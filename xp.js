@@ -9,13 +9,16 @@
   const STORAGE_KEY = 'rpg_character_v1';
   const HABITS_KEY  = 'rpg_habits_v1';
   const MAX_LOG     = 200;
+  const MAX_LEVEL   = 100;
 
-  // Level formule: level = floor(sqrt(xp / 50)) + 1
+  // Level formule: level = min(100, floor(sqrt(xp / 50)) + 1)
+  // Level 100 vereist 490.050 XP — bij 150 XP/dag ≈ 9 jaar. Near-impossible.
   function xpToLevel(xp) {
-    return Math.floor(Math.sqrt((xp || 0) / 50)) + 1;
+    return Math.min(MAX_LEVEL, Math.floor(Math.sqrt((xp || 0) / 50)) + 1);
   }
 
   function xpForLevel(level) {
+    if (level >= MAX_LEVEL) return Infinity; // Max level bereikt
     return Math.pow(level - 1, 2) * 50;
   }
 
@@ -102,12 +105,14 @@
     travel:        { xp:0, parentSkill:'lifestyle',  icon:'✈️', label:'Reizen',          active:false, quickLog:null },
     hobbies:       { xp:0, parentSkill:'lifestyle',  icon:'🎮', label:'Hobby\'s',        active:false, quickLog:null },
 
-    // ── DISCIPLINE (PRIVÉ — PIN 1111) ─────────────────────────────────
-    no_porn:       { xp:0, parentSkill:'discipline', icon:'🛡️', label:'No Porn',         active:true,  private:true, quickLog:null },
-    weed_control:  { xp:0, parentSkill:'discipline', icon:'🚫', label:'Weed Control',    active:true,  private:true, quickLog:null },
-    screen_time:   { xp:0, parentSkill:'discipline', icon:'📵', label:'Schermtijd',      active:true,  private:true, quickLog:null },
-    cold_shower:   { xp:0, parentSkill:'discipline', icon:'🚿', label:'Koud Douchen',    active:false, quickLog:null },
-    bedtime:       { xp:0, parentSkill:'discipline', icon:'🌙', label:'Bedtijd',         active:false, quickLog:null },
+    // ── DISCIPLINE — alleen no_porn en weed_control zijn privé (PIN 1111) ──
+    no_porn:       { xp:0, parentSkill:'discipline', icon:'🛡️', label:'No Porn',      active:true,  private:true, quickLog:null },
+    weed_control:  { xp:0, parentSkill:'discipline', icon:'🚫', label:'Weed Control', active:true,  private:true, quickLog:null },
+    screen_time:   { xp:0, parentSkill:'discipline', icon:'📵', label:'Schermtijd',   active:true,
+                     quickLog:[{label:'< 2u scherm',minutes:0,xp:20},{label:'< 1u social media',minutes:0,xp:30}] },
+    cold_shower:   { xp:0, parentSkill:'discipline', icon:'🚿', label:'Koud Douchen', active:true,
+                     quickLog:[{label:'Koud douche afgemaakt',minutes:5,xp:25},{label:'Wissel douche',minutes:5,xp:15}] },
+    bedtime:       { xp:0, parentSkill:'discipline', icon:'🌙', label:'Vroeg naar bed',active:false, quickLog:null },
 
     // ── KNOWLEDGE ────────────────────────────────────────────────────
     learning:      { xp:0, parentSkill:'knowledge',  icon:'🎓', label:'Leren',           active:true,
@@ -288,7 +293,8 @@
     skill.xp       = Math.max(0, (skill.xp || 0) + amount);
     const newLevel = xpToLevel(skill.xp);
 
-    char.xpLog.unshift({ skill:skillName, amount, reason:reason||'', date:todayStr() });
+    const isPrivate = !!(skill.private || (DEFAULT_SKILLS[skillName] || {}).private);
+    char.xpLog.unshift({ skill:skillName, amount, reason:reason||'', date:todayStr(), private:isPrivate });
     if (char.xpLog.length > MAX_LOG) char.xpLog.length = MAX_LOG;
 
     saveCharacter(char);

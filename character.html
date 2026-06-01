@@ -146,6 +146,7 @@ body::before {
 .rs-tile-icon  { font-size:20px; line-height:1; }
 .rs-tile-name  { font-size:8px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--t3); text-align:center; line-height:1.2; }
 .rs-tile-level { font-size:18px; font-weight:700; font-family:var(--mono); line-height:1; letter-spacing:-0.03em; }
+.rs-tile-max .rs-tile-level { font-size:10px; letter-spacing:0.08em; }
 
 /* ── History bar chart ───────────────────────────── */
 .history-chart {
@@ -518,8 +519,9 @@ const PARENT_META = {
 };
 const CATEGORY_ORDER = ['money','body','mind','business','lifestyle','discipline','knowledge','creative'];
 
-function xpToLevel(xp){ return Math.floor(Math.sqrt((xp||0)/50))+1; }
-function xpForLevel(l){ return Math.pow(l-1,2)*50; }
+const MAX_LEVEL = 100;
+function xpToLevel(xp){ return Math.min(MAX_LEVEL, Math.floor(Math.sqrt((xp||0)/50))+1); }
+function xpForLevel(l){ return l>=MAX_LEVEL ? Infinity : Math.pow(l-1,2)*50; }
 
 function loadChar(){
   try{ return JSON.parse(localStorage.getItem('rpg_character_v1'))||{skills:{},xpLog:[]}; }
@@ -650,10 +652,12 @@ function renderCharacter(){
   const char   = loadChar();
   const skills = char.skills||{};
 
-  // Total level
-  let total=0;
-  for(const s of Object.values(skills)) total+=xpToLevel(s.xp||0);
-  document.getElementById('totalLevel').textContent=total;
+  // Character Level = gebaseerd op totaal XP over alle skills, capped op 100
+  // Level 100 vereist ~490k total XP ≈ 9 jaar dagelijks loggen
+  let totalXpAll=0;
+  for(const s of Object.values(skills)) totalXpAll+=(s.xp||0);
+  const charLevel = xpToLevel(totalXpAll);
+  document.getElementById('totalLevel').textContent = charLevel === MAX_LEVEL ? '100' : charLevel;
 
   // Group active skills per category
   const sections = document.getElementById('rsSkillSections');
@@ -697,15 +701,15 @@ function renderCharacter(){
     grid.className='rs-grid';
 
     subskills.forEach(s=>{
-      const level=xpToLevel(s.xp);
+      const level=Math.min(MAX_LEVEL, xpToLevel(s.xp));
       const tile=document.createElement('div');
-      tile.className='rs-tile';
+      tile.className='rs-tile'+(level>=MAX_LEVEL?' rs-tile-max':'');
       tile.style.borderColor=meta.color+'26';
       tile.innerHTML=
         `<div class="rs-tile-glow" style="background:radial-gradient(circle at 50% 0%,${meta.color}20,transparent 65%)"></div>`+
         `<div class="rs-tile-icon">${s.private&&!isPrivateUnlocked()?'🔒':s.icon}</div>`+
         `<div class="rs-tile-name">${s.private&&!isPrivateUnlocked()?'Privé':s.label}</div>`+
-        `<div class="rs-tile-level" style="color:${meta.color}">${level}</div>`;
+        `<div class="rs-tile-level" style="color:${meta.color}">${level>=MAX_LEVEL?'MAX':level}</div>`;
 
       tile.addEventListener('click',()=>openQuickLog(s.key,s));
       grid.appendChild(tile);
@@ -721,8 +725,19 @@ function renderCharacter(){
     logEl.innerHTML='<div style="color:var(--t3);font-size:12px;text-align:center;padding:10px">Nog geen XP verdiend — klik op een skill!</div>';
     return;
   }
+  const privateUnlocked = isPrivateUnlocked();
   logEl.innerHTML=log.map(e=>{
     const s=skills[e.skill]||{};
+    const defaults=window.RPG_DEFAULT_SKILLS||{};
+    const isPriv = e.private || (defaults[e.skill]||{}).private || s.private;
+    if(isPriv && !privateUnlocked){
+      return `<div class="log-item">
+        <div class="log-dot" style="background:var(--discipline)"></div>
+        <div class="log-text" style="color:var(--t3)">🔒 Privé activiteit</div>
+        <div class="log-xp" style="color:var(--discipline)">${e.amount>=0?'+':''}${e.amount} XP</div>
+        <div class="log-time">${e.date||''}</div>
+      </div>`;
+    }
     const p=PARENT_META[s.parentSkill]||{color:'#6BE3A4'};
     const sign=e.amount>=0?'+':'';
     return `<div class="log-item">
@@ -736,14 +751,14 @@ function renderCharacter(){
 
 // ── Daily quests ───────────────────────────────────
 const DAILY_QUESTS=[
-  {id:'workout',   icon:'💪',label:'Workout',      skill:'fitness',   xp:50},
-  {id:'meditation',icon:'🧘',label:'Meditatie',    skill:'meditation',xp:20},
-  {id:'no_porn',   icon:'🛡️',label:'Privé quest',  skill:'no_porn',   xp:45,private:true},
-  {id:'reading',   icon:'📖',label:'Lezen',         skill:'reading',   xp:15},
-  {id:'outreach',  icon:'📈',label:'Outreach',      skill:'sales',     xp:35},
-  {id:'gratitude', icon:'🙏',label:'Gratitude',     skill:'gratitude', xp:10},
-  {id:'nutrition', icon:'🥗',label:'Eiwitten',      skill:'nutrition', xp:20},
-  {id:'planning',  icon:'📅',label:'Dag plannen',   skill:'planning',  xp:10},
+  {id:'workout',      icon:'💪',label:'Workout',        skill:'fitness',    xp:50},
+  {id:'meditation',   icon:'🧘',label:'Meditatie',      skill:'meditation', xp:20},
+  {id:'no_porn',      icon:'🔒',label:'Privé quest',    skill:'no_porn',    xp:45, private:true},
+  {id:'weed_control', icon:'🔒',label:'Privé quest 2',  skill:'weed_control',xp:40,private:true},
+  {id:'reading',      icon:'📖',label:'Lezen',           skill:'reading',    xp:15},
+  {id:'outreach',     icon:'📈',label:'Outreach',        skill:'sales',      xp:35},
+  {id:'gratitude',    icon:'🙏',label:'Gratitude',       skill:'gratitude',  xp:10},
+  {id:'nutrition',    icon:'🥗',label:'Eiwitten',        skill:'nutrition',  xp:20},
 ];
 
 function renderDaily(){
@@ -910,9 +925,10 @@ function renderSkillTree(){
     subskills.forEach(s=>{
       const xp=s.xp||0;
       const level=xpToLevel(xp);
-      const curXP=xp-xpForLevel(level);
-      const nextXP=xpForLevel(level+1)-xpForLevel(level);
-      const pct=nextXP>0?Math.min(100,Math.round(curXP/nextXP*100)):100;
+      const isMax=level>=MAX_LEVEL;
+      const curXP=isMax?0:xp-xpForLevel(level);
+      const nextXP=isMax?1:xpForLevel(level+1)-xpForLevel(level);
+      const pct=isMax?100:nextXP>0?Math.min(100,Math.round(curXP/nextXP*100)):100;
       const div=document.createElement('div');
       div.className='skill-detail';
       div.innerHTML=
@@ -920,10 +936,10 @@ function renderSkillTree(){
           '<div class="skill-detail-icon">'+(s.icon||'⭐')+'</div>'+
           '<div class="skill-detail-name">'+(s.label||s.key)+'</div>'+
           (s.active===false?'<div style="font-size:9px;font-family:var(--mono);color:var(--t3);padding:2px 6px;border:1px solid rgba(255,255,255,0.08);border-radius:4px">slapend</div>':'')+
-          '<div class="skill-detail-lvl">Lvl <span style="color:'+meta.color+'">'+level+'</span></div>'+
+          '<div class="skill-detail-lvl">'+(isMax?'<span style="color:'+meta.color+'">MAX</span>':'Lvl <span style="color:'+meta.color+'">'+level+'</span>')+'</div>'+
         '</div>'+
-        '<div class="xp-bar-label"><span>XP</span><span>'+xp.toLocaleString()+' / '+xpForLevel(level+1).toLocaleString()+'</span></div>'+
-        '<div class="xp-bar-track"><div class="xp-bar-fill" style="width:'+pct+'%;background:'+meta.color+'"></div></div>';
+        '<div class="xp-bar-label"><span>XP</span><span>'+(isMax?xp.toLocaleString()+' (MAX)':xp.toLocaleString()+' / '+xpForLevel(level+1).toLocaleString())+'</span></div>'+
+        '<div class="xp-bar-track"><div class="xp-bar-fill" style="width:'+pct+'%;background:'+meta.color+(isMax?';box-shadow:0 0 8px '+meta.color+'88':'')+'"></div></div>';
       container.appendChild(div);
     });
   });
