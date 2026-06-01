@@ -268,9 +268,9 @@ textarea {
 <div class="char-screen active" id="tab-character">
 
   <div class="card hero">
-    <div class="hero-avatar">⚔️</div>
+    <div class="hero-avatar">👑</div>
     <div class="hero-name">King Joey</div>
-    <div class="hero-class">Life RPG Character · Self-Made Build</div>
+    <div class="hero-class">The Self-Made King · Life OS</div>
     <div class="total-level">
       <div class="total-num" id="totalLevel">—</div>
       <div class="total-label">Total Level</div>
@@ -499,11 +499,70 @@ function renderCharacter() {
   }
 }
 
+// ---- PIN lock for private (discipline) skills ----
+const PRIVATE_SKILLS = ['no_porn', 'weed_control', 'screen_time', 'bedtime'];
+const PRIVATE_PIN    = '1111';
+const PIN_SESSION_KEY = 'rpg_private_unlocked';
+
+function isPrivateUnlocked() {
+  return sessionStorage.getItem(PIN_SESSION_KEY) === '1';
+}
+function unlockPrivate() {
+  sessionStorage.setItem(PIN_SESSION_KEY, '1');
+}
+
+function showPinModal(onSuccess) {
+  const existing = document.getElementById('pinModal');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'pinModal';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)';
+
+  overlay.innerHTML =
+    '<div style="background:#0e0e10;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px 24px;width:280px;text-align:center">' +
+      '<div style="font-size:28px;margin-bottom:8px">🔒</div>' +
+      '<div style="font-size:15px;font-weight:700;margin-bottom:4px">Privé sectie</div>' +
+      '<div style="font-size:12px;color:#76746E;margin-bottom:20px">Voer je PIN in om verder te gaan</div>' +
+      '<input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="width:100%;text-align:center;font-size:24px;font-family:ui-monospace,monospace;letter-spacing:0.3em;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;color:#FAFAFA;outline:none;margin-bottom:12px">' +
+      '<div id="pinError" style="font-size:11px;color:#FF6B6B;min-height:16px;margin-bottom:8px"></div>' +
+      '<button id="pinCancel" style="font-size:12px;color:#76746E;background:none;border:none;cursor:pointer;padding:4px">Annuleren</button>' +
+    '</div>';
+
+  document.body.appendChild(overlay);
+
+  const input = document.getElementById('pinInput');
+  const error = document.getElementById('pinError');
+  setTimeout(() => input.focus(), 50);
+
+  input.addEventListener('input', () => {
+    if (input.value.length === 4) {
+      if (input.value === PRIVATE_PIN) {
+        unlockPrivate();
+        overlay.remove();
+        onSuccess();
+      } else {
+        error.textContent = 'Verkeerde PIN, probeer opnieuw';
+        input.value = '';
+        setTimeout(() => { error.textContent = ''; }, 2000);
+      }
+    }
+  });
+
+  document.getElementById('pinCancel').addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+}
+
+function requirePin(callback) {
+  if (isPrivateUnlocked()) { callback(); return; }
+  showPinModal(callback);
+}
+
 // ---- Daily screen ----
 const DAILY_QUESTS = [
   { id: 'workout',    icon: '💪', label: 'Workout',       skill: 'fitness',    xp: 50 },
   { id: 'meditation', icon: '🧘', label: 'Meditatie',     skill: 'meditation', xp: 20 },
-  { id: 'no_porn',    icon: '🛡️', label: 'Geen porno',    skill: 'no_porn',    xp: 45 },
+  { id: 'no_porn',    icon: '🛡️', label: 'Privé quest',   skill: 'no_porn',    xp: 45, private: true },
   { id: 'steps',      icon: '👣', label: '10k stappen',   skill: 'steps',      xp: 25 },
   { id: 'reading',    icon: '📖', label: 'Lezen',         skill: 'reading',    xp: 15 },
   { id: 'outreach',   icon: '📈', label: 'Outreach',      skill: 'outreach',   xp: 35 },
@@ -546,16 +605,19 @@ function renderDaily() {
   grid.innerHTML = '';
   DAILY_QUESTS.forEach(q => {
     const isDone = !!(quests[q.id] && quests[q.id].done);
+    const isPriv = q.private && !isPrivateUnlocked();
     const card = document.createElement('div');
     card.className = 'quest-card' + (isDone ? ' done' : '');
+    if (isPriv) card.style.opacity = '0.5';
     card.innerHTML =
       '<div class="quest-card-top">' +
-        '<span class="quest-icon">' + q.icon + '</span>' +
+        '<span class="quest-icon">' + (isPriv ? '🔒' : q.icon) + '</span>' +
         '<span class="quest-check">' + (isDone ? '✓' : '') + '</span>' +
       '</div>' +
-      '<div class="quest-label">' + q.label + '</div>' +
-      '<div class="quest-xp">+' + q.xp + ' XP</div>';
+      '<div class="quest-label">' + (isPriv ? 'Privé quest' : q.label) + '</div>' +
+      '<div class="quest-xp">' + (isPriv ? 'PIN vereist' : '+' + q.xp + ' XP') + '</div>';
     card.addEventListener('click', () => {
+      if (q.private && !isPrivateUnlocked()) { requirePin(() => renderDaily()); return; }
       const d = loadDaily();
       if (!d.quests) d.quests = {};
       const was = d.quests[q.id] && d.quests[q.id].done;
@@ -659,6 +721,16 @@ function renderSkillTree() {
     title.innerHTML = 'Skill Tree — ' + meta.label;
     title.style.marginTop = '20px';
     container.appendChild(title);
+
+    // Discipline: show lock if not unlocked
+    if (pKey === 'discipline' && !isPrivateUnlocked()) {
+      const lockCard = document.createElement('div');
+      lockCard.style.cssText = 'background:rgba(255,107,107,0.05);border:1px solid rgba(255,107,107,0.15);border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:all 0.2s';
+      lockCard.innerHTML = '<div style="font-size:24px;margin-bottom:8px">🔒</div><div style="font-size:13px;font-weight:600;color:#FF6B6B;margin-bottom:4px">Privé sectie</div><div style="font-size:11px;color:#76746E">Klik om te ontgrendelen met PIN</div>';
+      lockCard.addEventListener('click', () => requirePin(renderSkillTree));
+      container.appendChild(lockCard);
+      return;
+    }
 
     subskills.forEach(([name, skill]) => {
       const xp = skill.xp || 0;

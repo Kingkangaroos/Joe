@@ -167,14 +167,11 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
   <a href="index.html" class="bottombar-tab" data-page="main">
     <span class="bottombar-tab-icon">🏠</span><span>Main</span>
   </a>
-  <a href="health.html" class="bottombar-tab" data-page="health">
-    <span class="bottombar-tab-icon">💊</span><span>Health</span>
-  </a>
-  <a href="gym.html" class="bottombar-tab" data-page="fitness">
-    <span class="bottombar-tab-icon">💪</span><span>Fitness</span>
-  </a>
   <a href="character.html" class="bottombar-tab" data-page="character">
-    <span class="bottombar-tab-icon">⚔️</span><span>Character</span>
+    <span class="bottombar-tab-icon">👑</span><span>Character</span>
+  </a>
+  <a href="finance.html" class="bottombar-tab" data-page="finance-nav">
+    <span class="bottombar-tab-icon">💰</span><span>Finance</span>
   </a>
 </nav>`;
 
@@ -182,15 +179,15 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
     const p = (window.location.pathname || '').toLowerCase();
     return p.endsWith('/finance.html') || p.endsWith('finance.html');
   }
+  function isFinanceNavPage() { return false; }
   function isEmbedded() {
     try { return window.self !== window.top; } catch (e) { return true; }
   }
   function shouldShowChrome() { return !isFinancePage() && !isEmbedded(); }
   function currentPageKey() {
     const p = (window.location.pathname || '').toLowerCase();
-    if (p.endsWith('health.html')) return 'health';
-    if (p.endsWith('gym.html')) return 'fitness';
     if (p.endsWith('character.html')) return 'character';
+    if (p.endsWith('finance.html')) return 'finance-nav';
     return 'main';
   }
 
