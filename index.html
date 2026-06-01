@@ -693,6 +693,25 @@ body::after {
     </div>
   </div>
 
+  <!-- RPG Daily Check-in -->
+  <div class="section" id="rpgCheckinSection">
+    <div class="section-title" style="font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#76746E;display:flex;align-items:center;gap:10px;margin-bottom:12px;margin-top:20px">
+      Daily Check-in
+      <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent)"></span>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:18px">
+
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#76746E;margin-bottom:10px">Dagcijfer</div>
+      <div id="rpgScoreRow" style="display:flex;gap:5px;margin-bottom:16px;flex-wrap:wrap"></div>
+
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#76746E;margin-bottom:10px">Daily Quests</div>
+      <div id="rpgQuestGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px"></div>
+
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#76746E;margin-bottom:8px">Gratitude</div>
+      <textarea id="rpgGratitude" rows="3" placeholder="Waar ben je vandaag dankbaar voor?" style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;color:#FAFAFA;font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:13px;resize:none;outline:none;line-height:1.6;box-sizing:border-box"></textarea>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -1057,6 +1076,12 @@ body::after {
       if (cb.checked) list[idx].doneAt = Date.now();
       else delete list[idx].doneAt;
       setGoals(key, list);
+      if (cb.checked && typeof window.addXP === 'function') {
+        const real = list.filter(g => g.text && g.text.trim());
+        if (real.length > 0 && real.every(g => g.done)) {
+          window.addXP('discipline', 25, 'Alle goals voltooid');
+        }
+      }
       reload();
     });
     li.appendChild(cb);
@@ -1309,6 +1334,107 @@ body::after {
   });
 })();
 </script>
+<script>
+(function () {
+  const DAILY_KEY = () => 'rpg_daily_v1:' + new Date().toISOString().slice(0, 10);
+  const QUESTS = [
+    { id: 'workout',    icon: '💪', label: 'Workout',       skill: 'fitness',    xp: 50 },
+    { id: 'meditation', icon: '🧘', label: 'Meditatie',     skill: 'meditation', xp: 20 },
+    { id: 'no_porn',    icon: '🛡️', label: 'Geen porno',    skill: 'no_porn',    xp: 45 },
+    { id: 'steps',      icon: '👣', label: '10k stappen',   skill: 'steps',      xp: 25 },
+    { id: 'reading',    icon: '📖', label: 'Lezen',         skill: 'reading',    xp: 15 },
+    { id: 'outreach',   icon: '📈', label: 'Outreach',      skill: 'outreach',   xp: 35 },
+    { id: 'gratitude',  icon: '🙏', label: 'Gratitude',     skill: 'gratitude',  xp: 10 },
+    { id: 'nutrition',  icon: '🥗', label: 'Eiwitten',      skill: 'nutrition',  xp: 20 },
+  ];
+
+  function loadDaily() {
+    try { return JSON.parse(localStorage.getItem(DAILY_KEY())) || {}; } catch { return {}; }
+  }
+  function saveDaily(d) {
+    try { localStorage.setItem(DAILY_KEY(), JSON.stringify(d)); } catch {}
+  }
+
+  function renderScoreRow() {
+    const row = document.getElementById('rpgScoreRow');
+    if (!row) return;
+    const daily = loadDaily();
+    const cur = daily.dayScore || 0;
+    row.innerHTML = '';
+    for (let i = 1; i <= 10; i++) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = i;
+      btn.style.cssText = 'flex:1;min-width:28px;padding:8px 0;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:' + (cur === i ? '#6BE3A4' : '#76746E') + ';font-size:13px;font-weight:700;cursor:pointer;' + (cur === i ? 'background:rgba(107,227,164,0.12);border-color:rgba(107,227,164,0.3);' : '');
+      btn.addEventListener('click', function () {
+        const d = loadDaily();
+        if (d.dayScore === i) {
+          delete d.dayScore;
+        } else {
+          d.dayScore = i;
+          if (typeof window.addXP === 'function') window.addXP('discipline', i * 3, 'Dagcijfer ' + i);
+        }
+        saveDaily(d);
+        renderScoreRow();
+      });
+      row.appendChild(btn);
+    }
+  }
+
+  function renderQuests() {
+    const grid = document.getElementById('rpgQuestGrid');
+    if (!grid) return;
+    const daily = loadDaily();
+    const quests = daily.quests || {};
+    grid.innerHTML = '';
+    QUESTS.forEach(q => {
+      const done = !!(quests[q.id] && quests[q.id].done);
+      const card = document.createElement('div');
+      card.style.cssText = 'background:' + (done ? 'rgba(107,227,164,0.07)' : 'rgba(255,255,255,0.04)') + ';border:1px solid ' + (done ? 'rgba(107,227,164,0.2)' : 'rgba(255,255,255,0.07)') + ';border-radius:12px;padding:12px;cursor:pointer;user-select:none;transition:all 0.2s';
+      card.innerHTML = '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:18px">' + q.icon + '</span><span style="width:16px;height:16px;border-radius:50%;border:1.5px solid ' + (done ? 'transparent' : 'rgba(255,255,255,0.2)') + ';background:' + (done ? '#6BE3A4' : 'transparent') + ';display:flex;align-items:center;justify-content:center;font-size:9px;color:#050506;font-weight:700">' + (done ? '✓' : '') + '</span></div><div style="font-size:11px;font-weight:600;color:' + (done ? '#FAFAFA' : '#B8B6B0') + ';margin-bottom:2px">' + q.label + '</div><div style="font-size:10px;font-family:ui-monospace,monospace;color:' + (done ? '#6BE3A4' : '#76746E') + '">+' + q.xp + ' XP</div>';
+      card.addEventListener('click', function () {
+        const d = loadDaily();
+        if (!d.quests) d.quests = {};
+        const wasDone = d.quests[q.id] && d.quests[q.id].done;
+        d.quests[q.id] = { done: !wasDone, xpGiven: !wasDone };
+        if (!wasDone && typeof window.addXP === 'function') window.addXP(q.skill, q.xp, q.label);
+        saveDaily(d);
+        renderQuests();
+      });
+      grid.appendChild(card);
+    });
+  }
+
+  function initGratitude() {
+    const ta = document.getElementById('rpgGratitude');
+    if (!ta) return;
+    const daily = loadDaily();
+    if (daily.gratitude) ta.value = daily.gratitude;
+    ta.addEventListener('input', function () {
+      const d = loadDaily();
+      d.gratitude = ta.value;
+      saveDaily(d);
+    });
+    ta.addEventListener('blur', function () {
+      if (ta.value.trim() && typeof window.addXP === 'function') {
+        const d = loadDaily();
+        if (!d.gratitudeXpGiven) {
+          window.addXP('gratitude', 10, 'Gratitude ingevuld');
+          d.gratitudeXpGiven = true;
+          saveDaily(d);
+        }
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    renderScoreRow();
+    renderQuests();
+    initGratitude();
+  });
+})();
+</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   if (typeof initCloudSync !== 'function') return;

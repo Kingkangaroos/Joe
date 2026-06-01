@@ -657,7 +657,9 @@ main {
 
   function toggleTaken(id) {
     const taken = getTaken();
+    const wasTaken = !!taken[id];
     if (taken[id]) delete taken[id]; else taken[id] = Date.now();
+    if (!wasTaken && typeof window.addXP === 'function') window.addXP('nutrition', 20, 'Supplement genomen');
     setTaken(taken); render();
   }
   function toggleLow(id) {

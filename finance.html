@@ -2045,6 +2045,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       storeSet('nw:' + catKey, items);
       if (Math.abs(deltaCHF) > 0.005) {
         logActivity(catKey, items[idx].name, deltaCHF, 'edit');
+        if (typeof window.addXP === 'function') window.addXP('saving', 15, 'Net worth bijgewerkt');
       }
       renderAllNetWorth();
     }

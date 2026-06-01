@@ -2216,6 +2216,7 @@ img, video, canvas, svg { max-width: 100%; }
       delete doneDays[todayKey];
     } else {
       doneDays[todayKey] = new Date().toISOString();
+      if (typeof window.addXP === 'function') window.addXP('fitness', 50, 'Workout voltooid');
     }
     saveDoneDays(doneDays);
     renderTodaysWorkout();
