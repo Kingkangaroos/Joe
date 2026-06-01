@@ -20,14 +20,17 @@
   --t1: #FAFAFA;
   --t2: #B8B6B0;
   --t3: #76746E;
-  --green:  #6BE3A4;
-  --blue:   #7DD3FC;
-  --orange: #F2C063;
-  --purple: #C4B5FD;
-  --pink:   #F9A8D4;
-  --red:    #FF6B6B;
   --mono: 'JetBrains Mono', ui-monospace, monospace;
   --sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  /* LoA / chakra kleuren */
+  --money:      #F5C842;
+  --body:       #6BE3A4;
+  --mind:       #7DD3FC;
+  --business:   #C4B5FD;
+  --lifestyle:  #FB923C;
+  --discipline: #FF6B6B;
+  --knowledge:  #818CF8;
+  --creative:   #2DD4BF;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -44,207 +47,169 @@ body::before {
   position:fixed; inset:0; pointer-events:none; z-index:0;
   background:
     radial-gradient(ellipse 60% 40% at 80% 10%, rgba(107,227,164,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 20% 80%, rgba(124,120,246,0.07) 0%, transparent 60%);
+    radial-gradient(ellipse 50% 50% at 20% 80%, rgba(129,140,248,0.07) 0%, transparent 60%);
 }
 
-/* Internal tabs */
+/* ── Tabs ─────────────────────────────────────────── */
 .char-tabs {
-  display: flex;
-  gap: 0;
-  padding: 10px 16px 0;
-  position: relative; z-index: 1;
+  display: flex; gap:0;
+  padding: 10px 12px 0;
+  position:relative; z-index:1;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.char-tabs::-webkit-scrollbar { display:none; }
 .char-tab {
-  flex: 1;
-  padding: 8px 4px 10px;
-  border: none;
-  background: transparent;
-  color: var(--t3);
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: color 0.2s, border-color 0.2s;
+  flex-shrink:0;
+  padding: 8px 10px 10px;
+  border:none; background:transparent;
+  color:var(--t3); font-family:var(--sans);
+  font-size:10px; font-weight:700;
+  letter-spacing:0.08em; text-transform:uppercase;
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:color 0.2s, border-color 0.2s;
+  white-space:nowrap;
 }
-.char-tab.active { color: var(--t1); border-bottom-color: var(--green); }
+.char-tab.active { color:var(--t1); border-bottom-color:var(--body); }
 
-/* Screens */
-.char-screen { display: none; padding: 16px 16px 0; position: relative; z-index: 1; }
-.char-screen.active { display: block; animation: fadeUp 0.25s ease; }
-@keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+/* ── Screens ──────────────────────────────────────── */
+.char-screen { display:none; padding:14px 14px 0; position:relative; z-index:1; }
+.char-screen.active { display:block; animation:fadeUp 0.22s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:none} }
 
-/* Cards */
+/* ── Cards ────────────────────────────────────────── */
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 12px;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:16px; margin-bottom:12px;
+  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
 }
 
-/* Hero */
-.hero { text-align:center; padding: 24px 16px 20px; position:relative; overflow:hidden; }
+/* ── Hero ─────────────────────────────────────────── */
+.hero { text-align:center; padding:20px 16px 18px; position:relative; overflow:hidden; }
 .hero::before {
-  content:'';
-  position:absolute; top:-30px; left:50%;
+  content:''; position:absolute; top:-30px; left:50%;
   transform:translateX(-50%);
   width:200px; height:200px;
-  background:radial-gradient(circle, rgba(107,227,164,0.12), transparent 70%);
+  background:radial-gradient(circle, rgba(245,200,66,0.1), transparent 70%);
   pointer-events:none;
 }
 .hero-avatar {
-  width:68px; height:68px; border-radius:50%;
-  background:linear-gradient(135deg, rgba(107,227,164,0.2), rgba(125,211,252,0.15));
-  border:2px solid rgba(107,227,164,0.3);
+  width:64px; height:64px; border-radius:50%;
+  background:linear-gradient(135deg, rgba(245,200,66,0.2), rgba(107,227,164,0.15));
+  border:2px solid rgba(245,200,66,0.35);
   display:flex; align-items:center; justify-content:center;
-  font-size:30px; margin:0 auto 12px;
-  box-shadow:0 0 30px rgba(107,227,164,0.15);
+  font-size:28px; margin:0 auto 10px;
+  box-shadow:0 0 28px rgba(245,200,66,0.18);
 }
-.hero-name { font-size:20px; font-weight:700; letter-spacing:-0.02em; margin-bottom:3px; }
-.hero-class { font-size:10px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--t3); margin-bottom:14px; }
+.hero-name { font-size:19px; font-weight:700; letter-spacing:-0.02em; margin-bottom:2px; }
+.hero-class { font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--t3); margin-bottom:12px; }
 .total-level {
   display:inline-flex; align-items:baseline; gap:6px;
-  padding:10px 22px;
-  background:rgba(107,227,164,0.08);
-  border:1px solid rgba(107,227,164,0.2);
+  padding:9px 20px;
+  background:rgba(245,200,66,0.07);
+  border:1px solid rgba(245,200,66,0.22);
   border-radius:12px;
 }
-.total-num {
-  font-size:36px; font-weight:700; font-family:var(--mono);
-  color:var(--green); line-height:1; letter-spacing:-0.04em;
-}
-.total-label {
-  font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
-  color:var(--green); opacity:0.7;
-}
+.total-num { font-size:32px; font-weight:700; font-family:var(--mono); color:var(--money); line-height:1; letter-spacing:-0.04em; }
+.total-label { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--money); opacity:0.7; }
 
-/* Skill grid */
-.skills-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
-.skill-card {
+/* ── RS-style skill grid ──────────────────────────── */
+.rs-section-label {
+  font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--t3); display:flex; align-items:center; gap:8px;
+  margin:16px 0 8px;
+}
+.rs-section-label::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent); }
+
+.rs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-bottom:10px; }
+
+.rs-tile {
   background:var(--surface);
   border:1px solid var(--border);
-  border-radius:14px;
-  padding:14px;
-  cursor:pointer;
-  transition:all 0.2s;
+  border-radius:11px;
+  padding:10px 8px 9px;
+  cursor:pointer; user-select:none;
+  transition:all 0.18s;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
   position:relative; overflow:hidden;
+  -webkit-tap-highlight-color: transparent;
 }
-.skill-card:active { transform:scale(0.97); }
-.skill-card-glow {
+.rs-tile:active { transform:scale(0.95); }
+.rs-tile-glow {
   position:absolute; inset:0; opacity:0;
-  transition:opacity 0.3s; pointer-events:none;
+  transition:opacity 0.25s; pointer-events:none;
+  border-radius:11px;
 }
-.skill-card:hover .skill-card-glow { opacity:1; }
-.skill-icon { font-size:22px; margin-bottom:7px; }
-.skill-name { font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--t2); margin-bottom:5px; }
-.skill-level { font-size:26px; font-weight:700; font-family:var(--mono); line-height:1; letter-spacing:-0.03em; margin-bottom:5px; }
+.rs-tile:hover .rs-tile-glow { opacity:1; }
+.rs-tile-icon  { font-size:20px; line-height:1; }
+.rs-tile-name  { font-size:8px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--t3); text-align:center; line-height:1.2; }
+.rs-tile-level { font-size:18px; font-weight:700; font-family:var(--mono); line-height:1; letter-spacing:-0.03em; }
 
-/* XP bars */
-.xp-bar-label { display:flex; justify-content:space-between; margin-bottom:3px; font-size:10px; font-family:var(--mono); color:var(--t3); }
-.xp-bar-track { height:5px; background:rgba(255,255,255,0.07); border-radius:3px; overflow:hidden; }
-.xp-bar-fill { height:100%; border-radius:3px; transition:width 1s cubic-bezier(0.22,1,0.36,1); }
+/* ── History bar chart ───────────────────────────── */
+.history-chart {
+  display:flex; align-items:flex-end; gap:4px;
+  height:64px; padding:0 2px;
+}
+.hist-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; height:100%; justify-content:flex-end; }
+.hist-bar {
+  width:100%; border-radius:3px 3px 0 0;
+  min-height:3px; transition:height 0.5s cubic-bezier(0.22,1,0.36,1);
+}
+.hist-day { font-size:8px; font-family:var(--mono); color:var(--t3); }
 
-/* Activity log */
-.log-item { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+/* ── XP log ─────────────────────────────────────── */
+.log-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
 .log-item:last-child { border-bottom:none; }
-.log-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
-.log-text { flex:1; font-size:12px; color:var(--t2); }
-.log-xp { font-size:11px; font-family:var(--mono); font-weight:700; }
-.log-time { font-size:10px; font-family:var(--mono); color:var(--t3); }
+.log-dot  { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.log-text { flex:1; font-size:11px; color:var(--t2); }
+.log-xp   { font-size:10px; font-family:var(--mono); font-weight:700; flex-shrink:0; }
+.log-time { font-size:9px; font-family:var(--mono); color:var(--t3); flex-shrink:0; }
 
-/* Section title */
+/* ── Section title ───────────────────────────────── */
 .sec-title {
-  font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase;
+  font-size:9px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase;
   color:var(--t3); display:flex; align-items:center; gap:10px;
-  margin-bottom:12px; margin-top:20px;
+  margin-bottom:10px; margin-top:18px;
 }
 .sec-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent); }
 
-/* Daily check-in */
+/* ── Daily quests ────────────────────────────────── */
+.score-row { display:flex; gap:4px; margin-bottom:12px; }
+.score-btn {
+  flex:1; padding:8px 0; border-radius:7px;
+  border:1px solid var(--border); background:var(--surface);
+  color:var(--t3); font-family:var(--mono); font-size:12px; font-weight:700;
+  cursor:pointer; transition:all 0.15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.score-btn.active { background:rgba(107,227,164,0.1); border-color:rgba(107,227,164,0.3); color:var(--body); }
+
 .quest-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
 .quest-card {
   background:var(--surface); border:1px solid var(--border);
   border-radius:12px; padding:12px;
-  cursor:pointer; user-select:none; transition:all 0.2s;
+  cursor:pointer; user-select:none; transition:all 0.18s;
+  -webkit-tap-highlight-color:transparent;
 }
-.quest-card:active { transform:scale(0.97); }
+.quest-card:active { transform:scale(0.96); }
 .quest-card.done { background:rgba(107,227,164,0.07); border-color:rgba(107,227,164,0.2); }
-.quest-card-top { display:flex; justify-content:space-between; margin-bottom:6px; }
-.quest-icon { font-size:18px; }
+.quest-card-top { display:flex; justify-content:space-between; margin-bottom:5px; }
+.quest-icon { font-size:17px; }
 .quest-check {
   width:16px; height:16px; border-radius:50%;
-  border:1.5px solid rgba(255,255,255,0.2);
+  border:1.5px solid rgba(255,255,255,0.18);
   display:flex; align-items:center; justify-content:center;
   font-size:9px; font-weight:700;
 }
-.quest-card.done .quest-check { background:var(--green); border-color:var(--green); color:#050506; }
+.quest-card.done .quest-check { background:var(--body); border-color:var(--body); color:#050506; }
 .quest-label { font-size:11px; font-weight:600; color:var(--t2); margin-bottom:2px; }
 .quest-card.done .quest-label { color:var(--t1); }
-.quest-xp { font-size:10px; font-family:var(--mono); color:var(--t3); }
-.quest-card.done .quest-xp { color:var(--green); }
+.quest-xp { font-size:9px; font-family:var(--mono); color:var(--t3); }
+.quest-card.done .quest-xp { color:var(--body); }
 
-/* Score buttons */
-.score-row { display:flex; gap:5px; margin-bottom:14px; }
-.score-btn {
-  flex:1; padding:9px 0; border-radius:8px;
-  border:1px solid var(--border); background:var(--surface);
-  color:var(--t3); font-family:var(--mono); font-size:13px; font-weight:700;
-  cursor:pointer; transition:all 0.2s;
-}
-.score-btn.active { background:rgba(107,227,164,0.1); border-color:rgba(107,227,164,0.3); color:var(--green); }
-
-/* Quest list */
-.quest-row {
-  display:flex; align-items:center; gap:12px;
-  padding:13px 14px; background:var(--surface);
-  border:1px solid var(--border); border-radius:12px;
-  margin-bottom:8px; cursor:pointer; transition:all 0.2s;
-}
-.quest-row:active { transform:scale(0.98); }
-.quest-row.done { opacity:0.5; }
-.quest-row-icon { font-size:18px; flex-shrink:0; }
-.quest-row-text { flex:1; }
-.quest-row-name { font-size:13px; font-weight:600; margin-bottom:2px; }
-.quest-row.done .quest-row-name { text-decoration:line-through; color:var(--t3); }
-.quest-row-reward { font-size:10px; font-family:var(--mono); color:var(--t3); }
-.quest-row-check {
-  width:20px; height:20px; border-radius:50%;
-  border:1.5px solid rgba(255,255,255,0.15);
-  display:flex; align-items:center; justify-content:center;
-  font-size:11px; flex-shrink:0; transition:all 0.2s;
-}
-.quest-row.done .quest-row-check { background:var(--green); border-color:var(--green); color:#050506; }
-
-/* Boss quests */
-.boss-card {
-  border-radius:14px; padding:16px;
-  margin-bottom:8px; cursor:pointer; transition:all 0.2s;
-  position:relative; overflow:hidden;
-}
-.boss-card:active { transform:scale(0.98); }
-.boss-card::before { content:'⚔️'; position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:28px; opacity:0.15; pointer-events:none; }
-.boss-name { font-size:14px; font-weight:700; margin-bottom:4px; }
-.boss-desc { font-size:11px; color:var(--t2); margin-bottom:10px; }
-.boss-progress { display:flex; align-items:center; gap:10px; }
-.boss-pct { font-size:11px; font-family:var(--mono); }
-
-/* Skill tree */
-.skill-detail {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:14px; padding:14px; margin-bottom:8px;
-}
-.skill-detail-hdr { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-.skill-detail-icon { font-size:20px; }
-.skill-detail-name { font-size:13px; font-weight:700; flex:1; }
-.skill-detail-lvl { font-family:var(--mono); font-size:12px; font-weight:700; color:var(--t3); }
-.skill-detail-lvl span { font-size:16px; }
-
-/* Textarea */
+/* ── Textarea ─────────────────────────────────────── */
 textarea {
   width:100%; background:rgba(0,0,0,0.3);
   border:1px solid rgba(255,255,255,0.08); border-radius:10px;
@@ -252,21 +217,154 @@ textarea {
   font-size:13px; resize:none; outline:none; line-height:1.6;
   box-sizing:border-box;
 }
+
+/* ── Quest list (quests tab) ─────────────────────── */
+.quest-row {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 14px; background:var(--surface);
+  border:1px solid var(--border); border-radius:12px;
+  margin-bottom:7px; cursor:pointer; transition:all 0.18s;
+  -webkit-tap-highlight-color:transparent;
+}
+.quest-row:active { transform:scale(0.98); }
+.quest-row.done { opacity:0.5; }
+.quest-row-icon { font-size:17px; flex-shrink:0; }
+.quest-row-text { flex:1; }
+.quest-row-name { font-size:13px; font-weight:600; margin-bottom:2px; }
+.quest-row.done .quest-row-name { text-decoration:line-through; color:var(--t3); }
+.quest-row-reward { font-size:9px; font-family:var(--mono); color:var(--t3); }
+.quest-row-check {
+  width:20px; height:20px; border-radius:50%;
+  border:1.5px solid rgba(255,255,255,0.15);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; flex-shrink:0; transition:all 0.18s;
+}
+.quest-row.done .quest-row-check { background:var(--body); border-color:var(--body); color:#050506; }
+
+/* ── Boss quests ──────────────────────────────────── */
+.boss-card {
+  border-radius:14px; padding:14px;
+  margin-bottom:8px; cursor:pointer; transition:all 0.18s;
+  position:relative; overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+.boss-card:active { transform:scale(0.98); }
+.boss-card::before { content:'⚔️'; position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:26px; opacity:0.15; pointer-events:none; }
+.boss-name { font-size:13px; font-weight:700; margin-bottom:3px; }
+.boss-desc { font-size:11px; color:var(--t2); margin-bottom:9px; }
+.boss-progress { display:flex; align-items:center; gap:10px; }
+.boss-pct { font-size:10px; font-family:var(--mono); }
+.xp-bar-track { height:5px; background:rgba(255,255,255,0.07); border-radius:3px; overflow:hidden; flex:1; }
+.xp-bar-fill  { height:100%; border-radius:3px; transition:width 0.8s cubic-bezier(0.22,1,0.36,1); }
+.xp-bar-label { display:flex; justify-content:space-between; margin-bottom:3px; font-size:9px; font-family:var(--mono); color:var(--t3); }
+
+/* ── Skill tree (skills tab) ─────────────────────── */
+.skill-detail {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:13px; padding:13px; margin-bottom:7px;
+}
+.skill-detail-hdr { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.skill-detail-icon { font-size:18px; }
+.skill-detail-name { font-size:12px; font-weight:700; flex:1; }
+.skill-detail-lvl { font-family:var(--mono); font-size:11px; font-weight:700; color:var(--t3); }
+.skill-detail-lvl span { font-size:15px; }
+
+/* ── Gratitude word cloud ────────────────────────── */
+.word-cloud { display:flex; flex-wrap:wrap; gap:6px; padding:4px 0; }
+.word-tag {
+  padding:3px 8px; border-radius:20px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--t2); font-weight:600;
+  transition:all 0.2s; cursor:default;
+}
+
+/* ── Quick-log modal ─────────────────────────────── */
+.ql-overlay {
+  position:fixed; inset:0;
+  background:rgba(0,0,0,0.72);
+  z-index:9100;
+  display:flex; align-items:flex-end; justify-content:center;
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  animation:overlayIn 0.2s ease;
+}
+@keyframes overlayIn { from{opacity:0} to{opacity:1} }
+.ql-sheet {
+  background:#0e0e12;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px 20px 0 0;
+  width:100%; max-width:480px;
+  padding:20px 18px calc(env(safe-area-inset-bottom,0px) + 20px);
+  animation:sheetUp 0.25s cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes sheetUp { from{transform:translateY(60%)} to{transform:none} }
+.ql-handle { width:36px; height:4px; border-radius:2px; background:rgba(255,255,255,0.15); margin:0 auto 16px; }
+.ql-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.ql-skill-icon { font-size:26px; }
+.ql-skill-name { font-size:15px; font-weight:700; }
+.ql-skill-lvl  { font-size:11px; font-family:var(--mono); color:var(--t3); margin-top:2px; }
+.ql-options { display:flex; flex-direction:column; gap:8px; }
+.ql-btn {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 16px; border-radius:12px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  cursor:pointer; transition:all 0.15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.ql-btn:active { transform:scale(0.97); }
+.ql-btn-label { font-size:13px; font-weight:600; }
+.ql-btn-meta  { font-size:11px; font-family:var(--mono); color:var(--t3); }
+.ql-custom {
+  display:flex; gap:8px; margin-top:6px;
+  align-items:center;
+}
+.ql-custom input {
+  flex:1; background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1); border-radius:10px;
+  padding:11px 14px; color:var(--t1); font-family:var(--mono);
+  font-size:16px; text-align:center; outline:none;
+  -webkit-appearance:none;
+}
+.ql-custom-btn {
+  padding:11px 18px; border-radius:10px;
+  background:rgba(107,227,164,0.12); border:1px solid rgba(107,227,164,0.3);
+  color:var(--body); font-weight:700; font-size:13px; cursor:pointer;
+  transition:all 0.15s; white-space:nowrap;
+}
+.ql-close {
+  margin-top:12px; width:100%; padding:11px;
+  border-radius:12px; background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
+  color:var(--t3); font-size:13px; cursor:pointer;
+  transition:all 0.15s;
+}
+
+/* ── PIN modal ────────────────────────────────────── */
+.pin-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9200;
+  display:flex; align-items:center; justify-content:center;
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+}
+.pin-card {
+  background:#0e0e10; border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px; padding:28px 24px; width:280px; text-align:center;
+}
 </style>
 </head>
 <body>
-<!-- topbar.js injects topbar + bottombar here -->
 
 <div class="char-tabs">
-  <button class="char-tab active" onclick="showTab('character')">Character</button>
-  <button class="char-tab" onclick="showTab('daily')">Daily</button>
-  <button class="char-tab" onclick="showTab('quests')">Quests</button>
-  <button class="char-tab" onclick="showTab('skills')">Skills</button>
+  <button class="char-tab active" onclick="showTab('character')">⚔️ Character</button>
+  <button class="char-tab" onclick="showTab('daily')">📅 Daily</button>
+  <button class="char-tab" onclick="showTab('quests')">🎯 Quests</button>
+  <button class="char-tab" onclick="showTab('skills')">📊 Skills</button>
+  <button class="char-tab" onclick="showTab('history')">📈 History</button>
 </div>
 
 <!-- ===== CHARACTER ===== -->
 <div class="char-screen active" id="tab-character">
-
   <div class="card hero">
     <div class="hero-avatar">👑</div>
     <div class="hero-name">King Joey</div>
@@ -276,51 +374,39 @@ textarea {
       <div class="total-label">Total Level</div>
     </div>
   </div>
-
-  <div class="sec-title">Main Skills</div>
-  <div class="skills-grid" id="mainSkillsGrid"></div>
-
-  <div class="sec-title">Recent XP</div>
-  <div class="card" style="padding:14px 16px" id="xpLogContainer">
+  <div id="rsSkillSections"></div>
+  <div class="sec-title" style="margin-top:18px">Recent XP</div>
+  <div class="card" style="padding:12px 14px" id="xpLogContainer">
     <div style="color:var(--t3);font-size:12px;text-align:center;padding:10px">Nog geen XP verdiend</div>
   </div>
-
 </div>
 
 <!-- ===== DAILY ===== -->
 <div class="char-screen" id="tab-daily">
-
   <div class="card" style="display:flex;align-items:center;gap:14px;margin-bottom:0">
     <div>
-      <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);margin-bottom:4px" id="dailyDateLabel">—</div>
-      <div style="font-size:18px;font-weight:700;letter-spacing:-0.02em">Daily Check-in</div>
-      <div style="font-size:12px;color:var(--t3);margin-top:2px" id="dailyQuestCount">0 / 0 voltooid</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);margin-bottom:3px" id="dailyDateLabel">—</div>
+      <div style="font-size:17px;font-weight:700;letter-spacing:-0.02em">Daily Check-in</div>
+      <div style="font-size:11px;color:var(--t3);margin-top:2px" id="dailyQuestCount">0 / 0 voltooid</div>
     </div>
   </div>
-
   <div class="sec-title">Dagcijfer</div>
   <div class="score-row" id="dailyScoreRow"></div>
-
   <div class="sec-title">Daily Quests</div>
   <div class="quest-grid" id="dailyQuestGrid"></div>
-
   <div class="sec-title">Gratitude</div>
   <div class="card">
     <textarea id="dailyGratitude" rows="3" placeholder="Waar ben je vandaag dankbaar voor?"></textarea>
-    <div style="font-size:10px;color:var(--t3);margin-top:6px;font-family:var(--mono)">→ Opgeslagen per dag</div>
+    <div style="font-size:9px;color:var(--t3);margin-top:5px;font-family:var(--mono)">→ Opgeslagen per dag · zichtbaar in History</div>
   </div>
-
 </div>
 
 <!-- ===== QUESTS ===== -->
 <div class="char-screen" id="tab-quests">
-
   <div class="sec-title" style="margin-top:0">Daily Quests</div>
   <div id="dailyQuestList"></div>
-
   <div class="sec-title">Weekly Quests</div>
-
-  <div class="quest-row" id="wq-workouts" onclick="toggleWeeklyQuest(this,'wq-workouts','Body',200)">
+  <div class="quest-row" id="wq-workouts" onclick="toggleWeeklyQuest(this,'wq-workouts','fitness',200)">
     <div class="quest-row-icon">🏋️</div>
     <div class="quest-row-text">
       <div class="quest-row-name">4 workouts deze week</div>
@@ -328,61 +414,63 @@ textarea {
     </div>
     <div class="quest-row-check"></div>
   </div>
-  <div class="quest-row" id="wq-review" onclick="toggleWeeklyQuest(this,'wq-review','discipline',100)">
+  <div class="quest-row" id="wq-review" onclick="toggleWeeklyQuest(this,'wq-review','focus',100)">
     <div class="quest-row-icon">📊</div>
     <div class="quest-row-text">
       <div class="quest-row-name">Weekly review doen</div>
-      <div class="quest-row-reward">+100 XP Mind + Discipline</div>
+      <div class="quest-row-reward">+100 XP Mind</div>
     </div>
     <div class="quest-row-check"></div>
   </div>
-  <div class="quest-row" id="wq-social" onclick="toggleWeeklyQuest(this,'wq-social','dating',80)">
+  <div class="quest-row" id="wq-social" onclick="toggleWeeklyQuest(this,'wq-social','social',80)">
     <div class="quest-row-icon">💬</div>
     <div class="quest-row-text">
-      <div class="quest-row-name">1 date of sociale actie</div>
+      <div class="quest-row-name">1 sociale activiteit</div>
       <div class="quest-row-reward">+80 XP Lifestyle</div>
     </div>
     <div class="quest-row-check"></div>
   </div>
-
+  <div class="quest-row" id="wq-tennis" onclick="toggleWeeklyQuest(this,'wq-tennis','tennis',150)">
+    <div class="quest-row-icon">🎾</div>
+    <div class="quest-row-text">
+      <div class="quest-row-name">2x tennis deze week</div>
+      <div class="quest-row-reward">+150 XP Body</div>
+    </div>
+    <div class="quest-row-check"></div>
+  </div>
   <div class="sec-title">Boss Quests</div>
-
   <div class="boss-card" style="background:linear-gradient(135deg,rgba(196,181,253,0.06),rgba(249,168,212,0.04));border:1px solid rgba(196,181,253,0.2)">
     <div class="boss-name">🎯 Eerste klant binnenhalen</div>
     <div class="boss-desc">Sluit je eerste betaalde deal. One shot, one kill.</div>
     <div class="boss-progress">
-      <div class="xp-bar-track" style="flex:1;height:5px"><div class="xp-bar-fill" style="background:var(--purple);width:40%"></div></div>
-      <div class="boss-pct" style="color:var(--purple)">40%</div>
+      <div class="xp-bar-track"><div class="xp-bar-fill" style="background:var(--business);width:40%"></div></div>
+      <div class="boss-pct" style="color:var(--business)">40%</div>
     </div>
   </div>
-
   <div class="boss-card" style="background:linear-gradient(135deg,rgba(107,227,164,0.06),rgba(125,211,252,0.04));border:1px solid rgba(107,227,164,0.2)">
     <div class="boss-name">🔥 12% body fat bereiken</div>
     <div class="boss-desc">Huidig: ~16%. Nog 4% te gaan.</div>
     <div class="boss-progress">
-      <div class="xp-bar-track" style="flex:1;height:5px"><div class="xp-bar-fill" style="background:var(--green);width:62%"></div></div>
-      <div class="boss-pct" style="color:var(--green)">62%</div>
+      <div class="xp-bar-track"><div class="xp-bar-fill" style="background:var(--body);width:62%"></div></div>
+      <div class="boss-pct" style="color:var(--body)">62%</div>
     </div>
   </div>
-
-  <div class="boss-card" style="background:linear-gradient(135deg,rgba(242,192,99,0.06),transparent);border:1px solid rgba(242,192,99,0.2)">
+  <div class="boss-card" style="background:linear-gradient(135deg,rgba(245,200,66,0.06),transparent);border:1px solid rgba(245,200,66,0.2)">
     <div class="boss-name">💰 €10.000 spaargeld</div>
     <div class="boss-desc">€6.240 gespaard. Nog €3.760 te gaan.</div>
     <div class="boss-progress">
-      <div class="xp-bar-track" style="flex:1;height:5px"><div class="xp-bar-fill" style="background:var(--orange);width:62%"></div></div>
-      <div class="boss-pct" style="color:var(--orange)">62%</div>
+      <div class="xp-bar-track"><div class="xp-bar-fill" style="background:var(--money);width:62%"></div></div>
+      <div class="boss-pct" style="color:var(--money)">62%</div>
     </div>
   </div>
-
   <div class="boss-card" style="background:linear-gradient(135deg,rgba(125,211,252,0.06),transparent);border:1px solid rgba(125,211,252,0.2);margin-bottom:0">
     <div class="boss-name">⚔️ Life OS MVP afmaken</div>
     <div class="boss-desc">Dashboard ombouwen naar volledig RPG systeem.</div>
     <div class="boss-progress">
-      <div class="xp-bar-track" style="flex:1;height:5px"><div class="xp-bar-fill" style="background:var(--blue);width:75%"></div></div>
-      <div class="boss-pct" style="color:var(--blue)">75%</div>
+      <div class="xp-bar-track"><div class="xp-bar-fill" style="background:var(--mind);width:85%"></div></div>
+      <div class="boss-pct" style="color:var(--mind)">85%</div>
     </div>
   </div>
-
 </div>
 
 <!-- ===== SKILLS ===== -->
@@ -390,210 +478,299 @@ textarea {
   <div id="skillTreeContainer"></div>
 </div>
 
-<div style="height:80px"></div>
+<!-- ===== HISTORY ===== -->
+<div class="char-screen" id="tab-history">
+  <div class="sec-title" style="margin-top:0">Dagscores — afgelopen 14 dagen</div>
+  <div class="card" style="padding:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:11px;color:var(--t3)">Gemiddelde score</div>
+      <div style="font-size:18px;font-weight:700;font-family:var(--mono);color:var(--body)" id="avgScore">—</div>
+    </div>
+    <div class="history-chart" id="historyChart"></div>
+  </div>
+  <div class="sec-title">XP verdiend per categorie</div>
+  <div class="card" id="categoryXpCard" style="padding:14px"></div>
+  <div class="sec-title">Gratitude word cloud</div>
+  <div class="card" style="padding:14px">
+    <div class="word-cloud" id="wordCloud">
+      <div style="color:var(--t3);font-size:12px">Vul dagelijks gratitude in om de word cloud op te bouwen</div>
+    </div>
+  </div>
+</div>
+
+<div style="height:88px"></div>
 
 <script>
-// =====================================================================
-// character.html — reads live data from xp.js / localStorage
-// =====================================================================
+// =============================================================
+// character.html — v1.2
+// =============================================================
 
-const PARENT_COLORS = {
-  body:       { color: '#6BE3A4', icon: '💪', label: 'Body' },
-  mind:       { color: '#7DD3FC', icon: '🧠', label: 'Mind' },
-  money:      { color: '#F2C063', icon: '💰', label: 'Money' },
-  business:   { color: '#C4B5FD', icon: '📈', label: 'Business' },
-  lifestyle:  { color: '#F9A8D4', icon: '✨', label: 'Lifestyle' },
-  discipline: { color: '#FF6B6B', icon: '🛡️', label: 'Discipline' },
+// LoA kleuren — gespiegeld van xp.js
+const PARENT_META = {
+  money:      { color:'#F5C842', icon:'💰', label:'Money' },
+  body:       { color:'#6BE3A4', icon:'💪', label:'Body' },
+  mind:       { color:'#7DD3FC', icon:'🧠', label:'Mind' },
+  business:   { color:'#C4B5FD', icon:'📈', label:'Business' },
+  lifestyle:  { color:'#FB923C', icon:'✨', label:'Lifestyle' },
+  discipline: { color:'#FF6B6B', icon:'🛡️', label:'Discipline' },
+  knowledge:  { color:'#818CF8', icon:'📚', label:'Knowledge' },
+  creative:   { color:'#2DD4BF', icon:'🎨', label:'Creative' },
 };
+const CATEGORY_ORDER = ['money','body','mind','business','lifestyle','discipline','knowledge','creative'];
 
-function xpToLevel(xp) { return Math.floor(Math.sqrt((xp || 0) / 50)) + 1; }
-function xpForLevel(l)  { return Math.pow(l - 1, 2) * 50; }
+function xpToLevel(xp){ return Math.floor(Math.sqrt((xp||0)/50))+1; }
+function xpForLevel(l){ return Math.pow(l-1,2)*50; }
 
-function loadChar() {
-  try { return JSON.parse(localStorage.getItem('rpg_character_v1')) || { skills: {}, xpLog: [] }; }
-  catch { return { skills: {}, xpLog: [] }; }
+function loadChar(){
+  try{ return JSON.parse(localStorage.getItem('rpg_character_v1'))||{skills:{},xpLog:[]}; }
+  catch{ return {skills:{},xpLog:[]}; }
+}
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+function getDailyKey(d){ return 'rpg_daily_v1:'+(d||todayKey()); }
+function loadDaily(d){ try{ return JSON.parse(localStorage.getItem(getDailyKey(d)))||{}; } catch{ return {}; } }
+function saveDaily(data,d){ try{ localStorage.setItem(getDailyKey(d),JSON.stringify(data)); } catch{} }
+
+// ── Tab switch ─────────────────────────────────────
+function showTab(id){
+  document.querySelectorAll('.char-screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.char-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const tabs  = [...document.querySelectorAll('.char-tab')];
+  const names = ['character','daily','quests','skills','history'];
+  const idx   = names.indexOf(id);
+  if(idx>=0) tabs[idx].classList.add('active');
+  if(id==='character') renderCharacter();
+  if(id==='daily')     renderDaily();
+  if(id==='quests')    renderQuests();
+  if(id==='skills')    renderSkillTree();
+  if(id==='history')   renderHistory();
 }
 
-function getTodayKey() { return new Date().toISOString().slice(0, 10); }
-function getDailyKey() { return 'rpg_daily_v1:' + getTodayKey(); }
-function loadDaily()   { try { return JSON.parse(localStorage.getItem(getDailyKey())) || {}; } catch { return {}; } }
-function saveDaily(d)  { try { localStorage.setItem(getDailyKey(), JSON.stringify(d)); } catch {} }
+// ── PIN ────────────────────────────────────────────
+const PRIVATE_PIN     = '1111';
+const PIN_SESSION_KEY = 'rpg_private_unlocked';
+function isPrivateUnlocked(){ return sessionStorage.getItem(PIN_SESSION_KEY)==='1'; }
+function unlockPrivate(){ sessionStorage.setItem(PIN_SESSION_KEY,'1'); }
 
-// ---- Tab switching ----
-function showTab(id) {
-  document.querySelectorAll('.char-screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.char-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  const tabs = document.querySelectorAll('.char-tab');
-  const names = ['character','daily','quests','skills'];
-  tabs[names.indexOf(id)].classList.add('active');
-  if (id === 'character') renderCharacter();
-  if (id === 'daily')     renderDaily();
-  if (id === 'quests')    renderQuests();
-  if (id === 'skills')    renderSkillTree();
+function showPinModal(onSuccess){
+  document.getElementById('pinModal')?.remove();
+  const overlay = document.createElement('div');
+  overlay.id='pinModal';
+  overlay.className='pin-overlay';
+  overlay.innerHTML=
+    '<div class="pin-card">'+
+      '<div style="font-size:28px;margin-bottom:8px">🔒</div>'+
+      '<div style="font-size:15px;font-weight:700;margin-bottom:4px">Privé sectie</div>'+
+      '<div style="font-size:12px;color:var(--t3);margin-bottom:18px">Voer je PIN in om verder te gaan</div>'+
+      '<input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" '+
+        'style="width:100%;text-align:center;font-size:24px;font-family:var(--mono);letter-spacing:0.3em;'+
+        'background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;'+
+        'padding:12px;color:#FAFAFA;outline:none;margin-bottom:10px">'+
+      '<div id="pinError" style="font-size:11px;color:var(--discipline);min-height:14px;margin-bottom:8px"></div>'+
+      '<button onclick="document.getElementById(\'pinModal\').remove()" '+
+        'style="font-size:12px;color:var(--t3);background:none;border:none;cursor:pointer;padding:4px">Annuleren</button>'+
+    '</div>';
+  document.body.appendChild(overlay);
+  const inp=document.getElementById('pinInput');
+  const err=document.getElementById('pinError');
+  setTimeout(()=>inp.focus(),50);
+  inp.addEventListener('input',()=>{
+    if(inp.value.length===4){
+      if(inp.value===PRIVATE_PIN){ unlockPrivate(); overlay.remove(); onSuccess(); }
+      else{ err.textContent='Verkeerde PIN, probeer opnieuw'; inp.value=''; setTimeout(()=>err.textContent='',2000); }
+    }
+  });
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
 }
 
-// ---- Character screen ----
-function renderCharacter() {
-  const char = loadChar();
-  const skills = char.skills || {};
+function requirePin(cb){ if(isPrivateUnlocked()){ cb(); return; } showPinModal(cb); }
 
-  // Aggregate per parent skill
-  const parents = {};
-  for (const [name, skill] of Object.entries(skills)) {
-    const p = skill.parentSkill || 'discipline';
-    if (!parents[p]) parents[p] = { xp: 0, subskills: [] };
-    parents[p].xp += (skill.xp || 0);
-    parents[p].subskills.push({ name, level: xpToLevel(skill.xp), xp: skill.xp, icon: skill.icon, label: skill.label });
+// ── Quick-log modal ────────────────────────────────
+function openQuickLog(skillKey, skillData){
+  if(skillData.private && !isPrivateUnlocked()){
+    requirePin(()=>openQuickLog(skillKey,skillData));
+    return;
   }
+  document.getElementById('qlModal')?.remove();
+
+  const char   = loadChar();
+  const skill  = char.skills[skillKey]||skillData;
+  const xp     = skill.xp||0;
+  const level  = xpToLevel(xp);
+  const meta   = PARENT_META[skill.parentSkill||skillData.parentSkill]||{color:'#6BE3A4'};
+  const opts   = skill.quickLog||skillData.quickLog||[];
+
+  const overlay = document.createElement('div');
+  overlay.id='qlModal';
+  overlay.className='ql-overlay';
+
+  const optHtml = opts.map(o=>
+    `<div class="ql-btn" onclick="doQuickLog('${skillKey}',${o.xp},'${o.label}')">
+       <span class="ql-btn-label">${o.label}${o.minutes?' ('+o.minutes+' min)':''}</span>
+       <span class="ql-btn-meta" style="color:${meta.color}">+${o.xp} XP</span>
+     </div>`
+  ).join('');
+
+  overlay.innerHTML=
+    `<div class="ql-sheet">
+       <div class="ql-handle"></div>
+       <div class="ql-header">
+         <span class="ql-skill-icon">${skill.icon||skillData.icon||'⭐'}</span>
+         <div>
+           <div class="ql-skill-name" style="color:${meta.color}">${skill.label||skillData.label||skillKey}</div>
+           <div class="ql-skill-lvl">Level ${level} · ${xp.toLocaleString()} XP</div>
+         </div>
+       </div>
+       <div class="ql-options">
+         ${optHtml}
+         <div class="ql-custom">
+           <input id="qlCustomXp" type="number" min="1" max="999" placeholder="Eigen XP">
+           <button class="ql-custom-btn" onclick="doCustomQuickLog('${skillKey}')">+ Voeg toe</button>
+         </div>
+       </div>
+       <button class="ql-close" onclick="document.getElementById('qlModal').remove()">Sluiten</button>
+     </div>`;
+
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
+}
+
+function doQuickLog(skillKey, amount, label){
+  if(typeof window.addXP==='function') window.addXP(skillKey, amount, label);
+  document.getElementById('qlModal')?.remove();
+  renderCharacter();
+}
+function doCustomQuickLog(skillKey){
+  const val = parseInt(document.getElementById('qlCustomXp')?.value||0);
+  if(val>0) doQuickLog(skillKey, val, 'Custom XP');
+}
+
+// ── Character screen ───────────────────────────────
+function renderCharacter(){
+  const char   = loadChar();
+  const skills = char.skills||{};
 
   // Total level
-  let totalLevel = 0;
-  for (const skill of Object.values(skills)) totalLevel += xpToLevel(skill.xp);
-  document.getElementById('totalLevel').textContent = totalLevel;
+  let total=0;
+  for(const s of Object.values(skills)) total+=xpToLevel(s.xp||0);
+  document.getElementById('totalLevel').textContent=total;
 
-  // Skill grid
-  const grid = document.getElementById('mainSkillsGrid');
-  grid.innerHTML = '';
-  const order = ['body','mind','money','business','lifestyle','discipline'];
-  order.forEach(pKey => {
-    const meta = PARENT_COLORS[pKey];
-    const data = parents[pKey] || { xp: 0 };
-    const totalXP = data.xp || 0;
-    const level = xpToLevel(totalXP);
-    const curXP = totalXP - xpForLevel(level);
-    const nextXP = xpForLevel(level + 1) - xpForLevel(level);
-    const pct = nextXP > 0 ? Math.min(100, Math.round(curXP / nextXP * 100)) : 100;
+  // Group active skills per category
+  const sections = document.getElementById('rsSkillSections');
+  sections.innerHTML='';
 
-    const card = document.createElement('div');
-    card.className = 'skill-card';
-    card.onclick = () => { showTab('skills'); };
-    card.innerHTML =
-      '<div class="skill-card-glow" style="background:radial-gradient(circle at 50% 0%,' + meta.color + '18,transparent 70%)"></div>' +
-      '<div class="skill-icon">' + meta.icon + '</div>' +
-      '<div class="skill-name">' + meta.label + '</div>' +
-      '<div class="skill-level" style="color:' + meta.color + '">' + level + '</div>' +
-      '<div class="xp-bar-label"><span>XP</span><span style="font-family:var(--mono)">' + totalXP.toLocaleString() + '</span></div>' +
-      '<div class="xp-bar-track"><div class="xp-bar-fill" style="width:' + pct + '%;background:' + meta.color + ';box-shadow:0 0 8px ' + meta.color + '66"></div></div>';
-    grid.appendChild(card);
+  CATEGORY_ORDER.forEach(pKey=>{
+    const meta = PARENT_META[pKey];
+    // Get active subskills; also pull from RPG_DEFAULT_SKILLS for metadata
+    const defaults = window.RPG_DEFAULT_SKILLS||{};
+    const subskills = Object.entries({...defaults,...skills})
+      .filter(([k,s])=>{
+        const base = defaults[k]||{};
+        const actual = skills[k]||base;
+        return (base.parentSkill||actual.parentSkill)===pKey && (actual.active!==false ? (base.active!==false) : false) && (actual.active!==false);
+      })
+      .map(([k])=>{
+        const base   = defaults[k]||{};
+        const actual = skills[k]||{};
+        return {
+          key:k,
+          icon:actual.icon||base.icon||'⭐',
+          label:actual.label||base.label||k,
+          xp:actual.xp||0,
+          private:base.private||actual.private||false,
+          quickLog:actual.quickLog!==undefined?actual.quickLog:base.quickLog,
+          parentSkill:pKey,
+          active:actual.active!==undefined?actual.active:base.active,
+        };
+      })
+      .filter(s=>s.active!==false);
+
+    if(subskills.length===0) return;
+
+    const label=document.createElement('div');
+    label.className='rs-section-label';
+    label.style.color=meta.color;
+    label.innerHTML=meta.icon+' '+meta.label+'<span></span>';
+    sections.appendChild(label);
+
+    const grid=document.createElement('div');
+    grid.className='rs-grid';
+
+    subskills.forEach(s=>{
+      const level=xpToLevel(s.xp);
+      const tile=document.createElement('div');
+      tile.className='rs-tile';
+      tile.style.borderColor=meta.color+'26';
+      tile.innerHTML=
+        `<div class="rs-tile-glow" style="background:radial-gradient(circle at 50% 0%,${meta.color}20,transparent 65%)"></div>`+
+        `<div class="rs-tile-icon">${s.private&&!isPrivateUnlocked()?'🔒':s.icon}</div>`+
+        `<div class="rs-tile-name">${s.private&&!isPrivateUnlocked()?'Privé':s.label}</div>`+
+        `<div class="rs-tile-level" style="color:${meta.color}">${level}</div>`;
+
+      tile.addEventListener('click',()=>openQuickLog(s.key,s));
+      grid.appendChild(tile);
+    });
+
+    sections.appendChild(grid);
   });
 
   // XP log
-  const logContainer = document.getElementById('xpLogContainer');
-  const log = (char.xpLog || []).slice(0, 10);
-  if (log.length === 0) {
-    logContainer.innerHTML = '<div style="color:var(--t3);font-size:12px;text-align:center;padding:10px">Nog geen XP verdiend — start een workout!</div>';
-  } else {
-    logContainer.innerHTML = log.map(entry => {
-      const skill = (char.skills || {})[entry.skill] || {};
-      const parent = PARENT_COLORS[skill.parentSkill] || PARENT_COLORS.discipline;
-      const label = skill.label || entry.skill;
-      const time = entry.date || '';
-      return '<div class="log-item">' +
-        '<div class="log-dot" style="background:' + parent.color + '"></div>' +
-        '<div class="log-text">' + (entry.reason || label) + '</div>' +
-        '<div class="log-xp" style="color:' + parent.color + '">+' + entry.amount + ' XP</div>' +
-        '<div class="log-time">' + time + '</div>' +
-        '</div>';
-    }).join('');
+  const logEl=document.getElementById('xpLogContainer');
+  const log=(char.xpLog||[]).slice(0,12);
+  if(!log.length){
+    logEl.innerHTML='<div style="color:var(--t3);font-size:12px;text-align:center;padding:10px">Nog geen XP verdiend — klik op een skill!</div>';
+    return;
   }
+  logEl.innerHTML=log.map(e=>{
+    const s=skills[e.skill]||{};
+    const p=PARENT_META[s.parentSkill]||{color:'#6BE3A4'};
+    const sign=e.amount>=0?'+':'';
+    return `<div class="log-item">
+      <div class="log-dot" style="background:${p.color}"></div>
+      <div class="log-text">${e.reason||e.skill}</div>
+      <div class="log-xp" style="color:${p.color}">${sign}${e.amount} XP</div>
+      <div class="log-time">${e.date||''}</div>
+    </div>`;
+  }).join('');
 }
 
-// ---- PIN lock for private (discipline) skills ----
-const PRIVATE_SKILLS = ['no_porn', 'weed_control', 'screen_time', 'bedtime'];
-const PRIVATE_PIN    = '1111';
-const PIN_SESSION_KEY = 'rpg_private_unlocked';
-
-function isPrivateUnlocked() {
-  return sessionStorage.getItem(PIN_SESSION_KEY) === '1';
-}
-function unlockPrivate() {
-  sessionStorage.setItem(PIN_SESSION_KEY, '1');
-}
-
-function showPinModal(onSuccess) {
-  const existing = document.getElementById('pinModal');
-  if (existing) existing.remove();
-
-  const overlay = document.createElement('div');
-  overlay.id = 'pinModal';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)';
-
-  overlay.innerHTML =
-    '<div style="background:#0e0e10;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px 24px;width:280px;text-align:center">' +
-      '<div style="font-size:28px;margin-bottom:8px">🔒</div>' +
-      '<div style="font-size:15px;font-weight:700;margin-bottom:4px">Privé sectie</div>' +
-      '<div style="font-size:12px;color:#76746E;margin-bottom:20px">Voer je PIN in om verder te gaan</div>' +
-      '<input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="width:100%;text-align:center;font-size:24px;font-family:ui-monospace,monospace;letter-spacing:0.3em;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;color:#FAFAFA;outline:none;margin-bottom:12px">' +
-      '<div id="pinError" style="font-size:11px;color:#FF6B6B;min-height:16px;margin-bottom:8px"></div>' +
-      '<button id="pinCancel" style="font-size:12px;color:#76746E;background:none;border:none;cursor:pointer;padding:4px">Annuleren</button>' +
-    '</div>';
-
-  document.body.appendChild(overlay);
-
-  const input = document.getElementById('pinInput');
-  const error = document.getElementById('pinError');
-  setTimeout(() => input.focus(), 50);
-
-  input.addEventListener('input', () => {
-    if (input.value.length === 4) {
-      if (input.value === PRIVATE_PIN) {
-        unlockPrivate();
-        overlay.remove();
-        onSuccess();
-      } else {
-        error.textContent = 'Verkeerde PIN, probeer opnieuw';
-        input.value = '';
-        setTimeout(() => { error.textContent = ''; }, 2000);
-      }
-    }
-  });
-
-  document.getElementById('pinCancel').addEventListener('click', () => overlay.remove());
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
-}
-
-function requirePin(callback) {
-  if (isPrivateUnlocked()) { callback(); return; }
-  showPinModal(callback);
-}
-
-// ---- Daily screen ----
-const DAILY_QUESTS = [
-  { id: 'workout',    icon: '💪', label: 'Workout',       skill: 'fitness',    xp: 50 },
-  { id: 'meditation', icon: '🧘', label: 'Meditatie',     skill: 'meditation', xp: 20 },
-  { id: 'no_porn',    icon: '🛡️', label: 'Privé quest',   skill: 'no_porn',    xp: 45, private: true },
-  { id: 'steps',      icon: '👣', label: '10k stappen',   skill: 'steps',      xp: 25 },
-  { id: 'reading',    icon: '📖', label: 'Lezen',         skill: 'reading',    xp: 15 },
-  { id: 'outreach',   icon: '📈', label: 'Outreach',      skill: 'outreach',   xp: 35 },
-  { id: 'gratitude',  icon: '🙏', label: 'Gratitude',     skill: 'gratitude',  xp: 10 },
-  { id: 'nutrition',  icon: '🥗', label: 'Eiwitten',      skill: 'nutrition',  xp: 20 },
+// ── Daily quests ───────────────────────────────────
+const DAILY_QUESTS=[
+  {id:'workout',   icon:'💪',label:'Workout',      skill:'fitness',   xp:50},
+  {id:'meditation',icon:'🧘',label:'Meditatie',    skill:'meditation',xp:20},
+  {id:'no_porn',   icon:'🛡️',label:'Privé quest',  skill:'no_porn',   xp:45,private:true},
+  {id:'reading',   icon:'📖',label:'Lezen',         skill:'reading',   xp:15},
+  {id:'outreach',  icon:'📈',label:'Outreach',      skill:'sales',     xp:35},
+  {id:'gratitude', icon:'🙏',label:'Gratitude',     skill:'gratitude', xp:10},
+  {id:'nutrition', icon:'🥗',label:'Eiwitten',      skill:'nutrition', xp:20},
+  {id:'planning',  icon:'📅',label:'Dag plannen',   skill:'planning',  xp:10},
 ];
 
-function renderDaily() {
-  const daily = loadDaily();
-  const quests = daily.quests || {};
-  const days = ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'];
-  const months = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
-  const now = new Date();
-  document.getElementById('dailyDateLabel').textContent =
-    days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()];
-
-  const done = DAILY_QUESTS.filter(q => quests[q.id] && quests[q.id].done).length;
-  document.getElementById('dailyQuestCount').textContent = done + ' / ' + DAILY_QUESTS.length + ' voltooid';
+function renderDaily(){
+  const daily=loadDaily();
+  const quests=daily.quests||{};
+  const days=['zo','ma','di','wo','do','vr','za'];
+  const months=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  const now=new Date();
+  document.getElementById('dailyDateLabel').textContent=
+    days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()];
+  const done=DAILY_QUESTS.filter(q=>quests[q.id]?.done).length;
+  document.getElementById('dailyQuestCount').textContent=done+' / '+DAILY_QUESTS.length+' voltooid';
 
   // Score row
-  const scoreRow = document.getElementById('dailyScoreRow');
-  const cur = daily.dayScore || 0;
-  scoreRow.innerHTML = '';
-  for (let i = 1; i <= 10; i++) {
-    const btn = document.createElement('button');
-    btn.className = 'score-btn' + (cur === i ? ' active' : '');
-    btn.textContent = i;
-    btn.addEventListener('click', () => {
-      const d = loadDaily();
-      d.dayScore = (d.dayScore === i) ? 0 : i;
-      if (d.dayScore && typeof window.addXP === 'function') window.addXP('discipline', d.dayScore * 3, 'Dagcijfer ' + d.dayScore);
+  const scoreRow=document.getElementById('dailyScoreRow');
+  const cur=daily.dayScore||0;
+  scoreRow.innerHTML='';
+  for(let i=1;i<=10;i++){
+    const btn=document.createElement('button');
+    btn.className='score-btn'+(cur===i?' active':'');
+    btn.textContent=i;
+    btn.addEventListener('click',()=>{
+      const d=loadDaily();
+      const prev=d.dayScore||0;
+      if(prev&&typeof window.removeXP==='function') window.removeXP('focus',prev*2,'Dagcijfer gecorrigeerd');
+      d.dayScore=(prev===i)?0:i;
+      if(d.dayScore&&typeof window.addXP==='function') window.addXP('focus',d.dayScore*2,'Dagcijfer '+d.dayScore);
       saveDaily(d);
       renderDaily();
     });
@@ -601,28 +778,28 @@ function renderDaily() {
   }
 
   // Quest grid
-  const grid = document.getElementById('dailyQuestGrid');
-  grid.innerHTML = '';
-  DAILY_QUESTS.forEach(q => {
-    const isDone = !!(quests[q.id] && quests[q.id].done);
-    const isPriv = q.private && !isPrivateUnlocked();
-    const card = document.createElement('div');
-    card.className = 'quest-card' + (isDone ? ' done' : '');
-    if (isPriv) card.style.opacity = '0.5';
-    card.innerHTML =
-      '<div class="quest-card-top">' +
-        '<span class="quest-icon">' + (isPriv ? '🔒' : q.icon) + '</span>' +
-        '<span class="quest-check">' + (isDone ? '✓' : '') + '</span>' +
-      '</div>' +
-      '<div class="quest-label">' + (isPriv ? 'Privé quest' : q.label) + '</div>' +
-      '<div class="quest-xp">' + (isPriv ? 'PIN vereist' : '+' + q.xp + ' XP') + '</div>';
-    card.addEventListener('click', () => {
-      if (q.private && !isPrivateUnlocked()) { requirePin(() => renderDaily()); return; }
-      const d = loadDaily();
-      if (!d.quests) d.quests = {};
-      const was = d.quests[q.id] && d.quests[q.id].done;
-      d.quests[q.id] = { done: !was, xpGiven: !was };
-      if (!was && typeof window.addXP === 'function') window.addXP(q.skill, q.xp, q.label);
+  const grid=document.getElementById('dailyQuestGrid');
+  grid.innerHTML='';
+  DAILY_QUESTS.forEach(q=>{
+    const isDone=!!(quests[q.id]?.done);
+    const isPriv=q.private&&!isPrivateUnlocked();
+    const card=document.createElement('div');
+    card.className='quest-card'+(isDone?' done':'');
+    card.innerHTML=
+      '<div class="quest-card-top">'+
+        '<span class="quest-icon">'+(isPriv?'🔒':q.icon)+'</span>'+
+        '<span class="quest-check">'+(isDone?'✓':'')+'</span>'+
+      '</div>'+
+      '<div class="quest-label">'+(isPriv?'Privé quest':q.label)+'</div>'+
+      '<div class="quest-xp">'+(isPriv?'PIN vereist':'+'+q.xp+' XP')+'</div>';
+    card.addEventListener('click',()=>{
+      if(q.private&&!isPrivateUnlocked()){ requirePin(()=>renderDaily()); return; }
+      const d=loadDaily();
+      if(!d.quests) d.quests={};
+      const was=!!(d.quests[q.id]?.done);
+      d.quests[q.id]={done:!was};
+      if(!was&&typeof window.addXP==='function')    window.addXP(q.skill,q.xp,q.label);
+      if(was&&typeof window.removeXP==='function')  window.removeXP(q.skill,q.xp,q.label+' unchecked');
       saveDaily(d);
       renderDaily();
     });
@@ -630,150 +807,237 @@ function renderDaily() {
   });
 
   // Gratitude
-  const ta = document.getElementById('dailyGratitude');
-  if (ta && !ta._wired) {
-    ta._wired = true;
-    if (daily.gratitude) ta.value = daily.gratitude;
-    ta.addEventListener('input', () => {
-      const d = loadDaily(); d.gratitude = ta.value; saveDaily(d);
-    });
-    ta.addEventListener('blur', () => {
-      if (ta.value.trim() && typeof window.addXP === 'function') {
-        const d = loadDaily();
-        if (!d.gratitudeXpGiven) {
-          window.addXP('gratitude', 10, 'Gratitude ingevuld');
-          d.gratitudeXpGiven = true;
-          saveDaily(d);
+  const ta=document.getElementById('dailyGratitude');
+  if(ta&&!ta._wired){
+    ta._wired=true;
+    if(daily.gratitude) ta.value=daily.gratitude;
+    ta.addEventListener('input',()=>{ const d=loadDaily(); d.gratitude=ta.value; saveDaily(d); });
+    ta.addEventListener('blur',()=>{
+      if(ta.value.trim()&&typeof window.addXP==='function'){
+        const d=loadDaily();
+        if(!d.gratitudeXpGiven){
+          window.addXP('gratitude',10,'Gratitude ingevuld');
+          d.gratitudeXpGiven=true; saveDaily(d);
         }
       }
     });
-  } else if (ta && daily.gratitude && !ta.value) {
-    ta.value = daily.gratitude;
+  } else if(ta&&daily.gratitude&&!ta.value){
+    ta.value=daily.gratitude;
   }
 }
 
-// ---- Quests screen ----
-function renderQuests() {
-  const daily = loadDaily();
-  const quests = daily.quests || {};
-  const list = document.getElementById('dailyQuestList');
-  list.innerHTML = '';
-  DAILY_QUESTS.forEach(q => {
-    const isDone = !!(quests[q.id] && quests[q.id].done);
-    const row = document.createElement('div');
-    row.className = 'quest-row' + (isDone ? ' done' : '');
-    row.innerHTML =
-      '<div class="quest-row-icon">' + q.icon + '</div>' +
-      '<div class="quest-row-text"><div class="quest-row-name">' + q.label + '</div><div class="quest-row-reward">+' + q.xp + ' XP</div></div>' +
-      '<div class="quest-row-check">' + (isDone ? '✓' : '') + '</div>';
-    row.addEventListener('click', () => {
-      const d = loadDaily();
-      if (!d.quests) d.quests = {};
-      const was = d.quests[q.id] && d.quests[q.id].done;
-      d.quests[q.id] = { done: !was, xpGiven: !was };
-      if (!was && typeof window.addXP === 'function') window.addXP(q.skill, q.xp, q.label);
-      saveDaily(d);
-      renderQuests();
+// ── Quests screen ──────────────────────────────────
+function renderQuests(){
+  const daily=loadDaily();
+  const quests=daily.quests||{};
+  const list=document.getElementById('dailyQuestList');
+  list.innerHTML='';
+  DAILY_QUESTS.forEach(q=>{
+    const isDone=!!(quests[q.id]?.done);
+    const row=document.createElement('div');
+    row.className='quest-row'+(isDone?' done':'');
+    row.innerHTML=
+      '<div class="quest-row-icon">'+q.icon+'</div>'+
+      '<div class="quest-row-text"><div class="quest-row-name">'+q.label+'</div><div class="quest-row-reward">+'+q.xp+' XP</div></div>'+
+      '<div class="quest-row-check">'+(isDone?'✓':'')+'</div>';
+    row.addEventListener('click',()=>{
+      if(q.private&&!isPrivateUnlocked()){ requirePin(()=>renderQuests()); return; }
+      const d=loadDaily(); if(!d.quests) d.quests={};
+      const was=!!(d.quests[q.id]?.done);
+      d.quests[q.id]={done:!was};
+      if(!was&&typeof window.addXP==='function')   window.addXP(q.skill,q.xp,q.label);
+      if(was&&typeof window.removeXP==='function') window.removeXP(q.skill,q.xp,q.label+' unchecked');
+      saveDaily(d); renderQuests();
     });
     list.appendChild(row);
   });
 
-  // Restore weekly quest state
-  ['wq-workouts','wq-review','wq-social'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const wq = (loadDaily()['weeklyQuests'] || {})[id];
-    if (wq) el.classList.add('done');
-    else el.classList.remove('done');
-    el.querySelector('.quest-row-check').textContent = wq ? '✓' : '';
+  ['wq-workouts','wq-review','wq-social','wq-tennis'].forEach(id=>{
+    const el=document.getElementById(id); if(!el) return;
+    const on=!!(loadDaily()['weeklyQuests']||{})[id];
+    el.classList.toggle('done',on);
+    el.querySelector('.quest-row-check').textContent=on?'✓':'';
   });
 }
 
-function toggleWeeklyQuest(el, id, skill, xp) {
-  const d = loadDaily();
-  if (!d.weeklyQuests) d.weeklyQuests = {};
-  const was = !!d.weeklyQuests[id];
-  d.weeklyQuests[id] = !was;
-  if (!was && typeof window.addXP === 'function') window.addXP(skill, xp, el.querySelector('.quest-row-name').textContent);
+function toggleWeeklyQuest(el,id,skill,xp){
+  const d=loadDaily(); if(!d.weeklyQuests) d.weeklyQuests={};
+  const was=!!d.weeklyQuests[id]; d.weeklyQuests[id]=!was;
+  if(!was&&typeof window.addXP==='function')   window.addXP(skill,xp,el.querySelector('.quest-row-name').textContent);
+  if(was&&typeof window.removeXP==='function') window.removeXP(skill,xp,el.querySelector('.quest-row-name').textContent+' unchecked');
   saveDaily(d);
-  el.classList.toggle('done', !was);
-  el.querySelector('.quest-row-check').textContent = !was ? '✓' : '';
+  el.classList.toggle('done',!was);
+  el.querySelector('.quest-row-check').textContent=!was?'✓':'';
 }
 
-// ---- Skill tree ----
-function renderSkillTree() {
-  const char = loadChar();
-  const skills = char.skills || {};
-  const container = document.getElementById('skillTreeContainer');
-  container.innerHTML = '';
+// ── Skill tree ─────────────────────────────────────
+function renderSkillTree(){
+  const char=loadChar();
+  const skills=char.skills||{};
+  const defaults=window.RPG_DEFAULT_SKILLS||{};
+  const container=document.getElementById('skillTreeContainer');
+  container.innerHTML='';
 
-  const order = ['body','mind','money','business','lifestyle','discipline'];
-  order.forEach(pKey => {
-    const meta = PARENT_COLORS[pKey];
-    const subskills = Object.entries(skills)
-      .filter(([, s]) => s.parentSkill === pKey)
-      .sort((a, b) => (b[1].xp || 0) - (a[1].xp || 0));
+  CATEGORY_ORDER.forEach(pKey=>{
+    const meta=PARENT_META[pKey];
+    const subskills=Object.entries({...defaults,...skills})
+      .filter(([k,])=>(skills[k]?.parentSkill||defaults[k]?.parentSkill)===pKey)
+      .map(([k])=>({
+        key:k,
+        ...(defaults[k]||{}),
+        ...(skills[k]||{}),
+        parentSkill:pKey,
+      }))
+      .sort((a,b)=>(b.xp||0)-(a.xp||0));
 
-    if (subskills.length === 0) return;
+    if(!subskills.length) return;
 
-    const title = document.createElement('div');
-    title.className = 'sec-title';
-    title.innerHTML = 'Skill Tree — ' + meta.label;
-    title.style.marginTop = '20px';
-    container.appendChild(title);
+    const titleEl=document.createElement('div');
+    titleEl.className='sec-title';
+    titleEl.innerHTML=meta.icon+' '+meta.label;
+    titleEl.style.marginTop='18px';
+    container.appendChild(titleEl);
 
-    // Discipline: show lock if not unlocked
-    if (pKey === 'discipline' && !isPrivateUnlocked()) {
-      const lockCard = document.createElement('div');
-      lockCard.style.cssText = 'background:rgba(255,107,107,0.05);border:1px solid rgba(255,107,107,0.15);border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:all 0.2s';
-      lockCard.innerHTML = '<div style="font-size:24px;margin-bottom:8px">🔒</div><div style="font-size:13px;font-weight:600;color:#FF6B6B;margin-bottom:4px">Privé sectie</div><div style="font-size:11px;color:#76746E">Klik om te ontgrendelen met PIN</div>';
-      lockCard.addEventListener('click', () => requirePin(renderSkillTree));
-      container.appendChild(lockCard);
+    if(pKey==='discipline'&&!isPrivateUnlocked()){
+      const lc=document.createElement('div');
+      lc.style.cssText='background:rgba(255,107,107,0.05);border:1px solid rgba(255,107,107,0.15);border-radius:14px;padding:20px;text-align:center;cursor:pointer;margin-bottom:10px';
+      lc.innerHTML='<div style="font-size:24px;margin-bottom:6px">🔒</div><div style="font-size:12px;font-weight:700;color:var(--discipline);margin-bottom:3px">Privé sectie</div><div style="font-size:10px;color:var(--t3)">Klik om te ontgrendelen met PIN</div>';
+      lc.addEventListener('click',()=>requirePin(renderSkillTree));
+      container.appendChild(lc);
       return;
     }
 
-    subskills.forEach(([name, skill]) => {
-      const xp = skill.xp || 0;
-      const level = xpToLevel(xp);
-      const curXP = xp - xpForLevel(level);
-      const nextXP = xpForLevel(level + 1) - xpForLevel(level);
-      const pct = nextXP > 0 ? Math.min(100, Math.round(curXP / nextXP * 100)) : 100;
-
-      const div = document.createElement('div');
-      div.className = 'skill-detail';
-      div.innerHTML =
-        '<div class="skill-detail-hdr">' +
-          '<div class="skill-detail-icon">' + (skill.icon || '⭐') + '</div>' +
-          '<div class="skill-detail-name">' + (skill.label || name) + '</div>' +
-          '<div class="skill-detail-lvl">Lvl <span style="color:' + meta.color + '">' + level + '</span></div>' +
-        '</div>' +
-        '<div class="xp-bar-label"><span>XP</span><span>' + xp.toLocaleString() + ' / ' + xpForLevel(level + 1).toLocaleString() + '</span></div>' +
-        '<div class="xp-bar-track"><div class="xp-bar-fill" style="width:' + pct + '%;background:' + meta.color + '"></div></div>';
+    subskills.forEach(s=>{
+      const xp=s.xp||0;
+      const level=xpToLevel(xp);
+      const curXP=xp-xpForLevel(level);
+      const nextXP=xpForLevel(level+1)-xpForLevel(level);
+      const pct=nextXP>0?Math.min(100,Math.round(curXP/nextXP*100)):100;
+      const div=document.createElement('div');
+      div.className='skill-detail';
+      div.innerHTML=
+        '<div class="skill-detail-hdr">'+
+          '<div class="skill-detail-icon">'+(s.icon||'⭐')+'</div>'+
+          '<div class="skill-detail-name">'+(s.label||s.key)+'</div>'+
+          (s.active===false?'<div style="font-size:9px;font-family:var(--mono);color:var(--t3);padding:2px 6px;border:1px solid rgba(255,255,255,0.08);border-radius:4px">slapend</div>':'')+
+          '<div class="skill-detail-lvl">Lvl <span style="color:'+meta.color+'">'+level+'</span></div>'+
+        '</div>'+
+        '<div class="xp-bar-label"><span>XP</span><span>'+xp.toLocaleString()+' / '+xpForLevel(level+1).toLocaleString()+'</span></div>'+
+        '<div class="xp-bar-track"><div class="xp-bar-fill" style="width:'+pct+'%;background:'+meta.color+'"></div></div>';
       container.appendChild(div);
     });
   });
 
-  if (container.children.length === 0) {
-    container.innerHTML = '<div style="color:var(--t3);font-size:13px;text-align:center;padding:40px 0">Verdien XP op andere pagina\'s om skills te zien!</div>';
+  if(!container.children.length){
+    container.innerHTML='<div style="color:var(--t3);font-size:13px;text-align:center;padding:40px 0">Klik op skills om XP te verdienen!</div>';
   }
 }
 
-// ---- Boot ----
-document.addEventListener('DOMContentLoaded', () => {
-  renderCharacter();
-  renderDaily();
-  renderQuests();
-  // Sync RPG data
-  if (typeof initCloudSync === 'function' && window.supabase) {
-    initCloudSync({ appKey: 'rpg', syncedKeys: ['rpg_character_v1'] });
+// ── History screen ─────────────────────────────────
+function renderHistory(){
+  // 14-day bar chart
+  const days14=[];
+  const today=new Date();
+  for(let i=13;i>=0;i--){
+    const d=new Date(today);
+    d.setDate(d.getDate()-i);
+    const key=d.toISOString().slice(0,10);
+    const daily=loadDaily(key);
+    days14.push({date:key,score:daily.dayScore||0,day:d.getDate()});
+  }
+
+  const chart=document.getElementById('historyChart');
+  const scores=days14.map(d=>d.score).filter(s=>s>0);
+  const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length*10)/10:0;
+  document.getElementById('avgScore').textContent=avg||'—';
+
+  chart.innerHTML=days14.map(d=>{
+    const pct=d.score/10*100;
+    // Color: 1-4 red, 5-6 orange, 7-8 yellow-green, 9-10 green
+    const color=d.score<=0?'rgba(255,255,255,0.08)':d.score<=4?'#FF6B6B':d.score<=6?'#FB923C':d.score<=8?'#F5C842':'#6BE3A4';
+    return `<div class="hist-bar-wrap">
+      <div class="hist-bar" style="height:${pct}%;background:${color};min-height:${d.score>0?4:0}px" title="${d.date}: ${d.score||'—'}"></div>
+      <div class="hist-day">${d.day}</div>
+    </div>`;
+  }).join('');
+
+  // Category XP totals
+  const char=loadChar();
+  const skills=char.skills||{};
+  const defaults=window.RPG_DEFAULT_SKILLS||{};
+  const catCard=document.getElementById('categoryXpCard');
+  catCard.innerHTML='';
+  CATEGORY_ORDER.forEach(pKey=>{
+    const meta=PARENT_META[pKey];
+    const totalXp=Object.entries({...defaults,...skills})
+      .filter(([k])=>(skills[k]?.parentSkill||defaults[k]?.parentSkill)===pKey)
+      .reduce((sum,[k])=>sum+(skills[k]?.xp||0),0);
+    if(pKey==='discipline'&&!isPrivateUnlocked()) return;
+    const level=xpToLevel(totalXp);
+    const pct2=totalXp>0?Math.min(100,Math.round((totalXp-xpForLevel(level))/(xpForLevel(level+1)-xpForLevel(level))*100)):0;
+    catCard.innerHTML+=
+      `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;last-child:margin-bottom:0">
+        <div style="width:22px;font-size:14px">${meta.icon}</div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:600;margin-bottom:4px">
+            <span>${meta.label}</span>
+            <span style="font-family:var(--mono);color:${meta.color}">Lvl ${level}</span>
+          </div>
+          <div class="xp-bar-track"><div class="xp-bar-fill" style="width:${pct2}%;background:${meta.color};box-shadow:0 0 6px ${meta.color}55"></div></div>
+        </div>
+        <div style="font-size:9px;font-family:var(--mono);color:var(--t3);width:44px;text-align:right">${totalXp.toLocaleString()}</div>
+      </div>`;
+  });
+
+  // Gratitude word cloud
+  const wordMap={};
+  for(let i=0;i<60;i++){
+    const d=new Date(today);
+    d.setDate(d.getDate()-i);
+    const daily=loadDaily(d.toISOString().slice(0,10));
+    if(daily.gratitude){
+      daily.gratitude.toLowerCase()
+        .replace(/[^\w\s]/g,'')
+        .split(/\s+/)
+        .filter(w=>w.length>3)
+        .forEach(w=>{ wordMap[w]=(wordMap[w]||0)+1; });
+    }
+  }
+  const cloud=document.getElementById('wordCloud');
+  const words=Object.entries(wordMap).sort((a,b)=>b[1]-a[1]).slice(0,30);
+  if(!words.length){
+    cloud.innerHTML='<div style="color:var(--t3);font-size:12px">Vul dagelijks gratitude in om de word cloud op te bouwen</div>';
+    return;
+  }
+  const maxCount=words[0][1];
+  cloud.innerHTML=words.map(([w,c])=>{
+    const size=12+Math.round((c/maxCount)*14);
+    const opacity=0.5+Math.round((c/maxCount)*50)/100;
+    return `<span class="word-tag" style="font-size:${size}px;opacity:${opacity}">${w}</span>`;
+  }).join('');
+}
+
+// ── Boot ───────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  // Wait a tick for xp.js to load RPG_DEFAULT_SKILLS
+  setTimeout(()=>{
+    renderCharacter();
+    renderDaily();
+    renderQuests();
+  },0);
+
+  if(typeof initCloudSync==='function'&&window.supabase){
+    initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1']});
   }
 });
-window.addEventListener('storage', () => {
-  const active = document.querySelector('.char-screen.active');
-  if (!active) return;
-  const id = active.id.replace('tab-', '');
-  if (id === 'character') renderCharacter();
-  if (id === 'daily')     renderDaily();
+
+window.addEventListener('storage',()=>{
+  const active=document.querySelector('.char-screen.active');
+  if(!active) return;
+  const id=active.id.replace('tab-','');
+  if(id==='character') renderCharacter();
+  if(id==='daily')     renderDaily();
+  if(id==='history')   renderHistory();
 });
 </script>
 </body>

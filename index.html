@@ -616,30 +616,25 @@ body::after {
     </div>
   </div>
 
-  <div class="day-ring-wrap">
-    <div class="day-ring">
-      <svg viewBox="0 0 120 120">
-        <defs>
-          <filter id="dayRingGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="2.4" result="b" />
-            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        <circle class="day-ring-track" cx="60" cy="60" r="52" />
-        <circle class="day-ring-fill"  cx="60" cy="60" r="52" id="dayRingFill" filter="url(#dayRingGlow)" />
-      </svg>
-      <div class="day-ring-overlay">
-        <div class="day-ring-percent" id="dayRingPercent">—</div>
-        <div class="day-ring-phase"   id="dayRingPhase">—</div>
-        <div class="day-ring-clock"   id="dayRingClock">—</div>
-      </div>
-    </div>
-    <div class="day-ring-text">
-      <div class="day-ring-status"    id="dayRingStatus">Loading…</div>
-      <div class="day-ring-remaining" id="dayRingRemaining">—</div>
-      <div class="day-ring-hours">8:00 AM – 12:00 AM</div>
-    </div>
+  <!-- Quotes crawler -->
+  <div id="quotesCrawlWrap" style="
+    overflow:hidden; white-space:nowrap;
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);
+    border-radius:12px; padding:10px 0; margin-bottom:18px; position:relative;
+  ">
+    <div id="quotesCrawl" style="
+      display:inline-block;
+      animation: quoteScroll 40s linear infinite;
+      font-family:ui-monospace,monospace; font-size:12px; font-weight:600;
+      color:#B8B6B0; padding-left:100%;
+    "></div>
   </div>
+  <style>
+  @keyframes quoteScroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+  </style>
 
   <div class="section">
     <div class="section-title">To Do List</div>
@@ -935,61 +930,7 @@ body::after {
     return h + 'h ' + m + 'm';
   }
 
-  const C = 2 * Math.PI * 52;
-  const fillEl = document.getElementById('dayRingFill');
-  fillEl.setAttribute('stroke-dasharray', C);
-  fillEl.setAttribute('stroke-dashoffset', C);
-
-  function updateDayRing() {
-    const now = new Date();
-    const hours = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
-    const percentEl   = document.getElementById('dayRingPercent');
-    const phaseEl     = document.getElementById('dayRingPhase');
-    const clockEl     = document.getElementById('dayRingClock');
-    const statusEl    = document.getElementById('dayRingStatus');
-    const remainingEl = document.getElementById('dayRingRemaining');
-
-    clockEl.textContent = formatClock(now);
-
-    if (hours < WAKE_HOUR) {
-      fillEl.setAttribute('stroke-dashoffset', C);
-      fillEl.style.stroke = '#4D4B47';
-      percentEl.textContent = '—';
-      phaseEl.textContent   = 'SLEEPING';
-      statusEl.textContent  = '😴 Still sleeping';
-      const minsUntil = (WAKE_HOUR - hours) * 60;
-      remainingEl.textContent = formatRemaining(minsUntil) + ' until wake-up';
-      return;
-    }
-
-    if (hours >= SLEEP_HOUR) {
-      fillEl.setAttribute('stroke-dashoffset', 0);
-      fillEl.style.stroke = '#E25D7A';
-      percentEl.textContent = '100%';
-      phaseEl.textContent   = 'PAST BEDTIME';
-      statusEl.textContent  = '⚠️ Past bedtime';
-      remainingEl.textContent = 'Sleep!';
-      return;
-    }
-
-    const span = SLEEP_HOUR - WAKE_HOUR;
-    const percent = (hours - WAKE_HOUR) / span * 100;
-    fillEl.setAttribute('stroke-dashoffset', C * (1 - percent / 100));
-    fillEl.style.stroke = rgb(paletteAt(percent));
-    percentEl.textContent = Math.floor(percent) + '%';
-
-    let phase, status;
-    if (percent < 25)      { phase = 'MORNING';   status = '☀️ Morning — fresh start'; }
-    else if (percent < 50) { phase = 'MIDDAY';    status = '⚡ Midday — keep moving'; }
-    else if (percent < 75) { phase = 'AFTERNOON'; status = '🔥 Afternoon — push it'; }
-    else if (percent < 90) { phase = 'EVENING';   status = '⏳ Evening — wrap up'; }
-    else                   { phase = 'BEDTIME';   status = '🌙 Bedtime soon'; }
-    phaseEl.textContent  = phase;
-    statusEl.textContent = status;
-
-    const minsLeft = (SLEEP_HOUR - hours) * 60;
-    remainingEl.textContent = formatRemaining(minsLeft) + ' awake time left';
-  }
+  function updateDayRing() { /* day ring removed */ }
 
   // ---------- Row building ----------
   function makeInlineEdit(textEl, goals, idx, key, reload) {
@@ -1336,25 +1277,77 @@ body::after {
 </script>
 <script>
 (function () {
-  const DAILY_KEY = () => 'rpg_daily_v1:' + new Date().toISOString().slice(0, 10);
+  const DAILY_KEY    = () => 'rpg_daily_v1:' + new Date().toISOString().slice(0, 10);
+  const PIN_KEY      = 'rpg_private_unlocked';
+  const PRIVATE_PIN  = '1111';
+  const QUOTES_KEY   = 'rpg_quotes_v1';
+
   const QUESTS = [
-    { id: 'workout',    icon: '💪', label: 'Workout',       skill: 'fitness',    xp: 50 },
-    { id: 'meditation', icon: '🧘', label: 'Meditatie',     skill: 'meditation', xp: 20 },
-    { id: 'no_porn',    icon: '🛡️', label: 'Geen porno',    skill: 'no_porn',    xp: 45 },
-    { id: 'steps',      icon: '👣', label: '10k stappen',   skill: 'steps',      xp: 25 },
-    { id: 'reading',    icon: '📖', label: 'Lezen',         skill: 'reading',    xp: 15 },
-    { id: 'outreach',   icon: '📈', label: 'Outreach',      skill: 'outreach',   xp: 35 },
-    { id: 'gratitude',  icon: '🙏', label: 'Gratitude',     skill: 'gratitude',  xp: 10 },
-    { id: 'nutrition',  icon: '🥗', label: 'Eiwitten',      skill: 'nutrition',  xp: 20 },
+    { id: 'workout',    icon: '💪', label: 'Workout',      skill: 'fitness',   xp: 50 },
+    { id: 'meditation', icon: '🧘', label: 'Meditatie',    skill: 'meditation',xp: 20 },
+    { id: 'no_porn',    icon: '🛡️', label: 'Privé quest',  skill: 'no_porn',   xp: 45, private: true },
+    { id: 'reading',    icon: '📖', label: 'Lezen',        skill: 'reading',   xp: 15 },
+    { id: 'outreach',   icon: '📈', label: 'Outreach',     skill: 'sales',     xp: 35 },
+    { id: 'gratitude',  icon: '🙏', label: 'Gratitude',    skill: 'gratitude', xp: 10 },
+    { id: 'nutrition',  icon: '🥗', label: 'Eiwitten',     skill: 'nutrition', xp: 20 },
+    { id: 'planning',   icon: '📅', label: 'Dag plannen',  skill: 'planning',  xp: 10 },
   ];
 
-  function loadDaily() {
-    try { return JSON.parse(localStorage.getItem(DAILY_KEY())) || {}; } catch { return {}; }
-  }
-  function saveDaily(d) {
-    try { localStorage.setItem(DAILY_KEY(), JSON.stringify(d)); } catch {}
+  const DEFAULT_QUOTES = [
+    'Discipline is the bridge between goals and accomplishment.',
+    'Every day is a new chance to level up.',
+    'The king builds his kingdom one decision at a time.',
+    'Hard work beats talent when talent doesn\'t work hard.',
+    'Be the person you needed when you were younger.',
+    'Consistency over intensity — every single day.',
+    'Werk aan jezelf alsof je leven ervan afhangt.',
+    'Denk groot. Start klein. Begin nu.',
+  ];
+
+  function loadDaily()  { try { return JSON.parse(localStorage.getItem(DAILY_KEY()))||{}; } catch { return {}; } }
+  function saveDaily(d) { try { localStorage.setItem(DAILY_KEY(),JSON.stringify(d)); } catch {} }
+  function isPrivateUnlocked() { return sessionStorage.getItem(PIN_KEY)==='1'; }
+
+  // ── PIN modal ────────────────────────────────────────────────
+  function showPinModal(onSuccess) {
+    document.getElementById('indexPinModal')?.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'indexPinModal';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)';
+    overlay.innerHTML =
+      '<div style="background:#0e0e10;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px 24px;width:280px;text-align:center">' +
+        '<div style="font-size:28px;margin-bottom:8px">🔒</div>' +
+        '<div style="font-size:15px;font-weight:700;margin-bottom:4px;color:#FAFAFA">Privé sectie</div>' +
+        '<div style="font-size:12px;color:#76746E;margin-bottom:18px">Voer je PIN in om verder te gaan</div>' +
+        '<input id="indexPinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" ' +
+          'style="width:100%;text-align:center;font-size:24px;font-family:ui-monospace,monospace;letter-spacing:0.3em;' +
+          'background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;' +
+          'padding:12px;color:#FAFAFA;outline:none;margin-bottom:10px">' +
+        '<div id="indexPinError" style="font-size:11px;color:#FF6B6B;min-height:14px;margin-bottom:8px"></div>' +
+        '<button onclick="document.getElementById(\'indexPinModal\').remove()" ' +
+          'style="font-size:12px;color:#76746E;background:none;border:none;cursor:pointer;padding:4px">Annuleren</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    const inp = document.getElementById('indexPinInput');
+    const err = document.getElementById('indexPinError');
+    setTimeout(()=>inp.focus(), 50);
+    inp.addEventListener('input', () => {
+      if (inp.value.length === 4) {
+        if (inp.value === PRIVATE_PIN) {
+          sessionStorage.setItem(PIN_KEY, '1');
+          overlay.remove();
+          onSuccess();
+        } else {
+          err.textContent = 'Verkeerde PIN, probeer opnieuw';
+          inp.value = '';
+          setTimeout(()=>err.textContent='', 2000);
+        }
+      }
+    });
+    overlay.addEventListener('click', e => { if (e.target===overlay) overlay.remove(); });
   }
 
+  // ── Score row ────────────────────────────────────────────────
   function renderScoreRow() {
     const row = document.getElementById('rpgScoreRow');
     if (!row) return;
@@ -1365,15 +1358,18 @@ body::after {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.textContent = i;
-      btn.style.cssText = 'flex:1;min-width:28px;padding:8px 0;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:' + (cur === i ? '#6BE3A4' : '#76746E') + ';font-size:13px;font-weight:700;cursor:pointer;' + (cur === i ? 'background:rgba(107,227,164,0.12);border-color:rgba(107,227,164,0.3);' : '');
+      const active = cur === i;
+      btn.style.cssText = 'flex:1;min-width:24px;padding:8px 0;border-radius:8px;border:1px solid ' +
+        (active?'rgba(107,227,164,0.3)':'rgba(255,255,255,0.1)') +
+        ';background:' + (active?'rgba(107,227,164,0.12)':'rgba(255,255,255,0.04)') +
+        ';color:' + (active?'#6BE3A4':'#76746E') +
+        ';font-size:12px;font-weight:700;cursor:pointer;transition:all 0.15s';
       btn.addEventListener('click', function () {
         const d = loadDaily();
-        if (d.dayScore === i) {
-          delete d.dayScore;
-        } else {
-          d.dayScore = i;
-          if (typeof window.addXP === 'function') window.addXP('discipline', i * 3, 'Dagcijfer ' + i);
-        }
+        const prev = d.dayScore || 0;
+        if (prev && typeof window.removeXP === 'function') window.removeXP('focus', prev * 2, 'Dagcijfer gecorrigeerd');
+        d.dayScore = (prev === i) ? 0 : i;
+        if (d.dayScore && typeof window.addXP === 'function') window.addXP('focus', d.dayScore * 2, 'Dagcijfer ' + d.dayScore);
         saveDaily(d);
         renderScoreRow();
       });
@@ -1381,23 +1377,42 @@ body::after {
     }
   }
 
+  // ── Quests ───────────────────────────────────────────────────
   function renderQuests() {
     const grid = document.getElementById('rpgQuestGrid');
     if (!grid) return;
-    const daily = loadDaily();
+    const daily  = loadDaily();
     const quests = daily.quests || {};
     grid.innerHTML = '';
     QUESTS.forEach(q => {
-      const done = !!(quests[q.id] && quests[q.id].done);
+      const isDone = !!(quests[q.id] && quests[q.id].done);
+      const isPriv = q.private && !isPrivateUnlocked();
       const card = document.createElement('div');
-      card.style.cssText = 'background:' + (done ? 'rgba(107,227,164,0.07)' : 'rgba(255,255,255,0.04)') + ';border:1px solid ' + (done ? 'rgba(107,227,164,0.2)' : 'rgba(255,255,255,0.07)') + ';border-radius:12px;padding:12px;cursor:pointer;user-select:none;transition:all 0.2s';
-      card.innerHTML = '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:18px">' + q.icon + '</span><span style="width:16px;height:16px;border-radius:50%;border:1.5px solid ' + (done ? 'transparent' : 'rgba(255,255,255,0.2)') + ';background:' + (done ? '#6BE3A4' : 'transparent') + ';display:flex;align-items:center;justify-content:center;font-size:9px;color:#050506;font-weight:700">' + (done ? '✓' : '') + '</span></div><div style="font-size:11px;font-weight:600;color:' + (done ? '#FAFAFA' : '#B8B6B0') + ';margin-bottom:2px">' + q.label + '</div><div style="font-size:10px;font-family:ui-monospace,monospace;color:' + (done ? '#6BE3A4' : '#76746E') + '">+' + q.xp + ' XP</div>';
+      card.style.cssText = 'background:' + (isDone?'rgba(107,227,164,0.07)':'rgba(255,255,255,0.04)') +
+        ';border:1px solid ' + (isDone?'rgba(107,227,164,0.2)':'rgba(255,255,255,0.07)') +
+        ';border-radius:12px;padding:12px;cursor:pointer;user-select:none;transition:all 0.2s' +
+        (isPriv?';opacity:0.55':'');
+      card.innerHTML =
+        '<div style="display:flex;justify-content:space-between;margin-bottom:5px">' +
+          '<span style="font-size:17px">' + (isPriv?'🔒':q.icon) + '</span>' +
+          '<span style="width:16px;height:16px;border-radius:50%;border:1.5px solid ' +
+            (isDone?'transparent':'rgba(255,255,255,0.2)') +
+            ';background:' + (isDone?'#6BE3A4':'transparent') +
+            ';display:flex;align-items:center;justify-content:center;font-size:9px;color:#050506;font-weight:700">' +
+            (isDone?'✓':'') + '</span>' +
+        '</div>' +
+        '<div style="font-size:11px;font-weight:600;color:' + (isDone?'#FAFAFA':'#B8B6B0') + ';margin-bottom:2px">' +
+          (isPriv?'Privé quest':q.label) + '</div>' +
+        '<div style="font-size:9px;font-family:ui-monospace,monospace;color:' + (isDone?'#6BE3A4':'#76746E') + '">' +
+          (isPriv?'PIN vereist':'+'+q.xp+' XP') + '</div>';
       card.addEventListener('click', function () {
+        if (q.private && !isPrivateUnlocked()) { showPinModal(renderQuests); return; }
         const d = loadDaily();
         if (!d.quests) d.quests = {};
-        const wasDone = d.quests[q.id] && d.quests[q.id].done;
-        d.quests[q.id] = { done: !wasDone, xpGiven: !wasDone };
-        if (!wasDone && typeof window.addXP === 'function') window.addXP(q.skill, q.xp, q.label);
+        const was = !!(d.quests[q.id] && d.quests[q.id].done);
+        d.quests[q.id] = { done: !was };
+        if (!was && typeof window.addXP    === 'function') window.addXP(q.skill,    q.xp, q.label);
+        if (was  && typeof window.removeXP === 'function') window.removeXP(q.skill, q.xp, q.label + ' unchecked');
         saveDaily(d);
         renderQuests();
       });
@@ -1405,32 +1420,43 @@ body::after {
     });
   }
 
+  // ── Gratitude ────────────────────────────────────────────────
   function initGratitude() {
     const ta = document.getElementById('rpgGratitude');
     if (!ta) return;
     const daily = loadDaily();
     if (daily.gratitude) ta.value = daily.gratitude;
-    ta.addEventListener('input', function () {
-      const d = loadDaily();
-      d.gratitude = ta.value;
-      saveDaily(d);
-    });
+    ta.addEventListener('input', function () { const d=loadDaily(); d.gratitude=ta.value; saveDaily(d); });
     ta.addEventListener('blur', function () {
       if (ta.value.trim() && typeof window.addXP === 'function') {
         const d = loadDaily();
         if (!d.gratitudeXpGiven) {
           window.addXP('gratitude', 10, 'Gratitude ingevuld');
-          d.gratitudeXpGiven = true;
-          saveDaily(d);
+          d.gratitudeXpGiven = true; saveDaily(d);
         }
       }
     });
+  }
+
+  // ── Quotes crawler ───────────────────────────────────────────
+  function initQuotesCrawl() {
+    const el = document.getElementById('quotesCrawl');
+    if (!el) return;
+    let quotes;
+    try { quotes = JSON.parse(localStorage.getItem(QUOTES_KEY)); } catch {}
+    if (!Array.isArray(quotes) || !quotes.length) quotes = DEFAULT_QUOTES;
+    const text = quotes.join('   ✦   ') + '   ✦   ';
+    el.textContent = text;
+    // Adjust animation speed based on text length
+    const speed = Math.max(20, Math.min(80, text.length * 0.5));
+    el.style.animationDuration = speed + 's';
   }
 
   document.addEventListener('DOMContentLoaded', function () {
     renderScoreRow();
     renderQuests();
     initGratitude();
+    initQuotesCrawl();
   });
 })();
 </script>

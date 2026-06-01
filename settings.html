@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050506">
+<title>Settings — Life OS</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="sync.js" defer></script>
+<script src="topbar.js" defer></script>
+<script src="xp.js" defer></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root {
+  --bg: #050506;
+  --surface: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.07);
+  --t1: #FAFAFA; --t2: #B8B6B0; --t3: #76746E;
+  --green:  #6BE3A4;
+  --red:    #FF6B6B;
+  --gold:   #F5C842;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body {
+  background: var(--bg); font-family: var(--sans);
+  color: var(--t1); min-height:100vh; overflow-x:hidden;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(245,200,66,0.06) 0%, transparent 60%);
+}
+
+.page { padding: 16px 16px 100px; position:relative; z-index:1; max-width:520px; margin:0 auto; }
+
+.page-title {
+  font-size:20px; font-weight:700; letter-spacing:-0.02em; margin-bottom:4px;
+}
+.page-sub { font-size:12px; color:var(--t3); margin-bottom:24px; }
+
+.sec-title {
+  font-size:9px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--t3); display:flex; align-items:center; gap:10px;
+  margin-bottom:12px; margin-top:24px;
+}
+.sec-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent); }
+
+.card {
+  background: var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:16px; margin-bottom:12px;
+}
+
+/* ── Toggles ─────────────────────────────────────── */
+.toggle-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.toggle-row:last-child { border-bottom:none; }
+.toggle-label { font-size:13px; font-weight:500; }
+.toggle-sub   { font-size:10px; color:var(--t3); margin-top:2px; }
+
+.toggle-sw {
+  position:relative; width:44px; height:24px; flex-shrink:0; cursor:pointer;
+}
+.toggle-sw input { opacity:0; width:0; height:0; position:absolute; }
+.toggle-sw-track {
+  position:absolute; inset:0; border-radius:12px;
+  background:rgba(255,255,255,0.12); transition:background 0.25s;
+}
+.toggle-sw input:checked + .toggle-sw-track { background:var(--green); }
+.toggle-sw-thumb {
+  position:absolute; top:3px; left:3px;
+  width:18px; height:18px; border-radius:50%;
+  background:#fff; transition:transform 0.25s;
+  pointer-events:none;
+}
+.toggle-sw input:checked ~ .toggle-sw-thumb { transform:translateX(20px); }
+
+/* ── Skill pill list ─────────────────────────────── */
+.skill-pills { display:flex; flex-wrap:wrap; gap:6px; }
+.skill-pill {
+  display:flex; align-items:center; gap:5px;
+  padding:5px 10px; border-radius:20px;
+  border:1px solid var(--border); background:var(--surface);
+  font-size:11px; font-weight:600; cursor:pointer; transition:all 0.18s;
+  -webkit-tap-highlight-color:transparent; user-select:none;
+}
+.skill-pill.active {
+  background:rgba(107,227,164,0.1); border-color:rgba(107,227,164,0.35);
+  color:var(--green);
+}
+.skill-pill.private-pill {
+  background:rgba(255,107,107,0.07); border-color:rgba(255,107,107,0.2);
+  color:var(--t3);
+}
+.skill-pill.private-pill.active {
+  background:rgba(255,107,107,0.12); border-color:rgba(255,107,107,0.4);
+  color:var(--red);
+}
+
+/* ── Quotes list ─────────────────────────────────── */
+.quote-item {
+  display:flex; align-items:center; gap:8px;
+  padding:10px 12px; background:var(--surface);
+  border:1px solid var(--border); border-radius:10px; margin-bottom:6px;
+}
+.quote-text { flex:1; font-size:12px; color:var(--t2); }
+.quote-del {
+  background:none; border:none; color:var(--t3); cursor:pointer;
+  font-size:16px; padding:0 4px; opacity:0.6;
+  transition:opacity 0.15s, color 0.15s;
+}
+.quote-del:hover { opacity:1; color:var(--red); }
+
+/* ── Input ───────────────────────────────────────── */
+.input-row { display:flex; gap:8px; margin-top:10px; }
+.s-input {
+  flex:1; padding:10px 12px;
+  background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px; color:var(--t1); font-family:var(--sans);
+  font-size:13px; outline:none; transition:border-color 0.2s;
+}
+.s-input:focus { border-color:rgba(255,255,255,0.25); }
+.s-input::placeholder { color:var(--t3); }
+
+.s-btn {
+  padding:10px 16px; border-radius:10px;
+  background:rgba(107,227,164,0.1); border:1px solid rgba(107,227,164,0.3);
+  color:var(--green); font-weight:700; font-size:12px;
+  cursor:pointer; transition:all 0.15s; white-space:nowrap;
+}
+.s-btn-red {
+  background:rgba(255,107,107,0.1); border-color:rgba(255,107,107,0.3);
+  color:var(--red);
+}
+.s-btn-full {
+  width:100%; padding:12px; margin-top:8px;
+  border-radius:12px; background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  color:var(--t1); font-family:var(--sans); font-size:13px;
+  font-weight:600; cursor:pointer; transition:all 0.15s;
+}
+.s-btn-full:hover { background:rgba(255,255,255,0.08); }
+
+/* ── PIN boxes ───────────────────────────────────── */
+.pin-boxes { display:flex; gap:8px; margin:12px 0; }
+.pin-box {
+  flex:1; text-align:center; font-size:20px; font-family:var(--mono);
+  letter-spacing:0.2em; padding:12px;
+  background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px; color:var(--t1); outline:none;
+  -webkit-appearance:none;
+}
+.pin-box:focus { border-color:rgba(245,200,66,0.5); }
+
+.toast-s {
+  position:fixed; bottom:calc(env(safe-area-inset-bottom,0px)+80px); left:50%;
+  transform:translateX(-50%) translateY(10px);
+  background:rgba(20,20,24,0.95); border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px; padding:10px 18px;
+  font-size:13px; font-weight:600; color:var(--green);
+  opacity:0; transition:all 0.25s; pointer-events:none; z-index:9999;
+  white-space:nowrap;
+}
+.toast-s.show { opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div style="margin-top:8px; margin-bottom:0">
+    <div class="page-title">⚙️ Settings</div>
+    <div class="page-sub">Pas je Life OS aan naar jouw wensen</div>
+  </div>
+
+  <!-- ── SKILLS ───────────────────────────────────── -->
+  <div class="sec-title">Actieve skills</div>
+  <div class="card">
+    <div style="font-size:11px;color:var(--t3);margin-bottom:12px">Klik om skills aan of uit te zetten. Actieve skills verschijnen in je character grid.</div>
+    <div id="skillPillsContainer"></div>
+  </div>
+
+  <!-- ── DAILY QUESTS ─────────────────────────────── -->
+  <div class="sec-title">Daily quests</div>
+  <div class="card" id="dailyQuestToggles">
+    <div style="font-size:11px;color:var(--t3);margin-bottom:12px">Welke quests wil je dagelijks zien?</div>
+  </div>
+
+  <!-- ── QUOTES ────────────────────────────────────── -->
+  <div class="sec-title">Motiverende quotes</div>
+  <div class="card">
+    <div style="font-size:11px;color:var(--t3);margin-bottom:10px">Deze quotes scrollen onderaan je dashboard</div>
+    <div id="quotesList"></div>
+    <div class="input-row">
+      <input id="quoteInput" class="s-input" type="text" placeholder="Voeg een quote toe…">
+      <button class="s-btn" onclick="addQuote()">+ Voeg toe</button>
+    </div>
+    <button class="s-btn-full" onclick="resetQuotes()">↺ Herstel standaard quotes</button>
+  </div>
+
+  <!-- ── PIN ───────────────────────────────────────── -->
+  <div class="sec-title">Beveiliging</div>
+  <div class="card">
+    <div style="font-size:13px;font-weight:600;margin-bottom:4px">PIN wijzigen</div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:10px">De PIN beschermt je privé skills (Discipline categorie)</div>
+    <div style="font-size:10px;color:var(--t3);margin-bottom:6px">Huidige PIN</div>
+    <input id="currentPin" class="pin-box" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="width:100%;margin-bottom:10px">
+    <div style="font-size:10px;color:var(--t3);margin-bottom:6px">Nieuwe PIN (4 cijfers)</div>
+    <input id="newPin" class="pin-box" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="width:100%;margin-bottom:10px">
+    <div style="font-size:10px;color:var(--t3);margin-bottom:6px">Herhaal nieuwe PIN</div>
+    <input id="newPin2" class="pin-box" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="width:100%;margin-bottom:14px">
+    <div id="pinMsg" style="font-size:11px;color:var(--red);min-height:14px;margin-bottom:8px"></div>
+    <button class="s-btn-full" onclick="changePin()">🔒 PIN opslaan</button>
+  </div>
+
+  <!-- ── DATA ──────────────────────────────────────── -->
+  <div class="sec-title">Data</div>
+  <div class="card">
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">Cloud sync</div>
+        <div class="toggle-sub">Synchroniseer met Supabase</div>
+      </div>
+      <div style="font-size:11px;font-family:var(--mono);color:var(--green)" id="syncStatus">actief</div>
+    </div>
+    <div class="toggle-row" style="border-bottom:none;margin-top:8px">
+      <div>
+        <div class="toggle-label" style="color:var(--t3);font-size:12px">Versie</div>
+      </div>
+      <div style="font-size:11px;font-family:var(--mono);color:var(--t3)">v1.2</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast-s" id="settingsToast">✓ Opgeslagen</div>
+
+<script>
+// ──────────────────────────────────────────────────────────────
+// settings.html — v1.2
+// ──────────────────────────────────────────────────────────────
+
+const STORAGE_KEY  = 'rpg_character_v1';
+const QUOTES_KEY   = 'rpg_quotes_v1';
+const PIN_STORE    = 'rpg_pin_v1';
+
+const DEFAULT_QUOTES = [
+  'Discipline is the bridge between goals and accomplishment.',
+  'Every day is a new chance to level up.',
+  'The king builds his kingdom one decision at a time.',
+  'Hard work beats talent when talent doesn\'t work hard.',
+  'Be the person you needed when you were younger.',
+  'Consistency over intensity — every single day.',
+  'Werk aan jezelf alsof je leven ervan afhangt.',
+  'Denk groot. Start klein. Begin nu.',
+];
+
+const DAILY_QUEST_DEFS = [
+  { id:'workout',   icon:'💪', label:'Workout',      skill:'fitness' },
+  { id:'meditation',icon:'🧘', label:'Meditatie',    skill:'meditation' },
+  { id:'no_porn',   icon:'🛡️', label:'Privé quest',  skill:'no_porn', private:true },
+  { id:'reading',   icon:'📖', label:'Lezen',        skill:'reading' },
+  { id:'outreach',  icon:'📈', label:'Outreach',     skill:'sales' },
+  { id:'gratitude', icon:'🙏', label:'Gratitude',    skill:'gratitude' },
+  { id:'nutrition', icon:'🥗', label:'Eiwitten',     skill:'nutrition' },
+  { id:'planning',  icon:'📅', label:'Dag plannen',  skill:'planning' },
+];
+
+function showToast(msg, isError) {
+  const t = document.getElementById('settingsToast');
+  t.textContent = msg || '✓ Opgeslagen';
+  t.style.color = isError ? '#FF6B6B' : '#6BE3A4';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function loadChar() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { skills:{}, xpLog:[] }; }
+  catch { return { skills:{}, xpLog:[] }; }
+}
+function saveChar(c) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(c)); } catch {}
+}
+
+// ── Skills ────────────────────────────────────────────────────
+function renderSkillPills() {
+  const container = document.getElementById('skillPillsContainer');
+  const char      = loadChar();
+  const defaults  = window.RPG_DEFAULT_SKILLS || {};
+  const meta      = window.RPG_PARENT_SKILLS  || {};
+  const order     = ['money','body','mind','business','lifestyle','discipline','knowledge','creative'];
+
+  container.innerHTML = '';
+
+  order.forEach(cat => {
+    const catMeta = meta[cat] || { label: cat, color: '#fff' };
+    const catSkills = Object.entries(defaults)
+      .filter(([,s]) => s.parentSkill === cat)
+      .sort((a,b) => a[1].label.localeCompare(b[1].label));
+
+    if (!catSkills.length) return;
+
+    const label = document.createElement('div');
+    label.style.cssText = 'font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:' + catMeta.color + ';margin:10px 0 6px';
+    label.textContent = catMeta.icon + ' ' + catMeta.label;
+    container.appendChild(label);
+
+    const pills = document.createElement('div');
+    pills.className = 'skill-pills';
+
+    catSkills.forEach(([key, def]) => {
+      const saved  = char.skills[key] || {};
+      const active = saved.active !== undefined ? saved.active : def.active;
+      const pill   = document.createElement('div');
+      pill.className = 'skill-pill' + (active ? ' active' : '') + (def.private ? ' private-pill' : '');
+      pill.style.borderColor = active ? catMeta.color + '55' : '';
+      pill.style.color       = active ? catMeta.color : '';
+      pill.innerHTML = (def.icon || '⭐') + ' ' + (def.label || key);
+      pill.addEventListener('click', () => {
+        const c = loadChar();
+        if (!c.skills[key]) c.skills[key] = { ...def };
+        c.skills[key].active = !active;
+        saveChar(c);
+        showToast('✓ ' + def.label + ' ' + (!active ? 'ingeschakeld' : 'uitgeschakeld'));
+        renderSkillPills();
+      });
+      pills.appendChild(pill);
+    });
+
+    container.appendChild(pills);
+  });
+}
+
+// ── Daily quest toggles ────────────────────────────────────────
+function renderDailyQuestToggles() {
+  const container = document.getElementById('dailyQuestToggles');
+  // For now, show as informational list (future: make configurable)
+  let html = '<div style="font-size:11px;color:var(--t3);margin-bottom:12px">Welke quests wil je dagelijks zien?</div>';
+  DAILY_QUEST_DEFS.forEach(q => {
+    html += `<div class="toggle-row">
+      <div>
+        <div class="toggle-label">${q.icon} ${q.label}</div>
+        <div class="toggle-sub">+XP naar ${q.skill}${q.private?' · Privé quest':''}</div>
+      </div>
+      <div style="font-size:10px;font-family:var(--mono);color:var(--t3)">actief</div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+// ── Quotes ────────────────────────────────────────────────────
+function loadQuotes() {
+  try {
+    const q = JSON.parse(localStorage.getItem(QUOTES_KEY));
+    return Array.isArray(q) ? q : [...DEFAULT_QUOTES];
+  } catch { return [...DEFAULT_QUOTES]; }
+}
+function saveQuotes(q) {
+  try { localStorage.setItem(QUOTES_KEY, JSON.stringify(q)); } catch {}
+}
+
+function renderQuotes() {
+  const list   = document.getElementById('quotesList');
+  const quotes = loadQuotes();
+  list.innerHTML = '';
+  if (!quotes.length) {
+    list.innerHTML = '<div style="color:var(--t3);font-size:12px;padding:8px 0">Geen quotes — voeg er een toe!</div>';
+    return;
+  }
+  quotes.forEach((q, i) => {
+    const row = document.createElement('div');
+    row.className = 'quote-item';
+    row.innerHTML =
+      '<div class="quote-text">' + q + '</div>' +
+      '<button class="quote-del" onclick="deleteQuote(' + i + ')">×</button>';
+    list.appendChild(row);
+  });
+}
+
+window.addQuote = function () {
+  const inp = document.getElementById('quoteInput');
+  const text = (inp.value || '').trim();
+  if (!text) return;
+  const quotes = loadQuotes();
+  quotes.push(text);
+  saveQuotes(quotes);
+  inp.value = '';
+  renderQuotes();
+  showToast('✓ Quote toegevoegd');
+};
+
+window.deleteQuote = function (idx) {
+  const quotes = loadQuotes();
+  quotes.splice(idx, 1);
+  saveQuotes(quotes);
+  renderQuotes();
+  showToast('Quote verwijderd');
+};
+
+window.resetQuotes = function () {
+  if (!confirm('Standaard quotes herstellen? Je eigen quotes worden verwijderd.')) return;
+  saveQuotes([...DEFAULT_QUOTES]);
+  renderQuotes();
+  showToast('✓ Standaard quotes hersteld');
+};
+
+document.getElementById('quoteInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') window.addQuote();
+});
+
+// ── PIN ────────────────────────────────────────────────────────
+function getStoredPin() {
+  return localStorage.getItem(PIN_STORE) || '1111';
+}
+
+window.changePin = function () {
+  const cur  = (document.getElementById('currentPin').value  || '').trim();
+  const newP = (document.getElementById('newPin').value      || '').trim();
+  const conf = (document.getElementById('newPin2').value     || '').trim();
+  const msg  = document.getElementById('pinMsg');
+
+  if (cur !== getStoredPin()) { msg.textContent = 'Huidige PIN klopt niet'; return; }
+  if (newP.length !== 4 || !/^\d{4}$/.test(newP)) { msg.textContent = 'Nieuwe PIN moet 4 cijfers zijn'; return; }
+  if (newP !== conf) { msg.textContent = 'PINs komen niet overeen'; return; }
+
+  localStorage.setItem(PIN_STORE, newP);
+  msg.textContent = '';
+  document.getElementById('currentPin').value = '';
+  document.getElementById('newPin').value = '';
+  document.getElementById('newPin2').value = '';
+  showToast('✓ PIN opgeslagen');
+};
+
+// ── Boot ───────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Wait for xp.js to expose RPG_DEFAULT_SKILLS
+  setTimeout(() => {
+    renderSkillPills();
+    renderDailyQuestToggles();
+    renderQuotes();
+  }, 50);
+
+  if (typeof initCloudSync === 'function' && window.supabase) {
+    initCloudSync({ appKey: 'rpg', syncedKeys: ['rpg_character_v1'] });
+  }
+});
+</script>
+</body>
+</html>

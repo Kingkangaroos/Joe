@@ -173,6 +173,9 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
   <a href="finance.html" class="bottombar-tab" data-page="finance-nav">
     <span class="bottombar-tab-icon">💰</span><span>Finance</span>
   </a>
+  <a href="settings.html" class="bottombar-tab" data-page="settings">
+    <span class="bottombar-tab-icon">⚙️</span><span>Settings</span>
+  </a>
 </nav>`;
 
   function isFinancePage() {
@@ -188,6 +191,7 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
     const p = (window.location.pathname || '').toLowerCase();
     if (p.endsWith('character.html')) return 'character';
     if (p.endsWith('finance.html')) return 'finance-nav';
+    if (p.endsWith('settings.html')) return 'settings';
     return 'main';
   }
 
