@@ -148,6 +148,22 @@ body::before {
 .rs-tile-level { font-size:18px; font-weight:700; font-family:var(--mono); line-height:1; letter-spacing:-0.03em; }
 .rs-tile-max .rs-tile-level { font-size:10px; letter-spacing:0.08em; }
 
+/* ── Habit tiles ─────────────────────────────────── */
+.habit-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-bottom:10px; }
+.habit-tile {
+  background:var(--surface); border:1px solid var(--border); border-radius:11px;
+  padding:10px 8px 9px; cursor:pointer; user-select:none; transition:all 0.18s;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  position:relative; overflow:hidden; -webkit-tap-highlight-color:transparent;
+}
+.habit-tile:active { transform:scale(0.95); }
+.habit-tile-icon  { font-size:18px; line-height:1; }
+.habit-tile-name  { font-size:8px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--t3); text-align:center; line-height:1.2; }
+.habit-tile-score { font-size:16px; font-weight:700; font-family:var(--mono); line-height:1; }
+.habit-tile-bar   { width:100%; height:3px; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; }
+.habit-tile-fill  { height:100%; border-radius:2px; transition:width 0.5s cubic-bezier(0.22,1,0.36,1); }
+.habit-tile-done  { opacity:0.65; }
+
 /* ── History bar chart ───────────────────────────── */
 .history-chart {
   display:flex; align-items:flex-end; gap:4px;
@@ -649,109 +665,142 @@ function doCustomQuickLog(skillKey){
 
 // ── Character screen ───────────────────────────────
 function renderCharacter(){
-  const char   = loadChar();
-  const skills = char.skills||{};
+  const char     = loadChar();
+  const skills   = char.skills||{};
+  const defaults = window.RPG_DEFAULT_SKILLS||{};
 
-  // Character Level = gebaseerd op totaal XP over alle skills, capped op 100
-  // Level 100 vereist ~490k total XP ≈ 9 jaar dagelijks loggen
+  // Character Level = totaal XP van non-habit skills, capped op 100
   let totalXpAll=0;
-  for(const s of Object.values(skills)) totalXpAll+=(s.xp||0);
+  for(const [k,s] of Object.entries(skills)){
+    const def=defaults[k]||{};
+    if(!def.isHabit) totalXpAll+=(s.xp||0);
+  }
   const charLevel = xpToLevel(totalXpAll);
-  document.getElementById('totalLevel').textContent = charLevel === MAX_LEVEL ? '100' : charLevel;
+  document.getElementById('totalLevel').textContent = charLevel>=MAX_LEVEL ? '100' : charLevel;
 
-  // Group active skills per category
   const sections = document.getElementById('rsSkillSections');
   sections.innerHTML='';
 
+  // Skill tiles (non-habits only)
   CATEGORY_ORDER.forEach(pKey=>{
     const meta = PARENT_META[pKey];
-    // Get active subskills; also pull from RPG_DEFAULT_SKILLS for metadata
-    const defaults = window.RPG_DEFAULT_SKILLS||{};
-    const subskills = Object.entries({...defaults,...skills})
-      .filter(([k,s])=>{
-        const base = defaults[k]||{};
-        const actual = skills[k]||base;
-        return (base.parentSkill||actual.parentSkill)===pKey && (actual.active!==false ? (base.active!==false) : false) && (actual.active!==false);
+    const subskills = Object.entries(defaults)
+      .filter(([k,def])=>{
+        const actual = skills[k]||def;
+        return def.parentSkill===pKey && !def.isHabit && (actual.active!==false);
       })
-      .map(([k])=>{
-        const base   = defaults[k]||{};
+      .map(([k,def])=>{
         const actual = skills[k]||{};
         return {
           key:k,
-          icon:actual.icon||base.icon||'⭐',
-          label:actual.label||base.label||k,
+          icon:def.icon||'⭐',
+          label:def.label||k,
           xp:actual.xp||0,
-          private:base.private||actual.private||false,
-          quickLog:actual.quickLog!==undefined?actual.quickLog:base.quickLog,
+          private:!!def.private,
+          quickLog:def.quickLog,
+          milestones:def.milestones,
           parentSkill:pKey,
-          active:actual.active!==undefined?actual.active:base.active,
         };
-      })
-      .filter(s=>s.active!==false);
+      });
 
-    if(subskills.length===0) return;
+    if(!subskills.length) return;
 
-    const label=document.createElement('div');
-    label.className='rs-section-label';
-    label.style.color=meta.color;
-    label.innerHTML=meta.icon+' '+meta.label+'<span></span>';
-    sections.appendChild(label);
+    const labelEl=document.createElement('div');
+    labelEl.className='rs-section-label';
+    labelEl.style.color=meta.color;
+    labelEl.textContent=meta.icon+' '+meta.label;
+    sections.appendChild(labelEl);
 
     const grid=document.createElement('div');
     grid.className='rs-grid';
 
     subskills.forEach(s=>{
-      const level=Math.min(MAX_LEVEL, xpToLevel(s.xp));
+      const lvl=Math.min(MAX_LEVEL, xpToLevel(s.xp));
+      const isPriv=s.private&&!isPrivateUnlocked();
       const tile=document.createElement('div');
-      tile.className='rs-tile'+(level>=MAX_LEVEL?' rs-tile-max':'');
+      tile.className='rs-tile'+(lvl>=MAX_LEVEL?' rs-tile-max':'');
       tile.style.borderColor=meta.color+'26';
       tile.innerHTML=
         `<div class="rs-tile-glow" style="background:radial-gradient(circle at 50% 0%,${meta.color}20,transparent 65%)"></div>`+
-        `<div class="rs-tile-icon">${s.private&&!isPrivateUnlocked()?'🔒':s.icon}</div>`+
-        `<div class="rs-tile-name">${s.private&&!isPrivateUnlocked()?'Privé':s.label}</div>`+
-        `<div class="rs-tile-level" style="color:${meta.color}">${level>=MAX_LEVEL?'MAX':level}</div>`;
-
-      tile.addEventListener('click',()=>openQuickLog(s.key,s));
+        `<div class="rs-tile-icon">${isPriv?'🔒':s.icon}</div>`+
+        `<div class="rs-tile-name">${isPriv?'Privé':s.label}</div>`+
+        `<div class="rs-tile-level" style="color:${meta.color}">${lvl>=MAX_LEVEL?'MAX':lvl}</div>`;
+      tile.addEventListener('click',()=>openQuickLog(s.key,{...s,...(skills[s.key]||{})}));
       grid.appendChild(tile);
     });
-
     sections.appendChild(grid);
   });
 
-  // XP log
+  // Habit tiles section
+  const habits = typeof window.getHabits==='function' ? window.getHabits() : {};
+  const today = new Date().toISOString().slice(0,10);
+  const habitSkills = Object.entries(defaults)
+    .filter(([,def])=>def.isHabit && def.active!==false)
+    .map(([k,def])=>({
+      key:k, icon:def.icon||'⚡', label:def.label||k, parentSkill:def.parentSkill,
+      score:(habits[k]||{}).score||0, streak:(habits[k]||{}).streak||0,
+      lastChecked:(habits[k]||{}).lastChecked||'',
+    }));
+
+  if(habitSkills.length){
+    const habLabel=document.createElement('div');
+    habLabel.className='rs-section-label';
+    habLabel.textContent='⚡ Dagelijkse Habits';
+    sections.appendChild(habLabel);
+
+    const habGrid=document.createElement('div');
+    habGrid.className='habit-grid';
+
+    habitSkills.forEach(h=>{
+      const meta=PARENT_META[h.parentSkill]||{color:'#6BE3A4'};
+      const checkedToday=h.lastChecked===today;
+      const pct=Math.max(0,Math.min(100,h.score*10));
+      const tile=document.createElement('div');
+      tile.className='habit-tile'+(checkedToday?' habit-tile-done':'');
+      tile.style.borderColor=meta.color+'40';
+      tile.innerHTML=
+        `<div class="habit-tile-icon">${h.icon}</div>`+
+        `<div class="habit-tile-name">${h.label}</div>`+
+        `<div class="habit-tile-score" style="color:${meta.color}">${h.score}<span style="font-size:9px;color:var(--t3)">/10</span></div>`+
+        `<div class="habit-tile-bar"><div class="habit-tile-fill" style="width:${pct}%;background:${meta.color}"></div></div>`+
+        (h.streak>1?`<div style="font-size:8px;color:${meta.color};font-weight:700;font-family:var(--mono)">🔥 ${h.streak}</div>`:'');
+      tile.addEventListener('click',()=>{
+        if(checkedToday){
+          if(typeof window.uncheckHabit==='function') window.uncheckHabit(h.key);
+        } else {
+          if(typeof window.checkHabit==='function') window.checkHabit(h.key, h.label, h.icon);
+          if(typeof window.addXP==='function') window.addXP(h.key, 15, h.label+' habit');
+        }
+        renderCharacter();
+      });
+      habGrid.appendChild(tile);
+    });
+    sections.appendChild(habGrid);
+  }
+
+  // XP log with privacy masking
   const logEl=document.getElementById('xpLogContainer');
   const log=(char.xpLog||[]).slice(0,12);
   if(!log.length){
     logEl.innerHTML='<div style="color:var(--t3);font-size:12px;text-align:center;padding:10px">Nog geen XP verdiend — klik op een skill!</div>';
     return;
   }
-  const privateUnlocked = isPrivateUnlocked();
+  const privateUnlocked=isPrivateUnlocked();
   logEl.innerHTML=log.map(e=>{
     const s=skills[e.skill]||{};
-    const defaults=window.RPG_DEFAULT_SKILLS||{};
-    const isPriv = e.private || (defaults[e.skill]||{}).private || s.private;
-    if(isPriv && !privateUnlocked){
-      return `<div class="log-item">
-        <div class="log-dot" style="background:var(--discipline)"></div>
-        <div class="log-text" style="color:var(--t3)">🔒 Privé activiteit</div>
-        <div class="log-xp" style="color:var(--discipline)">${e.amount>=0?'+':''}${e.amount} XP</div>
-        <div class="log-time">${e.date||''}</div>
-      </div>`;
+    const def=defaults[e.skill]||{};
+    const isPriv=e.private||def.private||s.private;
+    if(isPriv&&!privateUnlocked){
+      return `<div class="log-item"><div class="log-dot" style="background:var(--discipline)"></div><div class="log-text" style="color:var(--t3)">🔒 Privé activiteit</div><div class="log-xp" style="color:var(--discipline)">${e.amount>=0?'+':''}${e.amount} XP</div><div class="log-time">${e.date||''}</div></div>`;
     }
-    const p=PARENT_META[s.parentSkill]||{color:'#6BE3A4'};
-    const sign=e.amount>=0?'+':'';
-    return `<div class="log-item">
-      <div class="log-dot" style="background:${p.color}"></div>
-      <div class="log-text">${e.reason||e.skill}</div>
-      <div class="log-xp" style="color:${p.color}">${sign}${e.amount} XP</div>
-      <div class="log-time">${e.date||''}</div>
-    </div>`;
+    const p=PARENT_META[s.parentSkill||def.parentSkill]||{color:'#6BE3A4'};
+    return `<div class="log-item"><div class="log-dot" style="background:${p.color}"></div><div class="log-text">${e.reason||e.skill}</div><div class="log-xp" style="color:${p.color}">${e.amount>=0?'+':''}${e.amount} XP</div><div class="log-time">${e.date||''}</div></div>`;
   }).join('');
 }
 
 // ── Daily quests ───────────────────────────────────
 const DAILY_QUESTS=[
-  {id:'workout',      icon:'💪',label:'Workout',        skill:'fitness',    xp:50},
+  {id:'workout',      icon:'💪',label:'Workout',        skill:'gym',        xp:50},
   {id:'meditation',   icon:'🧘',label:'Meditatie',      skill:'meditation', xp:20},
   {id:'no_porn',      icon:'🔒',label:'Privé quest',    skill:'no_porn',    xp:45, private:true},
   {id:'weed_control', icon:'🔒',label:'Privé quest 2',  skill:'weed_control',xp:40,private:true},
