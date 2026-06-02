@@ -595,12 +595,128 @@ body::after {
   .gm-card { padding: 16px; }
   .gm-progress-num { font-size: 36px; }
 }
+
+/* ===== Command Center ===== */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
+:root {
+  --cc-money:#F5C842; --cc-body:#6BE3A4; --cc-mind:#7DD3FC;
+  --cc-business:#C4B5FD; --cc-discipline:#FF6B6B;
+  --mono-cc:'JetBrains Mono',ui-monospace,monospace;
+}
+.cc-wrap {
+  background:rgba(255,255,255,0.025);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:18px; padding:18px;
+  margin-bottom:16px;
+}
+.cc-greeting {
+  font-family:'Space Grotesk',-apple-system,sans-serif;
+  font-size:22px; font-weight:700; color:#FAFAFA;
+  letter-spacing:-0.02em; margin-bottom:2px;
+}
+.cc-subtitle {
+  font-size:10px; font-weight:700; letter-spacing:0.18em;
+  text-transform:uppercase; color:#76746E; margin-bottom:14px;
+}
+.cc-quote {
+  font-size:12px; font-style:italic; color:#B8B6B0;
+  border-left:2px solid rgba(245,200,66,0.4);
+  padding-left:10px; margin-bottom:18px; line-height:1.6;
+}
+.cc-section-label {
+  font-size:9px; font-weight:700; letter-spacing:0.18em;
+  text-transform:uppercase; color:#76746E;
+  display:flex; align-items:center; gap:8px;
+  margin-bottom:10px; margin-top:14px;
+}
+.cc-section-label::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.07); }
+
+.cc-focus-skill {
+  margin-bottom:9px;
+}
+.cc-fs-row { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+.cc-fs-icon { font-size:16px; flex-shrink:0; }
+.cc-fs-name { font-size:12px; font-weight:700; flex:1; }
+.cc-fs-level { font-family:var(--mono-cc); font-size:11px; font-weight:700; }
+.cc-fs-track { height:4px; background:rgba(255,255,255,0.07); border-radius:3px; overflow:hidden; }
+.cc-fs-fill  { height:100%; border-radius:3px; transition:width 0.8s cubic-bezier(0.22,1,0.36,1); }
+.cc-fs-next  { font-size:9px; color:#76746E; margin-top:3px; font-family:var(--mono-cc); }
+
+.cc-mission-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.cc-mission {
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
+  border-radius:11px; padding:11px; cursor:pointer;
+  user-select:none; transition:all 0.18s; -webkit-tap-highlight-color:transparent;
+}
+.cc-mission:active { transform:scale(0.96); }
+.cc-mission.done { background:rgba(107,227,164,0.06); border-color:rgba(107,227,164,0.18); }
+.cc-mission-top { display:flex; justify-content:space-between; margin-bottom:4px; }
+.cc-mission-icon { font-size:16px; }
+.cc-mission-check {
+  width:16px; height:16px; border-radius:50%;
+  border:1.5px solid rgba(255,255,255,0.18);
+  display:flex; align-items:center; justify-content:center;
+  font-size:9px; font-weight:700;
+}
+.cc-mission.done .cc-mission-check { background:#6BE3A4; border-color:#6BE3A4; color:#050506; }
+.cc-mission-label { font-size:11px; font-weight:600; color:#B8B6B0; }
+.cc-mission.done .cc-mission-label { color:#FAFAFA; }
+.cc-mission-xp { font-size:9px; font-family:var(--mono-cc); color:#76746E; }
+.cc-mission.done .cc-mission-xp { color:#6BE3A4; }
+
+.cc-habit-row { display:flex; gap:7px; }
+.cc-habit {
+  flex:1; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
+  border-radius:11px; padding:9px 8px; cursor:pointer;
+  user-select:none; transition:all 0.18s; -webkit-tap-highlight-color:transparent;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+}
+.cc-habit:active { transform:scale(0.95); }
+.cc-habit.done { opacity:0.6; }
+.cc-habit-icon { font-size:16px; line-height:1; }
+.cc-habit-name { font-size:8px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#76746E; text-align:center; }
+.cc-habit-score { font-size:14px; font-weight:700; font-family:var(--mono-cc); }
+.cc-habit-bar { width:100%; height:3px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden; }
+.cc-habit-fill { height:100%; border-radius:2px; transition:width 0.5s; }
+
+/* Evening recap */
+.cc-recap {
+  background:linear-gradient(135deg,rgba(245,200,66,0.06),rgba(107,227,164,0.04));
+  border:1px solid rgba(245,200,66,0.18); border-radius:14px; padding:16px;
+  margin-bottom:16px;
+}
+.cc-recap-title { font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#F5C842; margin-bottom:10px; }
+.cc-recap-total { font-size:28px; font-weight:700; font-family:var(--mono-cc); color:#FAFAFA; letter-spacing:-0.04em; margin-bottom:2px; }
+.cc-recap-item { display:flex; align-items:center; gap:8px; padding:4px 0; }
+.cc-recap-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+.cc-recap-name { font-size:11px; color:#B8B6B0; flex:1; }
+.cc-recap-xp { font-size:10px; font-family:var(--mono-cc); font-weight:700; }
+.cc-coach-box {
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
+  border-radius:10px; padding:12px; margin:12px 0; font-size:12px;
+  color:#B8B6B0; line-height:1.6; font-style:italic;
+}
+.cc-close-day {
+  width:100%; padding:12px; border-radius:12px;
+  background:rgba(245,200,66,0.1); border:1px solid rgba(245,200,66,0.3);
+  color:#F5C842; font-size:13px; font-weight:700; cursor:pointer;
+  transition:all 0.15s;
+}
+.cc-recap-btn {
+  display:block; width:100%; margin-top:14px; padding:10px;
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
+  border-radius:10px; color:#76746E; font-size:11px; font-weight:700;
+  letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:all 0.15s;
+}
+.cc-recap-btn:hover { color:#FAFAFA; border-color:rgba(255,255,255,0.18); }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <h1 class="dash-title">King Joey's Dashboard</h1>
+  <!-- ===== COMMAND CENTER ===== -->
+  <div id="commandCenter"></div>
+  <div id="eveningRecap" style="display:none"></div>
 
   <div class="ticker-row">
     <div class="goal-ticker" id="goalTicker" aria-live="polite" aria-atomic="true">
@@ -688,24 +804,17 @@ body::after {
     </div>
   </div>
 
-  <!-- RPG Daily Check-in -->
-  <div class="section" id="rpgCheckinSection">
-    <div class="section-title" style="font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#76746E;display:flex;align-items:center;gap:10px;margin-bottom:12px;margin-top:20px">
-      Daily Check-in
-      <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent)"></span>
-    </div>
-    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:18px">
-
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#76746E;margin-bottom:10px">Dagcijfer</div>
-      <div id="rpgScoreRow" style="display:flex;gap:5px;margin-bottom:16px;flex-wrap:wrap"></div>
-
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#76746E;margin-bottom:10px">Daily Quests</div>
-      <div id="rpgQuestGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px"></div>
-
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#76746E;margin-bottom:8px">Gratitude</div>
-      <textarea id="rpgGratitude" rows="3" placeholder="Waar ben je vandaag dankbaar voor?" style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;color:#FAFAFA;font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:13px;resize:none;outline:none;line-height:1.6;box-sizing:border-box"></textarea>
+  <!-- RPG Daily Check-in (compact, below goals) -->
+  <div class="section" id="rpgCheckinSection" style="margin-top:8px">
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:16px">
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#76746E;margin-bottom:10px">Dagcijfer</div>
+      <div id="rpgScoreRow" style="display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap"></div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#76746E;margin-bottom:8px">Gratitude</div>
+      <textarea id="rpgGratitude" rows="2" placeholder="Waar ben je vandaag dankbaar voor?" style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;color:#FAFAFA;font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:13px;resize:none;outline:none;line-height:1.6;box-sizing:border-box"></textarea>
     </div>
   </div>
+  <!-- Hidden quest grid still needed for JS compatibility -->
+  <div id="rpgQuestGrid" style="display:none"></div>
 
 </div>
 
@@ -1283,7 +1392,7 @@ body::after {
   const QUOTES_KEY   = 'rpg_quotes_v1';
 
   const QUESTS = [
-    { id: 'workout',      icon: '💪', label: 'Workout',       skill: 'fitness',     xp: 50 },
+    { id: 'workout',      icon: '💪', label: 'Workout',       skill: 'gym',         xp: 50 },
     { id: 'meditation',   icon: '🧘', label: 'Meditatie',     skill: 'meditation',  xp: 20 },
     { id: 'no_porn',      icon: '🔒', label: 'Privé quest',   skill: 'no_porn',     xp: 45, private: true },
     { id: 'weed_control', icon: '🔒', label: 'Privé quest 2', skill: 'weed_control',xp: 40, private: true },
@@ -1292,6 +1401,249 @@ body::after {
     { id: 'gratitude',    icon: '🙏', label: 'Gratitude',     skill: 'gratitude',   xp: 10 },
     { id: 'nutrition',    icon: '🥗', label: 'Eiwitten',      skill: 'nutrition',   xp: 20 },
   ];
+
+  // Focus skills to highlight in command center
+  const FOCUS_SKILLS = [
+    { key:'tennis',       icon:'🎾', label:'Tennis',       color:'#6BE3A4' },
+    { key:'calisthenics', icon:'🤸', label:'Calisthenics', color:'#6BE3A4' },
+    { key:'coding',       icon:'💻', label:'Coding',       color:'#C4B5FD' },
+    { key:'investing',    icon:'📈', label:'Investeren',   color:'#F5C842' },
+    { key:'piano',        icon:'🎹', label:'Piano',        color:'#2DD4BF' },
+  ];
+
+  const HABITS_LIST = [
+    { key:'sleep',       icon:'😴', label:'Slaap',    color:'#7DD3FC' },
+    { key:'nutrition',   icon:'🥗', label:'Voeding',  color:'#6BE3A4' },
+    { key:'meditation',  icon:'🧘', label:'Mediteren', color:'#7DD3FC' },
+    { key:'cold_shower', icon:'🚿', label:'Koud',     color:'#818CF8' },
+    { key:'walking',     icon:'👟', label:'Stappen',  color:'#6BE3A4' },
+  ];
+
+  const COACH_SUGGESTIONS = {
+    workout:    'Doe 3 sets progressie. 20 minuten. +50 XP Gym.',
+    meditation: '10 min timer. In 4 sec, uit 6 sec. Dat is alles.',
+    gratitude:  'Schrijf 3 dingen op. Ze mogen heel klein zijn. 2 minuten.',
+    outreach:   'Stuur één DM of email. Één zin. Nu. +35 XP Sales.',
+    nutrition:  'Eet een eiwitrijke maaltijd voor je slaapt.',
+    reading:    'Lees 10 pagina\'s. Gewoon beginnen. +25 XP Mind.',
+  };
+
+  function xpToLevelCC(xp){ return Math.min(100, Math.floor(Math.sqrt((xp||0)/50))+1); }
+  function xpForLevelCC(l){ return l>=100?Infinity:Math.pow(l-1,2)*50; }
+
+  function loadCharCC() {
+    try { return JSON.parse(localStorage.getItem('rpg_character_v1'))||{skills:{},xpLog:[]}; } catch { return {skills:{},xpLog:[]}; }
+  }
+  function loadHabitsCC() {
+    try { return JSON.parse(localStorage.getItem('rpg_habits_v1'))||{}; } catch { return {}; }
+  }
+
+  function getGreeting() {
+    const h = new Date().getHours();
+    if (h < 12) return 'Goedemorgen';
+    if (h < 18) return 'Goedemiddag';
+    return 'Goedenavond';
+  }
+
+  function getQuote() {
+    let quotes;
+    try { quotes = JSON.parse(localStorage.getItem('rpg_quotes_v1')); } catch {}
+    if (!Array.isArray(quotes)||!quotes.length) quotes = DEFAULT_QUOTES;
+    return quotes[Math.floor(Date.now()/86400000) % quotes.length];
+  }
+
+  function renderCommandCenter() {
+    const cc = document.getElementById('commandCenter');
+    if (!cc) return;
+    const char = loadCharCC();
+    const skills = char.skills||{};
+    const habits = loadHabitsCC();
+    const daily = loadDaily();
+    const quests = daily.quests||{};
+    const today = new Date().toISOString().slice(0,10);
+
+    // Focus skills
+    const fsHtml = FOCUS_SKILLS.map(fs=>{
+      const sk = skills[fs.key]||{};
+      const xp = sk.xp||0;
+      const lvl = xpToLevelCC(xp);
+      const isMax = lvl>=100;
+      const curXP = isMax?0:xp-xpForLevelCC(lvl);
+      const nextXP = isMax?1:xpForLevelCC(lvl+1)-xpForLevelCC(lvl);
+      const pct = isMax?100:Math.min(100,Math.round(curXP/nextXP*100));
+      const defaults = window.RPG_DEFAULT_SKILLS||{};
+      const msLevels = Object.keys((defaults[fs.key]||{}).milestones||{}).map(Number).sort((a,b)=>a-b);
+      const nextMs = msLevels.find(l=>l>lvl);
+      const nextLabel = nextMs?((defaults[fs.key]||{}).milestones||{})[nextMs]:'';
+      return `<div class="cc-focus-skill">
+        <div class="cc-fs-row">
+          <span class="cc-fs-icon">${fs.icon}</span>
+          <span class="cc-fs-name">${fs.label}</span>
+          <span class="cc-fs-level" style="color:${fs.color}">Lvl ${isMax?'MAX':lvl}</span>
+        </div>
+        <div class="cc-fs-track"><div class="cc-fs-fill" style="width:${pct}%;background:${fs.color}"></div></div>
+        ${nextLabel?'<div class="cc-fs-next">→ '+nextLabel+'</div>':''}
+      </div>`;
+    }).join('');
+
+    // Missions (non-private quests only in command center)
+    const publicQuests = QUESTS.filter(q=>!q.private);
+    const missionsHtml = publicQuests.map(q=>{
+      const isDone=!!(quests[q.id]?.done);
+      return `<div class="cc-mission${isDone?' done':''}" data-qid="${q.id}">
+        <div class="cc-mission-top">
+          <span class="cc-mission-icon">${q.icon}</span>
+          <span class="cc-mission-check">${isDone?'✓':''}</span>
+        </div>
+        <div class="cc-mission-label">${q.label}</div>
+        <div class="cc-mission-xp">+${q.xp} XP</div>
+      </div>`;
+    }).join('');
+
+    // Habits
+    const habitsHtml = HABITS_LIST.map(h=>{
+      const hab = habits[h.key]||{};
+      const score = hab.score||0;
+      const checkedToday = hab.lastChecked===today;
+      const pct = Math.min(100,score*10);
+      return `<div class="cc-habit${checkedToday?' done':''}" data-hid="${h.key}">
+        <div class="cc-habit-icon">${h.icon}</div>
+        <div class="cc-habit-name">${h.label}</div>
+        <div class="cc-habit-score" style="color:${h.color}">${score}</div>
+        <div class="cc-habit-bar"><div class="cc-habit-fill" style="width:${pct}%;background:${h.color}"></div></div>
+      </div>`;
+    }).join('');
+
+    cc.innerHTML =
+      `<div class="cc-wrap">
+        <div class="cc-greeting">${getGreeting()}, King Joey 👑</div>
+        <div class="cc-subtitle">Gamenfy v0.1 · Bouw je karakter</div>
+        <div class="cc-quote">${getQuote()}</div>
+
+        <div class="cc-section-label">Focus Skills</div>
+        ${fsHtml}
+
+        <div class="cc-section-label">Missions Vandaag</div>
+        <div class="cc-mission-grid">${missionsHtml}</div>
+
+        <div class="cc-section-label">Habits</div>
+        <div class="cc-habit-row">${habitsHtml}</div>
+      </div>`;
+
+    // Wire mission clicks
+    publicQuests.forEach(q=>{
+      const el = cc.querySelector('[data-qid="'+q.id+'"]');
+      if(!el) return;
+      el.addEventListener('click',()=>{
+        const d=loadDaily(); if(!d.quests) d.quests={};
+        const was=!!(d.quests[q.id]?.done);
+        d.quests[q.id]={done:!was};
+        if(!was&&typeof window.addXP==='function')    window.addXP(q.skill,q.xp,q.label);
+        if(was&&typeof window.removeXP==='function')  window.removeXP(q.skill,q.xp,q.label+' unchecked');
+        saveDaily(d);
+        renderCommandCenter();
+        renderQuests();
+      });
+    });
+
+    // Wire habit clicks
+    HABITS_LIST.forEach(h=>{
+      const el = cc.querySelector('[data-hid="'+h.key+'"]');
+      if(!el) return;
+      el.addEventListener('click',()=>{
+        const habitsRaw = loadHabitsCC();
+        const hab = habitsRaw[h.key]||{score:0,lastChecked:null,streak:0};
+        const checkedToday = hab.lastChecked===today;
+        if(checkedToday){
+          hab.score=Math.max(0,(hab.score||1)-1);
+          hab.lastChecked=null;
+          hab.streak=Math.max(0,(hab.streak||1)-1);
+        } else {
+          const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+          hab.score=Math.min(10,(hab.score||0)+1);
+          hab.streak=(hab.lastChecked===yesterday)?(hab.streak||0)+1:1;
+          hab.lastChecked=today;
+          if(typeof window.addXP==='function') window.addXP(h.key,15,h.label+' habit');
+        }
+        habitsRaw[h.key]=hab;
+        try{ localStorage.setItem('rpg_habits_v1',JSON.stringify(habitsRaw)); } catch{}
+        renderCommandCenter();
+      });
+    });
+
+    // Evening recap button (after 20:00, not yet closed)
+    const hour = new Date().getHours();
+    const recapClosed = !!(daily.recapShown);
+    if(hour>=20 && !recapClosed){
+      const btn = document.createElement('button');
+      btn.className='cc-recap-btn';
+      btn.textContent='📊 Dag Recap bekijken';
+      btn.addEventListener('click',()=>{ renderEveningRecap(); document.getElementById('eveningRecap').scrollIntoView({behavior:'smooth'}); });
+      cc.querySelector('.cc-wrap').appendChild(btn);
+    }
+  }
+
+  function renderEveningRecap() {
+    const recap = document.getElementById('eveningRecap');
+    if(!recap) return;
+    const char = loadCharCC();
+    const daily = loadDaily();
+    const quests = daily.quests||{};
+    const log = char.xpLog||[];
+    const today = new Date().toISOString().slice(0,10);
+
+    // Today's XP from log
+    const todayLog = log.filter(e=>e.date===today);
+    const totalXP = todayLog.reduce((sum,e)=>sum+(e.amount>0?e.amount:0),0);
+
+    // XP per skill
+    const xpPerSkill={};
+    todayLog.forEach(e=>{ if(e.amount>0){ xpPerSkill[e.skill]=(xpPerSkill[e.skill]||0)+e.amount; } });
+
+    const SKILL_COLORS={money:'#F5C842',body:'#6BE3A4',mind:'#7DD3FC',business:'#C4B5FD',lifestyle:'#FB923C',discipline:'#FF6B6B',knowledge:'#818CF8',creative:'#2DD4BF'};
+    const defaults = window.RPG_DEFAULT_SKILLS||{};
+
+    const xpItemsHtml = Object.entries(xpPerSkill).slice(0,6).map(([k,xp])=>{
+      const def=defaults[k]||{};
+      const cat=def.parentSkill||'body';
+      const color=SKILL_COLORS[cat]||'#6BE3A4';
+      return `<div class="cc-recap-item">
+        <div class="cc-recap-dot" style="background:${color}"></div>
+        <div class="cc-recap-name">${def.icon||'⭐'} ${def.label||k}</div>
+        <div class="cc-recap-xp" style="color:${color}">+${xp} XP</div>
+      </div>`;
+    }).join('');
+
+    // Missed missions
+    const missedPublic = QUESTS.filter(q=>!q.private&&!(quests[q.id]?.done));
+    const firstMissed = missedPublic[0];
+    const coachMsg = firstMissed ? COACH_SUGGESTIONS[firstMissed.id] || ('Doe nog de '+firstMissed.label+' voor het slapen.') : 'Sterke dag — alles gedaan.';
+
+    // Day score
+    const score = daily.dayScore||0;
+
+    recap.style.display='block';
+    recap.innerHTML=
+      `<div class="cc-recap">
+        <div class="cc-recap-title">⚡ Dag Recap — ${today}</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px">
+          <div class="cc-recap-total">${totalXP>0?'+'+totalXP+' XP':'0 XP'}</div>
+          <div style="font-size:11px;color:#76746E">vandaag verdiend</div>
+          ${score?'<div style="margin-left:auto;font-size:11px;font-family:var(--mono-cc);color:#F5C842;font-weight:700">'+score+'/10</div>':''}
+        </div>
+        ${xpItemsHtml}
+        ${missedPublic.length?'<div style="margin-top:10px;font-size:10px;color:#76746E;font-weight:700;letter-spacing:0.1em;text-transform:uppercase">Niet gedaan:</div>'+missedPublic.map(q=>'<div style="font-size:11px;color:#76746E;padding:2px 0">• '+q.label+'</div>').join(''):''}
+        <div class="cc-coach-box">"${coachMsg}"</div>
+        <button class="cc-close-day" onclick="closeDay()">Dag afsluiten</button>
+      </div>`;
+  }
+
+  function closeDay(){
+    const d=loadDaily(); d.recapShown=true; saveDaily(d);
+    document.getElementById('eveningRecap').style.display='none';
+    renderCommandCenter();
+  }
+  window.closeDay=closeDay;
 
   const DEFAULT_QUOTES = [
     'Discipline is the bridge between goals and accomplishment.',
@@ -1453,10 +1805,14 @@ body::after {
   }
 
   document.addEventListener('DOMContentLoaded', function () {
+    renderCommandCenter();
     renderScoreRow();
     renderQuests();
     initGratitude();
     initQuotesCrawl();
+    // Auto-show evening recap after 20:00
+    const h=new Date().getHours();
+    if(h>=20){ const d=loadDaily(); if(!d.recapShown) renderEveningRecap(); }
   });
 })();
 </script>
