@@ -945,7 +945,10 @@ function renderSkillTree(){
   CATEGORY_ORDER.forEach(pKey=>{
     const meta=PARENT_META[pKey];
     const subskills=Object.entries({...defaults,...skills})
-      .filter(([k,])=>(skills[k]?.parentSkill||defaults[k]?.parentSkill)===pKey)
+      .filter(([k,])=>{
+        const def=defaults[k]||{};
+        return (skills[k]?.parentSkill||def.parentSkill)===pKey && !def.isHabit;
+      })
       .map(([k])=>({
         key:k,
         ...(defaults[k]||{}),
