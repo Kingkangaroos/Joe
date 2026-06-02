@@ -609,6 +609,15 @@ body::after {
   border-radius:18px; padding:18px;
   margin-bottom:16px;
 }
+/* Quote rotator — boven de greeting */
+.cc-quote-banner {
+  font-size:11px; font-weight:600; color:#F5C842;
+  letter-spacing:0.06em; text-transform:uppercase;
+  padding:8px 0 14px;
+  border-bottom:1px solid rgba(245,200,66,0.15);
+  margin-bottom:14px; min-height:36px;
+  transition:opacity 0.4s;
+}
 .cc-greeting {
   font-family:'Space Grotesk',-apple-system,sans-serif;
   font-size:22px; font-weight:700; color:#FAFAFA;
@@ -617,11 +626,6 @@ body::after {
 .cc-subtitle {
   font-size:10px; font-weight:700; letter-spacing:0.18em;
   text-transform:uppercase; color:#76746E; margin-bottom:14px;
-}
-.cc-quote {
-  font-size:12px; font-style:italic; color:#B8B6B0;
-  border-left:2px solid rgba(245,200,66,0.4);
-  padding-left:10px; margin-bottom:18px; line-height:1.6;
 }
 .cc-section-label {
   font-size:9px; font-weight:700; letter-spacing:0.18em;
@@ -732,25 +736,10 @@ body::after {
     </div>
   </div>
 
-  <!-- Quotes crawler -->
-  <div id="quotesCrawlWrap" style="
-    overflow:hidden; white-space:nowrap;
-    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);
-    border-radius:12px; padding:10px 0; margin-bottom:18px; position:relative;
-  ">
-    <div id="quotesCrawl" style="
-      display:inline-block;
-      animation: quoteScroll 40s linear infinite;
-      font-family:ui-monospace,monospace; font-size:12px; font-weight:600;
-      color:#B8B6B0; padding-left:100%;
-    "></div>
+  <!-- Quotes crawler hidden — vervangen door roterende banner in Command Center -->
+  <div id="quotesCrawlWrap" style="display:none">
+    <div id="quotesCrawl"></div>
   </div>
-  <style>
-  @keyframes quoteScroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
-  }
-  </style>
 
   <div class="section">
     <div class="section-title">To Do List</div>
@@ -1402,22 +1391,51 @@ body::after {
     { id: 'nutrition',    icon: '🥗', label: 'Eiwitten',      skill: 'nutrition',   xp: 20 },
   ];
 
-  // Focus skills to highlight in command center
-  const FOCUS_SKILLS = [
-    { key:'tennis',       icon:'🎾', label:'Tennis',       color:'#6BE3A4' },
-    { key:'calisthenics', icon:'🤸', label:'Calisthenics', color:'#6BE3A4' },
-    { key:'coding',       icon:'💻', label:'Coding',       color:'#C4B5FD' },
-    { key:'investing',    icon:'📈', label:'Investeren',   color:'#F5C842' },
-    { key:'piano',        icon:'🎹', label:'Piano',        color:'#2DD4BF' },
-  ];
+  const FOCUS_SKILLS_KEY = 'rpg_focus_skills_v1';
+  // Default focus skills — user kan dit aanpassen in Settings
+  const DEFAULT_FOCUS = ['tennis','calisthenics'];
+  const ALL_SKILL_META = {
+    saving:       { icon:'🐖', label:'Sparen',       color:'#F5C842' },
+    investing:    { icon:'📈', label:'Investeren',    color:'#F5C842' },
+    budgeting:    { icon:'📋', label:'Budget',        color:'#F5C842' },
+    net_worth:    { icon:'🏦', label:'Net Worth',     color:'#F5C842' },
+    gym:          { icon:'🏋️', label:'Gym',           color:'#6BE3A4' },
+    tennis:       { icon:'🎾', label:'Tennis',        color:'#6BE3A4' },
+    calisthenics: { icon:'🤸', label:'Calisthenics',  color:'#6BE3A4' },
+    strength:     { icon:'💪', label:'Kracht',        color:'#6BE3A4' },
+    reading:      { icon:'📚', label:'Lezen',         color:'#7DD3FC' },
+    focus:        { icon:'🎯', label:'Deep Work',     color:'#7DD3FC' },
+    journaling:   { icon:'📓', label:'Journaling',    color:'#7DD3FC' },
+    sales:        { icon:'🤝', label:'Sales',         color:'#C4B5FD' },
+    marketing:    { icon:'📣', label:'Marketing',     color:'#C4B5FD' },
+    ai_tools:     { icon:'🤖', label:'AI Tools',      color:'#C4B5FD' },
+    coding:       { icon:'💻', label:'Coding',        color:'#C4B5FD' },
+    cooking:      { icon:'🍳', label:'Koken',         color:'#FB923C' },
+    social:       { icon:'👥', label:'Sociaal',       color:'#FB923C' },
+    dating:       { icon:'❤️', label:'Dating',        color:'#FB923C' },
+    planning:     { icon:'📅', label:'Planning',      color:'#FB923C' },
+    languages:    { icon:'🗣️', label:'Talen',         color:'#818CF8' },
+    learning:     { icon:'🎓', label:'Leren',         color:'#818CF8' },
+    piano:        { icon:'🎹', label:'Piano',         color:'#2DD4BF' },
+    content:      { icon:'🎬', label:'Content',       color:'#2DD4BF' },
+  };
+
+  function getFocusSkills() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(FOCUS_SKILLS_KEY));
+      if (Array.isArray(saved) && saved.length) return saved;
+    } catch {}
+    return DEFAULT_FOCUS;
+  }
 
   const HABITS_LIST = [
     { key:'sleep',       icon:'😴', label:'Slaap',    color:'#7DD3FC' },
     { key:'nutrition',   icon:'🥗', label:'Voeding',  color:'#6BE3A4' },
-    { key:'meditation',  icon:'🧘', label:'Mediteren', color:'#7DD3FC' },
     { key:'cold_shower', icon:'🚿', label:'Koud',     color:'#818CF8' },
     { key:'walking',     icon:'👟', label:'Stappen',  color:'#6BE3A4' },
   ];
+  // Habits die ook als mission bestaan → niet dubbel tonen
+  const MISSION_SKILL_HABIT_KEYS = new Set(['meditation','nutrition','gratitude']);
 
   const COACH_SUGGESTIONS = {
     workout:    'Doe 3 sets progressie. 20 minuten. +50 XP Gym.',
@@ -1452,6 +1470,26 @@ body::after {
     return quotes[Math.floor(Date.now()/86400000) % quotes.length];
   }
 
+  let _quoteIdx = 0;
+  let _quoteTimer = null;
+  function startQuoteRotation() {
+    if (_quoteTimer) return;
+    let quotes;
+    try { quotes = JSON.parse(localStorage.getItem('rpg_quotes_v1')); } catch {}
+    if (!Array.isArray(quotes)||!quotes.length) quotes = DEFAULT_QUOTES;
+    function rotate() {
+      const el = document.getElementById('ccQuoteBanner');
+      if (!el) return;
+      el.style.opacity='0';
+      setTimeout(()=>{
+        _quoteIdx = (_quoteIdx+1) % quotes.length;
+        el.textContent = quotes[_quoteIdx];
+        el.style.opacity='1';
+      }, 400);
+    }
+    _quoteTimer = setInterval(rotate, 8000);
+  }
+
   function renderCommandCenter() {
     const cc = document.getElementById('commandCenter');
     if (!cc) return;
@@ -1462,8 +1500,16 @@ body::after {
     const quests = daily.quests||{};
     const today = new Date().toISOString().slice(0,10);
 
-    // Focus skills
-    const fsHtml = FOCUS_SKILLS.map(fs=>{
+    let quotes;
+    try { quotes = JSON.parse(localStorage.getItem('rpg_quotes_v1')); } catch {}
+    if (!Array.isArray(quotes)||!quotes.length) quotes = DEFAULT_QUOTES;
+    const firstQuote = quotes[_quoteIdx % quotes.length];
+
+    // Focus skills (from localStorage)
+    const focusKeys = getFocusSkills();
+    const fsHtml = focusKeys.map(key=>{
+      const fs = ALL_SKILL_META[key]||{ icon:'⭐', label:key, color:'#6BE3A4' };
+      fs.key = key;
       const sk = skills[fs.key]||{};
       const xp = sk.xp||0;
       const lvl = xpToLevelCC(xp);
@@ -1486,8 +1532,8 @@ body::after {
       </div>`;
     }).join('');
 
-    // Missions (non-private quests only in command center)
-    const publicQuests = QUESTS.filter(q=>!q.private);
+    // Missions — geen privé, geen habits die al als habit-tile staan
+    const publicQuests = QUESTS.filter(q=>!q.private && !MISSION_SKILL_HABIT_KEYS.has(q.skill));
     const missionsHtml = publicQuests.map(q=>{
       const isDone=!!(quests[q.id]?.done);
       return `<div class="cc-mission${isDone?' done':''}" data-qid="${q.id}">
@@ -1516,9 +1562,9 @@ body::after {
 
     cc.innerHTML =
       `<div class="cc-wrap">
-        <div class="cc-greeting">${getGreeting()}, King Joey 👑</div>
+        <div class="cc-quote-banner" id="ccQuoteBanner" style="transition:opacity 0.4s">${firstQuote}</div>
+        <div class="cc-greeting">${getGreeting()}, King Joey</div>
         <div class="cc-subtitle">Gamenfy v0.1 · Bouw je karakter</div>
-        <div class="cc-quote">${getQuote()}</div>
 
         <div class="cc-section-label">Focus Skills</div>
         ${fsHtml}
@@ -1806,6 +1852,7 @@ body::after {
 
   document.addEventListener('DOMContentLoaded', function () {
     renderCommandCenter();
+    startQuoteRotation();
     renderScoreRow();
     renderQuests();
     initGratitude();

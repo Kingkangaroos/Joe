@@ -177,6 +177,13 @@ body::before {
     <div class="page-sub">Pas je Life OS aan naar jouw wensen</div>
   </div>
 
+  <!-- ── FOCUS SKILLS ────────────────────────────── -->
+  <div class="sec-title">Focus Skills</div>
+  <div class="card">
+    <div style="font-size:11px;color:var(--t3);margin-bottom:12px">Welke skills zie je bovenaan je dashboard? Kies er max 5. Dit is jouw prioriteit.</div>
+    <div id="focusSkillPills" class="skill-pills"></div>
+  </div>
+
   <!-- ── SKILLS ───────────────────────────────────── -->
   <div class="sec-title">Actieve skills</div>
   <div class="card">
@@ -436,8 +443,66 @@ window.changePin = function () {
   showToast('✓ PIN opgeslagen');
 };
 
+// ── Focus Skills ───────────────────────────────────────────────
+const FOCUS_SKILLS_KEY = 'rpg_focus_skills_v1';
+const FOCUS_SKILL_OPTIONS = [
+  { key:'tennis',       icon:'🎾', label:'Tennis' },
+  { key:'calisthenics', icon:'🤸', label:'Calisthenics' },
+  { key:'gym',          icon:'🏋️', label:'Gym' },
+  { key:'coding',       icon:'💻', label:'Coding' },
+  { key:'investing',    icon:'📈', label:'Investeren' },
+  { key:'piano',        icon:'🎹', label:'Piano' },
+  { key:'reading',      icon:'📚', label:'Lezen' },
+  { key:'sales',        icon:'🤝', label:'Sales' },
+  { key:'focus',        icon:'🎯', label:'Deep Work' },
+  { key:'languages',    icon:'🗣️', label:'Talen' },
+  { key:'journaling',   icon:'📓', label:'Journaling' },
+  { key:'marketing',    icon:'📣', label:'Marketing' },
+  { key:'ai_tools',     icon:'🤖', label:'AI Tools' },
+  { key:'content',      icon:'🎬', label:'Content' },
+];
+
+function getFocusSkillsSetting() {
+  try {
+    const s = JSON.parse(localStorage.getItem(FOCUS_SKILLS_KEY));
+    if (Array.isArray(s) && s.length) return s;
+  } catch {}
+  return ['tennis','calisthenics'];
+}
+function saveFocusSkills(arr) {
+  try { localStorage.setItem(FOCUS_SKILLS_KEY, JSON.stringify(arr)); } catch {}
+}
+
+function renderFocusSkillPills() {
+  const container = document.getElementById('focusSkillPills');
+  if (!container) return;
+  const selected = getFocusSkillsSetting();
+  container.innerHTML = '';
+  FOCUS_SKILL_OPTIONS.forEach(opt => {
+    const on = selected.includes(opt.key);
+    const pill = document.createElement('div');
+    pill.className = 'skill-pill' + (on ? ' active' : '');
+    pill.innerHTML = opt.icon + ' ' + opt.label;
+    pill.addEventListener('click', () => {
+      const cur = getFocusSkillsSetting();
+      const idx = cur.indexOf(opt.key);
+      if (idx >= 0) {
+        cur.splice(idx, 1);
+      } else {
+        if (cur.length >= 5) { showToast('Max 5 focus skills', true); return; }
+        cur.push(opt.key);
+      }
+      saveFocusSkills(cur);
+      showToast('Focus skills opgeslagen');
+      renderFocusSkillPills();
+    });
+    container.appendChild(pill);
+  });
+}
+
 // ── Boot ───────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  renderFocusSkillPills();
   // Wait for xp.js to expose RPG_DEFAULT_SKILLS
   setTimeout(() => {
     renderSkillPills();

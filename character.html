@@ -52,8 +52,8 @@ body::before {
 
 /* ── Tabs ─────────────────────────────────────────── */
 .char-tabs {
-  display: flex; gap:0;
-  padding: 10px 12px 0;
+  display: flex; gap:6px;
+  padding: 12px 12px 0;
   position:relative; z-index:1;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -62,17 +62,24 @@ body::before {
 .char-tabs::-webkit-scrollbar { display:none; }
 .char-tab {
   flex-shrink:0;
-  padding: 8px 10px 10px;
-  border:none; background:transparent;
+  padding: 8px 14px;
+  border:1px solid rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.03);
+  border-radius:20px;
   color:var(--t3); font-family:var(--sans);
-  font-size:10px; font-weight:700;
-  letter-spacing:0.08em; text-transform:uppercase;
+  font-size:11px; font-weight:700;
+  letter-spacing:0.06em; text-transform:uppercase;
   cursor:pointer;
-  border-bottom:2px solid transparent;
-  transition:color 0.2s, border-color 0.2s;
+  transition:all 0.2s;
   white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
 }
-.char-tab.active { color:var(--t1); border-bottom-color:var(--body); }
+.char-tab:active { transform:scale(0.95); }
+.char-tab.active {
+  color:var(--t1);
+  background:rgba(107,227,164,0.1);
+  border-color:rgba(107,227,164,0.35);
+}
 
 /* ── Screens ──────────────────────────────────────── */
 .char-screen { display:none; padding:14px 14px 0; position:relative; z-index:1; }
@@ -511,8 +518,13 @@ textarea {
   <div class="quest-grid" id="dailyQuestGrid"></div>
   <div class="sec-title">Gratitude</div>
   <div class="card">
-    <textarea id="dailyGratitude" rows="3" placeholder="Waar ben je vandaag dankbaar voor?"></textarea>
-    <div style="font-size:9px;color:var(--t3);margin-top:5px;font-family:var(--mono)">→ Opgeslagen per dag · zichtbaar in History</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input id="gratitudeInput" type="text" placeholder="Dankbaar voor… druk Enter"
+        style="flex:1;background:transparent;border:none;outline:none;color:var(--t1);font-family:var(--sans);font-size:13px;padding:0">
+      <button id="gratitudeAddBtn" style="background:rgba(107,227,164,0.12);border:1px solid rgba(107,227,164,0.25);color:#6BE3A4;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)">+</button>
+    </div>
+    <div id="gratitudeTags" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:0"></div>
+    <div style="font-size:9px;color:var(--t3);margin-top:8px;font-family:var(--mono)">→ Opgeslagen per dag · klik op een woord in History voor detail</div>
   </div>
 </div>
 
@@ -1132,24 +1144,49 @@ function renderDaily(){
     grid.appendChild(card);
   });
 
-  // Gratitude
-  const ta=document.getElementById('dailyGratitude');
-  if(ta&&!ta._wired){
-    ta._wired=true;
-    if(daily.gratitude) ta.value=daily.gratitude;
-    ta.addEventListener('input',()=>{ const d=loadDaily(); d.gratitude=ta.value; saveDaily(d); });
-    ta.addEventListener('blur',()=>{
-      if(ta.value.trim()&&typeof window.addXP==='function'){
-        const d=loadDaily();
-        if(!d.gratitudeXpGiven){
-          window.addXP('gratitude',10,'Gratitude ingevuld');
-          d.gratitudeXpGiven=true; saveDaily(d);
-        }
-      }
-    });
-  } else if(ta&&daily.gratitude&&!ta.value){
-    ta.value=daily.gratitude;
+  // Gratitude tag-input
+  renderGratitudeTags(daily);
+  const gi=document.getElementById('gratitudeInput');
+  const gb=document.getElementById('gratitudeAddBtn');
+  function submitGratitudeTag(){
+    const word=gi.value.trim();
+    if(!word) return;
+    addGratitudeItem(word);
+    gi.value='';
+    const d=loadDaily();
+    if(!d.gratitudeXpGiven&&typeof window.addXP==='function'){
+      window.addXP('gratitude',10,'Gratitude ingevuld');
+      d.gratitudeXpGiven=true; saveDaily(d);
+    }
+    renderGratitudeTags(loadDaily());
   }
+  if(gi&&!gi._wired){
+    gi._wired=true;
+    gi.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); submitGratitudeTag(); } });
+    gb.addEventListener('click',submitGratitudeTag);
+  }
+}
+
+function renderGratitudeTags(daily){
+  const container=document.getElementById('gratitudeTags');
+  if(!container) return;
+  const items=loadGratitudeItems();
+  // Collect today's entries: words added today
+  const today=todayKey();
+  const todayWords=Object.entries(items)
+    .filter(([,d])=>d.lastDate===today)
+    .sort((a,b)=>(b[1].count||1)-(a[1].count||1));
+  container.innerHTML='';
+  todayWords.forEach(([word])=>{
+    const t=document.createElement('span');
+    t.textContent=word;
+    t.className='word-tag';
+    t.style.cursor='pointer';
+    t.style.color='#6BE3A4';
+    t.style.borderColor='rgba(107,227,164,0.25)';
+    t.addEventListener('click',()=>showGratitudeDetail(word,items[word]));
+    container.appendChild(t);
+  });
 }
 
 // ── Path to Superiority ────────────────────────────
@@ -1302,11 +1339,90 @@ function renderSkillTree(){
   }
 }
 
+// ── Gratitude storage ──────────────────────────────
+const GRATITUDE_KEY = 'rpg_gratitude_v1';
+function loadGratitudeItems(){ try{ return JSON.parse(localStorage.getItem(GRATITUDE_KEY))||{}; } catch{ return {}; } }
+function saveGratitudeItems(obj){ try{ localStorage.setItem(GRATITUDE_KEY,JSON.stringify(obj)); } catch{} }
+
+function addGratitudeItem(word){
+  const items = loadGratitudeItems();
+  const key = word.toLowerCase().trim();
+  if(!key) return;
+  if(!items[key]) items[key]={ count:0, firstDate:todayKey(), lastDate:todayKey() };
+  items[key].count++;
+  items[key].lastDate = todayKey();
+  saveGratitudeItems(items);
+}
+
+// ── History — dag detail panel ──────────────────────
+function showDayDetail(dateStr){
+  const daily = loadDaily(dateStr);
+  const char  = loadChar();
+  const log   = char.xpLog||[];
+  const quests = daily.quests||{};
+  const score  = daily.dayScore||0;
+
+  const dayLog = log.filter(e=>e.date===dateStr&&e.amount>0);
+  const totalXP= dayLog.reduce((s,e)=>s+e.amount,0);
+  const allGratItems = loadGratitudeItems();
+  const gratWords = Object.entries(allGratItems).filter(([,d])=>d.lastDate===dateStr).map(([w])=>w);
+
+  const defaults = window.RPG_DEFAULT_SKILLS||{};
+  const SKILL_COLORS={money:'#F5C842',body:'#6BE3A4',mind:'#7DD3FC',business:'#C4B5FD',lifestyle:'#FB923C',discipline:'#FF6B6B',knowledge:'#818CF8',creative:'#2DD4BF'};
+
+  document.getElementById('dayDetailModal')?.remove();
+  const overlay = document.createElement('div');
+  overlay.id='dayDetailModal';
+  overlay.className='sd-overlay';
+
+  const months=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  const d = new Date(dateStr+'T12:00:00');
+  const label = d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+  const scoreColor = score<=0?'var(--t3)':score<=4?'#FF6B6B':score<=6?'#FB923C':score<=8?'#F5C842':'#6BE3A4';
+
+  const xpRows = dayLog.slice(0,8).map(e=>{
+    const def=defaults[e.skill]||{};
+    const cat=def.parentSkill||'body';
+    const c=SKILL_COLORS[cat]||'#6BE3A4';
+    return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04)">
+      <div style="width:5px;height:5px;border-radius:50%;background:${c};flex-shrink:0"></div>
+      <div style="flex:1;font-size:11px;color:var(--t2)">${e.reason||e.skill}</div>
+      <div style="font-size:10px;font-family:var(--mono);font-weight:700;color:${c}">+${e.amount}</div>
+    </div>`;
+  }).join('');
+
+  overlay.innerHTML=
+    `<div class="sd-sheet">
+      <div class="sd-handle"></div>
+      <div class="sd-hero">
+        <div class="sd-hero-top">
+          <div>
+            <div class="sd-title">${label}</div>
+            <div class="sd-subtitle">Dagdetails</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:28px;font-weight:700;font-family:var(--mono);color:${scoreColor}">${score||'—'}<span style="font-size:12px;color:var(--t3)">/10</span></div>
+            <div style="font-size:9px;color:var(--t3)">dagcijfer</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:6px">
+          <span style="font-size:22px;font-weight:700;font-family:var(--mono);color:#FAFAFA">${totalXP>0?'+'+totalXP:'0'}</span>
+          <span style="font-size:11px;color:var(--t3)">XP verdiend</span>
+        </div>
+      </div>
+      ${xpRows?`<div class="sd-section"><div class="sd-section-title">XP Log</div>${xpRows}</div>`:''}
+      ${gratWords.length?`<div class="sd-section"><div class="sd-section-title">Gratitude</div><div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">${gratWords.map(w=>`<span class="word-tag" style="color:#6BE3A4;border-color:rgba(107,227,164,0.25)">${w}</span>`).join('')}</div></div>`:''}
+      <button class="sd-close" onclick="document.getElementById('dayDetailModal').remove()">Sluiten</button>
+    </div>`;
+
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
+}
+
 // ── History screen ─────────────────────────────────
 function renderHistory(){
-  // 14-day bar chart
-  const days14=[];
   const today=new Date();
+  const days14=[];
   for(let i=13;i>=0;i--){
     const d=new Date(today);
     d.setDate(d.getDate()-i);
@@ -1320,15 +1436,19 @@ function renderHistory(){
   const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length*10)/10:0;
   document.getElementById('avgScore').textContent=avg||'—';
 
-  chart.innerHTML=days14.map(d=>{
+  chart.innerHTML='';
+  days14.forEach(d=>{
     const pct=d.score/10*100;
-    // Color: 1-4 red, 5-6 orange, 7-8 yellow-green, 9-10 green
     const color=d.score<=0?'rgba(255,255,255,0.08)':d.score<=4?'#FF6B6B':d.score<=6?'#FB923C':d.score<=8?'#F5C842':'#6BE3A4';
-    return `<div class="hist-bar-wrap">
-      <div class="hist-bar" style="height:${pct}%;background:${color};min-height:${d.score>0?4:0}px" title="${d.date}: ${d.score||'—'}"></div>
-      <div class="hist-day">${d.day}</div>
-    </div>`;
-  }).join('');
+    const wrap=document.createElement('div');
+    wrap.className='hist-bar-wrap';
+    wrap.style.cursor='pointer';
+    wrap.innerHTML=
+      `<div class="hist-bar" style="height:${pct}%;background:${color};min-height:${d.score>0?4:0}px"></div>`+
+      `<div class="hist-day">${d.day}</div>`;
+    wrap.addEventListener('click',()=>showDayDetail(d.date));
+    chart.appendChild(wrap);
+  });
 
   // Category XP totals
   const char=loadChar();
@@ -1345,7 +1465,7 @@ function renderHistory(){
     const level=xpToLevel(totalXp);
     const pct2=totalXp>0?Math.min(100,Math.round((totalXp-xpForLevel(level))/(xpForLevel(level+1)-xpForLevel(level))*100)):0;
     catCard.innerHTML+=
-      `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;last-child:margin-bottom:0">
+      `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
         <div style="width:22px;font-size:14px">${meta.icon}</div>
         <div style="flex:1">
           <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:600;margin-bottom:4px">
@@ -1358,32 +1478,69 @@ function renderHistory(){
       </div>`;
   });
 
-  // Gratitude word cloud
-  const wordMap={};
-  for(let i=0;i<60;i++){
-    const d=new Date(today);
-    d.setDate(d.getDate()-i);
-    const daily=loadDaily(d.toISOString().slice(0,10));
-    if(daily.gratitude){
-      daily.gratitude.toLowerCase()
-        .replace(/[^\w\s]/g,'')
-        .split(/\s+/)
-        .filter(w=>w.length>3)
-        .forEach(w=>{ wordMap[w]=(wordMap[w]||0)+1; });
-    }
-  }
+  // Gratitude word cloud — uit rpg_gratitude_v1
   const cloud=document.getElementById('wordCloud');
-  const words=Object.entries(wordMap).sort((a,b)=>b[1]-a[1]).slice(0,30);
+  const items = loadGratitudeItems();
+  const words = Object.entries(items).sort((a,b)=>b[1].count-a[1].count).slice(0,40);
   if(!words.length){
-    cloud.innerHTML='<div style="color:var(--t3);font-size:12px">Vul dagelijks gratitude in om de word cloud op te bouwen</div>';
+    cloud.innerHTML='<div style="color:var(--t3);font-size:12px">Vul dagelijks gratitude in. Elke dag merk je meer.</div>';
     return;
   }
-  const maxCount=words[0][1];
-  cloud.innerHTML=words.map(([w,c])=>{
-    const size=12+Math.round((c/maxCount)*14);
-    const opacity=0.5+Math.round((c/maxCount)*50)/100;
-    return `<span class="word-tag" style="font-size:${size}px;opacity:${opacity}">${w}</span>`;
-  }).join('');
+  const maxC = words[0][1].count;
+  cloud.innerHTML='';
+  words.forEach(([word,data])=>{
+    const size=11+Math.round((data.count/maxC)*16);
+    const op=0.45+Math.round((data.count/maxC)*55)/100;
+    const tag=document.createElement('span');
+    tag.className='word-tag';
+    tag.style.cssText=`font-size:${size}px;opacity:${op};cursor:pointer`;
+    tag.textContent=word;
+    tag.title=`${data.count}× gezegd`;
+    tag.addEventListener('click',()=>showGratitudeDetail(word,data));
+    cloud.appendChild(tag);
+  });
+}
+
+function showGratitudeDetail(word, data){
+  document.getElementById('gratDetailModal')?.remove();
+  const overlay=document.createElement('div');
+  overlay.id='gratDetailModal';
+  overlay.className='sd-overlay';
+  overlay.innerHTML=
+    `<div class="sd-sheet">
+      <div class="sd-handle"></div>
+      <div class="sd-hero">
+        <div class="sd-title" style="font-size:20px">${word}</div>
+        <div class="sd-subtitle">${data.count}× dankbaar voor · Laatste: ${data.lastDate||'—'}</div>
+      </div>
+      <div class="sd-section">
+        <div class="sd-section-title">Waarom dankbaar?</div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:12px;line-height:1.6">
+          Voeg een reden toe waarom je dankbaar bent voor <strong>${word}</strong>.
+        </div>
+        <textarea id="gratNoteInput" rows="3" placeholder="Bijv: omdat het me een veilig gevoel geeft…"
+          style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+          padding:12px;color:#FAFAFA;font-family:var(--sans);font-size:13px;resize:none;outline:none;line-height:1.6;box-sizing:border-box"></textarea>
+        <button style="margin-top:10px;width:100%;padding:12px;border-radius:12px;background:rgba(107,227,164,0.1);border:1px solid rgba(107,227,164,0.3);color:#6BE3A4;font-size:13px;font-weight:700;cursor:pointer"
+          onclick="saveGratitudeNote('${word}')">Opslaan</button>
+      </div>
+      <button class="sd-close" onclick="document.getElementById('gratDetailModal').remove()">Sluiten</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
+}
+
+function saveGratitudeNote(word){
+  const note = document.getElementById('gratNoteInput')?.value?.trim();
+  if(!note) return;
+  const items = loadGratitudeItems();
+  const key = word.toLowerCase();
+  if(!items[key]) items[key]={ count:1, firstDate:todayKey(), lastDate:todayKey() };
+  if(!items[key].notes) items[key].notes=[];
+  items[key].notes.push({ text:note, date:todayKey() });
+  saveGratitudeItems(items);
+  document.getElementById('gratDetailModal')?.remove();
+  renderHistory();
 }
 
 // ── Boot ───────────────────────────────────────────

@@ -149,18 +149,7 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
 `;
 
   const topbarHtml = `
-<header class="topbar" id="topbar" role="navigation" aria-label="Quick actions">
-  <div class="topbar-water-wrap">
-    <a href="health.html#water" class="topbar-water-pill" id="topbarWater" aria-label="Water progress">
-      <span class="topbar-pill-dot"></span>
-      <span class="topbar-pill-count" id="topbarWaterCount">0/0</span>
-    </a>
-    <button class="topbar-water-add" id="topbarWaterAdd" aria-label="Log one drink" type="button">+</button>
-  </div>
-  <a href="finance.html" class="topbar-finance-btn" id="topbarFinance" aria-label="Finance">
-    <span class="topbar-finance-icon">📊</span>
-  </a>
-</header>`;
+<header class="topbar" id="topbar" role="navigation" aria-label="Quick actions" style="display:none"></header>`;
 
   const bottombarHtml = `
 <nav class="bottombar" id="bottombar" role="navigation" aria-label="Main tabs">
@@ -169,9 +158,6 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
   </a>
   <a href="character.html" class="bottombar-tab" data-page="character">
     <span class="bottombar-tab-icon">👑</span><span>Character</span>
-  </a>
-  <a href="finance.html" class="bottombar-tab" data-page="finance-nav">
-    <span class="bottombar-tab-icon">💰</span><span>Finance</span>
   </a>
   <a href="settings.html" class="bottombar-tab" data-page="settings">
     <span class="bottombar-tab-icon">⚙️</span><span>Settings</span>
