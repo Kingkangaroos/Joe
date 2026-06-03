@@ -1,8 +1,8 @@
 // =============================================================
-// xp.js — Life OS RPG engine v1.3
-// Gebruik: addXP('tennis', 55, 'Tennisles')
-//          removeXP('tennis', 55, 'Quest unchecked')
-// isHabit: true → score 0-10 via checkHabit(), geen XP-level
+// xp.js — Life OS RPG engine v2.0
+// Usage: addXP('tennis', 55, 'Tennis lesson')
+//        removeXP('tennis', 55, 'Quest unchecked')
+// isHabit: true → score 0-10 via checkHabit(), no XP-level
 // =============================================================
 (function () {
   'use strict';
@@ -12,7 +12,7 @@
   const MAX_LOG     = 200;
   const MAX_LEVEL   = 100;
 
-  // Level 100 vereist 490.050 XP — bij ~150 XP/dag ≈ 9 jaar. Near-impossible.
+  // Level 100 requires 490,050 XP — at ~150 XP/day ≈ 9 years. Near-impossible.
   function xpToLevel(xp) {
     return Math.min(MAX_LEVEL, Math.floor(Math.sqrt((xp || 0) / 50)) + 1);
   }
@@ -21,7 +21,7 @@
     return Math.pow(level - 1, 2) * 50;
   }
 
-  // ─── 8 Categorieën — Law of Attraction / Chakra ──────────────────────
+  // ─── 8 Categories — Law of Attraction / Chakra ──────────────────────
   const PARENT_SKILLS = {
     money:      { label: 'Money',      icon: '💰', color: '#F5C842' }, // Gold   — Solar Plexus
     body:       { label: 'Body',       icon: '💪', color: '#6BE3A4' }, // Green  — Heart
@@ -35,158 +35,158 @@
 
   // ─── Skills & Habits ──────────────────────────────────────────────────
   //
-  // isHabit: true  → dagelijkse gewoonte, score 0-10, geen XP-levels
-  //                  wordt bijgehouden via rpg_habits_v1
-  // isHabit: false → skill, cumulatief XP, level 1-100
+  // isHabit: true  → daily habit, score 0-10, no XP-levels
+  //                  tracked via rpg_habits_v1
+  // isHabit: false → skill, cumulative XP, level 1-100
   //
-  // milestones: { level: 'wat je kunt op dat level' }
-  //   → toont special toast bij level-up naar dat level
+  // milestones: { level: 'what you can do at that level' }
+  //   → shows special toast on level-up to that level
   //
-  // private: true  → verborgen achter PIN (alleen no_porn + weed_control)
+  // private: true  → hidden behind PIN (only no_porn + weed_control)
 
   const DEFAULT_SKILLS = {
 
     // ══ MONEY — skills ════════════════════════════════════════════════
     saving: {
-      xp:0, parentSkill:'money', icon:'🐖', label:'Sparen', active:true,
+      xp:0, parentSkill:'money', icon:'🐖', label:'Saving', active:true,
       quickLog:[
-        {label:'Bedrag gespaard',    xp:30},
-        {label:'Maand target gehaald', xp:60},
-        {label:'Automatisch sparen',  xp:20},
+        {label:'Amount saved',         xp:30},
+        {label:'Monthly target hit',   xp:60},
+        {label:'Auto-save set up',     xp:20},
       ],
-      milestones:{ 10:'Eerste €1.000 gespaard', 25:'€5.000 buffer', 50:'€10.000 — solid foundation', 75:'€25.000', 100:'€50.000+ — financiële vrijheid in zicht' },
+      milestones:{ 10:'First €1,000 saved', 25:'€5,000 buffer', 50:'€10,000 — solid foundation', 75:'€25,000', 100:'€50,000+ — financial freedom in sight' },
     },
     investing: {
-      xp:0, parentSkill:'money', icon:'📈', label:'Investeren', active:true,
+      xp:0, parentSkill:'money', icon:'📈', label:'Investing', active:true,
       quickLog:[
-        {label:'Investering gedaan',         xp:40},
-        {label:'Strategie research (video/artikel)', xp:20},
-        {label:'Portfolio review',           xp:25},
-        {label:'Boek over investing gelezen',xp:35},
+        {label:'Investment made',                    xp:40},
+        {label:'Strategy research (video/article)',  xp:20},
+        {label:'Portfolio review',                   xp:25},
+        {label:'Investing book read',                xp:35},
       ],
       milestones:{
-        1:  'Eerste beleggingsrekening geopend',
-        5:  '€500 belegd',
-        10: 'Index fondsen begrijpen (S&P500, MSCI World)',
-        15: '€2.500 belegd, consistent maandelijks',
-        20: 'Portfolio diversificatie begrijpen',
-        25: '€5.000 belegd',
-        30: '€10.000 belegd',
-        40: 'Dividend + FIRE concept doorgrond',
-        50: '€25.000 — passief inkomen merkbaar',
-        60: '€50.000 — compound werkt voor jou',
-        70: '€75.000',
-        80: '€100.000 — de ton. Het fundament.',
-        90: '€150.000',
-        100:'€250.000+ — financiële onafhankelijkheid',
+        1:  'First brokerage account opened',
+        5:  '€500 invested',
+        10: 'Understanding index funds (S&P500, MSCI World)',
+        15: '€2,500 invested — consistent monthly contributions',
+        20: 'Understanding portfolio diversification',
+        25: '€5,000 invested',
+        30: '€10,000 invested',
+        40: 'Dividend + FIRE concept fully understood',
+        50: '€25,000 — passive income becoming noticeable',
+        60: '€50,000 — compound interest works for you',
+        70: '€75,000',
+        80: '€100,000 — the ton. The foundation.',
+        90: '€150,000',
+        100:'€250,000+ — financial independence',
       },
     },
     budgeting: {
-      xp:0, parentSkill:'money', icon:'📋', label:'Budget', active:true,
+      xp:0, parentSkill:'money', icon:'📋', label:'Budgeting', active:true,
       quickLog:[
-        {label:'Maandbudget bijgewerkt', xp:25},
-        {label:'Uitgaven gecategoriseerd', xp:15},
-        {label:'Subscriptions gereviewed', xp:20},
+        {label:'Monthly budget updated',    xp:25},
+        {label:'Expenses categorized',      xp:15},
+        {label:'Subscriptions reviewed',    xp:20},
       ],
     },
     net_worth: {
       xp:0, parentSkill:'money', icon:'🏦', label:'Net Worth', active:true,
       quickLog:[
-        {label:'Net worth bijgewerkt', xp:30},
-        {label:'Financieel overzicht gemaakt', xp:20},
+        {label:'Net worth updated',       xp:30},
+        {label:'Financial overview made', xp:20},
       ],
-      milestones:{ 10:'Eerste positieve net worth', 30:'€10.000 net worth', 50:'€25.000', 75:'€50.000', 100:'€100.000 — de ton gehaald 🏆' },
+      milestones:{ 10:'First positive net worth', 30:'€10,000 net worth', 50:'€25,000', 75:'€50,000', 100:'€100,000 — the ton reached 🏆' },
     },
 
     // ══ BODY — skills ═════════════════════════════════════════════════
     gym: {
       xp:0, parentSkill:'body', icon:'🏋️', label:'Gym', active:true,
       quickLog:[
-        {label:'Gym sessie',        xp:60},
-        {label:'Push sessie',       xp:50},
-        {label:'Pull sessie',       xp:50},
-        {label:'Legs sessie',       xp:55},
-        {label:'PR gehaald',        xp:100},
+        {label:'Gym session',   xp:60},
+        {label:'Push session',  xp:50},
+        {label:'Pull session',  xp:50},
+        {label:'Legs session',  xp:55},
+        {label:'PR hit',        xp:100},
       ],
-      milestones:{ 10:'Consistente routine (3x/week)', 20:'Zichtbaar resultaat', 30:'100kg squat', 50:'Advanced lifter', 75:'Competition-ready physique', 100:'Elite — top 1% lichaam' },
+      milestones:{ 10:'Consistent routine (3x/week)', 20:'Visible results', 30:'100kg squat', 50:'Advanced lifter', 75:'Competition-ready physique', 100:'Elite — top 1% body' },
     },
     tennis: {
       xp:0, parentSkill:'body', icon:'🎾', label:'Tennis', active:true,
       quickLog:[
-        {label:'Tennisles',  xp:55},
-        {label:'Freeplay',   xp:40},
-        {label:'1v1 match',  xp:65},
-        {label:'2v2 match',  xp:50},
+        {label:'Tennis lesson', xp:55},
+        {label:'Free play',     xp:40},
+        {label:'1v1 match',     xp:65},
+        {label:'2v2 match',     xp:50},
       ],
       milestones:{
-        1:  'Eerste les — je raakt de bal',
-        5:  '20+ slag rally consistent houden',
+        1:  'First lesson — you hit the ball',
+        5:  'Consistent 20+ shot rally',
         10: 'Serve 70%+ first serve percentage',
-        15: 'Topspin forehand onder controle',
-        20: 'Club-niveau — je wint van beginners',
-        30: 'Backhand slice + lob beheersen',
-        40: 'Competitie klaar — officiële wedstrijden',
-        50: '4.0 NTRP niveau',
-        60: 'Tactisch spel — punt opbouwen bewust',
-        70: '4.5 NTRP — hogere competitie',
-        80: 'Serve & volley, aanvallend spel volledig',
+        15: 'Topspin forehand under control',
+        20: 'Club level — beating beginners',
+        30: 'Backhand slice + lob mastered',
+        40: 'Competition ready — playing official matches',
+        50: '4.0 NTRP level',
+        60: 'Tactical play — building points consciously',
+        70: '4.5 NTRP — higher competition level',
+        80: 'Serve & volley, full attacking game',
         90: '5.0 NTRP — near-professional',
-        100:'Elite — toernooien winnen',
+        100:'Elite — winning tournaments',
       },
     },
     calisthenics: {
       xp:0, parentSkill:'body', icon:'🤸', label:'Calisthenics', active:true,
       quickLog:[
-        {label:'Training sessie',     xp:50},
-        {label:'Nieuwe skill geoefend', xp:40},
-        {label:'Progressie gehaald',  xp:70},
+        {label:'Training session',    xp:50},
+        {label:'New skill practiced', xp:40},
+        {label:'Progress milestone',  xp:70},
       ],
       milestones:{
-        1:  'Correcte plank (30 sec) + 10 bodyweight squats',
-        2:  '5 push-ups aaneengesloten',
-        3:  '10 push-ups aaneengesloten',
-        4:  '15 push-ups aaneengesloten',
-        5:  '20 push-ups aaneengesloten',
-        6:  '5 negatieve pull-ups (slow eccentric, 5 sec neer)',
-        7:  '1 strikte pull-up — je eerste',
-        8:  '3 strikte pull-ups aaneengesloten',
-        9:  '5 strikte pull-ups aaneengesloten',
-        10: '10 strikte pull-ups',
-        12: 'Pike push-up — eerste stap richting handstand',
-        14: 'Dips (parallel bars) — 10 herhalingen',
-        15: 'Handstand oefening — tegen muur (eerste keer)',
-        17: 'Handstand hold 5 sec tegen muur',
-        20: 'Handstand hold 10 sec tegen muur',
+        1:  'Correct plank (30 sec) + 10 bodyweight squats',
+        2:  '5 push-ups consecutive',
+        3:  '10 push-ups consecutive',
+        4:  '15 push-ups consecutive',
+        5:  '20 push-ups consecutive',
+        6:  '5 negative pull-ups (slow eccentric, 5 sec down)',
+        7:  '1 strict pull-up — your first',
+        8:  '3 strict pull-ups consecutive',
+        9:  '5 strict pull-ups consecutive',
+        10: '10 strict pull-ups',
+        12: 'Pike push-up — first step toward handstand',
+        14: 'Dips (parallel bars) — 10 reps',
+        15: 'Handstand practice — against wall (first time)',
+        17: 'Handstand hold 5 sec against wall',
+        20: 'Handstand hold 10 sec against wall',
         22: 'Pike handstand push-up',
-        24: 'Vrije handstand 3 sec (zonder muur)',
-        25: 'Vrije handstand 5 sec',
-        27: 'Eerste handstand push-up (met muur)',
-        30: 'Strict handstand push-up — geen kip',
-        33: 'Ring dip — eerste gymring skill',
-        35: 'Strict muscle-up op ringen',
-        38: 'Ring muscle-up vloeiend, elke rep',
+        24: 'Free handstand 3 sec (no wall)',
+        25: 'Free handstand 5 sec',
+        27: 'First handstand push-up (with wall)',
+        30: 'Strict handstand push-up — no kip',
+        33: 'Ring dip — first ring skill',
+        35: 'Strict muscle-up on rings',
+        38: 'Ring muscle-up smooth, every rep',
         40: 'Bar muscle-up',
-        45: '5 muscle-ups aaneengesloten',
-        50: 'L-sit (30 sec) — core van staal',
-        55: 'Manna progressie — V-sit',
+        45: '5 muscle-ups consecutive',
+        50: 'L-sit (30 sec) — core of steel',
+        55: 'Manna progression — V-sit',
         60: 'Front lever (5 sec)',
         65: 'Front lever pulls',
         70: 'Back lever (5 sec)',
-        75: 'Dragon flag — Rocky-niveau',
+        75: 'Dragon flag — Rocky level',
         80: 'Human flag (3 sec)',
-        85: 'One-arm push-up (beide kanten)',
+        85: 'One-arm push-up (both sides)',
         90: 'Tuck planche',
         95: 'Advanced tuck planche',
-        100:'Full planche — absolute wereldklasse',
+        100:'Full planche — absolute world class',
       },
     },
     core: {
       xp:0, parentSkill:'body', icon:'🔥', label:'Core', active:true,
       quickLog:[
-        {label:'Core training sessie',     xp:45},
-        {label:'Plank challenge',          xp:30},
-        {label:'Dragon flag progressie',   xp:50},
-        {label:'L-sit geoefend',          xp:40},
+        {label:'Core training session',   xp:45},
+        {label:'Plank challenge',         xp:30},
+        {label:'Dragon flag progression', xp:50},
+        {label:'L-sit practice',          xp:40},
       ],
       milestones:{
         1:  '10 sec plank',
@@ -194,161 +194,193 @@
         10: 'Hollow body hold (30 sec)',
         15: 'Leg raises — 10 strict',
         20: 'Toes to bar',
-        30: 'Dragon flag progressie',
-        40: 'Dragon flag (volledig)',
+        30: 'Dragon flag progression',
+        40: 'Dragon flag (full)',
         50: 'L-sit (15 sec)',
         60: 'L-sit (30 sec)',
         70: 'V-sit',
         80: 'Front lever',
-        100:'Absolute core — planche-niveau stabiliteit',
+        100:'Absolute core — planche-level stability',
+      },
+    },
+    stretching: {
+      xp:0, parentSkill:'body', icon:'🧘', label:'Mobility', active:true,
+      quickLog:[
+        {label:'Mobility session',      xp:30},
+        {label:'Deep stretch (30 min)', xp:45},
+        {label:'New milestone hit',     xp:60},
+      ],
+      milestones:{
+        1:  'Touch knees with straight legs',
+        5:  'Hands on floor — full forward fold',
+        10: 'Full squat (heels on floor, 60s)',
+        15: 'Pancake stretch (thighs on floor)',
+        20: 'Side split (90 degrees)',
+        30: 'Forward split',
+        40: 'Full side split',
+        50: 'Bridge from lying position',
+        60: 'Bridge from standing (wall walkover)',
+        80: 'Scorpion pose',
+        100:'Contortion-level — full backbend with splits',
       },
     },
     strength: {
-      xp:0, parentSkill:'body', icon:'💪', label:'Kracht', active:false,
-      quickLog:[{label:'Kracht sessie', xp:50},{label:'PR gehaald', xp:80}],
+      xp:0, parentSkill:'body', icon:'💪', label:'Strength', active:false,
+      quickLog:[{label:'Strength session', xp:50},{label:'PR hit', xp:80}],
     },
 
     // ══ BODY — habits (isHabit: true) ═════════════════════════════════
     sleep: {
-      xp:0, parentSkill:'body', icon:'😴', label:'Slaap', active:true, isHabit:true,
-      habitDesc:'8 uur slapen = +1 punt. Minder = proportioneel minder. Daalt -1 per gemiste dag.',
+      xp:0, parentSkill:'body', icon:'😴', label:'Sleep', active:true, isHabit:true,
+      habitDesc:'8 hours sleep = +1 point. Less = proportionally less. Drops -1 per missed day.',
     },
     nutrition: {
-      xp:0, parentSkill:'body', icon:'🥗', label:'Voeding', active:true, isHabit:true,
-      habitDesc:'Elke dag genoeg en gezond eten. +1 punt. Daalt -1 per gemiste dag.',
+      xp:0, parentSkill:'body', icon:'🥗', label:'Nutrition', active:true, isHabit:true,
+      habitDesc:'Eat enough and healthy every day. +1 point. Drops -1 per missed day.',
     },
     walking: {
-      xp:0, parentSkill:'body', icon:'👟', label:'10k Stappen', active:true, isHabit:true,
-      habitDesc:'10.000 stappen per dag = vol punt. Minder = proportioneel minder.',
+      xp:0, parentSkill:'body', icon:'👟', label:'10k Steps', active:true, isHabit:true,
+      habitDesc:'10,000 steps per day = full point. Less = proportionally less.',
     },
 
     // ══ MIND — skills ═════════════════════════════════════════════════
     reading: {
-      xp:0, parentSkill:'mind', icon:'📚', label:'Lezen', active:true,
+      xp:0, parentSkill:'mind', icon:'📚', label:'Reading', active:true,
       quickLog:[
-        {label:'30 min lezen',  xp:25},
-        {label:'1 uur lezen',   xp:45},
-        {label:'Boek afgerond', xp:150},
+        {label:'30 min reading',  xp:25},
+        {label:'1 hour reading',  xp:45},
+        {label:'Book finished',   xp:150},
       ],
-      milestones:{ 10:'10 boeken gelezen', 25:'25 boeken', 50:'50 boeken', 75:'75 boeken', 100:'100+ boeken — speed reader' },
+      milestones:{ 10:'10 books read', 25:'25 books', 50:'50 books', 75:'75 books', 100:'100+ books — speed reader' },
     },
     focus: {
       xp:0, parentSkill:'mind', icon:'🎯', label:'Deep Work', active:true,
       quickLog:[
-        {label:'Diepe werk sessie (90 min)', xp:60},
+        {label:'Deep work session (90 min)', xp:60},
         {label:'Pomodoro x4',               xp:50},
-        {label:'2 uur phone-free',          xp:45},
+        {label:'2 hours phone-free',         xp:45},
       ],
-      milestones:{ 20:'2 uur/dag deep work', 50:'4 uur/dag deep work', 100:'6+ uur/dag — Cal Newport niveau' },
+      milestones:{ 20:'2 hours/day deep work', 50:'4 hours/day deep work', 100:'6+ hours/day — Cal Newport level' },
     },
     journaling: {
       xp:0, parentSkill:'mind', icon:'📓', label:'Journaling', active:true,
       quickLog:[
-        {label:'Dagboek bijgewerkt',     xp:20},
-        {label:'Uitgebreide reflectie',  xp:35},
-        {label:'Week review',            xp:40},
+        {label:'Journal entry',         xp:20},
+        {label:'Extended reflection',   xp:35},
+        {label:'Week review',           xp:40},
       ],
     },
 
     // ══ MIND — habits ═════════════════════════════════════════════════
     meditation: {
-      xp:0, parentSkill:'mind', icon:'🧘', label:'Meditatie', active:true, isHabit:true,
-      habitDesc:'Dagelijks mediteren. +1 punt. Daalt -1 per gemiste dag.',
+      xp:0, parentSkill:'mind', icon:'🧘', label:'Meditation', active:true, isHabit:true,
+      habitDesc:'Meditate daily. +1 point. Drops -1 per missed day.',
     },
     gratitude: {
       xp:0, parentSkill:'mind', icon:'🙏', label:'Gratitude', active:true, isHabit:true,
-      habitDesc:'Dagelijks 3 dingen opschrijven waarvoor je dankbaar bent.',
+      habitDesc:'Write 3 things you\'re grateful for every day.',
     },
 
     // ══ BUSINESS — skills ═════════════════════════════════════════════
     sales: {
       xp:0, parentSkill:'business', icon:'🤝', label:'Sales', active:true,
       quickLog:[
-        {label:'Sales gesprek gevoerd', xp:40},
-        {label:'Offerte verstuurd',     xp:30},
-        {label:'Deal gesloten',         xp:150},
-        {label:'Follow-up gedaan',      xp:20},
+        {label:'Sales call done',  xp:40},
+        {label:'Proposal sent',    xp:30},
+        {label:'Deal closed',      xp:150},
+        {label:'Follow-up done',   xp:20},
       ],
-      milestones:{ 10:'Eerste betaalde klant', 25:'5 klanten', 50:'Consistent pipeline', 75:'Sales systeem gebouwd', 100:'Top sales — €10k+/maand' },
+      milestones:{ 10:'First paying client', 25:'5 clients', 50:'Consistent pipeline', 75:'Sales system built', 100:'Top sales — €10k+/month' },
     },
     marketing: {
       xp:0, parentSkill:'business', icon:'📣', label:'Marketing', active:true,
       quickLog:[
-        {label:'Content gemaakt',       xp:40},
-        {label:'Post gepubliceerd',     xp:20},
-        {label:'Campagne opgezet',      xp:50},
-        {label:'Analytics geanalyseerd',xp:25},
+        {label:'Content created',    xp:40},
+        {label:'Post published',     xp:20},
+        {label:'Campaign set up',    xp:50},
+        {label:'Analytics reviewed', xp:25},
       ],
     },
     ai_tools: {
       xp:0, parentSkill:'business', icon:'🤖', label:'AI Tools', active:true,
       quickLog:[
-        {label:'Workflow geautomatiseerd', xp:50},
-        {label:'Nieuwe tool geleerd',      xp:30},
-        {label:'Prompt geoptimeerd',       xp:20},
-        {label:'AI-project gebouwd',       xp:70},
+        {label:'Workflow automated', xp:50},
+        {label:'New tool learned',   xp:30},
+        {label:'Prompt optimized',   xp:20},
+        {label:'AI project built',   xp:70},
       ],
-      milestones:{ 20:'10+ AI tools in gebruik', 50:'Volledig AI-first workflow', 100:'AI expert — bouwt eigen tools' },
+      milestones:{
+        5:  'First AI-generated output used in real work',
+        10: '5+ AI tools in daily workflow',
+        20: 'First automated pipeline built',
+        30: 'AI replaces 3+ hours of manual work per week',
+        40: 'Custom agent or automation built',
+        50: 'Fully AI-first workflow — thinking in systems',
+        60: 'AI agents working autonomously',
+        75: 'Teaching others — AI workflow coach',
+        90: 'Building products with AI at the core',
+        100:'AI expert — building tools others can\'t imagine',
+      },
     },
     coding: {
       xp:0, parentSkill:'business', icon:'💻', label:'Coding', active:true,
       quickLog:[
-        {label:'Feature gebouwd',    xp:60},
-        {label:'Bug gefixt',         xp:30},
-        {label:'Project sessie',     xp:50},
-        {label:'Deployed naar prod', xp:80},
+        {label:'Feature built',     xp:60},
+        {label:'Bug fixed',         xp:30},
+        {label:'Project session',   xp:50},
+        {label:'Deployed to prod',  xp:80},
       ],
       milestones:{
-        1:  'HTML/CSS begrijpen, eerste pagina',
-        5:  'JavaScript basics — functies, DOM',
-        10: 'Eigen website live (dit dashboard — al gedaan!)',
-        15: "API's aanroepen, data ophalen",
-        20: 'Database koppelen (Supabase — al gedaan!)',
-        25: 'Authentication systeem',
-        30: 'Eerste product dat anderen gebruiken',
-        40: 'AI agents bouwen en automatiseren',
+        1:  'HTML/CSS understood — first page live',
+        5:  'JavaScript basics — functions, DOM manipulation',
+        10: 'Own website live (this dashboard — already done!)',
+        15: 'Calling APIs, fetching real data',
+        20: 'Database connected (Supabase — already done!)',
+        25: 'Authentication system built',
+        30: 'First product used by others',
+        40: 'Building and deploying AI agents',
         50: 'Full-stack app — frontend + backend',
-        60: 'Eigen SaaS product live',
-        70: 'Product genereert €1.000/maand',
-        80: 'Team aansturen via automatisering',
-        90: 'Tech founder — schaalbaar product',
-        100:'10x engineer — bouwt wat anderen niet kunnen',
+        60: 'Own SaaS product live',
+        70: 'Product generating €1,000/month',
+        80: 'Managing team via automation',
+        90: 'Tech founder — scalable product',
+        100:'10x engineer — building what others can\'t',
       },
     },
 
     // ══ LIFESTYLE — skills ════════════════════════════════════════════
     cooking: {
-      xp:0, parentSkill:'lifestyle', icon:'🍳', label:'Koken', active:true,
+      xp:0, parentSkill:'lifestyle', icon:'🍳', label:'Cooking', active:true,
       quickLog:[
-        {label:'Gezond gekookt',    xp:20},
-        {label:'Nieuw recept',      xp:45},
-        {label:'Meal prep gedaan',  xp:40},
+        {label:'Cooked healthy',  xp:20},
+        {label:'New recipe',      xp:45},
+        {label:'Meal prep done',  xp:40},
       ],
-      milestones:{ 10:'10 recepten', 25:'25 recepten onder de knie', 50:'Gevarieerd en gezond koken', 100:'Chef-niveau thuis koken' },
+      milestones:{ 10:'10 recipes mastered', 25:'25 recipes mastered', 50:'Varied and healthy cooking', 100:'Chef-level home cooking' },
     },
     social: {
-      xp:0, parentSkill:'lifestyle', icon:'👥', label:'Sociaal', active:true,
+      xp:0, parentSkill:'lifestyle', icon:'👥', label:'Social', active:true,
       quickLog:[
-        {label:'Vrienden gezien',     xp:35},
-        {label:'Nieuwe connectie',    xp:40},
-        {label:'Familie tijd',        xp:25},
-        {label:'Sociaal event',       xp:30},
+        {label:'Friends seen',     xp:35},
+        {label:'New connection',   xp:40},
+        {label:'Family time',      xp:25},
+        {label:'Social event',     xp:30},
       ],
     },
     dating: {
       xp:0, parentSkill:'lifestyle', icon:'❤️', label:'Dating', active:true,
       quickLog:[
-        {label:'Date gehad',          xp:50},
-        {label:'Iemand aangesproken', xp:40},
-        {label:'Match gemaakt',       xp:20},
+        {label:'Date happened',       xp:50},
+        {label:'Approached someone',  xp:40},
+        {label:'Match made',          xp:20},
       ],
     },
     planning: {
       xp:0, parentSkill:'lifestyle', icon:'📅', label:'Planning', active:true,
       quickLog:[
-        {label:'Week gepland',       xp:30},
-        {label:'Dag gepland',        xp:10},
-        {label:'Doelen bijgewerkt',  xp:20},
+        {label:'Week planned',    xp:30},
+        {label:'Day planned',     xp:10},
+        {label:'Goals updated',   xp:20},
       ],
     },
 
@@ -362,34 +394,34 @@
       active:true, private:true, quickLog:null,
     },
 
-    // ══ DISCIPLINE — habits (NIET privé) ══════════════════════════════
+    // ══ DISCIPLINE — habits (NOT private) ══════════════════════════════
     screen_time: {
-      xp:0, parentSkill:'discipline', icon:'📵', label:'Schermtijd', active:true, isHabit:true,
-      habitDesc:'Bewuste schermtijd: < 2u entertainment per dag = vol punt.',
+      xp:0, parentSkill:'discipline', icon:'📵', label:'Screen Time', active:true, isHabit:true,
+      habitDesc:'Conscious screen time: < 2h entertainment per day = full point.',
     },
     cold_shower: {
-      xp:0, parentSkill:'discipline', icon:'🚿', label:'Koud Douchen', active:true, isHabit:true,
-      habitDesc:'Elke dag koud douchen. +1 punt. Daalt -1 per gemiste dag.',
+      xp:0, parentSkill:'discipline', icon:'🚿', label:'Cold Shower', active:true, isHabit:true,
+      habitDesc:'Cold shower every day. +1 point. Drops -1 per missed day.',
     },
 
     // ══ KNOWLEDGE — skills ════════════════════════════════════════════
     languages: {
-      xp:0, parentSkill:'knowledge', icon:'🗣️', label:'Talen', active:true,
+      xp:0, parentSkill:'knowledge', icon:'🗣️', label:'Languages', active:true,
       quickLog:[
-        {label:'Duolingo / app',             xp:15},
-        {label:'30 min studeren',            xp:25},
-        {label:'Gesprek in vreemde taal',    xp:45},
-        {label:'Serie/film in taal gekeken', xp:20},
+        {label:'Duolingo / app',                         xp:15},
+        {label:'30 min study',                           xp:25},
+        {label:'Conversation in foreign language',       xp:45},
+        {label:'Series/film watched in target language', xp:20},
       ],
-      milestones:{ 10:'Basis conversatie', 30:'A2 niveau', 50:'B1 niveau', 75:'B2 niveau', 100:'C1 — vloeiend' },
+      milestones:{ 10:'Basic conversation', 30:'A2 level', 50:'B1 level', 75:'B2 level', 100:'C1 — fluent' },
     },
     learning: {
-      xp:0, parentSkill:'knowledge', icon:'🎓', label:'Leren', active:true,
+      xp:0, parentSkill:'knowledge', icon:'🎓', label:'Learning', active:true,
       quickLog:[
-        {label:'Online cursus (uur)',    xp:45},
-        {label:'Tutorial gevolgd',       xp:25},
-        {label:'Cursus afgerond',        xp:200},
-        {label:'Skill geoefend',         xp:30},
+        {label:'Online course (1 hour)', xp:45},
+        {label:'Tutorial followed',      xp:25},
+        {label:'Course completed',       xp:200},
+        {label:'Skill practiced',        xp:30},
       ],
     },
 
@@ -397,34 +429,34 @@
     piano: {
       xp:0, parentSkill:'creative', icon:'🎹', label:'Piano', active:true,
       quickLog:[
-        {label:'30 min geoefend',       xp:30},
-        {label:'1 uur geoefend',        xp:55},
-        {label:'Nieuw nummer geleerd',  xp:80},
-        {label:'Opgetreden / gedeeld',  xp:100},
+        {label:'30 min practice',    xp:30},
+        {label:'1 hour practice',    xp:55},
+        {label:'New piece learned',  xp:80},
+        {label:'Performed / shared', xp:100},
       ],
       milestones:{
-        1:  'Noten lezen, beide handen los',
-        5:  'Eerste volledig stuk afgerond',
-        10: 'Bladmuziek lezen — Grade 1',
-        15: 'Grade 2 — polyfonie, pedaalgebruik',
-        20: 'Grade 3 — eerste echte stukken',
-        30: 'Grade 4 — Clementi sonatines',
-        40: 'Grade 5 — Chopin nocturnes mogelijk',
-        50: 'Grade 6 — Bach inventies',
-        60: 'Grade 7 — Beethoven sonates',
-        70: 'Grade 8 — gevorderd niveau',
-        80: 'Diploma niveau — concertstukken',
-        90: 'Pre-conservatoire niveau',
-        100:'Concert-niveau — Chopin Ballade No.1',
+        1:  'Reading notes — both hands separately',
+        5:  'First complete piece finished',
+        10: 'Reading sheet music — Grade 1',
+        15: 'Grade 2 — polyphony, pedal use',
+        20: 'Grade 3 — first real pieces',
+        30: 'Grade 4 — Clementi sonatinas',
+        40: 'Grade 5 — Chopin nocturnes possible',
+        50: 'Grade 6 — Bach inventions',
+        60: 'Grade 7 — Beethoven sonatas',
+        70: 'Grade 8 — advanced level',
+        80: 'Diploma level — concert pieces',
+        90: 'Pre-conservatory level',
+        100:'Concert level — Chopin Ballade No.1',
       },
     },
     content: {
       xp:0, parentSkill:'creative', icon:'🎬', label:'Content', active:true,
       quickLog:[
-        {label:'Video gemonteerd',   xp:60},
-        {label:'Post gemaakt',       xp:25},
-        {label:'Gepubliceerd',       xp:40},
-        {label:'Serie afgerond',     xp:100},
+        {label:'Video edited',  xp:60},
+        {label:'Post created',  xp:25},
+        {label:'Published',     xp:40},
+        {label:'Series done',   xp:100},
       ],
     },
   };
@@ -441,12 +473,12 @@
           if (!saved.skills[k]) {
             saved.skills[k] = { ...v };
           } else {
-            // Altijd sync vanuit DEFAULT_SKILLS definitie (overschrijft stale data)
+            // Always sync from DEFAULT_SKILLS definition (overwrites stale data)
             saved.skills[k].parentSkill = v.parentSkill;
             saved.skills[k].icon    = saved.skills[k].icon  || v.icon;
             saved.skills[k].label   = saved.skills[k].label || v.label;
             saved.skills[k].isHabit = v.isHabit || false;
-            // Private: ALTIJD sync vanuit default — verwijder als default het niet heeft
+            // Private: ALWAYS sync from default — remove if default doesn't have it
             if (v.private) saved.skills[k].private = true;
             else            delete saved.skills[k].private;
             if (saved.skills[k].active === undefined) saved.skills[k].active = v.active;
@@ -550,7 +582,7 @@
     t._hide = setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(8px)'; }, duration||2400);
   }
 
-  // ─── Publieke API ─────────────────────────────────────────────────────
+  // ─── Public API ─────────────────────────────────────────────────────
 
   window.addXP = function (skillName, amount, reason) {
     const char  = loadCharacter();

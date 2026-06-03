@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0d0d0f">
+<meta name="theme-color" content="#0a0a0f">
 <title>Character — King Joey</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="sync.js" defer></script>
@@ -13,7 +13,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
 :root {
-  --bg: #0d0d0f;
+  --bg: #0a0a0f;
   --surface: rgba(255,255,255,0.04);
   --surface-h: rgba(255,255,255,0.07);
   --border: rgba(255,255,255,0.07);
@@ -46,8 +46,9 @@ body::before {
   content:'';
   position:fixed; inset:0; pointer-events:none; z-index:0;
   background:
-    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(107,227,164,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 20% 80%, rgba(129,140,248,0.07) 0%, transparent 60%);
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245,200,66,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(107,227,164,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 30% at 20% 80%, rgba(129,140,248,0.04) 0%, transparent 50%);
 }
 
 /* ── Tabs ─────────────────────────────────────────── */
@@ -88,9 +89,13 @@ body::before {
 
 /* ── Cards ────────────────────────────────────────── */
 .card {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:16px; padding:16px; margin-bottom:12px;
-  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  background:rgba(255,255,255,0.03); border:0.5px solid rgba(255,255,255,0.08);
+  border-radius:20px; padding:16px; margin-bottom:12px;
+  backdrop-filter:blur(40px); -webkit-backdrop-filter:blur(40px);
+  box-shadow:
+    0 0 0 0.5px rgba(255,255,255,0.04) inset,
+    0 20px 60px rgba(0,0,0,0.4),
+    0 1px 0 rgba(255,255,255,0.06) inset;
 }
 
 /* ── Hero ─────────────────────────────────────────── */
@@ -103,14 +108,12 @@ body::before {
   pointer-events:none;
 }
 .hero-avatar {
-  width:64px; height:64px; border-radius:50%;
-  background:linear-gradient(135deg, rgba(245,200,66,0.15), rgba(107,227,164,0.1));
-  border:2px solid rgba(245,200,66,0.4);
+  width:72px; height:72px; border-radius:50%;
+  background:conic-gradient(from 180deg, rgba(245,200,66,0.3), rgba(245,200,66,0.05), rgba(245,200,66,0.3));
+  border:1px solid rgba(245,200,66,0.4);
   display:flex; align-items:center; justify-content:center;
-  font-size:17px; font-weight:800; font-family:var(--mono);
-  color:#F5C842; letter-spacing:0.04em;
   margin:0 auto 10px;
-  box-shadow:0 0 28px rgba(245,200,66,0.22), 0 0 60px rgba(245,200,66,0.07);
+  box-shadow:0 0 40px rgba(245,200,66,0.2), 0 0 80px rgba(245,200,66,0.08);
 }
 .hero-name { font-size:19px; font-weight:700; letter-spacing:-0.02em; margin-bottom:2px; }
 .hero-class { font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--t3); margin-bottom:12px; }
@@ -490,7 +493,7 @@ textarea {
 <!-- ===== CHARACTER ===== -->
 <div class="char-screen active" id="tab-character">
   <div class="card hero">
-    <div class="hero-avatar">KJ</div>
+    <div class="hero-avatar"><span style="font-family:var(--mono);font-size:20px;font-weight:700;color:#F5C842;letter-spacing:0.05em">KJ</span></div>
     <div class="hero-name">King Joey</div>
     <div class="hero-class">Life OS · Gamenfy v0.1</div>
     <div class="total-level">
@@ -787,7 +790,7 @@ function openSkillDetail(skillKey){
       <div class="sd-ms-body">
         <div class="sd-ms-level" style="${isNext?'color:'+color:''}">${isDone?'LVL '+l:isNext?'→ LVL '+l:'LVL '+l}</div>
         <div class="sd-ms-label${isNext?' next':''}" style="${isNext?'color:'+color:isDone?'color:var(--t2)':'color:var(--t3)'}">${milestones[l]}</div>
-        ${date?'<div class="sd-ms-date">Bereikt op '+date+'</div>':''}
+        ${date?'<div class="sd-ms-date">Reached on '+date+'</div>':''}
       </div>
     </div>`;
   }).join('');
@@ -803,7 +806,7 @@ function openSkillDetail(skillKey){
 
   // Milestone reach button: show if within 200 XP of next milestone
   const xpToNextMs = nextMs ? (xpForLevel(nextMs) - xp) : null;
-  const showMsReachBtn = nextMs && xpToNextMs !== null && xpToNextMs <= 200 && xpToNextMs > 0;
+  const showMsReachBtn = nextMs && xpToNextMs !== null && xpToNextMs <= 300 && xpToNextMs > 0;
   const msReachBtnHtml = showMsReachBtn
     ? `<button id="sdMsReachBtn" style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:10px;padding:11px 14px;border-radius:11px;background:rgba(107,227,164,0.1);border:1px solid rgba(107,227,164,0.3);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent" onclick="sdLog('${skillKey}',${xpToNextMs},'Milestone Lvl ${nextMs} reached')">
         <span style="font-size:13px;font-weight:700;color:#6BE3A4">Milestone reached — Lvl ${nextMs}</span>
@@ -1013,7 +1016,7 @@ function renderCharacter(){
     const def=defaults[e.skill]||{};
     const isPriv=e.private||def.private||s.private;
     if(isPriv&&!privateUnlocked){
-      return `<div class="log-item"><div class="log-dot" style="background:var(--discipline)"></div><div class="log-text" style="color:var(--t3)">🔒 Privé activiteit</div><div class="log-xp" style="color:var(--discipline)">${e.amount>=0?'+':''}${e.amount} XP</div><div class="log-time">${e.date||''}</div></div>`;
+      return `<div class="log-item"><div class="log-dot" style="background:var(--discipline)"></div><div class="log-text" style="color:var(--t3)">🔒 Private activity</div><div class="log-xp" style="color:var(--discipline)">${e.amount>=0?'+':''}${e.amount} XP</div><div class="log-time">${e.date||''}</div></div>`;
     }
     const p=PARENT_META[s.parentSkill||def.parentSkill]||{color:'#6BE3A4'};
     return `<div class="log-item"><div class="log-dot" style="background:${p.color}"></div><div class="log-text">${e.reason||e.skill}</div><div class="log-xp" style="color:${p.color}">${e.amount>=0?'+':''}${e.amount} XP</div><div class="log-time">${e.date||''}</div></div>`;
@@ -1139,13 +1142,13 @@ function renderGratitudeTags(daily){
 
 // ── Path to Superiority ────────────────────────────
 const PATH_PHASES=[
-  { label:'Structuur van de werkelijkheid', skills:['learning','languages'] },
-  { label:'De werking van het brein',       skills:['meditation','journaling','focus'] },
-  { label:'Taal en logica beheersen',       skills:['reading','coding'] },
-  { label:'De mensheid begrijpen',          skills:['reading','social'] },
-  { label:'De groten bestuderen',           skills:['reading'] },
-  { label:'Alles verbinden',               skills:['focus','journaling'] },
-  { label:'Zelf scheppen — Creator',        skills:['piano','coding','content'] },
+  { label:'Structure of Reality',   skills:['learning','languages'],          desc:'Math, physics, chemistry, biology — how everything connects' },
+  { label:'The Brain',              skills:['meditation','journaling','focus'],desc:'Neuroscience, psychology, consciousness, introspection' },
+  { label:'Language & Logic',       skills:['reading','coding'],              desc:'Writing, rhetoric, programming — mastering expression' },
+  { label:'Understanding Humanity', skills:['reading','social'],              desc:'History, philosophy, human nature, relationships' },
+  { label:'Study the Greats',       skills:['reading'],                       desc:'Biographies of Da Vinci, Aurelius, Tesla, Buffett' },
+  { label:'Connect Everything',     skills:['focus','journaling'],            desc:'Synthesis — see how all knowledge forms one system' },
+  { label:'Create — The Creator',   skills:['piano','coding','content'],      desc:'Build things that outlast you. Art, software, ideas.' },
 ];
 
 function renderPathToSuperiority(){
@@ -1163,11 +1166,12 @@ function renderPathToSuperiority(){
     const avg=levels.length?Math.round(levels.reduce((a,b)=>a+b,0)/levels.length):0;
     const pct=Math.round(avg);
     const barColor=pct<20?'#FF6B6B':pct<50?'#FB923C':pct<75?'#F5C842':'#6BE3A4';
-    return `<div style="margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <div style="font-size:11px;font-weight:600;color:var(--t2)">Fase ${i+1} — ${phase.label}</div>
+    return `<div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
+        <div style="font-size:11px;font-weight:700;color:var(--t1)">Phase ${i+1} — ${phase.label}</div>
         <div style="font-size:10px;font-family:var(--mono);color:${barColor};font-weight:700">${pct}%</div>
       </div>
+      ${phase.desc?`<div style="font-size:10px;color:var(--t3);margin-bottom:5px;font-style:italic">${phase.desc}</div>`:''}
       <div style="height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden">
         <div style="height:100%;width:${pct}%;background:${barColor};border-radius:2px;transition:width 0.8s cubic-bezier(0.22,1,0.36,1)"></div>
       </div>
@@ -1273,7 +1277,7 @@ function renderSkillTree(){
         '<div class="skill-detail-hdr">'+
           '<div class="skill-detail-icon">'+(s.icon||'⭐')+'</div>'+
           '<div class="skill-detail-name">'+(s.label||s.key)+'</div>'+
-          (s.active===false?'<div style="font-size:9px;font-family:var(--mono);color:var(--t3);padding:2px 6px;border:1px solid rgba(255,255,255,0.08);border-radius:4px">slapend</div>':'')+
+          (s.active===false?'<div style="font-size:9px;font-family:var(--mono);color:var(--t3);padding:2px 6px;border:1px solid rgba(255,255,255,0.08);border-radius:4px">inactive</div>':'')+
           '<div class="skill-detail-lvl">'+(isMax?'<span style="color:'+meta.color+'">MAX</span>':'Lvl <span style="color:'+meta.color+'">'+level+'</span>')+'</div>'+
         '</div>'+
         '<div class="xp-bar-label"><span>XP</span><span>'+(isMax?xp.toLocaleString()+' (MAX)':xp.toLocaleString()+' / '+xpForLevel(level+1).toLocaleString())+'</span></div>'+
@@ -1431,7 +1435,7 @@ function renderHistory(){
   const items = loadGratitudeItems();
   const words = Object.entries(items).sort((a,b)=>b[1].count-a[1].count).slice(0,40);
   if(!words.length){
-    cloud.innerHTML='<div style="color:var(--t3);font-size:12px">Vul dagelijks gratitude in. Elke dag merk je meer.</div>';
+    cloud.innerHTML='<div style="color:var(--t3);font-size:12px">Log gratitude daily to see patterns emerge.</div>';
     return;
   }
   const maxC = words[0][1].count;
@@ -1501,7 +1505,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   },0);
 
   if(typeof initCloudSync==='function'&&window.supabase){
-    initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1']});
+    initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder'],syncedPrefixes:['rpg_daily_v1:']});
   }
 });
 

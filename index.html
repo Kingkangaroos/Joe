@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0d0d0f">
+<meta name="theme-color" content="#0a0a0f">
 <title>King Joey's Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="sync.js" defer></script>
@@ -24,7 +24,7 @@
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0;
-  background: #0d0d0f;
+  background: #0a0a0f;
   color: var(--text-secondary);
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
@@ -41,12 +41,11 @@ body::before {
   content: '';
   position: fixed; inset: 0;
   background:
-    radial-gradient(circle at 82% 14%, rgba(224, 118, 88, 0.16), transparent 45%),
-    radial-gradient(circle at 18% 90%, rgba(180, 180, 200, 0.06), transparent 50%);
-  filter: blur(40px);
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245,200,66,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(107,227,164,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 30% at 20% 80%, rgba(129,140,248,0.04) 0%, transparent 50%);
   pointer-events: none;
   z-index: -2;
-  animation: drift 36s ease-in-out infinite alternate;
 }
 body::after {
   content: '';
@@ -1035,6 +1034,17 @@ body::after {
 
   function updateDayRing() { /* day ring removed */ }
 
+  // ---------- Move to tomorrow ----------
+  function moveGoalToTomorrow(idx) {
+    const todayGoals = getGoals(todayKey());
+    const goal = todayGoals.splice(idx, 1)[0];
+    setGoals(todayKey(), todayGoals);
+    const tomorrowGoals = getGoals(tomorrowKey());
+    tomorrowGoals.push({ ...goal, done: false });
+    setGoals(tomorrowKey(), tomorrowGoals);
+    loadToday();
+  }
+
   // ---------- Row building ----------
   function makeInlineEdit(textEl, goals, idx, key, reload) {
     textEl.addEventListener('click', () => {
@@ -1151,6 +1161,18 @@ body::after {
       setTimeout(reload, 480);
     });
     li.appendChild(queueBtn);
+
+    if (!readOnly && !goal.done) {
+      const tmrwBtn = document.createElement('button');
+      tmrwBtn.type = 'button';
+      tmrwBtn.className = 'goal-delete';
+      tmrwBtn.setAttribute('aria-label', 'Move to tomorrow');
+      tmrwBtn.title = 'Move to tomorrow';
+      tmrwBtn.textContent = '→';
+      tmrwBtn.style.fontSize = '13px';
+      tmrwBtn.addEventListener('click', () => moveGoalToTomorrow(idx));
+      li.appendChild(tmrwBtn);
+    }
 
     const del = document.createElement('button');
     del.type = 'button';
@@ -1400,29 +1422,31 @@ body::after {
   // Default focus skills — user kan dit aanpassen in Settings
   const DEFAULT_FOCUS = ['tennis','calisthenics'];
   const ALL_SKILL_META = {
-    saving:       { icon:'🐖', label:'Sparen',       color:'#F5C842' },
-    investing:    { icon:'📈', label:'Investeren',    color:'#F5C842' },
-    budgeting:    { icon:'📋', label:'Budget',        color:'#F5C842' },
-    net_worth:    { icon:'🏦', label:'Net Worth',     color:'#F5C842' },
-    gym:          { icon:'🏋️', label:'Gym',           color:'#6BE3A4' },
-    tennis:       { icon:'🎾', label:'Tennis',        color:'#6BE3A4' },
-    calisthenics: { icon:'🤸', label:'Calisthenics',  color:'#6BE3A4' },
-    strength:     { icon:'💪', label:'Kracht',        color:'#6BE3A4' },
-    reading:      { icon:'📚', label:'Lezen',         color:'#7DD3FC' },
-    focus:        { icon:'🎯', label:'Deep Work',     color:'#7DD3FC' },
-    journaling:   { icon:'📓', label:'Journaling',    color:'#7DD3FC' },
-    sales:        { icon:'🤝', label:'Sales',         color:'#C4B5FD' },
-    marketing:    { icon:'📣', label:'Marketing',     color:'#C4B5FD' },
-    ai_tools:     { icon:'🤖', label:'AI Tools',      color:'#C4B5FD' },
-    coding:       { icon:'💻', label:'Coding',        color:'#C4B5FD' },
-    cooking:      { icon:'🍳', label:'Koken',         color:'#FB923C' },
-    social:       { icon:'👥', label:'Sociaal',       color:'#FB923C' },
-    dating:       { icon:'❤️', label:'Dating',        color:'#FB923C' },
-    planning:     { icon:'📅', label:'Planning',      color:'#FB923C' },
-    languages:    { icon:'🗣️', label:'Talen',         color:'#818CF8' },
-    learning:     { icon:'🎓', label:'Leren',         color:'#818CF8' },
-    piano:        { icon:'🎹', label:'Piano',         color:'#2DD4BF' },
-    content:      { icon:'🎬', label:'Content',       color:'#2DD4BF' },
+    saving:       { icon:'🐖', label:'Saving',       color:'#F5C842' },
+    investing:    { icon:'📈', label:'Investing',    color:'#F5C842' },
+    budgeting:    { icon:'📋', label:'Budgeting',    color:'#F5C842' },
+    net_worth:    { icon:'🏦', label:'Net Worth',    color:'#F5C842' },
+    gym:          { icon:'🏋️', label:'Gym',          color:'#6BE3A4' },
+    tennis:       { icon:'🎾', label:'Tennis',       color:'#6BE3A4' },
+    calisthenics: { icon:'🤸', label:'Calisthenics', color:'#6BE3A4' },
+    core:         { icon:'🔥', label:'Core',         color:'#6BE3A4' },
+    stretching:   { icon:'🧘', label:'Mobility',     color:'#6BE3A4' },
+    strength:     { icon:'💪', label:'Strength',     color:'#6BE3A4' },
+    reading:      { icon:'📚', label:'Reading',      color:'#7DD3FC' },
+    focus:        { icon:'🎯', label:'Deep Work',    color:'#7DD3FC' },
+    journaling:   { icon:'📓', label:'Journaling',   color:'#7DD3FC' },
+    sales:        { icon:'🤝', label:'Sales',        color:'#C4B5FD' },
+    marketing:    { icon:'📣', label:'Marketing',    color:'#C4B5FD' },
+    ai_tools:     { icon:'🤖', label:'AI Tools',     color:'#C4B5FD' },
+    coding:       { icon:'💻', label:'Coding',       color:'#C4B5FD' },
+    cooking:      { icon:'🍳', label:'Cooking',      color:'#FB923C' },
+    social:       { icon:'👥', label:'Social',       color:'#FB923C' },
+    dating:       { icon:'❤️', label:'Dating',       color:'#FB923C' },
+    planning:     { icon:'📅', label:'Planning',     color:'#FB923C' },
+    languages:    { icon:'🗣️', label:'Languages',    color:'#818CF8' },
+    learning:     { icon:'🎓', label:'Learning',     color:'#818CF8' },
+    piano:        { icon:'🎹', label:'Piano',        color:'#2DD4BF' },
+    content:      { icon:'🎬', label:'Content',      color:'#2DD4BF' },
   };
 
   function getFocusSkills() {
@@ -1449,6 +1473,12 @@ body::after {
     outreach:   'Send one DM or email. One sentence. Now. +35 XP Sales.',
     nutrition:  'Eat a protein-rich meal before bed.',
     reading:    'Read 10 pages. Just start. +25 XP Mind.',
+    core:       '3 sets of hollow body holds. 30 sec each. +45 XP Core.',
+    mobility:   '15 min stretch routine. Hips, hamstrings, shoulders. +30 XP Mobility.',
+    tennis:     'Rally practice or shadow swings. 20 minutes. +40 XP Tennis.',
+    piano:      '30 min focused practice. Hands separately first. +30 XP Piano.',
+    investing:  'Review your portfolio. One research article. +20 XP Investing.',
+    coding:     'One feature or bug fix. Ship something. +50 XP Coding.',
   };
 
   function xpToLevelCC(xp){ return Math.min(100, Math.floor(Math.sqrt((xp||0)/50))+1); }
@@ -1720,15 +1750,15 @@ body::after {
     overlay.innerHTML =
       '<div style="background:#0e0e10;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px 24px;width:280px;text-align:center">' +
         '<div style="font-size:28px;margin-bottom:8px">🔒</div>' +
-        '<div style="font-size:15px;font-weight:700;margin-bottom:4px;color:#FAFAFA">Privé sectie</div>' +
-        '<div style="font-size:12px;color:#76746E;margin-bottom:18px">Voer je PIN in om verder te gaan</div>' +
+        '<div style="font-size:15px;font-weight:700;margin-bottom:4px;color:#FAFAFA">Private section</div>' +
+        '<div style="font-size:12px;color:#76746E;margin-bottom:18px">Enter your PIN to continue</div>' +
         '<input id="indexPinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" ' +
           'style="width:100%;text-align:center;font-size:24px;font-family:ui-monospace,monospace;letter-spacing:0.3em;' +
           'background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;' +
           'padding:12px;color:#FAFAFA;outline:none;margin-bottom:10px">' +
         '<div id="indexPinError" style="font-size:11px;color:#FF6B6B;min-height:14px;margin-bottom:8px"></div>' +
         '<button onclick="document.getElementById(\'indexPinModal\').remove()" ' +
-          'style="font-size:12px;color:#76746E;background:none;border:none;cursor:pointer;padding:4px">Annuleren</button>' +
+          'style="font-size:12px;color:#76746E;background:none;border:none;cursor:pointer;padding:4px">Cancel</button>' +
       '</div>';
     document.body.appendChild(overlay);
     const inp = document.getElementById('indexPinInput');
@@ -1741,7 +1771,7 @@ body::after {
           overlay.remove();
           onSuccess();
         } else {
-          err.textContent = 'Verkeerde PIN, probeer opnieuw';
+          err.textContent = 'Wrong PIN, try again';
           inp.value = '';
           setTimeout(()=>err.textContent='', 2000);
         }
@@ -1770,9 +1800,9 @@ body::after {
       btn.addEventListener('click', function () {
         const d = loadDaily();
         const prev = d.dayScore || 0;
-        if (prev && typeof window.removeXP === 'function') window.removeXP('focus', prev * 2, 'Dagcijfer gecorrigeerd');
+        if (prev && typeof window.removeXP === 'function') window.removeXP('focus', prev * 2, 'Day score corrected');
         d.dayScore = (prev === i) ? 0 : i;
-        if (d.dayScore && typeof window.addXP === 'function') window.addXP('focus', d.dayScore * 2, 'Dagcijfer ' + d.dayScore);
+        if (d.dayScore && typeof window.addXP === 'function') window.addXP('focus', d.dayScore * 2, 'Day score ' + d.dayScore);
         saveDaily(d);
         renderScoreRow();
       });
@@ -1805,9 +1835,9 @@ body::after {
             (isDone?'✓':'') + '</span>' +
         '</div>' +
         '<div style="font-size:11px;font-weight:600;color:' + (isDone?'#FAFAFA':'#B8B6B0') + ';margin-bottom:2px">' +
-          (isPriv?'Privé quest':q.label) + '</div>' +
+          (isPriv?'Private quest':q.label) + '</div>' +
         '<div style="font-size:9px;font-family:ui-monospace,monospace;color:' + (isDone?'#6BE3A4':'#76746E') + '">' +
-          (isPriv?'PIN vereist':'+'+q.xp+' XP') + '</div>';
+          (isPriv?'PIN required':'+'+q.xp+' XP') + '</div>';
       card.addEventListener('click', function () {
         if (q.private && !isPrivateUnlocked()) { showPinModal(renderQuests); return; }
         const d = loadDaily();

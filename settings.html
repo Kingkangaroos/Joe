@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#050506">
-<title>Settings — Life OS</title>
+<meta name="theme-color" content="#0a0a0f">
+<title>Settings — Gamenfy</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="sync.js" defer></script>
 <script src="topbar.js" defer></script>
@@ -13,7 +13,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
 :root {
-  --bg: #050506;
+  --bg: #0a0a0f;
   --surface: rgba(255,255,255,0.04);
   --border: rgba(255,255,255,0.07);
   --t1: #FAFAFA; --t2: #B8B6B0; --t3: #76746E;
@@ -32,7 +32,10 @@ html, body {
 }
 body::before {
   content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
-  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(245,200,66,0.06) 0%, transparent 60%);
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245,200,66,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(107,227,164,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 30% at 20% 80%, rgba(129,140,248,0.04) 0%, transparent 50%);
 }
 
 .page { padding: 16px 16px 100px; position:relative; z-index:1; max-width:520px; margin:0 auto; }
@@ -167,6 +170,18 @@ body::before {
   white-space:nowrap;
 }
 .toast-s.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ── Notification time picker ────────────────────── */
+.notif-time {
+  display:flex; align-items:center; gap:8px; margin-top:10px;
+}
+.notif-time input[type="time"] {
+  background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px; color:var(--t1); font-family:var(--mono);
+  font-size:14px; padding:8px 12px; outline:none;
+  -webkit-appearance:none;
+}
+.notif-time input[type="time"]:focus { border-color:rgba(245,200,66,0.4); }
 </style>
 </head>
 <body>
@@ -174,54 +189,76 @@ body::before {
 
   <div style="margin-top:8px; margin-bottom:0">
     <div class="page-title">⚙️ Settings</div>
-    <div class="page-sub">Pas je Life OS aan naar jouw wensen</div>
+    <div class="page-sub">Customize your Gamenfy</div>
   </div>
 
   <!-- ── FOCUS SKILLS ────────────────────────────── -->
   <div class="sec-title">Focus Skills</div>
   <div class="card">
-    <div style="font-size:11px;color:var(--t3);margin-bottom:12px">Welke skills zie je bovenaan je dashboard? Kies er max 5. Dit is jouw prioriteit.</div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:12px">Which skills appear at the top of your dashboard? Choose up to 5. These are your priorities.</div>
     <div id="focusSkillPills" class="skill-pills"></div>
   </div>
 
   <!-- ── SKILLS ───────────────────────────────────── -->
-  <div class="sec-title">Actieve skills</div>
+  <div class="sec-title">Active skills</div>
   <div class="card">
-    <div style="font-size:11px;color:var(--t3);margin-bottom:12px">Klik om skills aan of uit te zetten. Actieve skills verschijnen in je character grid.</div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:12px">Toggle skills on or off. Active skills appear in your character grid.</div>
     <div id="skillPillsContainer"></div>
   </div>
 
   <!-- ── DAILY QUESTS ─────────────────────────────── -->
   <div class="sec-title">Daily quests</div>
   <div class="card" id="dailyQuestToggles">
-    <div style="font-size:11px;color:var(--t3);margin-bottom:12px">Welke quests wil je dagelijks zien?</div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:12px">Your daily quest lineup.</div>
+  </div>
+
+  <!-- ── NOTIFICATIONS ────────────────────────────── -->
+  <div class="sec-title">Notifications</div>
+  <div class="card">
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">Daily reminder</div>
+        <div class="toggle-sub">Get a push notification when it's time for check-in</div>
+      </div>
+      <label class="toggle-sw">
+        <input type="checkbox" id="notifToggle" onchange="toggleNotifications(this.checked)">
+        <span class="toggle-sw-track"></span>
+        <span class="toggle-sw-thumb"></span>
+      </label>
+    </div>
+    <div class="notif-time" id="notifTimeRow" style="display:none">
+      <span style="font-size:11px;color:var(--t3)">Remind me at</span>
+      <input type="time" id="notifTime" value="21:00" onchange="saveNotifTime(this.value)">
+      <span style="font-size:11px;color:var(--t3)">local time</span>
+    </div>
+    <div style="font-size:10px;color:var(--t3);margin-top:8px" id="notifStatus"></div>
   </div>
 
   <!-- ── QUOTES ────────────────────────────────────── -->
-  <div class="sec-title">Motiverende quotes</div>
+  <div class="sec-title">Motivational quotes</div>
   <div class="card">
-    <div style="font-size:11px;color:var(--t3);margin-bottom:10px">Deze quotes scrollen onderaan je dashboard</div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:10px">These rotate in your Command Center banner</div>
     <div id="quotesList"></div>
     <div class="input-row">
-      <input id="quoteInput" class="s-input" type="text" placeholder="Voeg een quote toe…">
-      <button class="s-btn" onclick="addQuote()">+ Voeg toe</button>
+      <input id="quoteInput" class="s-input" type="text" placeholder="Add a quote…">
+      <button class="s-btn" onclick="addQuote()">+ Add</button>
     </div>
-    <button class="s-btn-full" onclick="resetQuotes()">↺ Herstel standaard quotes</button>
+    <button class="s-btn-full" onclick="resetQuotes()">↺ Restore default quotes</button>
   </div>
 
   <!-- ── PIN ───────────────────────────────────────── -->
-  <div class="sec-title">Beveiliging</div>
+  <div class="sec-title">Security</div>
   <div class="card">
-    <div style="font-size:13px;font-weight:600;margin-bottom:4px">PIN wijzigen</div>
-    <div style="font-size:11px;color:var(--t3);margin-bottom:10px">De PIN beschermt je privé skills (Discipline categorie)</div>
-    <div style="font-size:10px;color:var(--t3);margin-bottom:6px">Huidige PIN</div>
+    <div style="font-size:13px;font-weight:600;margin-bottom:4px">Change PIN</div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:10px">The PIN protects your private skills (Discipline category)</div>
+    <div style="font-size:10px;color:var(--t3);margin-bottom:6px">Current PIN</div>
     <input id="currentPin" class="pin-box" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="width:100%;margin-bottom:10px">
-    <div style="font-size:10px;color:var(--t3);margin-bottom:6px">Nieuwe PIN (4 cijfers)</div>
+    <div style="font-size:10px;color:var(--t3);margin-bottom:6px">New PIN (4 digits)</div>
     <input id="newPin" class="pin-box" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="width:100%;margin-bottom:10px">
-    <div style="font-size:10px;color:var(--t3);margin-bottom:6px">Herhaal nieuwe PIN</div>
+    <div style="font-size:10px;color:var(--t3);margin-bottom:6px">Confirm new PIN</div>
     <input id="newPin2" class="pin-box" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="width:100%;margin-bottom:14px">
     <div id="pinMsg" style="font-size:11px;color:var(--red);min-height:14px;margin-bottom:8px"></div>
-    <button class="s-btn-full" onclick="changePin()">🔒 PIN opslaan</button>
+    <button class="s-btn-full" onclick="changePin()">🔒 Save PIN</button>
   </div>
 
   <!-- ── DATA ──────────────────────────────────────── -->
@@ -230,31 +267,39 @@ body::before {
     <div class="toggle-row">
       <div>
         <div class="toggle-label">Cloud sync</div>
-        <div class="toggle-sub">Synchroniseer met Supabase</div>
+        <div class="toggle-sub">Synced to Supabase</div>
       </div>
-      <div style="font-size:11px;font-family:var(--mono);color:var(--green)" id="syncStatus">actief</div>
+      <div style="font-size:11px;font-family:var(--mono);color:var(--green)" id="syncStatus">active</div>
     </div>
     <div class="toggle-row" style="border-bottom:none;margin-top:8px">
       <div>
-        <div class="toggle-label" style="color:var(--t3);font-size:12px">Versie</div>
+        <div class="toggle-label" style="color:var(--t3);font-size:12px">Version</div>
       </div>
-      <div style="font-size:11px;font-family:var(--mono);color:var(--t3)">v1.2</div>
+      <div style="font-size:11px;font-family:var(--mono);color:var(--t3)">v2.0</div>
     </div>
+  </div>
+
+  <!-- ── GAMENFY FOOTER ─────────────────────────────── -->
+  <div style="text-align:center; padding:24px 0 8px; border-top:0.5px solid rgba(255,255,255,0.06); margin-top:24px;">
+    <div style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:rgba(245,200,66,0.5); font-family:var(--mono);">GAMENFY</div>
+    <div style="font-size:10px; color:rgba(255,255,255,0.2); margin-top:4px; font-family:var(--mono);">v2.0 · built by King Joey</div>
   </div>
 
 </div>
 
 <!-- Toast -->
-<div class="toast-s" id="settingsToast">✓ Opgeslagen</div>
+<div class="toast-s" id="settingsToast">✓ Saved</div>
 
 <script>
 // ──────────────────────────────────────────────────────────────
-// settings.html — v1.2
+// settings.html — v2.0
 // ──────────────────────────────────────────────────────────────
 
 const STORAGE_KEY  = 'rpg_character_v1';
 const QUOTES_KEY   = 'rpg_quotes_v1';
 const PIN_STORE    = 'rpg_pin_v1';
+const NOTIF_KEY    = 'rpg_notif_v1';
+const LAST_REMIND  = 'rpg_last_reminder';
 
 const DEFAULT_QUOTES = [
   'Discipline is the bridge between goals and accomplishment.',
@@ -263,24 +308,24 @@ const DEFAULT_QUOTES = [
   'Hard work beats talent when talent doesn\'t work hard.',
   'Be the person you needed when you were younger.',
   'Consistency over intensity — every single day.',
-  'Werk aan jezelf alsof je leven ervan afhangt.',
-  'Denk groot. Start klein. Begin nu.',
+  'You don\'t rise to the level of your goals — you fall to the level of your systems.',
+  'Build the kingdom. One rep, one page, one decision at a time.',
 ];
 
 const DAILY_QUEST_DEFS = [
-  { id:'workout',   icon:'💪', label:'Workout',      skill:'fitness' },
-  { id:'meditation',icon:'🧘', label:'Meditatie',    skill:'meditation' },
-  { id:'no_porn',   icon:'🛡️', label:'Privé quest',  skill:'no_porn', private:true },
-  { id:'reading',   icon:'📖', label:'Lezen',        skill:'reading' },
-  { id:'outreach',  icon:'📈', label:'Outreach',     skill:'sales' },
-  { id:'gratitude', icon:'🙏', label:'Gratitude',    skill:'gratitude' },
-  { id:'nutrition', icon:'🥗', label:'Eiwitten',     skill:'nutrition' },
-  { id:'planning',  icon:'📅', label:'Dag plannen',  skill:'planning' },
+  { id:'workout',   icon:'💪', label:'Workout',       skill:'gym' },
+  { id:'meditation',icon:'🧘', label:'Meditation',    skill:'meditation' },
+  { id:'no_porn',   icon:'🔒', label:'Private quest', skill:'no_porn', private:true },
+  { id:'reading',   icon:'📖', label:'Reading',       skill:'reading' },
+  { id:'outreach',  icon:'📈', label:'Outreach',      skill:'sales' },
+  { id:'gratitude', icon:'🙏', label:'Gratitude',     skill:'gratitude' },
+  { id:'nutrition', icon:'🥗', label:'Protein',       skill:'nutrition' },
+  { id:'planning',  icon:'📅', label:'Plan the day',  skill:'planning' },
 ];
 
 function showToast(msg, isError) {
   const t = document.getElementById('settingsToast');
-  t.textContent = msg || '✓ Opgeslagen';
+  t.textContent = msg || '✓ Saved';
   t.style.color = isError ? '#FF6B6B' : '#6BE3A4';
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2200);
@@ -333,7 +378,7 @@ function renderSkillPills() {
         if (!c.skills[key]) c.skills[key] = { ...def };
         c.skills[key].active = !active;
         saveChar(c);
-        showToast('✓ ' + def.label + ' ' + (!active ? 'ingeschakeld' : 'uitgeschakeld'));
+        showToast((active ? 'Disabled' : 'Enabled') + ' ' + def.label);
         renderSkillPills();
       });
       pills.appendChild(pill);
@@ -346,15 +391,14 @@ function renderSkillPills() {
 // ── Daily quest toggles ────────────────────────────────────────
 function renderDailyQuestToggles() {
   const container = document.getElementById('dailyQuestToggles');
-  // For now, show as informational list (future: make configurable)
-  let html = '<div style="font-size:11px;color:var(--t3);margin-bottom:12px">Welke quests wil je dagelijks zien?</div>';
+  let html = '<div style="font-size:11px;color:var(--t3);margin-bottom:12px">Your daily quest lineup.</div>';
   DAILY_QUEST_DEFS.forEach(q => {
     html += `<div class="toggle-row">
       <div>
         <div class="toggle-label">${q.icon} ${q.label}</div>
-        <div class="toggle-sub">+XP naar ${q.skill}${q.private?' · Privé quest':''}</div>
+        <div class="toggle-sub">+XP → ${q.skill}${q.private?' · Private quest':''}</div>
       </div>
-      <div style="font-size:10px;font-family:var(--mono);color:var(--t3)">actief</div>
+      <div style="font-size:10px;font-family:var(--mono);color:var(--t3)">active</div>
     </div>`;
   });
   container.innerHTML = html;
@@ -376,7 +420,7 @@ function renderQuotes() {
   const quotes = loadQuotes();
   list.innerHTML = '';
   if (!quotes.length) {
-    list.innerHTML = '<div style="color:var(--t3);font-size:12px;padding:8px 0">Geen quotes — voeg er een toe!</div>';
+    list.innerHTML = '<div style="color:var(--t3);font-size:12px;padding:8px 0">No quotes — add one below!</div>';
     return;
   }
   quotes.forEach((q, i) => {
@@ -398,7 +442,7 @@ window.addQuote = function () {
   saveQuotes(quotes);
   inp.value = '';
   renderQuotes();
-  showToast('✓ Quote toegevoegd');
+  showToast('✓ Quote added');
 };
 
 window.deleteQuote = function (idx) {
@@ -406,14 +450,14 @@ window.deleteQuote = function (idx) {
   quotes.splice(idx, 1);
   saveQuotes(quotes);
   renderQuotes();
-  showToast('Quote verwijderd');
+  showToast('Quote removed');
 };
 
 window.resetQuotes = function () {
-  if (!confirm('Standaard quotes herstellen? Je eigen quotes worden verwijderd.')) return;
+  if (!confirm('Restore default quotes? Your custom quotes will be removed.')) return;
   saveQuotes([...DEFAULT_QUOTES]);
   renderQuotes();
-  showToast('✓ Standaard quotes hersteld');
+  showToast('✓ Default quotes restored');
 };
 
 document.getElementById('quoteInput').addEventListener('keydown', e => {
@@ -431,16 +475,16 @@ window.changePin = function () {
   const conf = (document.getElementById('newPin2').value     || '').trim();
   const msg  = document.getElementById('pinMsg');
 
-  if (cur !== getStoredPin()) { msg.textContent = 'Huidige PIN klopt niet'; return; }
-  if (newP.length !== 4 || !/^\d{4}$/.test(newP)) { msg.textContent = 'Nieuwe PIN moet 4 cijfers zijn'; return; }
-  if (newP !== conf) { msg.textContent = 'PINs komen niet overeen'; return; }
+  if (cur !== getStoredPin()) { msg.textContent = 'Current PIN is incorrect'; return; }
+  if (newP.length !== 4 || !/^\d{4}$/.test(newP)) { msg.textContent = 'New PIN must be 4 digits'; return; }
+  if (newP !== conf) { msg.textContent = 'PINs do not match'; return; }
 
   localStorage.setItem(PIN_STORE, newP);
   msg.textContent = '';
   document.getElementById('currentPin').value = '';
   document.getElementById('newPin').value = '';
   document.getElementById('newPin2').value = '';
-  showToast('✓ PIN opgeslagen');
+  showToast('✓ PIN saved');
 };
 
 // ── Focus Skills ───────────────────────────────────────────────
@@ -449,13 +493,15 @@ const FOCUS_SKILL_OPTIONS = [
   { key:'tennis',       icon:'🎾', label:'Tennis' },
   { key:'calisthenics', icon:'🤸', label:'Calisthenics' },
   { key:'gym',          icon:'🏋️', label:'Gym' },
+  { key:'core',         icon:'🔥', label:'Core' },
+  { key:'stretching',   icon:'🧘', label:'Mobility' },
   { key:'coding',       icon:'💻', label:'Coding' },
-  { key:'investing',    icon:'📈', label:'Investeren' },
+  { key:'investing',    icon:'📈', label:'Investing' },
   { key:'piano',        icon:'🎹', label:'Piano' },
-  { key:'reading',      icon:'📚', label:'Lezen' },
+  { key:'reading',      icon:'📚', label:'Reading' },
   { key:'sales',        icon:'🤝', label:'Sales' },
   { key:'focus',        icon:'🎯', label:'Deep Work' },
-  { key:'languages',    icon:'🗣️', label:'Talen' },
+  { key:'languages',    icon:'🗣️', label:'Languages' },
   { key:'journaling',   icon:'📓', label:'Journaling' },
   { key:'marketing',    icon:'📣', label:'Marketing' },
   { key:'ai_tools',     icon:'🤖', label:'AI Tools' },
@@ -493,16 +539,103 @@ function renderFocusSkillPills() {
         cur.push(opt.key);
       }
       saveFocusSkills(cur);
-      showToast('Focus skills opgeslagen');
+      showToast('Focus skills saved');
       renderFocusSkillPills();
     });
     container.appendChild(pill);
   });
 }
 
+// ── Notifications ──────────────────────────────────────────────
+function loadNotifSettings() {
+  try { return JSON.parse(localStorage.getItem(NOTIF_KEY)) || {}; } catch { return {}; }
+}
+function saveNotifSettings(obj) {
+  try { localStorage.setItem(NOTIF_KEY, JSON.stringify(obj)); } catch {}
+}
+
+function requestNotificationPermission() {
+  if (!('Notification' in window)) {
+    showToast('Notifications not supported in this browser', true);
+    return;
+  }
+  Notification.requestPermission().then(perm => {
+    if (perm === 'granted') {
+      const s = loadNotifSettings();
+      s.enabled = true;
+      saveNotifSettings(s);
+      updateNotifUI(true);
+      showToast('✓ Notifications enabled');
+      scheduleReminder();
+    } else {
+      showToast('Permission denied — check browser settings', true);
+      document.getElementById('notifToggle').checked = false;
+    }
+  });
+}
+
+function scheduleReminder() {
+  const s = loadNotifSettings();
+  const timeStr = s.time || '21:00';
+  const [hours] = timeStr.split(':').map(Number);
+  const now = new Date();
+  const lastReminder = localStorage.getItem(LAST_REMIND);
+  const today = now.toISOString().slice(0, 10);
+  if (lastReminder !== today && now.getHours() >= hours) {
+    new Notification('King Joey', {
+      body: 'Time for your daily check-in. Build the kingdom.',
+      icon: '/icon.png'
+    });
+    localStorage.setItem(LAST_REMIND, today);
+  }
+}
+
+function updateNotifUI(enabled) {
+  const toggle = document.getElementById('notifToggle');
+  const timeRow = document.getElementById('notifTimeRow');
+  const status  = document.getElementById('notifStatus');
+  if (toggle) toggle.checked = !!enabled;
+  if (timeRow) timeRow.style.display = enabled ? 'flex' : 'none';
+  if (status) {
+    const perm = 'Notification' in window ? Notification.permission : 'unsupported';
+    status.textContent = enabled
+      ? (perm === 'granted' ? '✓ Notifications active' : 'Permission: ' + perm)
+      : '';
+  }
+}
+
+window.toggleNotifications = function(checked) {
+  if (checked) {
+    requestNotificationPermission();
+  } else {
+    const s = loadNotifSettings();
+    s.enabled = false;
+    saveNotifSettings(s);
+    updateNotifUI(false);
+    showToast('Notifications disabled');
+  }
+};
+
+window.saveNotifTime = function(val) {
+  const s = loadNotifSettings();
+  s.time = val;
+  saveNotifSettings(s);
+  showToast('✓ Reminder time saved');
+};
+
+function initNotifUI() {
+  const s = loadNotifSettings();
+  const timeInput = document.getElementById('notifTime');
+  if (timeInput && s.time) timeInput.value = s.time;
+  const isEnabled = s.enabled && 'Notification' in window && Notification.permission === 'granted';
+  updateNotifUI(isEnabled);
+  if (isEnabled) scheduleReminder();
+}
+
 // ── Boot ───────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   renderFocusSkillPills();
+  initNotifUI();
   // Wait for xp.js to expose RPG_DEFAULT_SKILLS
   setTimeout(() => {
     renderSkillPills();
@@ -511,7 +644,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 50);
 
   if (typeof initCloudSync === 'function' && window.supabase) {
-    initCloudSync({ appKey: 'rpg', syncedKeys: ['rpg_character_v1'] });
+    initCloudSync({ appKey: 'rpg', syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder'], syncedPrefixes: ['rpg_daily_v1:'] });
   }
 });
 </script>
