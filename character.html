@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#050506">
+<meta name="theme-color" content="#0d0d0f">
 <title>Character — King Joey</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="sync.js" defer></script>
@@ -13,7 +13,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
 :root {
-  --bg: #050506;
+  --bg: #0d0d0f;
   --surface: rgba(255,255,255,0.04);
   --surface-h: rgba(255,255,255,0.07);
   --border: rgba(255,255,255,0.07);
@@ -104,11 +104,13 @@ body::before {
 }
 .hero-avatar {
   width:64px; height:64px; border-radius:50%;
-  background:linear-gradient(135deg, rgba(245,200,66,0.2), rgba(107,227,164,0.15));
-  border:2px solid rgba(245,200,66,0.35);
+  background:linear-gradient(135deg, rgba(245,200,66,0.15), rgba(107,227,164,0.1));
+  border:2px solid rgba(245,200,66,0.4);
   display:flex; align-items:center; justify-content:center;
-  font-size:28px; margin:0 auto 10px;
-  box-shadow:0 0 28px rgba(245,200,66,0.18);
+  font-size:17px; font-weight:800; font-family:var(--mono);
+  color:#F5C842; letter-spacing:0.04em;
+  margin:0 auto 10px;
+  box-shadow:0 0 28px rgba(245,200,66,0.22), 0 0 60px rgba(245,200,66,0.07);
 }
 .hero-name { font-size:19px; font-weight:700; letter-spacing:-0.02em; margin-bottom:2px; }
 .hero-class { font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--t3); margin-bottom:12px; }
@@ -478,19 +480,19 @@ textarea {
 <body>
 
 <div class="char-tabs">
-  <button class="char-tab active" onclick="showTab('character')">⚔️ Character</button>
-  <button class="char-tab" onclick="showTab('daily')">📅 Daily</button>
-  <button class="char-tab" onclick="showTab('quests')">🎯 Quests</button>
-  <button class="char-tab" onclick="showTab('skills')">📊 Skills</button>
-  <button class="char-tab" onclick="showTab('history')">📈 History</button>
+  <button class="char-tab active" onclick="showTab('character')">Character</button>
+  <button class="char-tab" onclick="showTab('daily')">Daily</button>
+  <button class="char-tab" onclick="showTab('quests')">Quests</button>
+  <button class="char-tab" onclick="showTab('skills')">Skills</button>
+  <button class="char-tab" onclick="showTab('history')">History</button>
 </div>
 
 <!-- ===== CHARACTER ===== -->
 <div class="char-screen active" id="tab-character">
   <div class="card hero">
-    <div class="hero-avatar">👑</div>
+    <div class="hero-avatar">KJ</div>
     <div class="hero-name">King Joey</div>
-    <div class="hero-class">The Self-Made King · Life OS</div>
+    <div class="hero-class">Life OS · Gamenfy v0.1</div>
     <div class="total-level">
       <div class="total-num" id="totalLevel">—</div>
       <div class="total-label">Total Level</div>
@@ -499,7 +501,7 @@ textarea {
   <div id="rsSkillSections"></div>
   <div class="sec-title" style="margin-top:18px">Recent XP</div>
   <div class="card" style="padding:12px 14px" id="xpLogContainer">
-    <div style="color:var(--t3);font-size:12px;text-align:center;padding:10px">Nog geen XP verdiend</div>
+    <div style="color:var(--t3);font-size:12px;text-align:center;padding:10px">No XP yet — tap a skill to log!</div>
   </div>
 </div>
 
@@ -509,22 +511,22 @@ textarea {
     <div>
       <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);margin-bottom:3px" id="dailyDateLabel">—</div>
       <div style="font-size:17px;font-weight:700;letter-spacing:-0.02em">Daily Check-in</div>
-      <div style="font-size:11px;color:var(--t3);margin-top:2px" id="dailyQuestCount">0 / 0 voltooid</div>
+      <div style="font-size:11px;color:var(--t3);margin-top:2px" id="dailyQuestCount">0 / 0 completed</div>
     </div>
   </div>
-  <div class="sec-title">Dagcijfer</div>
+  <div class="sec-title">Day Score</div>
   <div class="score-row" id="dailyScoreRow"></div>
-  <div class="sec-title">Daily Quests</div>
+  <div class="sec-title">Daily Missions</div>
   <div class="quest-grid" id="dailyQuestGrid"></div>
   <div class="sec-title">Gratitude</div>
   <div class="card">
     <div style="display:flex;gap:8px;align-items:center">
-      <input id="gratitudeInput" type="text" placeholder="Dankbaar voor… druk Enter"
+      <input id="gratitudeInput" type="text" placeholder="Grateful for… press Enter"
         style="flex:1;background:transparent;border:none;outline:none;color:var(--t1);font-family:var(--sans);font-size:13px;padding:0">
       <button id="gratitudeAddBtn" style="background:rgba(107,227,164,0.12);border:1px solid rgba(107,227,164,0.25);color:#6BE3A4;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)">+</button>
     </div>
     <div id="gratitudeTags" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:0"></div>
-    <div style="font-size:9px;color:var(--t3);margin-top:8px;font-family:var(--mono)">→ Opgeslagen per dag · klik op een woord in History voor detail</div>
+    <div style="font-size:9px;color:var(--t3);margin-top:8px;font-family:var(--mono)">→ Saved per day · click a word in History for detail</div>
   </div>
 </div>
 
@@ -538,74 +540,8 @@ textarea {
     <div id="pathToSuperiority"></div>
   </div>
 
-  <div class="sec-title" style="margin-top:0">Daily Quests</div>
+  <div class="sec-title" style="margin-top:0">Daily Missions</div>
   <div id="dailyQuestList"></div>
-  <div class="sec-title">Weekly Quests</div>
-  <div class="quest-row" id="wq-workouts" onclick="toggleWeeklyQuest(this,'wq-workouts','fitness',200)">
-    <div class="quest-row-icon">🏋️</div>
-    <div class="quest-row-text">
-      <div class="quest-row-name">4 workouts deze week</div>
-      <div class="quest-row-reward">+200 XP Body</div>
-    </div>
-    <div class="quest-row-check"></div>
-  </div>
-  <div class="quest-row" id="wq-review" onclick="toggleWeeklyQuest(this,'wq-review','focus',100)">
-    <div class="quest-row-icon">📊</div>
-    <div class="quest-row-text">
-      <div class="quest-row-name">Weekly review doen</div>
-      <div class="quest-row-reward">+100 XP Mind</div>
-    </div>
-    <div class="quest-row-check"></div>
-  </div>
-  <div class="quest-row" id="wq-social" onclick="toggleWeeklyQuest(this,'wq-social','social',80)">
-    <div class="quest-row-icon">💬</div>
-    <div class="quest-row-text">
-      <div class="quest-row-name">1 sociale activiteit</div>
-      <div class="quest-row-reward">+80 XP Lifestyle</div>
-    </div>
-    <div class="quest-row-check"></div>
-  </div>
-  <div class="quest-row" id="wq-tennis" onclick="toggleWeeklyQuest(this,'wq-tennis','tennis',150)">
-    <div class="quest-row-icon">🎾</div>
-    <div class="quest-row-text">
-      <div class="quest-row-name">2x tennis deze week</div>
-      <div class="quest-row-reward">+150 XP Body</div>
-    </div>
-    <div class="quest-row-check"></div>
-  </div>
-  <div class="sec-title">Boss Quests</div>
-  <div class="boss-card" style="background:linear-gradient(135deg,rgba(196,181,253,0.06),rgba(249,168,212,0.04));border:1px solid rgba(196,181,253,0.2)">
-    <div class="boss-name">🎯 Eerste klant binnenhalen</div>
-    <div class="boss-desc">Sluit je eerste betaalde deal. One shot, one kill.</div>
-    <div class="boss-progress">
-      <div class="xp-bar-track"><div class="xp-bar-fill" style="background:var(--business);width:40%"></div></div>
-      <div class="boss-pct" style="color:var(--business)">40%</div>
-    </div>
-  </div>
-  <div class="boss-card" style="background:linear-gradient(135deg,rgba(107,227,164,0.06),rgba(125,211,252,0.04));border:1px solid rgba(107,227,164,0.2)">
-    <div class="boss-name">🔥 12% body fat bereiken</div>
-    <div class="boss-desc">Huidig: ~16%. Nog 4% te gaan.</div>
-    <div class="boss-progress">
-      <div class="xp-bar-track"><div class="xp-bar-fill" style="background:var(--body);width:62%"></div></div>
-      <div class="boss-pct" style="color:var(--body)">62%</div>
-    </div>
-  </div>
-  <div class="boss-card" style="background:linear-gradient(135deg,rgba(245,200,66,0.06),transparent);border:1px solid rgba(245,200,66,0.2)">
-    <div class="boss-name">💰 €10.000 spaargeld</div>
-    <div class="boss-desc">€6.240 gespaard. Nog €3.760 te gaan.</div>
-    <div class="boss-progress">
-      <div class="xp-bar-track"><div class="xp-bar-fill" style="background:var(--money);width:62%"></div></div>
-      <div class="boss-pct" style="color:var(--money)">62%</div>
-    </div>
-  </div>
-  <div class="boss-card" style="background:linear-gradient(135deg,rgba(125,211,252,0.06),transparent);border:1px solid rgba(125,211,252,0.2);margin-bottom:0">
-    <div class="boss-name">⚔️ Life OS MVP afmaken</div>
-    <div class="boss-desc">Dashboard ombouwen naar volledig RPG systeem.</div>
-    <div class="boss-progress">
-      <div class="xp-bar-track"><div class="xp-bar-fill" style="background:var(--mind);width:85%"></div></div>
-      <div class="boss-pct" style="color:var(--mind)">85%</div>
-    </div>
-  </div>
 </div>
 
 <!-- ===== SKILLS ===== -->
@@ -615,20 +551,20 @@ textarea {
 
 <!-- ===== HISTORY ===== -->
 <div class="char-screen" id="tab-history">
-  <div class="sec-title" style="margin-top:0">Dagscores — afgelopen 14 dagen</div>
+  <div class="sec-title" style="margin-top:0">Day Scores — last 14 days</div>
   <div class="card" style="padding:14px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <div style="font-size:11px;color:var(--t3)">Gemiddelde score</div>
+      <div style="font-size:11px;color:var(--t3)">Average score</div>
       <div style="font-size:18px;font-weight:700;font-family:var(--mono);color:var(--body)" id="avgScore">—</div>
     </div>
     <div class="history-chart" id="historyChart"></div>
   </div>
-  <div class="sec-title">XP verdiend per categorie</div>
+  <div class="sec-title">XP by category</div>
   <div class="card" id="categoryXpCard" style="padding:14px"></div>
-  <div class="sec-title">Gratitude word cloud</div>
+  <div class="sec-title">Gratitude cloud</div>
   <div class="card" style="padding:14px">
     <div class="word-cloud" id="wordCloud">
-      <div style="color:var(--t3);font-size:12px">Vul dagelijks gratitude in om de word cloud op te bouwen</div>
+      <div style="color:var(--t3);font-size:12px">Log gratitude daily to build your word cloud</div>
     </div>
   </div>
 </div>
@@ -696,15 +632,15 @@ function showPinModal(onSuccess){
   overlay.innerHTML=
     '<div class="pin-card">'+
       '<div style="font-size:28px;margin-bottom:8px">🔒</div>'+
-      '<div style="font-size:15px;font-weight:700;margin-bottom:4px">Privé sectie</div>'+
-      '<div style="font-size:12px;color:var(--t3);margin-bottom:18px">Voer je PIN in om verder te gaan</div>'+
+      '<div style="font-size:15px;font-weight:700;margin-bottom:4px">Private section</div>'+
+      '<div style="font-size:12px;color:var(--t3);margin-bottom:18px">Enter your PIN to continue</div>'+
       '<input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" '+
         'style="width:100%;text-align:center;font-size:24px;font-family:var(--mono);letter-spacing:0.3em;'+
         'background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;'+
         'padding:12px;color:#FAFAFA;outline:none;margin-bottom:10px">'+
       '<div id="pinError" style="font-size:11px;color:var(--discipline);min-height:14px;margin-bottom:8px"></div>'+
       '<button onclick="document.getElementById(\'pinModal\').remove()" '+
-        'style="font-size:12px;color:var(--t3);background:none;border:none;cursor:pointer;padding:4px">Annuleren</button>'+
+        'style="font-size:12px;color:var(--t3);background:none;border:none;cursor:pointer;padding:4px">Cancel</button>'+
     '</div>';
   document.body.appendChild(overlay);
   const inp=document.getElementById('pinInput');
@@ -713,7 +649,7 @@ function showPinModal(onSuccess){
   inp.addEventListener('input',()=>{
     if(inp.value.length===4){
       if(inp.value===PRIVATE_PIN){ unlockPrivate(); overlay.remove(); onSuccess(); }
-      else{ err.textContent='Verkeerde PIN, probeer opnieuw'; inp.value=''; setTimeout(()=>err.textContent='',2000); }
+      else{ err.textContent='Wrong PIN, try again'; inp.value=''; setTimeout(()=>err.textContent='',2000); }
     }
   });
   overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
@@ -760,11 +696,11 @@ function openQuickLog(skillKey, skillData){
        <div class="ql-options">
          ${optHtml}
          <div class="ql-custom">
-           <input id="qlCustomXp" type="number" min="1" max="999" placeholder="Eigen XP">
-           <button class="ql-custom-btn" onclick="doCustomQuickLog('${skillKey}')">+ Voeg toe</button>
+           <input id="qlCustomXp" type="number" min="1" max="999" placeholder="Custom XP">
+           <button class="ql-custom-btn" onclick="doCustomQuickLog('${skillKey}')">+ Add</button>
          </div>
        </div>
-       <button class="ql-close" onclick="document.getElementById('qlModal').remove()">Sluiten</button>
+       <button class="ql-close" onclick="document.getElementById('qlModal').remove()">Close</button>
      </div>`;
 
   document.body.appendChild(overlay);
@@ -801,11 +737,11 @@ function showMilestoneConfirm(skillKey, level, label, color, onDone){
       '<div class="ms-level-badge" style="background:'+color+'18;border:1px solid '+color+'44;color:'+color+'">'+
         '⭐ Level '+level+' bereikt'+
       '</div>'+
-      '<div style="font-size:15px;font-weight:700;margin-bottom:8px">Heb je dit al bereikt?</div>'+
+      '<div style="font-size:15px;font-weight:700;margin-bottom:8px">Did you reach this?</div>'+
       '<div style="font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.5">'+label+'</div>'+
       '<div style="display:flex;gap:10px">'+
-        '<button id="msNo" style="flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--t3);font-size:13px;cursor:pointer">Nog niet</button>'+
-        '<button id="msYes" style="flex:1;padding:12px;border-radius:12px;background:'+color+'18;border:1px solid '+color+'44;color:'+color+';font-size:13px;font-weight:700;cursor:pointer">Ja, bevestigen</button>'+
+        '<button id="msNo" style="flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--t3);font-size:13px;cursor:pointer">Not yet</button>'+
+        '<button id="msYes" style="flex:1;padding:12px;border-radius:12px;background:'+color+'18;border:1px solid '+color+'44;color:'+color+';font-size:13px;font-weight:700;cursor:pointer">Yes, confirmed</button>'+
       '</div>'+
     '</div>';
   document.body.appendChild(overlay);
@@ -865,6 +801,16 @@ function openSkillDetail(skillKey){
      </div>`
   ).join('');
 
+  // Milestone reach button: show if within 200 XP of next milestone
+  const xpToNextMs = nextMs ? (xpForLevel(nextMs) - xp) : null;
+  const showMsReachBtn = nextMs && xpToNextMs !== null && xpToNextMs <= 200 && xpToNextMs > 0;
+  const msReachBtnHtml = showMsReachBtn
+    ? `<button id="sdMsReachBtn" style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:10px;padding:11px 14px;border-radius:11px;background:rgba(107,227,164,0.1);border:1px solid rgba(107,227,164,0.3);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent" onclick="sdLog('${skillKey}',${xpToNextMs},'Milestone Lvl ${nextMs} reached')">
+        <span style="font-size:13px;font-weight:700;color:#6BE3A4">Milestone reached — Lvl ${nextMs}</span>
+        <span style="font-size:11px;font-family:var(--mono);font-weight:700;color:#6BE3A4">+${xpToNextMs} XP</span>
+      </button>`
+    : '';
+
   document.getElementById('sdModal')?.remove();
   const overlay=document.createElement('div');
   overlay.id='sdModal';
@@ -875,33 +821,35 @@ function openSkillDetail(skillKey){
       <div class="sd-hero">
         <div class="sd-hero-top">
           <div class="sd-icon">${def.icon||'⭐'}</div>
-          <div>
+          <div style="flex:1">
             <div class="sd-title" style="color:${color}">${def.label||skillKey}</div>
-            <div class="sd-subtitle">Level ${isMax?'MAX':level} · ${xp.toLocaleString()} XP totaal</div>
+            <div class="sd-subtitle">Level ${isMax?'MAX':level} · ${xp.toLocaleString()} XP total</div>
           </div>
+          <button onclick="document.getElementById('sdModal').remove()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t3);font-size:14px;flex-shrink:0">✕</button>
         </div>
         <div class="sd-xp-label">
-          <span>${isMax?'MAXED OUT':curXP.toLocaleString()+' / '+nextXP.toLocaleString()+ ' XP naar Lvl '+(level+1)}</span>
+          <span>${isMax?'MAXED OUT':curXP.toLocaleString()+' / '+nextXP.toLocaleString()+' XP to Lvl '+(level+1)}</span>
           <span>${isMax?'100%':pct+'%'}</span>
         </div>
         <div class="sd-xp-track"><div class="sd-xp-fill" style="width:${pct}%;background:${color}"></div></div>
-        ${nextMsLabel?'<div class="sd-next-goal">Volgende unlock: <span style="color:'+color+'">'+nextMsLabel+'</span></div>':''}
+        ${nextMsLabel?'<div class="sd-next-goal">Next unlock: <span style="color:'+color+'">'+nextMsLabel+'</span></div>':''}
+        ${msReachBtnHtml}
       </div>
-      ${msLevels.length?`
-      <div class="sd-section">
-        <div class="sd-section-title">Unlock Pad</div>
-        ${msHtml}
-      </div>`:''}
       ${logHtml?`
       <div class="sd-log-section">
-        <div class="sd-section-title" style="padding:0">Log Training</div>
+        <div class="sd-section-title" style="padding:0">Log Activity</div>
         ${logHtml}
         <div class="sd-log-custom">
-          <input id="sdCustomXp" type="number" min="1" max="999" placeholder="Eigen XP">
-          <button class="ql-custom-btn" onclick="sdLog('${skillKey}',parseInt(document.getElementById('sdCustomXp')?.value||0),'Custom XP')">+ Voeg toe</button>
+          <input id="sdCustomXp" type="number" min="1" max="999" placeholder="Custom XP">
+          <button class="ql-custom-btn" onclick="sdLog('${skillKey}',parseInt(document.getElementById('sdCustomXp')?.value||0),'Custom XP')">+ Add</button>
         </div>
       </div>`:''}
-      <button class="sd-close" onclick="document.getElementById('sdModal').remove()">Sluiten</button>
+      ${msLevels.length?`
+      <div class="sd-section">
+        <div class="sd-section-title">Unlock Path</div>
+        ${msHtml}
+      </div>`:''}
+      <button class="sd-close" onclick="document.getElementById('sdModal').remove()">Close</button>
     </div>`;
 
   document.body.appendChild(overlay);
@@ -955,7 +903,54 @@ function renderCharacter(){
   const sections = document.getElementById('rsSkillSections');
   sections.innerHTML='';
 
-  // Skill tiles (non-habits only)
+  // ── Habit tiles FIRST ──────────────────────────────
+  const habits = typeof window.getHabits==='function' ? window.getHabits() : {};
+  const today = new Date().toISOString().slice(0,10);
+  const habitSkills = Object.entries(defaults)
+    .filter(([,def])=>def.isHabit && def.active!==false)
+    .map(([k,def])=>({
+      key:k, icon:def.icon||'⚡', label:def.label||k, parentSkill:def.parentSkill,
+      score:(habits[k]||{}).score||0, streak:(habits[k]||{}).streak||0,
+      lastChecked:(habits[k]||{}).lastChecked||'',
+    }));
+
+  if(habitSkills.length){
+    const habLabel=document.createElement('div');
+    habLabel.className='rs-section-label';
+    habLabel.textContent='Daily Habits';
+    sections.appendChild(habLabel);
+
+    const habGrid=document.createElement('div');
+    habGrid.className='habit-grid';
+
+    habitSkills.forEach(h=>{
+      const meta=PARENT_META[h.parentSkill]||{color:'#6BE3A4'};
+      const checkedToday=h.lastChecked===today;
+      const pct=Math.max(0,Math.min(100,h.score*10));
+      const tile=document.createElement('div');
+      tile.className='habit-tile'+(checkedToday?' habit-tile-done':'');
+      tile.style.borderColor=meta.color+'40';
+      tile.innerHTML=
+        `<div class="habit-tile-icon">${h.icon}</div>`+
+        `<div class="habit-tile-name">${h.label}</div>`+
+        `<div class="habit-tile-score" style="color:${meta.color}">${h.score}<span style="font-size:9px;color:var(--t3)">/10</span></div>`+
+        `<div class="habit-tile-bar"><div class="habit-tile-fill" style="width:${pct}%;background:${meta.color}"></div></div>`+
+        (h.streak>1?`<div style="font-size:8px;color:${meta.color};font-weight:700;font-family:var(--mono)">${h.streak} day streak</div>`:'');
+      tile.addEventListener('click',()=>{
+        if(checkedToday){
+          if(typeof window.uncheckHabit==='function') window.uncheckHabit(h.key);
+        } else {
+          if(typeof window.checkHabit==='function') window.checkHabit(h.key, h.label, h.icon);
+          if(typeof window.addXP==='function') window.addXP(h.key, 15, h.label+' habit');
+        }
+        renderCharacter();
+      });
+      habGrid.appendChild(tile);
+    });
+    sections.appendChild(habGrid);
+  }
+
+  // ── Skill tiles (non-habits) ───────────────────────
   CATEGORY_ORDER.forEach(pKey=>{
     const meta = PARENT_META[pKey];
     const subskills = Object.entries(defaults)
@@ -982,7 +977,7 @@ function renderCharacter(){
     const labelEl=document.createElement('div');
     labelEl.className='rs-section-label';
     labelEl.style.color=meta.color;
-    labelEl.textContent=meta.icon+' '+meta.label;
+    labelEl.textContent=meta.label;
     sections.appendChild(labelEl);
 
     const grid=document.createElement('div');
@@ -997,7 +992,7 @@ function renderCharacter(){
       tile.innerHTML=
         `<div class="rs-tile-glow" style="background:radial-gradient(circle at 50% 0%,${meta.color}20,transparent 65%)"></div>`+
         `<div class="rs-tile-icon">${isPriv?'🔒':s.icon}</div>`+
-        `<div class="rs-tile-name">${isPriv?'Privé':s.label}</div>`+
+        `<div class="rs-tile-name">${isPriv?'Private':s.label}</div>`+
         `<div class="rs-tile-level" style="color:${meta.color}">${lvl>=MAX_LEVEL?'MAX':lvl}</div>`;
       tile.addEventListener('click',()=>openSkillDetail(s.key));
       grid.appendChild(tile);
@@ -1005,58 +1000,11 @@ function renderCharacter(){
     sections.appendChild(grid);
   });
 
-  // Habit tiles section
-  const habits = typeof window.getHabits==='function' ? window.getHabits() : {};
-  const today = new Date().toISOString().slice(0,10);
-  const habitSkills = Object.entries(defaults)
-    .filter(([,def])=>def.isHabit && def.active!==false)
-    .map(([k,def])=>({
-      key:k, icon:def.icon||'⚡', label:def.label||k, parentSkill:def.parentSkill,
-      score:(habits[k]||{}).score||0, streak:(habits[k]||{}).streak||0,
-      lastChecked:(habits[k]||{}).lastChecked||'',
-    }));
-
-  if(habitSkills.length){
-    const habLabel=document.createElement('div');
-    habLabel.className='rs-section-label';
-    habLabel.textContent='⚡ Dagelijkse Habits';
-    sections.appendChild(habLabel);
-
-    const habGrid=document.createElement('div');
-    habGrid.className='habit-grid';
-
-    habitSkills.forEach(h=>{
-      const meta=PARENT_META[h.parentSkill]||{color:'#6BE3A4'};
-      const checkedToday=h.lastChecked===today;
-      const pct=Math.max(0,Math.min(100,h.score*10));
-      const tile=document.createElement('div');
-      tile.className='habit-tile'+(checkedToday?' habit-tile-done':'');
-      tile.style.borderColor=meta.color+'40';
-      tile.innerHTML=
-        `<div class="habit-tile-icon">${h.icon}</div>`+
-        `<div class="habit-tile-name">${h.label}</div>`+
-        `<div class="habit-tile-score" style="color:${meta.color}">${h.score}<span style="font-size:9px;color:var(--t3)">/10</span></div>`+
-        `<div class="habit-tile-bar"><div class="habit-tile-fill" style="width:${pct}%;background:${meta.color}"></div></div>`+
-        (h.streak>1?`<div style="font-size:8px;color:${meta.color};font-weight:700;font-family:var(--mono)">🔥 ${h.streak}</div>`:'');
-      tile.addEventListener('click',()=>{
-        if(checkedToday){
-          if(typeof window.uncheckHabit==='function') window.uncheckHabit(h.key);
-        } else {
-          if(typeof window.checkHabit==='function') window.checkHabit(h.key, h.label, h.icon);
-          if(typeof window.addXP==='function') window.addXP(h.key, 15, h.label+' habit');
-        }
-        renderCharacter();
-      });
-      habGrid.appendChild(tile);
-    });
-    sections.appendChild(habGrid);
-  }
-
   // XP log with privacy masking
   const logEl=document.getElementById('xpLogContainer');
   const log=(char.xpLog||[]).slice(0,12);
   if(!log.length){
-    logEl.innerHTML='<div style="color:var(--t3);font-size:12px;text-align:center;padding:10px">Nog geen XP verdiend — klik op een skill!</div>';
+    logEl.innerHTML='<div style="color:var(--t3);font-size:12px;text-align:center;padding:10px">No XP yet — tap a skill to log!</div>';
     return;
   }
   const privateUnlocked=isPrivateUnlocked();
@@ -1075,25 +1023,25 @@ function renderCharacter(){
 // ── Daily quests ───────────────────────────────────
 const DAILY_QUESTS=[
   {id:'workout',      icon:'💪',label:'Workout',        skill:'gym',        xp:50},
-  {id:'meditation',   icon:'🧘',label:'Meditatie',      skill:'meditation', xp:20},
-  {id:'no_porn',      icon:'🔒',label:'Privé quest',    skill:'no_porn',    xp:45, private:true},
-  {id:'weed_control', icon:'🔒',label:'Privé quest 2',  skill:'weed_control',xp:40,private:true},
-  {id:'reading',      icon:'📖',label:'Lezen',           skill:'reading',    xp:15},
+  {id:'meditation',   icon:'🧘',label:'Meditation',     skill:'meditation', xp:20},
+  {id:'no_porn',      icon:'🔒',label:'Private quest',  skill:'no_porn',    xp:45, private:true},
+  {id:'weed_control', icon:'🔒',label:'Private quest 2',skill:'weed_control',xp:40,private:true},
+  {id:'reading',      icon:'📖',label:'Reading',         skill:'reading',    xp:15},
   {id:'outreach',     icon:'📈',label:'Outreach',        skill:'sales',      xp:35},
   {id:'gratitude',    icon:'🙏',label:'Gratitude',       skill:'gratitude',  xp:10},
-  {id:'nutrition',    icon:'🥗',label:'Eiwitten',        skill:'nutrition',  xp:20},
+  {id:'nutrition',    icon:'🥗',label:'Protein',         skill:'nutrition',  xp:20},
 ];
 
 function renderDaily(){
   const daily=loadDaily();
   const quests=daily.quests||{};
-  const days=['zo','ma','di','wo','do','vr','za'];
-  const months=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const now=new Date();
   document.getElementById('dailyDateLabel').textContent=
     days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()];
   const done=DAILY_QUESTS.filter(q=>quests[q.id]?.done).length;
-  document.getElementById('dailyQuestCount').textContent=done+' / '+DAILY_QUESTS.length+' voltooid';
+  document.getElementById('dailyQuestCount').textContent=done+' / '+DAILY_QUESTS.length+' completed';
 
   // Score row
   const scoreRow=document.getElementById('dailyScoreRow');
@@ -1128,8 +1076,8 @@ function renderDaily(){
         '<span class="quest-icon">'+(isPriv?'🔒':q.icon)+'</span>'+
         '<span class="quest-check">'+(isDone?'✓':'')+'</span>'+
       '</div>'+
-      '<div class="quest-label">'+(isPriv?'Privé quest':q.label)+'</div>'+
-      '<div class="quest-xp">'+(isPriv?'PIN vereist':'+'+q.xp+' XP')+'</div>';
+      '<div class="quest-label">'+(isPriv?'Private quest':q.label)+'</div>'+
+      '<div class="quest-xp">'+(isPriv?'PIN required':'+'+q.xp+' XP')+'</div>';
     card.addEventListener('click',()=>{
       if(q.private&&!isPrivateUnlocked()){ requirePin(()=>renderDaily()); return; }
       const d=loadDaily();
@@ -1306,7 +1254,7 @@ function renderSkillTree(){
     if(pKey==='discipline'&&!isPrivateUnlocked()){
       const lc=document.createElement('div');
       lc.style.cssText='background:rgba(255,107,107,0.05);border:1px solid rgba(255,107,107,0.15);border-radius:14px;padding:20px;text-align:center;cursor:pointer;margin-bottom:10px';
-      lc.innerHTML='<div style="font-size:24px;margin-bottom:6px">🔒</div><div style="font-size:12px;font-weight:700;color:var(--discipline);margin-bottom:3px">Privé sectie</div><div style="font-size:10px;color:var(--t3)">Klik om te ontgrendelen met PIN</div>';
+      lc.innerHTML='<div style="font-size:24px;margin-bottom:6px">🔒</div><div style="font-size:12px;font-weight:700;color:var(--discipline);margin-bottom:3px">Private section</div><div style="font-size:10px;color:var(--t3)">Tap to unlock with PIN</div>';
       lc.addEventListener('click',()=>requirePin(renderSkillTree));
       container.appendChild(lc);
       return;
@@ -1335,7 +1283,7 @@ function renderSkillTree(){
   });
 
   if(!container.children.length){
-    container.innerHTML='<div style="color:var(--t3);font-size:13px;text-align:center;padding:40px 0">Klik op skills om XP te verdienen!</div>';
+    container.innerHTML='<div style="color:var(--t3);font-size:13px;text-align:center;padding:40px 0">Tap a skill to start earning XP!</div>';
   }
 }
 
@@ -1375,9 +1323,9 @@ function showDayDetail(dateStr){
   overlay.id='dayDetailModal';
   overlay.className='sd-overlay';
 
-  const months=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const d = new Date(dateStr+'T12:00:00');
-  const label = d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+  const label = months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
   const scoreColor = score<=0?'var(--t3)':score<=4?'#FF6B6B':score<=6?'#FB923C':score<=8?'#F5C842':'#6BE3A4';
 
   const xpRows = dayLog.slice(0,8).map(e=>{
@@ -1398,21 +1346,21 @@ function showDayDetail(dateStr){
         <div class="sd-hero-top">
           <div>
             <div class="sd-title">${label}</div>
-            <div class="sd-subtitle">Dagdetails</div>
+            <div class="sd-subtitle">Day Detail</div>
           </div>
           <div style="text-align:right">
             <div style="font-size:28px;font-weight:700;font-family:var(--mono);color:${scoreColor}">${score||'—'}<span style="font-size:12px;color:var(--t3)">/10</span></div>
-            <div style="font-size:9px;color:var(--t3)">dagcijfer</div>
+            <div style="font-size:9px;color:var(--t3)">day score</div>
           </div>
         </div>
         <div style="display:flex;align-items:baseline;gap:6px">
           <span style="font-size:22px;font-weight:700;font-family:var(--mono);color:#FAFAFA">${totalXP>0?'+'+totalXP:'0'}</span>
-          <span style="font-size:11px;color:var(--t3)">XP verdiend</span>
+          <span style="font-size:11px;color:var(--t3)">XP earned</span>
         </div>
       </div>
       ${xpRows?`<div class="sd-section"><div class="sd-section-title">XP Log</div>${xpRows}</div>`:''}
       ${gratWords.length?`<div class="sd-section"><div class="sd-section-title">Gratitude</div><div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">${gratWords.map(w=>`<span class="word-tag" style="color:#6BE3A4;border-color:rgba(107,227,164,0.25)">${w}</span>`).join('')}</div></div>`:''}
-      <button class="sd-close" onclick="document.getElementById('dayDetailModal').remove()">Sluiten</button>
+      <button class="sd-close" onclick="document.getElementById('dayDetailModal').remove()">Close</button>
     </div>`;
 
   document.body.appendChild(overlay);
@@ -1511,20 +1459,20 @@ function showGratitudeDetail(word, data){
       <div class="sd-handle"></div>
       <div class="sd-hero">
         <div class="sd-title" style="font-size:20px">${word}</div>
-        <div class="sd-subtitle">${data.count}× dankbaar voor · Laatste: ${data.lastDate||'—'}</div>
+        <div class="sd-subtitle">${data.count}× grateful for · Last: ${data.lastDate||'—'}</div>
       </div>
       <div class="sd-section">
-        <div class="sd-section-title">Waarom dankbaar?</div>
+        <div class="sd-section-title">Why grateful?</div>
         <div style="font-size:12px;color:var(--t2);margin-bottom:12px;line-height:1.6">
-          Voeg een reden toe waarom je dankbaar bent voor <strong>${word}</strong>.
+          Add a note about why you're grateful for <strong>${word}</strong>.
         </div>
-        <textarea id="gratNoteInput" rows="3" placeholder="Bijv: omdat het me een veilig gevoel geeft…"
+        <textarea id="gratNoteInput" rows="3" placeholder="E.g. because it gives me peace of mind…"
           style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:10px;
           padding:12px;color:#FAFAFA;font-family:var(--sans);font-size:13px;resize:none;outline:none;line-height:1.6;box-sizing:border-box"></textarea>
         <button style="margin-top:10px;width:100%;padding:12px;border-radius:12px;background:rgba(107,227,164,0.1);border:1px solid rgba(107,227,164,0.3);color:#6BE3A4;font-size:13px;font-weight:700;cursor:pointer"
-          onclick="saveGratitudeNote('${word}')">Opslaan</button>
+          onclick="saveGratitudeNote('${word}')">Save</button>
       </div>
-      <button class="sd-close" onclick="document.getElementById('gratDetailModal').remove()">Sluiten</button>
+      <button class="sd-close" onclick="document.getElementById('gratDetailModal').remove()">Close</button>
     </div>`;
   document.body.appendChild(overlay);
   overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#050506">
+<meta name="theme-color" content="#0d0d0f">
 <title>King Joey's Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="sync.js" defer></script>
@@ -24,7 +24,7 @@
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0;
-  background: #050506;
+  background: #0d0d0f;
   color: var(--text-secondary);
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
@@ -773,8 +773,8 @@ body::after {
       </div>
     </div>
 
-    <!-- PLAN TOMORROW -->
-    <div class="gm-card gm-card-tomorrow" id="gmCardTomorrow">
+    <!-- PLAN TOMORROW — hidden for now -->
+    <div class="gm-card gm-card-tomorrow" id="gmCardTomorrow" style="display:none">
       <div class="gm-header">
         <div class="gm-header-left">
           <div class="gm-eyebrow" id="tomorrowLabel">Plan tomorrow —</div>
@@ -796,10 +796,15 @@ body::after {
   <!-- RPG Daily Check-in (compact, below goals) -->
   <div class="section" id="rpgCheckinSection" style="margin-top:8px">
     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:16px">
-      <div style="font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#76746E;margin-bottom:10px">Dagcijfer</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#76746E;margin-bottom:10px">Day Score</div>
       <div id="rpgScoreRow" style="display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap"></div>
       <div style="font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#76746E;margin-bottom:8px">Gratitude</div>
-      <textarea id="rpgGratitude" rows="2" placeholder="Waar ben je vandaag dankbaar voor?" style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;color:#FAFAFA;font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:13px;resize:none;outline:none;line-height:1.6;box-sizing:border-box"></textarea>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="rpgGratitudeInput" type="text" placeholder="Grateful for… press Enter"
+          style="flex:1;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:#FAFAFA;font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:13px;outline:none">
+        <button id="rpgGratitudeAddBtn" style="background:rgba(107,227,164,0.12);border:1px solid rgba(107,227,164,0.25);color:#6BE3A4;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">+</button>
+      </div>
+      <div id="rpgGratitudeTags" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:0"></div>
     </div>
   </div>
   <!-- Hidden quest grid still needed for JS compatibility -->
@@ -1381,14 +1386,14 @@ body::after {
   const QUOTES_KEY   = 'rpg_quotes_v1';
 
   const QUESTS = [
-    { id: 'workout',      icon: '💪', label: 'Workout',       skill: 'gym',         xp: 50 },
-    { id: 'meditation',   icon: '🧘', label: 'Meditatie',     skill: 'meditation',  xp: 20 },
-    { id: 'no_porn',      icon: '🔒', label: 'Privé quest',   skill: 'no_porn',     xp: 45, private: true },
-    { id: 'weed_control', icon: '🔒', label: 'Privé quest 2', skill: 'weed_control',xp: 40, private: true },
-    { id: 'reading',      icon: '📖', label: 'Lezen',         skill: 'reading',     xp: 15 },
-    { id: 'outreach',     icon: '📈', label: 'Outreach',      skill: 'sales',       xp: 35 },
-    { id: 'gratitude',    icon: '🙏', label: 'Gratitude',     skill: 'gratitude',   xp: 10 },
-    { id: 'nutrition',    icon: '🥗', label: 'Eiwitten',      skill: 'nutrition',   xp: 20 },
+    { id: 'workout',      icon: '💪', label: 'Workout',        skill: 'gym',         xp: 50 },
+    { id: 'meditation',   icon: '🧘', label: 'Meditation',    skill: 'meditation',  xp: 20 },
+    { id: 'no_porn',      icon: '🔒', label: 'Private quest', skill: 'no_porn',     xp: 45, private: true },
+    { id: 'weed_control', icon: '🔒', label: 'Private quest 2',skill:'weed_control',xp: 40, private: true },
+    { id: 'reading',      icon: '📖', label: 'Reading',        skill: 'reading',     xp: 15 },
+    { id: 'outreach',     icon: '📈', label: 'Outreach',       skill: 'sales',       xp: 35 },
+    { id: 'gratitude',    icon: '🙏', label: 'Gratitude',      skill: 'gratitude',   xp: 10 },
+    { id: 'nutrition',    icon: '🥗', label: 'Protein',        skill: 'nutrition',   xp: 20 },
   ];
 
   const FOCUS_SKILLS_KEY = 'rpg_focus_skills_v1';
@@ -1429,21 +1434,21 @@ body::after {
   }
 
   const HABITS_LIST = [
-    { key:'sleep',       icon:'😴', label:'Slaap',    color:'#7DD3FC' },
-    { key:'nutrition',   icon:'🥗', label:'Voeding',  color:'#6BE3A4' },
-    { key:'cold_shower', icon:'🚿', label:'Koud',     color:'#818CF8' },
-    { key:'walking',     icon:'👟', label:'Stappen',  color:'#6BE3A4' },
+    { key:'sleep',       icon:'😴', label:'Sleep',   color:'#7DD3FC' },
+    { key:'nutrition',   icon:'🥗', label:'Nutrition',color:'#6BE3A4' },
+    { key:'cold_shower', icon:'🚿', label:'Cold',    color:'#818CF8' },
+    { key:'walking',     icon:'👟', label:'Steps',   color:'#6BE3A4' },
   ];
   // Habits die ook als mission bestaan → niet dubbel tonen
   const MISSION_SKILL_HABIT_KEYS = new Set(['meditation','nutrition','gratitude']);
 
   const COACH_SUGGESTIONS = {
-    workout:    'Doe 3 sets progressie. 20 minuten. +50 XP Gym.',
-    meditation: '10 min timer. In 4 sec, uit 6 sec. Dat is alles.',
-    gratitude:  'Schrijf 3 dingen op. Ze mogen heel klein zijn. 2 minuten.',
-    outreach:   'Stuur één DM of email. Één zin. Nu. +35 XP Sales.',
-    nutrition:  'Eet een eiwitrijke maaltijd voor je slaapt.',
-    reading:    'Lees 10 pagina\'s. Gewoon beginnen. +25 XP Mind.',
+    workout:    '3 sets of progressions. 20 minutes. +50 XP Gym.',
+    meditation: '10 min timer. In 4 sec, out 6 sec. That\'s all.',
+    gratitude:  'Write 3 things. They can be small. 2 minutes.',
+    outreach:   'Send one DM or email. One sentence. Now. +35 XP Sales.',
+    nutrition:  'Eat a protein-rich meal before bed.',
+    reading:    'Read 10 pages. Just start. +25 XP Mind.',
   };
 
   function xpToLevelCC(xp){ return Math.min(100, Math.floor(Math.sqrt((xp||0)/50))+1); }
@@ -1458,9 +1463,9 @@ body::after {
 
   function getGreeting() {
     const h = new Date().getHours();
-    if (h < 12) return 'Goedemorgen';
-    if (h < 18) return 'Goedemiddag';
-    return 'Goedenavond';
+    if (h < 12) return 'Good morning';
+    if (h < 18) return 'Good afternoon';
+    return 'Good evening';
   }
 
   function getQuote() {
@@ -1564,12 +1569,12 @@ body::after {
       `<div class="cc-wrap">
         <div class="cc-quote-banner" id="ccQuoteBanner" style="transition:opacity 0.4s">${firstQuote}</div>
         <div class="cc-greeting">${getGreeting()}, King Joey</div>
-        <div class="cc-subtitle">Gamenfy v0.1 · Bouw je karakter</div>
+        <div class="cc-subtitle">Gamenfy v0.1 · Build your character</div>
 
         <div class="cc-section-label">Focus Skills</div>
         ${fsHtml}
 
-        <div class="cc-section-label">Missions Vandaag</div>
+        <div class="cc-section-label">Daily Missions</div>
         <div class="cc-mission-grid">${missionsHtml}</div>
 
         <div class="cc-section-label">Habits</div>
@@ -1609,7 +1614,7 @@ body::after {
           hab.score=Math.min(10,(hab.score||0)+1);
           hab.streak=(hab.lastChecked===yesterday)?(hab.streak||0)+1:1;
           hab.lastChecked=today;
-          if(typeof window.addXP==='function') window.addXP(h.key,15,h.label+' habit');
+          if(typeof window.addXP==='function') window.addXP(h.key,15,h.label);
         }
         habitsRaw[h.key]=hab;
         try{ localStorage.setItem('rpg_habits_v1',JSON.stringify(habitsRaw)); } catch{}
@@ -1623,7 +1628,7 @@ body::after {
     if(hour>=20 && !recapClosed){
       const btn = document.createElement('button');
       btn.className='cc-recap-btn';
-      btn.textContent='📊 Dag Recap bekijken';
+      btn.textContent='📊 View Day Recap';
       btn.addEventListener('click',()=>{ renderEveningRecap(); document.getElementById('eveningRecap').scrollIntoView({behavior:'smooth'}); });
       cc.querySelector('.cc-wrap').appendChild(btn);
     }
@@ -1663,7 +1668,7 @@ body::after {
     // Missed missions
     const missedPublic = QUESTS.filter(q=>!q.private&&!(quests[q.id]?.done));
     const firstMissed = missedPublic[0];
-    const coachMsg = firstMissed ? COACH_SUGGESTIONS[firstMissed.id] || ('Doe nog de '+firstMissed.label+' voor het slapen.') : 'Sterke dag — alles gedaan.';
+    const coachMsg = firstMissed ? COACH_SUGGESTIONS[firstMissed.id] || ('Still time for '+firstMissed.label+' before bed.') : 'Strong day — everything done.';
 
     // Day score
     const score = daily.dayScore||0;
@@ -1671,16 +1676,16 @@ body::after {
     recap.style.display='block';
     recap.innerHTML=
       `<div class="cc-recap">
-        <div class="cc-recap-title">⚡ Dag Recap — ${today}</div>
+        <div class="cc-recap-title">⚡ Day Recap — ${today}</div>
         <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px">
           <div class="cc-recap-total">${totalXP>0?'+'+totalXP+' XP':'0 XP'}</div>
-          <div style="font-size:11px;color:#76746E">vandaag verdiend</div>
+          <div style="font-size:11px;color:#76746E">earned today</div>
           ${score?'<div style="margin-left:auto;font-size:11px;font-family:var(--mono-cc);color:#F5C842;font-weight:700">'+score+'/10</div>':''}
         </div>
         ${xpItemsHtml}
-        ${missedPublic.length?'<div style="margin-top:10px;font-size:10px;color:#76746E;font-weight:700;letter-spacing:0.1em;text-transform:uppercase">Niet gedaan:</div>'+missedPublic.map(q=>'<div style="font-size:11px;color:#76746E;padding:2px 0">• '+q.label+'</div>').join(''):''}
+        ${missedPublic.length?'<div style="margin-top:10px;font-size:10px;color:#76746E;font-weight:700;letter-spacing:0.1em;text-transform:uppercase">Not done:</div>'+missedPublic.map(q=>'<div style="font-size:11px;color:#76746E;padding:2px 0">• '+q.label+'</div>').join(''):''}
         <div class="cc-coach-box">"${coachMsg}"</div>
-        <button class="cc-close-day" onclick="closeDay()">Dag afsluiten</button>
+        <button class="cc-close-day" onclick="closeDay()">Close Day</button>
       </div>`;
   }
 
@@ -1818,22 +1823,55 @@ body::after {
     });
   }
 
-  // ── Gratitude ────────────────────────────────────────────────
-  function initGratitude() {
-    const ta = document.getElementById('rpgGratitude');
-    if (!ta) return;
-    const daily = loadDaily();
-    if (daily.gratitude) ta.value = daily.gratitude;
-    ta.addEventListener('input', function () { const d=loadDaily(); d.gratitude=ta.value; saveDaily(d); });
-    ta.addEventListener('blur', function () {
-      if (ta.value.trim() && typeof window.addXP === 'function') {
-        const d = loadDaily();
-        if (!d.gratitudeXpGiven) {
-          window.addXP('gratitude', 10, 'Gratitude ingevuld');
-          d.gratitudeXpGiven = true; saveDaily(d);
-        }
-      }
+  // ── Gratitude tag-input ──────────────────────────────────────
+  const GRAT_KEY = 'rpg_gratitude_v1';
+  function loadGratItems(){ try{ return JSON.parse(localStorage.getItem(GRAT_KEY))||{}; } catch{ return {}; } }
+  function saveGratItems(obj){ try{ localStorage.setItem(GRAT_KEY,JSON.stringify(obj)); } catch{} }
+  function addGratItem(word){
+    const key = word.toLowerCase().trim();
+    if(!key) return;
+    const items = loadGratItems();
+    const today = new Date().toISOString().slice(0,10);
+    if(!items[key]) items[key]={ count:0, firstDate:today, lastDate:today };
+    items[key].count++;
+    items[key].lastDate = today;
+    saveGratItems(items);
+  }
+  function renderGratTagsHome(){
+    const container = document.getElementById('rpgGratitudeTags');
+    if(!container) return;
+    const today = new Date().toISOString().slice(0,10);
+    const items = loadGratItems();
+    const todayWords = Object.entries(items)
+      .filter(([,d])=>d.lastDate===today)
+      .sort((a,b)=>(b[1].count||1)-(a[1].count||1));
+    container.innerHTML='';
+    todayWords.forEach(([word])=>{
+      const t = document.createElement('span');
+      t.textContent = word;
+      t.style.cssText='padding:3px 10px;border-radius:20px;background:rgba(107,227,164,0.08);border:1px solid rgba(107,227,164,0.22);color:#6BE3A4;font-size:12px;font-weight:600';
+      container.appendChild(t);
     });
+  }
+  function initGratitude() {
+    const inp = document.getElementById('rpgGratitudeInput');
+    const btn = document.getElementById('rpgGratitudeAddBtn');
+    if (!inp) return;
+    renderGratTagsHome();
+    function submit(){
+      const word = inp.value.trim();
+      if(!word) return;
+      addGratItem(word);
+      inp.value = '';
+      const d = loadDaily();
+      if(!d.gratitudeXpGiven && typeof window.addXP === 'function'){
+        window.addXP('gratitude', 10, 'Gratitude logged');
+        d.gratitudeXpGiven = true; saveDaily(d);
+      }
+      renderGratTagsHome();
+    }
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); submit(); } });
+    if(btn) btn.addEventListener('click', submit);
   }
 
   // ── Quotes crawler ───────────────────────────────────────────
