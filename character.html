@@ -1024,16 +1024,25 @@ function renderCharacter(){
 }
 
 // ── Daily quests ───────────────────────────────────
-const DAILY_QUESTS=[
-  {id:'workout',      icon:'💪',label:'Workout',        skill:'gym',        xp:50},
-  {id:'meditation',   icon:'🧘',label:'Meditation',     skill:'meditation', xp:20},
-  {id:'no_porn',      icon:'🔒',label:'Private quest',  skill:'no_porn',    xp:45, private:true},
-  {id:'weed_control', icon:'🔒',label:'Private quest 2',skill:'weed_control',xp:40,private:true},
-  {id:'reading',      icon:'📖',label:'Reading',         skill:'reading',    xp:15},
-  {id:'outreach',     icon:'📈',label:'Outreach',        skill:'sales',      xp:35},
-  {id:'gratitude',    icon:'🙏',label:'Gratitude',       skill:'gratitude',  xp:10},
-  {id:'nutrition',    icon:'🥗',label:'Protein',         skill:'nutrition',  xp:20},
+const ALL_DAILY_QUESTS=[
+  {id:'workout',      icon:'💪',label:'Workout',        skill:'gym',          xp:50},
+  {id:'meditation',   icon:'🧘',label:'Meditation',     skill:'meditation',   xp:20},
+  {id:'no_porn',      icon:'🔒',label:'Private quest',  skill:'no_porn',      xp:45, private:true},
+  {id:'weed_control', icon:'🔒',label:'Private quest 2',skill:'weed_control', xp:40, private:true},
+  {id:'reading',      icon:'📖',label:'Reading',         skill:'reading',      xp:15},
+  {id:'outreach',     icon:'📈',label:'Outreach',        skill:'sales',        xp:35},
+  {id:'gratitude',    icon:'🙏',label:'Gratitude',       skill:'gratitude',    xp:10},
+  {id:'nutrition',    icon:'🥗',label:'Protein',         skill:'nutrition',    xp:20},
+  {id:'planning',     icon:'📅',label:'Plan the day',    skill:'planning',     xp:15},
 ];
+const ACTIVE_QUESTS_KEY='rpg_active_quests_v1';
+const DEFAULT_ACTIVE_QUESTS=['workout','meditation','no_porn','weed_control','reading','outreach','gratitude','nutrition'];
+function getActiveQuestIds(){
+  try{ const s=JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if(Array.isArray(s)) return s; } catch{}
+  return [...DEFAULT_ACTIVE_QUESTS];
+}
+function getDailyQuests(){ return ALL_DAILY_QUESTS.filter(q=>getActiveQuestIds().includes(q.id)); }
+const DAILY_QUESTS = { get length(){ return getDailyQuests().length; }, forEach(fn){ getDailyQuests().forEach(fn); }, filter(fn){ return getDailyQuests().filter(fn); } };
 
 function renderDaily(){
   const daily=loadDaily();
@@ -1505,7 +1514,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   },0);
 
   if(typeof initCloudSync==='function'&&window.supabase){
-    initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder'],syncedPrefixes:['rpg_daily_v1:']});
+    initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1'],syncedPrefixes:['rpg_daily_v1:']});
   }
 });
 
