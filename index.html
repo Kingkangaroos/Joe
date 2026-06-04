@@ -667,33 +667,55 @@ body::after {
 .cc-mission-xp { font-size:9px; font-family:var(--mono-cc); color:#76746E; }
 .cc-mission.done .cc-mission-xp { color:#6BE3A4; }
 
-.cc-habit-row { display:flex; gap:7px; }
+.cc-habit-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .cc-habit {
-  flex:1; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
-  border-radius:11px; padding:9px 8px; cursor:pointer;
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
+  border-radius:14px; padding:14px 12px; cursor:pointer;
   user-select:none; transition:all 0.18s; -webkit-tap-highlight-color:transparent;
-  display:flex; flex-direction:column; align-items:center; gap:4px;
+  display:flex; flex-direction:column; gap:6px;
 }
-.cc-habit:active { transform:scale(0.95); }
-.cc-habit.done { opacity:0.6; }
-.cc-habit-icon { font-size:16px; line-height:1; }
-.cc-habit-name { font-size:8px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#76746E; text-align:center; }
-.cc-habit-score { font-size:14px; font-weight:700; font-family:var(--mono-cc); }
-.cc-habit-bar { width:100%; height:3px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden; }
-.cc-habit-fill { height:100%; border-radius:2px; transition:width 0.5s; }
+.cc-habit:active { transform:scale(0.96); }
+.cc-habit.done { background:rgba(107,227,164,0.04); border-color:rgba(107,227,164,0.14); }
+.cc-habit-header { display:flex; align-items:center; gap:8px; }
+.cc-habit-icon { font-size:20px; line-height:1; }
+.cc-habit-name { font-size:11px; font-weight:700; color:#B8B6B0; flex:1; }
+.cc-habit-score { font-size:20px; font-weight:700; font-family:var(--mono-cc); line-height:1; }
+.cc-habit-bar { width:100%; height:5px; background:rgba(255,255,255,0.07); border-radius:3px; overflow:hidden; }
+.cc-habit-fill { height:100%; border-radius:3px; transition:width 0.5s; }
+.cc-habit-status { font-size:9px; color:#76746E; font-weight:700; letter-spacing:0.06em; }
 
 /* Evening recap */
 .cc-recap {
-  background:linear-gradient(135deg,rgba(245,200,66,0.06),rgba(107,227,164,0.04));
-  border:1px solid rgba(245,200,66,0.18); border-radius:14px; padding:16px;
-  margin-bottom:16px;
+  background:linear-gradient(135deg,rgba(245,200,66,0.08),rgba(107,227,164,0.04));
+  border:1px solid rgba(245,200,66,0.22); border-radius:18px; padding:20px;
+  margin-bottom:16px; position:relative; overflow:hidden;
 }
-.cc-recap-title { font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#F5C842; margin-bottom:10px; }
-.cc-recap-total { font-size:28px; font-weight:700; font-family:var(--mono-cc); color:#FAFAFA; letter-spacing:-0.04em; margin-bottom:2px; }
-.cc-recap-item { display:flex; align-items:center; gap:8px; padding:4px 0; }
-.cc-recap-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
-.cc-recap-name { font-size:11px; color:#B8B6B0; flex:1; }
-.cc-recap-xp { font-size:10px; font-family:var(--mono-cc); font-weight:700; }
+.cc-recap::before { content:''; position:absolute; top:-40px; right:-40px; width:140px; height:140px;
+  background:radial-gradient(circle,rgba(245,200,66,0.12) 0%,transparent 70%); pointer-events:none; }
+.cc-recap-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px; }
+.cc-recap-title { font-size:9px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#F5C842; margin-bottom:6px; }
+.cc-recap-day-score { display:flex; align-items:baseline; gap:6px; }
+.cc-recap-score-num { font-size:48px; font-weight:700; font-family:var(--mono-cc); line-height:1; letter-spacing:-0.04em; }
+.cc-recap-score-denom { font-size:18px; color:#76746E; font-family:var(--mono-cc); font-weight:700; }
+.cc-recap-total-xp { text-align:right; }
+.cc-recap-xp-num { font-size:22px; font-weight:700; font-family:var(--mono-cc); color:#FAFAFA; }
+.cc-recap-xp-label { font-size:9px; color:#76746E; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
+.cc-recap-progress { margin-bottom:14px; }
+.cc-recap-prog-label { display:flex; justify-content:space-between; margin-bottom:5px; }
+.cc-recap-prog-text { font-size:10px; color:#B8B6B0; font-weight:600; }
+.cc-recap-prog-pct { font-size:10px; color:#F5C842; font-family:var(--mono-cc); font-weight:700; }
+.cc-recap-prog-track { height:6px; background:rgba(255,255,255,0.08); border-radius:4px; overflow:hidden; }
+.cc-recap-prog-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,#F5C842,#6BE3A4); transition:width 1s cubic-bezier(0.22,1,0.36,1); }
+.cc-recap-cats { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:14px; }
+.cc-recap-cat { background:rgba(255,255,255,0.03); border-radius:10px; padding:8px 10px; }
+.cc-recap-cat-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+.cc-recap-cat-name { font-size:10px; font-weight:700; color:#B8B6B0; }
+.cc-recap-cat-xp { font-size:10px; font-family:var(--mono-cc); font-weight:700; }
+.cc-recap-cat-bar { height:3px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden; }
+.cc-recap-cat-fill { height:100%; border-radius:2px; }
+.cc-recap-missed { margin-bottom:12px; }
+.cc-recap-missed-title { font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#FF6B6B; margin-bottom:6px; }
+.cc-recap-missed-item { font-size:11px; color:#76746E; padding:2px 0; display:flex; align-items:center; gap:6px; }
 .cc-coach-box {
   background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
   border-radius:10px; padding:12px; margin:12px 0; font-size:12px;
@@ -1594,12 +1616,17 @@ body::after {
       const hab = habits[h.key]||{};
       const score = hab.score||0;
       const checkedToday = hab.lastChecked===today;
+      const streak = hab.streak||0;
       const pct = Math.min(100,score*10);
       return `<div class="cc-habit${checkedToday?' done':''}" data-hid="${h.key}">
-        <div class="cc-habit-icon">${h.icon}</div>
-        <div class="cc-habit-name">${h.label}</div>
-        <div class="cc-habit-score" style="color:${h.color}">${score}</div>
+        <div class="cc-habit-header">
+          <span class="cc-habit-icon">${h.icon}</span>
+          <span class="cc-habit-name">${h.label}</span>
+          ${checkedToday?'<span style="font-size:14px">✓</span>':''}
+        </div>
+        <div class="cc-habit-score" style="color:${h.color}">${score}<span style="font-size:11px;font-weight:500;color:#76746E">/10</span></div>
         <div class="cc-habit-bar"><div class="cc-habit-fill" style="width:${pct}%;background:${h.color}"></div></div>
+        <div class="cc-habit-status">${streak>1?'🔥 '+streak+' day streak':checkedToday?'✓ Done today':'Tap to log'}</div>
       </div>`;
     }).join('');
 
@@ -1660,13 +1687,12 @@ body::after {
       });
     });
 
-    // Evening recap button (after 20:00, not yet closed)
-    const hour = new Date().getHours();
+    // Recap knop — altijd zichtbaar, niet alleen na 20:00
     const recapClosed = !!(daily.recapShown);
-    if(hour>=20 && !recapClosed){
+    if(!recapClosed){
       const btn = document.createElement('button');
       btn.className='cc-recap-btn';
-      btn.textContent='📊 View Day Recap';
+      btn.textContent='📊 Dag Recap bekijken';
       btn.addEventListener('click',()=>{ renderEveningRecap(); document.getElementById('eveningRecap').scrollIntoView({behavior:'smooth'}); });
       cc.querySelector('.cc-wrap').appendChild(btn);
     }
@@ -1681,49 +1707,78 @@ body::after {
     const log = char.xpLog||[];
     const today = new Date().toISOString().slice(0,10);
 
-    // Today's XP from log
     const todayLog = log.filter(e=>e.date===today);
     const totalXP = todayLog.reduce((sum,e)=>sum+(e.amount>0?e.amount:0),0);
 
-    // XP per skill
-    const xpPerSkill={};
-    todayLog.forEach(e=>{ if(e.amount>0){ xpPerSkill[e.skill]=(xpPerSkill[e.skill]||0)+e.amount; } });
-
+    // XP per categorie
     const SKILL_COLORS={money:'#F5C842',body:'#6BE3A4',mind:'#7DD3FC',business:'#C4B5FD',lifestyle:'#FB923C',discipline:'#FF6B6B',knowledge:'#818CF8',creative:'#2DD4BF'};
+    const CAT_LABELS={money:'💰 Money',body:'💪 Body',mind:'🧠 Mind',business:'📈 Business',lifestyle:'✨ Lifestyle',discipline:'🛡️ Discipline',knowledge:'📚 Knowledge',creative:'🎨 Creative'};
     const defaults = window.RPG_DEFAULT_SKILLS||{};
+    const xpPerCat={};
+    todayLog.forEach(e=>{ if(e.amount>0){ const cat=(defaults[e.skill]||{}).parentSkill||'body'; xpPerCat[cat]=(xpPerCat[cat]||0)+e.amount; } });
+    const catEntries = Object.entries(xpPerCat).sort((a,b)=>b[1]-a[1]);
+    const maxCatXP = catEntries.length ? catEntries[0][1] : 1;
 
-    const xpItemsHtml = Object.entries(xpPerSkill).slice(0,6).map(([k,xp])=>{
-      const def=defaults[k]||{};
-      const cat=def.parentSkill||'body';
+    const catsHtml = catEntries.slice(0,6).map(([cat,xp])=>{
       const color=SKILL_COLORS[cat]||'#6BE3A4';
-      return `<div class="cc-recap-item">
-        <div class="cc-recap-dot" style="background:${color}"></div>
-        <div class="cc-recap-name">${def.icon||'⭐'} ${def.label||k}</div>
-        <div class="cc-recap-xp" style="color:${color}">+${xp} XP</div>
+      const label=CAT_LABELS[cat]||cat;
+      const pct=Math.round(xp/maxCatXP*100);
+      return `<div class="cc-recap-cat">
+        <div class="cc-recap-cat-head">
+          <span class="cc-recap-cat-name">${label}</span>
+          <span class="cc-recap-cat-xp" style="color:${color}">+${xp}</span>
+        </div>
+        <div class="cc-recap-cat-bar"><div class="cc-recap-cat-fill" style="width:${pct}%;background:${color}"></div></div>
       </div>`;
     }).join('');
 
-    // Missed missions
+    // Quest voortgang
+    const allActive = QUESTS.filter(q=>!q.private);
+    const doneCount = allActive.filter(q=>!!(quests[q.id]?.done)).length;
+    const totalCount = allActive.length;
+    const questPct = totalCount ? Math.round(doneCount/totalCount*100) : 0;
     const missedPublic = QUESTS.filter(q=>!q.private&&!(quests[q.id]?.done));
     const firstMissed = missedPublic[0];
-    const coachMsg = firstMissed ? COACH_SUGGESTIONS[firstMissed.id] || ('Still time for '+firstMissed.label+' before bed.') : 'Strong day — everything done.';
+    const coachMsg = firstMissed ? COACH_SUGGESTIONS[firstMissed.id] || ('Still time for '+firstMissed.label+' before bed.') : '🏆 Strong day — everything done. King behavior.';
 
-    // Day score
     const score = daily.dayScore||0;
+    const scoreColor = score<=0?'#76746E':score<=4?'#FF6B6B':score<=6?'#FB923C':score<=8?'#F5C842':'#6BE3A4';
+
+    const missedHtml = missedPublic.length ?
+      `<div class="cc-recap-missed">
+        <div class="cc-recap-missed-title">Nog niet gedaan</div>
+        ${missedPublic.map(q=>`<div class="cc-recap-missed-item"><span>○</span> ${q.label}</div>`).join('')}
+      </div>` : '<div style="font-size:12px;color:#6BE3A4;margin-bottom:12px;font-weight:700">✓ Alle missies voltooid!</div>';
 
     recap.style.display='block';
     recap.innerHTML=
       `<div class="cc-recap">
-        <div class="cc-recap-title">⚡ Day Recap — ${today}</div>
-        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px">
-          <div class="cc-recap-total">${totalXP>0?'+'+totalXP+' XP':'0 XP'}</div>
-          <div style="font-size:11px;color:#76746E">earned today</div>
-          ${score?'<div style="margin-left:auto;font-size:11px;font-family:var(--mono-cc);color:#F5C842;font-weight:700">'+score+'/10</div>':''}
+        <div class="cc-recap-header">
+          <div>
+            <div class="cc-recap-title">⚡ Dag Recap</div>
+            <div class="cc-recap-day-score">
+              <span class="cc-recap-score-num" style="color:${scoreColor}">${score||'—'}</span>
+              <span class="cc-recap-score-denom">/10</span>
+            </div>
+          </div>
+          <div class="cc-recap-total-xp">
+            <div class="cc-recap-xp-num">+${totalXP}</div>
+            <div class="cc-recap-xp-label">XP verdiend</div>
+          </div>
         </div>
-        ${xpItemsHtml}
-        ${missedPublic.length?'<div style="margin-top:10px;font-size:10px;color:#76746E;font-weight:700;letter-spacing:0.1em;text-transform:uppercase">Not done:</div>'+missedPublic.map(q=>'<div style="font-size:11px;color:#76746E;padding:2px 0">• '+q.label+'</div>').join(''):''}
+        <div class="cc-recap-progress">
+          <div class="cc-recap-prog-label">
+            <span class="cc-recap-prog-text">Missies voltooid (${doneCount}/${totalCount})</span>
+            <span class="cc-recap-prog-pct">${questPct}%</span>
+          </div>
+          <div class="cc-recap-prog-track">
+            <div class="cc-recap-prog-fill" style="width:${questPct}%"></div>
+          </div>
+        </div>
+        ${catEntries.length ? `<div class="cc-recap-cats">${catsHtml}</div>` : ''}
+        ${missedHtml}
         <div class="cc-coach-box">"${coachMsg}"</div>
-        <button class="cc-close-day" onclick="closeDay()">Close Day</button>
+        <button class="cc-close-day" onclick="closeDay()">Dag afsluiten</button>
       </div>`;
   }
 

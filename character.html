@@ -511,10 +511,15 @@ textarea {
 <!-- ===== DAILY ===== -->
 <div class="char-screen" id="tab-daily">
   <div class="card" style="display:flex;align-items:center;gap:14px;margin-bottom:0">
-    <div>
+    <div style="flex:1">
       <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);margin-bottom:3px" id="dailyDateLabel">—</div>
       <div style="font-size:17px;font-weight:700;letter-spacing:-0.02em">Daily Check-in</div>
       <div style="font-size:11px;color:var(--t3);margin-top:2px" id="dailyQuestCount">0 / 0 completed</div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button id="dayPrevBtn" onclick="shiftSelectedDay(-1)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--t2);border-radius:8px;padding:5px 10px;font-size:14px;cursor:pointer;-webkit-tap-highlight-color:transparent">‹</button>
+      <button id="dayTodayBtn" onclick="goToToday()" style="background:rgba(245,200,66,0.08);border:1px solid rgba(245,200,66,0.2);color:#F5C842;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;display:none;-webkit-tap-highlight-color:transparent">Today</button>
+      <button id="dayNextBtn" onclick="shiftSelectedDay(1)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--t2);border-radius:8px;padding:5px 10px;font-size:14px;cursor:pointer;-webkit-tap-highlight-color:transparent">›</button>
     </div>
   </div>
   <div class="sec-title">Day Score</div>
@@ -604,6 +609,25 @@ function todayKey(){ return new Date().toISOString().slice(0,10); }
 function getDailyKey(d){ return 'rpg_daily_v1:'+(d||todayKey()); }
 function loadDaily(d){ try{ return JSON.parse(localStorage.getItem(getDailyKey(d)))||{}; } catch{ return {}; } }
 function saveDaily(data,d){ try{ localStorage.setItem(getDailyKey(d),JSON.stringify(data)); } catch{} }
+
+// ── Selected date for Daily tab ────────────────────
+let _selectedDate = todayKey();
+function getSelectedDate(){ return _selectedDate; }
+function setSelectedDate(d){
+  _selectedDate = d;
+  const isToday = d === todayKey();
+  const todayBtn = document.getElementById('dayTodayBtn');
+  if(todayBtn) todayBtn.style.display = isToday ? 'none' : 'block';
+  renderDaily();
+}
+function shiftSelectedDay(delta){
+  const d = new Date(_selectedDate+'T12:00:00');
+  d.setDate(d.getDate()+delta);
+  const newKey = d.toISOString().slice(0,10);
+  if(newKey > todayKey()) return; // geen toekomstige dagen
+  setSelectedDate(newKey);
+}
+function goToToday(){ setSelectedDate(todayKey()); }
 
 // ── Tab switch ─────────────────────────────────────
 function showTab(id){
@@ -1045,13 +1069,15 @@ function getDailyQuests(){ return ALL_DAILY_QUESTS.filter(q=>getActiveQuestIds()
 const DAILY_QUESTS = { get length(){ return getDailyQuests().length; }, forEach(fn){ getDailyQuests().forEach(fn); }, filter(fn){ return getDailyQuests().filter(fn); } };
 
 function renderDaily(){
-  const daily=loadDaily();
+  const selDate=getSelectedDate();
+  const daily=loadDaily(selDate);
   const quests=daily.quests||{};
   const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const now=new Date();
+  const d=new Date(selDate+'T12:00:00');
+  const isToday=selDate===todayKey();
   document.getElementById('dailyDateLabel').textContent=
-    days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()];
+    (isToday?'Today — ':'')+days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
   const done=DAILY_QUESTS.filter(q=>quests[q.id]?.done).length;
   document.getElementById('dailyQuestCount').textContent=done+' / '+DAILY_QUESTS.length+' completed';
 
@@ -1064,12 +1090,13 @@ function renderDaily(){
     btn.className='score-btn'+(cur===i?' active':'');
     btn.textContent=i;
     btn.addEventListener('click',()=>{
-      const d=loadDaily();
-      const prev=d.dayScore||0;
+      const sd=getSelectedDate();
+      const dd=loadDaily(sd);
+      const prev=dd.dayScore||0;
       if(prev&&typeof window.removeXP==='function') window.removeXP('focus',prev*2,'Dagcijfer gecorrigeerd');
-      d.dayScore=(prev===i)?0:i;
-      if(d.dayScore&&typeof window.addXP==='function') window.addXP('focus',d.dayScore*2,'Dagcijfer '+d.dayScore);
-      saveDaily(d);
+      dd.dayScore=(prev===i)?0:i;
+      if(dd.dayScore&&typeof window.addXP==='function') window.addXP('focus',dd.dayScore*2,'Dagcijfer '+dd.dayScore);
+      saveDaily(dd,sd);
       renderDaily();
     });
     scoreRow.appendChild(btn);
@@ -1092,13 +1119,14 @@ function renderDaily(){
       '<div class="quest-xp">'+(isPriv?'PIN required':'+'+q.xp+' XP')+'</div>';
     card.addEventListener('click',()=>{
       if(q.private&&!isPrivateUnlocked()){ requirePin(()=>renderDaily()); return; }
-      const d=loadDaily();
-      if(!d.quests) d.quests={};
-      const was=!!(d.quests[q.id]?.done);
-      d.quests[q.id]={done:!was};
+      const sd=getSelectedDate();
+      const dd=loadDaily(sd);
+      if(!dd.quests) dd.quests={};
+      const was=!!(dd.quests[q.id]?.done);
+      dd.quests[q.id]={done:!was};
       if(!was&&typeof window.addXP==='function')    window.addXP(q.skill,q.xp,q.label);
       if(was&&typeof window.removeXP==='function')  window.removeXP(q.skill,q.xp,q.label+' unchecked');
-      saveDaily(d);
+      saveDaily(dd,sd);
       renderDaily();
     });
     grid.appendChild(card);
@@ -1113,12 +1141,13 @@ function renderDaily(){
     if(!word) return;
     addGratitudeItem(word);
     gi.value='';
-    const d=loadDaily();
-    if(!d.gratitudeXpGiven&&typeof window.addXP==='function'){
+    const sd=getSelectedDate();
+    const dd=loadDaily(sd);
+    if(!dd.gratitudeXpGiven&&typeof window.addXP==='function'){
       window.addXP('gratitude',10,'Gratitude ingevuld');
-      d.gratitudeXpGiven=true; saveDaily(d);
+      dd.gratitudeXpGiven=true; saveDaily(dd,sd);
     }
-    renderGratitudeTags(loadDaily());
+    renderGratitudeTags(loadDaily(sd));
   }
   if(gi&&!gi._wired){
     gi._wired=true;
