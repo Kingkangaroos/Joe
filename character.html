@@ -699,6 +699,21 @@ function openQuickLog(skillKey, skillData){
   const meta   = PARENT_META[skill.parentSkill||skillData.parentSkill]||{color:'#6BE3A4'};
   const opts   = skill.quickLog||skillData.quickLog||[];
 
+  // Milestone knop voor quick log
+  const defaults = window.RPG_DEFAULT_SKILLS||{};
+  const def = defaults[skillKey]||skillData||{};
+  const milestones = def.milestones||{};
+  const msLevels = Object.keys(milestones).map(Number).sort((a,b)=>a-b);
+  const nextMs = msLevels.find(l=>l>level);
+  const xpToNextMs = nextMs ? (xpForLevel(nextMs) - xp) : null;
+  const nextMsLabel = nextMs ? milestones[nextMs] : '';
+  const msBtnHtml = (nextMs && xpToNextMs > 0)
+    ? `<div class="ql-btn" style="background:rgba(245,200,66,0.06);border-color:rgba(245,200,66,0.2)" onclick="doQuickLog('${skillKey}',${xpToNextMs},'Milestone Lvl ${nextMs} bereikt')">
+         <span class="ql-btn-label">🏆 Milestone bereikt<span style="display:block;font-size:10px;color:var(--t3);font-weight:400;margin-top:1px">${nextMsLabel}</span></span>
+         <span class="ql-btn-meta" style="color:#F5C842">+${xpToNextMs} XP</span>
+       </div>`
+    : '';
+
   const overlay = document.createElement('div');
   overlay.id='qlModal';
   overlay.className='ql-overlay';
@@ -721,6 +736,7 @@ function openQuickLog(skillKey, skillData){
          </div>
        </div>
        <div class="ql-options">
+         ${msBtnHtml}
          ${optHtml}
          <div class="ql-custom">
            <input id="qlCustomXp" type="number" min="1" max="999" placeholder="Custom XP">
@@ -828,13 +844,15 @@ function openSkillDetail(skillKey){
      </div>`
   ).join('');
 
-  // Milestone reach button: show if within 200 XP of next milestone
+  // Milestone reach button: always show if there's a next milestone
   const xpToNextMs = nextMs ? (xpForLevel(nextMs) - xp) : null;
-  const showMsReachBtn = nextMs && xpToNextMs !== null && xpToNextMs <= 300 && xpToNextMs > 0;
-  const msReachBtnHtml = showMsReachBtn
-    ? `<button id="sdMsReachBtn" style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:10px;padding:11px 14px;border-radius:11px;background:rgba(107,227,164,0.1);border:1px solid rgba(107,227,164,0.3);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent" onclick="sdLog('${skillKey}',${xpToNextMs},'Milestone Lvl ${nextMs} reached')">
-        <span style="font-size:13px;font-weight:700;color:#6BE3A4">Milestone reached — Lvl ${nextMs}</span>
-        <span style="font-size:11px;font-family:var(--mono);font-weight:700;color:#6BE3A4">+${xpToNextMs} XP</span>
+  const msReachBtnHtml = (nextMs && xpToNextMs > 0)
+    ? `<button id="sdMsReachBtn" style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:10px;padding:11px 14px;border-radius:11px;background:rgba(245,200,66,0.08);border:1px solid rgba(245,200,66,0.25);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent" onclick="sdLog('${skillKey}',${xpToNextMs},'Milestone Lvl ${nextMs} bereikt')">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#F5C842">🏆 Milestone bereikt — Lvl ${nextMs}</div>
+          <div style="font-size:10px;color:var(--t3);margin-top:2px">${nextMsLabel}</div>
+        </div>
+        <span style="font-size:11px;font-family:var(--mono);font-weight:700;color:#F5C842;flex-shrink:0;margin-left:10px">+${xpToNextMs} XP</span>
       </button>`
     : '';
 
