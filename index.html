@@ -734,6 +734,36 @@ body::after {
   letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:all 0.15s;
 }
 .cc-recap-btn:hover { color:#FAFAFA; border-color:rgba(255,255,255,0.18); }
+.ah-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.ah-tile {
+  background: rgba(255,255,255,0.04);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 12px 8px 10px;
+  text-align: center;
+}
+.ah-tile-icon { font-size: 18px; margin-bottom: 4px; }
+.ah-tile-val {
+  font-size: 16px; font-weight: 700;
+  font-family: var(--font-mono, ui-monospace);
+  color: #FAFAFA; line-height: 1;
+}
+.ah-tile-label {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-tertiary, #76746E);
+  margin-top: 3px;
+}
+.ah-sync-time {
+  font-size: 10px; color: var(--text-tertiary, #76746E);
+  font-family: var(--font-mono, ui-monospace);
+  text-align: right; margin-bottom: 16px;
+}
 </style>
 </head>
 <body>
@@ -761,6 +791,35 @@ body::after {
   <div id="quotesCrawlWrap" style="display:none">
     <div id="quotesCrawl"></div>
   </div>
+
+  <!-- Apple Health Today -->
+  <div style="font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#76746E;display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px">
+    <span>Today's Stats</span>
+    <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent)"></span>
+  </div>
+  <div class="ah-grid" id="ahGrid">
+    <div class="ah-tile">
+      <div class="ah-tile-icon">👟</div>
+      <div class="ah-tile-val" id="ahSteps">—</div>
+      <div class="ah-tile-label">Steps</div>
+    </div>
+    <div class="ah-tile">
+      <div class="ah-tile-icon">😴</div>
+      <div class="ah-tile-val" id="ahSleep">—</div>
+      <div class="ah-tile-label">Sleep</div>
+    </div>
+    <div class="ah-tile">
+      <div class="ah-tile-icon">🔥</div>
+      <div class="ah-tile-val" id="ahCal">—</div>
+      <div class="ah-tile-label">kcal</div>
+    </div>
+    <div class="ah-tile">
+      <div class="ah-tile-icon">❤️</div>
+      <div class="ah-tile-val" id="ahHR">—</div>
+      <div class="ah-tile-label">HR</div>
+    </div>
+  </div>
+  <div class="ah-sync-time" id="ahSyncTime"></div>
 
   <div class="section">
     <div class="section-title">To Do List</div>
@@ -1993,6 +2052,53 @@ body::after {
     if(h>=20){ const d=loadDaily(); if(!d.recapShown) renderEveningRecap(); }
   });
 })();
+
+// ── Apple Health widget ──────────────────────────────────
+(function loadAppleHealth() {
+  const SUPA_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co';
+  const SUPA_KEY = 'sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
+  const today    = new Date().toISOString().slice(0, 10);
+  const ahKey    = 'apple_health:' + today;
+
+  fetch(SUPA_URL + '/rest/v1/app_state?select=data,updated_at&key=eq.'
+    + encodeURIComponent(ahKey), {
+    headers: {
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY,
+    }
+  })
+  .then(r => r.json())
+  .then(rows => {
+    if (!rows || !rows.length || !rows[0].data) return;
+    const d = rows[0].data;
+
+    // Support both "steps" and "steps " (trailing space from Shortcuts)
+    const stepsRaw = d.steps != null ? d.steps : (d['steps '] != null ? d['steps '] : null);
+    const steps = stepsRaw != null ? Math.round(stepsRaw).toLocaleString() : '—';
+    const sleep = d.sleep_hours != null
+      ? (Math.round(d.sleep_hours * 10) / 10) + 'h' : '—';
+    const cal   = d.calories != null ? Math.round(d.calories) : '—';
+    const hr    = d.heart_rate != null ? Math.round(d.heart_rate) + ' bpm'
+      : (d.resting_heart_rate != null ? Math.round(d.resting_heart_rate) + ' bpm' : '—');
+
+    const el = id => document.getElementById(id);
+    if (el('ahSteps')) {
+      el('ahSteps').textContent = steps;
+      if (stepsRaw >= 10000) el('ahSteps').style.color = '#6BE3A4';
+    }
+    if (el('ahSleep')) el('ahSleep').textContent = sleep;
+    if (el('ahCal'))   el('ahCal').textContent   = cal;
+    if (el('ahHR'))    el('ahHR').textContent     = hr;
+
+    if (el('ahSyncTime') && rows[0].updated_at) {
+      const t = new Date(rows[0].updated_at);
+      el('ahSyncTime').textContent = 'Synced '
+        + t.toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'});
+    }
+  })
+  .catch(() => {});
+})();
+// ────────────────────────────────────────────────────────
 </script>
 
 <script>
