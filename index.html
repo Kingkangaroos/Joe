@@ -2073,8 +2073,9 @@ body::after {
     const d = rows[0].data;
 
     // Support both "steps" and "steps " (trailing space from Shortcuts)
-    const stepsRaw = d.steps != null ? d.steps : (d['steps '] != null ? d['steps '] : null);
-    const steps = stepsRaw != null ? Math.round(stepsRaw).toLocaleString() : '—';
+    const stepsRaw  = d.steps != null ? Number(d.steps) : (d['steps '] != null ? Number(d['steps ']) : 0);
+    const energyRaw = Number(d.active_energy) || 0;
+    const steps = stepsRaw > 0 ? Math.round(stepsRaw).toLocaleString() : '—';
     const sleep = d.sleep_hours != null
       ? (Math.round(d.sleep_hours * 10) / 10) + 'h' : '—';
     const cal   = d.calories != null ? Math.round(d.calories) : '—';
@@ -2094,6 +2095,18 @@ body::after {
       const t = new Date(rows[0].updated_at);
       el('ahSyncTime').textContent = 'Synced '
         + t.toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'});
+    }
+
+    // Endurance XP — één keer per dag toekennen
+    const AH_XP_KEY = 'ah_xp_given:' + today;
+    if (!localStorage.getItem(AH_XP_KEY) && typeof window.addXP === 'function') {
+      const stepsScore  = Math.min(stepsRaw / 10000, 1) * 50;
+      const energyScore = Math.min(energyRaw / 600,  1) * 50;
+      const xp = Math.round(stepsScore + energyScore);
+      if (xp > 0) {
+        window.addXP('endurance', xp, 'Apple Health — steps + energy');
+        localStorage.setItem(AH_XP_KEY, '1');
+      }
     }
   })
   .catch(() => {});

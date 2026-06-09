@@ -228,6 +228,20 @@
       xp:0, parentSkill:'body', icon:'💪', label:'Strength', active:false,
       quickLog:[{label:'Strength session', xp:50},{label:'PR hit', xp:80}],
     },
+    endurance: {
+      xp:0, parentSkill:'body', icon:'🏃', label:'Endurance', active:true,
+      quickLog:[
+        { label:'Run / cardio session', xp:40 },
+        { label:'10k steps reached',    xp:30 },
+        { label:'Cycling session',      xp:35 },
+      ],
+      milestones:{
+        25:  'Run 5km without stopping',
+        50:  '10km under 55 min',
+        75:  'Half marathon',
+        100: 'Marathon — elite endurance',
+      },
+    },
 
     // ══ BODY — habits (isHabit: true) ═════════════════════════════════
     sleep: {
