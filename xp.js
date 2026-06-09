@@ -225,8 +225,34 @@
       },
     },
     strength: {
-      xp:0, parentSkill:'body', icon:'💪', label:'Strength', active:false,
-      quickLog:[{label:'Strength session', xp:50},{label:'PR hit', xp:80}],
+      xp:0, parentSkill:'body', icon:'💪', label:'Strength', active:true,
+      quickLog:[
+        { label:'Gym session', xp:60 },
+        { label:'PR achieved', xp:100 },
+        { label:'Push day',    xp:50 },
+        { label:'Pull day',    xp:50 },
+        { label:'Leg day',     xp:55 },
+      ],
+      milestones:{
+        25:  '3x/week consistent training',
+        50:  '100kg squat, 80kg bench',
+        75:  '140kg squat, weighted pull-ups',
+        100: 'Elite — competition-ready, top 1%',
+      },
+    },
+    recovery: {
+      xp:0, parentSkill:'body', icon:'❤️', label:'Recovery', active:true,
+      quickLog:[
+        { label:'8+ hours sleep',     xp:30 },
+        { label:'Rest day respected', xp:20 },
+        { label:'Deload week done',   xp:40 },
+      ],
+      milestones:{
+        25:  'Consistent 7+ hrs sleep, resting HR under 65',
+        50:  '8hr sleep standard, HRV improving',
+        75:  'Recovery in 24h after heavy training',
+        100: 'Athlete-level recovery — optimal sleep + HRV',
+      },
     },
     endurance: {
       xp:0, parentSkill:'body', icon:'🏃', label:'Endurance', active:true,
