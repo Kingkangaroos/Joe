@@ -460,6 +460,25 @@ textarea {
   color:var(--t3); font-size:13px; cursor:pointer; transition:all 0.15s;
 }
 
+/* ── Skill Detail Panel v2 (Fase 3 — sdOverlay/sd-panel) ── */
+.sd-panel{background:#0e0e12;border:1px solid rgba(255,255,255,0.1);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;padding:20px 18px calc(env(safe-area-inset-bottom,0px) + 20px);animation:sheetUp 0.25s cubic-bezier(0.22,1,0.36,1);-webkit-overflow-scrolling:touch}
+.sd-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.sd-level-badge{font-size:12px;font-family:var(--mono);color:var(--t3);font-weight:700}
+.sd-xp-section{margin-bottom:18px}
+.sd-log-section{margin-bottom:20px}
+.sd-log-title{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.sd-ms-reach-btn{width:100%;padding:12px 16px;background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.3);border-radius:12px;color:#F5C842;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:14px;transition:all 0.15s;text-align:left;display:flex;align-items:center;gap:10px}
+.sd-ms-reach-btn:active{transform:scale(0.98)}
+.sd-custom-input{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:var(--t1);font-family:var(--mono);font-size:16px;text-align:center;outline:none;-webkit-appearance:none}
+.sd-custom-btn{padding:11px 18px;border-radius:10px;background:rgba(107,227,164,0.12);border:1px solid rgba(107,227,164,0.3);color:#6BE3A4;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap}
+.sd-unlock-title{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
+.sd-ms-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.sd-ms-row:last-child{border-bottom:none}
+.sd-ms-status{font-size:14px;flex-shrink:0;width:20px;text-align:center;margin-top:1px}
+.sd-ms-text{font-size:12px;font-weight:500;color:var(--t2);line-height:1.4}
+.sd-ms-text.next-target{color:var(--t1);font-weight:700}
+.sd-ms-text.locked{color:var(--t3)}
+
 /* Milestone confirm modal */
 .ms-confirm-overlay {
   position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9300;
@@ -597,15 +616,17 @@ textarea {
 // LoA kleuren — gespiegeld van xp.js
 const PARENT_META = {
   money:      { color:'#F5C842', icon:'💰', label:'Money' },
-  body:       { color:'#6BE3A4', icon:'💪', label:'Body' },
-  mind:       { color:'#7DD3FC', icon:'🧠', label:'Mind' },
+  body:       { color:'#6BE3A4', icon:'💪', label:'Physical' },
+  mind:       { color:'#7DD3FC', icon:'🧠', label:'Mental' },
   business:   { color:'#C4B5FD', icon:'📈', label:'Business' },
   lifestyle:  { color:'#FB923C', icon:'✨', label:'Lifestyle' },
-  discipline: { color:'#FF6B6B', icon:'🛡️', label:'Discipline' },
   knowledge:  { color:'#818CF8', icon:'📚', label:'Knowledge' },
-  creative:   { color:'#2DD4BF', icon:'🎨', label:'Creative' },
+  // Mapped — erven van domein
+  discipline: { color:'#7DD3FC', icon:'🧠', label:'Mental' },
+  creative:   { color:'#818CF8', icon:'📚', label:'Knowledge' },
 };
-const CATEGORY_ORDER = ['money','body','mind','business','lifestyle','discipline','knowledge','creative'];
+const CATEGORY_ORDER = ['money','body','mind','business','lifestyle','knowledge'];
+const DOMAIN_MAP     = { discipline: 'mind', creative: 'knowledge' };
 
 const MAX_LEVEL = 100;
 function xpToLevel(xp){ return Math.min(MAX_LEVEL, Math.floor(Math.sqrt((xp||0)/50))+1); }
@@ -803,143 +824,138 @@ function showMilestoneConfirm(skillKey, level, label, color, onDone){
   document.getElementById('msNo').addEventListener('click',()=>{ overlay.remove(); if(onDone) onDone(); });
 }
 
-// ── Skill detail panel ─────────────────────────────
+// ── Skill Detail Panel — Fase 3 ────────────────────
+function getConfirmedMilestones(){
+  try{ return JSON.parse(localStorage.getItem('rpg_milestones_v1'))||{}; }catch{ return {}; }
+}
+
 function openSkillDetail(skillKey){
   const defaults=window.RPG_DEFAULT_SKILLS||{};
   const def=defaults[skillKey]||{};
   if(def.private&&!isPrivateUnlocked()){ requirePin(()=>openSkillDetail(skillKey)); return; }
 
-  const char=loadChar();
-  const saved=char.skills[skillKey]||{};
-  const xp=saved.xp||0;
-  const level=Math.min(MAX_LEVEL,xpToLevel(xp));
-  const meta=PARENT_META[def.parentSkill||'body']||{color:'#6BE3A4'};
-  const color=meta.color;
-  const milestones=def.milestones||{};
-  const confirmed=loadMilestones();
+  const char  =loadChar();
+  const saved =(char.skills||{})[skillKey]||{};
+  const xp    =saved.xp||0;
+  const level =xpToLevel(xp);
+  const meta  =PARENT_META[def.parentSkill||'body']||{color:'#6BE3A4'};
+  const color =meta.color;
+  const ms    =def.milestones||{};
+  const conf  =getConfirmedMilestones();
 
-  const isMax=level>=MAX_LEVEL;
-  const curXP=isMax?0:xp-xpForLevel(level);
-  const nextXP=isMax?1:xpForLevel(level+1)-xpForLevel(level);
-  const pct=isMax?100:Math.min(100,Math.round(curXP/nextXP*100));
+  const isMax   =level>=MAX_LEVEL;
+  const curBase =xpForLevel(level);
+  const nextBase=xpForLevel(level+1);
+  const pct     =isMax?100:Math.min(100,Math.round((xp-curBase)/(nextBase-curBase)*100));
 
-  // Next milestone
-  const msLevels=Object.keys(milestones).map(Number).sort((a,b)=>a-b);
-  const nextMs=msLevels.find(l=>l>level);
-  const nextMsLabel=nextMs?milestones[nextMs]:'';
+  const msLevels =Object.keys(ms).map(Number).sort((a,b)=>a-b);
+  const nextMs   =msLevels.find(l=>l>level);
+  const xpToNext =nextMs?xpForLevel(nextMs)-xp:null;
+  const showMsBtn=nextMs&&xpToNext!==null&&xpToNext<=300;
 
-  // Build milestone list HTML
-  const msHtml=msLevels.map(l=>{
-    const isDone=level>=l;
-    const isNext=!isDone&&l===nextMs;
-    const isConf=confirmed[skillKey+'_'+l]?.confirmed;
-    const date=confirmed[skillKey+'_'+l]?.date||'';
-    let status=isDone?(isConf?'✅':'✅'):'🔒';
-    if(isNext) status='▶';
-    return `<div class="sd-milestone${isNext?' sd-ms-next':''}">
-      <div class="sd-ms-status">${status}</div>
-      <div class="sd-ms-body">
-        <div class="sd-ms-level" style="${isNext?'color:'+color:''}">${isDone?'LVL '+l:isNext?'→ LVL '+l:'LVL '+l}</div>
-        <div class="sd-ms-label${isNext?' next':''}" style="${isNext?'color:'+color:isDone?'color:var(--t2)':'color:var(--t3)'}">${milestones[l]}</div>
-        ${date?'<div class="sd-ms-date">Reached on '+date+'</div>':''}
+  document.getElementById('sdOverlay')?.remove();
+  document.getElementById('sdModal')?.remove();
+
+  const overlay=document.createElement('div');
+  overlay.id='sdOverlay';
+  overlay.className='sd-overlay';
+
+  const msBtnHtml=showMsBtn?`
+    <button class="sd-ms-reach-btn" onclick="confirmSkillMilestone('${skillKey}',${nextMs},${xpToNext})">
+      🏆 Milestone in reach — Level ${nextMs}
+      <span style="font-size:11px;font-weight:400;color:rgba(245,200,66,0.7)">${ms[nextMs]}</span>
+    </button>`:'';
+
+  const logBtns=(def.quickLog||[]).map(q=>`
+    <div class="sd-log-btn" onclick="doSkillDetailLog('${skillKey}',${q.xp},'${q.label.replace(/'/g,"\\'")}')">
+      <span class="sd-log-btn-label">${q.label}</span>
+      <span class="sd-log-btn-xp" style="color:${color}">+${q.xp} XP</span>
+    </div>`).join('');
+
+  const msRows=msLevels.map(ml=>{
+    const done  =level>=ml;
+    const isNext=ml===nextMs;
+    const isConf=conf[`${skillKey}_${ml}`];
+    const icon  =done?'✅':isNext?'▶':'🔒';
+    const cls   =isNext?'next-target':done?'':'locked';
+    const dateHtml=isConf?.date?`<div class="sd-ms-date">Achieved ${isConf.date}</div>`:'';
+    return `<div class="sd-ms-row">
+      <div class="sd-ms-status">${icon}</div>
+      <div>
+        <div class="sd-ms-level">Level ${ml}</div>
+        <div class="sd-ms-text ${cls}">${ms[ml]}</div>
+        ${dateHtml}
       </div>
     </div>`;
   }).join('');
 
-  // Quick log options
-  const opts=def.quickLog||[];
-  const logHtml=opts.map(o=>
-    `<div class="sd-log-btn" onclick="sdLog('${skillKey}',${o.xp},'${o.label}')">
-       <span class="sd-log-btn-label">${o.label}</span>
-       <span class="sd-log-btn-xp" style="color:${color}">+${o.xp} XP</span>
-     </div>`
-  ).join('');
-
-  // Milestone reach button: always show if there's a next milestone
-  const xpToNextMs = nextMs ? (xpForLevel(nextMs) - xp) : null;
-  const msReachBtnHtml = (nextMs && xpToNextMs > 0)
-    ? `<button id="sdMsReachBtn" style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:10px;padding:11px 14px;border-radius:11px;background:rgba(245,200,66,0.08);border:1px solid rgba(245,200,66,0.25);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent" onclick="sdLog('${skillKey}',${xpToNextMs},'Milestone Lvl ${nextMs} bereikt')">
-        <div>
-          <div style="font-size:11px;font-weight:700;color:#F5C842">🏆 Milestone bereikt — Lvl ${nextMs}</div>
-          <div style="font-size:10px;color:var(--t3);margin-top:2px">${nextMsLabel}</div>
-        </div>
-        <span style="font-size:11px;font-family:var(--mono);font-weight:700;color:#F5C842;flex-shrink:0;margin-left:10px">+${xpToNextMs} XP</span>
-      </button>`
-    : '';
-
-  document.getElementById('sdModal')?.remove();
-  const overlay=document.createElement('div');
-  overlay.id='sdModal';
-  overlay.className='sd-overlay';
-  overlay.innerHTML=
-    `<div class="sd-sheet">
+  overlay.innerHTML=`
+    <div class="sd-panel">
       <div class="sd-handle"></div>
-      <div class="sd-hero">
-        <div class="sd-hero-top">
-          <div class="sd-icon">${def.icon||'⭐'}</div>
-          <div style="flex:1">
-            <div class="sd-title" style="color:${color}">${def.label||skillKey}</div>
-            <div class="sd-subtitle">Level ${isMax?'MAX':level} · ${xp.toLocaleString()} XP total</div>
-          </div>
-          <button onclick="document.getElementById('sdModal').remove()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t3);font-size:14px;flex-shrink:0">✕</button>
+      <div class="sd-header">
+        <span class="sd-icon">${def.icon||'⭐'}</span>
+        <div>
+          <div class="sd-title" style="color:${color}">${def.label||skillKey}</div>
+          <div class="sd-level-badge">Level ${isMax?'MAX':level} · ${xp.toLocaleString()} XP</div>
         </div>
+      </div>
+      <div class="sd-xp-section">
         <div class="sd-xp-label">
-          <span>${isMax?'MAXED OUT':curXP.toLocaleString()+' / '+nextXP.toLocaleString()+' XP to Lvl '+(level+1)}</span>
-          <span>${isMax?'100%':pct+'%'}</span>
+          <span>${isMax?'Maximum level reached':'Progress to Level '+(level+1)}</span>
+          <span>${isMax?'MAX':pct+'%'}</span>
         </div>
         <div class="sd-xp-track"><div class="sd-xp-fill" style="width:${pct}%;background:${color}"></div></div>
-        ${nextMsLabel?'<div class="sd-next-goal">Next unlock: <span style="color:'+color+'">'+nextMsLabel+'</span></div>':''}
-        ${msReachBtnHtml}
       </div>
-      ${logHtml?`
+      ${msBtnHtml}
       <div class="sd-log-section">
-        <div class="sd-section-title" style="padding:0">Log Activity</div>
-        ${logHtml}
-        <div class="sd-log-custom">
-          <input id="sdCustomXp" type="number" min="1" max="999" placeholder="Custom XP">
-          <button class="ql-custom-btn" onclick="sdLog('${skillKey}',parseInt(document.getElementById('sdCustomXp')?.value||0),'Custom XP')">+ Add</button>
+        <div class="sd-log-title">Log Activity</div>
+        ${logBtns}
+        <div class="sd-custom" style="display:flex;gap:8px;margin-top:6px">
+          <input class="sd-custom-input" id="sdCustomXp" type="number" min="1" max="999" placeholder="Custom XP">
+          <button class="sd-custom-btn" onclick="doSkillDetailLog('${skillKey}',parseInt(document.getElementById('sdCustomXp')?.value||0),'Custom XP')">+ Add</button>
         </div>
-      </div>`:''}
-      ${msLevels.length?`
-      <div class="sd-section">
-        <div class="sd-section-title">Unlock Path</div>
-        ${msHtml}
-      </div>`:''}
-      <button class="sd-close" onclick="document.getElementById('sdModal').remove()">Close</button>
+      </div>
+      ${msLevels.length?`<div class="sd-unlock-title">Unlock Path</div>${msRows}`:''}
+      <button class="sd-close" onclick="document.getElementById('sdOverlay')?.remove()">Close</button>
     </div>`;
 
   document.body.appendChild(overlay);
   overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
 }
 
-function sdLog(skillKey, amount, label){
+function doSkillDetailLog(skillKey, amount, label){
   if(!amount||amount<=0) return;
   const defaults=window.RPG_DEFAULT_SKILLS||{};
   const def=defaults[skillKey]||{};
   const milestones=def.milestones||{};
-
   const charBefore=loadChar();
-  const xpBefore=(charBefore.skills[skillKey]||{}).xp||0;
-  const levelBefore=xpToLevel(xpBefore);
-
+  const levelBefore=xpToLevel((charBefore.skills[skillKey]||{}).xp||0);
   if(typeof window.addXP==='function') window.addXP(skillKey, amount, label);
-
   const charAfter=loadChar();
-  const xpAfter=(charAfter.skills[skillKey]||{}).xp||0;
-  const levelAfter=Math.min(MAX_LEVEL,xpToLevel(xpAfter));
-
-  // Check if we crossed a milestone level
+  const levelAfter=Math.min(MAX_LEVEL,xpToLevel((charAfter.skills[skillKey]||{}).xp||0));
   const msLevels=Object.keys(milestones).map(Number).sort((a,b)=>a-b);
   const crossedMs=msLevels.find(l=>l>levelBefore&&l<=levelAfter&&!isMilestoneConfirmed(skillKey,l));
-
-  document.getElementById('sdModal')?.remove();
+  document.getElementById('sdOverlay')?.remove();
   renderCharacter();
-  renderBodySystem();
-
+  if(typeof renderBodySystem==='function') renderBodySystem();
   if(crossedMs){
-    const meta=PARENT_META[def.parentSkill||'body']||{color:'#6BE3A4'};
-    setTimeout(()=>showMilestoneConfirm(skillKey,crossedMs,milestones[crossedMs],meta.color,null),400);
+    const meta2=PARENT_META[def.parentSkill||'body']||{color:'#6BE3A4'};
+    setTimeout(()=>showMilestoneConfirm(skillKey,crossedMs,milestones[crossedMs],meta2.color,null),400);
   }
+}
+
+function confirmSkillMilestone(skillKey, targetLevel, xpNeeded){
+  const def=(window.RPG_DEFAULT_SKILLS||{})[skillKey]||{};
+  const text=(def.milestones||{})[targetLevel]||'';
+  if(!confirm(`Have you actually achieved Level ${targetLevel}?\n"${text}"`)) return;
+  if(typeof window.addXP==='function'&&xpNeeded>0)
+    window.addXP(skillKey, xpNeeded, `Milestone confirmed: Level ${targetLevel}`);
+  const conf=getConfirmedMilestones();
+  conf[`${skillKey}_${targetLevel}`]={ date:new Date().toISOString().slice(0,10), confirmed:true };
+  localStorage.setItem('rpg_milestones_v1', JSON.stringify(conf));
+  document.getElementById('sdOverlay')?.remove();
+  renderCharacter();
+  if(typeof renderBodySystem==='function') renderBodySystem();
 }
 
 // ── Character screen ───────────────────────────────
@@ -1062,7 +1078,8 @@ function renderCharacter(){
     const subskills = Object.entries(defaults)
       .filter(([k,def])=>{
         const actual = skills[k]||def;
-        return def.parentSkill===pKey && !def.isHabit && (actual.active!==false);
+        const mappedPs = DOMAIN_MAP[def.parentSkill] || def.parentSkill;
+        return mappedPs===pKey && !def.isHabit && (actual.active!==false);
       })
       .map(([k,def])=>{
         const actual = skills[k]||{};
@@ -1354,7 +1371,9 @@ function renderSkillTree(){
     const subskills=Object.entries({...defaults,...skills})
       .filter(([k,])=>{
         const def=defaults[k]||{};
-        return (skills[k]?.parentSkill||def.parentSkill)===pKey && !def.isHabit;
+        const ps=skills[k]?.parentSkill||def.parentSkill;
+        const mappedPs=DOMAIN_MAP[ps]||ps;
+        return mappedPs===pKey && !def.isHabit;
       })
       .map(([k])=>({
         key:k,
@@ -1528,9 +1547,8 @@ function renderHistory(){
   CATEGORY_ORDER.forEach(pKey=>{
     const meta=PARENT_META[pKey];
     const totalXp=Object.entries({...defaults,...skills})
-      .filter(([k])=>(skills[k]?.parentSkill||defaults[k]?.parentSkill)===pKey)
+      .filter(([k])=>{const ps=skills[k]?.parentSkill||defaults[k]?.parentSkill; return (DOMAIN_MAP[ps]||ps)===pKey;})
       .reduce((sum,[k])=>sum+(skills[k]?.xp||0),0);
-    if(pKey==='discipline'&&!isPrivateUnlocked()) return;
     const level=xpToLevel(totalXp);
     const pct2=totalXp>0?Math.min(100,Math.round((totalXp-xpForLevel(level))/(xpForLevel(level+1)-xpForLevel(level))*100)):0;
     catCard.innerHTML+=

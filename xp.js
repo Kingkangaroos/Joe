@@ -23,14 +23,16 @@
 
   // ─── 8 Categories — Law of Attraction / Chakra ──────────────────────
   const PARENT_SKILLS = {
-    money:      { label: 'Money',      icon: '💰', color: '#F5C842' }, // Gold   — Solar Plexus
-    body:       { label: 'Body',       icon: '💪', color: '#6BE3A4' }, // Green  — Heart
-    mind:       { label: 'Mind',       icon: '🧠', color: '#7DD3FC' }, // Blue   — Third Eye
-    business:   { label: 'Business',   icon: '📈', color: '#C4B5FD' }, // Purple — Crown
-    lifestyle:  { label: 'Lifestyle',  icon: '✨', color: '#FB923C' }, // Orange — Sacral
-    discipline: { label: 'Discipline', icon: '🛡️', color: '#FF6B6B' }, // Red    — Root
-    knowledge:  { label: 'Knowledge',  icon: '📚', color: '#818CF8' }, // Indigo — Brow
-    creative:   { label: 'Creative',   icon: '🎨', color: '#2DD4BF' }, // Teal   — Throat
+    // 6 officiële domeinen (v3.0)
+    money:      { label: 'Money',      icon: '💰', color: '#F5C842' },
+    body:       { label: 'Physical',   icon: '💪', color: '#6BE3A4' },
+    mind:       { label: 'Mental',     icon: '🧠', color: '#7DD3FC' },
+    business:   { label: 'Business',   icon: '📈', color: '#C4B5FD' },
+    lifestyle:  { label: 'Lifestyle',  icon: '✨', color: '#FB923C' },
+    knowledge:  { label: 'Knowledge',  icon: '📚', color: '#818CF8' },
+    // Geen eigen domeinen meer — erven van dichtsbijzijnde domein
+    discipline: { label: 'Mental',     icon: '🧠', color: '#7DD3FC' },
+    creative:   { label: 'Knowledge',  icon: '📚', color: '#818CF8' },
   };
 
   // ─── Skills & Habits ──────────────────────────────────────────────────
@@ -527,6 +529,7 @@
           }
         }
         if (!saved.xpLog) saved.xpLog = [];
+        applyPhysicalDecay(saved);
         return saved;
       }
     } catch (e) {}
@@ -536,6 +539,34 @@
 
   function saveCharacter(char) {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(char)); } catch (e) {}
+  }
+
+  function applyPhysicalDecay(char) {
+    const PHYSICAL_SKILLS = ['strength','calisthenics','stretching','mobility','endurance','recovery','gym','tennis'];
+    const today = todayStr();
+    const DECAY_KEY = 'rpg_last_decay_check';
+    if (localStorage.getItem(DECAY_KEY) === today) return;
+    let changed = false;
+    const log = char.xpLog || [];
+    PHYSICAL_SKILLS.forEach(key => {
+      const skill = char.skills[key];
+      if (!skill || !skill.xp) return;
+      const lastEntry = log.find(e => e.skill === key);
+      if (!lastEntry || !lastEntry.date) return;
+      const daysSince = Math.floor((new Date(today) - new Date(lastEntry.date)) / 86400000);
+      if (daysSince >= 14) {
+        const weeksInactive = Math.floor(daysSince / 14);
+        const levelsToRemove = Math.min(weeksInactive, 5);
+        const currentLevel = xpToLevel(skill.xp);
+        const targetLevel = Math.max(1, currentLevel - levelsToRemove);
+        if (targetLevel < currentLevel) {
+          skill.xp = xpForLevel(targetLevel);
+          changed = true;
+        }
+      }
+    });
+    localStorage.setItem(DECAY_KEY, today);
+    if (changed) saveCharacter(char);
   }
 
   // ─── Habits ──────────────────────────────────────────────────────────
@@ -688,6 +719,8 @@
   window.RPG_PARENT_SKILLS  = PARENT_SKILLS;
   window.RPG_DEFAULT_SKILLS = DEFAULT_SKILLS;
   window.RPG_MAX_LEVEL      = MAX_LEVEL;
+  window.RPG_CATEGORY_ORDER = ['money','body','mind','business','lifestyle','knowledge'];
+  window.RPG_DOMAIN_MAP     = { discipline: 'mind', creative: 'knowledge' };
 
   // ─── Cloud sync ───────────────────────────────────────────────────────
   function initRPGSync() {
