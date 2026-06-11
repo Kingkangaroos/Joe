@@ -246,6 +246,24 @@ body::before {
     <button class="s-btn-full" onclick="resetQuotes()">↺ Restore default quotes</button>
   </div>
 
+  <!-- ── HEVY ─────────────────────────────────────── -->
+  <div class="sec-title">Integrations</div>
+  <div class="card">
+    <div style="font-size:13px;font-weight:600;margin-bottom:4px">Hevy API Key</div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:10px">Connects your workout data from Hevy</div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input type="password" id="hevyKeyInput"
+        placeholder="a4d43526-..."
+        style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:var(--t1);font-size:14px;outline:none"
+        value="">
+      <button onclick="saveHevyKey()"
+        style="padding:11px 18px;border-radius:10px;background:rgba(107,227,164,0.12);border:1px solid rgba(107,227,164,0.3);color:#6BE3A4;font-weight:700;font-size:13px;cursor:pointer">
+        Save
+      </button>
+    </div>
+    <div id="hevyKeySaved" style="font-size:11px;color:#6BE3A4;margin-top:6px;display:none">✓ Saved</div>
+  </div>
+
   <!-- ── PIN ───────────────────────────────────────── -->
   <div class="sec-title">Security</div>
   <div class="card">
@@ -664,6 +682,16 @@ function initNotifUI() {
 }
 
 // ── Boot ───────────────────────────────────────────────────────
+// ── Hevy ────────────────────────────────────────────────────────
+const HEVY_KEY = 'hevy_api_key';
+window.saveHevyKey = function() {
+  const v = document.getElementById('hevyKeyInput')?.value?.trim();
+  if (!v) return;
+  localStorage.setItem(HEVY_KEY, v);
+  const saved = document.getElementById('hevyKeySaved');
+  if (saved) { saved.style.display = 'block'; setTimeout(()=>saved.style.display='none', 2000); }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   renderFocusSkillPills();
   initNotifUI();
@@ -673,6 +701,13 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDailyQuestToggles();
     renderQuotes();
   }, 50);
+
+  // Pre-fill Hevy key
+  if (!localStorage.getItem(HEVY_KEY)) {
+    localStorage.setItem(HEVY_KEY, 'a4d43526-b1ea-4a5f-9c69-ca543e6afee0');
+  }
+  const inp = document.getElementById('hevyKeyInput');
+  if (inp) inp.value = localStorage.getItem(HEVY_KEY) || '';
 
   if (typeof initCloudSync === 'function' && window.supabase) {
     initCloudSync({ appKey: 'rpg', syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1'], syncedPrefixes: ['rpg_daily_v1:'] });

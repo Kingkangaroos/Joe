@@ -505,6 +505,19 @@ textarea {
   background:#0e0e10; border:1px solid rgba(255,255,255,0.1);
   border-radius:20px; padding:28px 24px; width:280px; text-align:center;
 }
+
+/* Hevy workout widget */
+.hevy-widget{background:rgba(107,227,164,0.04);border:0.5px solid rgba(107,227,164,0.15);border-radius:16px;padding:14px;margin-bottom:12px}
+.hevy-widget-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.hevy-widget-title{font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#6BE3A4}
+.hevy-widget-date{font-size:10px;font-family:var(--mono);color:var(--t3)}
+.hevy-workout-name{font-size:15px;font-weight:700;color:var(--t1);margin-bottom:8px}
+.hevy-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.hevy-stat{background:rgba(255,255,255,0.04);border-radius:10px;padding:8px;text-align:center}
+.hevy-stat-val{font-size:16px;font-weight:700;font-family:var(--mono);color:#6BE3A4;line-height:1}
+.hevy-stat-label{font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--t3);margin-top:3px}
+.hevy-exercises{font-size:11px;color:var(--t3);line-height:1.6}
+.hevy-xp-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(107,227,164,0.1);border:1px solid rgba(107,227,164,0.2);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;font-family:var(--mono);color:#6BE3A4;margin-top:8px}
 </style>
 </head>
 <body>
@@ -528,6 +541,8 @@ textarea {
       <div class="total-label">Total Level</div>
     </div>
   </div>
+  <!-- Hevy Last Workout -->
+  <div id="hevyWidget" style="margin-bottom:12px"></div>
   <!-- Body System scan -->
   <div id="bodySystemSection" style="margin-bottom:12px"></div>
   <div id="rsSkillSections"></div>
@@ -669,7 +684,7 @@ function showTab(id){
   const names = ['character','daily','quests','skills','history'];
   const idx   = names.indexOf(id);
   if(idx>=0) tabs[idx].classList.add('active');
-  if(id==='character') { renderCharacter(); renderBodySystem(); }
+  if(id==='character') { renderCharacter(); renderBodySystem(); loadHevyWidget(); }
   if(id==='daily')     renderDaily();
   if(id==='quests')    renderQuests();
   if(id==='skills')    renderSkillTree();
@@ -1005,6 +1020,88 @@ function renderBodySystem() {
 
   html += `</div></div>`;
   section.innerHTML = html;
+}
+// ────────────────────────────────────────────────────────
+
+// ── Hevy Workout Widget (Fase 4) ─────────────────────────────────
+async function loadHevyWidget() {
+  const el = document.getElementById('hevyWidget');
+  if (!el) return;
+
+  const apiKey = localStorage.getItem('hevy_api_key');
+  if (!apiKey) { el.innerHTML = ''; return; }
+
+  try {
+    const res = await fetch('https://api.hevyapp.com/v1/workouts?page=1&pageSize=3', {
+      headers: { 'api-key': apiKey }
+    });
+    if (!res.ok) { el.innerHTML = ''; return; }
+    const data = await res.json();
+    const workouts = data.workouts || [];
+    if (!workouts.length) { el.innerHTML = ''; return; }
+
+    const w = workouts[0];
+
+    let totalSets = 0, totalVolume = 0;
+    const exerciseNames = [];
+    (w.exercises || []).forEach(ex => {
+      exerciseNames.push(ex.title);
+      (ex.sets || []).forEach(s => {
+        if (s.type !== 'warmup') {
+          totalSets++;
+          totalVolume += (s.weight_kg || 0) * (s.reps || 0);
+        }
+      });
+    });
+
+    const durationMin = w.end_time && w.start_time
+      ? Math.round((new Date(w.end_time) - new Date(w.start_time)) / 60000) : null;
+    const dateStr = new Date(w.start_time).toLocaleDateString('nl-NL', { day:'numeric', month:'short' });
+    const volumeStr = totalVolume > 0
+      ? (totalVolume >= 1000 ? (totalVolume/1000).toFixed(1)+'k' : Math.round(totalVolume)) + ' kg'
+      : '—';
+
+    const XP_KEY = 'hevy_xp:' + w.id;
+    let xpAwarded = 0;
+    if (!localStorage.getItem(XP_KEY) && typeof window.addXP === 'function') {
+      const baseXP   = 60;
+      const setBonus = Math.min(totalSets * 3, 40);
+      xpAwarded = baseXP + setBonus;
+      window.addXP('strength', xpAwarded, `Hevy: ${w.title || 'Workout'}`);
+      localStorage.setItem(XP_KEY, '1');
+      setTimeout(() => { renderCharacter(); renderBodySystem(); }, 300);
+    }
+
+    const xpBadge = xpAwarded > 0
+      ? `<div class="hevy-xp-badge">+${xpAwarded} XP Strength</div>` : '';
+
+    el.innerHTML = `
+      <div class="hevy-widget">
+        <div class="hevy-widget-header">
+          <div class="hevy-widget-title">Last Workout</div>
+          <div class="hevy-widget-date">${dateStr}</div>
+        </div>
+        <div class="hevy-workout-name">${w.title || 'Workout'}</div>
+        <div class="hevy-stats">
+          <div class="hevy-stat">
+            <div class="hevy-stat-val">${totalSets}</div>
+            <div class="hevy-stat-label">Sets</div>
+          </div>
+          <div class="hevy-stat">
+            <div class="hevy-stat-val">${volumeStr}</div>
+            <div class="hevy-stat-label">Volume</div>
+          </div>
+          <div class="hevy-stat">
+            <div class="hevy-stat-val">${durationMin ? durationMin+'m' : '—'}</div>
+            <div class="hevy-stat-label">Duration</div>
+          </div>
+        </div>
+        <div class="hevy-exercises">${[...new Set(exerciseNames)].slice(0,4).join(' · ')}</div>
+        ${xpBadge}
+      </div>`;
+  } catch(e) {
+    el.innerHTML = '';
+  }
 }
 // ────────────────────────────────────────────────────────
 
@@ -1635,6 +1732,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Wait a tick for xp.js to load RPG_DEFAULT_SKILLS
   setTimeout(()=>{
     renderCharacter();
+    renderBodySystem();
+    loadHevyWidget();
     renderDaily();
     renderQuests();
   },0);
@@ -1648,7 +1747,7 @@ window.addEventListener('storage',()=>{
   const active=document.querySelector('.char-screen.active');
   if(!active) return;
   const id=active.id.replace('tab-','');
-  if(id==='character') { renderCharacter(); renderBodySystem(); }
+  if(id==='character') { renderCharacter(); renderBodySystem(); loadHevyWidget(); }
   if(id==='daily')     renderDaily();
   if(id==='history')   renderHistory();
 });
