@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F4F3EF">
 <title>Gamenfy — Command Center</title>
+<link rel="manifest" href="./manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -399,7 +400,7 @@ body {
       </div>
       <div class="arc-stat">
         <div class="arc-stat-val" id="arcBestStreak">0</div>
-        <div class="arc-stat-lbl">Best Streak</div>
+        <div class="arc-stat-lbl">Top Habit</div>
       </div>
     </div>
   </div>
@@ -545,14 +546,14 @@ function renderMissions() {
     const h = habits[k] || {};
     const donedToday = h.lastChecked === today;
     if (donedToday) doneCount++;
-    const streak = h.streak || 0;
+    const lvl = h.score || 0;
     return `<div class="mission-row${donedToday?' done':''}" onclick="toggleMission('${k}')" data-key="${k}">
       <div class="mission-check">
         <span class="mission-check-icon">✓</span>
       </div>
       <div class="mission-info">
         <div class="mission-name">${def.label}</div>
-        <div class="mission-streak">${streak > 0 ? '🔥 ' + streak + ' day streak' : 'Start your streak today'}</div>
+        <div class="mission-streak">${lvl >= 10 ? '👑 Level 10 — mastered' : lvl > 0 ? '⬆️ Level ' + lvl + '/10' : 'Level 0 — start today'}</div>
       </div>
       <div class="mission-xp">+15 XP</div>
     </div>`;
@@ -565,11 +566,11 @@ function renderMissions() {
   const arcXp = document.getElementById('arcXpToday');
   if (arcXp) arcXp.textContent = xpToday;
 
-  // best streak
+  // top habit level (0-10)
   let best = 0;
-  for (const h of Object.values(habits)) { if ((h.streak||0) > best) best = h.streak; }
+  for (const h of Object.values(habits)) { if ((h.score||0) > best) best = h.score; }
   const bs = document.getElementById('arcBestStreak');
-  if (bs) bs.textContent = best;
+  if (bs) bs.textContent = best + '/10';
 }
 
 window.toggleMission = function(key) {
@@ -588,7 +589,7 @@ window.toggleMission = function(key) {
   } else {
     const result = window.checkHabit(key, def.label, def.icon);
     if (window.addXP) window.addXP(key, 15, 'Habit: ' + def.label);
-    showToast('+15 XP · ' + def.label + (result.streak > 1 ? ' 🔥 ' + result.streak : ''));
+    showToast('+15 XP · ' + def.label + ' · Level ' + (result.score||1) + '/10' + ((result.score||0) >= 10 ? ' 👑' : ''));
   }
   renderMissions();
   renderCharStrip();

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F4F3EF">
 <title>Character — King Joey</title>
+<link rel="manifest" href="./manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -675,7 +676,7 @@ textarea {
     </div>
     <div class="core-stat-box">
       <div class="core-stat-val" id="statBestStreak">0</div>
-      <div class="core-stat-lbl">Best Streak</div>
+      <div class="core-stat-lbl">Top Habit</div>
     </div>
     <div class="core-stat-box">
       <div class="core-stat-val" id="statActiveSkills">0</div>
@@ -1372,12 +1373,12 @@ function renderCharacter(){
   const sxw = document.getElementById('statXpWeek');
   if (sxw) sxw.textContent = xpWeek.toLocaleString();
 
-  // Best streak
+  // Top habit level (0-10)
   const habits = typeof window.getHabits==='function' ? window.getHabits() : {};
-  let bestStreak = 0;
-  for (const h of Object.values(habits)) { if ((h.streak||0)>bestStreak) bestStreak=h.streak; }
+  let bestHabit = 0;
+  for (const h of Object.values(habits)) { if ((h.score||0)>bestHabit) bestHabit=h.score; }
   const sbs = document.getElementById('statBestStreak');
-  if (sbs) sbs.textContent = bestStreak;
+  if (sbs) sbs.textContent = bestHabit + '/10';
 
   // Active skills
   let activeCount = 0;
@@ -1395,7 +1396,6 @@ function renderCharacter(){
   sections.innerHTML='';
 
   // ── Habit tiles FIRST ──────────────────────────────
-  const habits = typeof window.getHabits==='function' ? window.getHabits() : {};
   const today = new Date().toISOString().slice(0,10);
   const habitSkills = Object.entries(defaults)
     .filter(([,def])=>def.isHabit && def.active!==false)
@@ -1426,7 +1426,7 @@ function renderCharacter(){
         `<div class="habit-tile-name">${h.label}</div>`+
         `<div class="habit-tile-score" style="color:${meta.color}">${h.score}<span style="font-size:9px;color:var(--t3)">/10</span></div>`+
         `<div class="habit-tile-bar"><div class="habit-tile-fill" style="width:${pct}%;background:${meta.color}"></div></div>`+
-        (h.streak>1?`<div style="font-size:8px;color:${meta.color};font-weight:700;font-family:var(--mono)">${h.streak} day streak</div>`:'');
+        (h.score>0?`<div style="font-size:8px;color:${meta.color};font-weight:700;font-family:var(--mono)">Level ${h.score}/10${h.score>=10?' 👑':''}</div>`:'');
       tile.addEventListener('click',()=>{
         if(checkedToday){
           if(typeof window.uncheckHabit==='function') window.uncheckHabit(h.key);

@@ -54,7 +54,7 @@
       origRemove(k);
       try { if (!suppressSync && matches(k)) schedulePush(); } catch (e) {}
     };
-    function applyRemote(remote) {
+    function applyRemote(remote, allowDelete) {
       if (!remote || typeof remote !== 'object') return false;
       suppressSync = true;
       let changed = false;
@@ -65,8 +65,10 @@
           const local = localStorage.getItem(k);
           if (local !== incoming) { try { origSet(k, incoming); changed = true; } catch (e) {} }
         }
-        for (const k of listAllKeys()) {
-          if (!(k in remote)) { try { origRemove(k); changed = true; } catch (e) {} }
+        if (allowDelete) {
+          for (const k of listAllKeys()) {
+            if (!(k in remote)) { try { origRemove(k); changed = true; } catch (e) {} }
+          }
         }
       } finally { suppressSync = false; }
       if (changed && typeof onApplied === 'function') { try { onApplied(); } catch (e) {} }
@@ -111,7 +113,11 @@
         const { data, error } = await supa.from('app_state').select('data').eq('key', appKey).maybeSingle();
         if (!error && data && data.data && Object.keys(data.data).length > 0) {
           lastSyncedJson = JSON.stringify(data.data);
-          applyRemote(data.data);
+          applyRemote(data.data, false); // initial load: never delete local-only items
+          // If we have local items the cloud doesn't know about, push the merged state.
+          let hasLocalOnly = false;
+          for (const k of listAllKeys()) { if (!(k in data.data)) { hasLocalOnly = true; break; } }
+          if (hasLocalOnly) schedulePush();
         } else if (Object.keys(collect()).length > 0) {
           schedulePush();
         }
@@ -124,7 +130,7 @@
           const incoming = JSON.stringify(payload.new.data);
           if (incoming === lastSyncedJson) return;
           lastSyncedJson = incoming;
-          applyRemote(payload.new.data);
+          applyRemote(payload.new.data, true);
         })
         .subscribe();
     })();

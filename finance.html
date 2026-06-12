@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#F4F3EF">
 <title>Finances</title>
+<link rel="manifest" href="./manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="sync.js" defer></script>
 <script src="topbar.js" defer></script>
@@ -2112,13 +2113,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         }
       });
     });
-    // Subs annualized — one aggregate slice (no per-sub breakdown here).
-    const subItems = storeGet('subs') || [];
-    const annualSubsCHF = subItems.reduce((s, it) => s + monthlyEquivalent(it) * 12, 0);
-    if (annualSubsCHF > 0) {
-      const meta = NW_SLICE_META.subs;
-      slices.push({ key: 'subs', name: meta.name, color: meta.color, value: annualSubsCHF });
-    }
+    // Subscriptions intentionally excluded from the allocation donut —
+    // they live in their own Maandlasten tab.
 
     const sliceTotal = slices.reduce((s, x) => s + x.value, 0);
 
