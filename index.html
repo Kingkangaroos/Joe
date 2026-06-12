@@ -3,2134 +3,836 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0f">
-<title>King Joey's Dashboard</title>
+<meta name="theme-color" content="#F4F3EF">
+<title>Gamenfy — Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="sync.js" defer></script>
 <script src="topbar.js" defer></script>
 <script src="xp.js" defer></script>
 <style>
 :root {
-  --text-primary: #FAFAFA;
-  --text-secondary: #B8B6B0;
-  --text-tertiary: #76746E;
-  --success: #6BE3A4;
-  --warning: #F2C063;
-  --danger: #FF6B6B;
-  --font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --bg: #F4F3EF;
+  --card: #FFFFFF;
+  --ink: #15140F;
+  --ink-card: #181712;
+  --muted: #6F6C63;
+  --faint: #A6A399;
+  --line: #E8E6DF;
+  --line-strong: #DBD8CF;
+  --ember: #D4633E;
+  --ember-deep: #B14E2E;
+  --gold: #C9A227;
+  --green: #2E8B5F;
+  --scan: #4FC3D9;
+  --font-display: 'Schibsted Grotesk', -apple-system, sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
-  margin: 0; padding: 0;
-  background: #0a0a0f;
-  color: var(--text-secondary);
-  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
 body {
   min-height: 100vh;
-  position: relative;
   overflow-x: hidden;
-  padding: max(28px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) 60px max(20px, env(safe-area-inset-left));
+  padding: 12px 16px 24px;
 }
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245,200,66,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(107,227,164,0.04) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 30% at 20% 80%, rgba(129,140,248,0.04) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: -2;
-}
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: radial-gradient(rgba(255,255,255,0.014) 1px, transparent 1px);
-  background-size: 3px 3px;
-  pointer-events: none;
-  z-index: -1;
-}
-@keyframes drift {
-  0%   { transform: translate3d(0,0,0); }
-  100% { transform: translate3d(-22px, 14px, 0); }
-}
+.page { max-width: 600px; margin: 0 auto; }
 
-.page {
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-/* ===== Component 1: page title ===== */
-.dash-title {
-  margin: 0 0 14px;
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  background: linear-gradient(180deg, #FFFFFF 0%, #C7C4BC 120%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-@media (max-width: 480px) { .dash-title { font-size: 22px; } }
-
-/* ===== Component 2: Goal Ticker ===== */
-.ticker-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 4px;
-  margin-bottom: 18px;
-}
-.goal-ticker {
-  position: relative; overflow: hidden;
-  display: flex; align-items: center; gap: 10px;
-  padding: 7px 12px;
-  border-radius: 12px;
-  background:
-    linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.30) 100%),
-    repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 3px);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-}
-.goal-ticker::after {
-  content: '';
-  position: absolute; top: 0; bottom: 0;
-  width: 30%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
-  pointer-events: none;
-  animation: ticker-sweep 8s linear infinite;
-}
-@keyframes ticker-sweep {
-  0%   { left: -40%; }
-  100% { left: 110%; }
-}
-.goal-ticker-led { display: inline-flex; align-items: center; }
-.goal-ticker-led-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: #6BE3A4;
-  box-shadow: 0 0 8px rgba(107,227,164,0.7);
-  animation: led-pulse 1.6s ease-in-out infinite;
-}
-@keyframes led-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: 0.45; transform: scale(0.85); }
-}
-.goal-ticker-label {
-  font-family: var(--font-mono);
-  font-size: 9.5px; font-weight: 800;
-  letter-spacing: 0.18em;
-  color: var(--text-tertiary);
-}
-.goal-ticker-stage {
-  position: relative; overflow: hidden;
-  flex: 1; height: 22px;
-}
-.goal-ticker-row {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 12.5px; font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-primary);
-  white-space: nowrap;
-}
-.goal-ticker-row.is-leaving  { animation: ticker-leave 0.45s cubic-bezier(0.55, 0, 0.55, 1) forwards; }
-.goal-ticker-row.is-entering { animation: ticker-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-@keyframes ticker-leave { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-100%); } }
-@keyframes ticker-enter { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: translateY(0); } }
-.goal-ticker-status {
-  display: inline-flex; justify-content: center;
-  width: 18px;
-  color: var(--text-tertiary);
-}
-.goal-ticker-status[data-status="done"]    { color: var(--success); }
-.goal-ticker-status[data-status="pending"] { color: var(--text-tertiary); }
-.goal-ticker-text {
-  flex: 1;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.goal-ticker-meta {
-  font-family: var(--font-mono);
-  font-size: 11px; font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.04em;
-  color: var(--text-secondary);
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.04);
-}
-@media (max-width: 480px) {
-  .goal-ticker { padding: 9px 12px; }
-  .goal-ticker-label { font-size: 9px; letter-spacing: 0.14em; }
-  .goal-ticker-row { font-size: 12px; }
-  .goal-ticker-meta { font-size: 10px; padding: 2px 7px; }
-}
-
-/* ===== Component 3: Day Ring ===== */
-.day-ring-wrap {
-  display: flex; flex-wrap: wrap;
-  align-items: center; justify-content: center;
-  gap: 26px;
-  padding: 22px;
-  margin-bottom: 22px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(24px) saturate(1.2);
-  -webkit-backdrop-filter: blur(24px) saturate(1.2);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
-}
-.day-ring {
-  position: relative;
-  width: 168px; height: 168px;
-  flex-shrink: 0;
-}
-.day-ring svg { width: 100%; height: 100%; display: block; }
-.day-ring-track { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 8; }
-.day-ring-fill {
-  fill: none;
-  stroke-width: 8;
-  stroke-linecap: round;
-  transform: rotate(-90deg);
-  transform-origin: 60px 60px;
-  transition: stroke 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              stroke-dashoffset 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.day-ring-overlay {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  pointer-events: none;
-}
-.day-ring-percent {
-  font-size: 40px; font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.04em;
-  color: var(--text-primary);
-  line-height: 1;
-}
-.day-ring-phase {
-  margin-top: 5px;
-  font-family: var(--font-mono);
-  font-size: 9.5px; font-weight: 800;
-  letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--text-tertiary);
-}
-.day-ring-clock {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: var(--text-tertiary);
-  margin-top: 2px;
-}
-.day-ring-text {
-  display: flex; flex-direction: column;
-  gap: 6px;
-  max-width: 280px;
-}
-.day-ring-status { font-size: 14px; font-weight: 700; color: var(--text-primary); }
-.day-ring-remaining { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); }
-.day-ring-hours { font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); }
-@media (max-width: 480px) {
-  .day-ring { width: 144px; height: 144px; }
-  .day-ring-percent { font-size: 32px; }
-  .day-ring-status { font-size: 13px; }
-}
-
-/* ===== Component 4: section + To Do List ===== */
-.section { margin-top: 8px; }
-.section-title {
-  font-size: 10.5px; font-weight: 700;
-  letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--text-tertiary);
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 12px;
-}
-.section-title::before {
-  content: ''; width: 18px; height: 1px;
-  background: var(--text-tertiary); opacity: 0.6;
-}
-.section-title::after {
-  content: ''; flex: 1; height: 1px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
-}
-
-.gm-card {
-  position: relative;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 14px;
-  backdrop-filter: blur(24px) saturate(1.2);
-  -webkit-backdrop-filter: blur(24px) saturate(1.2);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
-  transition: background 0.4s;
-  overflow: hidden;
-}
-.gm-card.gm-all-done::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(107,227,164,0.10), transparent 60%);
-  pointer-events: none;
-}
-.gm-card.gm-all-done .gm-progress-num,
-.gm-card.gm-all-done .gm-progress-label { color: var(--success); }
-
-.gm-header {
-  display: flex; align-items: flex-start; justify-content: space-between;
-  flex-wrap: wrap; gap: 12px;
-  margin-bottom: 14px;
-  position: relative;
-}
-.gm-header-left { display: flex; flex-direction: column; }
-.gm-eyebrow {
-  font-size: 10.5px; font-weight: 700;
-  letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 6px;
-}
-.gm-progress-row { display: flex; align-items: baseline; gap: 6px; }
-.gm-progress-num {
-  font-size: 42px; font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.045em;
-  color: var(--text-primary);
-  line-height: 1;
-}
-.gm-progress-total {
-  font-family: var(--font-mono);
-  font-size: 18px;
-  color: var(--text-tertiary);
-}
-.gm-progress-label {
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 0.10em; text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-left: 4px;
-}
-.gm-tomorrow-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; }
-.gm-tomorrow-count {
-  font-family: var(--font-mono);
-  font-size: 11px; font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.04em; text-transform: uppercase;
-  color: var(--text-tertiary);
-}
-.gm-card-tomorrow .gm-progress-row { display: none; }
-
-.gm-streak {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
-  color: var(--text-tertiary);
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 0.10em; text-transform: uppercase;
-  transition: background 0.25s, color 0.25s, border-color 0.25s;
-}
-.gm-streak-icon { font-size: 13px; }
-.gm-streak-num {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-.gm-streak.gm-streak-active {
-  background: rgba(242,192,99,0.10);
-  color: #F2C063;
-  border-color: rgba(242,192,99,0.32);
-}
-.gm-streak.gm-streak-active .gm-streak-icon {
-  filter: drop-shadow(0 0 6px rgba(242,192,99,0.6));
-}
-
-.gm-bar {
-  display: flex; gap: 4px;
-  height: 6px;
-  margin-bottom: 16px;
-}
-.gm-bar:empty { display: none; }
-.gm-bar-seg {
-  flex: 1;
-  background: rgba(255,255,255,0.06);
-  border-radius: 3px;
-  transition: background 0.3s, box-shadow 0.3s;
-}
-.gm-bar-seg-done {
-  background: #6BE3A4;
-  box-shadow: 0 0 6px rgba(107,227,164,0.40);
-}
-
-.goal-list { list-style: none; margin: 0; padding: 0; }
-.empty-state {
-  text-align: center;
-  font-size: 12px; font-style: italic;
-  color: var(--text-tertiary);
-  padding: 14px 0;
-}
-
-.gm-row {
+/* ── Character strip ─────────────────────────────── */
+.char-strip {
   display: flex; align-items: center; gap: 12px;
   padding: 12px 14px;
-  margin-bottom: 6px;
-  background: rgba(255,255,255,0.035);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  transition: background 0.2s, opacity 0.3s;
-  position: relative;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  text-decoration: none;
+  margin-bottom: 20px;
+  transition: box-shadow 0.15s;
 }
-.gm-row:hover { background: rgba(255,255,255,0.06); }
-.gm-row.gm-row-done {
-  opacity: 0.45;
-  background: rgba(107,227,164,0.04);
+.char-strip:active { box-shadow: 0 0 0 2px var(--ember); }
+.char-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--ink-card);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
 }
-.gm-row.gm-row-done .gm-text {
-  text-decoration: line-through;
-  text-decoration-color: rgba(255,255,255,0.4);
+.char-name {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 15px; color: var(--ink);
 }
-.gm-row.gm-row-queued {
-  background: rgba(242,192,99,0.10);
-  box-shadow: inset 3px 0 0 0 #F2C063;
+.char-sub {
+  font-size: 11px; color: var(--muted);
+  margin-top: 1px;
 }
-.gm-row.gm-row-queued .gm-text { color: #FFE2A8; }
-.gm-row.is-drag-over { border-top: 2px solid #6BE3A4; }
-.gm-row.is-queue-flashing { animation: gm-queue-flash 0.48s ease-out; }
-@keyframes gm-queue-flash {
-  0%   { background: rgba(255,255,255,0.035); transform: scale(1); }
-  40%  { background: rgba(242,192,99,0.32); transform: scale(1.015); }
-  100% { background: rgba(255,255,255,0.035); transform: scale(1); }
+.char-level {
+  margin-left: auto; display: flex; align-items: center; gap: 6px;
+}
+.char-level-badge {
+  background: var(--ink); color: var(--gold);
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 16px; font-variant-numeric: tabular-nums;
+  padding: 4px 10px; border-radius: 8px;
+  letter-spacing: -0.02em;
+}
+.char-chevron { color: var(--faint); font-size: 14px; }
+
+/* ── Greeting ─────────────────────────────────────── */
+.greeting {
+  margin-bottom: 20px;
+}
+.greeting-time {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 22px; color: var(--ink); line-height: 1.1;
+}
+.greeting-date {
+  font-size: 12px; color: var(--muted); margin-top: 3px;
 }
 
-.gm-handle {
-  width: 14px; flex-shrink: 0;
-  color: var(--text-tertiary);
-  font-weight: 700; font-size: 14px;
-  letter-spacing: -2px;
-  cursor: grab;
-  opacity: 0;
-  transition: opacity 0.2s;
-  user-select: none;
-}
-.gm-row:hover .gm-handle { opacity: 1; }
-.gm-handle:active { cursor: grabbing; }
-
-.gm-check {
-  appearance: none; -webkit-appearance: none;
-  width: 22px; height: 22px; flex-shrink: 0;
-  margin: 0;
-  border: 1.5px solid rgba(255,255,255,0.18);
-  background: rgba(0,0,0,0.28);
-  border-radius: 7px;
-  position: relative;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, box-shadow 0.25s;
-}
-.gm-check:checked {
-  background: #6BE3A4;
-  border-color: #6BE3A4;
-  box-shadow: 0 0 12px rgba(107,227,164,0.40);
-}
-.gm-check:checked::after {
-  content: '';
-  position: absolute; left: 6px; top: 2px;
-  width: 6px; height: 11px;
-  border: solid #0A0A0B;
-  border-width: 0 2.5px 2.5px 0;
-  transform: rotate(45deg);
-  animation: gm-check-pop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-@keyframes gm-check-pop {
-  from { transform: rotate(45deg) scale(0); }
-  to   { transform: rotate(45deg) scale(1); }
-}
-.gm-check:disabled { cursor: not-allowed; opacity: 0.55; }
-
-.gm-text {
-  flex: 1;
-  font-size: 14px;
-  color: var(--text-primary);
-  cursor: text;
-  outline: none;
-  border-radius: 4px;
-  padding: 2px 4px;
-  margin: -2px -4px;
-}
-.gm-text[contenteditable="true"] {
-  outline: 1px solid rgba(255,255,255,0.18);
-  background: rgba(0,0,0,0.28);
+/* ── Section header ──────────────────────────────── */
+.sec-head {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 10px;
 }
 
-.gm-queue-btn {
-  border: 0; background: transparent;
-  color: var(--text-tertiary);
-  font-size: 14px;
-  cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 6px;
-  opacity: 0.55;
-  transition: opacity 0.2s, color 0.2s, transform 0.1s;
+/* ── Day Arc ─────────────────────────────────────── */
+.day-arc-card {
+  background: var(--ink-card);
+  border-radius: 20px;
+  padding: 20px 20px 16px;
+  margin-bottom: 20px;
+  position: relative; overflow: hidden;
 }
-.gm-queue-btn:hover { opacity: 1; }
-.gm-queue-btn.gm-queue-active {
-  color: #F2C063;
-  opacity: 1;
-  filter: drop-shadow(0 0 4px rgba(242,192,99,0.65));
+.arc-wrap {
+  display: flex; justify-content: center;
+  margin-bottom: 16px;
 }
-.gm-queue-btn:disabled { cursor: not-allowed; opacity: 0.3; }
-
-.goal-delete {
-  border: 0; background: transparent;
-  color: var(--text-tertiary);
-  font-size: 18px;
-  cursor: pointer;
-  padding: 0 4px;
-  opacity: 0.5;
-  transition: opacity 0.2s, color 0.2s;
+.arc-svg { overflow: visible; }
+.arc-track { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 8; stroke-linecap: round; }
+.arc-fill  { fill: none; stroke: var(--ember); stroke-width: 8; stroke-linecap: round;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.25,0.46,0.45,0.94); }
+.arc-pct {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 28px; fill: #FAFAFA; text-anchor: middle;
+  font-variant-numeric: tabular-nums;
 }
-.gm-row:hover .goal-delete { opacity: 1; }
-.goal-delete:hover { color: var(--danger); }
-
-.gm-show-toggle {
-  width: 100%;
-  margin: 6px 0 0;
-  padding: 9px;
-  border: 1px dashed rgba(255,255,255,0.12);
-  border-radius: 10px;
-  background: transparent;
-  color: var(--text-tertiary);
-  font-family: inherit;
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 0.06em; text-transform: uppercase;
-  cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+.arc-label {
+  font-family: var(--font-body); font-size: 10px;
+  fill: rgba(255,255,255,0.45); text-anchor: middle;
+  letter-spacing: 0.1em; text-transform: uppercase;
 }
-.gm-show-toggle:hover { color: var(--text-primary); border-color: rgba(255,255,255,0.22); }
-
-.gm-push-btn {
-  width: 100%;
-  margin-top: 14px;
-  padding: 11px;
-  border: 1px dashed rgba(255,255,255,0.16);
-  border-radius: 12px;
-  background: transparent;
-  color: var(--text-tertiary);
-  font-family: inherit;
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 0.10em; text-transform: uppercase;
-  cursor: pointer;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
-}
-.gm-push-btn:hover {
-  color: var(--text-primary);
-  border-color: rgba(255,255,255,0.30);
-  border-style: solid;
-  background: rgba(255,255,255,0.04);
-}
-
-.goal-input-wrap.gm-input-wrap {
-  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
-  margin-top: 14px;
+.arc-stats {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 1px; border-top: 1px solid rgba(255,255,255,0.08);
   padding-top: 14px;
-  border-top: 1px solid rgba(255,255,255,0.06);
 }
-.gm-input {
-  flex: 1; min-width: 0;
-  padding: 11px 14px;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  background: rgba(0,0,0,0.28);
-  color: var(--text-primary);
-  font-family: inherit; font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s, background 0.2s;
+.arc-stat { text-align: center; }
+.arc-stat-val {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 18px; color: #FAFAFA;
+  font-variant-numeric: tabular-nums; line-height: 1;
 }
-.gm-input::placeholder { color: var(--text-tertiary); }
-.gm-input:focus { border-color: rgba(255,255,255,0.28); background: rgba(0,0,0,0.36); }
-
-.gm-add {
-  padding: 11px 20px;
-  border: 0; border-radius: 12px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #E8E5DD 100%);
-  color: #0A0A0B;
-  font-family: inherit; font-size: 13px; font-weight: 700;
-  cursor: pointer;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.9),
-    0 2px 8px rgba(0,0,0,0.35),
-    0 8px 22px rgba(0,0,0,0.25);
-  transition: transform 0.1s, filter 0.15s;
-}
-.gm-add:hover { filter: brightness(1.06); transform: translateY(-1px); }
-.gm-add:active { transform: translateY(0); }
-
-.gm-polish {
-  padding: 11px 18px;
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 12px;
-  background: rgba(255,255,255,0.04);
-  color: var(--text-primary);
-  font-family: inherit; font-size: 13px; font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-}
-.gm-polish:hover {
-  background: rgba(255,255,255,0.07);
-  border-color: rgba(255,255,255,0.18);
-}
-
-.gm-status {
-  flex-basis: 100%;
-  font-size: 11px;
-  color: var(--text-tertiary);
-  min-height: 14px;
-  margin-top: 4px;
-}
-.gm-status.gm-status-error { color: var(--danger); }
-
-@media (max-width: 480px) {
-  body { padding: max(20px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) 50px max(14px, env(safe-area-inset-left)); }
-  .gm-card { padding: 16px; }
-  .gm-progress-num { font-size: 36px; }
-}
-
-/* ===== Command Center ===== */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
-:root {
-  --cc-money:#F5C842; --cc-body:#6BE3A4; --cc-mind:#7DD3FC;
-  --cc-business:#C4B5FD; --cc-discipline:#FF6B6B;
-  --mono-cc:'JetBrains Mono',ui-monospace,monospace;
-}
-.cc-wrap {
-  background:rgba(255,255,255,0.025);
-  border:1px solid rgba(255,255,255,0.07);
-  border-radius:18px; padding:18px;
-  margin-bottom:16px;
-}
-/* Quote rotator — boven de greeting */
-.cc-quote-banner {
-  font-size:11px; font-weight:600; color:#F5C842;
-  letter-spacing:0.06em; text-transform:uppercase;
-  padding:8px 0 14px;
-  border-bottom:1px solid rgba(245,200,66,0.15);
-  margin-bottom:14px; min-height:36px;
-  transition:opacity 0.4s;
-}
-.cc-greeting {
-  font-family:'Space Grotesk',-apple-system,sans-serif;
-  font-size:22px; font-weight:700; color:#FAFAFA;
-  letter-spacing:-0.02em; margin-bottom:2px;
-}
-.cc-subtitle {
-  font-size:10px; font-weight:700; letter-spacing:0.18em;
-  text-transform:uppercase; color:#76746E; margin-bottom:14px;
-}
-.cc-section-label {
-  font-size:9px; font-weight:700; letter-spacing:0.18em;
-  text-transform:uppercase; color:#76746E;
-  display:flex; align-items:center; gap:8px;
-  margin-bottom:10px; margin-top:14px;
-}
-.cc-section-label::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.07); }
-
-.cc-focus-skill {
-  margin-bottom:9px;
-}
-.cc-fs-row { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
-.cc-fs-icon { font-size:16px; flex-shrink:0; }
-.cc-fs-name { font-size:12px; font-weight:700; flex:1; }
-.cc-fs-level { font-family:var(--mono-cc); font-size:11px; font-weight:700; }
-.cc-fs-track { height:4px; background:rgba(255,255,255,0.07); border-radius:3px; overflow:hidden; }
-.cc-fs-fill  { height:100%; border-radius:3px; transition:width 0.8s cubic-bezier(0.22,1,0.36,1); }
-.cc-fs-next  { font-size:9px; color:#76746E; margin-top:3px; font-family:var(--mono-cc); }
-
-.cc-mission-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
-.cc-mission {
-  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
-  border-radius:11px; padding:11px; cursor:pointer;
-  user-select:none; transition:all 0.18s; -webkit-tap-highlight-color:transparent;
-}
-.cc-mission:active { transform:scale(0.96); }
-.cc-mission.done { background:rgba(107,227,164,0.06); border-color:rgba(107,227,164,0.18); }
-.cc-mission-top { display:flex; justify-content:space-between; margin-bottom:4px; }
-.cc-mission-icon { font-size:16px; }
-.cc-mission-check {
-  width:16px; height:16px; border-radius:50%;
-  border:1.5px solid rgba(255,255,255,0.18);
-  display:flex; align-items:center; justify-content:center;
-  font-size:9px; font-weight:700;
-}
-.cc-mission.done .cc-mission-check { background:#6BE3A4; border-color:#6BE3A4; color:#050506; }
-.cc-mission-label { font-size:11px; font-weight:600; color:#B8B6B0; }
-.cc-mission.done .cc-mission-label { color:#FAFAFA; }
-.cc-mission-xp { font-size:9px; font-family:var(--mono-cc); color:#76746E; }
-.cc-mission.done .cc-mission-xp { color:#6BE3A4; }
-
-.cc-habit-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.cc-habit {
-  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
-  border-radius:14px; padding:14px 12px; cursor:pointer;
-  user-select:none; transition:all 0.18s; -webkit-tap-highlight-color:transparent;
-  display:flex; flex-direction:column; gap:6px;
-}
-.cc-habit:active { transform:scale(0.96); }
-.cc-habit.done { background:rgba(107,227,164,0.04); border-color:rgba(107,227,164,0.14); }
-.cc-habit-header { display:flex; align-items:center; gap:8px; }
-.cc-habit-icon { font-size:20px; line-height:1; }
-.cc-habit-name { font-size:11px; font-weight:700; color:#B8B6B0; flex:1; }
-.cc-habit-score { font-size:20px; font-weight:700; font-family:var(--mono-cc); line-height:1; }
-.cc-habit-bar { width:100%; height:5px; background:rgba(255,255,255,0.07); border-radius:3px; overflow:hidden; }
-.cc-habit-fill { height:100%; border-radius:3px; transition:width 0.5s; }
-.cc-habit-status { font-size:9px; color:#76746E; font-weight:700; letter-spacing:0.06em; }
-
-/* Evening recap */
-.cc-recap {
-  background:linear-gradient(135deg,rgba(245,200,66,0.08),rgba(107,227,164,0.04));
-  border:1px solid rgba(245,200,66,0.22); border-radius:18px; padding:20px;
-  margin-bottom:16px; position:relative; overflow:hidden;
-}
-.cc-recap::before { content:''; position:absolute; top:-40px; right:-40px; width:140px; height:140px;
-  background:radial-gradient(circle,rgba(245,200,66,0.12) 0%,transparent 70%); pointer-events:none; }
-.cc-recap-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px; }
-.cc-recap-title { font-size:9px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#F5C842; margin-bottom:6px; }
-.cc-recap-day-score { display:flex; align-items:baseline; gap:6px; }
-.cc-recap-score-num { font-size:48px; font-weight:700; font-family:var(--mono-cc); line-height:1; letter-spacing:-0.04em; }
-.cc-recap-score-denom { font-size:18px; color:#76746E; font-family:var(--mono-cc); font-weight:700; }
-.cc-recap-total-xp { text-align:right; }
-.cc-recap-xp-num { font-size:22px; font-weight:700; font-family:var(--mono-cc); color:#FAFAFA; }
-.cc-recap-xp-label { font-size:9px; color:#76746E; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
-.cc-recap-progress { margin-bottom:14px; }
-.cc-recap-prog-label { display:flex; justify-content:space-between; margin-bottom:5px; }
-.cc-recap-prog-text { font-size:10px; color:#B8B6B0; font-weight:600; }
-.cc-recap-prog-pct { font-size:10px; color:#F5C842; font-family:var(--mono-cc); font-weight:700; }
-.cc-recap-prog-track { height:6px; background:rgba(255,255,255,0.08); border-radius:4px; overflow:hidden; }
-.cc-recap-prog-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,#F5C842,#6BE3A4); transition:width 1s cubic-bezier(0.22,1,0.36,1); }
-.cc-recap-cats { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:14px; }
-.cc-recap-cat { background:rgba(255,255,255,0.03); border-radius:10px; padding:8px 10px; }
-.cc-recap-cat-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
-.cc-recap-cat-name { font-size:10px; font-weight:700; color:#B8B6B0; }
-.cc-recap-cat-xp { font-size:10px; font-family:var(--mono-cc); font-weight:700; }
-.cc-recap-cat-bar { height:3px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden; }
-.cc-recap-cat-fill { height:100%; border-radius:2px; }
-.cc-recap-missed { margin-bottom:12px; }
-.cc-recap-missed-title { font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#FF6B6B; margin-bottom:6px; }
-.cc-recap-missed-item { font-size:11px; color:#76746E; padding:2px 0; display:flex; align-items:center; gap:6px; }
-.cc-coach-box {
-  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
-  border-radius:10px; padding:12px; margin:12px 0; font-size:12px;
-  color:#B8B6B0; line-height:1.6; font-style:italic;
-}
-.cc-close-day {
-  width:100%; padding:12px; border-radius:12px;
-  background:rgba(245,200,66,0.1); border:1px solid rgba(245,200,66,0.3);
-  color:#F5C842; font-size:13px; font-weight:700; cursor:pointer;
-  transition:all 0.15s;
-}
-.cc-recap-btn {
-  display:block; width:100%; margin-top:14px; padding:10px;
-  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
-  border-radius:10px; color:#76746E; font-size:11px; font-weight:700;
-  letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:all 0.15s;
-}
-.cc-recap-btn:hover { color:#FAFAFA; border-color:rgba(255,255,255,0.18); }
-.ah-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.ah-tile {
-  background: rgba(255,255,255,0.04);
-  border: 0.5px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 12px 8px 10px;
-  text-align: center;
-}
-.ah-tile-icon { font-size: 18px; margin-bottom: 4px; }
-.ah-tile-val {
-  font-size: 16px; font-weight: 700;
-  font-family: var(--font-mono, ui-monospace);
-  color: #FAFAFA; line-height: 1;
-}
-.ah-tile-label {
-  font-size: 9px; font-weight: 600;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--text-tertiary, #76746E);
+.arc-stat-val.gold { color: var(--gold); }
+.arc-stat-lbl {
+  font-size: 9px; color: rgba(255,255,255,0.4);
+  text-transform: uppercase; letter-spacing: 0.1em;
   margin-top: 3px;
 }
-.ah-sync-time {
-  font-size: 10px; color: var(--text-tertiary, #76746E);
-  font-family: var(--font-mono, ui-monospace);
-  text-align: right; margin-bottom: 16px;
+
+/* ── Missions ────────────────────────────────────── */
+.missions-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.mission-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  transition: background 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.mission-row:last-child { border-bottom: none; }
+.mission-row:active { background: #F9F8F4; }
+.mission-row.done { opacity: 0.5; }
+.mission-check {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid var(--line-strong);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; background: transparent;
+}
+.mission-row.done .mission-check {
+  background: var(--green); border-color: var(--green);
+}
+.mission-check-icon { display: none; font-size: 11px; color: white; }
+.mission-row.done .mission-check-icon { display: block; }
+.mission-info { flex: 1; }
+.mission-name {
+  font-size: 14px; font-weight: 600; color: var(--ink);
+}
+.mission-streak {
+  font-size: 11px; color: var(--muted); margin-top: 2px;
+}
+.mission-xp {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  color: var(--ember); background: rgba(212,99,62,0.08);
+  padding: 2px 8px; border-radius: 6px; white-space: nowrap;
+}
+
+/* ── Focus skills ───────────────────────────────── */
+.focus-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.focus-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: box-shadow 0.15s;
+}
+.focus-card.open {
+  grid-column: 1 / -1;
+  box-shadow: 0 0 0 2px var(--ember);
+}
+.focus-card-top {
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.focus-lvl-badge {
+  background: var(--ink); color: var(--gold);
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 18px; font-variant-numeric: tabular-nums;
+  padding: 3px 8px; border-radius: 7px; flex-shrink: 0;
+  letter-spacing: -0.02em;
+}
+.focus-name {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 14px; color: var(--ink); line-height: 1.2;
+}
+.focus-domain {
+  font-size: 10px; color: var(--muted); margin-top: 2px;
+}
+.focus-next {
+  font-size: 10px; color: var(--muted);
+  margin: 8px 0 6px; line-height: 1.4;
+}
+.focus-next strong { color: var(--ink); }
+.focus-bar-track {
+  height: 3px; background: var(--line);
+  border-radius: 2px; margin-bottom: 0;
+}
+.focus-bar-fill {
+  height: 3px; background: var(--ember);
+  border-radius: 2px; transition: width 0.4s;
+}
+/* expanded */
+.focus-expand { display: none; margin-top: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
+.focus-card.open .focus-expand { display: block; }
+.focus-log-btns {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 12px;
+}
+.focus-log-btn {
+  flex: 1; min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  border-radius: 10px;
+  font-family: var(--font-body); font-size: 12px;
+  color: var(--ink); font-weight: 600;
+  cursor: pointer; text-align: left;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.1s;
+}
+.focus-log-btn:active { background: var(--line); }
+.focus-log-btn .xp-tag {
+  display: block; font-size: 10px;
+  color: var(--ember); font-weight: 700;
+  margin-top: 2px;
+}
+.focus-unlock-title {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--muted); margin-bottom: 8px;
+}
+.focus-ms-row {
+  display: flex; gap: 8px; padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+.focus-ms-row:last-child { border-bottom: none; }
+.focus-ms-status { font-size: 13px; width: 18px; flex-shrink: 0; }
+.focus-ms-text { font-size: 12px; color: var(--muted); line-height: 1.4; }
+.focus-ms-text.done { color: var(--green); text-decoration: line-through; }
+.focus-ms-text.next { color: var(--ink); font-weight: 600; }
+
+/* ── Core tracker ───────────────────────────────── */
+.core-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.core-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.core-head-label {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 13px; color: var(--ink);
+}
+.core-head-sub { font-size: 11px; color: var(--muted); }
+.core-skills {
+  display: grid; grid-template-columns: 1fr 1fr;
+}
+.core-skill {
+  padding: 14px;
+  border-right: 1px solid var(--line);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.core-skill:nth-child(even) { border-right: none; }
+.core-skill-icon { font-size: 24px; margin-bottom: 6px; }
+.core-skill-name {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 13px; color: var(--ink); margin-bottom: 2px;
+}
+.core-skill-level {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 22px; color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+.core-skill-next {
+  font-size: 10px; color: var(--muted); margin-top: 4px;
+  line-height: 1.3;
+}
+.core-bar-track {
+  height: 3px; background: var(--line);
+  border-radius: 2px; margin-top: 8px;
+}
+.core-bar-fill {
+  height: 3px; background: var(--ember);
+  border-radius: 2px;
+}
+
+/* ── XP toast ────────────────────────────────────── */
+.dl-toast {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom,0px) + 72px);
+  right: 16px; left: 16px;
+  max-width: 360px; margin: 0 auto;
+  background: var(--ink); color: #FAFAFA;
+  font-family: var(--font-body); font-size: 13px; font-weight: 600;
+  padding: 10px 16px; border-radius: 12px;
+  pointer-events: none; z-index: 9999;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.dl-toast.show { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 480px) {
+  body { padding: 10px 14px 16px; }
+  .focus-grid { grid-template-columns: 1fr; }
+  .focus-card.open { grid-column: 1; }
 }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <!-- ===== COMMAND CENTER ===== -->
-  <div id="commandCenter"></div>
-  <div id="eveningRecap" style="display:none"></div>
-
-  <div class="ticker-row">
-    <div class="goal-ticker" id="goalTicker" aria-live="polite" aria-atomic="true">
-      <div class="goal-ticker-led"><span class="goal-ticker-led-dot"></span></div>
-      <div class="goal-ticker-label">GOALS</div>
-      <div class="goal-ticker-stage" id="goalTickerStage">
-        <div class="goal-ticker-row">
-          <span class="goal-ticker-status" data-status="">—</span>
-          <span class="goal-ticker-text">Loading…</span>
-        </div>
-      </div>
-      <div class="goal-ticker-meta" id="goalTickerMeta">0/0</div>
+  <!-- Character strip -->
+  <a href="character.html" class="char-strip" id="charStrip">
+    <div class="char-avatar">🧠</div>
+    <div>
+      <div class="char-name">Joey</div>
+      <div class="char-sub" id="charSubLine">Loading…</div>
     </div>
+    <div class="char-level">
+      <div class="char-level-badge" id="charTotalLevel">—</div>
+      <div class="char-chevron">›</div>
+    </div>
+  </a>
+
+  <!-- Greeting -->
+  <div class="greeting">
+    <div class="greeting-time" id="greetingText">Good morning, Joey</div>
+    <div class="greeting-date" id="greetingDate"></div>
   </div>
 
-  <!-- Quotes crawler hidden — vervangen door roterende banner in Command Center -->
-  <div id="quotesCrawlWrap" style="display:none">
-    <div id="quotesCrawl"></div>
-  </div>
-
-  <!-- Apple Health Today -->
-  <div style="font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#76746E;display:flex;align-items:center;gap:8px;margin-bottom:10px;margin-top:4px">
-    <span>Today's Stats</span>
-    <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent)"></span>
-  </div>
-  <div class="ah-grid" id="ahGrid">
-    <div class="ah-tile">
-      <div class="ah-tile-icon">👟</div>
-      <div class="ah-tile-val" id="ahSteps">—</div>
-      <div class="ah-tile-label">Steps</div>
+  <!-- Day Arc -->
+  <div class="sec-head">Day Score</div>
+  <div class="day-arc-card" id="dayArcCard">
+    <div class="arc-wrap">
+      <svg class="arc-svg" width="160" height="90" viewBox="0 0 160 90">
+        <!-- half-circle track, left to right -->
+        <path class="arc-track" id="arcTrack" d=""/>
+        <path class="arc-fill"  id="arcFill"  d=""/>
+        <text class="arc-pct"   id="arcPct"  x="80" y="82">0%</text>
+        <text class="arc-label" id="arcLbl"  x="80" y="95">Missions Done</text>
+      </svg>
     </div>
-    <div class="ah-tile">
-      <div class="ah-tile-icon">😴</div>
-      <div class="ah-tile-val" id="ahSleep">—</div>
-      <div class="ah-tile-label">Sleep</div>
-    </div>
-    <div class="ah-tile">
-      <div class="ah-tile-icon">🔥</div>
-      <div class="ah-tile-val" id="ahCal">—</div>
-      <div class="ah-tile-label">kcal</div>
-    </div>
-    <div class="ah-tile">
-      <div class="ah-tile-icon">❤️</div>
-      <div class="ah-tile-val" id="ahHR">—</div>
-      <div class="ah-tile-label">HR</div>
-    </div>
-  </div>
-  <div class="ah-sync-time" id="ahSyncTime"></div>
-
-  <div class="section">
-    <div class="section-title">To Do List</div>
-
-    <!-- TODAY -->
-    <div class="gm-card" id="gmCardToday">
-      <div class="gm-header">
-        <div class="gm-header-left">
-          <div class="gm-eyebrow" id="todayLabel">Today —</div>
-          <div class="gm-progress-row">
-            <span class="gm-progress-num"   id="gmProgressNum">0</span>
-            <span class="gm-progress-total" id="gmProgressTotal">/ 0</span>
-            <span class="gm-progress-label" id="gmProgressLabel">no goals yet</span>
-          </div>
-        </div>
-        <div class="gm-streak" id="gmStreak">
-          <span class="gm-streak-icon">⚡</span>
-          <span class="gm-streak-num" id="gmStreakNum">0</span>
-          <span>day streak</span>
-        </div>
+    <div class="arc-stats">
+      <div class="arc-stat">
+        <div class="arc-stat-val" id="arcXpToday">0</div>
+        <div class="arc-stat-lbl">XP Today</div>
       </div>
-      <div class="gm-bar" id="gmBar"></div>
-      <ul id="goalList" class="goal-list gm-list"></ul>
-      <div id="emptyState" class="empty-state">No goals for today yet — add one below.</div>
-      <button type="button" id="gmPushBtn" class="gm-push-btn" style="display:none;">Push remaining to tomorrow</button>
-      <div class="goal-input-wrap gm-input-wrap">
-        <input id="goalInput" class="gm-input" type="text" placeholder="Add a goal for today…" autocomplete="off">
-        <button type="button" id="goalAddBtn"    class="gm-add">+ Add</button>
-        <button type="button" id="goalPolishBtn" class="gm-polish">✨ Polish</button>
-        <div class="gm-status" id="polishStatus"></div>
+      <div class="arc-stat">
+        <div class="arc-stat-val gold" id="arcTotalLevel">—</div>
+        <div class="arc-stat-lbl">Total Level</div>
       </div>
-    </div>
-
-    <!-- PLAN TOMORROW — hidden for now -->
-    <div class="gm-card gm-card-tomorrow" id="gmCardTomorrow" style="display:none">
-      <div class="gm-header">
-        <div class="gm-header-left">
-          <div class="gm-eyebrow" id="tomorrowLabel">Plan tomorrow —</div>
-          <div class="gm-tomorrow-sub">Write tonight, locked until 6 AM.</div>
-        </div>
-        <div class="gm-tomorrow-count" id="gmTomorrowCount">0 planned</div>
-      </div>
-      <ul id="tomorrowList" class="goal-list gm-list"></ul>
-      <div id="tomorrowEmpty" class="empty-state">Nothing planned for tomorrow yet</div>
-      <div class="goal-input-wrap gm-input-wrap">
-        <input id="tomorrowInput" class="gm-input" type="text" placeholder="Add a goal for tomorrow…" autocomplete="off">
-        <button type="button" id="tomorrowAddBtn"    class="gm-add">+ Add</button>
-        <button type="button" id="tomorrowPolishBtn" class="gm-polish">✨ Polish</button>
-        <div class="gm-status" id="tomorrowStatus"></div>
+      <div class="arc-stat">
+        <div class="arc-stat-val" id="arcBestStreak">0</div>
+        <div class="arc-stat-lbl">Best Streak</div>
       </div>
     </div>
   </div>
 
-  <!-- RPG Daily Check-in (compact, below goals) -->
-  <div class="section" id="rpgCheckinSection" style="margin-top:8px">
-    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:16px">
-      <div style="font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#76746E;margin-bottom:10px">Day Score</div>
-      <div id="rpgScoreRow" style="display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap"></div>
-      <div style="font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#76746E;margin-bottom:8px">Gratitude</div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input id="rpgGratitudeInput" type="text" placeholder="Grateful for… press Enter"
-          style="flex:1;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:#FAFAFA;font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:13px;outline:none">
-        <button id="rpgGratitudeAddBtn" style="background:rgba(107,227,164,0.12);border:1px solid rgba(107,227,164,0.25);color:#6BE3A4;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">+</button>
-      </div>
-      <div id="rpgGratitudeTags" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:0"></div>
-    </div>
+  <!-- Today's Missions -->
+  <div class="sec-head">Today's Missions</div>
+  <div class="missions-card" id="missionsCard">
+    <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">Loading habits…</div>
   </div>
-  <!-- Hidden quest grid still needed for JS compatibility -->
-  <div id="rpgQuestGrid" style="display:none"></div>
 
-</div>
+  <!-- Focus Skills -->
+  <div class="sec-head">Focus Skills</div>
+  <div class="focus-grid" id="focusGrid">
+    <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px;grid-column:1/-1">Loading skills…</div>
+  </div>
+
+  <!-- Core Tracker -->
+  <div class="sec-head">Core Tracker</div>
+  <div class="core-card" id="coreCard">
+    <div class="core-head">
+      <div>
+        <div class="core-head-label">New Skills</div>
+        <div class="core-head-sub">Track your newest pursuits</div>
+      </div>
+    </div>
+    <div class="core-skills" id="coreSkills"></div>
+  </div>
+
+</div><!-- .page -->
+
+<div class="dl-toast" id="dlToast"></div>
 
 <script>
-(function () {
-  'use strict';
+// ── Helpers ──────────────────────────────────────────────────
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+function fmtDate() {
+  return new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+}
+function showToast(msg, dur=2200) {
+  const t = document.getElementById('dlToast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
+}
 
-  // Paste your Anthropic key here to enable ✨ Polish. Empty = falls back to plain add.
-  const ANTHROPIC_API_KEY = '';
+// ── Greeting render ──────────────────────────────────────────
+function renderGreeting() {
+  const gt = document.getElementById('greetingText');
+  const gd = document.getElementById('greetingDate');
+  if (gt) gt.textContent = greeting() + ', Joey';
+  if (gd) gd.textContent = fmtDate();
+}
 
-  const WAKE_HOUR  = 8;
-  const SLEEP_HOUR = 24;
-
-  // ---------- storage helpers ----------
-  function storeGet(key) {
-    try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
+// ── Character strip ──────────────────────────────────────────
+function renderCharStrip() {
+  if (!window.getCharacter || !window.xpToLevel) return;
+  const char = window.getCharacter();
+  const skills = char.skills || {};
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
+  let totalXp = 0;
+  let activeCount = 0;
+  for (const [k, s] of Object.entries(skills)) {
+    const def = defaults[k] || {};
+    if (def.isHabit || def.private || s.active === false) continue;
+    totalXp += (s.xp || 0);
+    activeCount++;
   }
-  function storeSet(key, value) {
-    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
-    if (typeof key === 'string' && key.indexOf('goals:') === 0) {
-      window.dispatchEvent(new CustomEvent('goals-changed'));
+  const totalLevel = window.xpToLevel(totalXp / Math.max(1, activeCount));
+  document.getElementById('charTotalLevel').textContent = totalLevel;
+  document.getElementById('charSubLine').textContent = activeCount + ' active skills';
+  document.getElementById('arcTotalLevel').textContent = totalLevel;
+}
+
+// ── Day Arc SVG ──────────────────────────────────────────────
+function polarToXY(cx, cy, r, angleDeg) {
+  const rad = (angleDeg - 90) * Math.PI / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+function halfArcPath(cx, cy, r, startDeg, endDeg) {
+  const s = polarToXY(cx, cy, r, startDeg);
+  const e = polarToXY(cx, cy, r, endDeg);
+  const large = endDeg - startDeg > 180 ? 1 : 0;
+  return `M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y}`;
+}
+function renderArc(pct) {
+  const cx=80, cy=85, r=68;
+  const startDeg=180, endDeg=360;
+  const totalLen = Math.PI * r;
+  const track = document.getElementById('arcTrack');
+  const fill  = document.getElementById('arcFill');
+  const pctEl = document.getElementById('arcPct');
+  if (!track || !fill) return;
+  const path = halfArcPath(cx, cy, r, startDeg, endDeg);
+  track.setAttribute('d', path);
+  fill.setAttribute('d', path);
+  fill.style.strokeDasharray  = totalLen;
+  fill.style.strokeDashoffset = totalLen - (totalLen * Math.min(1, pct));
+  if (pctEl) pctEl.textContent = Math.round(pct * 100) + '%';
+}
+
+// ── Missions ─────────────────────────────────────────────────
+function renderMissions() {
+  if (!window.getHabits) { setTimeout(renderMissions, 50); return; }
+  const habits = window.getHabits();
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
+  const today = todayStr();
+
+  // Collect habits from defaults
+  const habitKeys = Object.keys(defaults).filter(k => defaults[k].isHabit && !defaults[k].private && defaults[k].active !== false);
+
+  const container = document.getElementById('missionsCard');
+  if (!container) return;
+  if (!habitKeys.length) {
+    container.innerHTML = '<div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">No habits set up yet — go to Settings.</div>';
+    return;
+  }
+
+  let doneCount = 0;
+  let xpToday = 0;
+  const today2 = todayStr();
+
+  // XP today from xpLog
+  if (window.getCharacter) {
+    const char = window.getCharacter();
+    const log = char.xpLog || [];
+    for (const entry of log) {
+      if ((entry.date || '').startsWith(today2)) xpToday += Math.max(0, entry.amount || 0);
     }
   }
-  function storeDelete(key) { try { localStorage.removeItem(key); } catch (e) {} }
-  function storeListKeys(prefix) {
-    const out = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (k && k.indexOf(prefix) === 0) out.push(k);
-    }
-    return out;
+
+  container.innerHTML = habitKeys.map(k => {
+    const def = defaults[k];
+    const h = habits[k] || {};
+    const donedToday = h.lastChecked === today;
+    if (donedToday) doneCount++;
+    const streak = h.streak || 0;
+    return `<div class="mission-row${donedToday?' done':''}" onclick="toggleMission('${k}')" data-key="${k}">
+      <div class="mission-check">
+        <span class="mission-check-icon">✓</span>
+      </div>
+      <div class="mission-info">
+        <div class="mission-name">${def.label}</div>
+        <div class="mission-streak">${streak > 0 ? '🔥 ' + streak + ' day streak' : 'Start your streak today'}</div>
+      </div>
+      <div class="mission-xp">+15 XP</div>
+    </div>`;
+  }).join('');
+
+  // Update arc
+  const pct = habitKeys.length ? doneCount / habitKeys.length : 0;
+  renderArc(pct);
+
+  const arcXp = document.getElementById('arcXpToday');
+  if (arcXp) arcXp.textContent = xpToday;
+
+  // best streak
+  let best = 0;
+  for (const h of Object.values(habits)) { if ((h.streak||0) > best) best = h.streak; }
+  const bs = document.getElementById('arcBestStreak');
+  if (bs) bs.textContent = best;
+}
+
+window.toggleMission = function(key) {
+  if (!window.checkHabit || !window.uncheckHabit) return;
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
+  const def = defaults[key] || {};
+  const habits = window.getHabits ? window.getHabits() : {};
+  const h = habits[key] || {};
+  const today = todayStr();
+  const wasDone = h.lastChecked === today;
+
+  if (wasDone) {
+    window.uncheckHabit(key);
+    if (window.addXP) window.addXP(key, -15, 'Habit unchecked: ' + def.label);
+    showToast('Habit unchecked');
+  } else {
+    const result = window.checkHabit(key, def.label, def.icon);
+    if (window.addXP) window.addXP(key, 15, 'Habit: ' + def.label);
+    showToast('+15 XP · ' + def.label + (result.streak > 1 ? ' 🔥 ' + result.streak : ''));
+  }
+  renderMissions();
+  renderCharStrip();
+};
+
+// ── Focus skills ─────────────────────────────────────────────
+let openFocusKey = null;
+
+function getNextMilestone(def, currentLevel) {
+  if (!def.milestones) return null;
+  const levels = Object.keys(def.milestones).map(Number).sort((a,b)=>a-b);
+  return levels.find(l => l > currentLevel) || null;
+}
+function getConfirmedMs(skillKey) {
+  try { return JSON.parse(localStorage.getItem('rpg_milestones_v1')) || {}; } catch(e) { return {}; }
+}
+
+function renderFocusGrid() {
+  const container = document.getElementById('focusGrid');
+  if (!container) return;
+  if (!window.getCharacter || !window.xpToLevel) { setTimeout(renderFocusGrid, 50); return; }
+
+  const char = window.getCharacter();
+  const skills = char.skills || {};
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
+  const parents = window.RPG_PARENT_SKILLS || {};
+  const domainMap = window.RPG_DOMAIN_MAP || {};
+
+  // focus skills list
+  let focusKeys = [];
+  try { focusKeys = JSON.parse(localStorage.getItem('rpg_focus_skills_v1')) || []; } catch(e) {}
+
+  if (!focusKeys.length) {
+    // top 6 by XP, non-habit, active
+    const active = Object.entries(defaults)
+      .filter(([k,d]) => !d.isHabit && !d.private && d.active !== false)
+      .map(([k,d]) => ({ key:k, xp: (skills[k]||{}).xp||0 }))
+      .sort((a,b)=>b.xp-a.xp)
+      .slice(0, 6);
+    focusKeys = active.map(x=>x.key);
   }
 
-  // ---------- date helpers ----------
-  function pad2(n) { return String(n).padStart(2, '0'); }
-  function dateToKey(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
-  function getActiveDateString() {
-    const now = new Date();
-    if (now.getHours() < 6) {
-      const d = new Date(now);
-      d.setDate(d.getDate() - 1);
-      return dateToKey(d);
-    }
-    return dateToKey(now);
-  }
-  function getTomorrowDateString() {
-    const now = new Date();
-    const d = new Date(now);
-    if (now.getHours() >= 6) d.setDate(d.getDate() + 1);
-    return dateToKey(d);
-  }
-  function formatDate(yyyy_mm_dd) {
-    const parts = yyyy_mm_dd.split('-').map(Number);
-    const d = new Date(parts[0], parts[1] - 1, parts[2]);
-    const wk = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
-    const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
-    return wk + ', ' + mo + ' ' + d.getDate();
+  if (!focusKeys.length) {
+    container.innerHTML = '<div style="padding:16px;color:var(--muted);font-size:13px;grid-column:1/-1">Set focus skills in Settings.</div>';
+    return;
   }
 
-  function todayKey()    { return 'goals:' + getActiveDateString(); }
-  function tomorrowKey() { return 'goals:' + getTomorrowDateString(); }
+  container.innerHTML = focusKeys.map(key => {
+    const def = defaults[key] || {};
+    const s = skills[key] || {};
+    const xp = s.xp || 0;
+    const level = window.xpToLevel(xp);
+    const rawPs = def.parentSkill || '';
+    const ps = domainMap[rawPs] || rawPs;
+    const parentDef = parents[ps] || {};
+    const parentLabel = parentDef.label || ps;
+    const nextMs = getNextMilestone(def, level);
+    const nextMsText = nextMs ? `Lvl ${nextMs} — ${def.milestones[nextMs]}` : 'Max level reached';
+    const nextXp = window.xpForLevel ? window.xpForLevel(level+1) : null;
+    const thisXp = window.xpForLevel ? window.xpForLevel(level) : 0;
+    const barPct = nextXp && nextXp !== Infinity
+      ? Math.round(((xp - thisXp) / (nextXp - thisXp)) * 100)
+      : 100;
+    const isOpen = openFocusKey === key;
 
-  function getGoals(key) {
-    const g = storeGet(key);
-    return Array.isArray(g) ? g : [];
-  }
-  function setGoals(key, list) { storeSet(key, list); }
+    // Build log buttons
+    const logBtns = (def.quickLog || []).map(q =>
+      `<button class="focus-log-btn" onclick="focusLog('${key}',${q.xp},'${(q.label||'').replace(/'/g,"\\'")}',event)">
+        ${q.label}<span class="xp-tag">+${q.xp} XP</span>
+       </button>`
+    ).join('');
 
-  // ---------- rollover: pull undone older goals into today ----------
-  function rollover() {
-    const todayDateStr = getActiveDateString();
-    const todayK = 'goals:' + todayDateStr;
-    let today = getGoals(todayK);
-    const texts = new Set(today.map(g => g.text));
+    // Build unlock ladder: last confirmed + next 3
+    const confirmed = getConfirmedMs(key);
+    const msLevels = def.milestones ? Object.keys(def.milestones).map(Number).sort((a,b)=>a-b) : [];
+    const doneMs = msLevels.filter(l => l <= level);
+    const lastDone = doneMs[doneMs.length-1];
+    const upcomingMs = msLevels.filter(l => l > level).slice(0,3);
+    const msRows = [
+      ...(lastDone != null ? [`<div class="focus-ms-row"><span class="focus-ms-status">✅</span><span class="focus-ms-text done">Lvl ${lastDone} — ${def.milestones[lastDone]}</span></div>`] : []),
+      ...upcomingMs.map((l,i) => `<div class="focus-ms-row"><span class="focus-ms-status">${i===0?'→':'·'}</span><span class="focus-ms-text${i===0?' next':''}">${i===0?'Next: ':''}Lvl ${l} — ${def.milestones[l]}</span></div>`)
+    ].join('');
 
-    storeListKeys('goals:').forEach(k => {
-      const dateStr = k.slice('goals:'.length);
-      if (dateStr >= todayDateStr) return;
-      const old = getGoals(k);
-      old.forEach(g => {
-        if (!g.done && g.text && !texts.has(g.text)) {
-          today.push({ text: g.text, done: false });
-          texts.add(g.text);
-        }
-      });
-      storeDelete(k);
-    });
-    setGoals(todayK, today);
-  }
-
-  // ---------- streak ----------
-  function loadStreak() {
-    const s = storeGet('goal_streak_v1');
-    if (s && typeof s.count === 'number') return s;
-    return { count: 0, lastProcessedDate: '' };
-  }
-  function saveStreak(s) { storeSet('goal_streak_v1', s); }
-
-  function processStreak() {
-    const s = loadStreak();
-    const todayDateStr = getActiveDateString();
-    const keys = storeListKeys('goals:')
-      .map(k => k.slice('goals:'.length))
-      .filter(d => d < todayDateStr)
-      .sort();
-    keys.forEach(dateStr => {
-      if (s.lastProcessedDate && dateStr <= s.lastProcessedDate) return;
-      const list = getGoals('goals:' + dateStr);
-      if (list.length === 0) { /* don't break the streak on empty days */ }
-      else if (list.every(g => g.done)) s.count += 1;
-      else s.count = 0;
-      s.lastProcessedDate = dateStr;
-    });
-    saveStreak(s);
-  }
-
-  // ---------- Goal Ticker ----------
-  const tickerStage = document.getElementById('goalTickerStage');
-  const tickerMeta  = document.getElementById('goalTickerMeta');
-  let cycleIdx = 0;
-  let tickerTimer = null;
-
-  function buildTickerItems() {
-    const goals = getGoals(todayKey());
-    const total = goals.length;
-    const done  = goals.filter(g => g.done).length;
-    if (total === 0) return { items: [{ status: 'empty',   text: 'No goals set for today — add one to get rolling.' }], done, total };
-    if (done === total) return { items: [{ status: 'done', text: '✓ All goals done — solid day.' }], done, total };
-    const items = goals.filter(g => !g.done).map(g => ({ status: 'pending', text: g.text }));
-    return { items, done, total };
-  }
-
-  function statusGlyph(status) {
-    if (status === 'done') return '✓';
-    if (status === 'pending') return '○';
-    return '·';
-  }
-
-  let firstTick = true;
-  function tick() {
-    const { items, done, total } = buildTickerItems();
-    if (cycleIdx >= items.length) cycleIdx = 0;
-    const item = items[cycleIdx];
-    cycleIdx = (cycleIdx + 1) % items.length;
-
-    const oldRow = tickerStage.querySelector('.goal-ticker-row');
-    const newRow = document.createElement('div');
-    newRow.className = 'goal-ticker-row';
-    const status = document.createElement('span');
-    status.className = 'goal-ticker-status';
-    status.setAttribute('data-status', item.status);
-    status.textContent = statusGlyph(item.status);
-    const text = document.createElement('span');
-    text.className = 'goal-ticker-text';
-    text.textContent = item.text;
-    newRow.appendChild(status);
-    newRow.appendChild(text);
-
-    if (oldRow && !firstTick) {
-      oldRow.classList.add('is-leaving');
-      setTimeout(() => oldRow.remove(), 460);
-      newRow.classList.add('is-entering');
-    } else if (oldRow) {
-      oldRow.remove();
-    }
-    tickerStage.appendChild(newRow);
-    firstTick = false;
-
-    tickerMeta.textContent = done + '/' + total;
-  }
-
-  function startTicker() {
-    tick();
-    if (tickerTimer) clearInterval(tickerTimer);
-    tickerTimer = setInterval(tick, 5000);
-  }
-
-  window.addEventListener('goals-changed', () => {
-    cycleIdx = 0;
-    tick();
-  });
-
-  // ---------- Day Ring ----------
-  const PALETTE = [
-    [0,    [255, 216, 158]],
-    [12.5, [255, 205, 121]],
-    [25,   [255, 227, 143]],
-    [37.5, [255, 183, 106]],
-    [50,   [255, 149,  89]],
-    [62.5, [243, 111,  79]],
-    [75,   [226,  93, 122]],
-    [87.5, [123,  91, 176]],
-    [100,  [ 47,  58, 102]]
-  ];
-  function lerp(a, b, t) { return a + (b - a) * t; }
-  function paletteAt(p) {
-    if (p <= PALETTE[0][0]) return PALETTE[0][1];
-    if (p >= PALETTE[PALETTE.length - 1][0]) return PALETTE[PALETTE.length - 1][1];
-    for (let i = 0; i < PALETTE.length - 1; i++) {
-      const [p0, c0] = PALETTE[i];
-      const [p1, c1] = PALETTE[i + 1];
-      if (p >= p0 && p <= p1) {
-        const t = (p - p0) / (p1 - p0);
-        return [lerp(c0[0], c1[0], t), lerp(c0[1], c1[1], t), lerp(c0[2], c1[2], t)];
-      }
-    }
-    return [255,255,255];
-  }
-  function rgb(c) { return 'rgb(' + Math.round(c[0]) + ',' + Math.round(c[1]) + ',' + Math.round(c[2]) + ')'; }
-
-  function formatClock(d) {
-    let h = d.getHours();
-    const m = d.getMinutes();
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    h = h % 12;
-    if (h === 0) h = 12;
-    return h + ':' + pad2(m) + ' ' + ampm;
-  }
-  function formatRemaining(totalMin) {
-    const h = Math.floor(totalMin / 60);
-    const m = Math.floor(totalMin % 60);
-    return h + 'h ' + m + 'm';
-  }
-
-  function updateDayRing() { /* day ring removed */ }
-
-  // ---------- Move to tomorrow ----------
-  function moveGoalToTomorrow(idx) {
-    const todayGoals = getGoals(todayKey());
-    const goal = todayGoals.splice(idx, 1)[0];
-    setGoals(todayKey(), todayGoals);
-    const tomorrowGoals = getGoals(tomorrowKey());
-    tomorrowGoals.push({ ...goal, done: false });
-    setGoals(tomorrowKey(), tomorrowGoals);
-    loadToday();
-  }
-
-  // ---------- Row building ----------
-  function makeInlineEdit(textEl, goals, idx, key, reload) {
-    textEl.addEventListener('click', () => {
-      if (textEl.getAttribute('contenteditable') === 'true') return;
-      const original = textEl.textContent;
-      textEl.setAttribute('contenteditable', 'true');
-      textEl.focus();
-      const range = document.createRange();
-      range.selectNodeContents(textEl);
-      range.collapse(false);
-      const sel = window.getSelection();
-      sel.removeAllRanges(); sel.addRange(range);
-
-      function commit() {
-        const next = textEl.textContent.trim();
-        textEl.removeAttribute('contenteditable');
-        if (next && next !== original) {
-          const list = getGoals(key);
-          if (list[idx]) { list[idx].text = next; setGoals(key, list); }
-          reload();
-        } else {
-          textEl.textContent = original;
-        }
-      }
-      function cancel() {
-        textEl.removeAttribute('contenteditable');
-        textEl.textContent = original;
-      }
-      textEl.addEventListener('blur', commit, { once: true });
-      textEl.addEventListener('keydown', function onKey(e) {
-        if (e.key === 'Enter') { e.preventDefault(); textEl.removeEventListener('keydown', onKey); textEl.blur(); }
-        else if (e.key === 'Escape') { e.preventDefault(); textEl.removeEventListener('keydown', onKey); cancel(); }
-      });
-    });
-  }
-
-  function wireDragReorder(row, listEl, key, reload) {
-    row.setAttribute('draggable', 'true');
-    row.addEventListener('dragstart', (e) => {
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', row.dataset.idx);
-    });
-    row.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      row.classList.add('is-drag-over');
-    });
-    row.addEventListener('dragleave', () => row.classList.remove('is-drag-over'));
-    row.addEventListener('drop', (e) => {
-      e.preventDefault();
-      row.classList.remove('is-drag-over');
-      const from = parseInt(e.dataTransfer.getData('text/plain'), 10);
-      const to   = parseInt(row.dataset.idx, 10);
-      if (isNaN(from) || isNaN(to) || from === to) return;
-      const list = getGoals(key);
-      const [moved] = list.splice(from, 1);
-      list.splice(to, 0, moved);
-      setGoals(key, list);
-      reload();
-    });
-  }
-
-  function buildGoalRow(goal, idx, key, readOnly, reload) {
-    const li = document.createElement('li');
-    li.className = 'gm-row';
-    li.dataset.idx = String(idx);
-    if (goal.done) li.classList.add('gm-row-done');
-    if (goal.queued) li.classList.add('gm-row-queued');
-
-    const handle = document.createElement('span');
-    handle.className = 'gm-handle';
-    handle.textContent = '⋮⋮';
-    li.appendChild(handle);
-
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.className = 'gm-check';
-    cb.checked = !!goal.done;
-    if (readOnly) { cb.disabled = true; cb.title = 'Activates at 6 AM tomorrow'; }
-    cb.addEventListener('change', () => {
-      const list = getGoals(key);
-      if (!list[idx]) return;
-      list[idx].done = cb.checked;
-      if (cb.checked) list[idx].doneAt = Date.now();
-      else delete list[idx].doneAt;
-      setGoals(key, list);
-      if (cb.checked && typeof window.addXP === 'function') {
-        const real = list.filter(g => g.text && g.text.trim());
-        if (real.length > 0 && real.every(g => g.done)) {
-          window.addXP('discipline', 25, 'Alle goals voltooid');
-        }
-      }
-      reload();
-    });
-    li.appendChild(cb);
-
-    const text = document.createElement('span');
-    text.className = 'gm-text';
-    text.textContent = goal.text;
-    li.appendChild(text);
-    makeInlineEdit(text, null, idx, key, reload);
-
-    const queueBtn = document.createElement('button');
-    queueBtn.type = 'button';
-    queueBtn.className = 'gm-queue-btn' + (goal.queued ? ' gm-queue-active' : '');
-    queueBtn.textContent = '⚡';
-    queueBtn.title = 'Queue for productivity window';
-    if (readOnly) queueBtn.disabled = true;
-    queueBtn.addEventListener('click', () => {
-      const list = getGoals(key);
-      if (!list[idx]) return;
-      list[idx].queued = !list[idx].queued;
-      setGoals(key, list);
-      li.classList.add('is-queue-flashing');
-      setTimeout(reload, 480);
-    });
-    li.appendChild(queueBtn);
-
-    if (!readOnly && !goal.done) {
-      const tmrwBtn = document.createElement('button');
-      tmrwBtn.type = 'button';
-      tmrwBtn.className = 'goal-delete';
-      tmrwBtn.setAttribute('aria-label', 'Move to tomorrow');
-      tmrwBtn.title = 'Move to tomorrow';
-      tmrwBtn.textContent = '→';
-      tmrwBtn.style.fontSize = '13px';
-      tmrwBtn.addEventListener('click', () => moveGoalToTomorrow(idx));
-      li.appendChild(tmrwBtn);
-    }
-
-    const del = document.createElement('button');
-    del.type = 'button';
-    del.className = 'goal-delete';
-    del.setAttribute('aria-label', 'Delete goal');
-    del.textContent = '×';
-    del.addEventListener('click', () => {
-      const list = getGoals(key);
-      list.splice(idx, 1);
-      setGoals(key, list);
-      reload();
-    });
-    li.appendChild(del);
-
-    wireDragReorder(li, null, key, reload);
-    return li;
-  }
-
-  // ---------- Renderers ----------
-  function renderTodayHeader() {
-    const goals = getGoals(todayKey());
-    const total = goals.length;
-    const done  = goals.filter(g => g.done).length;
-    document.getElementById('gmProgressNum').textContent   = done;
-    document.getElementById('gmProgressTotal').textContent = '/ ' + total;
-    const label = document.getElementById('gmProgressLabel');
-    if (total === 0)        label.textContent = 'no goals yet';
-    else if (done === total) label.textContent = 'all done — solid day';
-    else                     label.textContent = 'complete';
-
-    document.getElementById('todayLabel').textContent =
-      'Today — ' + formatDate(getActiveDateString());
-
-    const bar = document.getElementById('gmBar');
-    bar.innerHTML = '';
-    goals.forEach(g => {
-      const seg = document.createElement('div');
-      seg.className = 'gm-bar-seg' + (g.done ? ' gm-bar-seg-done' : '');
-      bar.appendChild(seg);
-    });
-
-    const card = document.getElementById('gmCardToday');
-    card.classList.toggle('gm-all-done', total > 0 && done === total);
-
-    const pushBtn = document.getElementById('gmPushBtn');
-    pushBtn.style.display = (total > 0 && done < total) ? 'block' : 'none';
-  }
-
-  function renderStreak() {
-    const s = loadStreak();
-    document.getElementById('gmStreakNum').textContent = s.count;
-    document.getElementById('gmStreak').classList.toggle('gm-streak-active', s.count > 0);
-  }
-
-  function renderTomorrowCount() {
-    const list = getGoals(tomorrowKey());
-    document.getElementById('gmTomorrowCount').textContent = list.length + ' planned';
-    document.getElementById('tomorrowLabel').textContent =
-      'Plan tomorrow — ' + formatDate(getTomorrowDateString());
-  }
-
-  function renderListInto(goals, listEl, emptyEl, key, readOnly) {
-    listEl.innerHTML = '';
-    emptyEl.style.display = goals.length === 0 ? 'block' : 'none';
-    const reload = () => (key === todayKey() ? loadToday() : loadTomorrow());
-
-    const visible = goals.length > 5 ? goals.slice(0, 5) : goals;
-    visible.forEach((g, i) => listEl.appendChild(buildGoalRow(g, i, key, readOnly, reload)));
-
-    if (goals.length > 5) {
-      let expanded = false;
-      const toggle = document.createElement('button');
-      toggle.type = 'button';
-      toggle.className = 'gm-show-toggle';
-      const updateLabel = () => {
-        toggle.textContent = expanded ? 'Show less ▴' : ('Show ' + (goals.length - 5) + ' more ▾');
-      };
-      updateLabel();
-      toggle.addEventListener('click', () => {
-        expanded = !expanded;
-        if (expanded) {
-          goals.slice(5).forEach((g, i) => {
-            const row = buildGoalRow(g, i + 5, key, readOnly, reload);
-            listEl.insertBefore(row, toggle);
-          });
-        } else {
-          Array.from(listEl.querySelectorAll('.gm-row')).slice(5).forEach(r => r.remove());
-        }
-        updateLabel();
-      });
-      listEl.appendChild(toggle);
-    }
-
-    if (key === todayKey()) renderTodayHeader();
-    else                    renderTomorrowCount();
-  }
-
-  function loadToday() {
-    const goals = getGoals(todayKey());
-    renderListInto(goals, document.getElementById('goalList'), document.getElementById('emptyState'), todayKey(), false);
-  }
-  function loadTomorrow() {
-    const goals = getGoals(tomorrowKey());
-    renderListInto(goals, document.getElementById('tomorrowList'), document.getElementById('tomorrowEmpty'), tomorrowKey(), true);
-  }
-
-  // ---------- Push remaining ----------
-  document.getElementById('gmPushBtn').addEventListener('click', () => {
-    const today    = getGoals(todayKey());
-    const remaining = today.filter(g => !g.done);
-    if (remaining.length === 0) return;
-    if (!confirm('Move ' + remaining.length + ' unchecked goal' + (remaining.length === 1 ? '' : 's') + ' to tomorrow?')) return;
-    const tomorrow = getGoals(tomorrowKey());
-    const seen = new Set(tomorrow.map(g => g.text));
-    remaining.forEach(g => {
-      if (!seen.has(g.text)) { tomorrow.push({ text: g.text, done: false }); seen.add(g.text); }
-    });
-    setGoals(tomorrowKey(), tomorrow);
-    setGoals(todayKey(), today.filter(g => g.done));
-    loadToday(); loadTomorrow();
-  });
-
-  // ---------- Add + Polish handlers ----------
-  function showStatus(el, message, isError) {
-    el.textContent = message;
-    el.classList.toggle('gm-status-error', !!isError);
-    clearTimeout(el._t);
-    el._t = setTimeout(() => { el.textContent = ''; el.classList.remove('gm-status-error'); }, 3500);
-  }
-
-  async function polishOne(text) {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 1000,
-        messages: [{
-          role: 'user',
-          content:
-            'Rewrite this single goal so it is concrete, action-oriented, and under 60 characters. ' +
-            'Return ONLY a JSON array with exactly one string, no preamble, no code fences.\n\nGoal: ' + text
-        }]
-      })
-    });
-    const data = await res.json();
-    const content = (data && data.content && data.content[0] && data.content[0].text) || '';
-    const arr = JSON.parse(content);
-    if (!Array.isArray(arr) || arr.length < 1 || typeof arr[0] !== 'string') throw new Error('bad response');
-    return arr[0].trim();
-  }
-
-  function makeAddHandlers(input, addBtn, polishBtn, key, statusEl, reload) {
-    function plainAdd(text) {
-      const list = getGoals(key);
-      list.push({ text, done: false });
-      setGoals(key, list);
-      input.value = '';
-      reload();
-    }
-    addBtn.addEventListener('click', () => {
-      const text = input.value.trim();
-      if (!text) return;
-      plainAdd(text);
-    });
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); addBtn.click(); }
-    });
-    polishBtn.addEventListener('click', async () => {
-      const text = input.value.trim();
-      if (!text) return;
-      if (!ANTHROPIC_API_KEY) {
-        plainAdd(text);
-        showStatus(statusEl, 'Polish needs an Anthropic API key — added as-typed.', false);
-        return;
-      }
-      polishBtn.disabled = true;
-      try {
-        const polished = await polishOne(text);
-        plainAdd(polished);
-      } catch (e) {
-        plainAdd(text);
-        showStatus(statusEl, 'Polish failed — added as-typed.', true);
-      } finally {
-        polishBtn.disabled = false;
-      }
-    });
-  }
-
-  makeAddHandlers(
-    document.getElementById('goalInput'),
-    document.getElementById('goalAddBtn'),
-    document.getElementById('goalPolishBtn'),
-    todayKey(),
-    document.getElementById('polishStatus'),
-    loadToday
-  );
-  makeAddHandlers(
-    document.getElementById('tomorrowInput'),
-    document.getElementById('tomorrowAddBtn'),
-    document.getElementById('tomorrowPolishBtn'),
-    tomorrowKey(),
-    document.getElementById('tomorrowStatus'),
-    loadTomorrow
-  );
-
-  // ---------- Boot ----------
-  rollover();
-  processStreak();
-  loadToday();
-  loadTomorrow();
-  renderStreak();
-  updateDayRing();
-  setInterval(updateDayRing, 60 * 1000);
-  startTicker();
-
-  // Re-render when storage changes from another tab (or our bridged parent).
-  window.addEventListener('storage', () => {
-    loadToday(); loadTomorrow(); renderStreak();
-  });
-})();
-</script>
-<script>
-(function () {
-  const DAILY_KEY    = () => 'rpg_daily_v1:' + new Date().toISOString().slice(0, 10);
-  const PIN_KEY      = 'rpg_private_unlocked';
-  const PRIVATE_PIN  = '1111';
-  const QUOTES_KEY   = 'rpg_quotes_v1';
-
-  const ALL_QUESTS = [
-    { id: 'workout',      icon: '💪', label: 'Workout',         skill: 'gym',          xp: 50 },
-    { id: 'meditation',   icon: '🧘', label: 'Meditation',     skill: 'meditation',   xp: 20 },
-    { id: 'no_porn',      icon: '🔒', label: 'Private quest',  skill: 'no_porn',      xp: 45, private: true },
-    { id: 'weed_control', icon: '🔒', label: 'Private quest 2',skill: 'weed_control', xp: 40, private: true },
-    { id: 'reading',      icon: '📖', label: 'Reading',         skill: 'reading',      xp: 15 },
-    { id: 'outreach',     icon: '📈', label: 'Outreach',        skill: 'sales',        xp: 35 },
-    { id: 'gratitude',    icon: '🙏', label: 'Gratitude',       skill: 'gratitude',    xp: 10 },
-    { id: 'nutrition',    icon: '🥗', label: 'Protein',         skill: 'nutrition',    xp: 20 },
-    { id: 'planning',     icon: '📅', label: 'Plan the day',    skill: 'planning',     xp: 15 },
-  ];
-  const ACTIVE_QUESTS_KEY = 'rpg_active_quests_v1';
-  const DEFAULT_ACTIVE_QUESTS = ['workout','meditation','no_porn','weed_control','reading','outreach','gratitude','nutrition'];
-  function getActiveQuestIds() {
-    try { const s = JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if (Array.isArray(s)) return s; } catch {}
-    return [...DEFAULT_ACTIVE_QUESTS];
-  }
-  const QUESTS = { filter(fn){ return ALL_QUESTS.filter(q=>getActiveQuestIds().includes(q.id)).filter(fn); }, forEach(fn){ ALL_QUESTS.filter(q=>getActiveQuestIds().includes(q.id)).forEach(fn); } };
-
-  const FOCUS_SKILLS_KEY = 'rpg_focus_skills_v1';
-  // Default focus skills — user kan dit aanpassen in Settings
-  const DEFAULT_FOCUS = ['tennis','calisthenics'];
-  const ALL_SKILL_META = {
-    saving:       { icon:'🐖', label:'Saving',       color:'#F5C842' },
-    investing:    { icon:'📈', label:'Investing',    color:'#F5C842' },
-    budgeting:    { icon:'📋', label:'Budgeting',    color:'#F5C842' },
-    net_worth:    { icon:'🏦', label:'Net Worth',    color:'#F5C842' },
-    gym:          { icon:'🏋️', label:'Gym',          color:'#6BE3A4' },
-    tennis:       { icon:'🎾', label:'Tennis',       color:'#6BE3A4' },
-    calisthenics: { icon:'🤸', label:'Calisthenics', color:'#6BE3A4' },
-    core:         { icon:'🔥', label:'Core',         color:'#6BE3A4' },
-    stretching:   { icon:'🧘', label:'Mobility',     color:'#6BE3A4' },
-    strength:     { icon:'💪', label:'Strength',     color:'#6BE3A4' },
-    reading:      { icon:'📚', label:'Reading',      color:'#7DD3FC' },
-    focus:        { icon:'🎯', label:'Deep Work',    color:'#7DD3FC' },
-    journaling:   { icon:'📓', label:'Journaling',   color:'#7DD3FC' },
-    sales:        { icon:'🤝', label:'Sales',        color:'#C4B5FD' },
-    marketing:    { icon:'📣', label:'Marketing',    color:'#C4B5FD' },
-    ai_tools:     { icon:'🤖', label:'AI Tools',     color:'#C4B5FD' },
-    coding:       { icon:'💻', label:'Coding',       color:'#C4B5FD' },
-    cooking:      { icon:'🍳', label:'Cooking',      color:'#FB923C' },
-    social:       { icon:'👥', label:'Social',       color:'#FB923C' },
-    dating:       { icon:'❤️', label:'Dating',       color:'#FB923C' },
-    planning:     { icon:'📅', label:'Planning',     color:'#FB923C' },
-    languages:    { icon:'🗣️', label:'Languages',    color:'#818CF8' },
-    learning:     { icon:'🎓', label:'Learning',     color:'#818CF8' },
-    piano:        { icon:'🎹', label:'Piano',        color:'#2DD4BF' },
-    content:      { icon:'🎬', label:'Content',      color:'#2DD4BF' },
-  };
-
-  function getFocusSkills() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(FOCUS_SKILLS_KEY));
-      if (Array.isArray(saved) && saved.length) return saved;
-    } catch {}
-    return DEFAULT_FOCUS;
-  }
-
-  const HABITS_LIST = [
-    { key:'sleep',       icon:'😴', label:'Sleep',   color:'#7DD3FC' },
-    { key:'nutrition',   icon:'🥗', label:'Nutrition',color:'#6BE3A4' },
-    { key:'cold_shower', icon:'🚿', label:'Cold',    color:'#818CF8' },
-    { key:'walking',     icon:'👟', label:'Steps',   color:'#6BE3A4' },
-  ];
-  // Habits die ook als mission bestaan → niet dubbel tonen
-  const MISSION_SKILL_HABIT_KEYS = new Set(['meditation','nutrition','gratitude']);
-
-  const COACH_SUGGESTIONS = {
-    workout:    '3 sets of progressions. 20 minutes. +50 XP Gym.',
-    meditation: '10 min timer. In 4 sec, out 6 sec. That\'s all.',
-    gratitude:  'Write 3 things. They can be small. 2 minutes.',
-    outreach:   'Send one DM or email. One sentence. Now. +35 XP Sales.',
-    nutrition:  'Eat a protein-rich meal before bed.',
-    reading:    'Read 10 pages. Just start. +25 XP Mind.',
-    core:       '3 sets of hollow body holds. 30 sec each. +45 XP Core.',
-    mobility:   '15 min stretch routine. Hips, hamstrings, shoulders. +30 XP Mobility.',
-    tennis:     'Rally practice or shadow swings. 20 minutes. +40 XP Tennis.',
-    piano:      '30 min focused practice. Hands separately first. +30 XP Piano.',
-    investing:  'Review your portfolio. One research article. +20 XP Investing.',
-    coding:     'One feature or bug fix. Ship something. +50 XP Coding.',
-  };
-
-  function xpToLevelCC(xp){ return Math.min(100, Math.floor(Math.sqrt((xp||0)/50))+1); }
-  function xpForLevelCC(l){ return l>=100?Infinity:Math.pow(l-1,2)*50; }
-
-  function loadCharCC() {
-    try { return JSON.parse(localStorage.getItem('rpg_character_v1'))||{skills:{},xpLog:[]}; } catch { return {skills:{},xpLog:[]}; }
-  }
-  function loadHabitsCC() {
-    try { return JSON.parse(localStorage.getItem('rpg_habits_v1'))||{}; } catch { return {}; }
-  }
-
-  function getGreeting() {
-    const h = new Date().getHours();
-    if (h < 12) return 'Good morning';
-    if (h < 18) return 'Good afternoon';
-    return 'Good evening';
-  }
-
-  function getQuote() {
-    let quotes;
-    try { quotes = JSON.parse(localStorage.getItem('rpg_quotes_v1')); } catch {}
-    if (!Array.isArray(quotes)||!quotes.length) quotes = DEFAULT_QUOTES;
-    return quotes[Math.floor(Date.now()/86400000) % quotes.length];
-  }
-
-  let _quoteIdx = 0;
-  let _quoteTimer = null;
-  function startQuoteRotation() {
-    if (_quoteTimer) return;
-    let quotes;
-    try { quotes = JSON.parse(localStorage.getItem('rpg_quotes_v1')); } catch {}
-    if (!Array.isArray(quotes)||!quotes.length) quotes = DEFAULT_QUOTES;
-    function rotate() {
-      const el = document.getElementById('ccQuoteBanner');
-      if (!el) return;
-      el.style.opacity='0';
-      setTimeout(()=>{
-        _quoteIdx = (_quoteIdx+1) % quotes.length;
-        el.textContent = quotes[_quoteIdx];
-        el.style.opacity='1';
-      }, 400);
-    }
-    _quoteTimer = setInterval(rotate, 8000);
-  }
-
-  function renderCommandCenter() {
-    const cc = document.getElementById('commandCenter');
-    if (!cc) return;
-    const char = loadCharCC();
-    const skills = char.skills||{};
-    const habits = loadHabitsCC();
-    const daily = loadDaily();
-    const quests = daily.quests||{};
-    const today = new Date().toISOString().slice(0,10);
-
-    let quotes;
-    try { quotes = JSON.parse(localStorage.getItem('rpg_quotes_v1')); } catch {}
-    if (!Array.isArray(quotes)||!quotes.length) quotes = DEFAULT_QUOTES;
-    const firstQuote = quotes[_quoteIdx % quotes.length];
-
-    // Focus skills (from localStorage)
-    const focusKeys = getFocusSkills();
-    const fsHtml = focusKeys.map(key=>{
-      const fs = ALL_SKILL_META[key]||{ icon:'⭐', label:key, color:'#6BE3A4' };
-      fs.key = key;
-      const sk = skills[fs.key]||{};
-      const xp = sk.xp||0;
-      const lvl = xpToLevelCC(xp);
-      const isMax = lvl>=100;
-      const curXP = isMax?0:xp-xpForLevelCC(lvl);
-      const nextXP = isMax?1:xpForLevelCC(lvl+1)-xpForLevelCC(lvl);
-      const pct = isMax?100:Math.min(100,Math.round(curXP/nextXP*100));
-      const defaults = window.RPG_DEFAULT_SKILLS||{};
-      const msLevels = Object.keys((defaults[fs.key]||{}).milestones||{}).map(Number).sort((a,b)=>a-b);
-      const nextMs = msLevels.find(l=>l>lvl);
-      const nextLabel = nextMs?((defaults[fs.key]||{}).milestones||{})[nextMs]:'';
-      return `<div class="cc-focus-skill">
-        <div class="cc-fs-row">
-          <span class="cc-fs-icon">${fs.icon}</span>
-          <span class="cc-fs-name">${fs.label}</span>
-          <span class="cc-fs-level" style="color:${fs.color}">Lvl ${isMax?'MAX':lvl}</span>
+    return `<div class="focus-card${isOpen?' open':''}" id="fc-${key}" onclick="toggleFocusCard('${key}',event)">
+      <div class="focus-card-top">
+        <div class="focus-lvl-badge">${level}</div>
+        <div>
+          <div class="focus-name">${def.label || key}</div>
+          <div class="focus-domain">${parentLabel}</div>
         </div>
-        <div class="cc-fs-track"><div class="cc-fs-fill" style="width:${pct}%;background:${fs.color}"></div></div>
-        ${nextLabel?'<div class="cc-fs-next">→ '+nextLabel+'</div>':''}
-      </div>`;
-    }).join('');
+      </div>
+      <div class="focus-next">Next unlock · <strong>${nextMsText}</strong></div>
+      <div class="focus-bar-track"><div class="focus-bar-fill" style="width:${barPct}%"></div></div>
+      <div class="focus-expand">
+        ${logBtns ? `<div class="focus-log-btns">${logBtns}</div>` : ''}
+        ${msRows ? `<div class="focus-unlock-title">Unlock Path</div>${msRows}` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
 
-    // Missions — geen privé, geen habits die al als habit-tile staan
-    const publicQuests = QUESTS.filter(q=>!q.private && !MISSION_SKILL_HABIT_KEYS.has(q.skill));
-    const missionsHtml = publicQuests.map(q=>{
-      const isDone=!!(quests[q.id]?.done);
-      return `<div class="cc-mission${isDone?' done':''}" data-qid="${q.id}">
-        <div class="cc-mission-top">
-          <span class="cc-mission-icon">${q.icon}</span>
-          <span class="cc-mission-check">${isDone?'✓':''}</span>
-        </div>
-        <div class="cc-mission-label">${q.label}</div>
-        <div class="cc-mission-xp">+${q.xp} XP</div>
-      </div>`;
-    }).join('');
+window.toggleFocusCard = function(key, e) {
+  // Don't close when clicking log buttons
+  if (e && e.target && e.target.closest('.focus-log-btn')) return;
+  openFocusKey = openFocusKey === key ? null : key;
+  renderFocusGrid();
+};
 
-    // Habits
-    const habitsHtml = HABITS_LIST.map(h=>{
-      const hab = habits[h.key]||{};
-      const score = hab.score||0;
-      const checkedToday = hab.lastChecked===today;
-      const streak = hab.streak||0;
-      const pct = Math.min(100,score*10);
-      return `<div class="cc-habit${checkedToday?' done':''}" data-hid="${h.key}">
-        <div class="cc-habit-header">
-          <span class="cc-habit-icon">${h.icon}</span>
-          <span class="cc-habit-name">${h.label}</span>
-          ${checkedToday?'<span style="font-size:14px">✓</span>':''}
-        </div>
-        <div class="cc-habit-score" style="color:${h.color}">${score}<span style="font-size:11px;font-weight:500;color:#76746E">/10</span></div>
-        <div class="cc-habit-bar"><div class="cc-habit-fill" style="width:${pct}%;background:${h.color}"></div></div>
-        <div class="cc-habit-status">${streak>1?'🔥 '+streak+' day streak':checkedToday?'✓ Done today':'Tap to log'}</div>
-      </div>`;
-    }).join('');
+window.focusLog = function(key, xp, label, e) {
+  if (e) e.stopPropagation();
+  if (!window.addXP) return;
+  window.addXP(key, xp, label);
+  showToast('+' + xp + ' XP · ' + label);
+  renderFocusGrid();
+  renderCharStrip();
+};
 
-    cc.innerHTML =
-      `<div class="cc-wrap">
-        <div class="cc-quote-banner" id="ccQuoteBanner" style="transition:opacity 0.4s">${firstQuote}</div>
-        <div class="cc-greeting">${getGreeting()}, King Joey</div>
-        <div class="cc-subtitle">Gamenfy v2.0 · Build your character</div>
+// ── Core Tracker ─────────────────────────────────────────────
+const CORE_SKILLS = ['whistling', 'dancing'];
 
-        <div class="cc-section-label">Focus Skills</div>
-        ${fsHtml}
+function renderCoreTracker() {
+  const container = document.getElementById('coreSkills');
+  if (!container) return;
+  if (!window.getCharacter || !window.xpToLevel) { setTimeout(renderCoreTracker, 50); return; }
 
-        <div class="cc-section-label">Daily Missions</div>
-        <div class="cc-mission-grid">${missionsHtml}</div>
+  const char = window.getCharacter();
+  const skills = char.skills || {};
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
 
-        <div class="cc-section-label">Habits</div>
-        <div class="cc-habit-row">${habitsHtml}</div>
-      </div>`;
+  container.innerHTML = CORE_SKILLS.map(key => {
+    const def = defaults[key] || {};
+    const s = skills[key] || {};
+    const xp = s.xp || 0;
+    const level = window.xpToLevel(xp);
+    const nextMs = getNextMilestone(def, level);
+    const nextMsText = nextMs ? 'Lvl ' + nextMs + ' — ' + def.milestones[nextMs] : 'Keep going';
+    const nextXp = window.xpForLevel ? window.xpForLevel(level+1) : null;
+    const thisXp = window.xpForLevel ? window.xpForLevel(level) : 0;
+    const barPct = nextXp && nextXp !== Infinity
+      ? Math.round(((xp - thisXp) / (nextXp - thisXp)) * 100) : 100;
 
-    // Wire mission clicks
-    publicQuests.forEach(q=>{
-      const el = cc.querySelector('[data-qid="'+q.id+'"]');
-      if(!el) return;
-      el.addEventListener('click',()=>{
-        const d=loadDaily(); if(!d.quests) d.quests={};
-        const was=!!(d.quests[q.id]?.done);
-        d.quests[q.id]={done:!was};
-        if(!was&&typeof window.addXP==='function')    window.addXP(q.skill,q.xp,q.label);
-        if(was&&typeof window.removeXP==='function')  window.removeXP(q.skill,q.xp,q.label+' unchecked');
-        saveDaily(d);
-        renderCommandCenter();
-        renderQuests();
-      });
+    return `<div class="core-skill" onclick="openCoreSkill('${key}')">
+      <div class="core-skill-icon">${def.icon||'⭐'}</div>
+      <div class="core-skill-name">${def.label||key}</div>
+      <div class="core-skill-level">${level}</div>
+      <div class="core-skill-next">${nextMsText}</div>
+      <div class="core-bar-track"><div class="core-bar-fill" style="width:${barPct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+window.openCoreSkill = function(key) {
+  if (!window.getCharacter || !window.xpToLevel) return;
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
+  const def = defaults[key] || {};
+  const char = window.getCharacter();
+  const s = (char.skills || {})[key] || {};
+  const xp = s.xp || 0;
+  const level = window.xpToLevel(xp);
+
+  // Simple log modal
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:8000;display:flex;align-items:flex-end;justify-content:center;';
+  const panel = document.createElement('div');
+  panel.style.cssText = 'background:#fff;border-radius:20px 20px 0 0;padding:20px 16px 32px;width:100%;max-width:480px;';
+
+  const logBtns = (def.quickLog || []).map(q =>
+    `<button onclick="coreLog('${key}',${q.xp},'${(q.label||'').replace(/'/g,"\\'")}');this.closest('[data-overlay]').remove();"
+      style="width:100%;padding:12px;margin-bottom:8px;border:1px solid #E8E6DF;border-radius:10px;background:#F4F3EF;font-size:14px;font-weight:600;text-align:left;cursor:pointer;font-family:inherit;">
+      ${q.label} <span style="color:#D4633E;font-size:12px;float:right">+${q.xp} XP</span>
+    </button>`
+  ).join('');
+
+  panel.innerHTML = `
+    <div style="font-family:'Schibsted Grotesk',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px">${def.label}</div>
+    <div style="font-size:12px;color:#6F6C63;margin-bottom:16px">Level ${level} · ${xp} XP</div>
+    ${logBtns}
+    <button onclick="this.closest('[data-overlay]').remove()" style="width:100%;padding:12px;border:none;background:transparent;color:#6F6C63;font-size:14px;cursor:pointer;font-family:inherit">Cancel</button>
+  `;
+  overlay.setAttribute('data-overlay','1');
+  overlay.appendChild(panel);
+  overlay.addEventListener('click', e => { if (e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+};
+
+window.coreLog = function(key, xp, label) {
+  if (!window.addXP) return;
+  window.addXP(key, xp, label);
+  showToast('+' + xp + ' XP · ' + label);
+  renderCoreTracker();
+  renderCharStrip();
+};
+
+// ── Apple Health XP (v2.3 — carry-over) ──────────────────────
+(async function loadAppleHealth() {
+  const SB_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co';
+  const SB_KEY = 'sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
+  const today = todayStr();
+  const XP_GUARD = 'ah_xp_given:' + today;
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/app_state?key=eq.apple_health:${today}&select=data`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
     });
-
-    // Wire habit clicks
-    HABITS_LIST.forEach(h=>{
-      const el = cc.querySelector('[data-hid="'+h.key+'"]');
-      if(!el) return;
-      el.addEventListener('click',()=>{
-        const habitsRaw = loadHabitsCC();
-        const hab = habitsRaw[h.key]||{score:0,lastChecked:null,streak:0};
-        const checkedToday = hab.lastChecked===today;
-        if(checkedToday){
-          hab.score=Math.max(0,(hab.score||1)-1);
-          hab.lastChecked=null;
-          hab.streak=Math.max(0,(hab.streak||1)-1);
-        } else {
-          const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
-          hab.score=Math.min(10,(hab.score||0)+1);
-          hab.streak=(hab.lastChecked===yesterday)?(hab.streak||0)+1:1;
-          hab.lastChecked=today;
-          if(typeof window.addXP==='function') window.addXP(h.key,15,h.label);
-        }
-        habitsRaw[h.key]=hab;
-        try{ localStorage.setItem('rpg_habits_v1',JSON.stringify(habitsRaw)); } catch{}
-        renderCommandCenter();
-      });
-    });
-
-    // Recap knop — altijd zichtbaar, niet alleen na 20:00
-    const recapClosed = !!(daily.recapShown);
-    if(!recapClosed){
-      const btn = document.createElement('button');
-      btn.className='cc-recap-btn';
-      btn.textContent='📊 Dag Recap bekijken';
-      btn.addEventListener('click',()=>{ renderEveningRecap(); document.getElementById('eveningRecap').scrollIntoView({behavior:'smooth'}); });
-      cc.querySelector('.cc-wrap').appendChild(btn);
-    }
-  }
-
-  function renderEveningRecap() {
-    const recap = document.getElementById('eveningRecap');
-    if(!recap) return;
-    const char = loadCharCC();
-    const daily = loadDaily();
-    const quests = daily.quests||{};
-    const log = char.xpLog||[];
-    const today = new Date().toISOString().slice(0,10);
-
-    const todayLog = log.filter(e=>e.date===today);
-    const totalXP = todayLog.reduce((sum,e)=>sum+(e.amount>0?e.amount:0),0);
-
-    // XP per categorie
-    const SKILL_COLORS={money:'#F5C842',body:'#6BE3A4',mind:'#7DD3FC',business:'#C4B5FD',lifestyle:'#FB923C',discipline:'#FF6B6B',knowledge:'#818CF8',creative:'#2DD4BF'};
-    const CAT_LABELS={money:'💰 Money',body:'💪 Body',mind:'🧠 Mind',business:'📈 Business',lifestyle:'✨ Lifestyle',discipline:'🛡️ Discipline',knowledge:'📚 Knowledge',creative:'🎨 Creative'};
-    const defaults = window.RPG_DEFAULT_SKILLS||{};
-    const xpPerCat={};
-    todayLog.forEach(e=>{ if(e.amount>0){ const cat=(defaults[e.skill]||{}).parentSkill||'body'; xpPerCat[cat]=(xpPerCat[cat]||0)+e.amount; } });
-    const catEntries = Object.entries(xpPerCat).sort((a,b)=>b[1]-a[1]);
-    const maxCatXP = catEntries.length ? catEntries[0][1] : 1;
-
-    const catsHtml = catEntries.slice(0,6).map(([cat,xp])=>{
-      const color=SKILL_COLORS[cat]||'#6BE3A4';
-      const label=CAT_LABELS[cat]||cat;
-      const pct=Math.round(xp/maxCatXP*100);
-      return `<div class="cc-recap-cat">
-        <div class="cc-recap-cat-head">
-          <span class="cc-recap-cat-name">${label}</span>
-          <span class="cc-recap-cat-xp" style="color:${color}">+${xp}</span>
-        </div>
-        <div class="cc-recap-cat-bar"><div class="cc-recap-cat-fill" style="width:${pct}%;background:${color}"></div></div>
-      </div>`;
-    }).join('');
-
-    // Quest voortgang
-    const allActive = QUESTS.filter(q=>!q.private);
-    const doneCount = allActive.filter(q=>!!(quests[q.id]?.done)).length;
-    const totalCount = allActive.length;
-    const questPct = totalCount ? Math.round(doneCount/totalCount*100) : 0;
-    const missedPublic = QUESTS.filter(q=>!q.private&&!(quests[q.id]?.done));
-    const firstMissed = missedPublic[0];
-    const coachMsg = firstMissed ? COACH_SUGGESTIONS[firstMissed.id] || ('Still time for '+firstMissed.label+' before bed.') : '🏆 Strong day — everything done. King behavior.';
-
-    const score = daily.dayScore||0;
-    const scoreColor = score<=0?'#76746E':score<=4?'#FF6B6B':score<=6?'#FB923C':score<=8?'#F5C842':'#6BE3A4';
-
-    const missedHtml = missedPublic.length ?
-      `<div class="cc-recap-missed">
-        <div class="cc-recap-missed-title">Nog niet gedaan</div>
-        ${missedPublic.map(q=>`<div class="cc-recap-missed-item"><span>○</span> ${q.label}</div>`).join('')}
-      </div>` : '<div style="font-size:12px;color:#6BE3A4;margin-bottom:12px;font-weight:700">✓ Alle missies voltooid!</div>';
-
-    recap.style.display='block';
-    recap.innerHTML=
-      `<div class="cc-recap">
-        <div class="cc-recap-header">
-          <div>
-            <div class="cc-recap-title">⚡ Dag Recap</div>
-            <div class="cc-recap-day-score">
-              <span class="cc-recap-score-num" style="color:${scoreColor}">${score||'—'}</span>
-              <span class="cc-recap-score-denom">/10</span>
-            </div>
-          </div>
-          <div class="cc-recap-total-xp">
-            <div class="cc-recap-xp-num">+${totalXP}</div>
-            <div class="cc-recap-xp-label">XP verdiend</div>
-          </div>
-        </div>
-        <div class="cc-recap-progress">
-          <div class="cc-recap-prog-label">
-            <span class="cc-recap-prog-text">Missies voltooid (${doneCount}/${totalCount})</span>
-            <span class="cc-recap-prog-pct">${questPct}%</span>
-          </div>
-          <div class="cc-recap-prog-track">
-            <div class="cc-recap-prog-fill" style="width:${questPct}%"></div>
-          </div>
-        </div>
-        ${catEntries.length ? `<div class="cc-recap-cats">${catsHtml}</div>` : ''}
-        ${missedHtml}
-        <div class="cc-coach-box">"${coachMsg}"</div>
-        <button class="cc-close-day" onclick="closeDay()">Dag afsluiten</button>
-      </div>`;
-  }
-
-  function closeDay(){
-    const d=loadDaily(); d.recapShown=true; saveDaily(d);
-    document.getElementById('eveningRecap').style.display='none';
-    renderCommandCenter();
-  }
-  window.closeDay=closeDay;
-
-  const DEFAULT_QUOTES = [
-    'Discipline is the bridge between goals and accomplishment.',
-    'Every day is a new chance to level up.',
-    'The king builds his kingdom one decision at a time.',
-    'Hard work beats talent when talent doesn\'t work hard.',
-    'Be the person you needed when you were younger.',
-    'Consistency over intensity — every single day.',
-    'Werk aan jezelf alsof je leven ervan afhangt.',
-    'Denk groot. Start klein. Begin nu.',
-  ];
-
-  function loadDaily()  { try { return JSON.parse(localStorage.getItem(DAILY_KEY()))||{}; } catch { return {}; } }
-  function saveDaily(d) { try { localStorage.setItem(DAILY_KEY(),JSON.stringify(d)); } catch {} }
-  function isPrivateUnlocked() { return sessionStorage.getItem(PIN_KEY)==='1'; }
-
-  // ── PIN modal ────────────────────────────────────────────────
-  function showPinModal(onSuccess) {
-    document.getElementById('indexPinModal')?.remove();
-    const overlay = document.createElement('div');
-    overlay.id = 'indexPinModal';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)';
-    overlay.innerHTML =
-      '<div style="background:#0e0e10;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px 24px;width:280px;text-align:center">' +
-        '<div style="font-size:28px;margin-bottom:8px">🔒</div>' +
-        '<div style="font-size:15px;font-weight:700;margin-bottom:4px;color:#FAFAFA">Private section</div>' +
-        '<div style="font-size:12px;color:#76746E;margin-bottom:18px">Enter your PIN to continue</div>' +
-        '<input id="indexPinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" ' +
-          'style="width:100%;text-align:center;font-size:24px;font-family:ui-monospace,monospace;letter-spacing:0.3em;' +
-          'background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;' +
-          'padding:12px;color:#FAFAFA;outline:none;margin-bottom:10px">' +
-        '<div id="indexPinError" style="font-size:11px;color:#FF6B6B;min-height:14px;margin-bottom:8px"></div>' +
-        '<button onclick="document.getElementById(\'indexPinModal\').remove()" ' +
-          'style="font-size:12px;color:#76746E;background:none;border:none;cursor:pointer;padding:4px">Cancel</button>' +
-      '</div>';
-    document.body.appendChild(overlay);
-    const inp = document.getElementById('indexPinInput');
-    const err = document.getElementById('indexPinError');
-    setTimeout(()=>inp.focus(), 50);
-    inp.addEventListener('input', () => {
-      if (inp.value.length === 4) {
-        if (inp.value === PRIVATE_PIN) {
-          sessionStorage.setItem(PIN_KEY, '1');
-          overlay.remove();
-          onSuccess();
-        } else {
-          err.textContent = 'Wrong PIN, try again';
-          inp.value = '';
-          setTimeout(()=>err.textContent='', 2000);
-        }
-      }
-    });
-    overlay.addEventListener('click', e => { if (e.target===overlay) overlay.remove(); });
-  }
-
-  // ── Score row ────────────────────────────────────────────────
-  function renderScoreRow() {
-    const row = document.getElementById('rpgScoreRow');
-    if (!row) return;
-    const daily = loadDaily();
-    const cur = daily.dayScore || 0;
-    row.innerHTML = '';
-    for (let i = 1; i <= 10; i++) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.textContent = i;
-      const active = cur === i;
-      btn.style.cssText = 'flex:1;min-width:24px;padding:8px 0;border-radius:8px;border:1px solid ' +
-        (active?'rgba(107,227,164,0.3)':'rgba(255,255,255,0.1)') +
-        ';background:' + (active?'rgba(107,227,164,0.12)':'rgba(255,255,255,0.04)') +
-        ';color:' + (active?'#6BE3A4':'#76746E') +
-        ';font-size:12px;font-weight:700;cursor:pointer;transition:all 0.15s';
-      btn.addEventListener('click', function () {
-        const d = loadDaily();
-        const prev = d.dayScore || 0;
-        if (prev && typeof window.removeXP === 'function') window.removeXP('focus', prev * 2, 'Day score corrected');
-        d.dayScore = (prev === i) ? 0 : i;
-        if (d.dayScore && typeof window.addXP === 'function') window.addXP('focus', d.dayScore * 2, 'Day score ' + d.dayScore);
-        saveDaily(d);
-        renderScoreRow();
-      });
-      row.appendChild(btn);
-    }
-  }
-
-  // ── Quests ───────────────────────────────────────────────────
-  function renderQuests() {
-    const grid = document.getElementById('rpgQuestGrid');
-    if (!grid) return;
-    const daily  = loadDaily();
-    const quests = daily.quests || {};
-    grid.innerHTML = '';
-    QUESTS.forEach(q => {
-      const isDone = !!(quests[q.id] && quests[q.id].done);
-      const isPriv = q.private && !isPrivateUnlocked();
-      const card = document.createElement('div');
-      card.style.cssText = 'background:' + (isDone?'rgba(107,227,164,0.07)':'rgba(255,255,255,0.04)') +
-        ';border:1px solid ' + (isDone?'rgba(107,227,164,0.2)':'rgba(255,255,255,0.07)') +
-        ';border-radius:12px;padding:12px;cursor:pointer;user-select:none;transition:all 0.2s' +
-        (isPriv?';opacity:0.55':'');
-      card.innerHTML =
-        '<div style="display:flex;justify-content:space-between;margin-bottom:5px">' +
-          '<span style="font-size:17px">' + (isPriv?'🔒':q.icon) + '</span>' +
-          '<span style="width:16px;height:16px;border-radius:50%;border:1.5px solid ' +
-            (isDone?'transparent':'rgba(255,255,255,0.2)') +
-            ';background:' + (isDone?'#6BE3A4':'transparent') +
-            ';display:flex;align-items:center;justify-content:center;font-size:9px;color:#050506;font-weight:700">' +
-            (isDone?'✓':'') + '</span>' +
-        '</div>' +
-        '<div style="font-size:11px;font-weight:600;color:' + (isDone?'#FAFAFA':'#B8B6B0') + ';margin-bottom:2px">' +
-          (isPriv?'Private quest':q.label) + '</div>' +
-        '<div style="font-size:9px;font-family:ui-monospace,monospace;color:' + (isDone?'#6BE3A4':'#76746E') + '">' +
-          (isPriv?'PIN required':'+'+q.xp+' XP') + '</div>';
-      card.addEventListener('click', function () {
-        if (q.private && !isPrivateUnlocked()) { showPinModal(renderQuests); return; }
-        const d = loadDaily();
-        if (!d.quests) d.quests = {};
-        const was = !!(d.quests[q.id] && d.quests[q.id].done);
-        d.quests[q.id] = { done: !was };
-        if (!was && typeof window.addXP    === 'function') window.addXP(q.skill,    q.xp, q.label);
-        if (was  && typeof window.removeXP === 'function') window.removeXP(q.skill, q.xp, q.label + ' unchecked');
-        saveDaily(d);
-        renderQuests();
-      });
-      grid.appendChild(card);
-    });
-  }
-
-  // ── Gratitude tag-input ──────────────────────────────────────
-  const GRAT_KEY = 'rpg_gratitude_v1';
-  function loadGratItems(){ try{ return JSON.parse(localStorage.getItem(GRAT_KEY))||{}; } catch{ return {}; } }
-  function saveGratItems(obj){ try{ localStorage.setItem(GRAT_KEY,JSON.stringify(obj)); } catch{} }
-  function addGratItem(word){
-    const key = word.toLowerCase().trim();
-    if(!key) return;
-    const items = loadGratItems();
-    const today = new Date().toISOString().slice(0,10);
-    if(!items[key]) items[key]={ count:0, firstDate:today, lastDate:today };
-    items[key].count++;
-    items[key].lastDate = today;
-    saveGratItems(items);
-  }
-  function renderGratTagsHome(){
-    const container = document.getElementById('rpgGratitudeTags');
-    if(!container) return;
-    const today = new Date().toISOString().slice(0,10);
-    const items = loadGratItems();
-    const todayWords = Object.entries(items)
-      .filter(([,d])=>d.lastDate===today)
-      .sort((a,b)=>(b[1].count||1)-(a[1].count||1));
-    container.innerHTML='';
-    todayWords.forEach(([word])=>{
-      const t = document.createElement('span');
-      t.textContent = word;
-      t.style.cssText='padding:3px 10px;border-radius:20px;background:rgba(107,227,164,0.08);border:1px solid rgba(107,227,164,0.22);color:#6BE3A4;font-size:12px;font-weight:600';
-      container.appendChild(t);
-    });
-  }
-  function initGratitude() {
-    const inp = document.getElementById('rpgGratitudeInput');
-    const btn = document.getElementById('rpgGratitudeAddBtn');
-    if (!inp) return;
-    renderGratTagsHome();
-    function submit(){
-      const word = inp.value.trim();
-      if(!word) return;
-      addGratItem(word);
-      inp.value = '';
-      const d = loadDaily();
-      if(!d.gratitudeXpGiven && typeof window.addXP === 'function'){
-        window.addXP('gratitude', 10, 'Gratitude logged');
-        d.gratitudeXpGiven = true; saveDaily(d);
-      }
-      renderGratTagsHome();
-    }
-    inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); submit(); } });
-    if(btn) btn.addEventListener('click', submit);
-  }
-
-  // ── Quotes crawler ───────────────────────────────────────────
-  function initQuotesCrawl() {
-    const el = document.getElementById('quotesCrawl');
-    if (!el) return;
-    let quotes;
-    try { quotes = JSON.parse(localStorage.getItem(QUOTES_KEY)); } catch {}
-    if (!Array.isArray(quotes) || !quotes.length) quotes = DEFAULT_QUOTES;
-    const text = quotes.join('   ✦   ') + '   ✦   ';
-    el.textContent = text;
-    // Adjust animation speed based on text length
-    const speed = Math.max(20, Math.min(80, text.length * 0.5));
-    el.style.animationDuration = speed + 's';
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    renderCommandCenter();
-    startQuoteRotation();
-    renderScoreRow();
-    renderQuests();
-    initGratitude();
-    initQuotesCrawl();
-    // Auto-show evening recap after 20:00
-    const h=new Date().getHours();
-    if(h>=20){ const d=loadDaily(); if(!d.recapShown) renderEveningRecap(); }
-  });
-})();
-
-// ── Apple Health widget ──────────────────────────────────
-(function loadAppleHealth() {
-  const SUPA_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co';
-  const SUPA_KEY = 'sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
-  const today    = new Date().toISOString().slice(0, 10);
-  const ahKey    = 'apple_health:' + today;
-
-  fetch(SUPA_URL + '/rest/v1/app_state?select=data,updated_at&key=eq.'
-    + encodeURIComponent(ahKey), {
-    headers: {
-      'apikey': SUPA_KEY,
-      'Authorization': 'Bearer ' + SUPA_KEY,
-    }
-  })
-  .then(r => r.json())
-  .then(rows => {
-    if (!rows || !rows.length || !rows[0].data) return;
-    const d = rows[0].data;
-
-    // Support both "steps" and "steps " (trailing space from Shortcuts)
-    const stepsRaw  = d.steps != null ? Number(d.steps) : (d['steps '] != null ? Number(d['steps ']) : 0);
-    const energyRaw = Number(d.active_energy) || 0;
-    const steps = stepsRaw > 0 ? Math.round(stepsRaw).toLocaleString() : '—';
-    const sleep = d.sleep_hours != null
-      ? (Math.round(d.sleep_hours * 10) / 10) + 'h' : '—';
-    const cal   = d.calories != null ? Math.round(d.calories) : '—';
-    const hr    = d.heart_rate != null ? Math.round(d.heart_rate) + ' bpm'
-      : (d.resting_heart_rate != null ? Math.round(d.resting_heart_rate) + ' bpm' : '—');
-
-    const el = id => document.getElementById(id);
-    if (el('ahSteps')) {
-      el('ahSteps').textContent = steps;
-      if (stepsRaw >= 10000) el('ahSteps').style.color = '#6BE3A4';
-    }
-    if (el('ahSleep')) el('ahSleep').textContent = sleep;
-    if (el('ahCal'))   el('ahCal').textContent   = cal;
-    if (el('ahHR'))    el('ahHR').textContent     = hr;
-
-    if (el('ahSyncTime') && rows[0].updated_at) {
-      const t = new Date(rows[0].updated_at);
-      el('ahSyncTime').textContent = 'Synced '
-        + t.toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'});
-    }
-
-    // Endurance XP — één keer per dag toekennen
-    const AH_XP_KEY = 'ah_xp_given:' + today;
-    if (!localStorage.getItem(AH_XP_KEY) && typeof window.addXP === 'function') {
-      const stepsScore  = Math.min(stepsRaw / 10000, 1) * 50;
-      const energyScore = Math.min(energyRaw / 600,  1) * 50;
-      const xp = Math.round(stepsScore + energyScore);
+    const rows = await res.json();
+    if (!rows || !rows.length) return;
+    const d = rows[0].data || {};
+    const steps   = parseInt(d['steps '] || d.steps || 0);
+    const energy  = parseInt(d['active_energy'] || d.energy || 0);
+    if (!localStorage.getItem(XP_GUARD) && (steps>0||energy>0) && window.addXP) {
+      const xp = Math.round(Math.min(steps/10000,1)*50 + Math.min(energy/600,1)*50);
       if (xp > 0) {
-        window.addXP('endurance', xp, 'Apple Health — steps + energy');
-        localStorage.setItem(AH_XP_KEY, '1');
+        window.addXP('endurance', xp, 'Apple Health — steps + active energy');
+        localStorage.setItem(XP_GUARD, '1');
       }
     }
-  })
-  .catch(() => {});
+  } catch(e) {}
 })();
-// ────────────────────────────────────────────────────────
-</script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  if (typeof initCloudSync !== 'function') return;
-  initCloudSync({
-    appKey: 'goals',
-    syncedPrefixes: ['goals:'],
-    onApplied: function () {
-      window.dispatchEvent(new CustomEvent('goals-changed'));
-      window.dispatchEvent(new Event('storage'));
-    }
-  });
-  initCloudSync({
-    appKey: 'rpg',
-    syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1'],
-    syncedPrefixes: ['rpg_daily_v1:'],
-    onApplied: function () { window.dispatchEvent(new Event('storage')); }
-  });
+// ── Boot ─────────────────────────────────────────────────────
+function boot() {
+  renderGreeting();
+  renderArc(0);
+  renderMissions();
+  renderFocusGrid();
+  renderCoreTracker();
+  renderCharStrip();
+}
+
+// Wait for xp.js to initialise
+if (window.getCharacter) {
+  boot();
+} else {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(boot, 60));
+}
+
+// Sync
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof initCloudSync === 'function' && window.supabase) {
+    initCloudSync({
+      appKey: 'rpg',
+      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1'],
+      syncedPrefixes: ['rpg_daily_v1:']
+    });
+  }
 });
 </script>
 </body>

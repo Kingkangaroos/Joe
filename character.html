@@ -3,99 +3,111 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0f">
+<meta name="theme-color" content="#F4F3EF">
 <title>Character — King Joey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="sync.js" defer></script>
 <script src="topbar.js" defer></script>
 <script src="xp.js" defer></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
-
 :root {
-  --bg: #0a0a0f;
-  --surface: rgba(255,255,255,0.04);
-  --surface-h: rgba(255,255,255,0.07);
-  --border: rgba(255,255,255,0.07);
-  --t1: #FAFAFA;
-  --t2: #B8B6B0;
-  --t3: #76746E;
-  --mono: 'JetBrains Mono', ui-monospace, monospace;
-  --sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-  /* LoA / chakra kleuren */
-  --money:      #F5C842;
-  --body:       #6BE3A4;
-  --mind:       #7DD3FC;
-  --business:   #C4B5FD;
-  --lifestyle:  #FB923C;
-  --discipline: #FF6B6B;
-  --knowledge:  #818CF8;
-  --creative:   #2DD4BF;
+  /* Daylight design tokens */
+  --bg: #F4F3EF;
+  --card: #FFFFFF;
+  --ink: #15140F;
+  --ink-card: #181712;
+  --muted: #6F6C63;
+  --faint: #A6A399;
+  --line: #E8E6DF;
+  --line-strong: #DBD8CF;
+  --ember: #D4633E;
+  --ember-deep: #B14E2E;
+  --gold: #C9A227;
+  --green: #2E8B5F;
+  --scan: #4FC3D9;
+  --font-display: 'Schibsted Grotesk', -apple-system, sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  /* Legacy aliases — used by existing JS */
+  --t1: #15140F;
+  --t2: #6F6C63;
+  --t3: #A6A399;
+  --sans: 'Schibsted Grotesk', -apple-system, sans-serif;
+  --mono: var(--font-mono);
+  --surface: #FFFFFF;
+  --border: #E8E6DF;
+  /* Domain accent colors */
+  --money:      #C9A227;
+  --body:       #2E8B5F;
+  --mind:       #0891B2;
+  --business:   #7C3AED;
+  --lifestyle:  #D4633E;
+  --discipline: #DC2626;
+  --knowledge:  #4F46E5;
+  --creative:   #0891B2;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
 html, body {
   background: var(--bg);
-  font-family: var(--sans);
-  color: var(--t1);
+  font-family: var(--font-body);
+  color: var(--ink);
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-}
-body::before {
-  content:'';
-  position:fixed; inset:0; pointer-events:none; z-index:0;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245,200,66,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(107,227,164,0.04) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 30% at 20% 80%, rgba(129,140,248,0.04) 0%, transparent 50%);
+  -webkit-text-size-adjust: 100%;
 }
 
 /* ── Tabs ─────────────────────────────────────────── */
 .char-tabs {
   display: flex; gap:6px;
-  padding: 12px 12px 0;
-  position:relative; z-index:1;
+  padding: 10px 14px 0;
+  position: sticky; top: 0; z-index: 20;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
 }
 .char-tabs::-webkit-scrollbar { display:none; }
 .char-tab {
   flex-shrink:0;
-  padding: 8px 14px;
-  border:1px solid rgba(255,255,255,0.08);
-  background:rgba(255,255,255,0.03);
-  border-radius:20px;
-  color:var(--t3); font-family:var(--sans);
-  font-size:11px; font-weight:700;
-  letter-spacing:0.06em; text-transform:uppercase;
-  cursor:pointer;
-  transition:all 0.2s;
-  white-space:nowrap;
-  -webkit-tap-highlight-color:transparent;
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  background: transparent;
+  border-radius: 20px;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  margin-bottom: 10px;
+  -webkit-tap-highlight-color: transparent;
 }
-.char-tab:active { transform:scale(0.95); }
+.char-tab:active { transform: scale(0.96); }
 .char-tab.active {
-  color:var(--t1);
-  background:rgba(107,227,164,0.1);
-  border-color:rgba(107,227,164,0.35);
+  color: #FAFAFA;
+  background: var(--ink);
+  border-color: var(--ink);
 }
 
 /* ── Screens ──────────────────────────────────────── */
-.char-screen { display:none; padding:14px 14px 0; position:relative; z-index:1; }
+.char-screen { display:none; padding:14px 14px 0; }
 .char-screen.active { display:block; animation:fadeUp 0.22s ease; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:none} }
 
 /* ── Cards ────────────────────────────────────────── */
 .card {
-  background:rgba(255,255,255,0.03); border:0.5px solid rgba(255,255,255,0.08);
-  border-radius:20px; padding:16px; margin-bottom:12px;
-  backdrop-filter:blur(40px); -webkit-backdrop-filter:blur(40px);
-  box-shadow:
-    0 0 0 0.5px rgba(255,255,255,0.04) inset,
-    0 20px 60px rgba(0,0,0,0.4),
-    0 1px 0 rgba(255,255,255,0.06) inset;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
 }
 
 /* ── Hero ─────────────────────────────────────────── */
@@ -129,52 +141,52 @@ body::before {
 
 /* ── RS-style skill grid ──────────────────────────── */
 .rs-section-label {
-  font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
-  color:var(--t3); display:flex; align-items:center; gap:8px;
+  font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--muted); display:flex; align-items:center; gap:8px;
   margin:16px 0 8px;
 }
-.rs-section-label::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent); }
+.rs-section-label::after { content:''; flex:1; height:1px; background:var(--line); }
 
+.rs-compact-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:14px; }
 .rs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-bottom:10px; }
 
 .rs-tile {
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:11px;
-  padding:10px 8px 9px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 6px 8px;
   cursor:pointer; user-select:none;
-  transition:all 0.18s;
-  display:flex; flex-direction:column; align-items:center; gap:4px;
-  position:relative; overflow:hidden;
+  transition: box-shadow 0.15s;
+  display:flex; flex-direction:column; align-items:center; gap:3px;
   -webkit-tap-highlight-color: transparent;
 }
-.rs-tile:active { transform:scale(0.95); }
-.rs-tile-glow {
-  position:absolute; inset:0; opacity:0;
-  transition:opacity 0.25s; pointer-events:none;
-  border-radius:11px;
-}
-.rs-tile:hover .rs-tile-glow { opacity:1; }
-.rs-tile-icon  { font-size:20px; line-height:1; }
-.rs-tile-name  { font-size:8px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--t3); text-align:center; line-height:1.2; }
-.rs-tile-level { font-size:18px; font-weight:700; font-family:var(--mono); line-height:1; letter-spacing:-0.03em; }
-.rs-tile-max .rs-tile-level { font-size:10px; letter-spacing:0.08em; }
+.rs-tile:active { box-shadow: 0 0 0 2px var(--ember); transform: scale(0.96); }
+.rs-tile-glow { display:none; }
+.rs-tile-icon  { font-size:18px; line-height:1; }
+.rs-tile-name  { font-size:8px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:var(--muted); text-align:center; line-height:1.2; }
+.rs-tile-level { font-size:20px; font-weight:800; font-family:var(--font-display); line-height:1; letter-spacing:-0.02em; color:var(--gold); font-variant-numeric:tabular-nums; }
+.rs-tile-level.zero { color:var(--faint); font-size:14px; font-weight:400; }
+.rs-tile-bar { width:100%; height:2px; background:var(--line); border-radius:1px; overflow:hidden; margin-top:2px; }
+.rs-tile-bar-fill { height:100%; background:var(--ember); border-radius:1px; }
+.rs-tile-max .rs-tile-level { font-size:10px; letter-spacing:0.08em; color:var(--gold); }
 
 /* ── Habit tiles ─────────────────────────────────── */
 .habit-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-bottom:10px; }
 .habit-tile {
-  background:var(--surface); border:1px solid var(--border); border-radius:11px;
-  padding:10px 8px 9px; cursor:pointer; user-select:none; transition:all 0.18s;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 8px 9px; cursor:pointer; user-select:none; transition: box-shadow 0.15s;
   display:flex; flex-direction:column; align-items:center; gap:4px;
-  position:relative; overflow:hidden; -webkit-tap-highlight-color:transparent;
+  -webkit-tap-highlight-color:transparent;
 }
-.habit-tile:active { transform:scale(0.95); }
+.habit-tile:active { box-shadow: 0 0 0 2px var(--ember); transform:scale(0.96); }
 .habit-tile-icon  { font-size:18px; line-height:1; }
-.habit-tile-name  { font-size:8px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--t3); text-align:center; line-height:1.2; }
-.habit-tile-score { font-size:16px; font-weight:700; font-family:var(--mono); line-height:1; }
-.habit-tile-bar   { width:100%; height:3px; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; }
+.habit-tile-name  { font-size:8px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:var(--muted); text-align:center; line-height:1.2; }
+.habit-tile-score { font-size:16px; font-weight:800; font-family:var(--font-display); line-height:1; }
+.habit-tile-bar   { width:100%; height:3px; background:var(--line); border-radius:2px; overflow:hidden; }
 .habit-tile-fill  { height:100%; border-radius:2px; transition:width 0.5s cubic-bezier(0.22,1,0.36,1); }
-.habit-tile-done  { opacity:0.65; }
+.habit-tile-done  { opacity:0.55; }
 
 /* ── History bar chart ───────────────────────────── */
 .history-chart {
@@ -186,63 +198,63 @@ body::before {
   width:100%; border-radius:3px 3px 0 0;
   min-height:3px; transition:height 0.5s cubic-bezier(0.22,1,0.36,1);
 }
-.hist-day { font-size:8px; font-family:var(--mono); color:var(--t3); }
+.hist-day { font-size:8px; font-family:var(--font-mono); color:var(--muted); }
 
 /* ── XP log ─────────────────────────────────────── */
-.log-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+.log-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--line); }
 .log-item:last-child { border-bottom:none; }
 .log-dot  { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
-.log-text { flex:1; font-size:11px; color:var(--t2); }
-.log-xp   { font-size:10px; font-family:var(--mono); font-weight:700; flex-shrink:0; }
-.log-time { font-size:9px; font-family:var(--mono); color:var(--t3); flex-shrink:0; }
+.log-text { flex:1; font-size:11px; color:var(--muted); }
+.log-xp   { font-size:10px; font-family:var(--font-mono); font-weight:700; flex-shrink:0; }
+.log-time { font-size:9px; font-family:var(--font-mono); color:var(--faint); flex-shrink:0; }
 
 /* ── Section title ───────────────────────────────── */
 .sec-title {
-  font-size:9px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase;
-  color:var(--t3); display:flex; align-items:center; gap:10px;
+  font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--muted); display:flex; align-items:center; gap:10px;
   margin-bottom:10px; margin-top:18px;
 }
-.sec-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent); }
+.sec-title::after { content:''; flex:1; height:1px; background:var(--line); }
 
 /* ── Daily quests ────────────────────────────────── */
 .score-row { display:flex; gap:4px; margin-bottom:12px; }
 .score-btn {
   flex:1; padding:8px 0; border-radius:7px;
-  border:1px solid var(--border); background:var(--surface);
-  color:var(--t3); font-family:var(--mono); font-size:12px; font-weight:700;
+  border:1px solid var(--line); background:var(--card);
+  color:var(--faint); font-family:var(--font-mono); font-size:12px; font-weight:700;
   cursor:pointer; transition:all 0.15s;
   -webkit-tap-highlight-color:transparent;
 }
-.score-btn.active { background:rgba(107,227,164,0.1); border-color:rgba(107,227,164,0.3); color:var(--body); }
+.score-btn.active { background:var(--ink); border-color:var(--ink); color:#FAFAFA; }
 
 .quest-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
 .quest-card {
-  background:var(--surface); border:1px solid var(--border);
+  background:var(--card); border:1px solid var(--line);
   border-radius:12px; padding:12px;
   cursor:pointer; user-select:none; transition:all 0.18s;
   -webkit-tap-highlight-color:transparent;
 }
 .quest-card:active { transform:scale(0.96); }
-.quest-card.done { background:rgba(107,227,164,0.07); border-color:rgba(107,227,164,0.2); }
+.quest-card.done { background:rgba(46,139,95,0.06); border-color:rgba(46,139,95,0.25); }
 .quest-card-top { display:flex; justify-content:space-between; margin-bottom:5px; }
 .quest-icon { font-size:17px; }
 .quest-check {
   width:16px; height:16px; border-radius:50%;
-  border:1.5px solid rgba(255,255,255,0.18);
+  border:1.5px solid var(--line-strong);
   display:flex; align-items:center; justify-content:center;
   font-size:9px; font-weight:700;
 }
-.quest-card.done .quest-check { background:var(--body); border-color:var(--body); color:#050506; }
-.quest-label { font-size:11px; font-weight:600; color:var(--t2); margin-bottom:2px; }
-.quest-card.done .quest-label { color:var(--t1); }
-.quest-xp { font-size:9px; font-family:var(--mono); color:var(--t3); }
-.quest-card.done .quest-xp { color:var(--body); }
+.quest-card.done .quest-check { background:var(--green); border-color:var(--green); color:#fff; }
+.quest-label { font-size:11px; font-weight:600; color:var(--muted); margin-bottom:2px; }
+.quest-card.done .quest-label { color:var(--ink); }
+.quest-xp { font-size:9px; font-family:var(--font-mono); color:var(--faint); }
+.quest-card.done .quest-xp { color:var(--green); }
 
 /* ── Textarea ─────────────────────────────────────── */
 textarea {
-  width:100%; background:rgba(0,0,0,0.3);
-  border:1px solid rgba(255,255,255,0.08); border-radius:10px;
-  padding:12px; color:var(--t1); font-family:var(--sans);
+  width:100%; background:var(--bg);
+  border:1px solid var(--line); border-radius:10px;
+  padding:12px; color:var(--ink); font-family:var(--font-body);
   font-size:13px; resize:none; outline:none; line-height:1.6;
   box-sizing:border-box;
 }
@@ -250,8 +262,8 @@ textarea {
 /* ── Quest list (quests tab) ─────────────────────── */
 .quest-row {
   display:flex; align-items:center; gap:12px;
-  padding:12px 14px; background:var(--surface);
-  border:1px solid var(--border); border-radius:12px;
+  padding:12px 14px; background:var(--card);
+  border:1px solid var(--line); border-radius:12px;
   margin-bottom:7px; cursor:pointer; transition:all 0.18s;
   -webkit-tap-highlight-color:transparent;
 }
@@ -259,68 +271,69 @@ textarea {
 .quest-row.done { opacity:0.5; }
 .quest-row-icon { font-size:17px; flex-shrink:0; }
 .quest-row-text { flex:1; }
-.quest-row-name { font-size:13px; font-weight:600; margin-bottom:2px; }
-.quest-row.done .quest-row-name { text-decoration:line-through; color:var(--t3); }
-.quest-row-reward { font-size:9px; font-family:var(--mono); color:var(--t3); }
+.quest-row-name { font-size:13px; font-weight:600; color:var(--ink); margin-bottom:2px; }
+.quest-row.done .quest-row-name { text-decoration:line-through; color:var(--muted); }
+.quest-row-reward { font-size:9px; font-family:var(--font-mono); color:var(--faint); }
 .quest-row-check {
   width:20px; height:20px; border-radius:50%;
-  border:1.5px solid rgba(255,255,255,0.15);
+  border:1.5px solid var(--line-strong);
   display:flex; align-items:center; justify-content:center;
   font-size:11px; flex-shrink:0; transition:all 0.18s;
 }
-.quest-row.done .quest-row-check { background:var(--body); border-color:var(--body); color:#050506; }
+.quest-row.done .quest-row-check { background:var(--green); border-color:var(--green); color:#fff; }
 
 /* ── Boss quests ──────────────────────────────────── */
 .boss-card {
+  background:var(--card); border:1px solid var(--line);
   border-radius:14px; padding:14px;
   margin-bottom:8px; cursor:pointer; transition:all 0.18s;
   position:relative; overflow:hidden;
   -webkit-tap-highlight-color:transparent;
 }
 .boss-card:active { transform:scale(0.98); }
-.boss-card::before { content:'⚔️'; position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:26px; opacity:0.15; pointer-events:none; }
-.boss-name { font-size:13px; font-weight:700; margin-bottom:3px; }
-.boss-desc { font-size:11px; color:var(--t2); margin-bottom:9px; }
+.boss-card::before { content:'⚔️'; position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:26px; opacity:0.10; pointer-events:none; }
+.boss-name { font-size:13px; font-weight:700; color:var(--ink); margin-bottom:3px; }
+.boss-desc { font-size:11px; color:var(--muted); margin-bottom:9px; }
 .boss-progress { display:flex; align-items:center; gap:10px; }
 .boss-pct { font-size:10px; font-family:var(--mono); }
-.xp-bar-track { height:5px; background:rgba(255,255,255,0.07); border-radius:3px; overflow:hidden; flex:1; }
+.xp-bar-track { height:5px; background:var(--line); border-radius:3px; overflow:hidden; flex:1; }
 .xp-bar-fill  { height:100%; border-radius:3px; transition:width 0.8s cubic-bezier(0.22,1,0.36,1); }
-.xp-bar-label { display:flex; justify-content:space-between; margin-bottom:3px; font-size:9px; font-family:var(--mono); color:var(--t3); }
+.xp-bar-label { display:flex; justify-content:space-between; margin-bottom:3px; font-size:9px; font-family:var(--font-mono); color:var(--muted); }
 
 /* ── Skill tree (skills tab) ─────────────────────── */
 .skill-detail {
-  background:var(--surface); border:1px solid var(--border);
+  background:var(--card); border:1px solid var(--line);
   border-radius:13px; padding:13px; margin-bottom:7px;
 }
 .skill-detail-hdr { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
 .skill-detail-icon { font-size:18px; }
-.skill-detail-name { font-size:12px; font-weight:700; flex:1; }
-.skill-detail-lvl { font-family:var(--mono); font-size:11px; font-weight:700; color:var(--t3); }
+.skill-detail-name { font-size:12px; font-weight:700; color:var(--ink); flex:1; }
+.skill-detail-lvl { font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--muted); }
 .skill-detail-lvl span { font-size:15px; }
 
 /* ── Gratitude word cloud ────────────────────────── */
 .word-cloud { display:flex; flex-wrap:wrap; gap:6px; padding:4px 0; }
 .word-tag {
   padding:3px 8px; border-radius:20px;
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.08);
-  color:var(--t2); font-weight:600;
+  background:var(--bg);
+  border:1px solid var(--line);
+  color:var(--muted); font-weight:600;
   transition:all 0.2s; cursor:default;
 }
 
-/* ── Quick-log modal ─────────────────────────────── */
+/* ── Quick-log modal — stays dark (floats above page) */
 .ql-overlay {
   position:fixed; inset:0;
-  background:rgba(0,0,0,0.72);
+  background:rgba(0,0,0,0.55);
   z-index:9100;
   display:flex; align-items:flex-end; justify-content:center;
-  backdrop-filter:blur(6px);
-  -webkit-backdrop-filter:blur(6px);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
   animation:overlayIn 0.2s ease;
 }
 @keyframes overlayIn { from{opacity:0} to{opacity:1} }
 .ql-sheet {
-  background:#0e0e12;
+  background:#141411;
   border:1px solid rgba(255,255,255,0.1);
   border-radius:20px 20px 0 0;
   width:100%; max-width:480px;
@@ -331,42 +344,39 @@ textarea {
 .ql-handle { width:36px; height:4px; border-radius:2px; background:rgba(255,255,255,0.15); margin:0 auto 16px; }
 .ql-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
 .ql-skill-icon { font-size:26px; }
-.ql-skill-name { font-size:15px; font-weight:700; }
-.ql-skill-lvl  { font-size:11px; font-family:var(--mono); color:var(--t3); margin-top:2px; }
+.ql-skill-name { font-size:15px; font-weight:700; color:#FAFAFA; }
+.ql-skill-lvl  { font-size:11px; font-family:var(--font-mono); color:rgba(255,255,255,0.4); margin-top:2px; }
 .ql-options { display:flex; flex-direction:column; gap:8px; }
 .ql-btn {
   display:flex; align-items:center; justify-content:space-between;
   padding:13px 16px; border-radius:12px;
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.09);
   cursor:pointer; transition:all 0.15s;
   -webkit-tap-highlight-color:transparent;
 }
 .ql-btn:active { transform:scale(0.97); }
-.ql-btn-label { font-size:13px; font-weight:600; }
-.ql-btn-meta  { font-size:11px; font-family:var(--mono); color:var(--t3); }
-.ql-custom {
-  display:flex; gap:8px; margin-top:6px;
-  align-items:center;
-}
+.ql-btn-label { font-size:13px; font-weight:600; color:#FAFAFA; }
+.ql-btn-meta  { font-size:11px; font-family:var(--font-mono); color:rgba(255,255,255,0.4); }
+.ql-custom { display:flex; gap:8px; margin-top:6px; align-items:center; }
 .ql-custom input {
-  flex:1; background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.1); border-radius:10px;
-  padding:11px 14px; color:var(--t1); font-family:var(--mono);
+  flex:1; background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.12); border-radius:10px;
+  padding:11px 14px; color:#FAFAFA; font-family:var(--font-mono);
   font-size:16px; text-align:center; outline:none;
   -webkit-appearance:none;
 }
 .ql-custom-btn {
   padding:11px 18px; border-radius:10px;
-  background:rgba(107,227,164,0.12); border:1px solid rgba(107,227,164,0.3);
-  color:var(--body); font-weight:700; font-size:13px; cursor:pointer;
+  background:rgba(201,162,39,0.15); border:1px solid rgba(201,162,39,0.3);
+  color:var(--gold); font-weight:700; font-size:13px; cursor:pointer;
   transition:all 0.15s; white-space:nowrap;
 }
 .ql-close {
   margin-top:12px; width:100%; padding:11px;
   border-radius:12px; background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.06);
-  color:var(--t3); font-size:13px; cursor:pointer;
+  border:1px solid rgba(255,255,255,0.07);
+  color:rgba(255,255,255,0.4); font-size:13px; cursor:pointer;
   transition:all 0.15s;
 }
 
@@ -495,6 +505,90 @@ textarea {
   font-family:var(--mono); font-size:13px; font-weight:700;
 }
 
+/* ── Body Scan hero ──────────────────────────────── */
+.body-scan-card {
+  background: var(--ink-card);
+  border-radius: 20px;
+  padding: 20px 16px 16px;
+  margin-bottom: 12px;
+  position: relative; overflow: hidden;
+}
+.scan-particle {
+  position:absolute; border-radius:50%;
+  background: rgba(79,195,217,0.35);
+  pointer-events:none;
+  animation: scanFloat linear infinite;
+}
+@keyframes scanFloat {
+  0%   { transform:translate(0,0) scale(1); opacity:0; }
+  20%  { opacity:1; }
+  80%  { opacity:0.6; }
+  100% { transform:translate(var(--dx),var(--dy)) scale(0.5); opacity:0; }
+}
+.scan-svg-wrap {
+  display:flex; justify-content:center; align-items:flex-start;
+  position:relative;
+}
+.scan-labels-left, .scan-labels-right {
+  flex:1; display:flex; flex-direction:column; gap:0;
+  padding-top: 30px;
+}
+.scan-labels-right { align-items:flex-start; }
+.scan-labels-left  { align-items:flex-end; }
+.scan-label-row {
+  display:flex; align-items:center; gap:4px;
+  margin-bottom: 52px;
+}
+.scan-label-name { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.5); }
+.scan-label-lvl  { font-family:var(--font-display); font-weight:800; font-size:14px; color:var(--scan); font-variant-numeric:tabular-nums; }
+.scan-label-line { width:16px; height:1px; background:rgba(79,195,217,0.4); }
+.scan-name-row {
+  text-align:center; margin-top:12px;
+}
+.scan-name {
+  font-family:var(--font-display); font-weight:800;
+  font-size:18px; letter-spacing:0.14em; text-transform:uppercase;
+  color:#FAFAFA;
+}
+.scan-level-tag {
+  font-family:var(--font-mono); font-size:11px;
+  color:var(--gold); margin-top:3px;
+  font-variant-numeric:tabular-nums;
+}
+
+/* ── Core stats row ──────────────────────────────── */
+.core-stats-row {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:8px; margin-bottom:12px;
+}
+.core-stat-box {
+  background:var(--card); border:1px solid var(--line);
+  border-radius:12px; padding:10px 8px;
+  text-align:center;
+}
+.core-stat-val {
+  font-family:var(--font-display); font-weight:800;
+  font-size:20px; font-variant-numeric:tabular-nums;
+  color:var(--ink); line-height:1;
+}
+.core-stat-val.gold { color:var(--gold); }
+.core-stat-lbl {
+  font-size:8px; font-weight:600; letter-spacing:0.06em;
+  text-transform:uppercase; color:var(--muted); margin-top:4px;
+  line-height:1.2;
+}
+
+/* ── Hevy widget (overridden to Daylight) ─────────── */
+.hevy-widget{background:rgba(46,139,95,0.05);border:1px solid rgba(46,139,95,0.15);border-radius:14px;padding:14px;margin-bottom:12px}
+.hevy-widget-title{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--green)}
+.hevy-widget-date{font-size:10px;font-family:var(--font-mono);color:var(--muted)}
+.hevy-workout-name{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.hevy-stat-val{font-size:16px;font-weight:700;font-family:var(--font-mono);color:var(--green);line-height:1}
+.hevy-stat-label{font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.hevy-exercises{font-size:11px;color:var(--muted);line-height:1.6}
+.hevy-stat{background:var(--bg);border-radius:10px;padding:8px;text-align:center}
+.hevy-xp-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(46,139,95,0.1);border:1px solid rgba(46,139,95,0.2);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;font-family:var(--font-mono);color:var(--green);margin-top:8px}
+
 /* ── PIN modal ────────────────────────────────────── */
 .pin-overlay {
   position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9200;
@@ -532,23 +626,81 @@ textarea {
 
 <!-- ===== CHARACTER ===== -->
 <div class="char-screen active" id="tab-character">
-  <div class="card hero">
-    <div class="hero-avatar"><span style="font-family:var(--mono);font-size:20px;font-weight:700;color:#F5C842;letter-spacing:0.05em">KJ</span></div>
-    <div class="hero-name">King Joey</div>
-    <div class="hero-class">Life OS · Gamenfy v3.1</div>
-    <div class="total-level">
-      <div class="total-num" id="totalLevel">—</div>
-      <div class="total-label">Total Level</div>
+
+  <!-- Body Scan Hero (het ene donkere element) -->
+  <div class="body-scan-card" id="bodyScanCard">
+    <div class="scan-svg-wrap">
+      <!-- Left labels -->
+      <div class="scan-labels-left" id="scanLabelsLeft"></div>
+      <!-- SVG silhouet -->
+      <svg viewBox="0 0 110 230" width="110" height="230" style="flex-shrink:0">
+        <!-- Silhouet -->
+        <circle cx="55" cy="20" r="15" fill="#2A2823"/>
+        <rect x="50" y="34" width="10" height="9" rx="4" fill="#2A2823"/>
+        <path d="M 32 43 Q 20 50 20 65 L 22 105 L 88 105 L 90 65 Q 90 50 78 43 Z" fill="#2A2823"/>
+        <path d="M 24 62 L 10 108 L 17 110 L 30 65 Z" fill="#2A2823"/>
+        <path d="M 86 62 L 100 108 L 93 110 L 80 65 Z" fill="#2A2823"/>
+        <path d="M 26 103 L 24 126 L 86 126 L 84 103 Z" fill="#2A2823"/>
+        <path d="M 34 124 L 32 210 L 52 210 L 54 124 Z" fill="#2A2823"/>
+        <path d="M 56 124 L 58 210 L 78 210 L 76 124 Z" fill="#2A2823"/>
+        <!-- Static scan rings -->
+        <ellipse cx="55" cy="58" rx="36" ry="6" fill="none" stroke="#4FC3D9" stroke-width="1" stroke-opacity="0.4"/>
+        <ellipse cx="55" cy="95" rx="30" ry="5" fill="none" stroke="#4FC3D9" stroke-width="1" stroke-opacity="0.35"/>
+        <ellipse cx="55" cy="170" rx="20" ry="4" fill="none" stroke="#4FC3D9" stroke-width="1" stroke-opacity="0.25"/>
+        <!-- Animated scan ring -->
+        <ellipse cx="55" cy="20" rx="12" ry="3" fill="none" stroke="#4FC3D9" stroke-width="1.5" stroke-opacity="0.85">
+          <animate attributeName="cy" values="15;215;15" dur="6s" repeatCount="indefinite" calcMode="linear"/>
+          <animate attributeName="rx" values="8;36;30;20;10;8" dur="6s" repeatCount="indefinite" calcMode="linear"/>
+          <animate attributeName="stroke-opacity" values="0;0.9;0.8;0.6;0.4;0" dur="6s" repeatCount="indefinite"/>
+        </ellipse>
+      </svg>
+      <!-- Right labels -->
+      <div class="scan-labels-right" id="scanLabelsRight"></div>
+    </div>
+    <div class="scan-name-row">
+      <div class="scan-name">JOEY</div>
+      <div class="scan-level-tag" id="scanLevelTag">Total Level —</div>
     </div>
   </div>
+
+  <!-- Core Stats row -->
+  <div class="core-stats-row">
+    <div class="core-stat-box">
+      <div class="core-stat-val gold" id="statTotalLevel">—</div>
+      <div class="core-stat-lbl">Total Level</div>
+    </div>
+    <div class="core-stat-box">
+      <div class="core-stat-val" id="statXpWeek">0</div>
+      <div class="core-stat-lbl">XP this week</div>
+    </div>
+    <div class="core-stat-box">
+      <div class="core-stat-val" id="statBestStreak">0</div>
+      <div class="core-stat-lbl">Best Streak</div>
+    </div>
+    <div class="core-stat-box">
+      <div class="core-stat-val" id="statActiveSkills">0</div>
+      <div class="core-stat-lbl">Skills Active</div>
+    </div>
+  </div>
+
   <!-- Hevy Last Workout -->
-  <div id="hevyWidget" style="margin-bottom:12px"></div>
-  <!-- Body System scan -->
-  <div id="bodySystemSection" style="margin-bottom:12px"></div>
+  <div id="hevyWidget"></div>
+
+  <!-- Compact RS skills grid -->
+  <div class="sec-title">Skills</div>
+  <div id="rsCompactGrid" class="rs-compact-grid"></div>
+
+  <!-- Domain sections (habits + skill rows) -->
+  <div class="sec-title">Domains</div>
   <div id="rsSkillSections"></div>
+
+  <!-- Body System (kept for bodySystemSection id compatibility) -->
+  <div id="bodySystemSection" style="display:none"></div>
+
+  <!-- Recent XP -->
   <div class="sec-title" style="margin-top:18px">Recent XP</div>
   <div class="card" style="padding:12px 14px" id="xpLogContainer">
-    <div style="color:var(--t3);font-size:12px;text-align:center;padding:10px">No XP yet — tap a skill to log!</div>
+    <div style="color:var(--muted);font-size:12px;text-align:center;padding:10px">No XP yet — tap a skill to log!</div>
   </div>
 </div>
 
@@ -684,7 +836,7 @@ function showTab(id){
   const names = ['character','daily','quests','skills','history'];
   const idx   = names.indexOf(id);
   if(idx>=0) tabs[idx].classList.add('active');
-  if(id==='character') { renderCharacter(); renderBodySystem(); loadHevyWidget(); }
+  if(id==='character') { renderCharacter(); loadHevyWidget(); }
   if(id==='daily')     renderDaily();
   if(id==='quests')    renderQuests();
   if(id==='skills')    renderSkillTree();
@@ -975,6 +1127,91 @@ function confirmSkillMilestone(skillKey, targetLevel, xpNeeded){
 
 // ── Character screen ───────────────────────────────
 // ── Body Level composite ──────────────────────────────
+// ── Body Scan SVG labels ───────────────────────────────────────
+function renderBodyScan() {
+  const BODY_SKILLS = [
+    { key:'strength',    label:'Strength',    side:'left'  },
+    { key:'calisthenics',label:'Calisth.',    side:'right' },
+    { key:'stretching',  label:'Mobility',    side:'left'  },
+    { key:'endurance',   label:'Endurance',   side:'right' },
+    { key:'recovery',    label:'Recovery',    side:'left'  },
+  ];
+  const char = loadChar();
+  const skills = char.skills || {};
+  const leftEl  = document.getElementById('scanLabelsLeft');
+  const rightEl = document.getElementById('scanLabelsRight');
+  if (!leftEl || !rightEl) return;
+
+  const leftSkills  = BODY_SKILLS.filter(s=>s.side==='left');
+  const rightSkills = BODY_SKILLS.filter(s=>s.side==='right');
+
+  const makeLabelRow = (s, side) => {
+    const lvl = xpToLevel((skills[s.key]||{}).xp||0);
+    if (side === 'left') {
+      return `<div class="scan-label-row">
+        <span class="scan-label-name" style="text-align:right">${s.label}</span>
+        <span class="scan-label-lvl">${lvl}</span>
+        <span class="scan-label-line"></span>
+      </div>`;
+    } else {
+      return `<div class="scan-label-row">
+        <span class="scan-label-line"></span>
+        <span class="scan-label-lvl">${lvl}</span>
+        <span class="scan-label-name">${s.label}</span>
+      </div>`;
+    }
+  };
+
+  leftEl.innerHTML  = leftSkills.map(s=>makeLabelRow(s,'left')).join('');
+  rightEl.innerHTML = rightSkills.map(s=>makeLabelRow(s,'right')).join('');
+
+  // Add floating particles
+  const card = document.getElementById('bodyScanCard');
+  if (card && !card.dataset.particles) {
+    card.dataset.particles = '1';
+    for (let i=0; i<12; i++) {
+      const p = document.createElement('div');
+      p.className = 'scan-particle';
+      const size = 2 + Math.random() * 3;
+      p.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${20+Math.random()*60}%; top:${10+Math.random()*80}%;
+        --dx:${(Math.random()-0.5)*40}px; --dy:${(Math.random()-0.5)*40}px;
+        animation-duration:${4+Math.random()*6}s;
+        animation-delay:${Math.random()*4}s;
+      `;
+      card.appendChild(p);
+    }
+  }
+}
+
+// ── Compact RS skills grid ─────────────────────────────────────
+function renderRSCompactGrid() {
+  const container = document.getElementById('rsCompactGrid');
+  if (!container) return;
+  const char = loadChar();
+  const skills = char.skills || {};
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
+
+  const allSkills = Object.entries(defaults)
+    .filter(([k,def]) => !def.isHabit && !def.private && def.active !== false)
+    .map(([k,def]) => ({ key:k, def, xp:(skills[k]||{}).xp||0 }))
+    .sort((a,b) => b.xp - a.xp);
+
+  container.innerHTML = allSkills.map(({key, def, xp}) => {
+    const level = Math.min(MAX_LEVEL, xpToLevel(xp));
+    const curBase = xpForLevel(level);
+    const nextBase = xpForLevel(level+1);
+    const barPct = (level >= MAX_LEVEL || nextBase === Infinity) ? 100
+      : Math.min(100, Math.round((xp - curBase) / (nextBase - curBase) * 100));
+    return `<div class="rs-tile" onclick="openSkillDetail('${key}')">
+      <div class="rs-tile-name">${def.label||key}</div>
+      <div class="rs-tile-level${level===0?' zero':''}">${level >= MAX_LEVEL ? 'MAX' : level}</div>
+      <div class="rs-tile-bar"><div class="rs-tile-bar-fill" style="width:${barPct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
 function renderBodySystem() {
   // 'stretching' is the key for Mobility in xp.js
   const BODY_SKILLS = [
@@ -1117,7 +1354,42 @@ function renderCharacter(){
     if(!def.isHabit) totalXpAll+=(s.xp||0);
   }
   const charLevel = xpToLevel(totalXpAll);
-  document.getElementById('totalLevel').textContent = charLevel>=MAX_LEVEL ? '100' : charLevel;
+  const charLevelStr = charLevel>=MAX_LEVEL ? '100' : charLevel;
+  const tlEl = document.getElementById('totalLevel');
+  if (tlEl) tlEl.textContent = charLevelStr;
+
+  // Update scan + core stats
+  const slTag = document.getElementById('scanLevelTag');
+  if (slTag) slTag.textContent = 'Total Level ' + charLevelStr;
+  const stl = document.getElementById('statTotalLevel');
+  if (stl) stl.textContent = charLevelStr;
+
+  // XP this week
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
+  const weekKey = weekAgo.toISOString().slice(0,10);
+  const xpWeek = (char.xpLog||[]).filter(e=>(e.date||'')>=weekKey&&(e.amount||0)>0)
+    .reduce((s,e)=>s+(e.amount||0),0);
+  const sxw = document.getElementById('statXpWeek');
+  if (sxw) sxw.textContent = xpWeek.toLocaleString();
+
+  // Best streak
+  const habits = typeof window.getHabits==='function' ? window.getHabits() : {};
+  let bestStreak = 0;
+  for (const h of Object.values(habits)) { if ((h.streak||0)>bestStreak) bestStreak=h.streak; }
+  const sbs = document.getElementById('statBestStreak');
+  if (sbs) sbs.textContent = bestStreak;
+
+  // Active skills
+  let activeCount = 0;
+  for (const [k,s] of Object.entries(skills)) {
+    const def = defaults[k]||{};
+    if (!def.isHabit && !def.private && s.active !== false) activeCount++;
+  }
+  const sas = document.getElementById('statActiveSkills');
+  if (sas) sas.textContent = activeCount;
+
+  renderBodyScan();
+  renderRSCompactGrid();
 
   const sections = document.getElementById('rsSkillSections');
   sections.innerHTML='';
@@ -1732,7 +2004,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Wait a tick for xp.js to load RPG_DEFAULT_SKILLS
   setTimeout(()=>{
     renderCharacter();
-    renderBodySystem();
     loadHevyWidget();
     renderDaily();
     renderQuests();
@@ -1747,7 +2018,7 @@ window.addEventListener('storage',()=>{
   const active=document.querySelector('.char-screen.active');
   if(!active) return;
   const id=active.id.replace('tab-','');
-  if(id==='character') { renderCharacter(); renderBodySystem(); loadHevyWidget(); }
+  if(id==='character') { renderCharacter(); loadHevyWidget(); }
   if(id==='daily')     renderDaily();
   if(id==='history')   renderHistory();
 });

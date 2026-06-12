@@ -391,6 +391,52 @@
     },
 
     // ══ LIFESTYLE — skills ════════════════════════════════════════════
+    whistling: {
+      xp:0, parentSkill:'lifestyle', icon:'🎵', label:'Finger Whistling', active:true,
+      quickLog:[
+        {label:'Practice session (10 min)', xp:20},
+        {label:'First sound produced',      xp:50},
+        {label:'Consistent tone',           xp:40},
+        {label:'Melodic control',           xp:60},
+      ],
+      milestones:{
+        1:  'First sound produced',
+        5:  'Consistent tone — reproducible every time',
+        10: 'Volume control — soft to loud',
+        15: 'Pitch control — hit different notes',
+        20: 'Simple melody playable (Happy Birthday)',
+        30: 'Two-octave range',
+        40: 'Clean transitions between notes',
+        50: 'Play any simple song by ear',
+        60: 'Vibrato technique',
+        75: 'Complex melodies — improvise',
+        90: 'Performance-ready — confident in public',
+        100:'Signature whistle — instantly recognizable',
+      },
+    },
+    dancing: {
+      xp:0, parentSkill:'lifestyle', icon:'🕺', label:'Dancing', active:true,
+      quickLog:[
+        {label:'30-min session',          xp:30},
+        {label:'1-hour session',          xp:55},
+        {label:'New move learned',        xp:40},
+        {label:'Social dancing (event)', xp:70},
+      ],
+      milestones:{
+        1:  'First 30-min session — you showed up',
+        5:  'Basic rhythm — move to the beat consistently',
+        10: 'Freestyle basics — comfortable in your body',
+        15: 'Social dancing — ask someone to dance',
+        20: '5 go-to moves for any party',
+        30: 'Salsa/Hip-hop basics',
+        40: 'Improvise confidently to any song',
+        50: 'Partner dancing — lead or follow smoothly',
+        60: 'Style and flavor — you have your own moves',
+        75: 'Perform in front of a crowd without nerves',
+        90: 'Teach someone the basics',
+        100:'Elite mover — own the floor',
+      },
+    },
     cooking: {
       xp:0, parentSkill:'lifestyle', icon:'🍳', label:'Cooking', active:true,
       quickLog:[
