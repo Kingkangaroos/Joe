@@ -155,7 +155,10 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
     <span class="bottombar-tab-icon">🏠</span><span>Main</span>
   </a>
   <a href="character.html" class="bottombar-tab" data-page="character">
-    <span class="bottombar-tab-icon">👑</span><span>Character</span>
+    <span class="bottombar-tab-icon">💪</span><span>Body</span>
+  </a>
+  <a href="character.html#skills" class="bottombar-tab" data-page="skills">
+    <span class="bottombar-tab-icon">⚔️</span><span>Skills</span>
   </a>
   <a href="finance.html" class="bottombar-tab" data-page="finance">
     <span class="bottombar-tab-icon">💰</span><span>Finance</span>

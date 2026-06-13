@@ -348,6 +348,183 @@ body {
 }
 .dl-toast.show { opacity: 1; transform: translateY(0); }
 
+/* ── Daily Quote ─────────────────────────────────── */
+.quote-card {
+  position: relative;
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(201,162,39,0.10), transparent 55%),
+    linear-gradient(135deg, #FBF9F3 0%, #F3EFE3 100%);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px 18px 16px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.quote-card::before {
+  content: '"';
+  position: absolute; top: -14px; left: 12px;
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 92px; color: rgba(201,162,39,0.18);
+  line-height: 1;
+}
+.quote-text {
+  position: relative; z-index: 1;
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 16px; line-height: 1.4; color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.quote-author {
+  position: relative; z-index: 1;
+  margin-top: 8px; font-size: 12px; color: var(--gold);
+  font-weight: 600; font-style: italic;
+}
+
+/* ── Agenda ──────────────────────────────────────── */
+.agenda-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.agenda-daynav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #1B1A15 0%, #2A2620 100%);
+  position: relative;
+}
+.agenda-daynav::after {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(80% 120% at 90% 10%, rgba(201,162,39,0.20), transparent 50%),
+    repeating-linear-gradient(115deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 9px);
+  pointer-events: none;
+}
+.agenda-nav-btn {
+  position: relative; z-index: 1;
+  width: 34px; height: 34px; border-radius: 10px;
+  border: 1px solid rgba(201,162,39,0.35);
+  background: rgba(255,255,255,0.04);
+  color: var(--gold); font-size: 16px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: transform 0.1s, background 0.15s;
+}
+.agenda-nav-btn:active { transform: scale(0.9); background: rgba(201,162,39,0.15); }
+.agenda-day-label {
+  position: relative; z-index: 1; text-align: center;
+}
+.agenda-day-name {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 16px; color: #F4F3EF; letter-spacing: -0.01em;
+}
+.agenda-day-sub {
+  font-size: 10px; color: var(--gold); margin-top: 1px;
+  text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;
+}
+.agenda-day-label.is-today .agenda-day-name::after {
+  content: '· TODAY'; color: var(--gold); font-size: 10px;
+  letter-spacing: 0.1em; margin-left: 6px;
+}
+.agenda-body {
+  max-height: 340px; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.agenda-hour {
+  display: flex; align-items: stretch;
+  border-bottom: 1px solid var(--line);
+  min-height: 46px;
+}
+.agenda-hour:last-child { border-bottom: none; }
+.agenda-hour-label {
+  width: 52px; flex-shrink: 0;
+  padding: 6px 8px 0 12px;
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--faint); text-align: right;
+}
+.agenda-hour-slot {
+  flex: 1; padding: 5px 12px 5px 6px;
+  display: flex; flex-direction: column; gap: 4px;
+  cursor: pointer; min-width: 0;
+}
+.agenda-hour-slot:active { background: rgba(201,162,39,0.05); }
+.agenda-block {
+  border-radius: 9px; padding: 7px 10px;
+  font-size: 12px; font-weight: 600; color: #fff;
+  display: flex; align-items: center; gap: 7px;
+  position: relative; line-height: 1.25;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+.agenda-block-icon { font-size: 13px; flex-shrink: 0; }
+.agenda-block-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.agenda-block-x {
+  flex-shrink: 0; opacity: 0.7; font-size: 14px;
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.2);
+}
+.agenda-block.done { opacity: 0.55; }
+.agenda-block.done .agenda-block-text { text-decoration: line-through; }
+.agenda-empty-hint {
+  padding: 20px 16px; text-align: center;
+  font-size: 12px; color: var(--faint);
+}
+
+/* Planner chips (tap a mission/skill to plan it) */
+.plan-tray {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 12px 14px; margin-bottom: 20px;
+}
+.plan-tray-title {
+  font-size: 11px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;
+}
+.plan-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.plan-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 12px; border-radius: 20px;
+  border: 1px solid var(--line-strong); background: var(--bg);
+  font-size: 12px; font-weight: 600; color: var(--ink);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: transform 0.1s, border-color 0.15s, background 0.15s;
+}
+.plan-chip:active { transform: scale(0.94); }
+.plan-chip.armed {
+  border-color: var(--ember); background: rgba(212,99,62,0.08);
+  box-shadow: 0 0 0 2px rgba(212,99,62,0.15);
+}
+.plan-chip-icon { font-size: 13px; }
+
+/* time-picker popover */
+.timepick-bg {
+  position: fixed; inset: 0; z-index: 9000;
+  background: rgba(20,19,15,0.45); backdrop-filter: blur(2px);
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.timepick {
+  background: #fff; border-radius: 22px 22px 0 0;
+  width: 100%; max-width: 480px; padding: 18px 16px max(24px, env(safe-area-inset-bottom));
+}
+.timepick-title {
+  font-family: var(--font-display); font-weight: 800; font-size: 17px;
+  margin-bottom: 2px;
+}
+.timepick-sub { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+.timepick-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+}
+.timepick-slot {
+  padding: 12px 4px; border-radius: 11px; border: 1px solid var(--line-strong);
+  background: var(--bg); font-family: var(--font-mono); font-size: 13px;
+  font-weight: 700; color: var(--ink); cursor: pointer;
+}
+.timepick-slot:active { background: rgba(201,162,39,0.12); border-color: var(--gold); }
+.timepick-cancel {
+  width: 100%; margin-top: 12px; padding: 12px; border: none;
+  background: transparent; color: var(--muted); font-size: 14px;
+  font-family: inherit; cursor: pointer;
+}
+
 @media (max-width: 480px) {
   body { padding: 10px 14px 16px; }
   .focus-grid { grid-template-columns: 1fr; }
@@ -375,6 +552,32 @@ body {
   <div class="greeting">
     <div class="greeting-time" id="greetingText">Good morning, Joey</div>
     <div class="greeting-date" id="greetingDate"></div>
+  </div>
+
+  <!-- Daily Quote -->
+  <div class="quote-card" id="quoteCard">
+    <div class="quote-text" id="quoteText">…</div>
+    <div class="quote-author" id="quoteAuthor"></div>
+  </div>
+
+  <!-- Agenda -->
+  <div class="sec-head">Agenda</div>
+  <div class="agenda-card">
+    <div class="agenda-daynav">
+      <button class="agenda-nav-btn" onclick="agendaShift(-1)" aria-label="Previous day">‹</button>
+      <div class="agenda-day-label" id="agendaDayLabel">
+        <div class="agenda-day-name" id="agendaDayName">Today</div>
+        <div class="agenda-day-sub" id="agendaDaySub"></div>
+      </div>
+      <button class="agenda-nav-btn" onclick="agendaShift(1)" aria-label="Next day">›</button>
+    </div>
+    <div class="agenda-body" id="agendaBody"></div>
+  </div>
+
+  <!-- Planner tray: tap a chip then tap a time slot -->
+  <div class="plan-tray" id="planTray" style="display:none">
+    <div class="plan-tray-title">Tap to schedule · then pick a time</div>
+    <div class="plan-chips" id="planChips"></div>
   </div>
 
   <!-- Day Arc -->
@@ -808,14 +1011,251 @@ window.coreLog = function(key, xp, label) {
   } catch(e) {}
 })();
 
+// ── Daily Quote ──────────────────────────────────────────────
+const QUOTES = [
+  ["The secret of getting ahead is getting started.", "Mark Twain"],
+  ["What you think, you become. What you feel, you attract.", "Buddha"],
+  ["Discipline is choosing between what you want now and what you want most.", "Abraham Lincoln"],
+  ["Energy flows where attention goes.", "Tony Robbins"],
+  ["The man who moves a mountain begins by carrying away small stones.", "Confucius"],
+  ["Whether you think you can or think you can't, you're right.", "Henry Ford"],
+  ["Your level of success rarely exceeds your level of personal development.", "Jim Rohn"],
+  ["We are what we repeatedly do. Excellence is a habit.", "Aristotle"],
+  ["The best way to predict the future is to create it.", "Peter Drucker"],
+  ["Do something today that your future self will thank you for.", "Sean Patrick Flanery"],
+  ["Strength does not come from winning. Your struggles develop your strengths.", "Arnold Schwarzenegger"],
+  ["A goal without a plan is just a wish.", "Antoine de Saint-Exupéry"],
+  ["The mind is everything. What you think you become.", "Buddha"],
+  ["Fall seven times, stand up eight.", "Japanese Proverb"],
+  ["Success is the sum of small efforts repeated day in and day out.", "Robert Collier"],
+  ["You miss 100% of the shots you don't take.", "Wayne Gretzky"],
+  ["The only way to do great work is to love what you do.", "Steve Jobs"],
+  ["Act as if what you do makes a difference. It does.", "William James"],
+  ["Don't watch the clock; do what it does. Keep going.", "Sam Levenson"],
+  ["The future belongs to those who believe in the beauty of their dreams.", "Eleanor Roosevelt"],
+  ["Either you run the day or the day runs you.", "Jim Rohn"],
+  ["What we plant in the soil of contemplation, we shall reap in the harvest of action.", "Meister Eckhart"],
+  ["Hard choices, easy life. Easy choices, hard life.", "Jerzy Gregorek"],
+  ["Motivation gets you going, but discipline keeps you growing.", "John C. Maxwell"],
+  ["The body achieves what the mind believes.", "Napoleon Hill"],
+  ["Small disciplines repeated with consistency lead to great achievements.", "John C. Maxwell"],
+  ["You are always a student, never a master. You have to keep moving forward.", "Conrad Hall"],
+  ["Once you replace negative thoughts with positive ones, you'll start having positive results.", "Willie Nelson"],
+  ["The gratitude you give is the abundance you attract.", "Unknown"],
+  ["Do the hard work that builds the man you want to become.", "Unknown"],
+];
+function renderQuote() {
+  // deterministic per day so it stays consistent across reloads, changes daily
+  const d = new Date();
+  const seed = d.getFullYear()*1000 + (d.getMonth()+1)*40 + d.getDate();
+  const q = QUOTES[seed % QUOTES.length];
+  const qt = document.getElementById('quoteText');
+  const qa = document.getElementById('quoteAuthor');
+  if (qt) qt.textContent = q[0];
+  if (qa) qa.textContent = '— ' + q[1];
+}
+
+// ── Agenda ───────────────────────────────────────────────────
+let agendaOffset = 0;        // 0 = today, -1 = yesterday, +1 = tomorrow
+let armedPlan = null;        // {key,label,icon,type} waiting for a time slot
+const AGENDA_PREFIX = 'rpg_agenda_v1:';   // + yyyy-mm-dd  ->  [{time, key, label, icon, type, done}]
+const AGENDA_START_HOUR = 6;
+const AGENDA_END_HOUR = 23;
+
+function dateForOffset(off) {
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + off);
+  return d;
+}
+function dateKey(d) {
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function loadAgenda(key) {
+  try { return JSON.parse(localStorage.getItem(AGENDA_PREFIX + key)) || []; } catch(e) { return []; }
+}
+function saveAgenda(key, items) {
+  try { localStorage.setItem(AGENDA_PREFIX + key, JSON.stringify(items)); } catch(e) {}
+}
+function renderAgendaDayLabel() {
+  const d = dateForOffset(agendaOffset);
+  const name = document.getElementById('agendaDayName');
+  const sub = document.getElementById('agendaDaySub');
+  const wrap = document.getElementById('agendaDayLabel');
+  if (!name) return;
+  if (agendaOffset === 0) { name.textContent = 'Today'; wrap.classList.add('is-today'); }
+  else if (agendaOffset === -1) { name.textContent = 'Yesterday'; wrap.classList.remove('is-today'); }
+  else if (agendaOffset === 1) { name.textContent = 'Tomorrow'; wrap.classList.remove('is-today'); }
+  else { name.textContent = d.toLocaleDateString('en-GB',{weekday:'long'}); wrap.classList.remove('is-today'); }
+  sub.textContent = d.toLocaleDateString('en-GB',{day:'numeric',month:'long'});
+}
+function renderAgenda() {
+  renderAgendaDayLabel();
+  const body = document.getElementById('agendaBody');
+  if (!body) return;
+  const key = dateKey(dateForOffset(agendaOffset));
+  const items = loadAgenda(key);
+  const nowHour = new Date().getHours();
+
+  let html = '';
+  for (let h = AGENDA_START_HOUR; h <= AGENDA_END_HOUR; h++) {
+    const slotItems = items.filter(it => it.time === h);
+    const blocks = slotItems.map((it, idx) => {
+      const color = it.type === 'mission' ? 'var(--green)' : it.type === 'skill' ? 'var(--ember)' : 'var(--ink-card)';
+      return `<div class="agenda-block${it.done?' done':''}" style="background:${color}" onclick="toggleAgendaBlock('${key}',${h},${idx},event)">
+        <span class="agenda-block-icon">${it.icon||'•'}</span>
+        <span class="agenda-block-text">${it.label}</span>
+        <span class="agenda-block-x" onclick="removeAgendaBlock('${key}',${h},${idx},event)">×</span>
+      </div>`;
+    }).join('');
+    const label = (h===12) ? '12 PM' : h>12 ? (h-12)+' PM' : h+' AM';
+    html += `<div class="agenda-hour">
+      <div class="agenda-hour-label">${label}</div>
+      <div class="agenda-hour-slot" onclick="onSlotTap('${key}',${h})">${blocks}</div>
+    </div>`;
+  }
+  body.innerHTML = html;
+
+  // auto-scroll to current hour on today
+  if (agendaOffset === 0) {
+    const idx = Math.max(0, nowHour - AGENDA_START_HOUR);
+    const row = body.children[idx];
+    if (row) body.scrollTop = Math.max(0, row.offsetTop - 60);
+  } else {
+    body.scrollTop = 0;
+  }
+}
+window.agendaShift = function(delta) {
+  agendaOffset += delta;
+  if (agendaOffset < -7) agendaOffset = -7;
+  if (agendaOffset > 30) agendaOffset = 30;
+  renderAgenda();
+};
+window.toggleAgendaBlock = function(key, hour, idx, e) {
+  if (e) e.stopPropagation();
+  if (e && e.target && e.target.classList.contains('agenda-block-x')) return;
+  const items = loadAgenda(key);
+  const matches = items.filter(it => it.time === hour);
+  const it = matches[idx];
+  if (!it) return;
+  it.done = !it.done;
+  saveAgenda(key, items);
+  // award XP only when marking done today/past, for missions/skills
+  if (it.done && it.key && window.addXP && agendaOffset <= 0) {
+    if (it.type === 'mission' && window.checkHabit) {
+      window.checkHabit(it.key, it.label, it.icon);
+      window.addXP(it.key, 15, 'Agenda: ' + it.label);
+      showToast('✓ ' + it.label + ' · +15 XP');
+    } else if (it.type === 'skill') {
+      window.addXP(it.key, 20, 'Agenda: ' + it.label);
+      showToast('✓ ' + it.label + ' · +20 XP');
+    } else {
+      showToast('✓ ' + it.label);
+    }
+    renderMissions(); renderFocusGrid(); renderCharStrip();
+  }
+  renderAgenda();
+};
+window.removeAgendaBlock = function(key, hour, idx, e) {
+  if (e) e.stopPropagation();
+  const items = loadAgenda(key);
+  let seen = -1;
+  const filtered = items.filter(it => {
+    if (it.time !== hour) return true;
+    seen++;
+    return seen !== idx;
+  });
+  saveAgenda(key, filtered);
+  renderAgenda();
+};
+
+// Planner tray: chips you can arm, then tap a slot (or use the time picker)
+function renderPlanTray() {
+  const tray = document.getElementById('planTray');
+  const chips = document.getElementById('planChips');
+  if (!chips) return;
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
+
+  // missions (habits not yet planned today is fine — chips are reusable)
+  const missionKeys = Object.keys(defaults).filter(k => defaults[k].isHabit && !defaults[k].private && defaults[k].active !== false);
+  // focus skills
+  let focusKeys = [];
+  try { focusKeys = JSON.parse(localStorage.getItem('rpg_focus_skills_v1')) || []; } catch(e) {}
+
+  const chipData = [
+    ...missionKeys.map(k => ({ key:k, label:defaults[k].label||k, icon:defaults[k].icon||'⚡', type:'mission' })),
+    ...focusKeys.map(k => ({ key:k, label:(defaults[k]||{}).label||k, icon:(defaults[k]||{}).icon||'★', type:'skill' })),
+  ];
+  if (!chipData.length) { tray.style.display = 'none'; return; }
+  tray.style.display = 'block';
+  chips.innerHTML = chipData.map(c =>
+    `<button class="plan-chip${armedPlan && armedPlan.key===c.key && armedPlan.type===c.type ? ' armed':''}"
+      onclick='armPlan(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
+      <span class="plan-chip-icon">${c.icon}</span>${c.label}
+    </button>`
+  ).join('');
+}
+window.armPlan = function(c) {
+  if (armedPlan && armedPlan.key === c.key && armedPlan.type === c.type) {
+    armedPlan = null; renderPlanTray(); return;
+  }
+  armedPlan = c;
+  renderPlanTray();
+  openTimePicker(c);
+};
+window.onSlotTap = function(key, hour) {
+  if (!armedPlan) return;  // nothing armed → tapping an empty slot does nothing
+  placeBlock(key, hour, armedPlan);
+  armedPlan = null;
+  renderPlanTray();
+};
+function placeBlock(key, hour, c) {
+  const items = loadAgenda(key);
+  items.push({ time: hour, key: c.key, label: c.label, icon: c.icon, type: c.type, done: false });
+  saveAgenda(key, items);
+  renderAgenda();
+  showToast('Planned · ' + c.label);
+}
+
+// Time picker popover (tap a chip → choose a time directly)
+function openTimePicker(c) {
+  const key = dateKey(dateForOffset(agendaOffset));
+  const bg = document.createElement('div');
+  bg.className = 'timepick-bg';
+  let slots = '';
+  for (let h = AGENDA_START_HOUR; h <= AGENDA_END_HOUR; h++) {
+    const label = (h===12) ? '12 PM' : h>12 ? (h-12)+' PM' : h+' AM';
+    slots += `<button class="timepick-slot" data-h="${h}">${label}</button>`;
+  }
+  bg.innerHTML = `<div class="timepick">
+    <div class="timepick-title">Schedule "${c.label}"</div>
+    <div class="timepick-sub">Pick a time slot — or tap any slot in the agenda</div>
+    <div class="timepick-grid">${slots}</div>
+    <button class="timepick-cancel">Cancel</button>
+  </div>`;
+  bg.addEventListener('click', e => {
+    if (e.target === bg || e.target.classList.contains('timepick-cancel')) { bg.remove(); return; }
+    const slot = e.target.closest('.timepick-slot');
+    if (slot) {
+      placeBlock(key, parseInt(slot.dataset.h), c);
+      armedPlan = null; renderPlanTray();
+      bg.remove();
+    }
+  });
+  document.body.appendChild(bg);
+}
+
 // ── Boot ─────────────────────────────────────────────────────
 function boot() {
   renderGreeting();
+  renderQuote();
   renderArc(0);
   renderMissions();
   renderFocusGrid();
   renderCoreTracker();
   renderCharStrip();
+  renderAgenda();
+  renderPlanTray();
 }
 
 // Wait for xp.js to initialise
@@ -831,7 +1271,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCloudSync({
       appKey: 'rpg',
       syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1'],
-      syncedPrefixes: ['rpg_daily_v1:']
+      syncedPrefixes: ['rpg_daily_v1:','rpg_agenda_v1:']
     });
   }
 });
