@@ -521,6 +521,24 @@
         {label:'Skill practiced',        xp:30},
       ],
     },
+    superiority: {
+      xp:0, parentSkill:'knowledge', icon:'🧠', label:'Path to Superiority', active:true,
+      quickLog:[
+        {label:'Study session (1 hour)',     xp:50},
+        {label:'Finished a book/topic',      xp:150},
+        {label:'Connected two domains',      xp:80},
+        {label:'Wrote / created something',  xp:100},
+      ],
+      milestones:{
+        14:'Phase 1 — Structure of reality (math, physics, chemistry, biology, systems)',
+        28:'Phase 2 — The mind (neuroscience, cognition, consciousness)',
+        42:'Phase 3 — Language & logic (rhetoric, critical thinking, code)',
+        56:'Phase 4 — Humanity (history, sociology, economics, art)',
+        70:'Phase 5 — The great thinkers (Plato → Feynman → Da Vinci)',
+        84:'Phase 6 — Connect all domains into one whole',
+        100:'Phase 7 — Create: from knowledge to wisdom',
+      },
+    },
 
     // ══ CREATIVE — skills ═════════════════════════════════════════════
     piano: {

@@ -327,6 +327,34 @@
       { lvl: 70, title: 'Master a Domain',       desc: 'Reach real, usable competence in one field.',                xp: 2800 },
       { lvl: 90, title: 'Polymath Path',         desc: 'Reach competence across 3 different fields.',                xp: 5000 },
     ],
+    superiority: [
+      // Phase 1 — Structure of reality
+      { lvl: 3,  title: 'Math: the Language',    desc: 'Refresh algebra → start calculus. Khan Academy or 3Blue1Brown.', xp: 100 },
+      { lvl: 7,  title: 'Classical Physics',     desc: 'Learn Newtonian mechanics: force, energy, momentum.',         xp: 200 },
+      { lvl: 11, title: 'Chemistry & Biology',   desc: 'How matter changes; how life organises itself.',             xp: 250 },
+      { lvl: 14, title: 'Systems Thinking',      desc: 'Read about how complexity emerges from simple rules.',        xp: 350 },
+      // Phase 2 — The mind
+      { lvl: 18, title: 'Neuroscience Basics',   desc: 'How the brain processes information (Sapolsky lectures).',     xp: 300 },
+      { lvl: 22, title: 'Cognitive Psychology',  desc: 'Memory, attention, decision-making, creativity.',            xp: 350 },
+      { lvl: 28, title: 'Consciousness',         desc: 'Read on philosophy of mind: what is "I"? + daily meditation.', xp: 450 },
+      // Phase 3 — Language & logic
+      { lvl: 33, title: 'Critical Thinking',     desc: 'Learn logical fallacies & argumentation.',                   xp: 400 },
+      { lvl: 38, title: 'Rhetoric & Writing',    desc: 'Practise expressing ideas clearly in writing.',              xp: 500 },
+      { lvl: 42, title: 'Programming',           desc: 'Learn to code — the modern mathematics of the mind (Python).', xp: 600 },
+      // Phase 4 — Humanity
+      { lvl: 47, title: 'World History',         desc: 'Patterns across time; history of philosophy.',               xp: 500 },
+      { lvl: 52, title: 'Economics',             desc: 'How value and power move through society.',                  xp: 600 },
+      { lvl: 56, title: 'Art & Music History',   desc: 'How humans have tried to understand beauty.',                xp: 650 },
+      // Phase 5 — The great thinkers
+      { lvl: 62, title: 'The Philosophers',      desc: 'Plato, Aristotle, Descartes, Spinoza, Nietzsche, Aurelius.', xp: 800 },
+      { lvl: 70, title: 'The Scientists',        desc: 'Newton, Darwin, Einstein, Turing, Feynman, Da Vinci.',       xp: 1000 },
+      // Phase 6 — Connect
+      { lvl: 78, title: 'Cross Domains',         desc: 'Link physics↔philosophy, biology↔economics, art↔math.',       xp: 1400 },
+      { lvl: 84, title: 'One Whole',             desc: 'Stop seeing subjects; see one connected system.',            xp: 1800 },
+      // Phase 7 — Create
+      { lvl: 92, title: 'Form a Worldview',      desc: 'Synthesise your own philosophy from everything learned.',     xp: 2500 },
+      { lvl: 100,title: 'Create',                desc: 'Make something new — knowledge becomes wisdom.',             xp: 5000 },
+    ],
 
     // ───────────── CORE / NEW SKILLS ─────────────
     whistling: [
