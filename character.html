@@ -612,21 +612,161 @@ textarea {
 .hevy-stat-val{font-size:16px;font-weight:700;font-family:var(--mono);color:#6BE3A4;line-height:1}
 .hevy-stat-label{font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--t3);margin-top:3px}
 .hevy-exercises{font-size:11px;color:var(--t3);line-height:1.6}
-.hevy-xp-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(107,227,164,0.1);border:1px solid rgba(107,227,164,0.2);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;font-family:var(--mono);color:#6BE3A4;margin-top:8px}
+/* ── BODY TAB ─────────────────────────────────────── */
+.body-hero {
+  background: linear-gradient(160deg, #1B1A15 0%, #2A2620 60%, #211E18 100%);
+  border-radius: 22px;
+  padding: 18px 16px 20px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.body-hero::before {
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(70% 60% at 50% 0%, rgba(201,162,39,0.18), transparent 55%),
+    repeating-linear-gradient(118deg, rgba(255,255,255,0.025) 0 2px, transparent 2px 11px);
+  pointer-events:none;
+}
+.body-hero-top {
+  position: relative; z-index:1;
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom: 6px;
+}
+.body-overall {
+  display:flex; align-items:baseline; gap:8px;
+}
+.body-overall-lvl {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 40px; color: #F4F3EF; line-height: 1;
+  letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+}
+.body-overall-lbl {
+  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--gold); font-weight: 700;
+}
+.body-mood {
+  font-size: 30px; line-height:1;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+}
+.body-figure-wrap {
+  position: relative; z-index:1;
+  display:flex; justify-content:center; align-items:center;
+  padding: 6px 0 2px;
+}
+.body-figure { width: auto; height: 300px; max-width: 100%; }
+.muscle { transition: fill 0.5s ease, opacity 0.5s ease; cursor:pointer; }
+.body-skill-tag {
+  position:absolute; z-index:2;
+  font-size:9px; font-family:var(--mono); font-weight:700;
+  color:#F4F3EF; background:rgba(0,0,0,0.35);
+  border:1px solid rgba(201,162,39,0.3);
+  padding:2px 6px; border-radius:6px; white-space:nowrap;
+  pointer-events:none;
+}
+.body-comp-row {
+  position:relative; z-index:1;
+  display:flex; gap:8px; margin-top:10px;
+}
+.body-comp-box {
+  flex:1; background: rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08); border-radius:12px;
+  padding:9px 8px; text-align:center;
+}
+.body-comp-val { font-family:var(--mono); font-weight:700; font-size:15px; color:#F4F3EF; line-height:1; }
+.body-comp-lbl { font-size:8px; letter-spacing:0.1em; text-transform:uppercase; color:var(--t3); margin-top:3px; }
+
+.body-skills-grid {
+  display:grid; grid-template-columns: repeat(2, 1fr); gap:10px;
+}
+.body-skill-card {
+  background: var(--card); border:1px solid var(--line);
+  border-radius:16px; padding:13px 14px; cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition: transform 0.1s, box-shadow 0.15s, border-color 0.15s;
+  position:relative; overflow:hidden;
+}
+.body-skill-card:active { transform: scale(0.97); }
+.body-skill-card.maxed { border-color: rgba(201,162,39,0.5); }
+.body-skill-head { display:flex; align-items:center; gap:9px; margin-bottom:9px; }
+.body-skill-icon {
+  width:34px; height:34px; border-radius:10px; flex-shrink:0;
+  background: rgba(46,139,95,0.1); display:flex; align-items:center; justify-content:center;
+  font-size:17px;
+}
+.body-skill-name { font-family:var(--font-display); font-weight:700; font-size:13px; color:var(--ink); }
+.body-skill-lvl { font-size:10px; color:var(--muted); margin-top:1px; }
+.body-skill-lvl b { color:var(--green); font-weight:700; }
+.body-skill-bar { height:5px; background:var(--line); border-radius:3px; overflow:hidden; }
+.body-skill-bar-fill { height:100%; background: linear-gradient(90deg, var(--green), #3CB178); border-radius:3px; transition: width 0.5s; }
+.body-skill-next { font-size:9px; color:var(--faint); margin-top:6px; line-height:1.3; }
+
+.body-daynav {
+  display:flex; align-items:center; justify-content:space-between;
+  background: var(--card); border:1px solid var(--line);
+  border-radius:14px; padding:8px 10px; margin-bottom:14px;
+}
+.body-daynav-btn {
+  width:30px; height:30px; border-radius:9px; border:1px solid var(--line-strong);
+  background:var(--bg); color:var(--ink); font-size:15px; font-weight:700;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+.body-daynav-label { font-family:var(--font-display); font-weight:700; font-size:13px; color:var(--ink); }
+.body-daynav-sub { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; text-align:center; margin-top:1px; }
 </style>
 </head>
 <body>
 
 <div class="char-tabs">
-  <button class="char-tab active" onclick="showTab('character')">Character</button>
+  <button class="char-tab active" onclick="showTab('body')">Body</button>
   <button class="char-tab" onclick="showTab('daily')">Daily</button>
   <button class="char-tab" onclick="showTab('quests')">Quests</button>
   <button class="char-tab" onclick="showTab('skills')">Skills</button>
   <button class="char-tab" onclick="showTab('history')">History</button>
 </div>
 
-<!-- ===== CHARACTER ===== -->
-<div class="char-screen active" id="tab-character">
+<!-- ===== BODY ===== -->
+<div class="char-screen active" id="tab-body">
+
+  <!-- Day navigation (backlog yesterday) -->
+  <div class="body-daynav">
+    <button class="body-daynav-btn" onclick="bodyShiftDay(-1)">‹</button>
+    <div style="text-align:center">
+      <div class="body-daynav-label" id="bodyDayLabel">Today</div>
+      <div class="body-daynav-sub" id="bodyDaySub"></div>
+    </div>
+    <button class="body-daynav-btn" onclick="bodyShiftDay(1)">›</button>
+  </div>
+
+  <!-- Hero: overall body level + anatomical figure -->
+  <div class="body-hero">
+    <div class="body-hero-top">
+      <div class="body-overall">
+        <span class="body-overall-lvl" id="bodyOverallLvl">—</span>
+        <span class="body-overall-lbl">Body<br>Level</span>
+      </div>
+      <div class="body-mood" id="bodyMood" title="All habits done = a smile">😐</div>
+    </div>
+    <div class="body-figure-wrap" id="bodyFigureWrap">
+      <!-- SVG injected by renderBodyFigure() -->
+    </div>
+    <div class="body-comp-row" id="bodyCompRow">
+      <div class="body-comp-box"><div class="body-comp-val" id="bodyCompWeight">—</div><div class="body-comp-lbl">Weight</div></div>
+      <div class="body-comp-box"><div class="body-comp-val" id="bodyCompFat">—</div><div class="body-comp-lbl">Body Fat</div></div>
+      <div class="body-comp-box"><div class="body-comp-val" id="bodyCompMuscle">—</div><div class="body-comp-lbl">Muscle</div></div>
+    </div>
+  </div>
+
+  <!-- Body skills -->
+  <div class="sec-title" style="margin-top:4px">Body Skills</div>
+  <div class="body-skills-grid" id="bodySkillsGrid"></div>
+
+  <!-- Hevy Last Workout -->
+  <div id="hevyWidget" style="margin-top:14px"></div>
+</div>
+
+<!-- ===== CHARACTER (legacy, hidden — kept for compatibility) ===== -->
+<div class="char-screen" id="tab-character" style="display:none">
 
   <!-- Body Scan Hero (het ene donkere element) -->
   <div class="body-scan-card" id="bodyScanCard">
@@ -644,16 +784,6 @@ textarea {
         <path d="M 26 103 L 24 126 L 86 126 L 84 103 Z" fill="#2A2823"/>
         <path d="M 34 124 L 32 210 L 52 210 L 54 124 Z" fill="#2A2823"/>
         <path d="M 56 124 L 58 210 L 78 210 L 76 124 Z" fill="#2A2823"/>
-        <!-- Static scan rings -->
-        <ellipse cx="55" cy="58" rx="36" ry="6" fill="none" stroke="#4FC3D9" stroke-width="1" stroke-opacity="0.4"/>
-        <ellipse cx="55" cy="95" rx="30" ry="5" fill="none" stroke="#4FC3D9" stroke-width="1" stroke-opacity="0.35"/>
-        <ellipse cx="55" cy="170" rx="20" ry="4" fill="none" stroke="#4FC3D9" stroke-width="1" stroke-opacity="0.25"/>
-        <!-- Animated scan ring -->
-        <ellipse cx="55" cy="20" rx="12" ry="3" fill="none" stroke="#4FC3D9" stroke-width="1.5" stroke-opacity="0.85">
-          <animate attributeName="cy" values="15;215;15" dur="6s" repeatCount="indefinite" calcMode="linear"/>
-          <animate attributeName="rx" values="8;36;30;20;10;8" dur="6s" repeatCount="indefinite" calcMode="linear"/>
-          <animate attributeName="stroke-opacity" values="0;0.9;0.8;0.6;0.4;0" dur="6s" repeatCount="indefinite"/>
-        </ellipse>
       </svg>
       <!-- Right labels -->
       <div class="scan-labels-right" id="scanLabelsRight"></div>
@@ -683,9 +813,6 @@ textarea {
       <div class="core-stat-lbl">Skills Active</div>
     </div>
   </div>
-
-  <!-- Hevy Last Workout -->
-  <div id="hevyWidget"></div>
 
   <!-- Compact RS skills grid -->
   <div class="sec-title">Skills</div>
@@ -832,11 +959,13 @@ function goToToday(){ setSelectedDate(todayKey()); }
 function showTab(id){
   document.querySelectorAll('.char-screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.char-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
+  const screen = document.getElementById('tab-'+id);
+  if (screen) { screen.classList.add('active'); screen.style.display=''; }
   const tabs  = [...document.querySelectorAll('.char-tab')];
-  const names = ['character','daily','quests','skills','history'];
+  const names = ['body','daily','quests','skills','history'];
   const idx   = names.indexOf(id);
   if(idx>=0) tabs[idx].classList.add('active');
+  if(id==='body')      { renderBody(); loadHevyWidget(); }
   if(id==='character') { renderCharacter(); loadHevyWidget(); }
   if(id==='daily')     renderDaily();
   if(id==='quests')    renderQuests();
@@ -1999,10 +2128,264 @@ function saveGratitudeNote(word){
   renderHistory();
 }
 
+// ── BODY TAB ───────────────────────────────────────
+// Lightweight toast (character.html had none)
+window.showToast = window.showToast || function(msg,dur){
+  let t=document.getElementById('charToast');
+  if(!t){ t=document.createElement('div'); t.id='charToast';
+    t.style.cssText='position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:#15140F;color:#F4F3EF;padding:11px 18px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:opacity .2s,transform .2s;box-shadow:0 8px 24px rgba(0,0,0,0.25);max-width:88%;text-align:center';
+    document.body.appendChild(t); }
+  t.textContent=msg;
+  requestAnimationFrame(()=>{ t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; });
+  clearTimeout(t._h); t._h=setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(20px)'; },dur||2200);
+};
+
+// Maps each muscle group to the body skill that drives its development.
+const MUSCLE_SKILL_MAP = {
+  chest:     'strength',
+  shoulders: 'strength',
+  arms:      'calisthenics',
+  abs:       'core',
+  obliques:  'core',
+  legs:      'gym',
+  forearms:  'calisthenics',
+  neck:      'mobility',
+};
+const BODY_SKILL_ORDER = ['gym','strength','calisthenics','core','mobility','endurance','recovery','tennis'];
+let bodyDayOffset = 0;
+
+function bodyDateForOffset(off){ const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+off); return d; }
+function bodyDateKey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+// fill colour for a muscle: more developed = warmer/brighter, scaled by skill level (0-100)
+function muscleFill(level){
+  const t = Math.max(0, Math.min(1, level/60));   // saturate around level 60
+  // interpolate from dim slate (#3A372F) → vivid muscle (#C2503A)
+  const a=[58,55,47], b=[194,80,58];
+  const c=a.map((v,i)=>Math.round(v+(b[i]-v)*t));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+
+function getBodySkillLevel(key){
+  if (!window.getCharacter || !window.xpToLevel) return 0;
+  const s=(window.getCharacter().skills||{})[key]||{};
+  return window.xpToLevel(s.xp||0);
+}
+
+function renderBodyFigure(){
+  const wrap = document.getElementById('bodyFigureWrap');
+  if (!wrap) return;
+
+  // resolve each muscle's level via its mapped skill
+  const lv = {};
+  for (const [muscle, skill] of Object.entries(MUSCLE_SKILL_MAP)) lv[muscle]=getBodySkillLevel(skill);
+  const coreLv = getBodySkillLevel('core');
+
+  // abs definition: number of visible ab rows grows with Core level (sixpack at high level)
+  const absOpacity = Math.max(0.12, Math.min(1, coreLv/45));
+  const absDefined = coreLv >= 25;
+
+  // SVG anatomical front-facing male figure
+  const svg = `
+  <svg class="body-figure" viewBox="0 0 200 420" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="skinShade" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#D9A87E"/>
+        <stop offset="100%" stop-color="#C28E62"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Head -->
+    <ellipse cx="100" cy="38" rx="22" ry="26" fill="url(#skinShade)"/>
+    <path d="M81 30 Q100 6 119 30 Q120 16 100 12 Q80 16 81 30 Z" fill="#2A2620"/>
+    <!-- Neck -->
+    <path d="M90 60 L90 76 Q100 82 110 76 L110 60 Z" fill="url(#skinShade)"/>
+    <path class="muscle" data-m="neck" d="M88 62 Q100 70 112 62 L112 74 Q100 80 88 74 Z" fill="${muscleFill(lv.neck)}" opacity="0.55"/>
+
+    <!-- Traps/Shoulders -->
+    <path class="muscle" data-m="shoulders" d="M60 84 Q100 66 140 84 Q150 90 150 104 Q125 92 100 92 Q75 92 50 104 Q50 90 60 84 Z" fill="${muscleFill(lv.shoulders)}"/>
+
+    <!-- Chest (pecs) -->
+    <path class="muscle" data-m="chest" d="M64 96 Q100 92 136 96 Q140 120 118 132 Q100 138 82 132 Q60 120 64 96 Z" fill="${muscleFill(lv.chest)}"/>
+    <line x1="100" y1="100" x2="100" y2="132" stroke="rgba(0,0,0,0.18)" stroke-width="1.5"/>
+
+    <!-- Left arm (deltoid + biceps) -->
+    <path class="muscle" data-m="arms" d="M50 104 Q40 108 40 130 L46 178 Q54 180 58 172 L60 120 Q56 108 50 104 Z" fill="${muscleFill(lv.arms)}"/>
+    <!-- Right arm -->
+    <path class="muscle" data-m="arms" d="M150 104 Q160 108 160 130 L154 178 Q146 180 142 172 L140 120 Q144 108 150 104 Z" fill="${muscleFill(lv.arms)}"/>
+    <!-- Forearms -->
+    <path class="muscle" data-m="forearms" d="M44 178 L40 224 Q46 228 52 224 L56 174 Q50 180 44 178 Z" fill="${muscleFill(lv.forearms)}"/>
+    <path class="muscle" data-m="forearms" d="M156 178 L160 224 Q154 228 148 224 L144 174 Q150 180 156 178 Z" fill="${muscleFill(lv.forearms)}"/>
+
+    <!-- Abdomen base -->
+    <path d="M74 132 Q100 138 126 132 L122 210 Q100 220 78 210 Z" fill="url(#skinShade)"/>
+    <!-- Obliques -->
+    <path class="muscle" data-m="obliques" d="M74 140 L70 200 Q78 206 80 196 L82 142 Z" fill="${muscleFill(lv.obliques)}" opacity="0.5"/>
+    <path class="muscle" data-m="obliques" d="M126 140 L130 200 Q122 206 120 196 L118 142 Z" fill="${muscleFill(lv.obliques)}" opacity="0.5"/>
+
+    <!-- Abs (sixpack rows; opacity & definition grow with Core) -->
+    <g class="muscle" data-m="abs" opacity="${absOpacity}">
+      ${absDefined ? `
+      <line x1="100" y1="142" x2="100" y2="200" stroke="rgba(0,0,0,0.22)" stroke-width="1.5"/>
+      <line x1="84" y1="156" x2="116" y2="156" stroke="rgba(0,0,0,0.18)" stroke-width="1.2"/>
+      <line x1="84" y1="172" x2="116" y2="172" stroke="rgba(0,0,0,0.18)" stroke-width="1.2"/>
+      <line x1="86" y1="188" x2="114" y2="188" stroke="rgba(0,0,0,0.18)" stroke-width="1.2"/>` : ``}
+      <rect x="82" y="142" width="36" height="62" rx="10" fill="${muscleFill(getBodySkillLevel('core'))}" opacity="0.35"/>
+    </g>
+
+    <!-- Pelvis -->
+    <path d="M78 208 Q100 218 122 208 L118 226 Q100 232 82 226 Z" fill="url(#skinShade)"/>
+
+    <!-- Legs (quads) -->
+    <path class="muscle" data-m="legs" d="M82 226 Q90 224 98 226 L96 320 Q88 324 82 320 Z" fill="${muscleFill(lv.legs)}"/>
+    <path class="muscle" data-m="legs" d="M118 226 Q110 224 102 226 L104 320 Q112 324 118 320 Z" fill="${muscleFill(lv.legs)}"/>
+    <!-- Calves -->
+    <path class="muscle" data-m="legs" d="M84 320 L86 392 Q92 396 96 392 L96 320 Q90 322 84 320 Z" fill="${muscleFill(lv.legs)}" opacity="0.8"/>
+    <path class="muscle" data-m="legs" d="M116 320 L114 392 Q108 396 104 392 L104 320 Q110 322 116 320 Z" fill="${muscleFill(lv.legs)}" opacity="0.8"/>
+  </svg>`;
+  wrap.innerHTML = svg;
+
+  // tap a muscle → jump to its skill
+  wrap.querySelectorAll('.muscle').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const m=el.getAttribute('data-m');
+      const skill=MUSCLE_SKILL_MAP[m];
+      if(skill) openBodySkill(skill);
+    });
+  });
+}
+
+function bodyMoodEmoji(){
+  // smile when all body habits are done today, neutral otherwise
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
+  const habits = (typeof window.getHabits==='function') ? window.getHabits() : {};
+  const today = bodyDateKey(bodyDateForOffset(0));
+  const bodyHabitKeys = Object.keys(defaults).filter(k=>defaults[k].isHabit && defaults[k].parentSkill==='body' && defaults[k].active!==false);
+  if (!bodyHabitKeys.length) return '😐';
+  const allDone = bodyHabitKeys.every(k=>{
+    const h=habits[k]; return h && (h.lastDate===today || (h.dates&&h.dates.includes(today)));
+  });
+  return allDone ? '😄' : '😐';
+}
+
+function renderBody(){
+  if (!window.getCharacter || !window.xpToLevel){ setTimeout(renderBody,60); return; }
+  const char = window.getCharacter();
+  const skills = char.skills || {};
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
+
+  // overall body level = average level of body skills
+  let sum=0, n=0;
+  for (const k of BODY_SKILL_ORDER){
+    if (!defaults[k]) continue;
+    sum += window.xpToLevel((skills[k]||{}).xp||0); n++;
+  }
+  const bodyLevel = n ? Math.round(sum/n) : 0;
+  const lvlEl=document.getElementById('bodyOverallLvl'); if(lvlEl) lvlEl.textContent=bodyLevel;
+
+  // mood
+  const moodEl=document.getElementById('bodyMood'); if(moodEl) moodEl.textContent=bodyMoodEmoji();
+
+  // day nav label
+  const d=bodyDateForOffset(bodyDayOffset);
+  const dl=document.getElementById('bodyDayLabel'), ds=document.getElementById('bodyDaySub');
+  if(dl){ dl.textContent = bodyDayOffset===0?'Today':bodyDayOffset===-1?'Yesterday':bodyDayOffset===1?'Tomorrow':d.toLocaleDateString('en-GB',{weekday:'long'}); }
+  if(ds){ ds.textContent = d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}); }
+
+  // figure
+  renderBodyFigure();
+
+  // body composition from Apple Health / Hevy (best-effort)
+  renderBodyComposition();
+
+  // body skill cards
+  const grid=document.getElementById('bodySkillsGrid');
+  if(grid){
+    grid.innerHTML = BODY_SKILL_ORDER.filter(k=>defaults[k]).map(k=>{
+      const def=defaults[k], s=skills[k]||{}, xp=s.xp||0, level=window.xpToLevel(xp);
+      const nextXp=window.xpForLevel?window.xpForLevel(level+1):null;
+      const thisXp=window.xpForLevel?window.xpForLevel(level):0;
+      const pct=nextXp&&nextXp!==Infinity?Math.round(((xp-thisXp)/(nextXp-thisXp))*100):100;
+      const ms=def.milestones?Object.keys(def.milestones).map(Number).sort((a,b)=>a-b):[];
+      const nextMs=ms.find(l=>l>level);
+      const nextTxt=nextMs?`Lvl ${nextMs}: ${def.milestones[nextMs]}`:'Maxed out 👑';
+      return `<div class="body-skill-card${level>=100?' maxed':''}" onclick="openBodySkill('${k}')">
+        <div class="body-skill-head">
+          <div class="body-skill-icon">${def.icon||'💪'}</div>
+          <div>
+            <div class="body-skill-name">${def.label||k}</div>
+            <div class="body-skill-lvl">Level <b>${level}</b> · ${xp} XP</div>
+          </div>
+        </div>
+        <div class="body-skill-bar"><div class="body-skill-bar-fill" style="width:${pct}%"></div></div>
+        <div class="body-skill-next">${nextTxt}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function renderBodyComposition(){
+  const wEl=document.getElementById('bodyCompWeight');
+  const fEl=document.getElementById('bodyCompFat');
+  const mEl=document.getElementById('bodyCompMuscle');
+  // Try latest apple_health row from localStorage cache if present
+  let weight='—', fat='—', muscle='—';
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const key=localStorage.key(i);
+      if(key && key.startsWith('apple_health:')){
+        const d=JSON.parse(localStorage.getItem(key))||{};
+        if(d.weight) weight=Math.round(parseFloat(d.weight))+' kg';
+        if(d.body_fat||d['body_fat']) fat=Math.round(parseFloat(d.body_fat||d['body_fat']))+'%';
+        if(d.muscle_mass) muscle=Math.round(parseFloat(d.muscle_mass))+' kg';
+      }
+    }
+  }catch(e){}
+  if(wEl) wEl.textContent=weight;
+  if(fEl) fEl.textContent=fat;
+  if(mEl) mEl.textContent=muscle;
+}
+
+window.bodyShiftDay=function(delta){
+  bodyDayOffset+=delta;
+  if(bodyDayOffset<-7) bodyDayOffset=-7;
+  if(bodyDayOffset>7) bodyDayOffset=7;
+  renderBody();
+};
+
+// Open a body skill: reuse the existing skill detail panel if available, else a simple log sheet
+window.openBodySkill=function(key){
+  if (typeof window.openSkillDetail==='function'){ window.openSkillDetail(key); return; }
+  if (typeof openSkillPanel==='function'){ openSkillPanel(key); return; }
+  // fallback quick-log sheet
+  const defaults=window.RPG_DEFAULT_SKILLS||{};
+  const def=defaults[key]||{};
+  const char=window.getCharacter?window.getCharacter():{skills:{}};
+  const s=(char.skills||{})[key]||{}; const level=window.xpToLevel?window.xpToLevel(s.xp||0):0;
+  const overlay=document.createElement('div');
+  overlay.setAttribute('data-overlay','1');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(20,19,15,0.45);z-index:9000;display:flex;align-items:flex-end;justify-content:center';
+  const logBtns=(def.quickLog||[]).map(q=>
+    `<button onclick="window.addXP&&window.addXP('${key}',${q.xp},'${(q.label||'').replace(/'/g,"\\'")}');showToast&&showToast('+${q.xp} XP · ${(q.label||'').replace(/'/g,"\\'")}');this.closest('[data-overlay]').remove();renderBody();"
+       style="width:100%;padding:13px;margin-bottom:8px;border:1px solid var(--line);border-radius:11px;background:var(--bg);font-size:14px;font-weight:600;text-align:left;cursor:pointer;font-family:inherit">
+       ${q.label}<span style="color:var(--ember);font-size:12px;float:right">+${q.xp} XP</span></button>`).join('');
+  overlay.innerHTML=`<div style="background:#fff;border-radius:22px 22px 0 0;padding:20px 16px max(28px,env(safe-area-inset-bottom));width:100%;max-width:480px">
+    <div style="font-family:var(--font-display);font-weight:800;font-size:18px">${def.icon||''} ${def.label||key}</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Level ${level} · ${s.xp||0} XP</div>
+    ${logBtns||'<div style="color:var(--muted);font-size:13px;padding:8px 0">No quick-log actions for this skill.</div>'}
+    <button onclick="this.closest('[data-overlay]').remove()" style="width:100%;padding:12px;border:none;background:transparent;color:var(--muted);font-size:14px;cursor:pointer;font-family:inherit">Cancel</button>
+  </div>`;
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+};
+
 // ── Boot ───────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
-  // Wait a tick for xp.js to load RPG_DEFAULT_SKILLS
   setTimeout(()=>{
+    // Deep-link: character.html#skills opens Skills directly (from bottom nav)
+    const hash = (window.location.hash || '').replace('#','');
+    if (hash === 'skills') showTab('skills');
+    else renderBody();
     renderCharacter();
     loadHevyWidget();
     renderDaily();
@@ -2010,14 +2393,20 @@ document.addEventListener('DOMContentLoaded',()=>{
   },0);
 
   if(typeof initCloudSync==='function'&&window.supabase){
-    initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1'],syncedPrefixes:['rpg_daily_v1:']});
+    initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1'],syncedPrefixes:['rpg_daily_v1:','rpg_agenda_v1:']});
   }
+});
+
+window.addEventListener('hashchange',()=>{
+  const hash=(window.location.hash||'').replace('#','');
+  if(hash==='skills') showTab('skills');
 });
 
 window.addEventListener('storage',()=>{
   const active=document.querySelector('.char-screen.active');
   if(!active) return;
   const id=active.id.replace('tab-','');
+  if(id==='body')      renderBody();
   if(id==='character') { renderCharacter(); loadHevyWidget(); }
   if(id==='daily')     renderDaily();
   if(id==='history')   renderHistory();
