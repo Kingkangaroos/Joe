@@ -494,14 +494,23 @@
 
     // ══ KNOWLEDGE — skills ════════════════════════════════════════════
     languages: {
-      xp:0, parentSkill:'knowledge', icon:'🗣️', label:'Languages', active:true,
+      xp:0, parentSkill:'knowledge', icon:'🇫🇷', label:'French', active:true,
       quickLog:[
-        {label:'Duolingo / app',                         xp:15},
+        {label:'Duolingo / app (15 min)',                xp:15},
         {label:'30 min study',                           xp:25},
-        {label:'Conversation in foreign language',       xp:45},
-        {label:'Series/film watched in target language', xp:20},
+        {label:'Conversation in French',                 xp:45},
+        {label:'Film/series in French',                  xp:20},
       ],
-      milestones:{ 10:'Basic conversation', 30:'A2 level', 50:'B1 level', 75:'B2 level', 100:'C1 — fluent' },
+      milestones:{
+        5:'A1 — greetings, intro yourself, order food',
+        15:'A1+ — present tense, 500 common words',
+        30:'A2 — past tense (passé composé), everyday topics',
+        45:'A2+ — hold a 5-min conversation comfortably',
+        55:'B1 — express opinions, future tense, ~2000 words',
+        70:'B1+ — follow native conversation, subjunctive intro',
+        85:'B2 — debate, understand films without subs',
+        100:'C1 — fluent, think and dream in French'
+      },
     },
     learning: {
       xp:0, parentSkill:'knowledge', icon:'🎓', label:'Learning', active:true,

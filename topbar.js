@@ -179,10 +179,18 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
   function shouldShowChrome() { return !isFinancePage() && !isEmbedded(); }
   function currentPageKey() {
     const p = (window.location.pathname || '').toLowerCase();
-    if (p.endsWith('character.html')) return 'character';
-    if (p.endsWith('finance.html')) return 'finance-nav';
+    const h = (window.location.hash || '').toLowerCase();
+    if (p.endsWith('character.html')) return h === '#skills' ? 'skills' : 'character';
+    if (p.endsWith('finance.html')) return 'finance';
     if (p.endsWith('settings.html')) return 'settings';
     return 'main';
+  }
+
+  function refreshActiveTab() {
+    const active = currentPageKey();
+    document.querySelectorAll('.bottombar-tab').forEach((t) => {
+      t.classList.toggle('active', t.getAttribute('data-page') === active);
+    });
   }
 
   function injectStyleAndHTML() {
@@ -203,6 +211,7 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
       t.classList.toggle('active', t.getAttribute('data-page') === active);
     });
     document.body.classList.add('has-bottombar');
+    window.addEventListener('hashchange', refreshActiveTab);
   }
 
   function calendarDateKey() {
