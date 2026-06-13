@@ -489,6 +489,14 @@ textarea {
 .sd-nextstep-eyebrow { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#E8945F; }
 .sd-nextstep-title { font-family:var(--font-display,sans-serif); font-weight:800; font-size:16px; color:#F4F3EF; margin-top:4px; }
 .sd-nextstep-desc { font-size:13px; color:rgba(244,243,239,0.75); line-height:1.4; margin-top:3px; }
+.sd-photo {
+  height:140px; margin:-20px -18px 16px; position:relative; background-color:#1a1a1f; overflow:hidden;
+}
+.sd-photo-img { width:100%; height:100%; object-fit:cover; display:block; }
+.sd-photo-fade {
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(14,14,18,0.1) 0%, rgba(14,14,18,0.65) 100%);
+}
 
 /* ── Skill Detail Panel v2 (Fase 3 — sdOverlay/sd-panel) ── */
 .sd-panel{position:relative;background:#0e0e12;border:1px solid rgba(255,255,255,0.1);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;padding:20px 18px calc(env(safe-area-inset-bottom,0px) + 20px);animation:sheetUp 0.25s cubic-bezier(0.22,1,0.36,1);-webkit-overflow-scrolling:touch}
@@ -892,7 +900,6 @@ textarea {
 <div class="char-tabs">
   <button class="char-tab active" onclick="showTab('body')">Body</button>
   <button class="char-tab" onclick="showTab('daily')">Daily</button>
-  <button class="char-tab" onclick="showTab('quests')">Quests</button>
   <button class="char-tab" onclick="showTab('skills')">Skills</button>
   <button class="char-tab" onclick="showTab('history')">History</button>
 </div>
@@ -1034,8 +1041,8 @@ textarea {
   </div>
 </div>
 
-<!-- ===== QUESTS ===== -->
-<div class="char-screen" id="tab-quests">
+<!-- ===== QUESTS (retired — superseded by Skills→Quests) ===== -->
+<div class="char-screen" id="tab-quests" style="display:none">
 
   <!-- Path to Superiority -->
   <div style="background:linear-gradient(135deg,rgba(245,200,66,0.07),rgba(196,181,253,0.05));border:1px solid rgba(245,200,66,0.18);border-radius:16px;padding:16px;margin-bottom:14px">
@@ -1159,13 +1166,12 @@ function showTab(id){
   const screen = document.getElementById('tab-'+id);
   if (screen) { screen.classList.add('active'); screen.style.display=''; }
   const tabs  = [...document.querySelectorAll('.char-tab')];
-  const names = ['body','daily','quests','skills','history'];
+  const names = ['body','daily','skills','history'];
   const idx   = names.indexOf(id);
   if(idx>=0) tabs[idx].classList.add('active');
   if(id==='body')      { renderBody(); loadHevyWidget(); }
   if(id==='character') { renderCharacter(); loadHevyWidget(); }
   if(id==='daily')     renderDaily();
-  if(id==='quests')    renderQuests();
   if(id==='skills')    renderSkillTree();
   if(id==='history')   renderHistory();
 }
@@ -1323,6 +1329,20 @@ function getConfirmedMilestones(){
   try{ return JSON.parse(localStorage.getItem('rpg_milestones_v1'))||{}; }catch{ return {}; }
 }
 
+// Per-skill hero photo. Unsplash Source was sunset (June 2024), so we use
+// Lorem Picsum with a fixed per-skill seed: reliable, key-free, and each skill
+// consistently gets the same tasteful photo. (Curated themed photos can replace
+// these later by dropping real Unsplash image URLs into SKILL_PHOTO_URL.)
+const SKILL_PHOTO_URL = {
+  // Optional hand-picked direct image URLs per skill go here later, e.g.
+  // tennis: 'https://images.unsplash.com/photo-xxxx?w=640',
+};
+function skillPhotoUrl(key){
+  if(SKILL_PHOTO_URL[key]) return SKILL_PHOTO_URL[key];
+  // deterministic, reliable, no API key
+  return 'https://picsum.photos/seed/gamenfy-'+encodeURIComponent(key)+'/640/240';
+}
+
 function openSkillDetail(skillKey){
   const defaults=window.RPG_DEFAULT_SKILLS||{};
   const def=defaults[skillKey]||{};
@@ -1398,10 +1418,17 @@ function openSkillDetail(skillKey){
     </div>`;
   }).join('');
 
+  const photoUrl=skillPhotoUrl(skillKey);
+  const photoHtml=photoUrl?`<div class="sd-photo">
+      <img class="sd-photo-img" src="${photoUrl}" alt="" onerror="this.closest('.sd-photo').style.display='none'">
+      <div class="sd-photo-fade"></div>
+    </div>`:'';
+
   overlay.innerHTML=`
     <div class="sd-panel">
       <div class="sd-handle"></div>
       <button class="sd-close-x" onclick="document.getElementById('sdOverlay')?.remove()" aria-label="Close">×</button>
+      ${photoHtml}
       <div class="sd-header">
         <span class="sd-icon">${def.icon||'⭐'}</span>
         <div>
@@ -2839,7 +2866,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     renderCharacter();
     loadHevyWidget();
     renderDaily();
-    renderQuests();
   },0);
 
   if(typeof initCloudSync==='function'&&window.supabase){
