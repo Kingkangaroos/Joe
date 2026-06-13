@@ -79,7 +79,7 @@ A gamified personal Life OS — version 0.1 of a future product. Joey uses it da
 
 ### Skills (`character.html` → Skills)
 - **Skills view:** RuneScape-style icon grid grouped by domain, each cell = level/100 + progress bar. Total Level banner on top + maxed counter. Private skills behind PIN.
-- **Quests view:** pick a skill → level-gated quest ladder. Quests unlock at their level; claiming grants XP. 28 skills, 131 quests (see `quests.js`).
+- **Quests view:** pick a skill → level-gated quest ladder. Quests unlock at their level; claiming grants XP. 28 skills, 261 quests (see `quests.js`).
 
 ### Finance (`finance.html`)
 - Net Worth (bank/stocks/crypto/other), Maandlasten (subscriptions, mark paid), Wishlist (% of net worth).
@@ -110,6 +110,7 @@ A gamified personal Life OS — version 0.1 of a future product. Joey uses it da
 - **v4.3** Body tab with anatomical figure, Body Level, mood face
 - **v4.4** RuneScape Skills grid + Total Level + quest system
 - **v4.5** complete quest coverage (28 skills, 131 quests)
+- **v4.6** expanded quest ladders — denser levels 1-100 (261 quests)
 
 ---
 
