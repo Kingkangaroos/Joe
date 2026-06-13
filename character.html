@@ -1799,6 +1799,8 @@ async function analyzeHevyStrength(){
   if(!levelN){ showToast('No main lifts (squat/bench/deadlift/OHP) found in Hevy data'); return null; }
 
   const strengthLevel=Math.round(levelSum/levelN);
+  // store cumulative volume so the body figure can grow with training
+  try { localStorage.setItem('hevy_total_volume', String(Math.round(totalVolume))); } catch(e){}
   // Gym level rewards consistency (workout count) + strength
   const consistencyBonus=Math.min(25, all.length); // up to +25 for 30 workouts
   const gymLevel=Math.min(100, Math.round(strengthLevel*0.75 + consistencyBonus*0.5 + Math.min(15, totalSets/20)));
@@ -2825,6 +2827,26 @@ function muscleFill(level){
   return `rgb(${c[0]},${c[1]},${c[2]})`;
 }
 
+// Extra muscularity from logged Hevy training volume (stored by the analyzer).
+// Returns 0..1 — adds visible bulk on top of skill level.
+function hevyMuscularity(){
+  try {
+    const v = parseFloat(localStorage.getItem('hevy_total_volume')||'0');
+    if(!v) return 0;
+    // ~50k kg cumulative volume → near max visual bulk
+    return Math.max(0, Math.min(1, v/50000));
+  } catch(e){ return 0; }
+}
+
+// Muscle bulk transform: scales a muscle group outward from its centre.
+// level 0 → flat (1.0), level 100 + volume → noticeably bigger.
+function muscleBulk(level, cx, cy, extra){
+  const t = Math.max(0, Math.min(1, level/100));
+  const vol = extra ? hevyMuscularity() : 0;
+  const s = 1 + t*0.28 + vol*0.14;          // up to ~+42% size
+  return `transform:translate(${cx}px,${cy}px) scale(${s.toFixed(3)}) translate(${-cx}px,${-cy}px)`;
+}
+
 function getBodySkillLevel(key){
   if (!window.getCharacter || !window.xpToLevel) return 0;
   const s=(window.getCharacter().skills||{})[key]||{};
@@ -2862,16 +2884,16 @@ function renderBodyFigure(){
     <path class="muscle" data-m="neck" d="M88 62 Q100 70 112 62 L112 74 Q100 80 88 74 Z" fill="${muscleFill(lv.neck)}" opacity="0.55"/>
 
     <!-- Traps/Shoulders -->
-    <path class="muscle" data-m="shoulders" d="M60 84 Q100 66 140 84 Q150 90 150 104 Q125 92 100 92 Q75 92 50 104 Q50 90 60 84 Z" fill="${muscleFill(lv.shoulders)}"/>
+    <path class="muscle" data-m="shoulders" style="${muscleBulk(lv.shoulders,100,88,true)}" d="M60 84 Q100 66 140 84 Q150 90 150 104 Q125 92 100 92 Q75 92 50 104 Q50 90 60 84 Z" fill="${muscleFill(lv.shoulders)}"/>
 
     <!-- Chest (pecs) -->
-    <path class="muscle" data-m="chest" d="M64 96 Q100 92 136 96 Q140 120 118 132 Q100 138 82 132 Q60 120 64 96 Z" fill="${muscleFill(lv.chest)}"/>
+    <path class="muscle" data-m="chest" style="${muscleBulk(lv.chest,100,112,true)}" d="M64 96 Q100 92 136 96 Q140 120 118 132 Q100 138 82 132 Q60 120 64 96 Z" fill="${muscleFill(lv.chest)}"/>
     <line x1="100" y1="100" x2="100" y2="132" stroke="rgba(0,0,0,0.18)" stroke-width="1.5"/>
 
     <!-- Left arm (deltoid + biceps) -->
-    <path class="muscle" data-m="arms" d="M50 104 Q40 108 40 130 L46 178 Q54 180 58 172 L60 120 Q56 108 50 104 Z" fill="${muscleFill(lv.arms)}"/>
+    <path class="muscle" data-m="arms" style="${muscleBulk(lv.arms,50,140,true)}" d="M50 104 Q40 108 40 130 L46 178 Q54 180 58 172 L60 120 Q56 108 50 104 Z" fill="${muscleFill(lv.arms)}"/>
     <!-- Right arm -->
-    <path class="muscle" data-m="arms" d="M150 104 Q160 108 160 130 L154 178 Q146 180 142 172 L140 120 Q144 108 150 104 Z" fill="${muscleFill(lv.arms)}"/>
+    <path class="muscle" data-m="arms" style="${muscleBulk(lv.arms,150,140,true)}" d="M150 104 Q160 108 160 130 L154 178 Q146 180 142 172 L140 120 Q144 108 150 104 Z" fill="${muscleFill(lv.arms)}"/>
     <!-- Forearms -->
     <path class="muscle" data-m="forearms" d="M44 178 L40 224 Q46 228 52 224 L56 174 Q50 180 44 178 Z" fill="${muscleFill(lv.forearms)}"/>
     <path class="muscle" data-m="forearms" d="M156 178 L160 224 Q154 228 148 224 L144 174 Q150 180 156 178 Z" fill="${muscleFill(lv.forearms)}"/>
@@ -2896,8 +2918,8 @@ function renderBodyFigure(){
     <path d="M78 208 Q100 218 122 208 L118 226 Q100 232 82 226 Z" fill="url(#skinShade)"/>
 
     <!-- Legs (quads) -->
-    <path class="muscle" data-m="legs" d="M82 226 Q90 224 98 226 L96 320 Q88 324 82 320 Z" fill="${muscleFill(lv.legs)}"/>
-    <path class="muscle" data-m="legs" d="M118 226 Q110 224 102 226 L104 320 Q112 324 118 320 Z" fill="${muscleFill(lv.legs)}"/>
+    <path class="muscle" data-m="legs" style="${muscleBulk(lv.legs,90,273,true)}" d="M82 226 Q90 224 98 226 L96 320 Q88 324 82 320 Z" fill="${muscleFill(lv.legs)}"/>
+    <path class="muscle" data-m="legs" style="${muscleBulk(lv.legs,110,273,true)}" d="M118 226 Q110 224 102 226 L104 320 Q112 324 118 320 Z" fill="${muscleFill(lv.legs)}"/>
     <!-- Calves -->
     <path class="muscle" data-m="legs" d="M84 320 L86 392 Q92 396 96 392 L96 320 Q90 322 84 320 Z" fill="${muscleFill(lv.legs)}" opacity="0.8"/>
     <path class="muscle" data-m="legs" d="M116 320 L114 392 Q108 396 104 392 L104 320 Q110 322 116 320 Z" fill="${muscleFill(lv.legs)}" opacity="0.8"/>
