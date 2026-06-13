@@ -52,7 +52,7 @@ A gamified personal Life OS — version 0.1 of a future product. Joey uses it da
 - **Skill level:** `level = floor(sqrt(xp/50)) + 1`, capped at **100**. XP comes from quick-log actions per skill.
 - **Habits:** separate **0–10 score** (NOT XP). +1 per day done, max 10; drops only after a missed day, so 10 days of slacking returns to 0. No punishing streaks.
 - **Body Level:** average level of the body skills (Gym, Strength, Calisthenics, Core, Mobility, Endurance, Recovery, Tennis). Shown on the Body tab.
-- **Total Level:** sum of all non-habit skill levels. Shown on the Skills tab. Separate from Body Level.
+- **Total Level:** average level of all non-habit skills (0-100 scale, like Body Level). Shown on the Skills tab.
 
 ---
 

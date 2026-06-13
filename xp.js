@@ -760,6 +760,22 @@
   };
 
   window.getCharacter       = function () { return loadCharacter(); };
+  window.setSkillXP = function (skillName, xp, reason) {
+    const char = loadCharacter();
+    if (!char.skills[skillName]) {
+      const def = DEFAULT_SKILLS[skillName] || {};
+      char.skills[skillName] = { xp: 0, parentSkill: def.parentSkill || 'knowledge', icon: def.icon || '⭐', label: def.label || skillName, active: true };
+    }
+    char.skills[skillName].xp = Math.max(0, Math.round(xp || 0));
+    char.xpLog.unshift({ skill: skillName, amount: 0, reason: reason || 'Assessment', date: todayStr(), private: !!(char.skills[skillName].private || (DEFAULT_SKILLS[skillName] || {}).private) });
+    if (char.xpLog.length > MAX_LOG) char.xpLog.length = MAX_LOG;
+    saveCharacter(char);
+    return char.skills[skillName];
+  };
+  window.setSkillLevel = function (skillName, level, reason) {
+    const lvl = Math.max(1, Math.min(MAX_LEVEL, Math.round(level || 1)));
+    return window.setSkillXP(skillName, xpForLevel(lvl), reason || 'Assessment');
+  };
   window.xpToLevel          = xpToLevel;
   window.xpForLevel         = xpForLevel;
   window.RPG_PARENT_SKILLS  = PARENT_SKILLS;

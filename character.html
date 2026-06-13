@@ -811,6 +811,62 @@ textarea {
 }
 .quest-node.done .quest-claim { background:var(--green); color:#fff; }
 .quest-locked-note { font-size:10px; color:var(--faint); font-style:italic; }
+
+/* ── Assessment (intake) ──────────────────────────── */
+.assess-btn {
+  width:100%; padding:13px; margin-bottom:14px; border-radius:14px;
+  border:1px solid rgba(201,162,39,0.4); cursor:pointer;
+  background:linear-gradient(135deg, #1B1A15, #2A2620); color:#F4F3EF;
+  font-family:var(--font-display); font-weight:700; font-size:14px;
+  -webkit-tap-highlight-color:transparent; position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.assess-btn::after {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(70% 100% at 100% 0%, rgba(201,162,39,0.25), transparent 55%);
+  pointer-events:none;
+}
+.assess-btn span { position:relative; z-index:1; }
+
+.assess-overlay {
+  position:fixed; inset:0; z-index:9500; background:var(--bg);
+  display:flex; flex-direction:column;
+}
+.assess-head {
+  padding:16px 18px 12px; border-bottom:1px solid var(--line);
+  display:flex; align-items:center; gap:12px;
+}
+.assess-progress-track { flex:1; height:6px; background:var(--line); border-radius:3px; overflow:hidden; }
+.assess-progress-fill { height:100%; background:linear-gradient(90deg, var(--gold), var(--ember)); border-radius:3px; transition:width 0.3s; }
+.assess-close { background:none; border:none; font-size:22px; color:var(--muted); cursor:pointer; line-height:1; }
+.assess-body { flex:1; overflow-y:auto; padding:22px 18px 16px; -webkit-overflow-scrolling:touch; }
+.assess-skill-head { display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+.assess-skill-icon { font-size:30px; }
+.assess-skill-name { font-family:var(--font-display); font-weight:800; font-size:22px; color:var(--ink); letter-spacing:-0.02em; }
+.assess-skill-domain { font-size:10px; letter-spacing:0.14em; text-transform:uppercase; font-weight:700; }
+.assess-q { font-size:14px; font-weight:600; color:var(--ink); margin:22px 0 12px; }
+.assess-opt {
+  width:100%; text-align:left; padding:14px 16px; margin-bottom:9px; border-radius:13px;
+  border:1.5px solid var(--line-strong); background:var(--card); cursor:pointer;
+  font-size:14px; color:var(--ink); font-family:inherit; line-height:1.35;
+  -webkit-tap-highlight-color:transparent; transition:all 0.12s;
+  display:flex; align-items:center; gap:12px;
+}
+.assess-opt:active { transform:scale(0.98); }
+.assess-opt.sel { border-color:var(--ember); background:rgba(212,99,62,0.07); box-shadow:0 0 0 2px rgba(212,99,62,0.12); }
+.assess-opt-lvl { font-family:var(--font-mono); font-size:10px; font-weight:700; color:var(--gold); flex-shrink:0; min-width:34px; }
+.assess-foot { padding:14px 18px max(20px,env(safe-area-inset-bottom)); border-top:1px solid var(--line); display:flex; gap:10px; }
+.assess-nav-btn {
+  flex:1; padding:14px; border-radius:13px; border:none; cursor:pointer;
+  font-family:var(--font-display); font-weight:700; font-size:15px; -webkit-tap-highlight-color:transparent;
+}
+.assess-skip { background:var(--card); border:1px solid var(--line-strong); color:var(--muted); flex:0 0 90px; }
+.assess-next { background:var(--ink); color:#F4F3EF; }
+.assess-next:disabled { opacity:0.4; }
+.assess-done-card { text-align:center; padding:40px 20px; }
+.assess-done-emoji { font-size:54px; margin-bottom:14px; }
+.assess-summary-row { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line); font-size:13px; }
+.assess-summary-row b { font-family:var(--font-mono); color:var(--ember); }
 </style>
 </head>
 <body>
@@ -983,6 +1039,7 @@ textarea {
 
   <!-- SKILLS VIEW -->
   <div id="skillsView">
+    <button class="assess-btn" onclick="startAssessment()"><span>🎯 Assess my levels</span></button>
     <div class="total-level-banner">
       <div>
         <div class="tlb-num" id="rsTotalLevel">—</div>
@@ -2066,7 +2123,10 @@ function renderRSGrid(){
     }
   }
 
-  const tl=document.getElementById('rsTotalLevel'); if(tl) tl.textContent=totalLevel;
+  const tl=document.getElementById('rsTotalLevel');
+  const skillCount = (function(){let c=0;CATEGORY_ORDER.forEach(pKey=>{Object.keys(defaults).forEach(k=>{const def=defaults[k];const ps=DOMAIN_MAP[def.parentSkill]||def.parentSkill;if(ps===pKey&&!def.isHabit&&!(def.private&&!isPrivateUnlocked()))c++;});});return c;})();
+  const avgLevel = skillCount ? Math.round(totalLevel/skillCount) : 0;
+  if(tl) tl.textContent=avgLevel;
   const tx=document.getElementById('rsTotalXp'); if(tx) tx.textContent=totalXp.toLocaleString()+' XP';
   const mc=document.getElementById('rsMaxedCount'); if(mc) mc.textContent=maxed+' maxed';
 }
@@ -2142,6 +2202,142 @@ window.toggleQuest=function(skill,lvl,xp){
   }
   renderQuestLadder();
 };
+
+// ── Assessment / intake ────────────────────────────
+// Per skill: pick the highest milestone you can already do (anchored to the
+// quest ladder), then a confidence nudge. Result overwrites the skill level.
+let assessSkills=[], assessIdx=0, assessAnswers={};
+
+function buildAssessSkills(){
+  const defaults=window.RPG_DEFAULT_SKILLS||{};
+  const QUESTS=window.RPG_QUESTS||{};
+  // only non-habit skills that have a quest ladder, respecting privacy gate
+  return Object.keys(QUESTS).filter(k=>{
+    const def=defaults[k]; if(!def) return false;
+    if(def.private && !isPrivateUnlocked()) return false;
+    return true;
+  });
+}
+
+window.startAssessment=function(){
+  assessSkills=buildAssessSkills();
+  assessIdx=0; assessAnswers={};
+  if(!assessSkills.length){ showToast('No assessable skills yet'); return; }
+  let ov=document.getElementById('assessOverlay');
+  if(!ov){ ov=document.createElement('div'); ov.id='assessOverlay'; ov.className='assess-overlay'; document.body.appendChild(ov); }
+  renderAssessStep();
+};
+
+function closeAssessment(){ const ov=document.getElementById('assessOverlay'); if(ov) ov.remove(); }
+
+function renderAssessStep(){
+  const ov=document.getElementById('assessOverlay'); if(!ov) return;
+  const defaults=window.RPG_DEFAULT_SKILLS||{};
+  const QUESTS=window.RPG_QUESTS||{};
+  const total=assessSkills.length;
+
+  if(assessIdx>=total){ renderAssessDone(); return; }
+
+  const key=assessSkills[assessIdx];
+  const def=defaults[key]||{};
+  const ladder=(QUESTS[key]||[]).slice().sort((a,b)=>a.lvl-b.lvl);
+  const pMeta=(typeof PARENT_META!=='undefined')?(PARENT_META[def.parentSkill]||{}):{};
+  const cur=assessAnswers[key];
+
+  // Build "highest you can do" options from quest milestones + a "nothing yet" + "mastered"
+  const opts=[];
+  opts.push({lvl:0, label:'Never tried / can\u2019t do this yet'});
+  ladder.forEach(q=>opts.push({lvl:q.lvl, label:q.title+' — '+q.desc}));
+
+  const pct=Math.round((assessIdx/total)*100);
+  ov.innerHTML=
+    '<div class="assess-head">'+
+      '<div class="assess-progress-track"><div class="assess-progress-fill" style="width:'+pct+'%"></div></div>'+
+      '<button class="assess-close" onclick="confirmCloseAssessment()">×</button>'+
+    '</div>'+
+    '<div class="assess-body">'+
+      '<div class="assess-skill-head">'+
+        '<div class="assess-skill-icon">'+(def.icon||'⭐')+'</div>'+
+        '<div><div class="assess-skill-name">'+(def.label||key)+'</div>'+
+        '<div class="assess-skill-domain" style="color:'+(pMeta.color||'var(--muted)')+'">'+(pMeta.label||'')+' · '+(assessIdx+1)+'/'+total+'</div></div>'+
+      '</div>'+
+      '<div class="assess-q">What\u2019s the highest you can already do?</div>'+
+      opts.map((o,i)=>
+        '<button class="assess-opt'+(cur&&cur.lvl===o.lvl?' sel':'')+'" onclick="pickAssess('+o.lvl+')">'+
+          '<span class="assess-opt-lvl">'+(o.lvl===0?'—':'Lv'+o.lvl)+'</span>'+
+          '<span>'+o.label+'</span>'+
+        '</button>').join('')+
+    '</div>'+
+    '<div class="assess-foot">'+
+      (assessIdx>0?'<button class="assess-nav-btn assess-skip" onclick="assessBack()">Back</button>':'<button class="assess-nav-btn assess-skip" onclick="assessSkip()">Skip</button>')+
+      '<button class="assess-nav-btn assess-next" onclick="assessNext()" '+(cur?'':'disabled')+'>'+(assessIdx===total-1?'Finish':'Next')+'</button>'+
+    '</div>';
+  ov.querySelector('.assess-body').scrollTop=0;
+}
+
+window.pickAssess=function(lvl){
+  const key=assessSkills[assessIdx];
+  // map "highest milestone" to a level a bit above that milestone (you've cleared it, so you're past it)
+  const QUESTS=window.RPG_QUESTS||{};
+  const ladder=(QUESTS[key]||[]).slice().sort((a,b)=>a.lvl-b.lvl);
+  let resultLevel;
+  if(lvl===0){ resultLevel=1; }
+  else {
+    // find the next milestone above the chosen one; place level midway toward it
+    const next=ladder.find(q=>q.lvl>lvl);
+    resultLevel = next ? Math.round((lvl+next.lvl)/2) : Math.min(100, lvl+5);
+  }
+  assessAnswers[key]={lvl, resultLevel};
+  renderAssessStep();
+};
+
+window.assessNext=function(){
+  if(!assessAnswers[assessSkills[assessIdx]]) return;
+  assessIdx++; renderAssessStep();
+};
+window.assessBack=function(){ if(assessIdx>0){ assessIdx--; renderAssessStep(); } };
+window.assessSkip=function(){ assessIdx++; renderAssessStep(); };
+window.confirmCloseAssessment=function(){
+  if(Object.keys(assessAnswers).length===0){ closeAssessment(); return; }
+  if(confirm('Stop the assessment? Answers so far won\u2019t be applied.')) closeAssessment();
+};
+
+function renderAssessDone(){
+  const ov=document.getElementById('assessOverlay'); if(!ov) return;
+  const defaults=window.RPG_DEFAULT_SKILLS||{};
+  const entries=Object.entries(assessAnswers).filter(([k,a])=>a&&a.resultLevel>1);
+  ov.innerHTML=
+    '<div class="assess-head"><div class="assess-progress-track"><div class="assess-progress-fill" style="width:100%"></div></div></div>'+
+    '<div class="assess-body">'+
+      '<div class="assess-done-card">'+
+        '<div class="assess-done-emoji">🎯</div>'+
+        '<div class="assess-skill-name">Your starting levels</div>'+
+        '<div style="font-size:13px;color:var(--muted);margin-top:6px">'+entries.length+' skills will be set. This overwrites current progress.</div>'+
+      '</div>'+
+      entries.map(([k,a])=>{
+        const def=defaults[k]||{};
+        return '<div class="assess-summary-row"><span>'+(def.icon||'⭐')+' '+(def.label||k)+'</span><b>Lvl '+a.resultLevel+'</b></div>';
+      }).join('')+
+      (entries.length===0?'<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px">No levels above 1 to set.</div>':'')+
+    '</div>'+
+    '<div class="assess-foot">'+
+      '<button class="assess-nav-btn assess-skip" onclick="closeAssessmentReload()">Cancel</button>'+
+      '<button class="assess-nav-btn assess-next" onclick="applyAssessment()">Apply levels</button>'+
+    '</div>';
+}
+
+window.applyAssessment=function(){
+  const setLevel=window.setSkillLevel;
+  if(typeof setLevel!=='function'){ showToast('Could not apply (no setter)'); return; }
+  let n=0;
+  Object.entries(assessAnswers).forEach(([k,a])=>{
+    if(a && a.resultLevel>=1){ setLevel(k, a.resultLevel, 'Assessment'); n++; }
+  });
+  closeAssessment();
+  showToast('Assessment applied · '+n+' skills set 🎯');
+  renderRSGrid(); renderBody(); renderCharacter&&renderCharacter();
+};
+window.closeAssessmentReload=function(){ closeAssessment(); };
 
 // ── Gratitude storage ──────────────────────────────
 const GRATITUDE_KEY = 'rpg_gratitude_v1';
@@ -2354,7 +2550,8 @@ window.showToast = window.showToast || function(msg,dur){
     t.style.cssText='position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:#15140F;color:#F4F3EF;padding:11px 18px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:opacity .2s,transform .2s;box-shadow:0 8px 24px rgba(0,0,0,0.25);max-width:88%;text-align:center';
     document.body.appendChild(t); }
   t.textContent=msg;
-  requestAnimationFrame(()=>{ t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; });
+  const show=()=>{ t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; };
+  (typeof requestAnimationFrame==='function'?requestAnimationFrame(show):setTimeout(show,0));
   clearTimeout(t._h); t._h=setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(20px)'; },dur||2200);
 };
 
