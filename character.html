@@ -13,6 +13,7 @@
 <script src="sync.js" defer></script>
 <script src="topbar.js" defer></script>
 <script src="xp.js" defer></script>
+<script src="quests.js" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -712,7 +713,104 @@ textarea {
   cursor:pointer; -webkit-tap-highlight-color:transparent;
 }
 .body-daynav-label { font-family:var(--font-display); font-weight:700; font-size:13px; color:var(--ink); }
-.body-daynav-sub { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; text-align:center; margin-top:1px; }
+/* ── SKILLS TAB (RuneScape style) ─────────────────── */
+.skills-toolbar {
+  display:flex; gap:8px; margin-bottom:14px;
+}
+.skills-tab-btn {
+  flex:1; padding:11px; border-radius:12px; border:1px solid var(--line);
+  background:var(--card); font-family:var(--font-display); font-weight:700;
+  font-size:13px; color:var(--muted); cursor:pointer; -webkit-tap-highlight-color:transparent;
+  transition:all 0.15s;
+}
+.skills-tab-btn.active { background:var(--ink); color:#F4F3EF; border-color:var(--ink); }
+
+.total-level-banner {
+  background: linear-gradient(135deg, #1B1A15 0%, #2A2620 100%);
+  border-radius:18px; padding:16px 18px; margin-bottom:16px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:relative; overflow:hidden;
+}
+.total-level-banner::after {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(70% 100% at 100% 0%, rgba(201,162,39,0.20), transparent 55%);
+  pointer-events:none;
+}
+.tlb-num { font-family:var(--font-display); font-weight:800; font-size:34px; color:#F4F3EF; line-height:1; letter-spacing:-0.02em; }
+.tlb-lbl { font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-top:3px; }
+.tlb-right { text-align:right; position:relative; z-index:1; }
+.tlb-sub { font-size:11px; color:#A6A399; font-family:var(--mono); }
+
+.rs-grid {
+  display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;
+}
+@media (max-width:380px){ .rs-grid { grid-template-columns:repeat(3,1fr); } }
+.rs-cell {
+  background:var(--card); border:1px solid var(--line); border-radius:13px;
+  padding:10px 6px 9px; text-align:center; cursor:pointer; position:relative;
+  -webkit-tap-highlight-color:transparent; transition:transform 0.1s, box-shadow 0.15s;
+}
+.rs-cell:active { transform:scale(0.94); }
+.rs-cell.maxed { border-color:var(--gold); box-shadow:0 0 0 1px var(--gold) inset; }
+.rs-cell-icon { font-size:21px; line-height:1; }
+.rs-cell-lvl {
+  font-family:var(--font-mono); font-weight:700; font-size:13px; margin-top:5px;
+  color:var(--ink); font-variant-numeric:tabular-nums;
+}
+.rs-cell-lvl .slash { color:var(--faint); font-weight:400; font-size:10px; }
+.rs-cell-name { font-size:8px; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:0.04em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.rs-cell-bar { height:3px; background:var(--line); border-radius:2px; margin-top:5px; overflow:hidden; }
+.rs-cell-bar-fill { height:100%; border-radius:2px; }
+
+.rs-domain-label {
+  font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--muted); margin:16px 0 9px; display:flex; align-items:center; gap:6px;
+}
+
+/* Quest view */
+.quest-skillpick {
+  display:flex; gap:7px; overflow-x:auto; padding-bottom:8px; margin-bottom:14px;
+  -webkit-overflow-scrolling:touch; scrollbar-width:none;
+}
+.quest-skillpick::-webkit-scrollbar{ display:none; }
+.quest-skillpick-btn {
+  flex-shrink:0; padding:8px 13px; border-radius:20px; border:1px solid var(--line-strong);
+  background:var(--card); font-size:12px; font-weight:600; color:var(--ink); cursor:pointer;
+  display:flex; align-items:center; gap:6px; -webkit-tap-highlight-color:transparent;
+}
+.quest-skillpick-btn.active { background:var(--ember); color:#fff; border-color:var(--ember); }
+
+.quest-ladder { position:relative; padding-left:30px; }
+.quest-ladder::before {
+  content:''; position:absolute; left:11px; top:8px; bottom:8px; width:2px;
+  background:linear-gradient(180deg, var(--gold), var(--line)); border-radius:2px;
+}
+.quest-node { position:relative; margin-bottom:12px; }
+.quest-node-dot {
+  position:absolute; left:-25px; top:4px; width:18px; height:18px; border-radius:50%;
+  background:var(--card); border:2px solid var(--line-strong); display:flex; align-items:center;
+  justify-content:center; font-size:10px; z-index:1;
+}
+.quest-node.unlocked .quest-node-dot { border-color:var(--gold); }
+.quest-node.done .quest-node-dot { background:var(--green); border-color:var(--green); color:#fff; }
+.quest-card2 {
+  background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px;
+  transition:border-color 0.15s, opacity 0.2s;
+}
+.quest-node.locked .quest-card2 { opacity:0.5; }
+.quest-node.unlocked .quest-card2 { border-color:rgba(201,162,39,0.4); cursor:pointer; }
+.quest-card2-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:3px; }
+.quest-card2-title { font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--ink); }
+.quest-card2-lvl { font-size:9px; font-family:var(--mono); font-weight:700; color:var(--gold); padding:2px 7px; border:1px solid rgba(201,162,39,0.3); border-radius:6px; }
+.quest-card2-desc { font-size:12px; color:var(--muted); line-height:1.4; }
+.quest-card2-foot { display:flex; align-items:center; justify-content:space-between; margin-top:8px; }
+.quest-card2-xp { font-size:11px; font-family:var(--mono); font-weight:700; color:var(--ember); }
+.quest-claim {
+  font-size:11px; font-weight:700; padding:5px 12px; border-radius:8px; border:none; cursor:pointer;
+  background:var(--gold); color:#15140F; font-family:var(--font-display);
+}
+.quest-node.done .quest-claim { background:var(--green); color:#fff; }
+.quest-locked-note { font-size:10px; color:var(--faint); font-style:italic; }
 </style>
 </head>
 <body>
@@ -878,7 +976,31 @@ textarea {
 
 <!-- ===== SKILLS ===== -->
 <div class="char-screen" id="tab-skills">
-  <div id="skillTreeContainer"></div>
+  <div class="skills-toolbar">
+    <button class="skills-tab-btn active" id="skillsViewBtn" onclick="setSkillsView('skills')">⚔️ Skills</button>
+    <button class="skills-tab-btn" id="questsViewBtn" onclick="setSkillsView('quests')">📜 Quests</button>
+  </div>
+
+  <!-- SKILLS VIEW -->
+  <div id="skillsView">
+    <div class="total-level-banner">
+      <div>
+        <div class="tlb-num" id="rsTotalLevel">—</div>
+        <div class="tlb-lbl">Total Level</div>
+      </div>
+      <div class="tlb-right">
+        <div class="tlb-sub" id="rsTotalXp">0 XP</div>
+        <div class="tlb-sub" id="rsMaxedCount">0 maxed</div>
+      </div>
+    </div>
+    <div id="rsGridContainer"></div>
+  </div>
+
+  <!-- QUESTS VIEW -->
+  <div id="questsView" style="display:none">
+    <div class="quest-skillpick" id="questSkillPick"></div>
+    <div id="questLadderContainer"></div>
+  </div>
 </div>
 
 <!-- ===== HISTORY ===== -->
@@ -1856,74 +1978,170 @@ function toggleWeeklyQuest(el,id,skill,xp){
   el.querySelector('.quest-row-check').textContent=!was?'✓':'';
 }
 
-// ── Skill tree ─────────────────────────────────────
+// ── Skill tree (RuneScape-style grid + quests) ─────
+let skillsView = 'skills';
+let activeQuestSkill = null;
+
+window.setSkillsView = function(view){
+  skillsView = view;
+  document.getElementById('skillsView').style.display = view==='skills'?'':'none';
+  document.getElementById('questsView').style.display = view==='quests'?'':'none';
+  document.getElementById('skillsViewBtn').classList.toggle('active', view==='skills');
+  document.getElementById('questsViewBtn').classList.toggle('active', view==='quests');
+  if(view==='skills') renderRSGrid();
+  else renderQuestView();
+};
+
 function renderSkillTree(){
+  // entry point used by showTab — render whichever sub-view is active
+  if(skillsView==='skills') renderRSGrid();
+  else renderQuestView();
+}
+
+function renderRSGrid(){
   const char=loadChar();
   const skills=char.skills||{};
   const defaults=window.RPG_DEFAULT_SKILLS||{};
-  const container=document.getElementById('skillTreeContainer');
+  const container=document.getElementById('rsGridContainer');
+  if(!container) return;
   container.innerHTML='';
+
+  let totalLevel=0, totalXp=0, maxed=0;
 
   CATEGORY_ORDER.forEach(pKey=>{
     const meta=PARENT_META[pKey];
-    const subskills=Object.entries({...defaults,...skills})
-      .filter(([k,])=>{
-        const def=defaults[k]||{};
-        const ps=skills[k]?.parentSkill||def.parentSkill;
-        const mappedPs=DOMAIN_MAP[ps]||ps;
-        return mappedPs===pKey && !def.isHabit;
-      })
-      .map(([k])=>({
-        key:k,
-        ...(defaults[k]||{}),
-        ...(skills[k]||{}),
-        parentSkill:pKey,
-      }))
-      .sort((a,b)=>(b.xp||0)-(a.xp||0));
-
+    const subskills=Object.keys(defaults)
+      .filter(k=>{
+        const def=defaults[k];
+        const ps=DOMAIN_MAP[def.parentSkill]||def.parentSkill;
+        return ps===pKey && !def.isHabit;
+      });
     if(!subskills.length) return;
 
-    const titleEl=document.createElement('div');
-    titleEl.className='sec-title';
-    titleEl.innerHTML=meta.icon+' '+meta.label;
-    titleEl.style.marginTop='18px';
-    container.appendChild(titleEl);
+    // private gate for discipline-domain skills (they map to mind, so check individually)
+    const visible = subskills.filter(k=>{
+      const def=defaults[k];
+      if(def.private && !isPrivateUnlocked()) return false;
+      return true;
+    });
+    if(!visible.length) return;
 
-    if(pKey==='discipline'&&!isPrivateUnlocked()){
-      const lc=document.createElement('div');
-      lc.style.cssText='background:rgba(255,107,107,0.05);border:1px solid rgba(255,107,107,0.15);border-radius:14px;padding:20px;text-align:center;cursor:pointer;margin-bottom:10px';
-      lc.innerHTML='<div style="font-size:24px;margin-bottom:6px">🔒</div><div style="font-size:12px;font-weight:700;color:var(--discipline);margin-bottom:3px">Private section</div><div style="font-size:10px;color:var(--t3)">Tap to unlock with PIN</div>';
-      lc.addEventListener('click',()=>requirePin(renderSkillTree));
-      container.appendChild(lc);
-      return;
-    }
+    const label=document.createElement('div');
+    label.className='rs-domain-label';
+    label.innerHTML=meta.icon+' '+meta.label;
+    container.appendChild(label);
 
-    subskills.forEach(s=>{
-      const xp=s.xp||0;
+    const grid=document.createElement('div');
+    grid.className='rs-grid';
+    visible.forEach(k=>{
+      const def=defaults[k], s=skills[k]||{}, xp=s.xp||0;
       const level=xpToLevel(xp);
       const isMax=level>=MAX_LEVEL;
-      const curXP=isMax?0:xp-xpForLevel(level);
-      const nextXP=isMax?1:xpForLevel(level+1)-xpForLevel(level);
-      const pct=isMax?100:nextXP>0?Math.min(100,Math.round(curXP/nextXP*100)):100;
-      const div=document.createElement('div');
-      div.className='skill-detail';
-      div.innerHTML=
-        '<div class="skill-detail-hdr">'+
-          '<div class="skill-detail-icon">'+(s.icon||'⭐')+'</div>'+
-          '<div class="skill-detail-name">'+(s.label||s.key)+'</div>'+
-          (s.active===false?'<div style="font-size:9px;font-family:var(--mono);color:var(--t3);padding:2px 6px;border:1px solid rgba(255,255,255,0.08);border-radius:4px">inactive</div>':'')+
-          '<div class="skill-detail-lvl">'+(isMax?'<span style="color:'+meta.color+'">MAX</span>':'Lvl <span style="color:'+meta.color+'">'+level+'</span>')+'</div>'+
-        '</div>'+
-        '<div class="xp-bar-label"><span>XP</span><span>'+(isMax?xp.toLocaleString()+' (MAX)':xp.toLocaleString()+' / '+xpForLevel(level+1).toLocaleString())+'</span></div>'+
-        '<div class="xp-bar-track"><div class="xp-bar-fill" style="width:'+pct+'%;background:'+meta.color+(isMax?';box-shadow:0 0 8px '+meta.color+'88':'')+'"></div></div>';
-      container.appendChild(div);
+      totalLevel+=level; totalXp+=xp; if(isMax) maxed++;
+      const nextXp=isMax?xp:xpForLevel(level+1);
+      const thisXp=xpForLevel(level);
+      const pct=isMax?100:Math.min(100,Math.round(((xp-thisXp)/(nextXp-thisXp))*100));
+      const cell=document.createElement('div');
+      cell.className='rs-cell'+(isMax?' maxed':'');
+      cell.onclick=()=>openSkillDetail(k);
+      cell.innerHTML=
+        '<div class="rs-cell-icon">'+(def.icon||'⭐')+'</div>'+
+        '<div class="rs-cell-lvl">'+level+'<span class="slash">/'+MAX_LEVEL+'</span></div>'+
+        '<div class="rs-cell-name">'+(def.label||k)+'</div>'+
+        '<div class="rs-cell-bar"><div class="rs-cell-bar-fill" style="width:'+pct+'%;background:'+meta.color+'"></div></div>';
+      grid.appendChild(cell);
     });
+    container.appendChild(grid);
   });
 
-  if(!container.children.length){
-    container.innerHTML='<div style="color:var(--t3);font-size:13px;text-align:center;padding:40px 0">Tap a skill to start earning XP!</div>';
+  // private locked teaser
+  if(!isPrivateUnlocked()){
+    const anyPrivate=Object.values(defaults).some(d=>d.private);
+    if(anyPrivate){
+      const lc=document.createElement('div');
+      lc.style.cssText='margin-top:16px;background:rgba(220,38,38,0.04);border:1px solid rgba(220,38,38,0.15);border-radius:13px;padding:14px;text-align:center;cursor:pointer';
+      lc.innerHTML='<div style="font-size:20px;margin-bottom:4px">🔒</div><div style="font-size:11px;font-weight:700;color:var(--discipline)">Private skills — tap to unlock</div>';
+      lc.onclick=()=>requirePin(renderRSGrid);
+      container.appendChild(lc);
+    }
   }
+
+  const tl=document.getElementById('rsTotalLevel'); if(tl) tl.textContent=totalLevel;
+  const tx=document.getElementById('rsTotalXp'); if(tx) tx.textContent=totalXp.toLocaleString()+' XP';
+  const mc=document.getElementById('rsMaxedCount'); if(mc) mc.textContent=maxed+' maxed';
 }
+
+// ── Quests ─────────────────────────────────────────
+function renderQuestView(){
+  const QUESTS=window.RPG_QUESTS||{};
+  const defaults=window.RPG_DEFAULT_SKILLS||{};
+  const pick=document.getElementById('questSkillPick');
+  if(!pick) return;
+
+  // skills that have quest ladders
+  const questSkills=Object.keys(QUESTS).filter(k=>defaults[k]);
+  if(!questSkills.length){ pick.innerHTML=''; document.getElementById('questLadderContainer').innerHTML='<div style="color:var(--t3);font-size:13px;text-align:center;padding:30px 0">No quests yet.</div>'; return; }
+
+  if(!activeQuestSkill || !QUESTS[activeQuestSkill]) activeQuestSkill=questSkills[0];
+
+  pick.innerHTML=questSkills.map(k=>{
+    const def=defaults[k];
+    return '<button class="quest-skillpick-btn'+(k===activeQuestSkill?' active':'')+'" onclick="selectQuestSkill(\''+k+'\')">'+(def.icon||'⭐')+' '+(def.label||k)+'</button>';
+  }).join('');
+
+  renderQuestLadder();
+}
+
+window.selectQuestSkill=function(k){ activeQuestSkill=k; renderQuestView(); };
+
+function renderQuestLadder(){
+  const QUESTS=window.RPG_QUESTS||{};
+  const defaults=window.RPG_DEFAULT_SKILLS||{};
+  const char=loadChar();
+  const cont=document.getElementById('questLadderContainer');
+  if(!cont) return;
+  const k=activeQuestSkill;
+  const ladder=QUESTS[k]||[];
+  const def=defaults[k]||{};
+  const xp=(char.skills||{})[k]?.xp||0;
+  const level=xpToLevel(xp);
+  const done=window.getQuestsDone?window.getQuestsDone():{};
+
+  cont.innerHTML='<div class="quest-ladder">'+ladder.map(q=>{
+    const isDone=!!done[k+':'+q.lvl];
+    const unlocked=level>=q.lvl;
+    const state=isDone?'done':unlocked?'unlocked':'locked';
+    const dot=isDone?'✓':unlocked?'★':'🔒';
+    return '<div class="quest-node '+state+'">'+
+      '<div class="quest-node-dot">'+dot+'</div>'+
+      '<div class="quest-card2">'+
+        '<div class="quest-card2-top"><div class="quest-card2-title">'+q.title+'</div><div class="quest-card2-lvl">LVL '+q.lvl+'</div></div>'+
+        '<div class="quest-card2-desc">'+q.desc+'</div>'+
+        '<div class="quest-card2-foot">'+
+          '<span class="quest-card2-xp">+'+q.xp+' XP</span>'+
+          (isDone
+            ? '<button class="quest-claim" onclick="toggleQuest(\''+k+'\','+q.lvl+','+q.xp+')">✓ Done</button>'
+            : unlocked
+              ? '<button class="quest-claim" onclick="toggleQuest(\''+k+'\','+q.lvl+','+q.xp+')">Claim</button>'
+              : '<span class="quest-locked-note">Reach level '+q.lvl+'</span>')+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('')+'</div>';
+}
+
+window.toggleQuest=function(skill,lvl,xp){
+  const done=window.getQuestsDone?window.getQuestsDone():{};
+  const wasDone=!!done[skill+':'+lvl];
+  window.setQuestDone(skill,lvl,!wasDone);
+  if(!wasDone){
+    if(window.addXP) window.addXP(skill,xp,'Quest complete (Lvl '+lvl+')');
+    showToast('Quest complete · +'+xp+' XP 🏆');
+  } else {
+    if(window.removeXP) window.removeXP(skill,xp,'Quest unclaimed (Lvl '+lvl+')');
+  }
+  renderQuestLadder();
+};
 
 // ── Gratitude storage ──────────────────────────────
 const GRATITUDE_KEY = 'rpg_gratitude_v1';
