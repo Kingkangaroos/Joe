@@ -778,7 +778,11 @@ textarea {
 }
 .rs-cell:active { transform:scale(0.94); }
 .rs-cell.maxed { border-color:var(--gold); box-shadow:0 0 0 1px var(--gold) inset; }
-.rs-cell-icon { font-size:21px; line-height:1; }
+.rs-cell-icon {
+  width:38px; height:38px; margin:0 auto 2px;
+  border-radius:11px; display:flex; align-items:center; justify-content:center;
+}
+.rs-cell-icon svg { width:22px; height:22px; }
 .rs-cell-lvl {
   font-family:var(--font-mono); font-weight:700; font-size:13px; margin-top:5px;
   color:var(--ink); font-variant-numeric:tabular-nums;
@@ -2117,6 +2121,57 @@ function renderSkillTree(){
   else renderQuestView();
 }
 
+// ── Line icons (minimal SVG, premium look — replaces emoji in the grid) ──
+// Each returns an SVG path set drawn with currentColor (domain color set on the wrapper).
+const LINE_ICONS = {
+  dumbbell:'<path d="M6.5 6.5v11M3.5 8.5v7M17.5 6.5v11M20.5 8.5v7M6.5 12h11"/>',
+  flame:'<path d="M12 3c1 3-1.5 4-1.5 6.5A3.5 3.5 0 0012 13a3.5 3.5 0 003.5-3.5C15.5 7 14 6 12 3z"/><path d="M8.5 13.5C7 15 6.5 16.5 6.5 18a5.5 5.5 0 0011 0c0-1.5-.5-3-2-4.5"/>',
+  gymnast:'<circle cx="12" cy="5" r="2"/><path d="M12 7v6m0 0l-4 5m4-5l4 5M6 10h12"/>',
+  yoga:'<circle cx="12" cy="4.5" r="1.8"/><path d="M12 6.5v5m0 0l-5 2 5-2 5 2m-5-2v6"/>',
+  run:'<circle cx="13" cy="4.5" r="1.8"/><path d="M11 8l-2 4 3 1 1 5m-1-5l3-1-1-4M7 11l2-1"/>',
+  tennis:'<circle cx="12" cy="12" r="8"/><path d="M5 6c3 2 3 10 0 12M19 6c-3 2-3 10 0 12"/>',
+  piggy:'<path d="M4 12a6 5 0 0112 0v4H4z"/><circle cx="9" cy="11" r="0.8" fill="currentColor"/><path d="M16 10l3-1v4M7 16v2M13 16v2"/>',
+  chart:'<path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"/>',
+  clipboard:'<rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 4h6v2H9zM9 11h6M9 15h4"/>',
+  bank:'<path d="M4 9l8-5 8 5M5 9v8m4-8v8m6-8v8m4-8v8M3 20h18"/>',
+  book:'<path d="M4 5a2 2 0 012-2h12v16H6a2 2 0 00-2 2zM4 19a2 2 0 012-2h12"/>',
+  target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.8" fill="currentColor"/>',
+  pen:'<path d="M4 20l4-1L19 8a2 2 0 00-3-3L5 16zM14 7l3 3"/>',
+  lotus:'<path d="M12 13c-3 0-5-2-5-2 2-3 5-4 5-4s3 1 5 4c0 0-2 2-5 2zM12 13v5M7 13c-2 0-3 2-3 2M17 13c2 0 3 2 3 2"/>',
+  handshake:'<path d="M3 12l4-4 5 3 5-3 4 4M7 14l3 3 2-2 2 2 3-3M8 8l4 3"/>',
+  megaphone:'<path d="M4 10v4l9 4V6zM13 7l5-2v14l-5-2M6 14v4h3"/>',
+  robot:'<rect x="6" y="8" width="12" height="9" rx="2"/><path d="M12 5v3M9 13h.01M15 13h.01M4 11v3M20 11v3"/>',
+  code:'<path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/>',
+  film:'<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 9h16M8 5v14M16 5v14"/>',
+  heart:'<path d="M12 20s-7-4.5-7-9.5A3.5 3.5 0 0112 7a3.5 3.5 0 017 3.5C19 15.5 12 20 12 20z"/>',
+  chef:'<path d="M7 13a3 3 0 01-1-6 3.5 3.5 0 016-1 3.5 3.5 0 015 2 3 3 0 01-2 5M7 13v5a1 1 0 001 1h8a1 1 0 001-1v-5"/>',
+  users:'<circle cx="9" cy="8" r="3"/><path d="M3 19a6 6 0 0112 0M16 6a3 3 0 010 6M18 19a6 6 0 00-2-4.5"/>',
+  calendar:'<rect x="4" y="6" width="16" height="14" rx="2"/><path d="M4 10h16M8 4v4M16 4v4"/>',
+  globe:'<circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.5 2.5 2.5 13 0 16M12 4c-2.5 2.5-2.5 13 0 16"/>',
+  piano:'<rect x="4" y="5" width="16" height="14" rx="1"/><path d="M8 5v9M12 5v9M16 5v9M4 14h16"/>',
+  cap:'<path d="M12 4L2 9l10 5 10-5zM6 11v4c0 1 3 2.5 6 2.5s6-1.5 6-2.5v-4"/>',
+  whistle:'<path d="M3 11a4 4 0 014-4h9l3 2-2 2v2a4 4 0 01-8 0H7a4 4 0 01-4-4z"/><circle cx="7" cy="11" r="1.5"/>',
+  dance:'<circle cx="13" cy="4.5" r="1.8"/><path d="M13 6.5l-2 4 3 1m-3-1l-3 4m6-3l2 2-1 4m-1-6l3-1"/>',
+  shield:'<path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6z"/>',
+  star:'<path d="M12 3l2.5 6 6.5.5-5 4 1.5 6.5L12 16.5 6 20l1.5-6.5-5-4 6.5-.5z"/>',
+};
+const SKILL_ICON_KEY = {
+  gym:'dumbbell', strength:'dumbbell', calisthenics:'gymnast', core:'flame', stretching:'yoga',
+  recovery:'run', endurance:'run', tennis:'tennis',
+  saving:'piggy', investing:'chart', budgeting:'clipboard', net_worth:'bank',
+  reading:'book', focus:'target', journaling:'pen', meditation:'lotus',
+  sales:'handshake', marketing:'megaphone', ai_tools:'robot', coding:'code', content:'film',
+  dating:'heart', cooking:'chef', social:'users', planning:'calendar',
+  languages:'globe', piano:'piano', learning:'cap',
+  whistling:'whistle', dancing:'dance',
+  no_porn:'shield', weed_control:'shield',
+};
+function skillIconSvg(key, color){
+  const name = SKILL_ICON_KEY[key] || 'star';
+  const path = LINE_ICONS[name] || LINE_ICONS.star;
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="'+(color||'currentColor')+'" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">'+path+'</svg>';
+}
+
 function renderRSGrid(){
   const char=loadChar();
   const skills=char.skills||{};
@@ -2164,7 +2219,7 @@ function renderRSGrid(){
       cell.className='rs-cell'+(isMax?' maxed':'');
       cell.onclick=()=>openSkillDetail(k);
       cell.innerHTML=
-        '<div class="rs-cell-icon">'+(def.icon||'⭐')+'</div>'+
+        '<div class="rs-cell-icon" style="color:'+meta.color+';background:'+meta.color+'14">'+skillIconSvg(k, meta.color)+'</div>'+
         '<div class="rs-cell-lvl">'+level+'<span class="slash">/'+MAX_LEVEL+'</span></div>'+
         '<div class="rs-cell-name">'+(def.label||k)+'</div>'+
         '<div class="rs-cell-bar"><div class="rs-cell-bar-fill" style="width:'+pct+'%;background:'+meta.color+'"></div></div>';
