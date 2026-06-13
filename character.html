@@ -944,8 +944,9 @@ textarea {
   <div class="sec-title" style="margin-top:4px">Body Skills</div>
   <div class="body-skills-grid" id="bodySkillsGrid"></div>
 
-  <!-- Hevy Last Workout -->
-  <div id="hevyWidget" style="margin-top:14px"></div>
+  <!-- Hevy Last Workout + analysis -->
+  <button class="assess-btn" onclick="runHevyAnalysis()" style="margin-top:14px"><span>🏋️ Analyze my Hevy strength</span></button>
+  <div id="hevyWidget"></div>
 </div>
 
 <!-- ===== CHARACTER (legacy, hidden — kept for compatibility) ===== -->
@@ -1716,6 +1717,132 @@ async function loadHevyWidget() {
   }
 }
 // ────────────────────────────────────────────────────────
+
+// ── Hevy strength analysis ──────────────────────────────
+// Pulls up to 30 workouts, finds best estimated 1RM per main lift,
+// scores it against bodyweight-ratio standards for the user's profile,
+// and maps the result to a Gym + Strength level (1-100).
+const LIFTER_PROFILE = { bodyweightKg: 72, heightCm: 193, age: 26, sex: 'male' };
+
+// Strength standards as 1RM / bodyweight ratios (male). Tuned to common
+// strength-standard tables; level interpolates between these anchors.
+const LIFT_STANDARDS = {
+  squat:    { match:/squat/i,                              ratios:{ beginner:0.75, novice:1.25, intermediate:1.5, advanced:2.0, elite:2.5 } },
+  bench:    { match:/bench/i,                              ratios:{ beginner:0.5,  novice:0.75, intermediate:1.0, advanced:1.5, elite:1.9 } },
+  deadlift: { match:/deadlift/i,                           ratios:{ beginner:1.0,  novice:1.5,  intermediate:2.0, advanced:2.5, elite:3.0 } },
+  ohp:      { match:/(overhead|shoulder|military) press/i, ratios:{ beginner:0.35, novice:0.55, intermediate:0.7, advanced:0.9, elite:1.2 } },
+};
+// level anchors aligned to the ratio tiers
+const TIER_LEVELS = { beginner:5, novice:20, intermediate:45, advanced:70, elite:95 };
+
+function epley1RM(weight, reps){ return reps>0 ? weight*(1+reps/30) : weight; }
+
+function ratioToLevel(ratio, ratios){
+  const tiers=['beginner','novice','intermediate','advanced','elite'];
+  if(ratio<=ratios.beginner) return Math.max(1, Math.round(TIER_LEVELS.beginner*(ratio/ratios.beginner)));
+  for(let i=0;i<tiers.length-1;i++){
+    const a=tiers[i], b=tiers[i+1];
+    if(ratio>=ratios[a] && ratio<ratios[b]){
+      const f=(ratio-ratios[a])/(ratios[b]-ratios[a]);
+      return Math.round(TIER_LEVELS[a]+(TIER_LEVELS[b]-TIER_LEVELS[a])*f);
+    }
+  }
+  return Math.min(100, Math.round(TIER_LEVELS.elite + (ratio-ratios.elite)/ratios.elite*5));
+}
+
+async function analyzeHevyStrength(){
+  const apiKey = localStorage.getItem('hevy_api_key');
+  if(!apiKey){ showToast('No Hevy API key found in this browser'); return null; }
+  const all=[];
+  try{
+    for(let page=1; page<=3; page++){
+      const res=await fetch('https://api.hevyapp.com/v1/workouts?page='+page+'&pageSize=10',{headers:{'api-key':apiKey}});
+      if(!res.ok) break;
+      const data=await res.json();
+      const ws=data.workouts||[];
+      all.push(...ws);
+      if(ws.length<10) break;
+    }
+  }catch(e){ showToast('Could not reach Hevy'); return null; }
+  if(!all.length){ showToast('No Hevy workouts found'); return null; }
+
+  // best estimated 1RM per main lift
+  const best={}; // liftKey -> {e1rm, weight, reps, title}
+  let totalVolume=0, totalSets=0;
+  all.forEach(w=>{
+    (w.exercises||[]).forEach(ex=>{
+      (ex.sets||[]).forEach(s=>{
+        if(s.type==='warmup') return;
+        const wt=s.weight_kg||0, reps=s.reps||0;
+        if(wt>0&&reps>0){ totalVolume+=wt*reps; totalSets++; }
+        for(const [key,def] of Object.entries(LIFT_STANDARDS)){
+          if(def.match.test(ex.title||'')){
+            const e=epley1RM(wt,reps);
+            if(!best[key]||e>best[key].e1rm) best[key]={e1rm:e,weight:wt,reps,title:ex.title};
+          }
+        }
+      });
+    });
+  });
+
+  const bw=LIFTER_PROFILE.bodyweightKg;
+  const lifts={};
+  let levelSum=0, levelN=0;
+  for(const [key,def] of Object.entries(LIFT_STANDARDS)){
+    if(best[key]){
+      const ratio=best[key].e1rm/bw;
+      const lvl=Math.max(1,Math.min(100,ratioToLevel(ratio,def.ratios)));
+      lifts[key]={ e1rm:Math.round(best[key].e1rm), ratio:+ratio.toFixed(2), level:lvl, weight:best[key].weight, reps:best[key].reps };
+      levelSum+=lvl; levelN++;
+    }
+  }
+  if(!levelN){ showToast('No main lifts (squat/bench/deadlift/OHP) found in Hevy data'); return null; }
+
+  const strengthLevel=Math.round(levelSum/levelN);
+  // Gym level rewards consistency (workout count) + strength
+  const consistencyBonus=Math.min(25, all.length); // up to +25 for 30 workouts
+  const gymLevel=Math.min(100, Math.round(strengthLevel*0.75 + consistencyBonus*0.5 + Math.min(15, totalSets/20)));
+
+  return { workouts:all.length, totalSets, totalVolume:Math.round(totalVolume), lifts, strengthLevel, gymLevel };
+}
+
+window.runHevyAnalysis=async function(){
+  showToast('Analyzing your last 30 Hevy workouts…');
+  const r=await analyzeHevyStrength();
+  if(!r) return;
+  // apply levels
+  if(window.setSkillLevel){
+    window.setSkillLevel('strength', r.strengthLevel, 'Hevy analysis');
+    window.setSkillLevel('gym', r.gymLevel, 'Hevy analysis');
+  }
+  renderBody(); renderRSGrid&&renderRSGrid();
+  // show a summary sheet
+  showHevyAnalysisSheet(r);
+};
+
+function showHevyAnalysisSheet(r){
+  const liftRows=Object.entries(r.lifts).map(([k,v])=>{
+    const name={squat:'Squat',bench:'Bench',deadlift:'Deadlift',ohp:'Overhead Press'}[k]||k;
+    return `<div class="assess-summary-row"><span>${name} · ~${v.e1rm}kg 1RM (${v.ratio}× BW)</span><b>Lvl ${v.level}</b></div>`;
+  }).join('');
+  const ov=document.createElement('div'); ov.className='assess-overlay';
+  ov.innerHTML=`<div class="assess-head"><div class="assess-progress-track"><div class="assess-progress-fill" style="width:100%"></div></div><button class="assess-close" onclick="this.closest('.assess-overlay').remove()">×</button></div>
+    <div class="assess-body">
+      <div class="assess-done-card">
+        <div class="assess-done-emoji">🏋️</div>
+        <div class="assess-skill-name">Hevy Strength Analysis</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:6px">${r.workouts} workouts · ${r.totalSets} working sets · ${(r.totalVolume/1000).toFixed(1)}k kg lifted</div>
+      </div>
+      ${liftRows}
+      <div class="assess-summary-row" style="border-top:2px solid var(--line);margin-top:8px"><span>💪 Strength level</span><b>Lvl ${r.strengthLevel}</b></div>
+      <div class="assess-summary-row"><span>🏋️ Gym level</span><b>Lvl ${r.gymLevel}</b></div>
+      <div style="font-size:11px;color:var(--faint);margin-top:14px;line-height:1.5">Based on estimated 1-rep maxes (Epley) vs strength standards for a ${LIFTER_PROFILE.bodyweightKg}kg male. Levels have been applied to your skills.</div>
+    </div>
+    <div class="assess-foot"><button class="assess-nav-btn assess-next" onclick="this.closest('.assess-overlay').remove()">Done</button></div>`;
+  document.body.appendChild(ov);
+}
+
+
 
 function renderCharacter(){
   const char     = loadChar();
