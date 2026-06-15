@@ -772,44 +772,30 @@ textarea {
 }
 @media (max-width:380px){ .rs-grid { grid-template-columns:repeat(3,1fr); } }
 .rs-cell {
-  background:
-    radial-gradient(120% 90% at 50% 0%, var(--cell-glow, transparent), transparent 60%),
-    linear-gradient(180deg, #16151A 0%, #0F0E12 100%);
-  border:1px solid rgba(255,255,255,0.07); border-radius:16px;
-  padding:13px 8px 11px; text-align:center; cursor:pointer; position:relative; overflow:hidden;
-  -webkit-tap-highlight-color:transparent; transition:transform 0.12s, box-shadow 0.2s, border-color 0.2s;
-  box-shadow:0 1px 2px rgba(0,0,0,0.3);
+  background:none; border:none; border-radius:14px;
+  padding:12px 6px; text-align:center; cursor:pointer; position:relative;
+  -webkit-tap-highlight-color:transparent; transition:transform 0.12s;
 }
-.rs-cell::before {
-  content:''; position:absolute; inset:0; border-radius:16px; pointer-events:none;
-  background:linear-gradient(180deg, rgba(255,255,255,0.06), transparent 40%);
-}
-.rs-cell:active { transform:scale(0.95); }
-.rs-cell.maxed {
-  border-color:rgba(201,162,39,0.55);
-  box-shadow:0 0 0 1px rgba(201,162,39,0.4) inset, 0 4px 18px -6px rgba(201,162,39,0.5);
-}
+.rs-cell:active { transform:scale(0.93); }
 .rs-cell.maxed::after {
-  content:'★'; position:absolute; top:7px; right:9px; font-size:11px; color:var(--gold); z-index:2;
+  content:'★'; position:absolute; top:6px; right:50%; margin-right:-26px; font-size:11px; color:var(--gold);
 }
 .rs-cell-icon {
-  width:44px; height:44px; margin:0 auto 7px; position:relative; z-index:1;
-  border-radius:13px; display:flex; align-items:center; justify-content:center;
-  border:1px solid rgba(255,255,255,0.10);
-  box-shadow:0 2px 8px -2px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+  width:54px; height:54px; margin:0 auto 8px; display:flex; align-items:center; justify-content:center;
+  background:none; border:none; box-shadow:none;
 }
-.rs-cell-icon svg { width:23px; height:23px; }
+.rs-cell-icon svg { width:38px; height:38px; }
 .rs-cell-lvl {
-  font-family:var(--font-display); font-weight:800; font-size:21px; margin-top:2px; position:relative; z-index:1;
-  color:#F4F3EF; font-variant-numeric:tabular-nums; letter-spacing:-0.02em; line-height:1;
+  font-family:var(--font-display); font-weight:800; font-size:19px; position:relative; z-index:1;
+  color:var(--ink); font-variant-numeric:tabular-nums; letter-spacing:-0.02em; line-height:1;
 }
-.rs-cell-lvl .slash { color:rgba(244,243,239,0.35); font-weight:500; font-size:11px; }
+.rs-cell-lvl .slash { color:var(--faint); font-weight:500; font-size:10px; }
 .rs-cell-name {
-  font-size:9px; color:rgba(244,243,239,0.55); margin-top:4px; text-transform:uppercase;
-  letter-spacing:0.08em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; position:relative; z-index:1; font-weight:600;
+  font-size:9px; color:var(--muted); margin-top:4px; text-transform:uppercase;
+  letter-spacing:0.07em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:600;
 }
-.rs-cell-bar { height:3px; background:rgba(255,255,255,0.09); border-radius:2px; margin-top:8px; overflow:hidden; position:relative; z-index:1; }
-.rs-cell-bar-fill { height:100%; border-radius:2px; box-shadow:0 0 6px var(--cell-glow, transparent); }
+.rs-cell-bar { height:3px; width:60%; margin:7px auto 0; background:var(--line); border-radius:2px; overflow:hidden; }
+.rs-cell-bar-fill { height:100%; border-radius:2px; }
 
 .rs-domain-label {
   font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
@@ -1746,10 +1732,10 @@ const LIFTER_PROFILE = { bodyweightKg: 72, heightCm: 193, age: 26, sex: 'male' }
 // Strength standards as 1RM / bodyweight ratios (male). Tuned to common
 // strength-standard tables; level interpolates between these anchors.
 const LIFT_STANDARDS = {
-  squat:    { match:/squat/i,                              ratios:{ beginner:0.75, novice:1.25, intermediate:1.5, advanced:2.0, elite:2.5 } },
-  bench:    { match:/bench/i,                              ratios:{ beginner:0.5,  novice:0.75, intermediate:1.0, advanced:1.5, elite:1.9 } },
-  deadlift: { match:/deadlift/i,                           ratios:{ beginner:1.0,  novice:1.5,  intermediate:2.0, advanced:2.5, elite:3.0 } },
-  ohp:      { match:/(overhead|shoulder|military) press/i, ratios:{ beginner:0.35, novice:0.55, intermediate:0.7, advanced:0.9, elite:1.2 } },
+  squat:    { match:/squat|hack squat/i, exclude:/split|goblet|bulgarian|sissy|jump|pistol|belt/i, ratios:{ beginner:0.75, novice:1.25, intermediate:1.5, advanced:2.0, elite:2.5 } },
+  bench:    { match:/bench press|bench|chest press/i, exclude:/decline machine|incline machine/i, ratios:{ beginner:0.5,  novice:0.75, intermediate:1.0, advanced:1.5, elite:1.9 } },
+  deadlift: { match:/deadlift|rdl|romanian/i, exclude:/single|stiff leg cable/i, ratios:{ beginner:1.0,  novice:1.5,  intermediate:2.0, advanced:2.5, elite:3.0 } },
+  ohp:      { match:/(overhead|shoulder|military) press|ohp/i, exclude:/machine|dumbbell single/i, ratios:{ beginner:0.35, novice:0.55, intermediate:0.7, advanced:0.9, elite:1.2 } },
 };
 // level anchors aligned to the ratio tiers
 const TIER_LEVELS = { beginner:5, novice:20, intermediate:45, advanced:70, elite:95 };
@@ -1795,7 +1781,7 @@ async function analyzeHevyStrength(){
         const wt=s.weight_kg||0, reps=s.reps||0;
         if(wt>0&&reps>0){ totalVolume+=wt*reps; totalSets++; }
         for(const [key,def] of Object.entries(LIFT_STANDARDS)){
-          if(def.match.test(ex.title||'')){
+          if(def.match.test(ex.title||'') && !(def.exclude && def.exclude.test(ex.title||''))){
             const e=epley1RM(wt,reps);
             if(!best[key]||e>best[key].e1rm) best[key]={e1rm:e,weight:wt,reps,title:ex.title};
           }
@@ -1844,8 +1830,10 @@ window.runHevyAnalysis=async function(){
 function showHevyAnalysisSheet(r){
   const liftRows=Object.entries(r.lifts).map(([k,v])=>{
     const name={squat:'Squat',bench:'Bench',deadlift:'Deadlift',ohp:'Overhead Press'}[k]||k;
-    return `<div class="assess-summary-row"><span>${name} · ~${v.e1rm}kg 1RM (${v.ratio}× BW)</span><b>Lvl ${v.level}</b></div>`;
+    return `<div class="assess-summary-row"><span>${name} · ~${v.e1rm}kg 1RM (${v.ratio}× BW)<br><span style="font-size:10px;color:var(--faint)">from: ${v.title||'?'}</span></span><b>Lvl ${v.level}</b></div>`;
   }).join('');
+  const missing=['squat','bench','deadlift','ohp'].filter(k=>!r.lifts[k]);
+  const missingNote=missing.length?`<div style="font-size:11px;color:var(--ember);margin:10px 0;line-height:1.5">⚠ Not found in your Hevy data: ${missing.map(k=>({squat:'Squat',bench:'Bench',deadlift:'Deadlift',ohp:'Overhead Press'}[k])).join(', ')}. If you do train these, their exercise name in Hevy may differ — tell Claudia and she'll widen the match.</div>`:'';
   const ov=document.createElement('div'); ov.className='assess-overlay';
   ov.innerHTML=`<div class="assess-head"><div class="assess-progress-track"><div class="assess-progress-fill" style="width:100%"></div></div><button class="assess-close" onclick="this.closest('.assess-overlay').remove()">×</button></div>
     <div class="assess-body">
@@ -1855,6 +1843,7 @@ function showHevyAnalysisSheet(r){
         <div style="font-size:13px;color:var(--muted);margin-top:6px">${r.workouts} workouts · ${r.totalSets} working sets · ${(r.totalVolume/1000).toFixed(1)}k kg lifted</div>
       </div>
       ${liftRows}
+      ${missingNote}
       <div class="assess-summary-row" style="border-top:2px solid var(--line);margin-top:8px"><span>💪 Strength level</span><b>Lvl ${r.strengthLevel}</b></div>
       <div class="assess-summary-row"><span>🏋️ Gym level</span><b>Lvl ${r.gymLevel}</b></div>
       <div style="font-size:11px;color:var(--faint);margin-top:14px;line-height:1.5">Based on estimated 1-rep maxes (Epley) vs strength standards for a ${LIFTER_PROFILE.bodyweightKg}kg male. Levels have been applied to your skills.</div>
@@ -2365,12 +2354,9 @@ function renderRSGrid(){
       const pct=isMax?100:Math.min(100,Math.round(((xp-thisXp)/(nextXp-thisXp))*100));
       const cell=document.createElement('div');
       cell.className='rs-cell'+(isMax?' maxed':'');
-      // glow intensity grows with level (subtle at low, vivid near max)
-      const glowA=(0.06+(level/100)*0.32).toFixed(2);
-      cell.style.setProperty('--cell-glow', meta.color+Math.round(glowA*255).toString(16).padStart(2,'0'));
       cell.onclick=()=>openSkillDetail(k);
       cell.innerHTML=
-        '<div class="rs-cell-icon" style="color:'+meta.color+';background:linear-gradient(180deg,'+meta.color+'26,'+meta.color+'0d)">'+skillIconSvg(k, meta.color)+'</div>'+
+        '<div class="rs-cell-icon" style="color:'+meta.color+'">'+skillIconSvg(k, meta.color)+'</div>'+
         '<div class="rs-cell-lvl">'+level+'<span class="slash">/'+MAX_LEVEL+'</span></div>'+
         '<div class="rs-cell-name">'+(def.label||k)+'</div>'+
         '<div class="rs-cell-bar"><div class="rs-cell-bar-fill" style="width:'+pct+'%;background:'+meta.color+'"></div></div>';
