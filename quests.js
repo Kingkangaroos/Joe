@@ -304,18 +304,41 @@
       { lvl: 100,title: 'C1 — Think in French',  desc: 'Catch yourself thinking and dreaming in French.',            xp: 5000 },
     ],
     piano: [
-      { lvl: 2,  title: 'Hand Position',        desc: 'Learn correct posture + find middle C, play a C major scale.', xp: 60 },
-      { lvl: 5,  title: 'First Melody',          desc: 'Play a simple melody (Ode to Joy) hands separate.',           xp: 150 },
-      { lvl: 8,  title: 'Read the Staff',        desc: 'Sight-read simple notes in treble clef.',                     xp: 220 },
-      { lvl: 12, title: 'Hands Together',        desc: 'Play a passage with both hands at once.',                    xp: 350 },
-      { lvl: 18, title: 'First Full Song',       desc: 'Play one complete song from memory.',                        xp: 500 },
-      { lvl: 25, title: 'Chords & Pedal',        desc: 'Play major/minor chords and use the sustain pedal.',         xp: 650 },
-      { lvl: 35, title: 'Three Songs',           desc: 'Build a 3-song repertoire you can play anytime.',            xp: 900 },
-      { lvl: 45, title: 'Grade 3 Piece',         desc: 'Play a Clementi sonatina or equivalent.',                    xp: 1200 },
-      { lvl: 55, title: 'Perform Live',          desc: 'Play for at least one other person.',                        xp: 1600 },
-      { lvl: 65, title: 'Bach Invention',        desc: 'Learn a two-part Bach invention.',                           xp: 2000 },
-      { lvl: 80, title: 'Improvise',             desc: 'Freely improvise over a chord progression.',                 xp: 3000 },
-      { lvl: 100,title: 'Concert Piece',         desc: 'Perform a concert-level piece (e.g. a Chopin nocturne).',     xp: 6000 },
+      // 1-10 Absolute Beginner — first sounds
+      { lvl: 2,  title: 'Find Middle C',         desc: 'Know where C is and name all white keys.',                  xp: 50 },
+      { lvl: 4,  title: 'Right-Hand 5 Notes',    desc: 'Play a 5-note pattern with your right hand, notes A-G named.', xp: 90 },
+      { lvl: 6,  title: 'Hands Apart',           desc: 'Play a simple melody with each hand separately.',            xp: 150 },
+      { lvl: 8,  title: 'One Song Clean',        desc: 'Play one simple song with no mistakes.',                    xp: 220 },
+      { lvl: 10, title: 'Metronome + Both Hands',desc: 'Play your first piece hands-together to a metronome.',       xp: 300 },
+      // 11-20 Beginner — control
+      { lvl: 13, title: 'First Scales',          desc: 'Play C, G and F major scales cleanly.',                     xp: 350 },
+      { lvl: 16, title: 'I-IV-V Chords',         desc: 'Play a I-IV-V chord progression.',                          xp: 420 },
+      { lvl: 18, title: 'Pedal & 2 Min',         desc: 'Use the sustain pedal; play 2 min without stopping.',         xp: 480 },
+      { lvl: 20, title: 'First Full Song',       desc: 'Play a complete song start to finish.',                     xp: 600 },
+      // 21-30 Novice — become a real pianist
+      { lvl: 23, title: 'All Major+Minor Chords',desc: 'Play every major and minor chord on command.',              xp: 650 },
+      { lvl: 25, title: 'First Improv',          desc: 'Improvise over a simple chord progression.',                xp: 720 },
+      { lvl: 28, title: 'Play for Someone',      desc: 'Perform a piece for another person.',                       xp: 800 },
+      { lvl: 30, title: '10 Songs + 15 Min',     desc: '10-song repertoire, 15 min of music memorised.',            xp: 950 },
+      // 31-40 Intermediate — fluency
+      { lvl: 33, title: 'All Scales + Arpeggios',desc: 'All major & minor scales, plus arpeggios.',                 xp: 1000 },
+      { lvl: 36, title: 'Play by Ear',           desc: 'Work out a tune by ear; scales at 100 BPM.',                xp: 1150 },
+      { lvl: 38, title: 'First Performance',     desc: 'Play at a small gig / for a group.',                        xp: 1300 },
+      { lvl: 40, title: 'Jazz/Blues Basics',     desc: '20-song repertoire, jazz/blues foundation, 30 min.',         xp: 1500 },
+      // 41-50 Advanced Intermediate
+      { lvl: 44, title: 'Bach Level',            desc: 'Play a Bach two-part invention.',                           xp: 1700 },
+      { lvl: 47, title: 'Read Pop Instantly',    desc: 'Play pop songs on first read; transpose a tune.',            xp: 1900 },
+      { lvl: 50, title: 'Chopin Beginner',       desc: 'Play a beginner Chopin piece; 1 hr repertoire.',            xp: 2200 },
+      // 51-70 Advanced → Expert
+      { lvl: 55, title: 'Improv 5 Min',          desc: 'Improvise for 5 minutes; advanced jazz chords.',            xp: 2600 },
+      { lvl: 60, title: 'ABRSM 6-7',             desc: 'Play grade 6-7 pieces; can accompany others.',              xp: 3200 },
+      { lvl: 65, title: 'Sight-Read Fluently',   desc: 'Play unfamiliar music on first sight; all keys improv.',     xp: 3800 },
+      { lvl: 70, title: 'Semi-Pro',              desc: 'Concert pieces, can teach beginners, 2 hr repertoire.',       xp: 4500 },
+      // 71-100 Master → Legend
+      { lvl: 78, title: 'Master Technique',      desc: 'Virtuoso passages, full sonatas, play with other musicians.', xp: 5500 },
+      { lvl: 85, title: 'Full Recital',          desc: 'Perform a complete recital; your own arrangements.',          xp: 7000 },
+      { lvl: 92, title: 'Virtuoso',              desc: 'Internationally-strong repertoire; your own style.',         xp: 9000 },
+      { lvl: 100,title: 'Concert Pianist',       desc: 'Total mastery of technique, ear and theory.',                xp: 15000 },
     ],
     learning: [
       { lvl: 2,  title: 'Pick a Topic',         desc: 'Choose one skill/subject and find a course or book for it.',  xp: 50 },
