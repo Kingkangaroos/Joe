@@ -1731,11 +1731,15 @@ const LIFTER_PROFILE = { bodyweightKg: 72, heightCm: 193, age: 26, sex: 'male' }
 
 // Strength standards as 1RM / bodyweight ratios (male). Tuned to common
 // strength-standard tables; level interpolates between these anchors.
+// Strength standards tuned to the lifts Joey actually trains (machine PPL + core).
+// No back squat / conventional deadlift — he doesn't do them. Ratios are 1RM/bodyweight.
 const LIFT_STANDARDS = {
-  squat:    { match:/squat|hack squat/i, exclude:/split|goblet|bulgarian|sissy|jump|pistol|belt/i, ratios:{ beginner:0.75, novice:1.25, intermediate:1.5, advanced:2.0, elite:2.5 } },
-  bench:    { match:/bench press|bench|chest press/i, exclude:/decline machine|incline machine/i, ratios:{ beginner:0.5,  novice:0.75, intermediate:1.0, advanced:1.5, elite:1.9 } },
-  deadlift: { match:/deadlift|rdl|romanian/i, exclude:/single|stiff leg cable/i, ratios:{ beginner:1.0,  novice:1.5,  intermediate:2.0, advanced:2.5, elite:3.0 } },
-  ohp:      { match:/(overhead|shoulder|military) press|ohp/i, exclude:/machine|dumbbell single/i, ratios:{ beginner:0.35, novice:0.55, intermediate:0.7, advanced:0.9, elite:1.2 } },
+  bench:    { label:'Bench Press', match:/bench press|bench|chest press \(barbell\)/i, exclude:/machine|smith/i, ratios:{ beginner:0.5,  novice:0.75, intermediate:1.0, advanced:1.4, elite:1.8 } },
+  row:      { label:'Bent Over Row', match:/bent over row|barbell row|pendlay/i, exclude:/cable|machine|seated/i, ratios:{ beginner:0.5,  novice:0.7,  intermediate:0.95, advanced:1.3, elite:1.6 } },
+  hipthrust:{ label:'Hip Thrust', match:/hip thrust|glute bridge/i, exclude:/single/i, ratios:{ beginner:0.6, novice:1.0, intermediate:1.4, advanced:2.0, elite:2.7 } },
+  pulldown: { label:'Lat Pulldown', match:/lat pulldown|pulldown/i, exclude:/single/i, ratios:{ beginner:0.5,  novice:0.7,  intermediate:0.9, advanced:1.2, elite:1.5 } },
+  ohp:      { label:'Shoulder Press', match:/(overhead|shoulder|military) press|ohp/i, exclude:/single/i, ratios:{ beginner:0.3,  novice:0.45, intermediate:0.6, advanced:0.85, elite:1.1 } },
+  core:     { label:'Weighted Core', match:/weighted crunch|crunch \(weighted\)|sit up \(weighted\)|weighted sit/i, exclude:/machine/i, ratios:{ beginner:0.3,  novice:0.55, intermediate:0.8, advanced:1.0, elite:1.3 } },
 };
 // level anchors aligned to the ratio tiers
 const TIER_LEVELS = { beginner:5, novice:20, intermediate:45, advanced:70, elite:95 };
@@ -1829,11 +1833,12 @@ window.runHevyAnalysis=async function(){
 
 function showHevyAnalysisSheet(r){
   const liftRows=Object.entries(r.lifts).map(([k,v])=>{
-    const name={squat:'Squat',bench:'Bench',deadlift:'Deadlift',ohp:'Overhead Press'}[k]||k;
+    const name=(LIFT_STANDARDS[k]&&LIFT_STANDARDS[k].label)||k;
     return `<div class="assess-summary-row"><span>${name} · ~${v.e1rm}kg 1RM (${v.ratio}× BW)<br><span style="font-size:10px;color:var(--faint)">from: ${v.title||'?'}</span></span><b>Lvl ${v.level}</b></div>`;
   }).join('');
-  const missing=['squat','bench','deadlift','ohp'].filter(k=>!r.lifts[k]);
-  const missingNote=missing.length?`<div style="font-size:11px;color:var(--ember);margin:10px 0;line-height:1.5">⚠ Not found in your Hevy data: ${missing.map(k=>({squat:'Squat',bench:'Bench',deadlift:'Deadlift',ohp:'Overhead Press'}[k])).join(', ')}. If you do train these, their exercise name in Hevy may differ — tell Claudia and she'll widen the match.</div>`:'';
+  const allKeys=Object.keys(LIFT_STANDARDS);
+  const missing=allKeys.filter(k=>!r.lifts[k]);
+  const missingNote=missing.length?`<div style="font-size:11px;color:var(--faint);margin:10px 0;line-height:1.5">Not found this period: ${missing.map(k=>LIFT_STANDARDS[k].label).join(', ')}.</div>`:'';
   const ov=document.createElement('div'); ov.className='assess-overlay';
   ov.innerHTML=`<div class="assess-head"><div class="assess-progress-track"><div class="assess-progress-fill" style="width:100%"></div></div><button class="assess-close" onclick="this.closest('.assess-overlay').remove()">×</button></div>
     <div class="assess-body">
