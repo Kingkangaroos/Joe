@@ -93,20 +93,26 @@
       { lvl: 90, title: 'Iron Veteran',         desc: '500 logged workouts — a lifestyle, not a phase.',            xp: 5000 },
     ],
     calisthenics: [
-      { lvl: 1,  title: 'First Pull-up',        desc: 'One clean dead-hang pull-up.',                               xp: 60 },
-      { lvl: 2,  title: 'Ten Push-ups',         desc: '10 strict push-ups in a row.',                               xp: 60 },
-      { lvl: 3,  title: 'Dead Hang',            desc: 'Hang from a bar for 30 seconds.',                            xp: 80 },
-      { lvl: 5,  title: 'Dip Master',           desc: '10 strict parallel-bar dips.',                               xp: 150 },
-      { lvl: 7,  title: 'Five Pull-ups',        desc: '5 strict pull-ups in a row.',                                xp: 180 },
-      { lvl: 10, title: 'Pistol Squat',         desc: 'One full pistol squat each leg.',                            xp: 300 },
-      { lvl: 15, title: 'Ten Pull-ups',         desc: '10 strict pull-ups in a row.',                               xp: 400 },
-      { lvl: 20, title: 'Muscle-up',            desc: 'Your first bar muscle-up.',                                  xp: 600 },
-      { lvl: 30, title: 'Pseudo Planche',       desc: 'Hold a pseudo-planche push-up position.',                    xp: 750 },
-      { lvl: 35, title: 'Handstand Hold',       desc: 'Free-standing handstand for 10 seconds.',                    xp: 900 },
-      { lvl: 50, title: 'L-sit to Handstand',   desc: 'Press from L-sit to handstand.',                             xp: 1400 },
-      { lvl: 65, title: 'Front Lever',          desc: 'Hold a full front lever for 3 seconds.',                     xp: 2000 },
-      { lvl: 80, title: 'Planche',              desc: 'Hold a full planche for 3 seconds.',                         xp: 3000 },
-      { lvl: 95, title: 'One-Arm Pull-up',      desc: 'One clean one-arm pull-up.',                                 xp: 5000 },
+      // Newbie → Beginner
+      { lvl: 3,  title: 'Newbie Base',           desc: '10 push-ups, 30 sec plank, 10 squats.',                     xp: 80 },
+      { lvl: 8,  title: 'Twenty + Negatives',    desc: '20 push-ups, 60 sec plank, 3 negative pull-ups.',            xp: 200 },
+      // Novice
+      { lvl: 14, title: 'First Pull-up',         desc: '1 strict pull-up, 10 dips, 20 sec wall handstand.',          xp: 350 },
+      // Athlete
+      { lvl: 22, title: 'Five & L-sit',          desc: '5 pull-ups, 20 dips, 10 sec L-sit.',                        xp: 550 },
+      // Strong
+      { lvl: 30, title: 'Pistol + Handstand',    desc: '10 pull-ups, a pistol squat, 60 sec wall handstand.',        xp: 800 },
+      // Advanced
+      { lvl: 40, title: 'Free Handstand',        desc: 'Muscle-up prep, 15 pull-ups, 5 sec freestanding handstand.', xp: 1200 },
+      // Elite
+      { lvl: 52, title: 'First Muscle-up',       desc: '1 muscle-up, 30 sec L-sit, 10 sec tuck front lever.',        xp: 1800 },
+      // Beast
+      { lvl: 64, title: 'Five Muscle-ups',       desc: '5 muscle-ups, wall HSPU, advanced tuck lever.',              xp: 2600 },
+      // Master
+      { lvl: 78, title: 'Front Lever',           desc: '5 sec front lever, straddle planche lean, 30 sec handstand.', xp: 3800 },
+      // Legend
+      { lvl: 92, title: 'Planche Path',          desc: '15 sec front lever, planche progression, one-arm pull-up prep.', xp: 5500 },
+      { lvl: 100,title: 'Legend',                desc: 'Full planche / front lever / one-arm pull-up.',              xp: 9000 },
     ],
     core: [
       { lvl: 1,  title: 'Plank Start',          desc: 'Hold a plank for 30 seconds.',                               xp: 40 },
@@ -159,15 +165,17 @@
 
     // ───────────── MIND ─────────────
     reading: [
-      { lvl: 1,  title: 'Open a Book',          desc: 'Read for 20 minutes today.',                                 xp: 40 },
-      { lvl: 3,  title: 'A Week of Pages',      desc: 'Read every day for 7 days.',                                 xp: 90 },
-      { lvl: 5,  title: 'First Finish',         desc: 'Finish one full book.',                                      xp: 200 },
-      { lvl: 10, title: 'Three Books',          desc: 'Finish 3 books.',                                            xp: 350 },
-      { lvl: 18, title: 'Five Shelf',           desc: 'Finish 5 books total.',                                      xp: 550 },
-      { lvl: 30, title: 'Genre Hopper',         desc: 'Finish books in 4 different genres.',                        xp: 900 },
-      { lvl: 45, title: 'Library of 25',        desc: 'Finish 25 books total.',                                     xp: 1600 },
-      { lvl: 65, title: 'Fifty Deep',           desc: 'Finish 50 books total.',                                     xp: 2800 },
-      { lvl: 90, title: 'The Hundred',          desc: 'Finish 100 books.',                                          xp: 5000 },
+      { lvl: 2,  title: 'Phone-Free 10',        desc: 'Read 10 minutes with your phone in another room.',           xp: 50 },
+      { lvl: 5,  title: 'A Week Straight',       desc: 'Read every day for 7 days.',                                xp: 120 },
+      { lvl: 10, title: 'First Finish',          desc: 'Finish one full book.',                                     xp: 250 },
+      { lvl: 18, title: 'Summarise It',          desc: 'Write 5 bullet takeaways after a book.',                     xp: 350 },
+      { lvl: 25, title: 'Five Done',             desc: 'Finish 5 books, each with a short summary.',                 xp: 550 },
+      { lvl: 40, title: 'Apply a Lesson',        desc: 'Use something from a book in real life.',                    xp: 900 },
+      { lvl: 50, title: 'Ten Deep',              desc: '10 books finished and applied.',                            xp: 1400 },
+      { lvl: 60, title: 'Speed + Grasp',         desc: 'Read 30-40 pages/hour and still recall it.',                xp: 1800 },
+      { lvl: 75, title: 'Notes System',          desc: '25 books with a real notes/highlight system.',              xp: 2800 },
+      { lvl: 90, title: 'Tackle the Hard Ones',  desc: 'Understand a genuinely difficult book.',                    xp: 4000 },
+      { lvl: 100,title: 'Sage',                  desc: '100 books and you actively use the knowledge.',             xp: 6000 },
     ],
     focus: [
       { lvl: 1,  title: 'One Focus Block',      desc: 'A single 25-min phone-free focus block.',                    xp: 40 },
@@ -286,6 +294,18 @@
       { lvl: 45, title: 'Run on the System',    desc: 'Use your own system for a month straight.',                  xp: 1200 },
       { lvl: 70, title: 'Life OS',              desc: 'Run your whole life from your system for a quarter.',        xp: 2800 },
     ],
+    puzzling: [
+      { lvl: 3,  title: 'Starter — 100 pc',     desc: 'Complete a 100-piece puzzle.',                              xp: 80 },
+      { lvl: 10, title: 'Beginner — 300 pc',    desc: 'Complete a 300-piece puzzle.',                              xp: 200 },
+      { lvl: 20, title: 'Casual — 500 pc',      desc: 'Complete a 500-piece puzzle.',                              xp: 400 },
+      { lvl: 32, title: 'Focused — 750 pc',     desc: 'Complete a 750-piece puzzle.',                              xp: 650 },
+      { lvl: 42, title: 'Solid — 1000 pc',      desc: 'Complete a 1000-piece puzzle.',                             xp: 900 },
+      { lvl: 55, title: 'Strategist',           desc: '1000 pieces under 8 hours.',                                xp: 1400 },
+      { lvl: 65, title: 'Advanced — 1500 pc',   desc: 'Complete a 1500-piece puzzle.',                             xp: 1900 },
+      { lvl: 75, title: 'Expert — 2000 pc',     desc: 'Complete a 2000-piece puzzle.',                             xp: 2600 },
+      { lvl: 88, title: 'Master — 3000 pc',     desc: '3000+ pieces, or a brutal colour-field puzzle.',            xp: 4000 },
+      { lvl: 100,title: 'Legend — 5000 pc',     desc: '5000+ pieces or an extreme puzzle.',                        xp: 7000 },
+    ],
 
     // ───────────── KNOWLEDGE ─────────────
     languages: [
@@ -382,16 +402,16 @@
 
     // ───────────── CORE / NEW SKILLS ─────────────
     whistling: [
-      { lvl: 1,  title: 'Make a Sound',         desc: 'Produce any clear note with fingers in your mouth.',         xp: 60 },
-      { lvl: 2,  title: 'Find the Position',    desc: 'Find the finger + tongue position that works.',              xp: 70 },
-      { lvl: 3,  title: 'Repeat It',            desc: 'Whistle on purpose 3 times in a row.',                       xp: 90 },
-      { lvl: 5,  title: 'Loud & Clear',         desc: 'Whistle loud enough to turn heads across a room.',           xp: 200 },
-      { lvl: 8,  title: 'Either Hand',          desc: 'Whistle with either hand / two-finger method.',              xp: 250 },
-      { lvl: 15, title: 'On Command',           desc: 'Whistle reliably 9 out of 10 tries.',                        xp: 400 },
-      { lvl: 25, title: 'Two-Tone',             desc: 'Whistle two distinct pitches on demand.',                    xp: 700 },
-      { lvl: 40, title: 'Call the Dog',         desc: 'Whistle a tune someone can recognise.',                      xp: 1200 },
-      { lvl: 60, title: 'Across the Park',      desc: 'A whistle that carries 100m.',                               xp: 2000 },
-      { lvl: 85, title: 'Whistle Anything',     desc: 'Whistle melodies cleanly at will.',                          xp: 3500 },
+      { lvl: 2,  title: 'The Setup',            desc: 'Lips over teeth, fingers in a V, tongue back. Aim the air down.', xp: 60 },
+      { lvl: 5,  title: 'First Sound',           desc: 'Produce any clear whistle tone, even once.',                 xp: 150 },
+      { lvl: 10, title: 'Do It Again',           desc: 'Get a sound on 5 of 10 tries.',                             xp: 250 },
+      { lvl: 18, title: 'Hold It',               desc: 'Hold a steady tone for 10 seconds.',                        xp: 350 },
+      { lvl: 28, title: 'Make It Loud',          desc: 'A whistle audible across a whole room.',                    xp: 500 },
+      { lvl: 38, title: 'On Command',            desc: 'Sharp, hard whistle the instant you want it.',              xp: 700 },
+      { lvl: 50, title: 'Reliable',              desc: 'Hit it 8 of 10 tries, both hands.',                         xp: 1000 },
+      { lvl: 65, title: 'Carry 30m',             desc: 'Whistle heard 20-30m away outside.',                        xp: 1500 },
+      { lvl: 82, title: 'Pitch Control',         desc: 'Vary pitch and volume on demand.',                          xp: 2500 },
+      { lvl: 100,title: 'Siren Mode',            desc: 'Instant, loud, reliable — a true crowd-call whistle.',       xp: 4000 },
     ],
     dancing: [
       { lvl: 1,  title: 'Find the Beat',        desc: 'Move on-beat to a full song.',                               xp: 60 },
