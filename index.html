@@ -13,6 +13,7 @@
 <script src="sync.js" defer></script>
 <script src="topbar.js" defer></script>
 <script src="xp.js" defer></script>
+<script src="ventures.js" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -103,6 +104,33 @@ body {
   font-family: var(--font-display); font-weight: 700;
   font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--muted); margin-bottom: 10px;
+}
+
+/* ── Next Move (Ventures) ────────────────────────── */
+.nextmove-card {
+  background: var(--card, #FFFFFF);
+  border: 1px solid var(--line, rgba(0,0,0,0.08));
+  border-radius: 16px;
+  padding: 6px 16px;
+  margin-bottom: 20px;
+}
+.nextmove-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 11px 0; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.nextmove-row + .nextmove-row { border-top: 1px solid var(--line, rgba(0,0,0,0.06)); }
+.nextmove-venture {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 3px;
+}
+.nextmove-title {
+  font-family: var(--font-display); font-weight: 700; font-size: 14px; color: var(--ink);
+  line-height: 1.3;
+}
+.nextmove-min {
+  flex-shrink: 0; font-size: 10px; font-family: var(--mono); font-weight: 700;
+  color: var(--muted); padding: 3px 8px; border: 1px solid var(--line, rgba(0,0,0,0.1));
+  border-radius: 7px; white-space: nowrap;
 }
 
 /* ── Day Arc ─────────────────────────────────────── */
@@ -644,6 +672,12 @@ body {
         <div class="arc-stat-lbl">Top Habit</div>
       </div>
     </div>
+  </div>
+
+  <!-- Next Move (Ventures) -->
+  <div id="nextMoveWrap" style="display:none">
+    <div class="sec-head">Next Move</div>
+    <div class="nextmove-card" id="nextMoveCard"></div>
   </div>
 
   <!-- Agenda -->
@@ -1372,10 +1406,30 @@ function openTimePicker(c) {
 }
 
 // ── Boot ─────────────────────────────────────────────────────
+// ── Next Move (Ventures v7.0) — one next step per active venture ──
+function renderNextMove() {
+  const wrap = document.getElementById('nextMoveWrap');
+  const card = document.getElementById('nextMoveCard');
+  if (!wrap || !card || !window.Ventures) return;
+  const rows = window.Ventures.activeVentures()
+    .map(v => ({ v, nx: window.Ventures.nextStep(v) }))
+    .filter(x => x.nx);
+  if (!rows.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = '';
+  card.innerHTML = rows.map(({ v, nx }) =>
+    '<div class="nextmove-row" onclick="location.href=\'character.html#ventures\'">' +
+      '<div><div class="nextmove-venture">' + v.name + '</div>' +
+      '<div class="nextmove-title">' + nx.step.title + '</div></div>' +
+      (nx.step.minutes ? '<div class="nextmove-min">~' + nx.step.minutes + ' min</div>' : '') +
+    '</div>'
+  ).join('');
+}
+
 function boot() {
   renderGreeting();
   renderQuote();
   renderArc(0);
+  renderNextMove();
   renderMissions();
   renderFocusGrid();
   renderCoreTracker();
@@ -1397,7 +1451,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initCloudSync === 'function' && window.supabase) {
     initCloudSync({
       appKey: 'rpg',
-      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1'],
+      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1'],
       syncedPrefixes: ['rpg_daily_v1:','rpg_agenda_v1:','rpg_todo_v1:']
     });
   }

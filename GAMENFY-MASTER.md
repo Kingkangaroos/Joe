@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v4.5)
+# GAMENFY — Master Document (v7.0)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -32,7 +32,8 @@ A gamified personal Life OS — version 0.1 of a future product. Joey uses it da
 | `health.html`, `po-water.html` | health & water trackers |
 | `settings.html` | focus skills, active skills, PIN, quotes |
 | `xp.js` | skill definitions, XP/level math, habits, addXP/removeXP |
-| `quests.js` | quest ladders per skill (NEW in v4.4) |
+| `quests.js` | quest ladders per skill (v4.4) |
+| `ventures.js` | Ventures: business quest ladders (v7.0) |
 | `sync.js` | Supabase cloud sync |
 | `topbar.js` | top bar + bottom nav |
 | `manifest.json` | PWA — start_url = index.html |
@@ -80,6 +81,7 @@ A gamified personal Life OS — version 0.1 of a future product. Joey uses it da
 ### Skills (`character.html` → Skills)
 - **Skills view:** RuneScape-style icon grid grouped by domain, each cell = level/100 + progress bar. Total Level banner on top + maxed counter. Private skills behind PIN.
 - **Quests view:** pick a skill → level-gated quest ladder. Quests unlock at their level; claiming grants XP. 28 skills, 261 quests (see `quests.js`).
+- **Ventures view (v7.0):** business ideas as quest ladders (see section 8a).
 
 ### Finance (`finance.html`)
 - Net Worth (bank/stocks/crypto/other), Maandlasten (subscriptions, mark paid), Wishlist (% of net worth).
@@ -103,7 +105,26 @@ A gamified personal Life OS — version 0.1 of a future product. Joey uses it da
 
 ---
 
-## 8. Done this session (v4.1 → v4.5)
+## 8a. Ventures (v7.0) — business quest ladders
+
+Business ideas as structured ladders: **phases → steps doable in a single evening** (first step of any venture ≤ 30 min). Steps award XP to existing skills (sales, marketing, coding, ai_tools) through `window.addXP` — `xp.js` untouched.
+
+- **Data:** `ventures.js`, localStorage `rpg_ventures_v1` (synced, seeded only if absent). Step: `{id, title, detail, minutes, xp:{skill:amount}, boss, done, doneAt}`.
+- **UI:** third view in the Skills toolbar (Skills / Quests / Ventures), reuses the quest-ladder styling. Boss steps get a heavier ink border. Deep-link: `character.html#ventures`.
+- **Home:** "Next Move" card (after Day Score) shows exactly **one** next step per active venture with a minutes badge; tap opens the ventures view. Hidden when nothing is open.
+
+**Active ventures:**
+1. **Grip** — pain-relief squeeze ball, B2B via tattoo studios. 5 phases, 17 steps. Boss: *First euro* (a studio buys or sells the first ball). Purpose: learn the full business cycle (validate → source → brand → sell → systemize) on a small budget.
+2. **Gamenfy Public** — from personal dashboard to something others can use. 3 phases, 7 steps. Boss: *Scope locked* (MVP scope written as a build doc).
+
+**Parked business ideas** (do not build; keep for later ladders):
+- Candy mix pot with mix mechanism (hardware product)
+- Invisible-units strategy game (hobby / coding project)
+- Cleaning company (backup learning business)
+
+---
+
+## 8. Version history
 
 - **v4.1** fixed dead character tabs, the add/sync-wipe bug, habit levels 0–10, subscriptions out of donut, PWA opens on Main
 - **v4.2** Main agenda + daily quote + tap-to-plan
@@ -111,16 +132,22 @@ A gamified personal Life OS — version 0.1 of a future product. Joey uses it da
 - **v4.4** RuneScape Skills grid + Total Level + quest system
 - **v4.5** complete quest coverage (28 skills, 131 quests)
 - **v4.6** expanded quest ladders — denser levels 1-100 (261 quests)
+- **v5.x–v6.4** Daylight visual pass, skill photo tiles with local fallback (`img/skills/`), Hevy strength analysis (Epley 1RMs on Joey's actual lifts), agenda + home reorder (quote → Day Score → Agenda → To-Do), money skills reworked (distinct identities), piano/calisthenics/reading/whistling ladders rebuilt from tier writeups, Puzzling skill added
+- **v7.0** Ventures layer: Grip + Gamenfy Public quest ladders, Next Move home card, master doc update
 
 ---
 
 ## 9. Roadmap / open items
 
-- [ ] Simplify the gym page (Joey found it too complex); keep Hevy → Apple Health bridge
+**Next builds (in order):**
+1. [ ] **Jarvis daily check-in + trigger:** evening check-in screen ("what did you do, here are your 1-3 next actions") + daily notification via iOS Shortcut + streak. The engagement layer — the reason to open the app daily.
+2. [ ] **Tier-lock system** (system-wide: milestone completion gates tier advancement)
+3. [ ] **Skill photos** — replace placeholder tiles (pure visual session, no features)
+
+**Backlog:**
 - [ ] Three-times-daily Apple Health sync setup
 - [ ] Optional drag-to-move in the agenda (currently tap-to-plan)
 - [ ] Realistic skill illustrations / celebration clips via Higgsfield (needs credits)
-- [ ] Decide if Finance should also appear as a sub-tab under Body (currently its own tab — left separate on purpose)
 - [ ] Quest ladders for private discipline skills (intentionally omitted for now)
 - [ ] Weekly/monthly agenda views (currently day view only)
 

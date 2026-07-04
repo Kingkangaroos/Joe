@@ -14,6 +14,7 @@
 <script src="topbar.js" defer></script>
 <script src="xp.js" defer></script>
 <script src="quests.js" defer></script>
+<script src="ventures.js" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -878,6 +879,37 @@ textarea {
 .quest-node.done .quest-claim { background:var(--green); color:#fff; }
 .quest-locked-note { font-size:10px; color:var(--faint); font-style:italic; }
 
+/* ── Ventures (v7.0) ──────────────────────────────── */
+.venture-card {
+  background:var(--card); border:1px solid var(--line); border-radius:16px;
+  padding:14px 16px; margin-bottom:12px; cursor:pointer;
+  -webkit-tap-highlight-color:transparent; transition:border-color 0.15s;
+}
+.venture-card:active { border-color:var(--line-strong); }
+.venture-card-top { display:flex; align-items:baseline; justify-content:space-between; }
+.venture-name { font-family:var(--font-display); font-weight:700; font-size:16px; color:var(--ink); }
+.venture-name.big { font-size:22px; }
+.venture-count { font-size:11px; font-family:var(--mono); font-weight:700; color:var(--muted); }
+.venture-tagline { font-size:12px; color:var(--muted); margin-top:2px; line-height:1.4; }
+.venture-bar { height:5px; border-radius:3px; background:var(--line); margin-top:10px; overflow:hidden; }
+.venture-bar-fill { height:100%; border-radius:3px; background:var(--gold); transition:width 0.3s; }
+.venture-next { font-size:12px; color:var(--ink); font-weight:600; margin-top:9px; }
+.venture-next.done { color:var(--green); }
+.venture-min { font-size:10px; font-family:var(--mono); font-weight:700; color:var(--muted); }
+.venture-back {
+  background:none; border:none; padding:0 0 12px 0; font-size:13px; font-weight:700;
+  color:var(--muted); cursor:pointer; font-family:var(--font-display);
+  -webkit-tap-highlight-color:transparent;
+}
+.venture-head { margin-bottom:16px; }
+.venture-phase {
+  font-size:11px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--muted); margin:16px 0 10px 2px;
+}
+.venture-boss .quest-card2 { border-color:var(--ink); border-width:1.5px; }
+.venture-boss .quest-node-dot { border-color:var(--ink); }
+.venture-boss.done .quest-node-dot { background:var(--green); border-color:var(--green); }
+
 /* ── Assessment (intake) ──────────────────────────── */
 .assess-btn {
   width:100%; padding:13px; margin-bottom:14px; border-radius:14px;
@@ -1101,6 +1133,7 @@ textarea {
   <div class="skills-toolbar">
     <button class="skills-tab-btn active" id="skillsViewBtn" onclick="setSkillsView('skills')">⚔️ Skills</button>
     <button class="skills-tab-btn" id="questsViewBtn" onclick="setSkillsView('quests')">📜 Quests</button>
+    <button class="skills-tab-btn" id="venturesViewBtn" onclick="setSkillsView('ventures')">💼 Ventures</button>
   </div>
 
   <!-- SKILLS VIEW -->
@@ -1123,6 +1156,11 @@ textarea {
   <div id="questsView" style="display:none">
     <div class="quest-skillpick" id="questSkillPick"></div>
     <div id="questLadderContainer"></div>
+  </div>
+
+  <!-- VENTURES VIEW -->
+  <div id="venturesView" style="display:none">
+    <div id="venturesContainer"></div>
   </div>
 </div>
 
@@ -2280,17 +2318,86 @@ window.setSkillsView = function(view){
   skillsView = view;
   document.getElementById('skillsView').style.display = view==='skills'?'':'none';
   document.getElementById('questsView').style.display = view==='quests'?'':'none';
+  document.getElementById('venturesView').style.display = view==='ventures'?'':'none';
   document.getElementById('skillsViewBtn').classList.toggle('active', view==='skills');
   document.getElementById('questsViewBtn').classList.toggle('active', view==='quests');
+  document.getElementById('venturesViewBtn').classList.toggle('active', view==='ventures');
   if(view==='skills') renderRSGrid();
+  else if(view==='ventures') renderVenturesView();
   else renderQuestView();
 };
 
 function renderSkillTree(){
   // entry point used by showTab — render whichever sub-view is active
   if(skillsView==='skills') renderRSGrid();
+  else if(skillsView==='ventures') renderVenturesView();
   else renderQuestView();
 }
+
+// ── Ventures (v7.0) — business quest ladders ─────────────────
+let ventureOpen = null; // id of expanded venture, null = list
+
+window.renderVenturesView = function(){
+  const box = document.getElementById('venturesContainer');
+  if(!box || !window.Ventures) return;
+  const data = window.Ventures.load();
+  if(ventureOpen){
+    const v = data.ventures.find(x=>x.id===ventureOpen);
+    if(v){ box.innerHTML = ventureDetailHTML(v); return; }
+    ventureOpen = null;
+  }
+  box.innerHTML = data.ventures.map(v=>{
+    const p = window.Ventures.progress(v);
+    const nx = window.Ventures.nextStep(v);
+    const pct = p.total ? Math.round(p.done/p.total*100) : 0;
+    return '<div class="venture-card" onclick="openVenture(\''+v.id+'\')">'+
+      '<div class="venture-card-top"><div class="venture-name">'+v.name+'</div>'+
+      '<div class="venture-count">'+p.done+'/'+p.total+' steps</div></div>'+
+      '<div class="venture-tagline">'+v.tagline+'</div>'+
+      '<div class="venture-bar"><div class="venture-bar-fill" style="width:'+pct+'%"></div></div>'+
+      (nx ? '<div class="venture-next">Next: '+nx.step.title+
+        (nx.step.minutes?' <span class="venture-min">~'+nx.step.minutes+' min</span>':'')+'</div>'
+          : '<div class="venture-next done">Completed</div>')+
+    '</div>';
+  }).join('');
+};
+
+window.openVenture = function(id){ ventureOpen = id; renderVenturesView(); };
+window.closeVenture = function(){ ventureOpen = null; renderVenturesView(); };
+
+function ventureDetailHTML(v){
+  const p = window.Ventures.progress(v);
+  const nx = window.Ventures.nextStep(v);
+  let html = '<button class="venture-back" onclick="closeVenture()">‹ All ventures</button>'+
+    '<div class="venture-head"><div class="venture-name big">'+v.name+'</div>'+
+    '<div class="venture-tagline">'+v.tagline+'</div>'+
+    '<div class="venture-count">'+p.done+'/'+p.total+' steps done</div></div>';
+  (v.phases||[]).forEach(ph=>{
+    html += '<div class="venture-phase">'+ph.name+'</div><div class="quest-ladder">';
+    (ph.steps||[]).forEach(s=>{
+      const isCurrent = nx && nx.step.id===s.id;
+      const cls = s.done?'done':(isCurrent?'unlocked':'locked');
+      const xpTxt = Object.keys(s.xp||{}).map(k=>'+'+s.xp[k]+' '+(k.charAt(0).toUpperCase()+k.slice(1)).replace('_',' ')).join(' · ');
+      html += '<div class="quest-node '+cls+(s.boss?' venture-boss':'')+'">'+
+        '<div class="quest-node-dot">'+(s.done?'✓':'')+'</div>'+
+        '<div class="quest-card2">'+
+          '<div class="quest-card2-top"><div class="quest-card2-title">'+s.title+'</div>'+
+          (s.minutes?'<div class="quest-card2-lvl">~'+s.minutes+' MIN</div>':(s.boss?'<div class="quest-card2-lvl">BOSS</div>':''))+'</div>'+
+          '<div class="quest-card2-desc">'+s.detail+'</div>'+
+          '<div class="quest-card2-foot"><div class="quest-card2-xp">'+xpTxt+'</div>'+
+          (isCurrent?'<button class="quest-claim" onclick="event.stopPropagation();completeVentureStep(\''+v.id+'\',\''+s.id+'\')">Complete step</button>':'')+
+          (s.done?'<div class="quest-locked-note">Done</div>':'')+
+          '</div></div></div>';
+    });
+    html += '</div>';
+  });
+  return html;
+}
+
+window.completeVentureStep = function(vid, sid){
+  const hit = window.Ventures.completeStep(vid, sid);
+  if(hit) renderVenturesView();
+};
 
 // ── Line icons (minimal SVG, premium look — replaces emoji in the grid) ──
 // Each returns an SVG path set drawn with currentColor (domain color set on the wrapper).
@@ -3115,6 +3222,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     // Deep-link: character.html#skills opens Skills directly (from bottom nav)
     const hash = (window.location.hash || '').replace('#','');
     if (hash === 'skills') showTab('skills');
+    else if (hash === 'ventures') { showTab('skills'); setSkillsView('ventures'); }
     else renderBody();
     renderCharacter();
     loadHevyWidget();
@@ -3122,7 +3230,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   },0);
 
   if(typeof initCloudSync==='function'&&window.supabase){
-    initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1'],syncedPrefixes:['rpg_daily_v1:','rpg_agenda_v1:']});
+    initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1'],syncedPrefixes:['rpg_daily_v1:','rpg_agenda_v1:']});
   }
 });
 
