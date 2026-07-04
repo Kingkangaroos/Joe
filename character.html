@@ -910,6 +910,49 @@ textarea {
 .venture-boss .quest-node-dot { border-color:var(--ink); }
 .venture-boss.done .quest-node-dot { background:var(--green); border-color:var(--green); }
 
+/* ── Health metrics (v7.3 — Apple Health style) ───── */
+.hm-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.hm-card {
+  background:var(--card); border:1px solid var(--line); border-radius:16px;
+  padding:13px 14px 11px; cursor:pointer; -webkit-tap-highlight-color:transparent;
+  transition:border-color 0.15s;
+}
+.hm-card:active { border-color:var(--line-strong); }
+.hm-loading { grid-column:1/-1; text-align:center; color:var(--muted); font-size:12px; cursor:default; padding:18px; }
+.hm-top { display:flex; align-items:center; gap:6px; margin-bottom:7px; }
+.hm-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.hm-label { font-size:9px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+.hm-val { font-family:var(--font-display); font-weight:800; font-size:21px; color:var(--ink); line-height:1; font-variant-numeric:tabular-nums; }
+.hm-unit { font-size:11px; font-weight:600; color:var(--muted); margin-left:3px; }
+.hm-sub { font-size:10px; color:var(--muted); margin-top:3px; font-family:var(--mono); }
+.hm-chart { margin-top:9px; display:flex; align-items:flex-end; gap:2px; height:30px; }
+.hm-bar { flex:1; border-radius:2px 2px 0 0; min-height:2px; opacity:0.85; }
+.hm-bar.empty { background:var(--line) !important; height:2px !important; }
+
+.hm-overlay {
+  position:fixed; inset:0; background:rgba(21,20,15,0.45); z-index:9000;
+  display:flex; align-items:flex-end; justify-content:center; animation:ciFadeH 0.2s ease;
+}
+@keyframes ciFadeH { from{opacity:0} to{opacity:1} }
+.hm-sheet {
+  width:100%; max-width:560px; max-height:86vh; overflow-y:auto;
+  background:var(--bg); border-radius:22px 22px 0 0;
+  padding:22px 20px calc(24px + env(safe-area-inset-bottom));
+  animation:ciUpH 0.28s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+@keyframes ciUpH { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
+.hm-sheet-kicker { font-size:10px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.hm-sheet-val { font-family:var(--font-display); font-weight:800; font-size:34px; color:var(--ink); line-height:1; font-variant-numeric:tabular-nums; }
+.hm-sheet-sub { font-size:12px; color:var(--muted); margin-top:4px; }
+.hm-sheet-chart { margin:20px 0 6px; display:flex; align-items:flex-end; gap:3px; height:120px; }
+.hm-sheet-chart .hm-bar { border-radius:3px 3px 0 0; }
+.hm-axis { display:flex; justify-content:space-between; font-size:9px; font-family:var(--mono); color:var(--faint); margin-bottom:16px; }
+.hm-stats { display:flex; gap:10px; }
+.hm-stat { flex:1; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 10px; text-align:center; }
+.hm-stat-val { font-family:var(--font-display); font-weight:800; font-size:17px; color:var(--ink); font-variant-numeric:tabular-nums; }
+.hm-stat-lbl { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+.hm-note { margin-top:14px; font-size:11px; color:var(--muted); line-height:1.5; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 12px; }
+
 /* ── Assessment (intake) ──────────────────────────── */
 .assess-btn {
   width:100%; padding:13px; margin-bottom:14px; border-radius:14px;
@@ -1006,6 +1049,12 @@ textarea {
       <div class="body-comp-box"><div class="body-comp-val" id="bodyCompFat">—</div><div class="body-comp-lbl">Body Fat</div></div>
       <div class="body-comp-box"><div class="body-comp-val" id="bodyCompMuscle">—</div><div class="body-comp-lbl">Muscle</div></div>
     </div>
+  </div>
+
+  <!-- Health metrics (v7.3 — Apple Health style) -->
+  <div class="sec-title" style="margin-top:4px">Health</div>
+  <div class="hm-grid" id="hmGrid">
+    <div class="hm-card hm-loading">Loading health data…</div>
   </div>
 
   <!-- Body skills -->
@@ -1248,7 +1297,7 @@ function showTab(id){
   const names = ['body','daily','skills','history'];
   const idx   = names.indexOf(id);
   if(idx>=0) tabs[idx].classList.add('active');
-  if(id==='body')      { renderBody(); loadHevyWidget(); }
+  if(id==='body')      { renderBody(); loadHevyWidget(); loadHealthMetrics(); }
   if(id==='character') { renderCharacter(); loadHevyWidget(); }
   if(id==='daily')     renderDaily();
   if(id==='skills')    renderSkillTree();
@@ -3183,8 +3232,138 @@ function renderBodyComposition(){
   if(mEl) mEl.textContent=muscle;
 }
 
-window.bodyShiftDay=function(delta){
-  bodyDayOffset+=delta;
+// ── Health metrics (v7.3 — Apple Health style) ───────────────
+const HM_SB_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co';
+const HM_SB_KEY = 'sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
+const HM_COLORS = { steps:'#D4633E', energy:'#C9A227', volume:'#2E8B5F', weight:'#15140F' };
+let hmData = null; // { byDate: {date:{steps,energy,weight}}, hevy: {date:volume}, lastHealthDate }
+
+function hmDateStr(offset){
+  const d=new Date(); d.setDate(d.getDate()+offset);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+async function hmFetchAll(){
+  if(hmData) return hmData;
+  const out = { byDate:{}, hevy:{}, lastHealthDate:null };
+  // Apple Health rows
+  try{
+    const r = await fetch(HM_SB_URL+'/rest/v1/app_state?key=like.apple_health:*&select=key,data&order=key.desc&limit=60',
+      { headers:{ apikey:HM_SB_KEY, Authorization:'Bearer '+HM_SB_KEY } });
+    if(r.ok){
+      const rows = await r.json();
+      for(const row of rows){
+        const date = String(row.key).slice('apple_health:'.length);
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+        const d = row.data||{};
+        out.byDate[date] = {
+          steps:  Math.round(Number(d['steps ']||d.steps||0))||0,
+          energy: Math.round(Number(d['active_energy']||d.energy||0))||0,
+          weight: Number(d.weight||0)||0
+        };
+        if(!out.lastHealthDate || date>out.lastHealthDate) out.lastHealthDate=date;
+      }
+    }
+  }catch(e){}
+  // Hevy volume per day
+  try{
+    const apiKey = localStorage.getItem('hevy_api_key');
+    if(apiKey){
+      const r = await fetch('https://api.hevyapp.com/v1/workouts?page=1&pageSize=10',{headers:{'api-key':apiKey}});
+      if(r.ok){
+        const data = await r.json();
+        (data.workouts||[]).forEach(w=>{
+          const date = String(w.start_time||'').slice(0,10);
+          if(!date) return;
+          let vol=0;
+          (w.exercises||[]).forEach(ex=>(ex.sets||[]).forEach(s=>{ if(s.type!=='warmup') vol+=(s.weight_kg||0)*(s.reps||0); }));
+          out.hevy[date]=(out.hevy[date]||0)+Math.round(vol);
+        });
+      }
+    }
+  }catch(e){}
+  hmData = out;
+  return out;
+}
+
+function hmSeries(days, getter){
+  const arr=[];
+  for(let i=days-1;i>=0;i--){ const d=hmDateStr(-i); arr.push({ date:d, val:getter(d)||0 }); }
+  return arr;
+}
+
+function hmBars(series, color, height){
+  const max = Math.max(1, ...series.map(p=>p.val));
+  return series.map(p=>{
+    if(!p.val) return '<div class="hm-bar empty"></div>';
+    const h = Math.max(2, Math.round(p.val/max*height));
+    return '<div class="hm-bar" style="height:'+h+'px;background:'+color+'"></div>';
+  }).join('');
+}
+
+function hmMetricDefs(d){
+  const g = {
+    steps:  date=>(d.byDate[date]||{}).steps,
+    energy: date=>(d.byDate[date]||{}).energy,
+    volume: date=>d.hevy[date],
+    weight: date=>(d.byDate[date]||{}).weight
+  };
+  const avg7 = (getter)=>{ const s=hmSeries(7,getter).filter(p=>p.val); return s.length?Math.round(s.reduce((a,p)=>a+p.val,0)/s.length):0; };
+  const latest = (getter)=>{ for(let i=0;i<45;i++){ const v=getter(hmDateStr(-i)); if(v) return {val:v,date:hmDateStr(-i)}; } return null; };
+  return [
+    { id:'steps',  label:'Steps',           unit:'',    color:HM_COLORS.steps,  getter:g.steps,  today:g.steps(hmDateStr(0))||0,  sub:'7-day avg '+avg7(g.steps).toLocaleString() },
+    { id:'energy', label:'Active Energy',   unit:'kcal',color:HM_COLORS.energy, getter:g.energy, today:g.energy(hmDateStr(0))||0, sub:'7-day avg '+avg7(g.energy) },
+    { id:'volume', label:'Training Volume', unit:'kg',  color:HM_COLORS.volume, getter:g.volume, today:(latest(g.volume)||{val:0}).val, sub:(latest(g.volume)?('last '+(latest(g.volume).date===hmDateStr(0)?'today':latest(g.volume).date.slice(5))):'no workouts yet') },
+    { id:'weight', label:'Weight',          unit:'kg',  color:HM_COLORS.weight, getter:g.weight, today:(latest(g.weight)||{val:0}).val, sub:(latest(g.weight)?('logged '+latest(g.weight).date.slice(5)):'no weight data') }
+  ];
+}
+
+async function loadHealthMetrics(){
+  const grid = document.getElementById('hmGrid');
+  if(!grid) return;
+  const d = await hmFetchAll();
+  const defs = hmMetricDefs(d);
+  grid.innerHTML = defs.map(m=>{
+    const bars = hmBars(hmSeries(14, m.getter), m.color, 30);
+    const val = m.today ? m.today.toLocaleString() : '—';
+    return '<div class="hm-card" onclick="openHmSheet(\''+m.id+'\')">'+
+      '<div class="hm-top"><div class="hm-dot" style="background:'+m.color+'"></div><div class="hm-label">'+m.label+'</div></div>'+
+      '<div><span class="hm-val">'+val+'</span>'+(m.unit&&m.today?'<span class="hm-unit">'+m.unit+'</span>':'')+'</div>'+
+      '<div class="hm-sub">'+m.sub+'</div>'+
+      '<div class="hm-chart">'+bars+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+window.openHmSheet = async function(id){
+  const d = await hmFetchAll();
+  const m = hmMetricDefs(d).find(x=>x.id===id);
+  if(!m) return;
+  const series30 = hmSeries(30, m.getter);
+  const logged = series30.filter(p=>p.val);
+  const avg = logged.length?Math.round(logged.reduce((a,p)=>a+p.val,0)/logged.length):0;
+  const best = logged.length?Math.max(...logged.map(p=>p.val)):0;
+  const stale = (id==='steps'||id==='energy') && d.lastHealthDate && d.lastHealthDate < hmDateStr(-2);
+  const overlay=document.createElement('div');
+  overlay.className='hm-overlay';
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
+  overlay.innerHTML = '<div class="hm-sheet">'+
+    '<div class="hm-sheet-kicker" style="color:'+m.color+'"><div class="hm-dot" style="background:'+m.color+'"></div>'+m.label+' · last 30 days</div>'+
+    '<div class="hm-sheet-val">'+(m.today?m.today.toLocaleString():'—')+(m.unit&&m.today?'<span class="hm-unit">'+m.unit+'</span>':'')+'</div>'+
+    '<div class="hm-sheet-sub">'+m.sub+'</div>'+
+    '<div class="hm-sheet-chart">'+hmBars(series30, m.color, 120)+'</div>'+
+    '<div class="hm-axis"><span>'+series30[0].date.slice(5)+'</span><span>'+series30[29].date.slice(5)+'</span></div>'+
+    '<div class="hm-stats">'+
+      '<div class="hm-stat"><div class="hm-stat-val">'+(avg?avg.toLocaleString():'—')+'</div><div class="hm-stat-lbl">Daily avg</div></div>'+
+      '<div class="hm-stat"><div class="hm-stat-val">'+(best?best.toLocaleString():'—')+'</div><div class="hm-stat-lbl">Best day</div></div>'+
+      '<div class="hm-stat"><div class="hm-stat-val">'+logged.length+'/30</div><div class="hm-stat-lbl">Days logged</div></div>'+
+    '</div>'+
+    (stale?'<div class="hm-note">Health sync looks stale — last data '+d.lastHealthDate+'. Check the Apple Health sync Shortcut on your phone.</div>':'')+
+  '</div>';
+  document.body.appendChild(overlay);
+};
+
+window.bodyShiftDay=function(delta){  bodyDayOffset+=delta;
   if(bodyDayOffset<-7) bodyDayOffset=-7;
   if(bodyDayOffset>7) bodyDayOffset=7;
   renderBody();
@@ -3223,7 +3402,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const hash = (window.location.hash || '').replace('#','');
     if (hash === 'skills') showTab('skills');
     else if (hash === 'ventures') { showTab('skills'); setSkillsView('ventures'); }
-    else renderBody();
+    else { renderBody(); loadHealthMetrics(); }
     renderCharacter();
     loadHevyWidget();
     renderDaily();
