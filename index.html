@@ -212,6 +212,35 @@ body {
 .wk-skill { display:flex; justify-content:space-between; background:var(--card,#fff); border:1px solid var(--line,rgba(0,0,0,0.08)); border-radius:11px; padding:9px 13px; margin-bottom:7px; font-size:12px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; }
 .wk-insight { margin-top:14px; background:var(--card,#fff); border:1.5px solid var(--ink,#15140F); border-radius:13px; padding:12px 14px; font-family:var(--font-display); font-weight:700; font-size:13px; color:var(--ink); line-height:1.45; }
 
+/* ── Focus timer (v8.2) ──────────────────────────── */
+.nextmove-start {
+  flex-shrink:0; font-size:12px; font-weight:800; padding:9px 16px; border-radius:10px;
+  border:none; cursor:pointer; background:var(--ink,#15140F); color:#F4F3EF;
+  font-family:var(--font-display); -webkit-tap-highlight-color:transparent;
+}
+.focus-overlay {
+  position:fixed; inset:0; z-index:9500; background:var(--ink-card,#15140F);
+  display:flex; align-items:center; justify-content:center;
+  animation:focusIn 0.25s ease;
+}
+@keyframes focusIn { from{opacity:0} to{opacity:1} }
+.focus-inner { text-align:center; padding:32px; max-width:420px; width:100%; }
+.focus-kicker { font-size:10px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:rgba(244,243,239,0.5); margin-bottom:8px; }
+.focus-title { font-family:var(--font-display); font-weight:800; font-size:20px; color:#F4F3EF; line-height:1.25; margin-bottom:28px; }
+.focus-time { font-family:var(--mono,monospace); font-weight:700; font-size:64px; color:#F4F3EF; font-variant-numeric:tabular-nums; letter-spacing:0.02em; }
+.focus-time.up { color:var(--ember,#D4633E); }
+.focus-hint { font-size:12px; color:rgba(244,243,239,0.55); margin:10px 0 34px; }
+.focus-done {
+  display:block; width:100%; padding:15px; border-radius:14px; border:none; cursor:pointer;
+  background:#F4F3EF; color:var(--ink,#15140F);
+  font-family:var(--font-display); font-weight:800; font-size:15px;
+  -webkit-tap-highlight-color:transparent;
+}
+.focus-quit {
+  display:block; width:100%; margin-top:10px; padding:11px; border:none; background:none; cursor:pointer;
+  font-size:12px; font-weight:600; color:rgba(244,243,239,0.5); -webkit-tap-highlight-color:transparent;
+}
+
 /* ── Push setup card ─────────────────────────────── */
 .push-card {
   background: var(--card, #fff); border: 1px solid var(--line, rgba(0,0,0,0.08));
@@ -1888,6 +1917,70 @@ function installLevelUpToasts(){
   };
 }
 
+// ── Focus timer (v8.2) — from list to starting, in one tap ──
+const FOCUS_KEY = 'rpg_focus_session_v1';
+function focusLoad(){ try{ const r=localStorage.getItem(FOCUS_KEY); if(r) return JSON.parse(r); }catch(e){} return null; }
+function focusSave(s){ try{ s?localStorage.setItem(FOCUS_KEY,JSON.stringify(s)):localStorage.removeItem(FOCUS_KEY); }catch(e){} }
+
+window.startFocus = function(vid, sid){
+  if(!window.Ventures) return;
+  const v = window.Ventures.load().ventures.find(x=>x.id===vid);
+  if(!v) return;
+  let step=null; (v.phases||[]).forEach(p=>(p.steps||[]).forEach(s=>{ if(s.id===sid) step=s; }));
+  if(!step||step.done) return;
+  focusSave({ vid, sid, title: step.title, ventureName: v.name, minutes: step.minutes||25, startedAt: Date.now() });
+  openFocusOverlay();
+};
+
+let focusTick=null;
+function openFocusOverlay(){
+  const s=focusLoad(); if(!s) return;
+  document.querySelectorAll('[data-focus]').forEach(el=>el.remove());
+  const ov=document.createElement('div');
+  ov.className='focus-overlay'; ov.setAttribute('data-focus','1');
+  ov.innerHTML='<div class="focus-inner">'+
+    '<div class="focus-kicker">'+s.ventureName+'</div>'+
+    '<div class="focus-title">'+s.title+'</div>'+
+    '<div class="focus-time" id="focusTime">--:--</div>'+
+    '<div class="focus-hint" id="focusHint">Focus. The clock is running.</div>'+
+    '<button class="focus-done" onclick="focusComplete(this)">Done \u2014 complete step</button>'+
+    '<button class="focus-quit" onclick="focusQuit()">Stop</button>'+
+  '</div>';
+  document.body.appendChild(ov);
+  const render=()=>{
+    const cur=focusLoad(); if(!cur){ ov.remove(); clearInterval(focusTick); return; }
+    const total=cur.minutes*60*1000;
+    const left=Math.max(0, total-(Date.now()-cur.startedAt));
+    const m=Math.floor(left/60000), sec=Math.floor((left%60000)/1000);
+    const el=document.getElementById('focusTime');
+    if(el) el.textContent=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+    if(left<=0){
+      const h=document.getElementById('focusHint');
+      if(h) h.textContent='Time\u2019s up. Did you finish it?';
+      if(el) el.classList.add('up');
+      clearInterval(focusTick);
+    }
+  };
+  render();
+  clearInterval(focusTick); focusTick=setInterval(render,1000);
+}
+
+window.focusComplete=function(btn){
+  const s=focusLoad(); if(!s) return;
+  const hit=window.Ventures?window.Ventures.completeStep(s.vid,s.sid):null;
+  focusSave(null); clearInterval(focusTick);
+  document.querySelectorAll('[data-focus]').forEach(el=>el.remove());
+  if(hit&&typeof showToast==='function'){
+    const xpTxt=Object.keys(hit.xp||{}).map(k=>'+'+hit.xp[k]+' '+k.replace('_',' ')).join(' \u00b7 ');
+    showToast(xpTxt+' \u00b7 '+hit.title);
+  }
+  renderNextMove(); renderStreakPill(); renderCheckinCard(); renderArc(0); renderMissions();
+};
+window.focusQuit=function(){
+  focusSave(null); clearInterval(focusTick);
+  document.querySelectorAll('[data-focus]').forEach(el=>el.remove());
+};
+
 // ── Next Move (Ventures v7.0) — one next step per active venture ──
 function renderNextMove() {
   const wrap = document.getElementById('nextMoveWrap');
@@ -1901,14 +1994,16 @@ function renderNextMove() {
   card.innerHTML = rows.map(({ v, nx }) =>
     '<div class="nextmove-row" onclick="location.href=\'character.html#ventures\'">' +
       '<div><div class="nextmove-venture">' + v.name + '</div>' +
-      '<div class="nextmove-title">' + nx.step.title + '</div></div>' +
-      (nx.step.minutes ? '<div class="nextmove-min">~' + nx.step.minutes + ' min</div>' : '') +
+      '<div class="nextmove-title">' + nx.step.title + '</div>' +
+      (nx.step.minutes ? '<div class="nextmove-min" style="display:inline-block;margin-top:4px">~' + nx.step.minutes + ' min</div>' : '') + '</div>' +
+      '<button class="nextmove-start" onclick="event.stopPropagation();startFocus(\'' + v.id + '\',\'' + nx.step.id + '\')">Start</button>' +
     '</div>'
   ).join('');
 }
 
 function boot() {
   installLevelUpToasts();
+  if (focusLoad()) openFocusOverlay();
   renderGreeting();
   renderQuote();
   renderArc(0);
