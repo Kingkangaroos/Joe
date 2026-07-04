@@ -837,6 +837,19 @@ textarea {
 .rs-cell.has-photo .rs-cell-bar { background:rgba(255,255,255,0.28); }
 .rs-cell-bar-fill { height:100%; border-radius:2px; }
 
+.export-btn {
+  display:block; margin:14px auto 4px; padding:8px 16px; border-radius:10px;
+  border:1px solid var(--line); background:none; color:var(--muted);
+  font-size:11px; font-weight:700; cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+.rs-chips { display:flex; gap:7px; overflow-x:auto; padding:2px 0 12px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.rs-chips::-webkit-scrollbar { display:none; }
+.rs-chip {
+  flex-shrink:0; padding:7px 14px; border-radius:18px; font-size:12px; font-weight:700;
+  font-family:var(--font-display); border:1px solid var(--line); background:var(--card);
+  color:var(--muted); cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+.rs-chip.active { border-color:var(--cc, var(--ink)); color:var(--ink); box-shadow:inset 0 0 0 1px var(--cc, var(--ink)); }
 .rs-domain-label {
   font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
   color:var(--muted); margin:16px 0 9px; display:flex; align-items:center; gap:6px;
@@ -1184,6 +1197,7 @@ textarea {
   <div class="score-row" id="dailyScoreRow"></div>
   <div class="sec-title">Daily Missions</div>
   <div class="quest-grid" id="dailyQuestGrid"></div>
+  <button class="export-btn" onclick="exportBackup()">Export data (backup)</button>
   <div class="sec-title">Gratitude</div>
   <div class="card">
     <div style="display:flex;gap:8px;align-items:center">
@@ -1231,7 +1245,8 @@ textarea {
         <div class="tlb-sub" id="rsMaxedCount">0 maxed</div>
       </div>
     </div>
-    <div id="rsGridContainer"></div>
+    <div class="rs-chips" id="rsFilterChips"></div>
+  <div id="rsGridContainer"></div>
   </div>
 
   <!-- QUESTS VIEW -->
@@ -2558,6 +2573,9 @@ function skillIconSvg(key, color){
   return '<svg viewBox="0 0 24 24" fill="none" stroke="'+(color||'currentColor')+'" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">'+path+'</svg>';
 }
 
+let rsFilter='all';
+window.setRsFilter=function(f){ rsFilter=f; renderRSGrid(); };
+
 function renderRSGrid(){
   const char=loadChar();
   const skills=char.skills||{};
@@ -2566,9 +2584,21 @@ function renderRSGrid(){
   if(!container) return;
   container.innerHTML='';
 
+  // domain filter chips
+  const chips=document.getElementById('rsFilterChips');
+  if(chips){
+    chips.innerHTML=['all',...CATEGORY_ORDER].map(f=>{
+      const label=f==='all'?'All':PARENT_META[f].label;
+      const color=f==='all'?'var(--ink)':PARENT_META[f].color;
+      const act=rsFilter===f;
+      return '<button class="rs-chip'+(act?' active':'')+'" style="'+(act?'--cc:'+color:'')+'" onclick="setRsFilter(\''+f+'\')">'+label+'</button>';
+    }).join('');
+  }
+
   let totalLevel=0, totalXp=0, maxed=0;
 
   CATEGORY_ORDER.forEach(pKey=>{
+    if(rsFilter!=='all' && pKey!==rsFilter) return;
     const meta=PARENT_META[pKey];
     const subskills=Object.keys(defaults)
       .filter(k=>{
@@ -3359,6 +3389,37 @@ function renderBodyComposition(){
   if(mEl) mEl.textContent=muscle;
 }
 
+// ── Export backup (v8.0) ─────────────────────────────────────
+window.exportBackup=function(){
+  const dump={ exportedAt:new Date().toISOString(), app:'gamenfy', keys:{} };
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k && (k.startsWith('rpg_')||k.startsWith('hevy_'))) dump.keys[k]=localStorage.getItem(k);
+  }
+  const blob=new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='gamenfy-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(a.href);
+  if(typeof showToast==='function') showToast('Backup downloaded');
+};
+
+// ── Level-up moments (v8.0) ──────────────────────────────────
+function installLevelUpToasts(){
+  if(!window.addXP||window.__lvlWrap) return; window.__lvlWrap=1;
+  const orig=window.addXP;
+  const lvlOf=k=>{ try{ const s=(window.getCharacter().skills||{})[k]||{}; const raw=window.xpToLevel(s.xp||0);
+    return window.tierLockInfo?window.tierLockInfo(k,raw).level:raw; }catch(e){ return 0; } };
+  window.addXP=function(skill,amount,reason){
+    const before=lvlOf(skill); const r=orig.apply(this,arguments); const after=lvlOf(skill);
+    if(after>before&&typeof showToast==='function'){
+      const label=((window.RPG_DEFAULT_SKILLS||{})[skill]||{}).label||skill;
+      showToast(label+' \u2192 Level '+after);
+    }
+    return r;
+  };
+}
+
 // ── Health metrics (v7.3 — Apple Health style) ───────────────
 const HM_SB_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co';
 const HM_SB_KEY = 'sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
@@ -3530,13 +3591,14 @@ document.addEventListener('DOMContentLoaded',()=>{
     if (hash === 'skills') showTab('skills');
     else if (hash === 'ventures') { showTab('skills'); setSkillsView('ventures'); }
     else { renderBody(); loadHealthMetrics(); }
+    installLevelUpToasts();
     renderCharacter();
     loadHevyWidget();
     renderDaily();
   },0);
 
   if(typeof initCloudSync==='function'&&window.supabase){
-    initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1'],syncedPrefixes:['rpg_daily_v1:','rpg_agenda_v1:']});
+    initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1'],syncedPrefixes:['rpg_daily_v1:','rpg_agenda_v1:']});
   }
 });
 

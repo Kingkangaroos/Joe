@@ -205,6 +205,13 @@ body {
   font-size: 12px; font-weight: 600; color: var(--muted); -webkit-tap-highlight-color: transparent;
 }
 
+.wk-dom { margin-bottom: 9px; }
+.wk-dom-top { display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--ink); margin-bottom:4px; }
+.wk-bar { height:7px; border-radius:4px; background:var(--line, rgba(0,0,0,0.07)); overflow:hidden; }
+.wk-bar-fill { height:100%; border-radius:4px; }
+.wk-skill { display:flex; justify-content:space-between; background:var(--card,#fff); border:1px solid var(--line,rgba(0,0,0,0.08)); border-radius:11px; padding:9px 13px; margin-bottom:7px; font-size:12px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; }
+.wk-insight { margin-top:14px; background:var(--card,#fff); border:1.5px solid var(--ink,#15140F); border-radius:13px; padding:12px 14px; font-family:var(--font-display); font-weight:700; font-size:13px; color:var(--ink); line-height:1.45; }
+
 /* ── Push setup card ─────────────────────────────── */
 .push-card {
   background: var(--card, #fff); border: 1px solid var(--line, rgba(0,0,0,0.08));
@@ -813,6 +820,11 @@ body {
 
   <!-- Push setup (one-time) -->
   <div class="push-card" id="pushCard" style="display:none"></div>
+
+  <!-- Weekly review (Sundays) -->
+  <div id="weeklyWrap" style="display:none">
+    <div class="checkin-cta" id="weeklyCta" onclick="openWeekly()"></div>
+  </div>
 
   <!-- Next Move (Ventures) -->
   <div id="nextMoveWrap" style="display:none">
@@ -1595,19 +1607,32 @@ function renderCheckinCard() {
       '<div class="checkin-cta-arrow">✓</div>';
     return;
   }
-  if (hour < 17) { wrap.style.display = 'none'; return; }
   const missions = openMissionsList().filter(m => !m.done).length;
   const ventures = window.Ventures ? window.Ventures.activeVentures().filter(v => window.Ventures.nextStep(v)).length : 0;
   const open = missions + ventures;
+  if (hour < 12) {
+    const st = window.Streak.status();
+    wrap.style.display = '';
+    cta.className = 'checkin-cta';
+    cta.setAttribute('onclick', "openCheckin('morning')");
+    cta.innerHTML = '<div><div class="checkin-cta-label">Morning brief</div>' +
+      '<div class="checkin-cta-title">Streak ' + st.current + ' · ' + open + ' thing' + (open === 1 ? '' : 's') + ' on today’s list</div></div>' +
+      '<div class="checkin-cta-arrow">›</div>';
+    return;
+  }
+  if (hour < 17) { wrap.style.display = 'none'; return; }
   wrap.style.display = '';
   cta.className = 'checkin-cta';
+  cta.setAttribute('onclick', "openCheckin('evening')");
   cta.innerHTML = '<div><div class="checkin-cta-label">Evening check-in</div>' +
     '<div class="checkin-cta-title">' + (open ? 'Close the day — ' + open + ' thing' + (open === 1 ? '' : 's') + ' still open' : 'Close the day') + '</div></div>' +
     '<div class="checkin-cta-arrow">›</div>';
 }
 
-window.openCheckin = function() {
+let ciMode = 'evening';
+window.openCheckin = function(mode) {
   if (!window.Streak) return;
+  ciMode = mode || (new Date().getHours() < 12 ? 'morning' : 'evening');
   const overlay = document.createElement('div');
   overlay.className = 'checkin-overlay';
   overlay.setAttribute('data-checkin', '1');
@@ -1648,21 +1673,24 @@ function renderCheckinSheet(sheet) {
   });
 
   const greetingHour = new Date().getHours();
-  const kicker = greetingHour >= 21 ? 'Last call' : 'Evening check-in';
+  const morning = ciMode === 'morning';
+  const kicker = morning ? 'Morning brief' : (greetingHour >= 21 ? 'Last call' : 'Evening check-in');
 
   sheet.innerHTML =
     '<div class="ci-head"><div class="ci-kicker">' + kicker + '</div>' +
-    '<div class="ci-title">' + (rows ? 'What\u2019s it going to be?' : 'Strong day.') + '</div></div>' +
+    '<div class="ci-title">' + (morning ? 'Own the day.' : (rows ? 'What\u2019s it going to be?' : 'Strong day.')) + '</div></div>' +
     '<div class="ci-stats">' +
       '<div class="ci-stat"><div class="ci-stat-val">' + xpTodayVal() + '</div><div class="ci-stat-lbl">XP today</div></div>' +
       '<div class="ci-stat"><div class="ci-stat-val">' + missionsDone + '/' + missions.length + '</div><div class="ci-stat-lbl">Missions</div></div>' +
       '<div class="ci-stat"><div class="ci-stat-val' + (st.todayActive ? ' ember' : '') + '">' + st.current + '</div><div class="ci-stat-lbl">' + (st.todayActive ? 'Streak · safe' : (st.atRisk ? 'Streak · at risk' : 'Streak')) + '</div></div>' +
     '</div>' +
-    (rows ? '<div class="ci-sec">Still open tonight</div>' + rows
+    (rows ? '<div class="ci-sec">' + (morning ? 'On the list today' : 'Still open tonight') + '</div>' + rows
           : '<div class="ci-clear">All clear. You showed up.</div>') +
-    '<button class="ci-close-btn' + (closed ? ' done' : '') + '" onclick="ciCloseDay(this)">' +
-      (closed ? 'Day secured' : 'Close the day') + '</button>' +
-    '<button class="ci-dismiss" onclick="this.closest(\'[data-checkin]\').remove()">Not yet</button>';
+    (morning
+      ? '<button class="ci-close-btn" onclick="this.closest(\'[data-checkin]\').remove()">Lock it in</button>'
+      : '<button class="ci-close-btn' + (closed ? ' done' : '') + '" onclick="ciCloseDay(this)">' +
+          (closed ? 'Day secured' : 'Close the day') + '</button>' +
+        '<button class="ci-dismiss" onclick="this.closest(\'[data-checkin]\').remove()">Not yet</button>');
 }
 
 window.ciVenture = function(vid, sid, btn) {
@@ -1733,6 +1761,124 @@ window.enablePushNow = async function(btn) {
   }
 };
 
+// ── Weekly Review (v8.0) — where did your energy go ─────────
+const WEEKLY_KEY = 'rpg_weekly_v1';
+const WK_DOMAINS = {
+  money:{label:'Money',color:'#F5C842'}, body:{label:'Physical',color:'#6BE3A4'},
+  mind:{label:'Mental',color:'#7DD3FC'}, business:{label:'Business',color:'#C4B5FD'},
+  lifestyle:{label:'Lifestyle',color:'#FB923C'}, knowledge:{label:'Knowledge',color:'#818CF8'}
+};
+const WK_MAP = { discipline:'mind', creative:'knowledge' };
+
+function wkFmt(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function wkMonday(offsetWeeks){ const d=new Date(); const day=(d.getDay()+6)%7; d.setDate(d.getDate()-day+(offsetWeeks||0)*7); return wkFmt(d); }
+function wkLoad(){ try{ const r=localStorage.getItem(WEEKLY_KEY); if(r) return JSON.parse(r); }catch(e){} return {weeks:{}}; }
+function wkClosedThisWeek(){ const w=wkLoad(); return !!(w.weeks && w.weeks[wkMonday(0)]); }
+
+function wkStats(fromDate, toDateExcl){
+  const out = { total:0, bySkill:{}, byDomain:{} };
+  if(!window.getCharacter) return out;
+  const defaults = window.RPG_DEFAULT_SKILLS||{};
+  (window.getCharacter().xpLog||[]).forEach(e=>{
+    const d=(e.date||'').slice(0,10);
+    if(d>=fromDate && d<toDateExcl && (e.amount||0)>0 && !e.private){
+      out.total+=e.amount;
+      out.bySkill[e.skill]=(out.bySkill[e.skill]||0)+e.amount;
+      const ps=(defaults[e.skill]||{}).parentSkill||'lifestyle';
+      const dom=WK_MAP[ps]||ps;
+      out.byDomain[dom]=(out.byDomain[dom]||0)+e.amount;
+    }
+  });
+  return out;
+}
+
+function renderWeeklyCard(){
+  const wrap=document.getElementById('weeklyWrap');
+  if(!wrap) return;
+  const day=new Date().getDay();
+  const due=(day===0||day===1) && !wkClosedThisWeek();
+  if(!due){ wrap.style.display='none'; return; }
+  wrap.style.display='';
+  document.getElementById('weeklyCta').innerHTML =
+    '<div><div class="checkin-cta-label">Weekly review</div>'+
+    '<div class="checkin-cta-title">Where did your energy go this week?</div></div>'+
+    '<div class="checkin-cta-arrow">›</div>';
+}
+
+window.openWeekly = function(){
+  const from=wkMonday(0), prevFrom=wkMonday(-1);
+  const tomorrow=(function(){const d=new Date();d.setDate(d.getDate()+1);return wkFmt(d);})();
+  const cur=wkStats(from, tomorrow), prev=wkStats(prevFrom, from);
+  const st=window.Streak?window.Streak.status():{current:0};
+  // active days this week
+  let activeDays=0;
+  try{ const days=JSON.parse(localStorage.getItem('rpg_streak_v1')).days||{};
+    for(let i=0;i<7;i++){ const d=new Date(); const off=(d.getDay()+6)%7; d.setDate(d.getDate()-off+i); const k=wkFmt(d); if(k<=wkFmt(new Date())&&days[k]) activeDays++; } }catch(e){}
+  // venture steps this week
+  let vSteps=0;
+  if(window.Ventures){ window.Ventures.load().ventures.forEach(v=>v.phases.forEach(p=>p.steps.forEach(s=>{ if(s.done&&s.doneAt&&s.doneAt.slice(0,10)>=from) vSteps++; }))); }
+  // domain bars
+  const domTotal=Object.values(cur.byDomain).reduce((a,b)=>a+b,0)||1;
+  const bars=Object.keys(WK_DOMAINS).filter(d=>cur.byDomain[d]).sort((a,b)=>cur.byDomain[b]-cur.byDomain[a]).map(d=>{
+    const pct=Math.round(cur.byDomain[d]/domTotal*100);
+    return '<div class="wk-dom"><div class="wk-dom-top"><span>'+WK_DOMAINS[d].label+'</span><span>'+pct+'%</span></div>'+
+      '<div class="wk-bar"><div class="wk-bar-fill" style="width:'+pct+'%;background:'+WK_DOMAINS[d].color+'"></div></div></div>';
+  }).join('')||'<div class="ci-clear" style="color:var(--muted)">No XP logged this week yet.</div>';
+  // top skills
+  const defaults=window.RPG_DEFAULT_SKILLS||{};
+  const top=Object.entries(cur.bySkill).sort((a,b)=>b[1]-a[1]).slice(0,3)
+    .map(([k,v])=>'<div class="wk-skill"><span>'+((defaults[k]||{}).label||k)+'</span><span>+'+v+' XP</span></div>').join('');
+  // insight
+  let insight='Balanced week. Keep the streak.';
+  const domKeys=Object.keys(cur.byDomain).sort((a,b)=>cur.byDomain[b]-cur.byDomain[a]);
+  if(prev.total>0 && cur.total>=prev.total*1.2) insight='Up '+Math.round((cur.total/prev.total-1)*100)+'% vs last week — momentum.';
+  else if(prev.total>0 && cur.total<prev.total*0.8) insight='Down vs last week. One strong day fixes this.';
+  else if(domKeys.length && cur.byDomain[domKeys[0]]/domTotal>0.5) insight=WK_DOMAINS[domKeys[0]].label+' took most of your energy this week.';
+  else if(vSteps===0) insight='Zero venture steps this week — 30 minutes tonight changes that.';
+
+  const overlay=document.createElement('div');
+  overlay.className='checkin-overlay'; overlay.setAttribute('data-checkin','1');
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
+  overlay.innerHTML='<div class="checkin-sheet">'+
+    '<div class="ci-head"><div class="ci-kicker">Weekly review</div>'+
+    '<div class="ci-title">Where your energy went</div></div>'+
+    '<div class="ci-stats">'+
+      '<div class="ci-stat"><div class="ci-stat-val">'+cur.total.toLocaleString()+'</div><div class="ci-stat-lbl">XP this week</div></div>'+
+      '<div class="ci-stat"><div class="ci-stat-val">'+activeDays+'/7</div><div class="ci-stat-lbl">Active days</div></div>'+
+      '<div class="ci-stat"><div class="ci-stat-val">'+vSteps+'</div><div class="ci-stat-lbl">Venture steps</div></div>'+
+    '</div>'+
+    '<div class="ci-sec">Energy by domain</div>'+bars+
+    (top?'<div class="ci-sec" style="margin-top:14px">Top skills</div>'+top:'')+
+    '<div class="wk-insight">'+insight+'</div>'+
+    '<button class="ci-close-btn" onclick="wkClose(this)">Close the week</button>'+
+  '</div>';
+  document.body.appendChild(overlay);
+};
+
+window.wkClose=function(btn){
+  const w=wkLoad(); w.weeks=w.weeks||{}; w.weeks[wkMonday(0)]={closedAt:new Date().toISOString()};
+  try{ localStorage.setItem(WEEKLY_KEY, JSON.stringify(w)); }catch(e){}
+  btn.textContent='Week closed'; btn.classList.add('done');
+  renderWeeklyCard();
+  setTimeout(()=>{ const ov=btn.closest('[data-checkin]'); if(ov) ov.remove(); },900);
+};
+
+// ── Level-up moments (v8.0) ─────────────────────────────────
+function installLevelUpToasts(){
+  if(!window.addXP||window.__lvlWrap) return; window.__lvlWrap=1;
+  const orig=window.addXP;
+  const lvlOf=k=>{ try{ const s=(window.getCharacter().skills||{})[k]||{}; const raw=window.xpToLevel(s.xp||0);
+    return window.tierLockInfo?window.tierLockInfo(k,raw).level:raw; }catch(e){ return 0; } };
+  window.addXP=function(skill,amount,reason){
+    const before=lvlOf(skill); const r=orig.apply(this,arguments); const after=lvlOf(skill);
+    if(after>before&&typeof showToast==='function'){
+      const label=((window.RPG_DEFAULT_SKILLS||{})[skill]||{}).label||skill;
+      showToast(label+' → Level '+after);
+    }
+    return r;
+  };
+}
+
 // ── Next Move (Ventures v7.0) — one next step per active venture ──
 function renderNextMove() {
   const wrap = document.getElementById('nextMoveWrap');
@@ -1753,11 +1899,13 @@ function renderNextMove() {
 }
 
 function boot() {
+  installLevelUpToasts();
   renderGreeting();
   renderQuote();
   renderArc(0);
   renderStreakPill();
   renderCheckinCard();
+  renderWeeklyCard();
   renderPushCard();
   renderNextMove();
   renderMissions();
@@ -1781,7 +1929,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initCloudSync === 'function' && window.supabase) {
     initCloudSync({
       appKey: 'rpg',
-      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1'],
+      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1'],
       syncedPrefixes: ['rpg_daily_v1:','rpg_agenda_v1:','rpg_todo_v1:']
     });
   }
