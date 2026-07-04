@@ -14,6 +14,7 @@
 <script src="topbar.js" defer></script>
 <script src="xp.js" defer></script>
 <script src="ventures.js" defer></script>
+<script src="checkin.js" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -90,6 +91,7 @@ body {
 /* ── Greeting ─────────────────────────────────────── */
 .greeting {
   margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
 }
 .greeting-time {
   font-family: var(--font-display); font-weight: 700;
@@ -97,6 +99,107 @@ body {
 }
 .greeting-date {
   font-size: 12px; color: var(--muted); margin-top: 3px;
+}
+.streak-pill {
+  flex-shrink: 0; display: flex; align-items: center; gap: 6px;
+  padding: 7px 13px; border-radius: 20px; cursor: pointer;
+  border: 1px solid var(--line, rgba(0,0,0,0.1));
+  background: var(--card, #fff);
+  font-family: var(--mono); font-weight: 700; font-size: 14px;
+  color: var(--muted); -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.streak-pill.lit { color: var(--ember, #D4633E); border-color: rgba(212,99,62,0.35); }
+.streak-pill.risk { animation: streakPulse 2.2s ease-in-out infinite; }
+@keyframes streakPulse {
+  0%,100% { border-color: var(--line, rgba(0,0,0,0.1)); }
+  50%     { border-color: rgba(212,99,62,0.55); }
+}
+.streak-flame { width: 16px; height: 16px; }
+
+/* ── Evening Check-in ─────────────────────────────── */
+.checkin-cta {
+  background: var(--card, #fff);
+  border: 1.5px solid var(--ink, #15140F);
+  border-radius: 16px; padding: 14px 16px; margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.checkin-cta.closed { border: 1px solid var(--line, rgba(0,0,0,0.08)); cursor: default; }
+.checkin-cta-label {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 3px;
+}
+.checkin-cta-title {
+  font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--ink); line-height: 1.3;
+}
+.checkin-cta-arrow {
+  flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%;
+  background: var(--ink, #15140F); color: #F4F3EF;
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+}
+.checkin-cta.closed .checkin-cta-arrow { background: var(--green, #2E8B5F); }
+
+.checkin-overlay {
+  position: fixed; inset: 0; background: rgba(21,20,15,0.45); z-index: 9000;
+  display: flex; align-items: flex-end; justify-content: center;
+  animation: ciFade 0.2s ease;
+}
+@keyframes ciFade { from { opacity: 0; } to { opacity: 1; } }
+.checkin-sheet {
+  width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto;
+  background: var(--bg, #F4F3EF); border-radius: 22px 22px 0 0;
+  padding: 22px 20px calc(24px + env(safe-area-inset-bottom));
+  animation: ciUp 0.28s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+@keyframes ciUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.ci-head { margin-bottom: 16px; }
+.ci-kicker {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 4px;
+}
+.ci-title { font-family: var(--font-display); font-weight: 800; font-size: 24px; color: var(--ink); line-height: 1.1; }
+.ci-stats { display: flex; gap: 10px; margin-bottom: 18px; }
+.ci-stat {
+  flex: 1; background: var(--card, #fff); border: 1px solid var(--line, rgba(0,0,0,0.08));
+  border-radius: 14px; padding: 12px 10px; text-align: center;
+}
+.ci-stat-val { font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.ci-stat-val.ember { color: var(--ember, #D4633E); }
+.ci-stat-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+.ci-sec {
+  font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin: 4px 0 9px 2px;
+}
+.ci-row {
+  background: var(--card, #fff); border: 1px solid var(--line, rgba(0,0,0,0.08));
+  border-radius: 14px; padding: 12px 14px; margin-bottom: 9px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.ci-row-kind { font-size: 9px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.ci-row-title { font-family: var(--font-display); font-weight: 700; font-size: 14px; color: var(--ink); line-height: 1.3; }
+.ci-row-sub { font-size: 11px; color: var(--muted); margin-top: 1px; font-family: var(--mono); }
+.ci-do {
+  flex-shrink: 0; font-size: 11px; font-weight: 700; padding: 8px 14px; border-radius: 9px;
+  border: none; cursor: pointer; background: var(--ink, #15140F); color: #F4F3EF;
+  font-family: var(--font-display); -webkit-tap-highlight-color: transparent;
+}
+.ci-clear {
+  background: var(--card, #fff); border: 1px solid var(--line, rgba(0,0,0,0.08));
+  border-radius: 14px; padding: 18px 16px; text-align: center;
+  font-family: var(--font-display); font-weight: 700; font-size: 14px; color: var(--green, #2E8B5F);
+  margin-bottom: 9px;
+}
+.ci-close-btn {
+  width: 100%; margin-top: 14px; padding: 15px; border-radius: 14px; border: none; cursor: pointer;
+  background: var(--ink, #15140F); color: #F4F3EF;
+  font-family: var(--font-display); font-weight: 800; font-size: 15px;
+  -webkit-tap-highlight-color: transparent;
+}
+.ci-close-btn.done { background: var(--green, #2E8B5F); }
+.ci-dismiss {
+  width: 100%; margin-top: 8px; padding: 10px; border: none; background: none; cursor: pointer;
+  font-size: 12px; font-weight: 600; color: var(--muted); -webkit-tap-highlight-color: transparent;
 }
 
 /* ── Section header ──────────────────────────────── */
@@ -636,8 +739,14 @@ body {
 
   <!-- Greeting -->
   <div class="greeting">
-    <div class="greeting-time" id="greetingText">Good morning, Joey</div>
-    <div class="greeting-date" id="greetingDate"></div>
+    <div>
+      <div class="greeting-time" id="greetingText">Good morning, Joey</div>
+      <div class="greeting-date" id="greetingDate"></div>
+    </div>
+    <button class="streak-pill" id="streakPill" onclick="openCheckin()" style="display:none">
+      <svg class="streak-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-1.5 4-1.5 6.5A3.5 3.5 0 0012 13a3.5 3.5 0 003.5-3.5C15.5 7 14 6 12 3z"/><path d="M8.5 13.5C7 15 6.5 16.5 6.5 18a5.5 5.5 0 0011 0c0-1.5-.5-3-2-4.5"/></svg>
+      <span id="streakPillNum">0</span>
+    </button>
   </div>
 
   <!-- Daily Quote -->
@@ -672,6 +781,11 @@ body {
         <div class="arc-stat-lbl">Top Habit</div>
       </div>
     </div>
+  </div>
+
+  <!-- Evening Check-in (Jarvis) -->
+  <div id="checkinWrap" style="display:none">
+    <div class="checkin-cta" id="checkinCta" onclick="openCheckin()"></div>
   </div>
 
   <!-- Next Move (Ventures) -->
@@ -902,6 +1016,7 @@ window.toggleMission = function(key) {
   }
   renderMissions();
   renderCharStrip();
+  if (window.Streak) { renderStreakPill(); renderCheckinCard(); }
 };
 
 // ── Focus skills ─────────────────────────────────────────────
@@ -1406,6 +1521,145 @@ function openTimePicker(c) {
 }
 
 // ── Boot ─────────────────────────────────────────────────────
+// ── Streak + Evening Check-in (v7.1) ─────────────────────────
+function xpTodayVal() {
+  let xp = 0;
+  if (window.getCharacter) {
+    const log = window.getCharacter().xpLog || [];
+    const t = todayStr();
+    for (const e of log) if ((e.date || '').startsWith(t)) xp += Math.max(0, e.amount || 0);
+  }
+  return xp;
+}
+
+function openMissionsList() {
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
+  const habits = window.getHabits ? window.getHabits() : {};
+  const t = todayStr();
+  return Object.keys(defaults)
+    .filter(k => defaults[k].isHabit && !defaults[k].private && defaults[k].active !== false)
+    .map(k => ({ key: k, label: defaults[k].label, done: (habits[k] || {}).lastChecked === t }));
+}
+
+function renderStreakPill() {
+  const pill = document.getElementById('streakPill');
+  if (!pill || !window.Streak) return;
+  const st = window.Streak.status();
+  pill.style.display = 'flex';
+  document.getElementById('streakPillNum').textContent = st.current;
+  pill.classList.toggle('lit', st.todayActive);
+  pill.classList.toggle('risk', st.atRisk && new Date().getHours() >= 17);
+}
+
+function renderCheckinCard() {
+  const wrap = document.getElementById('checkinWrap');
+  const cta = document.getElementById('checkinCta');
+  if (!wrap || !cta || !window.Streak) return;
+  const hour = new Date().getHours();
+  if (window.Streak.isClosedToday()) {
+    const st = window.Streak.status();
+    wrap.style.display = '';
+    cta.className = 'checkin-cta closed';
+    cta.innerHTML = '<div><div class="checkin-cta-label">Evening check-in</div>' +
+      '<div class="checkin-cta-title">Day secured · streak ' + st.current + '</div></div>' +
+      '<div class="checkin-cta-arrow">✓</div>';
+    return;
+  }
+  if (hour < 17) { wrap.style.display = 'none'; return; }
+  const missions = openMissionsList().filter(m => !m.done).length;
+  const ventures = window.Ventures ? window.Ventures.activeVentures().filter(v => window.Ventures.nextStep(v)).length : 0;
+  const open = missions + ventures;
+  wrap.style.display = '';
+  cta.className = 'checkin-cta';
+  cta.innerHTML = '<div><div class="checkin-cta-label">Evening check-in</div>' +
+    '<div class="checkin-cta-title">' + (open ? 'Close the day — ' + open + ' thing' + (open === 1 ? '' : 's') + ' still open' : 'Close the day') + '</div></div>' +
+    '<div class="checkin-cta-arrow">›</div>';
+}
+
+window.openCheckin = function() {
+  if (!window.Streak) return;
+  const overlay = document.createElement('div');
+  overlay.className = 'checkin-overlay';
+  overlay.setAttribute('data-checkin', '1');
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+  const sheet = document.createElement('div');
+  sheet.className = 'checkin-sheet';
+  overlay.appendChild(sheet);
+  document.body.appendChild(overlay);
+  renderCheckinSheet(sheet);
+};
+
+function renderCheckinSheet(sheet) {
+  const st = window.Streak.status();
+  const closed = window.Streak.isClosedToday();
+  const missions = openMissionsList();
+  const missionsDone = missions.filter(m => m.done).length;
+  const openMissions = missions.filter(m => !m.done);
+
+  const ventureRows = window.Ventures
+    ? window.Ventures.activeVentures().map(v => ({ v: v, nx: window.Ventures.nextStep(v) })).filter(x => x.nx)
+    : [];
+
+  let rows = '';
+  ventureRows.slice(0, 2).forEach(({ v, nx }) => {
+    rows += '<div class="ci-row"><div><div class="ci-row-kind">' + v.name + '</div>' +
+      '<div class="ci-row-title">' + nx.step.title + '</div>' +
+      (nx.step.minutes ? '<div class="ci-row-sub">~' + nx.step.minutes + ' min</div>' : '') + '</div>' +
+      '<button class="ci-do" onclick="ciVenture(\'' + v.id + '\',\'' + nx.step.id + '\',this)">Complete</button></div>';
+  });
+  openMissions.slice(0, Math.max(1, 3 - ventureRows.length)).forEach(m => {
+    rows += '<div class="ci-row"><div><div class="ci-row-kind">Mission</div>' +
+      '<div class="ci-row-title">' + m.label + '</div></div>' +
+      '<button class="ci-do" onclick="ciMission(\'' + m.key + '\',this)">Done</button></div>';
+  });
+
+  const greetingHour = new Date().getHours();
+  const kicker = greetingHour >= 21 ? 'Last call' : 'Evening check-in';
+
+  sheet.innerHTML =
+    '<div class="ci-head"><div class="ci-kicker">' + kicker + '</div>' +
+    '<div class="ci-title">' + (rows ? 'What\u2019s it going to be?' : 'Strong day.') + '</div></div>' +
+    '<div class="ci-stats">' +
+      '<div class="ci-stat"><div class="ci-stat-val">' + xpTodayVal() + '</div><div class="ci-stat-lbl">XP today</div></div>' +
+      '<div class="ci-stat"><div class="ci-stat-val">' + missionsDone + '/' + missions.length + '</div><div class="ci-stat-lbl">Missions</div></div>' +
+      '<div class="ci-stat"><div class="ci-stat-val' + (st.todayActive ? ' ember' : '') + '">' + st.current + '</div><div class="ci-stat-lbl">' + (st.todayActive ? 'Streak · safe' : (st.atRisk ? 'Streak · at risk' : 'Streak')) + '</div></div>' +
+    '</div>' +
+    (rows ? '<div class="ci-sec">Still open tonight</div>' + rows
+          : '<div class="ci-clear">All clear. You showed up.</div>') +
+    '<button class="ci-close-btn' + (closed ? ' done' : '') + '" onclick="ciCloseDay(this)">' +
+      (closed ? 'Day secured' : 'Close the day') + '</button>' +
+    '<button class="ci-dismiss" onclick="this.closest(\'[data-checkin]\').remove()">Not yet</button>';
+}
+
+window.ciVenture = function(vid, sid, btn) {
+  if (!window.Ventures) return;
+  const hit = window.Ventures.completeStep(vid, sid);
+  if (hit) {
+    const xpTxt = Object.keys(hit.xp || {}).map(k => '+' + hit.xp[k] + ' ' + k.replace('_', ' ')).join(' · ');
+    showToast(xpTxt + ' · ' + hit.title);
+  }
+  refreshAfterCiAction(btn);
+};
+
+window.ciMission = function(key, btn) {
+  if (window.toggleMission) window.toggleMission(key);
+  refreshAfterCiAction(btn);
+};
+
+function refreshAfterCiAction(btn) {
+  const sheet = btn && btn.closest('.checkin-sheet');
+  if (sheet) renderCheckinSheet(sheet);
+  renderStreakPill(); renderCheckinCard(); renderNextMove(); renderMissions(); renderArc(0);
+}
+
+window.ciCloseDay = function(btn) {
+  const st = window.Streak.closeDay();
+  btn.classList.add('done');
+  btn.textContent = 'Day ' + st.current + ' secured';
+  renderStreakPill(); renderCheckinCard();
+  setTimeout(() => { const ov = btn.closest('[data-checkin]'); if (ov) ov.remove(); }, 1100);
+};
+
 // ── Next Move (Ventures v7.0) — one next step per active venture ──
 function renderNextMove() {
   const wrap = document.getElementById('nextMoveWrap');
@@ -1429,6 +1683,8 @@ function boot() {
   renderGreeting();
   renderQuote();
   renderArc(0);
+  renderStreakPill();
+  renderCheckinCard();
   renderNextMove();
   renderMissions();
   renderFocusGrid();
@@ -1451,7 +1707,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initCloudSync === 'function' && window.supabase) {
     initCloudSync({
       appKey: 'rpg',
-      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1'],
+      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1'],
       syncedPrefixes: ['rpg_daily_v1:','rpg_agenda_v1:','rpg_todo_v1:']
     });
   }
