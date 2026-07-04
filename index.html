@@ -15,6 +15,7 @@
 <script src="xp.js" defer></script>
 <script src="ventures.js" defer></script>
 <script src="checkin.js" defer></script>
+<script src="push.js" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -200,6 +201,26 @@ body {
 .ci-dismiss {
   width: 100%; margin-top: 8px; padding: 10px; border: none; background: none; cursor: pointer;
   font-size: 12px; font-weight: 600; color: var(--muted); -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Push setup card ─────────────────────────────── */
+.push-card {
+  background: var(--card, #fff); border: 1px solid var(--line, rgba(0,0,0,0.08));
+  border-radius: 16px; padding: 14px 16px; margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.push-card-label {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 3px;
+}
+.push-card-title {
+  font-family: var(--font-display); font-weight: 700; font-size: 14px; color: var(--ink); line-height: 1.35;
+}
+.push-card-sub { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+.push-btn {
+  flex-shrink: 0; font-size: 12px; font-weight: 700; padding: 10px 15px; border-radius: 10px;
+  border: none; cursor: pointer; background: var(--ember, #D4633E); color: #fff;
+  font-family: var(--font-display); -webkit-tap-highlight-color: transparent;
 }
 
 /* ── Section header ──────────────────────────────── */
@@ -787,6 +808,9 @@ body {
   <div id="checkinWrap" style="display:none">
     <div class="checkin-cta" id="checkinCta" onclick="openCheckin()"></div>
   </div>
+
+  <!-- Push setup (one-time) -->
+  <div class="push-card" id="pushCard" style="display:none"></div>
 
   <!-- Next Move (Ventures) -->
   <div id="nextMoveWrap" style="display:none">
@@ -1660,6 +1684,45 @@ window.ciCloseDay = function(btn) {
   setTimeout(() => { const ov = btn.closest('[data-checkin]'); if (ov) ov.remove(); }, 1100);
 };
 
+// ── Push setup (v7.2) — one-time card until notifications are on ──
+async function renderPushCard() {
+  const card = document.getElementById('pushCard');
+  if (!card || !window.GamenfyPush) return;
+  const st = await window.GamenfyPush.status();
+  if (st === 'enabled' || st === 'unsupported' || st === 'denied') { card.style.display = 'none'; return; }
+  card.style.display = 'flex';
+  if (st === 'needs-standalone') {
+    card.innerHTML = '<div><div class="push-card-label">Evening nudge</div>' +
+      '<div class="push-card-title">Add Gamenfy to your home screen first</div>' +
+      '<div class="push-card-sub">Share → Add to Home Screen. Then open it from there to turn on the daily reminder.</div></div>';
+  } else {
+    card.innerHTML = '<div><div class="push-card-label">Evening nudge</div>' +
+      '<div class="push-card-title">Get a daily reminder at 19:30</div>' +
+      '<div class="push-card-sub">One tap. Jarvis stays quiet on days you already closed.</div></div>' +
+      '<button class="push-btn" onclick="enablePushNow(this)">Turn on</button>';
+  }
+}
+
+window.enablePushNow = async function(btn) {
+  btn.disabled = true; btn.textContent = '…';
+  try {
+    const res = await window.GamenfyPush.enable();
+    if (res.ok) {
+      showToast('Notifications on — see you at 19:30');
+      document.getElementById('pushCard').style.display = 'none';
+    } else if (res.reason === 'denied') {
+      showToast('Notifications blocked in iOS Settings');
+      document.getElementById('pushCard').style.display = 'none';
+    } else {
+      btn.disabled = false; btn.textContent = 'Turn on';
+      showToast('Could not enable — try again');
+    }
+  } catch (e) {
+    btn.disabled = false; btn.textContent = 'Turn on';
+    showToast('Could not enable — try again');
+  }
+};
+
 // ── Next Move (Ventures v7.0) — one next step per active venture ──
 function renderNextMove() {
   const wrap = document.getElementById('nextMoveWrap');
@@ -1685,6 +1748,7 @@ function boot() {
   renderArc(0);
   renderStreakPill();
   renderCheckinCard();
+  renderPushCard();
   renderNextMove();
   renderMissions();
   renderFocusGrid();
