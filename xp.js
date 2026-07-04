@@ -838,6 +838,33 @@
   };
   window.xpToLevel          = xpToLevel;
   window.xpForLevel         = xpForLevel;
+
+  // ── Tier-lock (v7.4) ────────────────────────────────────────
+  // XP always keeps accruing; only the effective level is capped.
+  // To pass a gate (10/25/50/75) the gate quest — the highest quest
+  // at or below that gate level — must be claimed. Skills without a
+  // quest ladder are never capped.
+  const TIER_GATES = [10, 25, 50, 75];
+  function tierLockInfo (skillName, rawLevel) {
+    const QUESTS = window.RPG_QUESTS;
+    const ladder = QUESTS && QUESTS[skillName];
+    if (!ladder || !ladder.length || typeof window.getQuestsDone !== 'function') {
+      return { level: rawLevel, locked: false };
+    }
+    const done = window.getQuestsDone();
+    for (const gate of TIER_GATES) {
+      if (rawLevel <= gate) break;
+      let gq = null;
+      for (const q of ladder) { if (q.lvl <= gate && (!gq || q.lvl > gq.lvl)) gq = q; }
+      if (gq && !done[skillName + ':' + gq.lvl]) {
+        return { level: gate, locked: true, gate: gate, quest: gq };
+      }
+    }
+    return { level: rawLevel, locked: false };
+  }
+  window.TIER_GATES   = TIER_GATES;
+  window.tierLockInfo = tierLockInfo;
+
   window.RPG_PARENT_SKILLS  = PARENT_SKILLS;
   window.RPG_DEFAULT_SKILLS = DEFAULT_SKILLS;
   window.RPG_MAX_LEVEL      = MAX_LEVEL;

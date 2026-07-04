@@ -953,6 +953,23 @@ textarea {
 .hm-stat-lbl { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
 .hm-note { margin-top:14px; font-size:11px; color:var(--muted); line-height:1.5; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 12px; }
 
+/* ── Tier-lock (v7.4) ─────────────────────────────── */
+.sd-tierlock {
+  display:flex; align-items:flex-start; gap:9px;
+  background:var(--card); border:1.5px solid var(--ink); border-radius:13px;
+  padding:11px 13px; margin-bottom:12px;
+  font-size:12px; color:var(--ink); line-height:1.5;
+}
+.sd-tierlock b { font-weight:800; }
+.rs-lock { width:11px; height:11px; margin-left:4px; vertical-align:baseline; opacity:0.9; }
+.rs-cell.tierlocked .rs-cell-lvl { color:#fff; }
+.quest-gate-badge {
+  font-size:8px; font-weight:800; letter-spacing:0.08em;
+  background:var(--ink); color:#F4F3EF; border-radius:5px; padding:2px 5px;
+  vertical-align:middle;
+}
+.quest-node.gate .quest-card2 { border-color:var(--ink); border-width:1.5px; }
+
 /* ── Assessment (intake) ──────────────────────────── */
 .assess-btn {
   width:100%; padding:13px; margin-bottom:14px; border-radius:14px;
@@ -1477,7 +1494,9 @@ function openSkillDetail(skillKey){
   const char  =loadChar();
   const saved =(char.skills||{})[skillKey]||{};
   const xp    =saved.xp||0;
-  const level =xpToLevel(xp);
+  const rawLevel=xpToLevel(xp);
+  const tl    =window.tierLockInfo?window.tierLockInfo(skillKey,rawLevel):{level:rawLevel,locked:false};
+  const level =tl.level;
   const meta  =PARENT_META[def.parentSkill||'body']||{color:'#6BE3A4'};
   const color =meta.color;
   const ms    =def.milestones||{};
@@ -1505,6 +1524,12 @@ function openSkillDetail(skillKey){
       🏆 Milestone in reach — Level ${nextMs}
       <span style="font-size:11px;font-weight:400;color:rgba(245,200,66,0.7)">${ms[nextMs]}</span>
     </button>`:'';
+
+  const tierLockHtml=tl.locked?`
+    <div class="sd-tierlock">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px;flex-shrink:0"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+      <div><b>Tier locked at Level ${tl.gate}.</b> Complete the quest "${tl.quest.title}" to advance. Your XP keeps counting — nothing is lost.</div>
+    </div>`:'';
 
   // Next concrete step — from the quest ladder (the next quest above current level)
   let nextStepHtml='';
@@ -1569,6 +1594,7 @@ function openSkillDetail(skillKey){
         </div>
         <div class="sd-xp-track"><div class="sd-xp-fill" style="width:${pct}%;background:${color}"></div></div>
       </div>
+      ${tierLockHtml}
       ${msBtnHtml}
       ${nextStepHtml}
       <div class="sd-log-section">
@@ -2537,23 +2563,26 @@ function renderRSGrid(){
     grid.className='rs-grid';
     visible.forEach(k=>{
       const def=defaults[k], s=skills[k]||{}, xp=s.xp||0;
-      const level=xpToLevel(xp);
+      const rawLevel=xpToLevel(xp);
+      const tl=window.tierLockInfo?window.tierLockInfo(k,rawLevel):{level:rawLevel,locked:false};
+      const level=tl.level;
       const isMax=level>=MAX_LEVEL;
       totalLevel+=level; totalXp+=xp; if(isMax) maxed++;
       const nextXp=isMax?xp:xpForLevel(level+1);
       const thisXp=xpForLevel(level);
       const pct=isMax?100:Math.min(100,Math.round(((xp-thisXp)/(nextXp-thisXp))*100));
       const cell=document.createElement('div');
-      cell.className='rs-cell'+(isMax?' maxed':'');
+      cell.className='rs-cell'+(isMax?' maxed':'')+(tl.locked?' tierlocked':'');
       cell.onclick=()=>openSkillDetail(k);
       const photo=skillPhotoUrl(k);
+      const lockSvg=tl.locked?'<svg class="rs-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>':'';
       cell.innerHTML=
         // photo loads on top if present; if it 404s, onerror removes it and the icon layer shows through
         '<img class="rs-cell-photo" src="'+photo+'" alt="" loading="lazy" onload="this.parentElement.classList.add(\'has-photo\')" onerror="this.remove()">'+
         '<div class="rs-cell-iconlayer" style="--dc:'+meta.color+'"><div class="rs-cell-bigicon" style="color:'+meta.color+'">'+skillIconSvg(k, meta.color)+'</div></div>'+
         '<div class="rs-cell-icon" style="color:#fff">'+skillIconSvg(k,'#fff')+'</div>'+
         '<div class="rs-cell-overlay">'+
-          '<div class="rs-cell-lvl">'+level+'<span class="slash">/'+MAX_LEVEL+'</span></div>'+
+          '<div class="rs-cell-lvl">'+level+'<span class="slash">/'+MAX_LEVEL+'</span>'+lockSvg+'</div>'+
           '<div class="rs-cell-name">'+(def.label||k)+'</div>'+
           '<div class="rs-cell-bar"><div class="rs-cell-bar-fill" style="width:'+pct+'%;background:'+meta.color+'"></div></div>'+
         '</div>';
@@ -2615,18 +2644,28 @@ function renderQuestLadder(){
   const ladder=QUESTS[k]||[];
   const def=defaults[k]||{};
   const xp=(char.skills||{})[k]?.xp||0;
-  const level=xpToLevel(xp);
+  const rawLevel=xpToLevel(xp);
+  const tl=window.tierLockInfo?window.tierLockInfo(k,rawLevel):{level:rawLevel,locked:false};
+  const level=tl.level;
   const done=window.getQuestsDone?window.getQuestsDone():{};
+  // gate quests: highest quest at or below each tier gate
+  const gateLvls=new Set();
+  (window.TIER_GATES||[]).forEach(g=>{
+    let gq=null; ladder.forEach(q=>{ if(q.lvl<=g&&(!gq||q.lvl>gq.lvl)) gq=q; });
+    if(gq) gateLvls.add(gq.lvl);
+  });
 
-  cont.innerHTML='<div class="quest-ladder">'+ladder.map(q=>{
+  cont.innerHTML=(tl.locked?'<div class="sd-tierlock" style="margin-bottom:12px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px;flex-shrink:0"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg><div><b>Tier locked at Level '+tl.gate+'.</b> Claim "'+tl.quest.title+'" to unlock the next tier.</div></div>':'')+
+  '<div class="quest-ladder">'+ladder.map(q=>{
     const isDone=!!done[k+':'+q.lvl];
     const unlocked=level>=q.lvl;
+    const isGate=gateLvls.has(q.lvl);
     const state=isDone?'done':unlocked?'unlocked':'locked';
     const dot=isDone?'✓':unlocked?'★':'🔒';
-    return '<div class="quest-node '+state+'">'+
+    return '<div class="quest-node '+state+(isGate?' gate':'')+'">'+
       '<div class="quest-node-dot">'+dot+'</div>'+
       '<div class="quest-card2">'+
-        '<div class="quest-card2-top"><div class="quest-card2-title">'+q.title+'</div><div class="quest-card2-lvl">LVL '+q.lvl+'</div></div>'+
+        '<div class="quest-card2-top"><div class="quest-card2-title">'+q.title+'</div><div class="quest-card2-lvl">'+(isGate?'<span class="quest-gate-badge">TIER GATE</span> ':'')+'LVL '+q.lvl+'</div></div>'+
         '<div class="quest-card2-desc">'+q.desc+'</div>'+
         '<div class="quest-card2-foot">'+
           '<span class="quest-card2-xp">+'+q.xp+' XP</span>'+
@@ -3409,7 +3448,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   },0);
 
   if(typeof initCloudSync==='function'&&window.supabase){
-    initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1'],syncedPrefixes:['rpg_daily_v1:','rpg_agenda_v1:']});
+    initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1'],syncedPrefixes:['rpg_daily_v1:','rpg_agenda_v1:']});
   }
 });
 

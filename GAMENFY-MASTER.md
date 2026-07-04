@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v7.3)
+# GAMENFY — Master Document (v7.4)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -137,6 +137,7 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 - **v4.6** expanded quest ladders — denser levels 1-100 (261 quests)
 - **v5.x–v6.4** Daylight visual pass, skill photo tiles with local fallback (`img/skills/`), Hevy strength analysis (Epley 1RMs on Joey's actual lifts), agenda + home reorder (quote → Day Score → Agenda → To-Do), money skills reworked (distinct identities), piano/calisthenics/reading/whistling ladders rebuilt from tier writeups, Puzzling skill added
 - **v7.0** Ventures layer: Grip + Gamenfy Public quest ladders, Next Move home card, master doc update
+- **v7.4** Tier-lock, system-wide. New in `xp.js` (additive — level formula untouched): `TIER_GATES=[10,25,50,75]` + `tierLockInfo(skill, rawLevel)` → effective level capped at the first gate whose gate quest (highest quest at or below the gate level) is unclaimed. XP always keeps accruing; only the shown/used level is capped. Skills without a quest ladder are never capped. Applied in: RS skills grid (lock icon on capped tiles), skill detail (ink-bordered "Tier locked" banner naming the exact quest), quest ladder (uses effective level for unlocks, TIER GATE badges + banner), home Focus grid and Core tracker. `quests.js` now also loads on index. Fixed pre-existing gap: `rpg_quests_done_v1` was never in syncedKeys — quest completions now sync across devices.
 - **v7.3** Health section on the Body tab (Apple Health-style): 2x2 metric cards — Steps, Active Energy (from `apple_health:*` rows incl. the trailing-space/string quirks), Training Volume (live from Hevy, kg per workout day), Weight — each with today's value, 7-day average and a 14-day bar chart in the metric's colour. Tap → bottom sheet with a 30-day chart, daily avg / best day / days-logged stats, and a stale-data warning when the Health sync Shortcut has stopped. Note: web apps cannot read HealthKit directly — data always arrives via the iOS sync Shortcut (broken since 2026-06-09 at build time; Joey to fix).
 - **v7.2** Automatic evening push (no Shortcuts): Supabase Edge Function `send-daily-push` + pg_cron `gamenfy-daily-push` at 17:30 UTC (≈19:30 NL summer). Function reads `app_state` key `rpg`, skips the push when the day is already closed, personalises with streak + next venture step, prunes dead subscriptions. Devices register via a one-time "Turn on" card on Main (requires the PWA opened from the home screen, iOS 16.4+); subscriptions live in `app_state` key `push_subscriptions`. VAPID keys + cron secret live only in the deployed function, not in this public repo.
 - **v7.1** Engagement layer: day streak (flame pill in the greeting, `rpg_streak_v1`, a day counts on any XP / mission / venture step / closed check-in; at-risk pulse after 17:00, never punitive mid-day) + Jarvis evening check-in (bottom sheet from 17:00: XP/missions/streak recap, up to 3 open actions completable inline, "Close the day" secures the streak; `rpg_checkin_v1`). Daily notification runs as an iOS Shortcut automation (out of app scope).
@@ -147,7 +148,7 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 
 **Next builds (in order):**
 1. [x] **Jarvis daily check-in + streak + automatic push** — shipped in v7.1/v7.2. Joey only taps "Turn on" once in the home-screen app.
-2. [ ] **Tier-lock system** (system-wide: milestone completion gates tier advancement) — next build
+2. [x] **Tier-lock system** — shipped in v7.4 (gates at 10/25/50/75, gate quest required, XP never lost).
 3. [ ] **Skill photos** — replace placeholder tiles (pure visual session, no features)
 
 **Backlog:**
