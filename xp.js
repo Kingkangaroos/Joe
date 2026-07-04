@@ -290,6 +290,10 @@
       xp:0, parentSkill:'body', icon:'👟', label:'10k Steps', active:true, isHabit:true,
       habitDesc:'10,000 steps per day = full point. Less = proportionally less.',
     },
+    grounding: {
+      xp:0, parentSkill:'body', icon:'🌱', label:'Grounding', active:true, isHabit:true,
+      habitDesc:'Bare feet on earth — grass, sand, soil. A few minutes counts. Daily reset.',
+    },
 
     // ══ MIND — skills ═════════════════════════════════════════════════
     reading: {

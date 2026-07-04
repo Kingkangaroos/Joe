@@ -1488,9 +1488,12 @@ function getConfirmedMilestones(){
 const SKILL_PHOTO_URL = {
   // Optional override per skill, e.g. a Canva export URL or different filename:
   // strength: 'img/skills/strength-v2.jpg',
-  strength: 'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/strength.png',
-  coding:   'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/coding.png',
-  sales:    'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/sales.png',
+  strength:  'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/strength.png',
+  coding:    'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/coding.png',
+  sales:     'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/sales.png',
+  saving:    'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/saving.jpg',
+  investing: 'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/investing.jpg',
+  budgeting: 'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/budgeting.jpg',
 };
 function skillPhotoUrl(key){
   if(SKILL_PHOTO_URL[key]) return SKILL_PHOTO_URL[key];
@@ -3105,7 +3108,8 @@ function muscleBulk(level, cx, cy, extra){
 function getBodySkillLevel(key){
   if (!window.getCharacter || !window.xpToLevel) return 0;
   const s=(window.getCharacter().skills||{})[key]||{};
-  return window.xpToLevel(s.xp||0);
+  const raw=window.xpToLevel(s.xp||0);
+  return window.tierLockInfo ? window.tierLockInfo(key,raw).level : raw;
 }
 
 function renderBodyFigure(){
