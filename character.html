@@ -1480,6 +1480,9 @@ function getConfirmedMilestones(){
 const SKILL_PHOTO_URL = {
   // Optional override per skill, e.g. a Canva export URL or different filename:
   // strength: 'img/skills/strength-v2.jpg',
+  strength: 'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/strength.png',
+  coding:   'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/coding.png',
+  sales:    'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/sales.png',
 };
 function skillPhotoUrl(key){
   if(SKILL_PHOTO_URL[key]) return SKILL_PHOTO_URL[key];
