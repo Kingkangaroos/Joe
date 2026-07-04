@@ -1773,7 +1773,14 @@ const WK_MAP = { discipline:'mind', creative:'knowledge' };
 function wkFmt(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function wkMonday(offsetWeeks){ const d=new Date(); const day=(d.getDay()+6)%7; d.setDate(d.getDate()-day+(offsetWeeks||0)*7); return wkFmt(d); }
 function wkLoad(){ try{ const r=localStorage.getItem(WEEKLY_KEY); if(r) return JSON.parse(r); }catch(e){} return {weeks:{}}; }
-function wkClosedThisWeek(){ const w=wkLoad(); return !!(w.weeks && w.weeks[wkMonday(0)]); }
+function wkReviewTarget(){
+  const day=new Date().getDay();
+  if(day===0) return wkMonday(0);          // Sunday: review the week ending today
+  if(day>=1&&day<=3) return wkMonday(-1);  // Mon-Wed: grace window for last week
+  return null;
+}
+function wkClosed(target){ const w=wkLoad(); return !!(w.weeks && w.weeks[target]); }
+function wkShiftDays(dateStr, n){ const p=dateStr.split('-').map(Number); const d=new Date(p[0],p[1]-1,p[2]+n); return wkFmt(d); }
 
 function wkStats(fromDate, toDateExcl){
   const out = { total:0, bySkill:{}, byDomain:{} };
@@ -1795,28 +1802,29 @@ function wkStats(fromDate, toDateExcl){
 function renderWeeklyCard(){
   const wrap=document.getElementById('weeklyWrap');
   if(!wrap) return;
-  const day=new Date().getDay();
-  const due=(day===0||day===1) && !wkClosedThisWeek();
-  if(!due){ wrap.style.display='none'; return; }
+  const target=wkReviewTarget();
+  if(!target || wkClosed(target)){ wrap.style.display='none'; return; }
+  const isCatchUp = new Date().getDay()!==0;
   wrap.style.display='';
   document.getElementById('weeklyCta').innerHTML =
     '<div><div class="checkin-cta-label">Weekly review</div>'+
-    '<div class="checkin-cta-title">Where did your energy go this week?</div></div>'+
+    '<div class="checkin-cta-title">'+(isCatchUp?'Last week is still open \u2014 close it':'Where did your energy go this week?')+'</div></div>'+
     '<div class="checkin-cta-arrow">›</div>';
 }
 
 window.openWeekly = function(){
-  const from=wkMonday(0), prevFrom=wkMonday(-1);
-  const tomorrow=(function(){const d=new Date();d.setDate(d.getDate()+1);return wkFmt(d);})();
-  const cur=wkStats(from, tomorrow), prev=wkStats(prevFrom, from);
+  const from=wkReviewTarget()||wkMonday(0);
+  const prevFrom=wkShiftDays(from,-7);
+  const toExcl=wkShiftDays(from,7);
+  const cur=wkStats(from, toExcl), prev=wkStats(prevFrom, from);
   const st=window.Streak?window.Streak.status():{current:0};
   // active days this week
   let activeDays=0;
   try{ const days=JSON.parse(localStorage.getItem('rpg_streak_v1')).days||{};
-    for(let i=0;i<7;i++){ const d=new Date(); const off=(d.getDay()+6)%7; d.setDate(d.getDate()-off+i); const k=wkFmt(d); if(k<=wkFmt(new Date())&&days[k]) activeDays++; } }catch(e){}
+    for(let i=0;i<7;i++){ const k=wkShiftDays(from,i); if(k<=wkFmt(new Date())&&days[k]) activeDays++; } }catch(e){}
   // venture steps this week
   let vSteps=0;
-  if(window.Ventures){ window.Ventures.load().ventures.forEach(v=>v.phases.forEach(p=>p.steps.forEach(s=>{ if(s.done&&s.doneAt&&s.doneAt.slice(0,10)>=from) vSteps++; }))); }
+  if(window.Ventures){ window.Ventures.load().ventures.forEach(v=>v.phases.forEach(p=>p.steps.forEach(s=>{ const dd=s.done&&s.doneAt?s.doneAt.slice(0,10):null; if(dd&&dd>=from&&dd<toExcl) vSteps++; }))); }
   // domain bars
   const domTotal=Object.values(cur.byDomain).reduce((a,b)=>a+b,0)||1;
   const bars=Object.keys(WK_DOMAINS).filter(d=>cur.byDomain[d]).sort((a,b)=>cur.byDomain[b]-cur.byDomain[a]).map(d=>{
@@ -1856,7 +1864,8 @@ window.openWeekly = function(){
 };
 
 window.wkClose=function(btn){
-  const w=wkLoad(); w.weeks=w.weeks||{}; w.weeks[wkMonday(0)]={closedAt:new Date().toISOString()};
+  const target=wkReviewTarget()||wkMonday(0);
+  const w=wkLoad(); w.weeks=w.weeks||{}; w.weeks[target]={closedAt:new Date().toISOString()};
   try{ localStorage.setItem(WEEKLY_KEY, JSON.stringify(w)); }catch(e){}
   btn.textContent='Week closed'; btn.classList.add('done');
   renderWeeklyCard();
