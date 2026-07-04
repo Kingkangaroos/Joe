@@ -683,7 +683,15 @@ textarea {
   padding: 6px 0 2px;
 }
 .body-figure { width: auto; height: 300px; max-width: 100%; }
+.body-figure.scanmode { height: 320px; }
 .muscle { transition: fill 0.5s ease, opacity 0.5s ease; cursor:pointer; }
+.scanline { animation: scanSweep 5.5s ease-in-out infinite; }
+@keyframes scanSweep { 0%,100% { transform: translateY(14px); opacity:0.9; } 50% { transform: translateY(398px); opacity:0.6; } }
+.scan-ring { animation: ringPulse 3.6s ease-in-out infinite; transform-origin: center; }
+@keyframes ringPulse { 0%,100% { opacity: 0.9; } 50% { opacity: 0.35; } }
+.scan-callout { cursor: pointer; }
+.scan-callout:active rect { fill: rgba(111,216,255,0.2); }
+@media (prefers-reduced-motion: reduce) { .scanline, .scan-ring { animation: none; } }
 .body-skill-tag {
   position:absolute; z-index:2;
   font-size:9px; font-family:var(--mono); font-weight:700;
@@ -3068,8 +3076,8 @@ function bodyDateKey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padSt
 // fill colour for a muscle: more developed = warmer/brighter, scaled by skill level (0-100)
 function muscleFill(level){
   const t = Math.max(0, Math.min(1, level/60));   // saturate around level 60
-  // interpolate from dim slate (#3A372F) → vivid muscle (#C2503A)
-  const a=[58,55,47], b=[194,80,58];
+  // hologram: interpolate from deep scan-blue → bright cyan
+  const a=[40,74,120], b=[111,216,255];
   const c=a.map((v,i)=>Math.round(v+(b[i]-v)*t));
   return `rgb(${c[0]},${c[1]},${c[2]})`;
 }
@@ -3108,76 +3116,131 @@ function renderBodyFigure(){
   const lv = {};
   for (const [muscle, skill] of Object.entries(MUSCLE_SKILL_MAP)) lv[muscle]=getBodySkillLevel(skill);
   const coreLv = getBodySkillLevel('core');
-
-  // abs definition: number of visible ab rows grows with Core level (sixpack at high level)
-  const absOpacity = Math.max(0.12, Math.min(1, coreLv/45));
+  const absOpacity = Math.max(0.25, Math.min(1, coreLv/45));
   const absDefined = coreLv >= 25;
 
-  // SVG anatomical front-facing male figure
+  // measurement callouts: skill → level, anchored to scan rings
+  const co = [
+    { skill:'strength',     label:'STRENGTH', lv:getBodySkillLevel('strength'),     ringY:112, side:'r' },
+    { skill:'core',         label:'CORE',     lv:coreLv,                            ringY:176, side:'r' },
+    { skill:'gym',          label:'LEGS',     lv:getBodySkillLevel('gym'),          ringY:272, side:'r' },
+    { skill:'calisthenics', label:'ARMS',     lv:getBodySkillLevel('calisthenics'), ringY:150, side:'l' },
+  ];
+  const pill = c => {
+    const x = c.side==='r' ? 212 : 4;
+    const lineX1 = c.side==='r' ? 170 : 40, lineX2 = c.side==='r' ? 210 : 86;
+    const tx = x + 42;
+    return `
+    <g class="scan-callout" data-skill="${c.skill}">
+      <line x1="${lineX1}" y1="${c.ringY}" x2="${lineX2}" y2="${c.ringY}" stroke="rgba(111,216,255,0.45)" stroke-width="1" stroke-dasharray="2 3"/>
+      <rect x="${x}" y="${c.ringY-11}" width="84" height="22" rx="11" fill="rgba(111,216,255,0.08)" stroke="rgba(111,216,255,0.4)" stroke-width="1"/>
+      <text x="${tx}" y="${c.ringY-1.5}" text-anchor="middle" font-size="7.5" font-weight="700" letter-spacing="1.2" fill="rgba(198,235,255,0.85)">${c.label}</text>
+      <text x="${tx}" y="${c.ringY+8}" text-anchor="middle" font-size="8.5" font-weight="800" fill="#6FD8FF" font-family="monospace">LV ${c.lv}</text>
+    </g>`;
+  };
+
+  const ring = (cy, rx) => `
+    <ellipse class="scan-ring" cx="150" cy="${cy}" rx="${rx}" ry="${Math.max(7,rx*0.16)}" fill="none"
+      stroke="rgba(111,216,255,0.55)" stroke-width="1" stroke-dasharray="5 4"/>`;
+
+  // SVG hologram body scan — figure centred at x=150 (shifted +50 for callout space)
   const svg = `
-  <svg class="body-figure" viewBox="0 0 200 420" xmlns="http://www.w3.org/2000/svg">
+  <svg class="body-figure scanmode" viewBox="0 0 300 430" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <linearGradient id="skinShade" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#D9A87E"/>
-        <stop offset="100%" stop-color="#C28E62"/>
+      <linearGradient id="holoSkin" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="rgba(88,150,215,0.34)"/>
+        <stop offset="100%" stop-color="rgba(52,96,160,0.22)"/>
       </linearGradient>
+      <linearGradient id="coneGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="rgba(111,216,255,0)"/>
+        <stop offset="100%" stop-color="rgba(111,216,255,0.10)"/>
+      </linearGradient>
+      <linearGradient id="scanlineGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="rgba(111,216,255,0)"/>
+        <stop offset="50%" stop-color="rgba(160,230,255,0.85)"/>
+        <stop offset="100%" stop-color="rgba(111,216,255,0)"/>
+      </linearGradient>
+      <filter id="holoGlow" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur stdDeviation="2.2" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
     </defs>
 
-    <!-- Head -->
-    <ellipse cx="100" cy="38" rx="22" ry="26" fill="url(#skinShade)"/>
-    <path d="M81 30 Q100 6 119 30 Q120 16 100 12 Q80 16 81 30 Z" fill="#2A2620"/>
-    <!-- Neck -->
-    <path d="M90 60 L90 76 Q100 82 110 76 L110 60 Z" fill="url(#skinShade)"/>
-    <path class="muscle" data-m="neck" d="M88 62 Q100 70 112 62 L112 74 Q100 80 88 74 Z" fill="${muscleFill(lv.neck)}" opacity="0.55"/>
+    <!-- projection cone + base -->
+    <polygon points="105,410 195,410 250,428 50,428" fill="url(#coneGrad)"/>
+    <ellipse cx="150" cy="412" rx="78" ry="12" fill="none" stroke="rgba(111,216,255,0.5)" stroke-width="1.2"/>
+    <ellipse cx="150" cy="412" rx="52" ry="7.5" fill="none" stroke="rgba(111,216,255,0.25)" stroke-width="1"/>
+    <ellipse cx="150" cy="412" rx="78" ry="12" fill="rgba(111,216,255,0.06)"/>
 
-    <!-- Traps/Shoulders -->
-    <path class="muscle" data-m="shoulders" style="${muscleBulk(lv.shoulders,100,88,true)}" d="M60 84 Q100 66 140 84 Q150 90 150 104 Q125 92 100 92 Q75 92 50 104 Q50 90 60 84 Z" fill="${muscleFill(lv.shoulders)}"/>
+    <!-- figure -->
+    <g filter="url(#holoGlow)" stroke="rgba(140,220,255,0.55)" stroke-width="0.8">
+      <!-- Head (no face — scan hologram) -->
+      <ellipse cx="150" cy="38" rx="22" ry="26" fill="url(#holoSkin)"/>
+      <!-- Neck -->
+      <path d="M140 60 L140 76 Q150 82 160 76 L160 60 Z" fill="url(#holoSkin)"/>
+      <path class="muscle" data-m="neck" d="M138 62 Q150 70 162 62 L162 74 Q150 80 138 74 Z" fill="${muscleFill(lv.neck)}" fill-opacity="0.5"/>
 
-    <!-- Chest (pecs) -->
-    <path class="muscle" data-m="chest" style="${muscleBulk(lv.chest,100,112,true)}" d="M64 96 Q100 92 136 96 Q140 120 118 132 Q100 138 82 132 Q60 120 64 96 Z" fill="${muscleFill(lv.chest)}"/>
-    <line x1="100" y1="100" x2="100" y2="132" stroke="rgba(0,0,0,0.18)" stroke-width="1.5"/>
+      <!-- Traps/Shoulders -->
+      <path class="muscle" data-m="shoulders" style="${muscleBulk(lv.shoulders,150,88,true)}" d="M110 84 Q150 66 190 84 Q200 90 200 104 Q175 92 150 92 Q125 92 100 104 Q100 90 110 84 Z" fill="${muscleFill(lv.shoulders)}" fill-opacity="0.55"/>
 
-    <!-- Left arm (deltoid + biceps) -->
-    <path class="muscle" data-m="arms" style="${muscleBulk(lv.arms,50,140,true)}" d="M50 104 Q40 108 40 130 L46 178 Q54 180 58 172 L60 120 Q56 108 50 104 Z" fill="${muscleFill(lv.arms)}"/>
-    <!-- Right arm -->
-    <path class="muscle" data-m="arms" style="${muscleBulk(lv.arms,150,140,true)}" d="M150 104 Q160 108 160 130 L154 178 Q146 180 142 172 L140 120 Q144 108 150 104 Z" fill="${muscleFill(lv.arms)}"/>
-    <!-- Forearms -->
-    <path class="muscle" data-m="forearms" d="M44 178 L40 224 Q46 228 52 224 L56 174 Q50 180 44 178 Z" fill="${muscleFill(lv.forearms)}"/>
-    <path class="muscle" data-m="forearms" d="M156 178 L160 224 Q154 228 148 224 L144 174 Q150 180 156 178 Z" fill="${muscleFill(lv.forearms)}"/>
+      <!-- Chest -->
+      <path class="muscle" data-m="chest" style="${muscleBulk(lv.chest,150,112,true)}" d="M114 96 Q150 92 186 96 Q190 120 168 132 Q150 138 132 132 Q110 120 114 96 Z" fill="${muscleFill(lv.chest)}" fill-opacity="0.6"/>
+      <line x1="150" y1="100" x2="150" y2="132" stroke="rgba(160,230,255,0.35)" stroke-width="1.2"/>
 
-    <!-- Abdomen base -->
-    <path d="M74 132 Q100 138 126 132 L122 210 Q100 220 78 210 Z" fill="url(#skinShade)"/>
-    <!-- Obliques -->
-    <path class="muscle" data-m="obliques" d="M74 140 L70 200 Q78 206 80 196 L82 142 Z" fill="${muscleFill(lv.obliques)}" opacity="0.5"/>
-    <path class="muscle" data-m="obliques" d="M126 140 L130 200 Q122 206 120 196 L118 142 Z" fill="${muscleFill(lv.obliques)}" opacity="0.5"/>
+      <!-- Arms -->
+      <path class="muscle" data-m="arms" style="${muscleBulk(lv.arms,100,140,true)}" d="M100 104 Q90 108 90 130 L96 178 Q104 180 108 172 L110 120 Q106 108 100 104 Z" fill="${muscleFill(lv.arms)}" fill-opacity="0.55"/>
+      <path class="muscle" data-m="arms" style="${muscleBulk(lv.arms,200,140,true)}" d="M200 104 Q210 108 210 130 L204 178 Q196 180 192 172 L190 120 Q194 108 200 104 Z" fill="${muscleFill(lv.arms)}" fill-opacity="0.55"/>
+      <!-- Forearms -->
+      <path class="muscle" data-m="forearms" d="M94 178 L90 224 Q96 228 102 224 L106 174 Q100 180 94 178 Z" fill="${muscleFill(lv.forearms)}" fill-opacity="0.5"/>
+      <path class="muscle" data-m="forearms" d="M206 178 L210 224 Q204 228 198 224 L194 174 Q200 180 206 178 Z" fill="${muscleFill(lv.forearms)}" fill-opacity="0.5"/>
 
-    <!-- Abs (sixpack rows; opacity & definition grow with Core) -->
-    <g class="muscle" data-m="abs" opacity="${absOpacity}">
-      ${absDefined ? `
-      <line x1="100" y1="142" x2="100" y2="200" stroke="rgba(0,0,0,0.22)" stroke-width="1.5"/>
-      <line x1="84" y1="156" x2="116" y2="156" stroke="rgba(0,0,0,0.18)" stroke-width="1.2"/>
-      <line x1="84" y1="172" x2="116" y2="172" stroke="rgba(0,0,0,0.18)" stroke-width="1.2"/>
-      <line x1="86" y1="188" x2="114" y2="188" stroke="rgba(0,0,0,0.18)" stroke-width="1.2"/>` : ``}
-      <rect x="82" y="142" width="36" height="62" rx="10" fill="${muscleFill(getBodySkillLevel('core'))}" opacity="0.35"/>
+      <!-- Abdomen -->
+      <path d="M124 132 Q150 138 176 132 L172 210 Q150 220 128 210 Z" fill="url(#holoSkin)"/>
+      <path class="muscle" data-m="obliques" d="M124 140 L120 200 Q128 206 130 196 L132 142 Z" fill="${muscleFill(lv.obliques)}" fill-opacity="0.45"/>
+      <path class="muscle" data-m="obliques" d="M176 140 L180 200 Q172 206 170 196 L168 142 Z" fill="${muscleFill(lv.obliques)}" fill-opacity="0.45"/>
+      <g class="muscle" data-m="abs" opacity="${absOpacity}">
+        ${absDefined ? `
+        <line x1="150" y1="142" x2="150" y2="200" stroke="rgba(160,230,255,0.4)" stroke-width="1.2"/>
+        <line x1="134" y1="156" x2="166" y2="156" stroke="rgba(160,230,255,0.32)" stroke-width="1"/>
+        <line x1="134" y1="172" x2="166" y2="172" stroke="rgba(160,230,255,0.32)" stroke-width="1"/>
+        <line x1="136" y1="188" x2="164" y2="188" stroke="rgba(160,230,255,0.32)" stroke-width="1"/>` : ``}
+        <rect x="132" y="142" width="36" height="62" rx="10" fill="${muscleFill(coreLv)}" fill-opacity="0.35"/>
+      </g>
+
+      <!-- Pelvis -->
+      <path d="M128 208 Q150 218 172 208 L168 226 Q150 232 132 226 Z" fill="url(#holoSkin)"/>
+
+      <!-- Legs -->
+      <path class="muscle" data-m="legs" style="${muscleBulk(lv.legs,140,273,true)}" d="M132 226 Q140 224 148 226 L146 320 Q138 324 132 320 Z" fill="${muscleFill(lv.legs)}" fill-opacity="0.55"/>
+      <path class="muscle" data-m="legs" style="${muscleBulk(lv.legs,160,273,true)}" d="M168 226 Q160 224 152 226 L154 320 Q162 324 168 320 Z" fill="${muscleFill(lv.legs)}" fill-opacity="0.55"/>
+      <path class="muscle" data-m="legs" d="M134 320 L136 392 Q142 396 146 392 L146 320 Q140 322 134 320 Z" fill="${muscleFill(lv.legs)}" fill-opacity="0.45"/>
+      <path class="muscle" data-m="legs" d="M166 320 L164 392 Q158 396 154 392 L154 320 Q160 322 166 320 Z" fill="${muscleFill(lv.legs)}" fill-opacity="0.45"/>
     </g>
 
-    <!-- Pelvis -->
-    <path d="M78 208 Q100 218 122 208 L118 226 Q100 232 82 226 Z" fill="url(#skinShade)"/>
+    <!-- scan rings -->
+    ${ring(112, 62)}
+    ${ring(176, 46)}
+    ${ring(272, 36)}
 
-    <!-- Legs (quads) -->
-    <path class="muscle" data-m="legs" style="${muscleBulk(lv.legs,90,273,true)}" d="M82 226 Q90 224 98 226 L96 320 Q88 324 82 320 Z" fill="${muscleFill(lv.legs)}"/>
-    <path class="muscle" data-m="legs" style="${muscleBulk(lv.legs,110,273,true)}" d="M118 226 Q110 224 102 226 L104 320 Q112 324 118 320 Z" fill="${muscleFill(lv.legs)}"/>
-    <!-- Calves -->
-    <path class="muscle" data-m="legs" d="M84 320 L86 392 Q92 396 96 392 L96 320 Q90 322 84 320 Z" fill="${muscleFill(lv.legs)}" opacity="0.8"/>
-    <path class="muscle" data-m="legs" d="M116 320 L114 392 Q108 396 104 392 L104 320 Q110 322 116 320 Z" fill="${muscleFill(lv.legs)}" opacity="0.8"/>
+    <!-- sweeping scanline -->
+    <g class="scanline"><rect x="70" y="0" width="160" height="2.5" rx="1.25" fill="url(#scanlineGrad)"/></g>
+
+    <!-- measurement callouts -->
+    ${co.map(pill).join('')}
   </svg>`;
   wrap.innerHTML = svg;
 
-  // tap a muscle → jump to its skill
+  // tap a muscle or a callout → jump to its skill
   wrap.querySelectorAll('.muscle').forEach(el=>{
     el.addEventListener('click',()=>{
       const m=el.getAttribute('data-m');
       const skill=MUSCLE_SKILL_MAP[m];
+      if(skill) openBodySkill(skill);
+    });
+  });
+  wrap.querySelectorAll('.scan-callout').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const skill=el.getAttribute('data-skill');
       if(skill) openBodySkill(skill);
     });
   });
