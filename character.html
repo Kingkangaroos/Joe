@@ -962,6 +962,10 @@ textarea {
 .hm-note { margin-top:14px; font-size:11px; color:var(--muted); line-height:1.5; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 12px; }
 
 /* ── Tier-lock (v7.4) ─────────────────────────────── */
+.sd-why {
+  background:var(--card); border:1px solid var(--line); border-radius:13px;
+  padding:11px 13px; margin-bottom:12px; font-size:12px; color:var(--muted); line-height:1.55;
+}
 .sd-tierlock {
   display:flex; align-items:flex-start; gap:9px;
   background:var(--card); border:1.5px solid var(--ink); border-radius:13px;
@@ -971,6 +975,10 @@ textarea {
 .sd-tierlock b { font-weight:800; }
 .rs-lock { width:11px; height:11px; margin-left:4px; vertical-align:baseline; opacity:0.9; }
 .rs-cell.tierlocked .rs-cell-lvl { color:#fff; }
+.quest-why {
+  font-size:9.5px; color:var(--muted); line-height:1.45; margin-top:6px;
+  border-top:1px solid var(--line); padding-top:6px;
+}
 .quest-gate-badge {
   font-size:8px; font-weight:800; letter-spacing:0.08em;
   background:var(--ink); color:#F4F3EF; border-radius:5px; padding:2px 5px;
@@ -1539,6 +1547,9 @@ function openSkillDetail(skillKey){
       <span style="font-size:11px;font-weight:400;color:rgba(245,200,66,0.7)">${ms[nextMs]}</span>
     </button>`:'';
 
+  const whyHtml=def.why?`
+    <div class="sd-why">${def.why}</div>`:'';
+
   const tierLockHtml=tl.locked?`
     <div class="sd-tierlock">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px;flex-shrink:0"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
@@ -1608,6 +1619,7 @@ function openSkillDetail(skillKey){
         </div>
         <div class="sd-xp-track"><div class="sd-xp-fill" style="width:${pct}%;background:${color}"></div></div>
       </div>
+      ${whyHtml}
       ${tierLockHtml}
       ${msBtnHtml}
       ${nextStepHtml}
@@ -2194,10 +2206,13 @@ const ALL_DAILY_QUESTS=[
   {id:'outreach',     icon:'📈',label:'Outreach',        skill:'sales',        xp:35},
   {id:'gratitude',    icon:'🙏',label:'Gratitude',       skill:'gratitude',    xp:10},
   {id:'nutrition',    icon:'🥗',label:'Protein',         skill:'nutrition',    xp:20},
+  {id:'grounding',    icon:'🌱',label:'Grounding',       skill:'grounding',    xp:15},
   {id:'planning',     icon:'📅',label:'Plan the day',    skill:'planning',     xp:15},
 ];
 const ACTIVE_QUESTS_KEY='rpg_active_quests_v1';
-const DEFAULT_ACTIVE_QUESTS=['workout','meditation','no_porn','weed_control','reading','outreach','gratitude','nutrition'];
+const DEFAULT_ACTIVE_QUESTS=['workout','meditation','no_porn','weed_control','reading','outreach','gratitude','nutrition','grounding'];
+// v7.8 one-time: surface Grounding in the Daily tab for existing stored selections
+try{ const _aq=JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if(Array.isArray(_aq)&&!_aq.includes('grounding')){ _aq.push('grounding'); localStorage.setItem(ACTIVE_QUESTS_KEY, JSON.stringify(_aq)); } }catch(e){}
 function getActiveQuestIds(){
   try{ const s=JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if(Array.isArray(s)) return s; } catch{}
   return [...DEFAULT_ACTIVE_QUESTS];
@@ -2253,7 +2268,9 @@ function renderDaily(){
         '<span class="quest-check">'+(isDone?'✓':'')+'</span>'+
       '</div>'+
       '<div class="quest-label">'+(isPriv?'Private quest':q.label)+'</div>'+
-      '<div class="quest-xp">'+(isPriv?'PIN required':'+'+q.xp+' XP')+'</div>';
+      '<div class="quest-xp">'+(isPriv?'PIN required':'+'+q.xp+' XP')+'</div>'+
+      ((!isPriv && (window.RPG_DEFAULT_SKILLS||{})[q.skill]?.why)
+        ? '<div class="quest-why">'+(window.RPG_DEFAULT_SKILLS)[q.skill].why+'</div>' : '');
     card.addEventListener('click',()=>{
       if(q.private&&!isPrivateUnlocked()){ requirePin(()=>renderDaily()); return; }
       const sd=getSelectedDate();

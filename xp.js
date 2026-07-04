@@ -280,18 +280,22 @@
     // ══ BODY — habits (isHabit: true) ═════════════════════════════════
     sleep: {
       xp:0, parentSkill:'body', icon:'😴', label:'Sleep', active:true, isHabit:true,
+      why:'7-9 hours is linked to better memory, hormone balance and muscle recovery. Chronic short sleep measurably raises illness and injury risk.',
       habitDesc:'8 hours sleep = +1 point. Less = proportionally less. Drops -1 per missed day.',
     },
     nutrition: {
       xp:0, parentSkill:'body', icon:'🥗', label:'Nutrition', active:true, isHabit:true,
+      why:'Enough protein (~1.6-2.2 g/kg when training) is what actually builds and keeps muscle — training without it wastes half the work.',
       habitDesc:'Eat enough and healthy every day. +1 point. Drops -1 per missed day.',
     },
     walking: {
       xp:0, parentSkill:'body', icon:'👟', label:'10k Steps', active:true, isHabit:true,
+      why:'Daily steps are strongly linked to lower all-cause mortality in large studies — most of the benefit kicks in around 7-9k steps.',
       habitDesc:'10,000 steps per day = full point. Less = proportionally less.',
     },
     grounding: {
       xp:0, parentSkill:'body', icon:'🌱', label:'Grounding', active:true, isHabit:true,
+      why:'Early small studies link it to lower cortisol, less inflammation and better sleep. Evidence is young — but barefoot minutes outside also mean daylight, calm and zero cost.',
       habitDesc:'Bare feet on earth — grass, sand, soil. A few minutes counts. Daily reset.',
     },
 
@@ -337,10 +341,12 @@
     // ══ MIND — habits ═════════════════════════════════════════════════
     meditation: {
       xp:0, parentSkill:'mind', icon:'🧘', label:'Meditation', active:true, isHabit:true,
+      why:'8 weeks of regular practice measurably lowers amygdala stress-reactivity in imaging studies. Even single 10-20 min sessions reduce anxiety and sharpen attention.',
       habitDesc:'Meditate daily. +1 point. Drops -1 per missed day.',
     },
     gratitude: {
       xp:0, parentSkill:'mind', icon:'🙏', label:'Gratitude', active:true, isHabit:true,
+      why:'Trials link written gratitude to higher wellbeing and better sleep quality — it trains your brain to scan for wins instead of threats.',
       habitDesc:'Write 3 things you\'re grateful for every day.',
     },
 
@@ -514,20 +520,24 @@
     // ══ DISCIPLINE — private skills (PIN 1111) ════════════════════════
     no_porn: {
       xp:0, parentSkill:'discipline', icon:'🛡️', label:'No Porn',
+      why:'Cutting supernormal stimulus recalibrates your reward system — most report noticeably better focus, drive and real-world motivation within weeks.',
       active:true, private:true, quickLog:null,
     },
     weed_control: {
       xp:0, parentSkill:'discipline', icon:'🚫', label:'Weed Control',
+      why:'REM sleep and short-term memory measurably recover within weeks of cutting back — better dreams, sharper recall, steadier energy.',
       active:true, private:true, quickLog:null,
     },
 
     // ══ DISCIPLINE — habits (NOT private) ══════════════════════════════
     screen_time: {
       xp:0, parentSkill:'discipline', icon:'📵', label:'Screen Time', active:true, isHabit:true,
+      why:'Less passive scrolling is linked to better mood and sleep — screens before bed delay melatonin and push your sleep back.',
       habitDesc:'Conscious screen time: < 2h entertainment per day = full point.',
     },
     cold_shower: {
       xp:0, parentSkill:'discipline', icon:'🚿', label:'Cold Shower', active:true, isHabit:true,
+      why:'Cold triggers a noradrenaline and dopamine surge (alertness, mood). A Dutch trial found ~29% fewer sick days in the cold-shower group.',
       habitDesc:'Cold shower every day. +1 point. Drops -1 per missed day.',
     },
 
