@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#F4F3EF">
+<link rel="manifest" href="manifest.json">
+<title>Jarvis — Gamenfy</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="sync.js" defer></script>
+<script src="topbar.js" defer></script>
+<style>
+:root {
+  --bg:#F4F3EF; --card:#FFFFFF; --ink:#15140F; --ink-card:#15140F;
+  --line:rgba(21,20,15,0.09); --line-strong:rgba(21,20,15,0.18);
+  --muted:#8A867C; --faint:#B7B3A8; --ember:#D4633E; --green:#2E8B5F;
+  --font-display:'Sora',-apple-system,sans-serif; --mono:'SF Mono',ui-monospace,monospace;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+body {
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  height:100dvh; display:flex; flex-direction:column;
+}
+.jv-head {
+  padding:calc(14px + env(safe-area-inset-top)) 18px 12px;
+  border-bottom:1px solid var(--line); background:var(--bg);
+  display:flex; align-items:center; gap:10px;
+}
+.jv-back { background:none; border:none; font-size:20px; color:var(--muted); cursor:pointer; padding:4px 8px 4px 0; -webkit-tap-highlight-color:transparent; }
+.jv-title { font-family:var(--font-display); font-weight:800; font-size:17px; }
+.jv-sub { font-size:10px; color:var(--muted); font-weight:600; letter-spacing:0.06em; text-transform:uppercase; }
+.jv-dot { width:7px; height:7px; border-radius:50%; background:var(--green); margin-left:auto; }
+.jv-msgs { flex:1; overflow-y:auto; padding:16px 16px 8px; display:flex; flex-direction:column; gap:10px; }
+.jv-msg { max-width:82%; padding:11px 14px; border-radius:16px; font-size:14px; line-height:1.5; white-space:pre-wrap; word-wrap:break-word; }
+.jv-msg.user { align-self:flex-end; background:var(--ink); color:#F4F3EF; border-bottom-right-radius:5px; }
+.jv-msg.bot { align-self:flex-start; background:var(--card); border:1px solid var(--line); border-bottom-left-radius:5px; }
+.jv-msg.thinking { color:var(--muted); font-style:italic; }
+.jv-inputbar {
+  display:flex; gap:8px; padding:10px 14px calc(12px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--line); background:var(--bg);
+}
+.jv-input {
+  flex:1; border:1px solid var(--line-strong); border-radius:22px; padding:11px 16px;
+  font-size:15px; background:var(--card); color:var(--ink); outline:none; font-family:inherit;
+}
+.jv-send {
+  flex-shrink:0; width:44px; height:44px; border-radius:50%; border:none; cursor:pointer;
+  background:var(--ink); color:#F4F3EF; font-size:17px; -webkit-tap-highlight-color:transparent;
+}
+.jv-send:disabled { opacity:0.4; }
+.jv-empty { text-align:center; color:var(--muted); font-size:13px; line-height:1.6; margin:auto; padding:30px; }
+.jv-empty b { font-family:var(--font-display); font-size:16px; color:var(--ink); display:block; margin-bottom:6px; }
+</style>
+</head>
+<body>
+  <div class="jv-head">
+    <button class="jv-back" onclick="location.href='index.html'">‹</button>
+    <div>
+      <div class="jv-title">Jarvis</div>
+      <div class="jv-sub">Knows your streak, ventures &amp; skills</div>
+    </div>
+    <div class="jv-dot"></div>
+  </div>
+  <div class="jv-msgs" id="jvMsgs">
+    <div class="jv-empty" id="jvEmpty"><b>Evening, Joey.</b>Ask me anything — what to start tonight, how your week looks, or what your next move should be. I remember our conversations.</div>
+  </div>
+  <div class="jv-inputbar">
+    <input class="jv-input" id="jvInput" type="text" placeholder="Talk to Jarvis…" autocomplete="off">
+    <button class="jv-send" id="jvSend" onclick="jvSend()">↑</button>
+  </div>
+
+<script>
+const JV_URL='https://ttxjsoahmtennnufgeqx.supabase.co/functions/v1/jarvis';
+const SB_URL='https://ttxjsoahmtennnufgeqx.supabase.co';
+const SB_KEY='sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
+
+function jvAdd(role, text, extraClass){
+  const empty=document.getElementById('jvEmpty');
+  if(empty) empty.remove();
+  const box=document.getElementById('jvMsgs');
+  const el=document.createElement('div');
+  el.className='jv-msg '+role+(extraClass?' '+extraClass:'');
+  el.textContent=text;
+  box.appendChild(el);
+  box.scrollTop=box.scrollHeight;
+  return el;
+}
+
+async function jvLoadHistory(){
+  try{
+    const r=await fetch(SB_URL+'/rest/v1/app_state?key=eq.jarvis_memory&select=data',
+      { headers:{ apikey:SB_KEY, Authorization:'Bearer '+SB_KEY } });
+    if(!r.ok) return;
+    const rows=await r.json();
+    const hist=rows.length&&rows[0].data&&Array.isArray(rows[0].data.history)?rows[0].data.history:[];
+    hist.slice(-14).forEach(m=>jvAdd(m.role==='user'?'user':'bot', m.content));
+  }catch(e){}
+}
+
+let jvBusy=false;
+async function jvSend(){
+  if(jvBusy) return;
+  const input=document.getElementById('jvInput');
+  const msg=input.value.trim();
+  if(!msg) return;
+  input.value='';
+  jvAdd('user', msg);
+  jvBusy=true;
+  document.getElementById('jvSend').disabled=true;
+  const think=jvAdd('bot','…','thinking');
+  try{
+    const r=await fetch(JV_URL,{
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'x-jarvis-pin':'1111' },
+      body:JSON.stringify({ message: msg })
+    });
+    const data=await r.json();
+    think.classList.remove('thinking');
+    think.textContent=data.reply||data.error||'Er ging iets mis — probeer opnieuw.';
+  }catch(e){
+    think.classList.remove('thinking');
+    think.textContent='Geen verbinding — probeer opnieuw.';
+  }
+  jvBusy=false;
+  document.getElementById('jvSend').disabled=false;
+  document.getElementById('jvMsgs').scrollTop=document.getElementById('jvMsgs').scrollHeight;
+}
+
+document.getElementById('jvInput').addEventListener('keydown',e=>{ if(e.key==='Enter') jvSend(); });
+jvLoadHistory();
+</script>
+</body>
+</html>
