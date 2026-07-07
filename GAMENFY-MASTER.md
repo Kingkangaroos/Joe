@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v8.3)
+# GAMENFY — Master Document (v8.4)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -154,6 +154,8 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 1. [x] **Jarvis daily check-in + streak + automatic push** — shipped in v7.1/v7.2. Joey only taps "Turn on" once in the home-screen app.
 2. [x] **Tier-lock system** — shipped in v7.4 (gates at 10/25/50/75, gate quest required, XP never lost).
 3. [~] **Skill photos** — in progress (v7.5): 3/28 done (strength, coding, sales), pipeline + style template locked in the v7.5 changelog entry. Blocked on Higgsfield credits (0 left, free plan) — continue in batches.
+
+**Next dedicated session — scientific skills audit (Joey approved, no input needed):** review all 28 skills against: (a) level pacing (levels 1-100 should map to realistic time-投入: ~1 level/week early, slowing later; tier gates at 10/25/50/75 must be provable real-world milestones), (b) quest ladders grounded in established progression science (strength: double-progression & 1RM standards; calisthenics: skill progressions; piano: graded repertoire (ABRSM-like); reading: volume+retention; meditation: duration+consistency findings; money: percentage-based benchmarks), (c) habit XP/decay rates consistent (currently +15/check, -1 level per 14 idle days for physical skills). Deliverable: one build doc updating quests.js + xp.js milestones with sources noted per ladder.
 
 **Backlog:**
 - [ ] Three-times-daily Apple Health sync setup

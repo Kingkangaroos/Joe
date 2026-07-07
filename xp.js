@@ -728,6 +728,21 @@
     return h;
   };
 
+  // v8.4: check a habit for a specific date (e.g. yesterday) — never downgrades
+  window.checkHabitFor = function (habitId, dateStr, label, icon) {
+    const habits = loadHabits();
+    if (!habits[habitId]) habits[habitId] = { label:label||habitId, icon:icon||'\u2b50', score:0, lastChecked:null, streak:0 };
+    const h = habits[habitId];
+    if (h.lastChecked && h.lastChecked >= dateStr) return { habit:h, applied:false };
+    const dayBefore = (function(){ const p=dateStr.split('-').map(Number); const d=new Date(p[0],p[1]-1,p[2]-1);
+      return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })();
+    h.score  = Math.min(10, (h.score||0)+1);
+    h.streak = (h.lastChecked===dayBefore) ? (h.streak||0)+1 : 1;
+    h.lastChecked = dateStr;
+    saveHabits(habits);
+    return { habit:h, applied:true };
+  };
+
   window.uncheckHabit = function (habitId) {
     const habits = loadHabits();
     if (!habits[habitId]) return;

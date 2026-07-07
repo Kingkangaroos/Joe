@@ -3447,7 +3447,9 @@ async function hmFetchAll(){
         out.byDate[date] = {
           steps:  Math.round(Number(d['steps ']||d.steps||0))||0,
           energy: Math.round(Number(d['active_energy']||d.energy||0))||0,
-          weight: Number(d.weight||0)||0
+          weight: Number(d.weight||0)||0,
+          sleep:  Math.round(Number(d.sleep_minutes||0))||0,
+          rhr:    Math.round(Number(d.resting_hr||0))||0
         };
         if(!out.lastHealthDate || date>out.lastHealthDate) out.lastHealthDate=date;
       }
@@ -3498,8 +3500,14 @@ function hmMetricDefs(d){
   };
   const avg7 = (getter)=>{ const s=hmSeries(7,getter).filter(p=>p.val); return s.length?Math.round(s.reduce((a,p)=>a+p.val,0)/s.length):0; };
   const latest = (getter)=>{ for(let i=0;i<45;i++){ const v=getter(hmDateStr(-i)); if(v) return {val:v,date:hmDateStr(-i)}; } return null; };
+  g.sleep = date=>(d.byDate[date]||{}).sleep;
+  g.rhr   = date=>(d.byDate[date]||{}).rhr;
+  const anySleep = hmSeries(30,g.sleep).some(p=>p.val), anyRhr = hmSeries(30,g.rhr).some(p=>p.val);
+  const air = { sub:'Waiting for Fitbit Air' };
   return [
     { id:'steps',  label:'Steps',           unit:'',    color:HM_COLORS.steps,  getter:g.steps,  today:g.steps(hmDateStr(0))||0,  sub:'7-day avg '+avg7(g.steps).toLocaleString() },
+    { id:'sleep',  label:'Sleep',           unit:'min', color:'#8E7CFF',        getter:g.sleep,  today:(latest(g.sleep)||{val:0}).val, sub:anySleep?('7-day avg '+avg7(g.sleep)+' min'):air.sub },
+    { id:'rhr',    label:'Resting HR',      unit:'bpm', color:'#E4604E',        getter:g.rhr,    today:(latest(g.rhr)||{val:0}).val,   sub:anyRhr?('7-day avg '+avg7(g.rhr)+' bpm'):air.sub },
     { id:'energy', label:'Active Energy',   unit:'kcal',color:HM_COLORS.energy, getter:g.energy, today:g.energy(hmDateStr(0))||0, sub:'7-day avg '+avg7(g.energy) },
     { id:'volume', label:'Training Volume', unit:'kg',  color:HM_COLORS.volume, getter:g.volume, today:(latest(g.volume)||{val:0}).val, sub:(latest(g.volume)?('last '+(latest(g.volume).date===hmDateStr(0)?'today':latest(g.volume).date.slice(5))):'no workouts yet') },
     { id:'weight', label:'Weight',          unit:'kg',  color:HM_COLORS.weight, getter:g.weight, today:(latest(g.weight)||{val:0}).val, sub:(latest(g.weight)?('logged '+latest(g.weight).date.slice(5)):'no weight data') }

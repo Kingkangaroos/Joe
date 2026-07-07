@@ -214,6 +214,11 @@ body {
 .wk-insight { margin-top:14px; background:var(--card,#fff); border:1.5px solid var(--ink,#15140F); border-radius:13px; padding:12px 14px; font-family:var(--font-display); font-weight:700; font-size:13px; color:var(--ink); line-height:1.45; }
 
 /* ── Focus timer (v8.2) ──────────────────────────── */
+.nm-add {
+  font-size:10px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase;
+  padding:5px 11px; border-radius:12px; border:1px solid var(--line, rgba(0,0,0,0.12));
+  background:var(--card,#fff); color:var(--muted); cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
 .nextmove-start {
   flex-shrink:0; font-size:12px; font-weight:800; padding:9px 16px; border-radius:10px;
   border:none; cursor:pointer; background:var(--ink,#15140F); color:#F4F3EF;
@@ -861,9 +866,10 @@ body {
     <div class="checkin-cta" id="weeklyCta" onclick="openWeekly()"></div>
   </div>
 
-  <!-- Next Move (Ventures) -->
+  <!-- Next Move (Ventures + custom) -->
   <div id="nextMoveWrap" style="display:none">
-    <div class="sec-head">Next Move</div>
+    <div class="sec-head" style="display:flex;align-items:center;justify-content:space-between">Next Move
+      <button class="nm-add" onclick="addCustomMove()">+ Add</button></div>
     <div class="nextmove-card" id="nextMoveCard"></div>
   </div>
 
@@ -902,7 +908,8 @@ body {
   </div>
 
   <!-- Today's Missions -->
-  <div class="sec-head">Today's Missions</div>
+  <div class="sec-head" style="display:flex;align-items:center;justify-content:space-between"><span id="missionsHead">Today's Missions</span>
+    <button class="nm-add" id="missionsDayBtn" onclick="toggleMissionsDay()">Yesterday</button></div>
   <div class="missions-card" id="missionsCard">
     <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">Loading habits…</div>
   </div>
@@ -1012,7 +1019,7 @@ function renderMissions() {
   if (!window.getHabits) { setTimeout(renderMissions, 50); return; }
   const habits = window.getHabits();
   const defaults = window.RPG_DEFAULT_SKILLS || {};
-  const today = todayStr();
+  const today = missionsDay === 'yesterday' ? yesterdayStr() : todayStr();
 
   // Collect habits from defaults
   const habitKeys = Object.keys(defaults).filter(k => defaults[k].isHabit && !defaults[k].private && defaults[k].active !== false);
@@ -1040,7 +1047,7 @@ function renderMissions() {
   container.innerHTML = habitKeys.map(k => {
     const def = defaults[k];
     const h = habits[k] || {};
-    const donedToday = h.lastChecked === today;
+    const donedToday = missionsDay==='yesterday' ? !!(h.lastChecked && h.lastChecked >= today) : (h.lastChecked === today);
     if (donedToday) doneCount++;
     const lvl = h.score || 0;
     return `<div class="mission-row${donedToday?' done':''}" onclick="toggleMission('${k}')" data-key="${k}">
@@ -1069,7 +1076,35 @@ function renderMissions() {
   if (bs) bs.textContent = best + '/10';
 }
 
+let missionsDay='today';
+window.toggleMissionsDay=function(){
+  missionsDay = missionsDay==='today' ? 'yesterday' : 'today';
+  document.getElementById('missionsHead').textContent = missionsDay==='today' ? "Today's Missions" : "Yesterday's Missions";
+  document.getElementById('missionsDayBtn').textContent = missionsDay==='today' ? 'Yesterday' : 'Back to today';
+  renderMissions();
+};
+function yesterdayStr(){ const d=new Date(); d.setDate(d.getDate()-1);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
 window.toggleMission = function(key) {
+  if (missionsDay === 'yesterday') {
+    const defaults = window.RPG_DEFAULT_SKILLS || {};
+    const def = defaults[key] || {};
+    const y = yesterdayStr();
+    const res = window.checkHabitFor ? window.checkHabitFor(key, y, def.label, def.icon) : null;
+    if (res && res.applied) {
+      if (window.addXP) window.addXP(key, 15, 'Habit (yesterday): ' + def.label);
+      try { const st = JSON.parse(localStorage.getItem('rpg_streak_v1')) || { days:{} };
+        st.days = st.days || {}; st.days[y] = true;
+        localStorage.setItem('rpg_streak_v1', JSON.stringify(st)); } catch (e) {}
+      showToast('+15 XP \u00b7 ' + def.label + ' \u00b7 counted for yesterday');
+    } else {
+      showToast('Already counted for yesterday or later');
+    }
+    renderMissions(); renderCharStrip();
+    if (window.Streak) { renderStreakPill(); renderCheckinCard(); }
+    return;
+  }
   if (!window.checkHabit || !window.uncheckHabit) return;
   const defaults = window.RPG_DEFAULT_SKILLS || {};
   const def = defaults[key] || {};
@@ -1646,6 +1681,7 @@ function renderCheckinCard() {
   const ventures = window.Ventures ? window.Ventures.activeVentures().filter(v => window.Ventures.nextStep(v)).length : 0;
   const open = missions + ventures;
   if (hour < 12) {
+    if (pref('morning_brief', true) === false) { wrap.style.display = 'none'; return; }
     const st = window.Streak.status();
     wrap.style.display = '';
     cta.className = 'checkin-cta';
@@ -1838,7 +1874,7 @@ function renderWeeklyCard(){
   const wrap=document.getElementById('weeklyWrap');
   if(!wrap) return;
   const target=wkReviewTarget();
-  if(!target || wkClosed(target)){ wrap.style.display='none'; return; }
+  if(pref('weekly_review', true)===false || !target || wkClosed(target)){ wrap.style.display='none'; return; }
   const isCatchUp = new Date().getDay()!==0;
   wrap.style.display='';
   document.getElementById('weeklyCta').innerHTML =
@@ -1923,6 +1959,35 @@ function installLevelUpToasts(){
   };
 }
 
+// ── Prefs (v8.4) ────────────────────────────────────────────
+function prefs(){ try{ const r=localStorage.getItem('rpg_prefs_v1'); if(r) return JSON.parse(r); }catch(e){} return {}; }
+function pref(k, dflt){ const p=prefs(); return (k in p)?p[k]:dflt; }
+
+// ── Custom next moves (v8.4) ────────────────────────────────
+const CUSTOM_MOVES_KEY='rpg_custom_moves_v1';
+function cmLoad(){ try{ const r=localStorage.getItem(CUSTOM_MOVES_KEY); if(r) return JSON.parse(r); }catch(e){} return {moves:[]}; }
+function cmSave(d){ try{ localStorage.setItem(CUSTOM_MOVES_KEY, JSON.stringify(d)); }catch(e){} }
+window.addCustomMove=function(){
+  const title=(prompt('What\u2019s the move? (short)')||'').trim();
+  if(!title) return;
+  let minutes=parseInt(prompt('How many minutes? (default 25)')||'25',10);
+  if(!(minutes>0&&minutes<600)) minutes=25;
+  const d=cmLoad();
+  d.moves.push({ id:'m'+Date.now(), title:title.slice(0,80), minutes, done:false });
+  cmSave(d); renderNextMove();
+};
+window.completeCustomMove=function(id){
+  const d=cmLoad(); const m=d.moves.find(x=>x.id===id);
+  if(!m||m.done) return;
+  m.done=true; m.doneAt=new Date().toISOString(); cmSave(d);
+  if(window.addXP) window.addXP('planning', 10, 'Custom move: '+m.title);
+  showToast('+10 planning \u00b7 '+m.title);
+  renderNextMove(); renderStreakPill(); renderCheckinCard();
+};
+window.removeCustomMove=function(id){
+  const d=cmLoad(); d.moves=d.moves.filter(x=>x.id!==id); cmSave(d); renderNextMove();
+};
+
 // ── Focus timer (v8.2) — from list to starting, in one tap ──
 const FOCUS_KEY = 'rpg_focus_session_v1';
 function focusLoad(){ try{ const r=localStorage.getItem(FOCUS_KEY); if(r) return JSON.parse(r); }catch(e){} return null; }
@@ -1934,7 +1999,13 @@ window.startFocus = function(vid, sid){
   if(!v) return;
   let step=null; (v.phases||[]).forEach(p=>(p.steps||[]).forEach(s=>{ if(s.id===sid) step=s; }));
   if(!step||step.done) return;
-  focusSave({ vid, sid, title: step.title, ventureName: v.name, minutes: step.minutes||25, startedAt: Date.now() });
+  focusSave({ kind:'venture', vid, sid, title: step.title, ventureName: v.name, minutes: step.minutes||25, startedAt: Date.now() });
+  openFocusOverlay();
+};
+window.startFocusCustom = function(id){
+  const m=cmLoad().moves.find(x=>x.id===id);
+  if(!m||m.done) return;
+  focusSave({ kind:'custom', cid:id, title:m.title, ventureName:'Your move', minutes:m.minutes||pref('focus_minutes',25), startedAt:Date.now() });
   openFocusOverlay();
 };
 
@@ -1973,6 +2044,12 @@ function openFocusOverlay(){
 
 window.focusComplete=function(btn){
   const s=focusLoad(); if(!s) return;
+  if(s.kind==='custom'){
+    focusSave(null); clearInterval(focusTick);
+    document.querySelectorAll('[data-focus]').forEach(el=>el.remove());
+    completeCustomMove(s.cid);
+    return;
+  }
   const hit=window.Ventures?window.Ventures.completeStep(s.vid,s.sid):null;
   focusSave(null); clearInterval(focusTick);
   document.querySelectorAll('[data-focus]').forEach(el=>el.remove());
@@ -1995,14 +2072,25 @@ function renderNextMove() {
   const rows = window.Ventures.activeVentures()
     .map(v => ({ v, nx: window.Ventures.nextStep(v) }))
     .filter(x => x.nx);
-  if (!rows.length) { wrap.style.display = 'none'; return; }
+  const custom = cmLoad().moves.filter(m => !m.done);
   wrap.style.display = '';
+  if (!rows.length && !custom.length) {
+    card.innerHTML = '<div class="nextmove-row" style="cursor:default;color:var(--muted);font-size:12px">Nothing queued \u2014 add your own move with + Add.</div>';
+    return;
+  }
   card.innerHTML = rows.map(({ v, nx }) =>
     '<div class="nextmove-row" onclick="location.href=\'character.html#ventures\'">' +
       '<div><div class="nextmove-venture">' + v.name + '</div>' +
       '<div class="nextmove-title">' + nx.step.title + '</div>' +
       (nx.step.minutes ? '<div class="nextmove-min" style="display:inline-block;margin-top:4px">~' + nx.step.minutes + ' min</div>' : '') + '</div>' +
       '<button class="nextmove-start" onclick="event.stopPropagation();startFocus(\'' + v.id + '\',\'' + nx.step.id + '\')">Start</button>' +
+    '</div>'
+  ).join('') + custom.map(m =>
+    '<div class="nextmove-row" onclick="if(confirm(\'Remove this move?\')) removeCustomMove(\'' + m.id + '\')">' +
+      '<div><div class="nextmove-venture">Your move</div>' +
+      '<div class="nextmove-title">' + m.title + '</div>' +
+      '<div class="nextmove-min" style="display:inline-block;margin-top:4px">~' + m.minutes + ' min</div></div>' +
+      '<button class="nextmove-start" onclick="event.stopPropagation();startFocusCustom(\'' + m.id + '\')">Start</button>' +
     '</div>'
   ).join('');
 }
@@ -2039,7 +2127,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initCloudSync === 'function' && window.supabase) {
     initCloudSync({
       appKey: 'rpg',
-      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1'],
+      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1'],
       syncedPrefixes: ['rpg_daily_v1:','rpg_agenda_v1:','rpg_todo_v1:']
     });
   }

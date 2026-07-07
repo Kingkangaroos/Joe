@@ -711,9 +711,53 @@ document.addEventListener('DOMContentLoaded', () => {
   if (inp) inp.value = localStorage.getItem(HEVY_KEY) || '';
 
   if (typeof initCloudSync === 'function' && window.supabase) {
-    initCloudSync({ appKey: 'rpg', syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1'], syncedPrefixes: ['rpg_daily_v1:'] });
+    initCloudSync({ appKey: 'rpg', syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1'], syncedPrefixes: ['rpg_daily_v1:','rpg_agenda_v1:'] });
   }
 });
+</script>
+
+<div style="max-width:560px;margin:0 auto;padding:0 16px 40px">
+  <div class="sec-title" style="margin-top:24px">Engine &amp; nudges</div>
+  <div style="background:var(--surface,rgba(255,255,255,0.04));border:1px solid var(--border,rgba(255,255,255,0.08));border-radius:14px;padding:4px 14px">
+    <div class="toggle-row">
+      <div><div class="toggle-label">Morning push (08:30)</div><div class="toggle-sub">Daily notification with your next move</div></div>
+      <label class="toggle-sw"><input type="checkbox" id="pfMorningPush"><span class="toggle-sw-track"></span><span class="toggle-sw-thumb"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div><div class="toggle-label">Evening push (19:30)</div><div class="toggle-sub">Skips automatically when your day is closed</div></div>
+      <label class="toggle-sw"><input type="checkbox" id="pfEveningPush"><span class="toggle-sw-track"></span><span class="toggle-sw-thumb"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div><div class="toggle-label">Morning brief card</div><div class="toggle-sub">On Main before noon</div></div>
+      <label class="toggle-sw"><input type="checkbox" id="pfMorningBrief"><span class="toggle-sw-track"></span><span class="toggle-sw-thumb"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div><div class="toggle-label">Weekly review card</div><div class="toggle-sub">Sundays, catch-up until Wednesday</div></div>
+      <label class="toggle-sw"><input type="checkbox" id="pfWeekly"><span class="toggle-sw-track"></span><span class="toggle-sw-thumb"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div><div class="toggle-label">Default focus minutes</div><div class="toggle-sub">For custom moves without a set time</div></div>
+      <input type="number" id="pfFocusMin" min="5" max="180" style="width:64px;background:transparent;border:1px solid var(--border,rgba(255,255,255,0.15));border-radius:8px;color:inherit;padding:6px 8px;font-size:13px;text-align:center">
+    </div>
+  </div>
+  <div style="font-size:10px;color:var(--t3,#888);margin-top:10px;line-height:1.5">Everything else runs itself: streak counts any XP, mission, venture step or closed check-in · tier gates at level 10/25/50/75 · Jarvis lives next to your streak flame · backup export is under Daily.</div>
+</div>
+<script>
+(function(){
+  const KEY='rpg_prefs_v1';
+  function load(){ try{ const r=localStorage.getItem(KEY); if(r) return JSON.parse(r); }catch(e){} return {}; }
+  function save(p){ try{ localStorage.setItem(KEY, JSON.stringify(p)); }catch(e){} }
+  const map={ pfMorningPush:'morning_push', pfEveningPush:'evening_push', pfMorningBrief:'morning_brief', pfWeekly:'weekly_review' };
+  const p=load();
+  Object.entries(map).forEach(([id,k])=>{
+    const el=document.getElementById(id); if(!el) return;
+    el.checked = (k in p) ? !!p[k] : true;
+    el.addEventListener('change',()=>{ const q=load(); q[k]=el.checked; save(q); });
+  });
+  const fm=document.getElementById('pfFocusMin');
+  if(fm){ fm.value = p.focus_minutes||25;
+    fm.addEventListener('change',()=>{ const q=load(); q.focus_minutes=Math.max(5,Math.min(180,parseInt(fm.value)||25)); save(q); }); }
+})();
 </script>
 </body>
 </html>
