@@ -7,7 +7,7 @@
 
 ## 1. What Gamenfy is
 
-A gamified personal Life OS — version 0.1 of a future product. Joey uses it daily and gives UX feedback that drives iteration. Skills, levels, habits and quests turn real life into an RPG. The dashboard runs as a PWA (add-to-homescreen) and opens on **Main**.
+A gamified personal Life OS — version 0.1 of a future product. Skills, levels, habits, quests, ventures, streaks and a check-in loop turn real life into an RPG. Runs as a PWA (add-to-homescreen, iOS 16.4+ for push) and opens on **Main**. Design principle: *liever werkend dan mooi-maar-kapot.* The engagement engine (morning/evening push, streak, check-ins, focus timer) exists because the day-one problem was "ik maak lijstjes maar begin niet".
 
 ---
 
@@ -30,13 +30,14 @@ A gamified personal Life OS — version 0.1 of a future product. Joey uses it da
 | `finance.html` | Net Worth / Maandlasten / Wishlist |
 | `gym.html` | Hevy-linked workout view (to be simplified) |
 | `health.html`, `po-water.html` | health & water trackers |
-| `settings.html` | focus skills, active skills, PIN, quotes |
+| `settings.html` | focus skills, active skills, PIN, quotes + **Engine & nudges** (push/card prefs, focus minutes → `rpg_prefs_v1`) |
 | `xp.js` | skill definitions, XP/level math, habits, addXP/removeXP |
 | `quests.js` | quest ladders per skill (v4.4) |
 | `ventures.js` | Ventures: business quest ladders (v7.0) |
 | `checkin.js` | Streak engine + evening check-in storage (v7.1) |
 | `push.js` | Web Push client: SW registration + subscription → Supabase (v7.2) |
 | `sw.js` | Service worker: shows push notifications, tap opens app (v7.2) |
+| `jarvis.html` | Jarvis chat page (v8.3, backed by the `jarvis` edge function) |
 | `sync.js` | Supabase cloud sync |
 | `topbar.js` | top bar + bottom nav |
 | `manifest.json` | PWA — start_url = index.html |
@@ -54,6 +55,8 @@ A gamified personal Life OS — version 0.1 of a future product. Joey uses it da
 ## 4. Level system
 
 - **Skill level:** `level = floor(sqrt(xp/50)) + 1`, capped at **100**. XP comes from quick-log actions per skill.
+- **Tier-lock (v7.4):** effective level is capped at gates **10/25/50/75** until that gate's quest (highest quest ≤ gate) is claimed — `tierLockInfo()` in xp.js, applied everywhere levels show. XP always keeps accruing.
+- **Level-up toasts (v8.0):** any addXP that crosses a level shows "Skill → Level N".
 - **Habits:** separate **0–10 score** (NOT XP). +1 per day done, max 10; drops only after a missed day, so 10 days of slacking returns to 0. No punishing streaks.
 - **Body Level:** average level of the body skills (Gym, Strength, Calisthenics, Core, Mobility, Endurance, Recovery, Tennis). Shown on the Body tab.
 - **Total Level:** average level of all non-habit skills (0-100 scale, like Body Level). Shown on the Skills tab.
@@ -63,23 +66,19 @@ A gamified personal Life OS — version 0.1 of a future product. Joey uses it da
 ## 5. The tabs in detail
 
 ### Main (`index.html`)
-1. Character strip (name + total level)
-2. Greeting + **daily rotating motivational quote** (deterministic per day)
-3. **Agenda** — 6:00–23:00 day view, gold day-bar, ‹ › navigation (−7…+30 days), auto-scrolls to current hour today
-4. **Plan tray** — tap a mission/focus-skill chip → pick a time (or tap a slot) → it drops into the agenda. Marking a block done awards XP. (Tap-to-plan, not drag — reliable on mobile. Drag is a possible future upgrade.)
-5. Today's Missions · Focus Skills · Core Tracker (whistling, dancing)
+1. Greeting + **streak flame pill** (ember when today is secured, pulses when at risk after 17:00) + round **Jarvis button** → jarvis.html
+2. Daily rotating quote (deterministic per day) · Day Score arc
+3. **Time-aware check-in card:** <12:00 Morning Brief ("Own the day", Lock it in) · 12–17 hidden · ≥17:00 Evening check-in (recap + up to 3 open actions completable inline + **Close the day** → streak secured). Streak: any XP / mission / venture step / closed day counts; never breaks mid-day.
+4. **Weekly Review card** (Sunday reviews the ending week; Mon–Wed catch-up for last week): XP, active days, venture steps, energy-by-domain bars, top skills, one rule-based insight.
+5. **Next Move card:** exactly one next step per active venture + **custom moves** (+ Add, `rpg_custom_moves_v1`), each with a **Start** button → full-screen **focus timer** (persists across refresh via `rpg_focus_session_v1`; Done completes the step and awards XP).
+6. **Agenda** — 6:00–23:00 day view, ‹ › nav, tap-to-plan tray (marking a block done awards XP)
+7. **Missions** with **Yesterday toggle** (fills a forgotten day: `checkHabitFor`, +15 XP, streak day stamped) · Focus Skills · Core Tracker (whistling, dancing)
+8. One-time push setup card until notifications are enabled
 
 ### Body (`character.html` → Body)
-- Anatomical muscular male figure (SVG). Muscle groups brighten/grow with their skill:
-  - chest + shoulders → **Strength**
-  - arms + forearms → **Calisthenics**
-  - abs + obliques → **Core** (visible sixpack appears at Core lvl 25+, sharper higher up)
-  - legs + calves → **Gym**
-- Overall **Body Level** + **mood face** (smiles when all body habits done today)
-- Day nav to backlog a forgotten day
-- 7 tappable body-skill cards → open the real skill detail panel
-- Body composition row (weight / body fat / muscle) from Apple Health
-- Hevy "last workout" widget
+- **Hologram body scan** (v7.6, pure SVG): translucent cyan figure with glow, pulsing measurement rings, sweeping scanline, projection cone. Muscle groups brighten/grow with their (tier-locked) skill level + Hevy volume: chest/shoulders → Strength, arms/forearms → Calisthenics, abs/obliques → Core, legs → Gym. Four tappable callout pills (STRENGTH/CORE/LEGS/ARMS with live LV) deep-link to skills.
+- **Health section** (v7.3, Apple Health-style): metric cards Steps · Active Energy · Training Volume (live from Hevy) · Weight · **Sleep** · **Resting HR** (last two show "Waiting for Fitbit Air" until data flows). Tap → 30-day chart + avg/best/days-logged; stale-sync warning built in.
+- Body Level + mood face · day nav · body-skill cards · body composition row · Hevy last-workout widget
 
 ### Skills (`character.html` → Skills)
 - **Skills view:** RuneScape-style icon grid grouped by domain, each cell = level/100 + progress bar. Total Level banner on top + maxed counter. Private skills behind PIN.
@@ -99,12 +98,13 @@ A gamified personal Life OS — version 0.1 of a future product. Joey uses it da
 
 ---
 
-## 7. Apple Health → Supabase sync
+## 7. Health data pipeline & server side
 
-- iOS Shortcut POSTs to Supabase. Keys: `apple_health:yyyy-MM-dd`, daily data `rpg_daily_v1:yyyy-MM-dd`.
-- Project URL `https://ttxjsoahmtennnufgeqx.supabase.co`, publishable key used for both `apikey` and `Authorization: Bearer`, header `Prefer: resolution=merge-duplicates` for upsert.
-- Three daily syncs planned.
-- Shortcuts pitfall: "no internet connection" usually = Rich Text URL formatting; use a dedicated URL action and reference it as a variable.
+- **Rows:** `apple_health:yyyy-MM-dd` in `app_state` — fields `steps` (legacy quirk: sometimes `steps ` with trailing space), `active_energy` (sometimes string), `weight`, `sleep_minutes`, `resting_hr`. The Body tab reads these; any source may write them.
+- **Current source:** iOS Shortcut (BROKEN since 2026-06-09 — date-variable defect; Joey fixes, or the Fitbit Air replaces it). Shortcuts pitfall: "no internet connection" usually = Rich Text URL formatting.
+- **Incoming source:** Fitbit Air → Google Health API via edge function `health-sync` (deployed skeleton, REPLACE_ME Google OAuth credentials; endpoint paths carry TODO-verify markers). Setup steps in the v8.4 changelog entry. Schedule nightly cron after first successful manual run.
+- **Edge functions live in this project:** `send-daily-push` (v3: morning/evening modes, prefs-aware, skips evening when day closed; crons `gamenfy-morning-push` 06:30 UTC + `gamenfy-daily-push` 17:30 UTC), `import-media` (copies remote images into public storage bucket `skills`), `jarvis` (chat brain — currently expects an API key const; **decision: Google Gemini free tier**, awaiting Joey's key from aistudio.google.com, then swap the Anthropic call for the Gemini endpoint), `health-sync` (above). All guarded by a shared secret header; VAPID keys live only inside `send-daily-push`.
+- **Supabase REST from clients:** publishable key as both `apikey` and `Authorization: Bearer`, `Prefer: resolution=merge-duplicates` for upserts.
 
 ---
 
