@@ -1733,7 +1733,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <div id="vkPaid" style="font-size:22px;font-weight:700;color:#6BE3A4;margin-top:4px">€0</div>
       </div>
       <div>
-        <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#F2C063">Openstaand</div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#F2C063">Openstaand <span id="vkCycleLbl" style="color:rgba(255,255,255,0.35);letter-spacing:0.04em"></span></div>
         <div id="vkOutstanding" style="font-size:22px;font-weight:700;color:#F2C063;margin-top:4px">€0</div>
       </div>
     </div>
@@ -1743,6 +1743,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       <input type="text" placeholder="Naam (bijv. Huur)" id="subName" style="flex:2;min-width:140px" />
       <input type="number" placeholder="Bedrag (€)" id="subAmount" step="0.01" style="flex:1;max-width:110px" />
       <input type="number" placeholder="Dag vd maand" id="subDayOfMonth" min="1" max="31" style="flex:1;max-width:110px" />
+      <input type="number" placeholder="Termijnen (optioneel)" id="subPlanTotal" min="1" max="120" style="flex:1;max-width:150px" />
       <button class="quick-add-btn" id="subAddBtn" onclick="window.__addSub && window.__addSub()">+ Toevoegen</button>
     </div>
     <!-- Hidden elements for backwards compatibility with old JS references -->
@@ -2345,7 +2346,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     populateSubFromSelect && populateSubFromSelect();
     const items = storeGet('subs') || [];
     const paidData = storeGet('vk_paid_v1') || {};
-    const curMonth = new Date().toISOString().slice(0, 7);
+    // Betaalcyclus loopt van de 21e t/m de 20e — op de 21e staat alles automatisch weer open.
+    const curMonth = (function(){ const d=new Date();
+      const m=new Date(d.getFullYear(), d.getMonth()-(d.getDate()<21?1:0), 1);
+      return 'c'+m.getFullYear()+'-'+String(m.getMonth()+1).padStart(2,'0'); })();
 
     subsList.innerHTML = '';
 
@@ -2377,11 +2381,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       if (isPaidThisMonth) row.style.opacity = '0.6';
 
       const dayLabel = it.dayOfMonth ? `dag ${it.dayOfMonth}` : '';
+      const planLabel = (it.plan && it.plan.total)
+        ? `${Math.min(paidMonths.length, it.plan.total)}/${it.plan.total} termijnen`
+        : '';
+      const metaBits = [dayLabel && ('📅 Afschrijving ' + dayLabel), planLabel && ('🧾 ' + planLabel)].filter(Boolean).join(' · ');
 
       const left = document.createElement('div');
       left.style.cssText = 'flex:1;min-width:0';
       left.innerHTML = `<div style="font-weight:600;color:var(--text-primary);font-size:14px">${escapeHtml(it.name)}</div>` +
-        (dayLabel ? `<div style="font-size:11px;color:var(--text-tertiary);margin-top:2px">📅 Afschrijving ${dayLabel}</div>` : '');
+        (metaBits ? `<div style="font-size:11px;color:var(--text-tertiary);margin-top:2px">${metaBits}</div>` : '');
 
       const cost = document.createElement('div');
       cost.style.cssText = 'text-align:right;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;' + (isPaidThisMonth ? 'color:var(--text-tertiary);text-decoration:line-through' : 'color:var(--text-primary)');
@@ -2399,6 +2407,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         else months.push(curMonth);
         pd[it.id] = months;
         storeSet('vk_paid_v1', pd);
+        // Betaalregeling: na de laatste termijn automatisch uit de lijst
+        if (mIdx < 0 && it.plan && it.plan.total && months.length >= it.plan.total) {
+          const its = storeGet('subs') || [];
+          const i2 = its.findIndex(x => x.id === it.id);
+          if (i2 >= 0) { its.splice(i2, 1); storeSet('subs', its); }
+          setTimeout(()=>alert('Betaalregeling "' + it.name + '" afgerond \u2014 automatisch verwijderd.'), 50);
+        }
         renderSubs();
       });
 
@@ -2427,6 +2442,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     if(subsTotal) subsTotal.innerHTML = fmtMoney(total) + ' <span style="font-size:13px;color:var(--text-tertiary);font-weight:500">/ mo</span>';
     if(subsYearly) subsYearly.textContent = '';
     if(subsCount) subsCount.textContent = `${items.length} kosten · €${outstanding.toFixed(0)} openstaand`;
+    const lblEl = document.getElementById('vkCycleLbl');
+    if (lblEl) {
+      const d=new Date(); const start=new Date(d.getFullYear(), d.getMonth()-(d.getDate()<21?1:0), 21);
+      const end=new Date(start.getFullYear(), start.getMonth()+1, 20);
+      const F=x=>x.toLocaleDateString('nl-NL',{day:'numeric',month:'short'});
+      lblEl.textContent = '· cyclus '+F(start)+' \u2013 '+F(end);
+    }
   }
 
   // ============================================================
@@ -2454,16 +2476,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 
   function doSubAdd() {
-    const name = (document.getElementById('subName').value || '').trim();
-    const amount = parseFloat(document.getElementById('subAmount').value || 0);
+    const nEl=document.getElementById('subName'), aEl=document.getElementById('subAmount');
+    if(!nEl||!aEl) return;
+    const name = (nEl.value || '').trim();
+    const amount = parseFloat(aEl.value || 0);
     const dayOfMonth = parseInt(document.getElementById('subDayOfMonth')?.value || 0) || null;
-    if (!name || !amount) return;
+    const planTotal = parseInt(document.getElementById('subPlanTotal')?.value || 0) || null;
+    if (!name || !amount) { (!name?nEl:aEl).focus(); return; }
     const items = storeGet('subs') || [];
-    items.push({ id: Date.now().toString(36), name, amount, dayOfMonth });
+    const item = { id: Date.now().toString(36), name, amount, dayOfMonth };
+    if (planTotal) item.plan = { total: planTotal };
+    items.push(item);
     storeSet('subs', items);
-    document.getElementById('subName').value = '';
-    document.getElementById('subAmount').value = '';
+    nEl.value=''; aEl.value='';
     if(document.getElementById('subDayOfMonth')) document.getElementById('subDayOfMonth').value = '';
+    if(document.getElementById('subPlanTotal')) document.getElementById('subPlanTotal').value = '';
     renderSubs();
   }
   // Add button uses event delegation (see safety-net at the bottom).
