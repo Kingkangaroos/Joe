@@ -102,6 +102,12 @@ body {
 .greeting-date {
   font-size: 12px; color: var(--muted); margin-top: 3px;
 }
+.day-nav-btn {
+  width:30px; height:30px; border-radius:50%; border:1px solid var(--line, rgba(0,0,0,0.12));
+  background:var(--card,#fff); color:var(--muted); font-size:16px; cursor:pointer;
+  flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent;
+}
 .streak-pill {
   flex-shrink: 0; display: flex; align-items: center; gap: 6px;
   padding: 7px 13px; border-radius: 20px; cursor: pointer;
@@ -804,9 +810,13 @@ body {
 
   <!-- Greeting -->
   <div class="greeting">
-    <div>
-      <div class="greeting-time" id="greetingText">Good morning, Joey</div>
-      <div class="greeting-date" id="greetingDate"></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="day-nav-btn" id="dayNavBack" onclick="setViewDay('yesterday')">‹</button>
+      <div>
+        <div class="greeting-time" id="greetingText">Good morning, Joey</div>
+        <div class="greeting-date" id="greetingDate"></div>
+      </div>
+      <button class="day-nav-btn" id="dayNavFwd" onclick="setViewDay('today')" style="display:none">›</button>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
     <button class="streak-pill jarvis-pill" onclick="location.href='jarvis.html'" title="Jarvis">
@@ -1040,7 +1050,7 @@ function renderMissions() {
     const char = window.getCharacter();
     const log = char.xpLog || [];
     for (const entry of log) {
-      if ((entry.date || '').startsWith(today2)) xpToday += Math.max(0, entry.amount || 0);
+      if ((entry.date || '').startsWith(today)) xpToday += Math.max(0, entry.amount || 0);
     }
   }
 
@@ -1077,12 +1087,25 @@ function renderMissions() {
 }
 
 let missionsDay='today';
-window.toggleMissionsDay=function(){
-  missionsDay = missionsDay==='today' ? 'yesterday' : 'today';
-  document.getElementById('missionsHead').textContent = missionsDay==='today' ? "Today's Missions" : "Yesterday's Missions";
-  document.getElementById('missionsDayBtn').textContent = missionsDay==='today' ? 'Yesterday' : 'Back to today';
+window.setViewDay=function(day){
+  missionsDay = day;
+  const yest = missionsDay==='yesterday';
+  document.getElementById('missionsHead').textContent = yest ? "Yesterday's Missions" : "Today's Missions";
+  document.getElementById('missionsDayBtn').textContent = yest ? 'Back to today' : 'Yesterday';
+  document.getElementById('dayNavBack').style.display = yest ? 'none' : 'flex';
+  document.getElementById('dayNavFwd').style.display  = yest ? 'flex' : 'none';
+  const gd = document.getElementById('greetingDate');
+  const gt = document.getElementById('greetingText');
+  if (yest) {
+    const d=new Date(); d.setDate(d.getDate()-1);
+    gt.textContent = 'Yesterday';
+    gd.textContent = d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}) + ' — fill in what you did';
+  } else {
+    renderGreeting();
+  }
   renderMissions();
 };
+window.toggleMissionsDay=function(){ setViewDay(missionsDay==='today'?'yesterday':'today'); };
 function yesterdayStr(){ const d=new Date(); d.setDate(d.getDate()-1);
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 
@@ -1185,7 +1208,7 @@ function renderFocusGrid() {
     const nextXp = window.xpForLevel ? window.xpForLevel(level+1) : null;
     const thisXp = window.xpForLevel ? window.xpForLevel(level) : 0;
     const barPct = nextXp && nextXp !== Infinity
-      ? Math.round(((xp - thisXp) / (nextXp - thisXp)) * 100)
+      ? Math.max(0, Math.min(100, Math.round(((xp - thisXp) / (nextXp - thisXp)) * 100)))
       : 100;
     const isOpen = openFocusKey === key;
 

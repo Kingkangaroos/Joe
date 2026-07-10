@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v8.7)
+# GAMENFY — Master Document (v8.8)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.

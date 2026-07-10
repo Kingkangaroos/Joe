@@ -1739,12 +1739,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     </div>
     <div id="subsList"></div>
     <div class="empty-state" id="subsEmpty">Nog geen vaste kosten</div>
-    <div class="quick-add" style="flex-wrap:wrap;gap:6px;margin-top:12px">
-      <input type="text" placeholder="Naam (bijv. Huur)" id="subName" style="flex:2;min-width:140px" />
-      <input type="number" placeholder="Bedrag (€)" id="subAmount" step="0.01" style="flex:1;max-width:110px" />
-      <input type="number" placeholder="Dag vd maand" id="subDayOfMonth" min="1" max="31" style="flex:1;max-width:110px" />
-      <input type="number" placeholder="Termijnen (optioneel)" id="subPlanTotal" min="1" max="120" style="flex:1;max-width:150px" />
-      <button class="quick-add-btn" id="subAddBtn" onclick="window.__addSub && window.__addSub()">+ Toevoegen</button>
+    <div class="quick-add" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+      <input type="text" placeholder="Naam (bijv. Huur)" id="subName" style="grid-column:1/-1;width:100%;box-sizing:border-box" />
+      <input type="number" placeholder="Bedrag (€)" id="subAmount" step="0.01" inputmode="decimal" style="width:100%;box-sizing:border-box" />
+      <input type="number" placeholder="Dag vd maand" id="subDayOfMonth" min="1" max="31" inputmode="numeric" style="width:100%;box-sizing:border-box" />
+      <input type="number" placeholder="Termijnen (optioneel, bijv. 6)" id="subPlanTotal" min="1" max="120" inputmode="numeric" style="width:100%;box-sizing:border-box" />
+      <button class="quick-add-btn" id="subAddBtn" onclick="window.__addSub && window.__addSub()" style="width:100%">+ Toevoegen</button>
     </div>
     <!-- Hidden elements for backwards compatibility with old JS references -->
     <div id="subsTotal" style="display:none"></div>
