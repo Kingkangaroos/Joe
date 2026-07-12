@@ -413,6 +413,63 @@ body {
   padding: 2px 8px; border-radius: 6px; white-space: nowrap;
 }
 
+/* v9: missions as Daily-tab quest cards */
+.missions-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  margin-bottom: 20px;
+}
+.mq-card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 12px; padding: 12px;
+  cursor: pointer; user-select: none; transition: all 0.18s;
+  -webkit-tap-highlight-color: transparent;
+}
+.mq-card:active { transform: scale(0.96); }
+.mq-card.done { background: rgba(46,139,95,0.06); border-color: rgba(46,139,95,0.25); }
+.mq-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.mq-icon { font-size: 17px; }
+.mq-check {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 1.5px solid var(--line-strong);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: transparent;
+}
+.mq-card.done .mq-check { background: var(--green); border-color: var(--green); color: #fff; }
+.mq-label { font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 2px; }
+.mq-card.done .mq-label { color: var(--ink); }
+.mq-meta { font-size: 9px; font-family: var(--font-mono); color: var(--faint); }
+.mq-card.done .mq-meta { color: var(--green); }
+.mq-why { font-size: 9.5px; color: var(--muted); line-height: 1.45; margin-top: 6px; }
+
+/* v9: gratitude box on Main */
+.grat-card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 14px; margin-bottom: 20px;
+}
+.grat-row { display: flex; gap: 8px; }
+.grat-row input {
+  flex: 1; background: var(--bg);
+  border: 1px solid var(--line-strong); border-radius: 10px;
+  padding: 10px 13px; color: var(--ink); font-family: var(--font-body);
+  font-size: 14px; outline: none; -webkit-appearance: none; min-width: 0;
+}
+.grat-row input::placeholder { color: var(--faint); }
+.grat-add {
+  padding: 10px 16px; border-radius: 10px; flex-shrink: 0;
+  background: rgba(46,139,95,0.08); border: 1px solid var(--green);
+  color: var(--green); font-weight: 700; font-size: 13px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.grat-add:active { transform: scale(0.96); }
+.grat-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.grat-tags:empty { margin-top: 0; }
+.grat-tag {
+  font-size: 11px; font-weight: 600; color: var(--green);
+  border: 1px solid rgba(46,139,95,0.35); border-radius: 20px;
+  padding: 4px 11px;
+}
+.grat-sub { font-size: 10.5px; color: var(--faint); margin-top: 8px; }
+
 /* ── Focus skills ───────────────────────────────── */
 .focus-grid {
   display: grid;
@@ -1016,8 +1073,19 @@ body {
   <!-- Today's Missions -->
   <div class="sec-head" style="display:flex;align-items:center;justify-content:space-between"><span id="missionsHead">Today's Missions</span>
     <button class="nm-add" id="missionsDayBtn" onclick="toggleMissionsDay()">Yesterday</button></div>
-  <div class="missions-card" id="missionsCard">
-    <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">Loading habits…</div>
+  <div class="missions-grid" id="missionsCard">
+    <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px;grid-column:1/-1">Loading habits…</div>
+  </div>
+
+  <!-- Gratitude (v9) -->
+  <div class="sec-head">Gratitude</div>
+  <div class="grat-card">
+    <div class="grat-row">
+      <input id="gratInput" type="text" placeholder="One thing you're grateful for…" maxlength="60">
+      <button class="grat-add" onclick="gratAdd()">+ Add</button>
+    </div>
+    <div class="grat-tags" id="gratTags"></div>
+    <div class="grat-sub">First word of the day · +10 XP Gratitude</div>
   </div>
 
   <!-- Focus Skills -->
@@ -1133,7 +1201,7 @@ function renderMissions() {
   const container = document.getElementById('missionsCard');
   if (!container) return;
   if (!habitKeys.length) {
-    container.innerHTML = '<div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">No habits set up yet — go to Settings.</div>';
+    container.innerHTML = '<div style="padding:16px;text-align:center;color:var(--muted);font-size:13px;grid-column:1/-1">No habits set up yet — go to Settings.</div>';
     return;
   }
 
@@ -1156,15 +1224,15 @@ function renderMissions() {
     const donedToday = hlogHas(k, today);
     if (donedToday) doneCount++;
     const lvl = h.score || 0;
-    return `<div class="mission-row${donedToday?' done':''}" onclick="toggleMission('${k}')" data-key="${k}">
-      <div class="mission-check">
-        <span class="mission-check-icon">✓</span>
+    const why = def.why ? (def.why.length > 82 ? def.why.slice(0, 82).replace(/\s+\S*$/,'') + '…' : def.why) : '';
+    return `<div class="mq-card${donedToday?' done':''}" onclick="toggleMission('${k}')" data-key="${k}">
+      <div class="mq-top">
+        <span class="mq-icon">${def.icon||'⚡'}</span>
+        <span class="mq-check">✓</span>
       </div>
-      <div class="mission-info">
-        <div class="mission-name">${def.label}</div>
-        <div class="mission-streak">${lvl >= 10 ? '👑 Level 10 — mastered' : lvl > 0 ? '⬆️ Level ' + lvl + '/10' : 'Level 0 — start today'}</div>
-      </div>
-      <div class="mission-xp">+15 XP</div>
+      <div class="mq-label">${def.label}</div>
+      <div class="mq-meta">${lvl >= 10 ? '👑 mastered' : 'Lv ' + lvl + '/10'} · +15 XP</div>
+      ${why ? `<div class="mq-why">${why}</div>` : ''}
     </div>`;
   }).join('');
 
@@ -1181,6 +1249,41 @@ function renderMissions() {
   const bs = document.getElementById('arcBestStreak');
   if (bs) bs.textContent = best + '/10';
 }
+
+// ── Gratitude on Main (v9) — same storage as the Daily tab ──
+const GRAT_KEY = 'rpg_gratitude_v1';
+function gratLoad(){ try{ return JSON.parse(localStorage.getItem(GRAT_KEY))||{}; }catch(e){ return {}; } }
+function gratSave(o){ try{ localStorage.setItem(GRAT_KEY, JSON.stringify(o)); }catch(e){} }
+function gratDailyLoad(){ try{ return JSON.parse(localStorage.getItem('rpg_daily_v1:'+todayStr()))||{}; }catch(e){ return {}; } }
+function gratDailySave(d){ try{ localStorage.setItem('rpg_daily_v1:'+todayStr(), JSON.stringify(d)); }catch(e){} }
+function renderGratitude(){
+  const box=document.getElementById('gratTags'); if(!box) return;
+  const items=gratLoad(); const t=todayStr();
+  const words=Object.entries(items).filter(([,d])=>d.lastDate===t).sort((a,b)=>(b[1].count||1)-(a[1].count||1));
+  box.innerHTML=words.map(([w])=>'<span class="grat-tag">'+escapeHtml(w)+'</span>').join('');
+}
+window.gratAdd=function(){
+  const inp=document.getElementById('gratInput'); if(!inp) return;
+  const word=(inp.value||'').trim(); if(!word) return;
+  const key=word.toLowerCase();
+  const items=gratLoad();
+  if(!items[key]) items[key]={ count:0, firstDate:todayStr(), lastDate:todayStr() };
+  items[key].count++; items[key].lastDate=todayStr();
+  gratSave(items);
+  inp.value='';
+  const dd=gratDailyLoad();
+  if(!dd.gratitudeXpGiven && typeof window.addXP==='function'){
+    window.addXP('gratitude',10,'Gratitude ingevuld');
+    dd.gratitudeXpGiven=true; gratDailySave(dd);
+    showToast('Grateful · +10 XP');
+  }
+  renderGratitude();
+};
+document.addEventListener('DOMContentLoaded',()=>{
+  const gi=document.getElementById('gratInput');
+  if(gi) gi.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); gratAdd(); } });
+  setTimeout(renderGratitude,80);
+});
 
 // ── Per-dag habit-logboek (v8.9) — maakt elke dag onafhankelijk afvinkbaar ──
 const HABITLOG_KEY='rpg_habitlog_v1';
@@ -2498,7 +2601,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initCloudSync === 'function' && window.supabase) {
     initCloudSync({
       appKey: 'rpg',
-      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1'],
+      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1','rpg_gratitude_v1'],
       syncedPrefixes: ['rpg_daily_v1:','rpg_agenda_v1:','rpg_todo_v1:']
     });
   }
