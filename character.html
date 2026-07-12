@@ -327,7 +327,7 @@ textarea {
 /* ── Quick-log modal — stays dark (floats above page) */
 .ql-overlay {
   position:fixed; inset:0;
-  background:rgba(0,0,0,0.55);
+  background:rgba(21,20,15,0.45);
   z-index:9100;
   display:flex; align-items:flex-end; justify-content:center;
   backdrop-filter:blur(4px);
@@ -336,63 +336,63 @@ textarea {
 }
 @keyframes overlayIn { from{opacity:0} to{opacity:1} }
 .ql-sheet {
-  background:#141411;
-  border:1px solid rgba(255,255,255,0.1);
+  background:var(--card);
+  border:1px solid var(--line);
   border-radius:20px 20px 0 0;
   width:100%; max-width:480px;
   padding:20px 18px calc(env(safe-area-inset-bottom,0px) + 20px);
   animation:sheetUp 0.25s cubic-bezier(0.22,1,0.36,1);
 }
 @keyframes sheetUp { from{transform:translateY(60%)} to{transform:none} }
-.ql-handle { width:36px; height:4px; border-radius:2px; background:rgba(255,255,255,0.15); margin:0 auto 16px; }
+.ql-handle { width:36px; height:4px; border-radius:2px; background:var(--line-strong); margin:0 auto 16px; }
 .ql-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
 .ql-skill-icon { font-size:26px; }
-.ql-skill-name { font-size:15px; font-weight:700; color:#FAFAFA; }
-.ql-skill-lvl  { font-size:11px; font-family:var(--font-mono); color:rgba(255,255,255,0.4); margin-top:2px; }
+.ql-skill-name { font-size:15px; font-weight:700; color:var(--ink); }
+.ql-skill-lvl  { font-size:11px; font-family:var(--font-mono); color:var(--muted); margin-top:2px; }
 .ql-options { display:flex; flex-direction:column; gap:8px; }
 .ql-btn {
   display:flex; align-items:center; justify-content:space-between;
   padding:13px 16px; border-radius:12px;
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.09);
+  background:var(--bg);
+  border:1px solid var(--line-strong);
   cursor:pointer; transition:all 0.15s;
   -webkit-tap-highlight-color:transparent;
 }
-.ql-btn:active { transform:scale(0.97); }
-.ql-btn-label { font-size:13px; font-weight:600; color:#FAFAFA; }
-.ql-btn-meta  { font-size:11px; font-family:var(--font-mono); color:rgba(255,255,255,0.4); }
+.ql-btn:active { transform:scale(0.97); background:#EFEDE7; }
+.ql-btn-label { font-size:13px; font-weight:600; color:var(--ink); }
+.ql-btn-meta  { font-size:11px; font-family:var(--font-mono); color:var(--muted); }
 .ql-custom { display:flex; gap:8px; margin-top:6px; align-items:center; }
 .ql-custom input {
-  flex:1; background:rgba(255,255,255,0.07);
-  border:1px solid rgba(255,255,255,0.12); border-radius:10px;
-  padding:11px 14px; color:#FAFAFA; font-family:var(--font-mono);
+  flex:1; background:var(--card);
+  border:1px solid var(--line-strong); border-radius:10px;
+  padding:11px 14px; color:var(--ink); font-family:var(--font-mono);
   font-size:16px; text-align:center; outline:none;
   -webkit-appearance:none;
 }
 .ql-custom-btn {
   padding:11px 18px; border-radius:10px;
-  background:rgba(201,162,39,0.15); border:1px solid rgba(201,162,39,0.3);
-  color:var(--gold); font-weight:700; font-size:13px; cursor:pointer;
+  background:rgba(201,162,39,0.12); border:1px solid rgba(201,162,39,0.45);
+  color:#8A6F16; font-weight:700; font-size:13px; cursor:pointer;
   transition:all 0.15s; white-space:nowrap;
 }
 .ql-close {
   margin-top:12px; width:100%; padding:11px;
-  border-radius:12px; background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.07);
-  color:rgba(255,255,255,0.4); font-size:13px; cursor:pointer;
+  border-radius:12px; background:var(--bg);
+  border:1px solid var(--line);
+  color:var(--muted); font-size:13px; cursor:pointer;
   transition:all 0.15s;
 }
 
-/* ── Skill detail panel (full-height sheet) ──────── */
+/* ── Skill detail panel — Daylight (v9 redesign) ──────── */
 .sd-overlay {
-  position:fixed; inset:0; background:rgba(0,0,0,0.78);
+  position:fixed; inset:0; background:rgba(21,20,15,0.45);
   z-index:9150; display:flex; align-items:flex-end; justify-content:center;
-  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
   animation:overlayIn 0.2s ease;
 }
 .sd-sheet {
-  background:#0b0b0f;
-  border:1px solid rgba(255,255,255,0.09);
+  background:var(--card);
+  border:1px solid var(--line);
   border-radius:22px 22px 0 0;
   width:100%; max-width:480px;
   max-height:92vh; overflow-y:auto;
@@ -400,68 +400,69 @@ textarea {
   animation:sheetUp 0.28s cubic-bezier(0.22,1,0.36,1);
   -webkit-overflow-scrolling:touch;
 }
-.sd-handle { width:36px; height:4px; border-radius:2px; background:rgba(255,255,255,0.15); margin:14px auto 0; }
+.sd-handle { width:36px; height:4px; border-radius:2px; background:var(--line-strong); margin:14px auto 0; }
 .sd-hero {
   padding:18px 18px 14px;
-  border-bottom:1px solid rgba(255,255,255,0.06);
+  border-bottom:1px solid var(--line);
 }
 .sd-hero-top { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
 .sd-icon { font-size:32px; line-height:1; }
-.sd-title { font-size:18px; font-weight:700; letter-spacing:-0.02em; }
-.sd-subtitle { font-size:11px; font-family:var(--mono); color:var(--t3); margin-top:2px; }
-.sd-xp-label { display:flex; justify-content:space-between; font-size:10px; font-family:var(--mono); color:var(--t3); margin-bottom:4px; }
-.sd-xp-track { height:6px; background:rgba(255,255,255,0.07); border-radius:4px; overflow:hidden; }
+.sd-title { font-family:var(--font-display); font-size:18px; font-weight:800; letter-spacing:-0.02em; }
+.sd-subtitle { font-size:11px; font-family:var(--mono); color:var(--muted); margin-top:2px; }
+.sd-xp-label { display:flex; justify-content:space-between; font-size:10px; font-family:var(--mono); color:var(--muted); margin-bottom:4px; }
+.sd-xp-track { height:6px; background:var(--line); border-radius:4px; overflow:hidden; }
 .sd-xp-fill  { height:100%; border-radius:4px; transition:width 0.8s cubic-bezier(0.22,1,0.36,1); }
-.sd-next-goal { font-size:11px; color:var(--t2); margin-top:8px; }
-.sd-next-goal span { font-weight:700; }
+.sd-next-goal { font-size:11px; color:var(--muted); margin-top:8px; }
+.sd-next-goal span { font-weight:700; color:var(--ink); }
 
 .sd-section { padding:14px 18px 0; }
 .sd-section-title {
   font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
-  color:var(--t3); display:flex; align-items:center; gap:8px; margin-bottom:10px;
+  color:var(--muted); display:flex; align-items:center; gap:8px; margin-bottom:10px;
 }
-.sd-section-title::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.07); }
+.sd-section-title::after { content:''; flex:1; height:1px; background:var(--line); }
 
 .sd-milestone {
   display:flex; align-items:flex-start; gap:10px;
-  padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+  padding:9px 0; border-bottom:1px solid var(--line);
 }
 .sd-milestone:last-child { border-bottom:none; }
 .sd-ms-status { font-size:14px; flex-shrink:0; width:18px; text-align:center; margin-top:1px; }
 .sd-ms-body { flex:1; }
-.sd-ms-level { font-size:9px; font-family:var(--mono); font-weight:700; color:var(--t3); margin-bottom:2px; }
-.sd-ms-label { font-size:12px; font-weight:600; }
+.sd-ms-level { font-size:9px; font-family:var(--mono); font-weight:700; color:var(--muted); margin-bottom:2px; }
+.sd-ms-label { font-size:12px; font-weight:600; color:var(--ink); }
 .sd-ms-label.next { font-weight:700; }
-.sd-ms-date { font-size:9px; font-family:var(--mono); color:var(--t3); margin-top:2px; }
+.sd-ms-date { font-size:9px; font-family:var(--mono); color:var(--faint); margin-top:2px; }
 
-.sd-ms-next { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:10px 12px; margin-bottom:2px; }
-.sd-ms-next .sd-ms-level { color:var(--t2); }
-.sd-ms-next .sd-ms-label { color:var(--t1); }
+.sd-ms-next { background:var(--bg); border:1px solid var(--line-strong); border-radius:10px; padding:10px 12px; margin-bottom:2px; }
+.sd-ms-next .sd-ms-level { color:var(--muted); }
+.sd-ms-next .sd-ms-label { color:var(--ink); }
 
 .sd-log-section { padding:14px 18px 0; }
 .sd-log-btn {
   display:flex; align-items:center; justify-content:space-between;
   padding:13px 16px; border-radius:12px;
-  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07);
+  background:var(--bg); border:1px solid var(--line-strong);
+  color:var(--ink);
   cursor:pointer; transition:all 0.15s; margin-bottom:8px;
   -webkit-tap-highlight-color:transparent;
 }
-.sd-log-btn:active { transform:scale(0.97); }
+.sd-log-btn:active { transform:scale(0.97); background:#EFEDE7; }
 .sd-log-btn-label { font-size:13px; font-weight:600; }
 .sd-log-btn-xp { font-size:11px; font-family:var(--mono); font-weight:700; }
 .sd-log-custom {
   display:flex; gap:8px; margin-top:2px; align-items:center;
 }
 .sd-log-custom input {
-  flex:1; background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.1); border-radius:10px;
-  padding:11px 14px; color:var(--t1); font-family:var(--mono);
+  flex:1; background:var(--card);
+  border:1px solid var(--line-strong); border-radius:10px;
+  padding:11px 14px; color:var(--ink); font-family:var(--mono);
   font-size:16px; text-align:center; outline:none; -webkit-appearance:none;
 }
 .sd-milestone-btn {
   display:flex; align-items:center; justify-content:space-between;
   width:100%; padding:12px 16px; margin-top:10px;
-  background:rgba(245,200,66,0.08); border:1px solid rgba(245,200,66,0.25);
+  background:rgba(201,162,39,0.10); border:1px solid rgba(201,162,39,0.45);
   border-radius:11px; cursor:pointer; transition:all 0.15s;
   -webkit-tap-highlight-color:transparent;
 }
@@ -469,72 +470,89 @@ textarea {
 .sd-close {
   display:block; width:calc(100% - 36px); margin:16px 18px 0;
   padding:12px; border-radius:12px;
-  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);
-  color:var(--t3); font-size:13px; cursor:pointer; transition:all 0.15s;
+  background:var(--bg); border:1px solid var(--line);
+  color:var(--muted); font-size:13px; cursor:pointer; transition:all 0.15s;
 }
 
 .sd-close-x {
   position:absolute; top:14px; right:14px; z-index:5;
   width:34px; height:34px; border-radius:50%;
-  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12);
-  color:#F4F3EF; font-size:20px; line-height:1; cursor:pointer;
+  background:rgba(255,255,255,0.85); border:1px solid var(--line-strong);
+  color:var(--ink); font-size:20px; line-height:1; cursor:pointer;
   display:flex; align-items:center; justify-content:center;
+  box-shadow:0 1px 4px rgba(21,20,15,0.12);
   -webkit-tap-highlight-color:transparent;
 }
-.sd-close-x:active { background:rgba(255,255,255,0.18); }
+.sd-close-x:active { background:#EFEDE7; }
 .sd-nextstep {
-  background:linear-gradient(135deg, rgba(212,99,62,0.18), rgba(201,162,39,0.10));
-  border:1px solid rgba(212,99,62,0.35); border-radius:14px;
+  background:rgba(212,99,62,0.07);
+  border:1px solid rgba(212,99,62,0.4); border-radius:14px;
   padding:13px 15px; margin-bottom:14px;
 }
-.sd-nextstep-eyebrow { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#E8945F; }
-.sd-nextstep-title { font-family:var(--font-display,sans-serif); font-weight:800; font-size:16px; color:#F4F3EF; margin-top:4px; }
-.sd-nextstep-desc { font-size:13px; color:rgba(244,243,239,0.75); line-height:1.4; margin-top:3px; }
+.sd-nextstep-eyebrow { font-size:10px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--ember); }
+.sd-nextstep-title { font-family:var(--font-display,sans-serif); font-weight:800; font-size:16px; color:var(--ink); margin-top:4px; }
+.sd-nextstep-desc { font-size:13px; color:var(--muted); line-height:1.4; margin-top:3px; }
 .sd-photo {
-  height:140px; margin:-20px -18px 16px; position:relative; background-color:#1a1a1f; overflow:hidden;
+  height:140px; margin:-20px -18px 16px; position:relative; background-color:var(--bg); overflow:hidden;
+  border-radius:20px 20px 0 0;
 }
 .sd-photo-img { width:100%; height:100%; object-fit:cover; display:block; }
 .sd-photo-fade {
   position:absolute; inset:0;
-  background:linear-gradient(180deg, rgba(14,14,18,0.1) 0%, rgba(14,14,18,0.65) 100%);
+  background:linear-gradient(180deg, rgba(255,255,255,0) 35%, rgba(255,255,255,0.95) 100%);
 }
 
-/* v8.10 contrast fixes: het sd-panel is donker (#0e0e12) — alles erin leesbaar licht */
-.sd-panel { color:#F4F3EF; }
-.sd-panel .sd-why { background:rgba(255,255,255,0.07); border-color:rgba(255,255,255,0.18); color:rgba(244,243,239,0.9); }
-.sd-panel .sd-tierlock { background:rgba(255,255,255,0.07); border-color:#F4F3EF; color:#F4F3EF; }
-.sd-panel .sd-log-btn { color:#F4F3EF; }
-.sd-panel .sd-log-title { color:rgba(244,243,239,0.7); }
-.sd-panel .quest-locked-note { color:rgba(244,243,239,0.55); }
+/* ── Tier checklist (v9): remaining quests to the next gate ── */
+.sd-tier {
+  background:var(--bg); border:1px solid var(--line-strong); border-radius:14px;
+  padding:12px 14px 6px; margin-bottom:14px;
+}
+.sd-tier-head { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:8px; }
+.sd-tier-title { font-size:9px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); }
+.sd-tier-count { font-size:10px; font-family:var(--mono); font-weight:700; color:var(--muted); }
+.sd-tier-row { display:flex; align-items:center; gap:9px; padding:8px 0; border-top:1px solid var(--line); }
+.sd-tier-lvl { font-size:9px; font-family:var(--mono); font-weight:700; color:var(--muted); flex-shrink:0; width:34px; }
+.sd-tier-name { flex:1; min-width:0; font-size:12px; font-weight:600; color:var(--ink); }
+.sd-tier-name.locked { color:var(--faint); font-weight:500; }
+.sd-tier-claim {
+  flex-shrink:0; padding:6px 12px; border-radius:9px; border:1px solid var(--green);
+  background:rgba(46,139,95,0.08); color:var(--green);
+  font-size:11px; font-weight:700; cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+.sd-tier-claim:active { transform:scale(0.95); }
+.sd-tier-lock { flex-shrink:0; font-size:9.5px; font-family:var(--mono); color:var(--faint); }
+.sd-tier-clear { font-size:11px; color:var(--green); font-weight:700; padding:2px 0 6px; }
 
-/* ── Skill Detail Panel v2 (Fase 3 — sdOverlay/sd-panel) ── */
-.sd-panel{position:relative;background:#0e0e12;border:1px solid rgba(255,255,255,0.1);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;padding:20px 18px calc(env(safe-area-inset-bottom,0px) + 20px);animation:sheetUp 0.25s cubic-bezier(0.22,1,0.36,1);-webkit-overflow-scrolling:touch}
+/* ── Skill Detail Panel v2 — Daylight ── */
+.sd-panel{position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;padding:20px 18px calc(env(safe-area-inset-bottom,0px) + 20px);animation:sheetUp 0.25s cubic-bezier(0.22,1,0.36,1);-webkit-overflow-scrolling:touch;color:var(--ink)}
 .sd-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.sd-level-badge{font-size:12px;font-family:var(--mono);color:var(--t3);font-weight:700}
+.sd-level-badge{font-size:12px;font-family:var(--mono);color:var(--muted);font-weight:700}
 .sd-xp-section{margin-bottom:18px}
 .sd-log-section{margin-bottom:20px}
-.sd-log-title{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
-.sd-ms-reach-btn{width:100%;padding:12px 16px;background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.3);border-radius:12px;color:#F5C842;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:14px;transition:all 0.15s;text-align:left;display:flex;align-items:center;gap:10px}
+.sd-log-title{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.sd-ms-reach-btn{width:100%;padding:12px 16px;background:rgba(201,162,39,0.10);border:1px solid rgba(201,162,39,0.45);border-radius:12px;color:#8A6F16;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:14px;transition:all 0.15s;text-align:left;display:flex;align-items:center;gap:10px}
 .sd-ms-reach-btn:active{transform:scale(0.98)}
-.sd-custom-input{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:var(--t1);font-family:var(--mono);font-size:16px;text-align:center;outline:none;-webkit-appearance:none}
-.sd-custom-btn{padding:11px 18px;border-radius:10px;background:rgba(107,227,164,0.12);border:1px solid rgba(107,227,164,0.3);color:#6BE3A4;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap}
-.sd-unlock-title{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
-.sd-ms-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.sd-ms-reach-btn span{color:var(--muted) !important}
+.sd-custom-input{flex:1;background:var(--card);border:1px solid var(--line-strong);border-radius:10px;padding:11px 14px;color:var(--ink);font-family:var(--mono);font-size:16px;text-align:center;outline:none;-webkit-appearance:none}
+.sd-custom-btn{padding:11px 18px;border-radius:10px;background:rgba(46,139,95,0.08);border:1px solid var(--green);color:var(--green);font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap}
+.sd-unlock-title{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.sd-ms-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
 .sd-ms-row:last-child{border-bottom:none}
 .sd-ms-status{font-size:14px;flex-shrink:0;width:20px;text-align:center;margin-top:1px}
-.sd-ms-text{font-size:12px;font-weight:500;color:var(--t2);line-height:1.4}
-.sd-ms-text.next-target{color:var(--t1);font-weight:700}
-.sd-ms-text.locked{color:var(--t3)}
+.sd-ms-text{font-size:12px;font-weight:500;color:var(--muted);line-height:1.4}
+.sd-ms-text.next-target{color:var(--ink);font-weight:700}
+.sd-ms-text.locked{color:var(--faint)}
 
-/* Milestone confirm modal */
+/* Milestone confirm modal — Daylight */
 .ms-confirm-overlay {
-  position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9300;
+  position:fixed; inset:0; background:rgba(21,20,15,0.5); z-index:9300;
   display:flex; align-items:center; justify-content:center;
-  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
 }
 .ms-confirm-card {
-  background:#0e0e12; border:1px solid rgba(255,255,255,0.12);
+  background:var(--card); border:1px solid var(--line);
   border-radius:20px; padding:28px 24px; width:300px; text-align:center;
+  color:var(--ink); box-shadow:0 12px 40px rgba(21,20,15,0.18);
 }
 .ms-confirm-card .ms-level-badge {
   display:inline-flex; align-items:center; gap:8px;
@@ -1423,9 +1441,9 @@ function openQuickLog(skillKey, skillData){
   const xpToNextMs = nextMs ? (xpForLevel(nextMs) - xp) : null;
   const nextMsLabel = nextMs ? milestones[nextMs] : '';
   const msBtnHtml = (nextMs && xpToNextMs > 0)
-    ? `<div class="ql-btn" style="background:rgba(245,200,66,0.06);border-color:rgba(245,200,66,0.2)" onclick="doQuickLog('${skillKey}',${xpToNextMs},'Milestone Lvl ${nextMs} bereikt')">
+    ? `<div class="ql-btn" style="background:rgba(201,162,39,0.10);border-color:rgba(201,162,39,0.45)" onclick="doQuickLog('${skillKey}',${xpToNextMs},'Milestone Lvl ${nextMs} bereikt')">
          <span class="ql-btn-label">🏆 Milestone bereikt<span style="display:block;font-size:10px;color:var(--t3);font-weight:400;margin-top:1px">${nextMsLabel}</span></span>
-         <span class="ql-btn-meta" style="color:#F5C842">+${xpToNextMs} XP</span>
+         <span class="ql-btn-meta" style="color:#8A6F16;font-weight:700">+${xpToNextMs} XP</span>
        </div>`
     : '';
 
@@ -1499,7 +1517,7 @@ function showMilestoneConfirm(skillKey, level, label, color, onDone){
       '<div style="font-size:15px;font-weight:700;margin-bottom:8px">Did you reach this?</div>'+
       '<div style="font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.5">'+label+'</div>'+
       '<div style="display:flex;gap:10px">'+
-        '<button id="msNo" style="flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--t3);font-size:13px;cursor:pointer">Not yet</button>'+
+        '<button id="msNo" style="flex:1;padding:12px;border-radius:12px;background:var(--bg);border:1px solid var(--line-strong);color:var(--muted);font-size:13px;cursor:pointer">Not yet</button>'+
         '<button id="msYes" style="flex:1;padding:12px;border-radius:12px;background:'+color+'18;border:1px solid '+color+'44;color:'+color+';font-size:13px;font-weight:700;cursor:pointer">Yes, confirmed</button>'+
       '</div>'+
     '</div>';
@@ -1595,6 +1613,35 @@ function openSkillDetail(skillKey){
     }
   }
 
+  // Tier checklist (v9): every remaining quest between you and the next gate,
+  // claimable inline. Locked rows show at which level they unlock.
+  let tierChecklistHtml='';
+  if(ladder.length){
+    const gates=window.TIER_GATES||[10,25,50,75];
+    const gate=tl.locked?tl.gate:gates.find(g=>g>=level);
+    if(gate){
+      const done=window.getQuestsDone?window.getQuestsDone():{};
+      const remaining=ladder.filter(q=>q.lvl<=gate&&!done[skillKey+':'+q.lvl]);
+      const rows=remaining.map(q=>{
+        const unlocked=q.lvl<=level;
+        return `<div class="sd-tier-row">
+          <div class="sd-tier-lvl">LV ${q.lvl}</div>
+          <div class="sd-tier-name${unlocked?'':' locked'}">${q.title}</div>
+          ${unlocked
+            ?`<button class="sd-tier-claim" onclick="sdClaimQuest('${skillKey}',${q.lvl},${q.xp})">Claim +${q.xp}</button>`
+            :`<div class="sd-tier-lock">unlocks LV ${q.lvl}</div>`}
+        </div>`;
+      }).join('');
+      tierChecklistHtml=`<div class="sd-tier">
+        <div class="sd-tier-head">
+          <div class="sd-tier-title">Tier gate · Level ${gate}</div>
+          <div class="sd-tier-count">${remaining.length?remaining.length+' to go':'clear'}</div>
+        </div>
+        ${remaining.length?rows:'<div class="sd-tier-clear">✓ Gate clear — nothing between you and Level '+gate+'</div>'}
+      </div>`;
+    }
+  }
+
   const logBtns=(def.quickLog||[]).map(q=>`
     <div class="sd-log-btn" onclick="doSkillDetailLog('${skillKey}',${q.xp},'${q.label.replace(/'/g,"\\'")}')">
       <span class="sd-log-btn-label">${q.label}</span>
@@ -1645,6 +1692,7 @@ function openSkillDetail(skillKey){
       </div>
       ${whyHtml}
       ${tierLockHtml}
+      ${tierChecklistHtml}
       ${msBtnHtml}
       ${nextStepHtml}
       <div class="sd-log-section">
@@ -1683,6 +1731,19 @@ function doSkillDetailLog(skillKey, amount, label){
     setTimeout(()=>showMilestoneConfirm(skillKey,crossedMs,milestones[crossedMs],meta2.color,null),400);
   }
 }
+
+// v9: claim a quest straight from the tier checklist in the skill panel
+window.sdClaimQuest=function(skill,lvl,xp){
+  if(!window.setQuestDone) return;
+  const done=window.getQuestsDone?window.getQuestsDone():{};
+  if(done[skill+':'+lvl]) return;
+  window.setQuestDone(skill,lvl,true);
+  if(window.addXP) window.addXP(skill,xp,'Quest complete (Lvl '+lvl+')');
+  showToast('Quest complete · +'+xp+' XP 🏆');
+  renderCharacter();
+  if(typeof renderBodySystem==='function') renderBodySystem();
+  openSkillDetail(skill);
+};
 
 function confirmSkillMilestone(skillKey, targetLevel, xpNeeded){
   const def=(window.RPG_DEFAULT_SKILLS||{})[skillKey]||{};
@@ -2349,8 +2410,8 @@ function renderGratitudeTags(daily){
     t.textContent=word;
     t.className='word-tag';
     t.style.cursor='pointer';
-    t.style.color='#6BE3A4';
-    t.style.borderColor='rgba(107,227,164,0.25)';
+    t.style.color='var(--green)';
+    t.style.borderColor='rgba(46,139,95,0.35)';
     t.addEventListener('click',()=>showGratitudeDetail(word,items[word]));
     container.appendChild(t);
   });
@@ -2954,13 +3015,13 @@ function showDayDetail(dateStr){
   const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const d = new Date(dateStr+'T12:00:00');
   const label = months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
-  const scoreColor = score<=0?'var(--t3)':score<=4?'#FF6B6B':score<=6?'#FB923C':score<=8?'#F5C842':'#6BE3A4';
+  const scoreColor = score<=0?'var(--muted)':score<=4?'var(--ember)':score<=6?'#B8722C':score<=8?'#8A6F16':'var(--green)';
 
   const xpRows = dayLog.slice(0,8).map(e=>{
     const def=defaults[e.skill]||{};
     const cat=def.parentSkill||'body';
     const c=SKILL_COLORS[cat]||'#6BE3A4';
-    return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04)">
+    return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line)">
       <div style="width:5px;height:5px;border-radius:50%;background:${c};flex-shrink:0"></div>
       <div style="flex:1;font-size:11px;color:var(--t2)">${e.reason||e.skill}</div>
       <div style="font-size:10px;font-family:var(--mono);font-weight:700;color:${c}">+${e.amount}</div>
@@ -2982,12 +3043,12 @@ function showDayDetail(dateStr){
           </div>
         </div>
         <div style="display:flex;align-items:baseline;gap:6px">
-          <span style="font-size:22px;font-weight:700;font-family:var(--mono);color:#FAFAFA">${totalXP>0?'+'+totalXP:'0'}</span>
+          <span style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--ink)">${totalXP>0?'+'+totalXP:'0'}</span>
           <span style="font-size:11px;color:var(--t3)">XP earned</span>
         </div>
       </div>
       ${xpRows?`<div class="sd-section"><div class="sd-section-title">XP Log</div>${xpRows}</div>`:''}
-      ${gratWords.length?`<div class="sd-section"><div class="sd-section-title">Gratitude</div><div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">${gratWords.map(w=>`<span class="word-tag" style="color:#6BE3A4;border-color:rgba(107,227,164,0.25)">${w}</span>`).join('')}</div></div>`:''}
+      ${gratWords.length?`<div class="sd-section"><div class="sd-section-title">Gratitude</div><div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">${gratWords.map(w=>`<span class="word-tag" style="color:var(--green);border-color:rgba(46,139,95,0.35)">${w}</span>`).join('')}</div></div>`:''}
       <button class="sd-close" onclick="document.getElementById('dayDetailModal').remove()">Close</button>
     </div>`;
 
@@ -3094,9 +3155,9 @@ function showGratitudeDetail(word, data){
           Add a note about why you're grateful for <strong>${word}</strong>.
         </div>
         <textarea id="gratNoteInput" rows="3" placeholder="E.g. because it gives me peace of mind…"
-          style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:10px;
-          padding:12px;color:#FAFAFA;font-family:var(--sans);font-size:13px;resize:none;outline:none;line-height:1.6;box-sizing:border-box"></textarea>
-        <button style="margin-top:10px;width:100%;padding:12px;border-radius:12px;background:rgba(107,227,164,0.1);border:1px solid rgba(107,227,164,0.3);color:#6BE3A4;font-size:13px;font-weight:700;cursor:pointer"
+          style="width:100%;background:var(--bg);border:1px solid var(--line-strong);border-radius:10px;
+          padding:12px;color:var(--ink);font-family:var(--sans);font-size:13px;resize:none;outline:none;line-height:1.6;box-sizing:border-box"></textarea>
+        <button style="margin-top:10px;width:100%;padding:12px;border-radius:12px;background:rgba(46,139,95,0.08);border:1px solid var(--green);color:var(--green);font-size:13px;font-weight:700;cursor:pointer"
           onclick="saveGratitudeNote('${word}')">Save</button>
       </div>
       <button class="sd-close" onclick="document.getElementById('gratDetailModal').remove()">Close</button>
