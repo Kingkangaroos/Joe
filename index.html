@@ -219,6 +219,25 @@ body {
 .wk-skill { display:flex; justify-content:space-between; background:var(--card,#fff); border:1px solid var(--line,rgba(0,0,0,0.08)); border-radius:11px; padding:9px 13px; margin-bottom:7px; font-size:12px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; }
 .wk-insight { margin-top:14px; background:var(--card,#fff); border:1.5px solid var(--ink,#15140F); border-radius:13px; padding:12px 14px; font-family:var(--font-display); font-weight:700; font-size:13px; color:var(--ink); line-height:1.45; }
 
+/* ── Choice Gate (v8.9) ──────────────────────────── */
+.choice-card {
+  background: var(--card, #fff); border: 1px solid var(--line, rgba(0,0,0,0.08));
+  border-radius: 16px; padding: 13px 16px; margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.cg-opt {
+  display:block; width:100%; text-align:left; padding:12px 14px; margin-bottom:8px;
+  border-radius:13px; border:1px solid var(--line, rgba(0,0,0,0.1)); background:var(--card,#fff);
+  font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--ink);
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+.cg-opt.active { border-color:var(--ink,#15140F); box-shadow:inset 0 0 0 1px var(--ink,#15140F); }
+.cg-detail { background:var(--card,#fff); border:1px solid var(--line, rgba(0,0,0,0.08)); border-radius:13px; padding:12px 14px; margin-top:4px; }
+.cg-line { font-size:12.5px; line-height:1.5; margin-bottom:5px; }
+.cg-line.plus { color:var(--green,#2E8B5F); }
+.cg-line.min  { color:var(--ember,#D4633E); }
+
 /* ── Focus timer (v8.2) ──────────────────────────── */
 .nm-add {
   font-size:10px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase;
@@ -883,6 +902,13 @@ body {
     <div class="nextmove-card" id="nextMoveCard"></div>
   </div>
 
+  <!-- Choice Gate (v8.9) -->
+  <div class="choice-card" onclick="openChoiceGate()">
+    <div><div class="checkin-cta-label">Free time?</div>
+    <div class="checkin-cta-title">Choose it consciously</div></div>
+    <div class="checkin-cta-arrow">›</div>
+  </div>
+
   <!-- Agenda -->
   <div class="sec-head">Agenda</div>
   <div class="agenda-card">
@@ -1057,7 +1083,7 @@ function renderMissions() {
   container.innerHTML = habitKeys.map(k => {
     const def = defaults[k];
     const h = habits[k] || {};
-    const donedToday = missionsDay==='yesterday' ? !!(h.lastChecked && h.lastChecked >= today) : (h.lastChecked === today);
+    const donedToday = hlogHas(k, today);
     if (donedToday) doneCount++;
     const lvl = h.score || 0;
     return `<div class="mission-row${donedToday?' done':''}" onclick="toggleMission('${k}')" data-key="${k}">
@@ -1084,6 +1110,24 @@ function renderMissions() {
   for (const h of Object.values(habits)) { if ((h.score||0) > best) best = h.score; }
   const bs = document.getElementById('arcBestStreak');
   if (bs) bs.textContent = best + '/10';
+}
+
+// ── Per-dag habit-logboek (v8.9) — maakt elke dag onafhankelijk afvinkbaar ──
+const HABITLOG_KEY='rpg_habitlog_v1';
+function hlogLoad(){ try{ const r=localStorage.getItem(HABITLOG_KEY); if(r) return JSON.parse(r); }catch(e){} return {}; }
+function hlogSave(d){ try{ localStorage.setItem(HABITLOG_KEY, JSON.stringify(d)); }catch(e){} }
+function hlogHas(key, date){
+  const l=hlogLoad();
+  if(l[key] && l[key][date]) return true;
+  // migratie: oude lastChecked telt als log voor die dag
+  const h=(window.getHabits?window.getHabits():{})[key]||{};
+  if(h.lastChecked===date){ hlogSet(key,date,true); return true; }
+  return false;
+}
+function hlogSet(key, date, val){
+  const l=hlogLoad(); l[key]=l[key]||{};
+  if(val) l[key][date]=true; else delete l[key][date];
+  hlogSave(l);
 }
 
 let missionsDay='today';
@@ -1114,15 +1158,16 @@ window.toggleMission = function(key) {
     const defaults = window.RPG_DEFAULT_SKILLS || {};
     const def = defaults[key] || {};
     const y = yesterdayStr();
-    const res = window.checkHabitFor ? window.checkHabitFor(key, y, def.label, def.icon) : null;
-    if (res && res.applied) {
+    if (hlogHas(key, y)) {
+      showToast('Already counted for yesterday');
+    } else {
+      if (window.checkHabitFor) window.checkHabitFor(key, y, def.label, def.icon);
+      hlogSet(key, y, true);
       if (window.addXP) window.addXP(key, 15, 'Habit (yesterday): ' + def.label);
       try { const st = JSON.parse(localStorage.getItem('rpg_streak_v1')) || { days:{} };
         st.days = st.days || {}; st.days[y] = true;
         localStorage.setItem('rpg_streak_v1', JSON.stringify(st)); } catch (e) {}
       showToast('+15 XP \u00b7 ' + def.label + ' \u00b7 counted for yesterday');
-    } else {
-      showToast('Already counted for yesterday or later');
     }
     renderMissions(); renderCharStrip();
     if (window.Streak) { renderStreakPill(); renderCheckinCard(); }
@@ -1138,10 +1183,12 @@ window.toggleMission = function(key) {
 
   if (wasDone) {
     window.uncheckHabit(key);
+    hlogSet(key, today, false);
     if (window.addXP) window.addXP(key, -15, 'Habit unchecked: ' + def.label);
     showToast('Habit unchecked');
   } else {
     const result = window.checkHabit(key, def.label, def.icon);
+    hlogSet(key, today, true);
     if (window.addXP) window.addXP(key, 15, 'Habit: ' + def.label);
     showToast('+15 XP · ' + def.label + ' · Level ' + (result.score||1) + '/10' + ((result.score||0) >= 10 ? ' 👑' : ''));
   }
@@ -1673,7 +1720,7 @@ function openMissionsList() {
   const t = todayStr();
   return Object.keys(defaults)
     .filter(k => defaults[k].isHabit && !defaults[k].private && defaults[k].active !== false)
-    .map(k => ({ key: k, label: defaults[k].label, done: (habits[k] || {}).lastChecked === t }));
+    .map(k => ({ key: k, label: defaults[k].label, done: (typeof hlogHas==='function') ? hlogHas(k, t) : ((habits[k] || {}).lastChecked === t) }));
 }
 
 function renderStreakPill() {
@@ -2011,6 +2058,58 @@ window.removeCustomMove=function(id){
   const d=cmLoad(); d.moves=d.moves.filter(x=>x.id!==id); cmSave(d); renderNextMove();
 };
 
+// ── Choice Gate (v8.9) — bewust kiezen waar je tijd heengaat ──
+const LEISURE = {
+  gaming: { label:'Gaming', gives:'Real relaxation, fun, switching off.',
+    costs:'One hour is a full venture step. No XP, and it rarely stays one hour.' },
+  scrolling: { label:'Series & scrolling', gives:'Easy rest, zero effort.',
+    costs:'Passive time you barely remember tomorrow. Pushes bedtime back.' },
+  social: { label:'Social media', gives:'Connection, quick dopamine.',
+    costs:'Designed to keep you longer than you chose. Attention leaks for hours after.' }
+};
+
+window.openChoiceGate=function(){
+  const nx = window.Ventures ? window.Ventures.activeVentures().map(v=>({v,nx:window.Ventures.nextStep(v)})).filter(x=>x.nx)[0] : null;
+  const openM = openMissionsList().filter(m=>!m.done).length;
+  const ov=document.createElement('div');
+  ov.className='checkin-overlay'; ov.setAttribute('data-checkin','1');
+  ov.addEventListener('click',e=>{ if(e.target===ov) ov.remove(); });
+  ov.innerHTML='<div class="checkin-sheet">'+
+    '<div class="ci-head"><div class="ci-kicker">Choice gate</div>'+
+    '<div class="ci-title">Where is this hour going?</div></div>'+
+    '<div class="ci-sec">If you\u2019re reaching for leisure</div>'+
+    Object.keys(LEISURE).map(k=>'<button class="cg-opt" onclick="cgPick(\''+k+'\',this)">'+LEISURE[k].label+'</button>').join('')+
+    '<div id="cgDetail"></div>'+
+    '<div class="ci-sec" style="margin-top:16px">The better hour is ready</div>'+
+    (nx ? '<div class="ci-row"><div><div class="ci-row-kind">'+nx.v.name+'</div>'+
+      '<div class="ci-row-title">'+nx.nx.step.title+'</div>'+
+      (nx.nx.step.minutes?'<div class="ci-row-sub">~'+nx.nx.step.minutes+' min</div>':'')+'</div>'+
+      '<button class="ci-do" onclick="this.closest(\'[data-checkin]\').remove();startFocus(\''+nx.v.id+'\',\''+nx.nx.step.id+'\')">Start</button></div>' : '')+
+    (openM ? '<div class="ci-row" onclick="this.closest(\'[data-checkin]\').remove()"><div><div class="ci-row-kind">Missions</div>'+
+      '<div class="ci-row-title">'+openM+' still open \u2014 quick wins</div></div></div>' : '')+
+    '<button class="ci-dismiss" onclick="this.closest(\'[data-checkin]\').remove()">Never mind</button>'+
+  '</div>';
+  document.body.appendChild(ov);
+};
+
+window.cgPick=function(k, btn){
+  const L=LEISURE[k]; if(!L) return;
+  document.querySelectorAll('.cg-opt').forEach(b=>b.classList.toggle('active', b===btn));
+  document.getElementById('cgDetail').innerHTML=
+    '<div class="cg-detail">'+
+    '<div class="cg-line plus">+ '+L.gives+'</div>'+
+    '<div class="cg-line min">\u2212 '+L.costs+'</div>'+
+    '<button class="ci-close-btn" style="margin-top:12px" onclick="cgStartLeisure(\''+k+'\')">Do it consciously \u2014 60 min, clock running</button>'+
+    '</div>';
+};
+
+window.cgStartLeisure=function(k){
+  const L=LEISURE[k];
+  document.querySelectorAll('[data-checkin]').forEach(el=>el.remove());
+  focusSave({ kind:'leisure', title:L.label+' \u2014 consciously chosen', ventureName:'Leisure', minutes:60, startedAt:Date.now() });
+  openFocusOverlay();
+};
+
 // ── Focus timer (v8.2) — from list to starting, in one tap ──
 const FOCUS_KEY = 'rpg_focus_session_v1';
 function focusLoad(){ try{ const r=localStorage.getItem(FOCUS_KEY); if(r) return JSON.parse(r); }catch(e){} return null; }
@@ -2067,6 +2166,12 @@ function openFocusOverlay(){
 
 window.focusComplete=function(btn){
   const s=focusLoad(); if(!s) return;
+  if(s.kind==='leisure'){
+    focusSave(null); clearInterval(focusTick);
+    document.querySelectorAll('[data-focus]').forEach(el=>el.remove());
+    showToast('Leisure done \u2014 nicely bounded. Back to the plan.');
+    return;
+  }
   if(s.kind==='custom'){
     focusSave(null); clearInterval(focusTick);
     document.querySelectorAll('[data-focus]').forEach(el=>el.remove());
@@ -2150,7 +2255,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initCloudSync === 'function' && window.supabase) {
     initCloudSync({
       appKey: 'rpg',
-      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1'],
+      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1'],
       syncedPrefixes: ['rpg_daily_v1:','rpg_agenda_v1:','rpg_todo_v1:']
     });
   }

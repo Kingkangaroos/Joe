@@ -729,16 +729,21 @@
   };
 
   // v8.4: check a habit for a specific date (e.g. yesterday) — never downgrades
+  // v8.9: backdating always applies score credit; dedup is the caller's job
+  // (index.html keeps a per-day log). lastChecked only moves forward.
   window.checkHabitFor = function (habitId, dateStr, label, icon) {
     const habits = loadHabits();
     if (!habits[habitId]) habits[habitId] = { label:label||habitId, icon:icon||'\u2b50', score:0, lastChecked:null, streak:0 };
     const h = habits[habitId];
-    if (h.lastChecked && h.lastChecked >= dateStr) return { habit:h, applied:false };
-    const dayBefore = (function(){ const p=dateStr.split('-').map(Number); const d=new Date(p[0],p[1]-1,p[2]-1);
-      return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })();
-    h.score  = Math.min(10, (h.score||0)+1);
-    h.streak = (h.lastChecked===dayBefore) ? (h.streak||0)+1 : 1;
-    h.lastChecked = dateStr;
+    h.score = Math.min(10, (h.score||0)+1);
+    if (!h.lastChecked || h.lastChecked < dateStr) {
+      const dayBefore = (function(){ const p=dateStr.split('-').map(Number); const d=new Date(p[0],p[1]-1,p[2]-1);
+        return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); })();
+      h.streak = (h.lastChecked===dayBefore) ? (h.streak||0)+1 : 1;
+      h.lastChecked = dateStr;
+    } else {
+      h.streak = (h.streak||0)+1; // chain grew backwards (yesterday filled while today was already checked)
+    }
     saveHabits(habits);
     return { habit:h, applied:true };
   };
