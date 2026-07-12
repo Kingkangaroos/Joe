@@ -172,3 +172,28 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 - Build in phases, push per phase so Joey can test live.
 - Be critical, keep it premium and functional ("liever werkend dan mooi-maar-kapot").
 - GitHub: `github.com/Kingkangaroos/Joe`. A fine-grained token (Contents: read/write) lets Claudia push directly from chat; re-paste it each new session.
+
+
+## AI-inzet per taak (credits-strategie, 2026-07-12)
+
+**SIMPEL — goedkoop model (Haiku-klasse):** geïsoleerd, exact omschreven, kopieerbaar patroon.
+- Net-worth grafiek-code echt verwijderen (nu alleen `display:none` op `.nw-chart-wrap`)
+- Copy/tekst-aanpassingen (why-teksten, labels, knopteksten)
+- CSS-tweaks op aanwijzing (kleuren, marges, groottes)
+- SKILL_PHOTO_URL entries toevoegen zodra foto-URLs bestaan
+- Extra quests/venture-stappen toevoegen aan bestaande ladders (patroon kopiëren)
+
+**GEMIDDELD — middenklasse (Sonnet):** één pagina, bestaand patroon volgen, geen datamodel-wijziging.
+- v9 taak 2: Main missions in Daily-kaartstijl + gratitude box op Main
+- v9 taak 3: tier-checklist in het skill-detail
+- v9 taak 4: skill-detail paneel naar Daylight
+- Jarvis-functie ombouwen naar Gemini-endpoint (zodra key er is)
+- Fitbit health-sync afronden (zodra Google-credentials er zijn)
+
+**COMPLEX — beste model:** meerdere systemen raken elkaar, ontwerpbeslissingen, migraties.
+- v9 taak 1: Time Sketcher (agenda × skills × quests × XP)
+- Higgsfield fotobatch (stijlconsistentie + esthetisch oordeel)
+- Fase 5: Gamenfy Public / multi-user fundament
+- Alles dat localStorage-keys, sync of xp.js raakt
+
+**Regels voor goedkope modellen:** altijd eerst dit document laten lezen · exact bestand + doel meegeven · NOOIT xp.js, sync.js of syncedKeys laten aanraken · na elke taak browsercheck vóór commit · bij twijfel: stoppen en escaleren naar een beter model.
