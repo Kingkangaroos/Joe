@@ -711,6 +711,76 @@ body {
   font-size: 12px; color: var(--faint);
 }
 
+/* ── Time Sketcher (v9) — tap an empty hour, sketch a skill into it ── */
+.ts-bg {
+  position: fixed; inset: 0; background: rgba(21,20,15,0.45);
+  z-index: 9200; display: flex; align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.ts-sheet {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 22px 22px 0 0; width: 100%; max-width: 480px;
+  max-height: 82vh; display: flex; flex-direction: column;
+  padding: 0 0 calc(env(safe-area-inset-bottom,0px) + 16px);
+  animation: tsUp 0.25s cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes tsUp { from { transform: translateY(50%); } to { transform: none; } }
+.ts-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--line-strong); margin: 12px auto 4px; flex-shrink: 0; }
+.ts-head { padding: 8px 18px 12px; border-bottom: 1px solid var(--line); flex-shrink: 0; }
+.ts-title { font-family: var(--font-display); font-weight: 800; font-size: 18px; letter-spacing: -0.02em; }
+.ts-sub { font-size: 11px; font-family: var(--font-mono); color: var(--muted); margin-top: 3px; }
+.ts-body { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 18px 4px; }
+.ts-domain { font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin: 12px 0 8px; display: flex; align-items: center; gap: 8px; }
+.ts-domain:first-child { margin-top: 2px; }
+.ts-domain::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.ts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.ts-skill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 11px; border-radius: 12px;
+  border: 1px solid var(--line-strong); background: var(--bg);
+  font-size: 12.5px; font-weight: 600; color: var(--ink); text-align: left;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 0.1s;
+}
+.ts-skill:active { transform: scale(0.96); }
+.ts-skill-icon { font-size: 15px; flex-shrink: 0; }
+.ts-skill-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ts-skill-lv { font-size: 9.5px; font-family: var(--font-mono); font-weight: 700; color: var(--muted); flex-shrink: 0; }
+.ts-back {
+  display: inline-flex; align-items: center; gap: 5px;
+  border: none; background: none; padding: 2px 0; margin-bottom: 10px;
+  font-size: 12px; font-weight: 700; color: var(--muted); cursor: pointer;
+}
+.ts-picked { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.ts-picked-icon { font-size: 26px; }
+.ts-picked-name { font-family: var(--font-display); font-weight: 800; font-size: 17px; }
+.ts-picked-lv { font-size: 10px; font-family: var(--font-mono); color: var(--muted); margin-top: 2px; }
+.ts-suggest {
+  border: 1px solid var(--line-strong); border-radius: 14px;
+  padding: 13px 15px; background: var(--bg); margin-bottom: 10px;
+}
+.ts-suggest.gate { border-color: var(--ember); background: rgba(212,99,62,0.06); }
+.ts-eyebrow { font-size: 9px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
+.ts-suggest.gate .ts-eyebrow { color: var(--ember); }
+.ts-q-title { font-family: var(--font-display); font-weight: 800; font-size: 15.5px; margin-top: 4px; }
+.ts-q-desc { font-size: 12.5px; color: var(--muted); line-height: 1.45; margin-top: 3px; }
+.ts-q-xp { font-size: 10.5px; font-family: var(--font-mono); font-weight: 700; color: var(--green); margin-top: 7px; }
+.ts-why { font-size: 11.5px; color: var(--muted); line-height: 1.45; border-left: 2px solid var(--gold); padding-left: 10px; margin-bottom: 12px; }
+.ts-place {
+  display: block; width: calc(100% - 36px); margin: 6px 18px 0; flex-shrink: 0;
+  padding: 13px; border-radius: 13px; border: none;
+  background: var(--ink); color: #F4F3EF;
+  font-family: var(--font-display); font-weight: 700; font-size: 14px;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 0.1s;
+}
+.ts-place:active { transform: scale(0.98); }
+.ts-cancel {
+  display: block; width: calc(100% - 36px); margin: 8px 18px 0; flex-shrink: 0;
+  padding: 11px; border-radius: 13px;
+  background: none; border: 1px solid var(--line);
+  color: var(--muted); font-size: 13px; cursor: pointer;
+}
+.agenda-block-hint { opacity: 0.75; font-weight: 400; }
+
 /* Planner chips (tap a mission/skill to plan it) */
 .plan-tray {
   background: var(--card); border: 1px solid var(--line);
@@ -1559,9 +1629,10 @@ function renderAgenda() {
     const slotItems = items.filter(it => it.time === h);
     const blocks = slotItems.map((it, idx) => {
       const color = it.type === 'mission' ? 'var(--green)' : it.type === 'skill' ? 'var(--ember)' : 'var(--ink-card)';
+      const hint = it.hint ? ` <span class="agenda-block-hint">· ${it.hint}</span>` : '';
       return `<div class="agenda-block${it.done?' done':''}" style="background:${color}" onclick="toggleAgendaBlock('${key}',${h},${idx},event)">
         <span class="agenda-block-icon">${it.icon||'•'}</span>
-        <span class="agenda-block-text">${it.label}</span>
+        <span class="agenda-block-text">${it.label}${hint}</span>
         <span class="agenda-block-x" onclick="removeAgendaBlock('${key}',${h},${idx},event)">×</span>
       </div>`;
     }).join('');
@@ -1661,10 +1732,14 @@ window.armPlan = function(c) {
   openTimePicker(c);
 };
 window.onSlotTap = function(key, hour) {
-  if (!armedPlan) return;  // nothing armed → tapping an empty slot does nothing
-  placeBlock(key, hour, armedPlan);
-  armedPlan = null;
-  renderPlanTray();
+  if (armedPlan) {
+    placeBlock(key, hour, armedPlan);
+    armedPlan = null;
+    renderPlanTray();
+    return;
+  }
+  // Time Sketcher (v9): tapping an empty hour with nothing armed sketches it
+  openTimeSketcher(key, hour);
 };
 function placeBlock(key, hour, c) {
   const items = loadAgenda(key);
@@ -1700,6 +1775,174 @@ function openTimePicker(c) {
     }
   });
   document.body.appendChild(bg);
+}
+
+// ── Time Sketcher (v9) ───────────────────────────────────────
+// Tap an empty agenda hour → pick a skill → get the exact next
+// practice from its quest ladder (tier gates first) + the why.
+function hourLabel(h) { return (h===12) ? '12 PM' : h>12 ? (h-12)+' PM' : h+' AM'; }
+
+function tsEffLevel(skillKey) {
+  const char = window.getCharacter ? window.getCharacter() : { skills:{} };
+  const xp = ((char.skills||{})[skillKey]||{}).xp || 0;
+  const raw = window.xpToLevel ? window.xpToLevel(xp) : 1;
+  const tl = window.tierLockInfo ? window.tierLockInfo(skillKey, raw) : { level: raw, locked: false };
+  return tl;
+}
+
+function tsSuggestion(skillKey) {
+  const def = (window.RPG_DEFAULT_SKILLS||{})[skillKey] || {};
+  if (def.isHabit) {
+    return { kind:'habit', eyebrow:'Daily mission', title:def.label||skillKey,
+      desc:'A single rep today keeps the score alive.',
+      why:def.why||null, xpLine:'+15 XP · habit score +1 (max 10)', hint:null };
+  }
+  const tl = tsEffLevel(skillKey);
+  const lvl = tl.level;
+  const done = window.getQuestsDone ? window.getQuestsDone() : {};
+  const ladder = ((window.RPG_QUESTS||{})[skillKey]||[]).slice().sort((a,b)=>a.lvl-b.lvl);
+  // 1. Tier gate open? That IS the priority — it clears the level cap.
+  if (tl.locked && tl.quest) {
+    return { kind:'gate', eyebrow:'Tier gate · LV '+tl.gate, title:tl.quest.title, desc:tl.quest.desc,
+      why:null, xpLine:'+'+tl.quest.xp+' XP when claimed — clears your level cap', hint:tl.quest.title };
+  }
+  // 2. Lowest unclaimed quest that is already unlocked.
+  const open = ladder.find(q => q.lvl <= lvl && !done[skillKey+':'+q.lvl]);
+  if (open) {
+    return { kind:'quest', eyebrow:'Next quest · LV '+open.lvl, title:open.title, desc:open.desc,
+      why:null, xpLine:'+'+open.xp+' XP when claimed', hint:open.title };
+  }
+  // 3. Nothing open yet → train toward the next unlock.
+  const up = ladder.find(q => q.lvl > lvl);
+  const ql = (def.quickLog||[])[0];
+  if (up) {
+    return { kind:'upcoming', eyebrow:'Coming up · unlocks LV '+up.lvl, title:up.title, desc:up.desc,
+      why:null, xpLine: ql ? 'Practice today: '+ql.label+' · +'+ql.xp+' XP' : null, hint:up.title };
+  }
+  return { kind:'free', eyebrow:'Free practice', title:def.label||skillKey,
+    desc:'Ladder cleared — keep the level climbing.',
+    why:null, xpLine: ql ? ql.label+' · +'+ql.xp+' XP' : null, hint:null };
+}
+
+function openTimeSketcher(key, hour) {
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
+  if (!Object.keys(defaults).length) return;
+  const order = window.RPG_CATEGORY_ORDER || ['money','body','mind','business','lifestyle','knowledge'];
+  const dmap = window.RPG_DOMAIN_MAP || {};
+  const parents = window.RPG_PARENT_SKILLS || {};
+  let focusKeys = [];
+  try { focusKeys = JSON.parse(localStorage.getItem('rpg_focus_skills_v1')) || []; } catch(e) {}
+
+  // group active, non-private skills by (mapped) domain; habits get their own group
+  const groups = {};
+  const habits = [];
+  for (const k of Object.keys(defaults)) {
+    const d = defaults[k];
+    if (d.private || d.active === false) continue;
+    if (d.isHabit) { habits.push(k); continue; }
+    const dom = dmap[d.parentSkill] || d.parentSkill || 'body';
+    (groups[dom] = groups[dom] || []).push(k);
+  }
+
+  const skillBtn = k => {
+    const d = defaults[k];
+    const tl = tsEffLevel(k);
+    return `<button class="ts-skill" onclick="tsPick('${key}',${hour},'${k}')">
+      <span class="ts-skill-icon">${d.icon||'⭐'}</span>
+      <span class="ts-skill-name">${d.label||k}</span>
+      <span class="ts-skill-lv">${d.isHabit ? '' : 'LV '+tl.level+(tl.locked?' 🔒':'')}</span>
+    </button>`;
+  };
+
+  let listHtml = '';
+  if (focusKeys.length) {
+    const fk = focusKeys.filter(k => defaults[k] && !defaults[k].private && defaults[k].active !== false);
+    if (fk.length) listHtml += `<div class="ts-domain">★ Focus skills</div><div class="ts-grid">${fk.map(skillBtn).join('')}</div>`;
+  }
+  for (const dom of order) {
+    const keys = (groups[dom]||[]).filter(k => !focusKeys.includes(k));
+    if (!keys.length) continue;
+    const p = parents[dom] || {};
+    listHtml += `<div class="ts-domain">${p.icon||''} ${p.label||dom}</div><div class="ts-grid">${keys.map(skillBtn).join('')}</div>`;
+  }
+  if (habits.length) {
+    listHtml += `<div class="ts-domain">⚡ Daily missions</div><div class="ts-grid">${habits.map(skillBtn).join('')}</div>`;
+  }
+
+  document.getElementById('tsBg')?.remove();
+  const bg = document.createElement('div');
+  bg.className = 'ts-bg'; bg.id = 'tsBg';
+  const d = new Date(key + 'T12:00:00');
+  bg.innerHTML = `<div class="ts-sheet">
+    <div class="ts-handle"></div>
+    <div class="ts-head">
+      <div class="ts-title">Sketch ${hourLabel(hour)}</div>
+      <div class="ts-sub">${d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})} · pick what this hour is for</div>
+    </div>
+    <div class="ts-body" id="tsBody">${listHtml}</div>
+    <button class="ts-cancel" onclick="document.getElementById('tsBg')?.remove()">Cancel</button>
+  </div>`;
+  bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
+  document.body.appendChild(bg);
+}
+
+window.tsPick = function(key, hour, skillKey) {
+  const body = document.getElementById('tsBody');
+  if (!body) return;
+  const def = (window.RPG_DEFAULT_SKILLS||{})[skillKey] || {};
+  const s = tsSuggestion(skillKey);
+  const tl = def.isHabit ? null : tsEffLevel(skillKey);
+  window._tsPending = { key, hour, skillKey, hint: s.hint };
+  body.innerHTML = `
+    <button class="ts-back" onclick="tsBack('${key}',${hour})">‹ All skills</button>
+    <div class="ts-picked">
+      <span class="ts-picked-icon">${def.icon||'⭐'}</span>
+      <div>
+        <div class="ts-picked-name">${def.label||skillKey}</div>
+        <div class="ts-picked-lv">${def.isHabit ? 'Daily habit · score '+((window.getHabits&&(window.getHabits()[skillKey]||{}).score)||0)+'/10' : 'Level '+tl.level+(tl.locked?' · tier locked':'')}</div>
+      </div>
+    </div>
+    <div class="ts-suggest${s.kind==='gate'?' gate':''}">
+      <div class="ts-eyebrow">${s.eyebrow}</div>
+      <div class="ts-q-title">${s.title}</div>
+      <div class="ts-q-desc">${s.desc}</div>
+      ${s.xpLine ? `<div class="ts-q-xp">${s.xpLine}</div>` : ''}
+    </div>
+    ${s.why ? `<div class="ts-why">${s.why}</div>` : ''}`;
+  // swap cancel → place button
+  const sheet = body.closest('.ts-sheet');
+  const oldBtn = sheet.querySelector('.ts-place'); if (oldBtn) oldBtn.remove();
+  const cancel = sheet.querySelector('.ts-cancel');
+  const place = document.createElement('button');
+  place.className = 'ts-place';
+  place.textContent = 'Place at ' + hourLabel(hour);
+  place.onclick = tsPlace;
+  sheet.insertBefore(place, cancel);
+};
+
+window.tsBack = function(key, hour) {
+  document.getElementById('tsBg')?.remove();
+  openTimeSketcher(key, hour);
+};
+
+function tsPlace() {
+  const p = window._tsPending;
+  if (!p) return;
+  const def = (window.RPG_DEFAULT_SKILLS||{})[p.skillKey] || {};
+  const items = loadAgenda(p.key);
+  items.push({
+    time: p.hour, key: p.skillKey,
+    label: def.label || p.skillKey,
+    icon: def.icon || '⭐',
+    type: def.isHabit ? 'mission' : 'skill',
+    hint: def.isHabit ? null : (p.hint || null),
+    done: false
+  });
+  saveAgenda(p.key, items);
+  window._tsPending = null;
+  document.getElementById('tsBg')?.remove();
+  renderAgenda();
+  showToast('Sketched · ' + (def.label || p.skillKey) + ' at ' + hourLabel(p.hour));
 }
 
 // ── Boot ─────────────────────────────────────────────────────
