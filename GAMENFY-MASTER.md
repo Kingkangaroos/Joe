@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v8.10)
+# GAMENFY — Master Document (v9.0)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -71,8 +71,8 @@ A gamified personal Life OS — version 0.1 of a future product. Skills, levels,
 3. **Time-aware check-in card:** <12:00 Morning Brief ("Own the day", Lock it in) · 12–17 hidden · ≥17:00 Evening check-in (recap + up to 3 open actions completable inline + **Close the day** → streak secured). Streak: any XP / mission / venture step / closed day counts; never breaks mid-day.
 4. **Weekly Review card** (Sunday reviews the ending week; Mon–Wed catch-up for last week): XP, active days, venture steps, energy-by-domain bars, top skills, one rule-based insight.
 5. **Next Move card:** exactly one next step per active venture + **custom moves** (+ Add, `rpg_custom_moves_v1`), each with a **Start** button → full-screen **focus timer** (persists across refresh via `rpg_focus_session_v1`; Done completes the step and awards XP).
-6. **Agenda** — 6:00–23:00 day view, ‹ › nav, tap-to-plan tray (marking a block done awards XP)
-7. **Missions** with **Yesterday toggle** (fills a forgotten day: `checkHabitFor`, +15 XP, streak day stamped) · Focus Skills · Core Tracker (whistling, dancing)
+6. **Agenda** — 6:00–23:00 day view, ‹ › nav, tap-to-plan tray (marking a block done awards XP). **Time Sketcher (v9.0):** tapping an *empty* hour with nothing armed opens a sheet — skills grouped by domain (Focus skills pinned, Daily missions last, live tier-locked levels); picking one shows the exact right practice from the ladder (open tier gate first, else lowest unclaimed unlocked quest, else next unlock + top quick-log action; habits show their why) and places a normal agenda block carrying the quest title as inline hint.
+7. **Missions** in Daily-tab quest-card style (v9.0: two-column mq-* grid with icon/check/level/XP + truncated why) with **Yesterday toggle** (fills a forgotten day: `checkHabitFor`, +15 XP, streak day stamped) · **Gratitude box** (v9.0: same storage as the Daily tab — `rpg_gratitude_v1` + `gratitudeXpGiven` in `rpg_daily_v1:date`; first word/day = +10 XP) · Focus Skills · Core Tracker (whistling, dancing)
 8. One-time push setup card until notifications are enabled
 
 ### Body (`character.html` → Body)
@@ -83,6 +83,7 @@ A gamified personal Life OS — version 0.1 of a future product. Skills, levels,
 ### Skills (`character.html` → Skills)
 - **Skills view:** RuneScape-style icon grid grouped by domain, each cell = level/100 + progress bar. Total Level banner on top + maxed counter. Private skills behind PIN.
 - **Quests view:** pick a skill → level-gated quest ladder. Quests unlock at their level; claiming grants XP. 28 skills, 261 quests (see `quests.js`).
+- **Skill detail panel:** fully Daylight since v9.0 (whole legacy dark sheet family converted: sd-panel, quick-log, day detail, gratitude detail, milestone confirm; PIN modal intentionally stays dark). Contains a **tier checklist**: next gate + every remaining unclaimed quest below it, unlocked ones claimable inline (`sdClaimQuest`), locked ones show their unlock level.
 - **Ventures view (v7.0):** business ideas as quest ladders (see section 8a).
 
 ### Finance (`finance.html`)
@@ -129,6 +130,8 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 
 ## 8. Version history
 
+- **v9.0** The v9 build list shipped in one session. (1) **Time Sketcher**: empty agenda hour → skill picker → practice suggestion straight from the quest ladder with tier-gate priority, placed as a normal block with quest-title hint; suggestion engine unit-tested against real xp.js+quests.js in all six states. (2) **Skill panel Daylight redesign**: entire dark sheet family (sd-panel, ql-*, day detail, gratitude detail, ms-confirm) native light; v8.10 contrast-override block deleted; inline dark leftovers fixed (white-on-white XP, invisible Not-yet button, dark textarea, weak green tags). (3) **Tier checklist** inside the skill panel with inline claims. (4) **Main missions in Daily-card style** (mq-* grid incl. why at decision time) + **gratitude box on Main** sharing the Daily tab's storage. Sync fix found in review: `rpg_gratitude_v1` was never in syncedKeys — added on index + character.
+
 - **v4.1** fixed dead character tabs, the add/sync-wipe bug, habit levels 0–10, subscriptions out of donut, PWA opens on Main
 - **v4.2** Main agenda + daily quote + tap-to-plan
 - **v4.3** Body tab with anatomical figure, Body Level, mood face
@@ -149,6 +152,13 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 ---
 
 ## 9. Roadmap / open items
+
+**v9 build list — status (v9.0):**
+1. [x] Time Sketcher (agenda × skills × quests × XP)
+2. [x] Main missions in Daily-card style + gratitude box on Main
+3. [x] Tier checklist inside skill detail (inline claims)
+4. [x] Skill-panel Daylight redesign
+5. [ ] Verify with Joey: maandlasten add-flow fixed in v8.8/v8.10 · new agenda/missions look approved on device
 
 **Next builds (in order):**
 1. [x] **Jarvis daily check-in + streak + automatic push** — shipped in v7.1/v7.2. Joey only taps "Turn on" once in the home-screen app.
@@ -178,6 +188,7 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 
 **SIMPEL — goedkoop model (Haiku-klasse):** geïsoleerd, exact omschreven, kopieerbaar patroon.
 - Net-worth grafiek-code echt verwijderen (nu alleen `display:none` op `.nw-chart-wrap`)
+- Dode `.mission-row`/`.missions-card` CSS in index.html verwijderen (v9.0 verving de rijen door mq-kaarten)
 - Copy/tekst-aanpassingen (why-teksten, labels, knopteksten)
 - CSS-tweaks op aanwijzing (kleuren, marges, groottes)
 - SKILL_PHOTO_URL entries toevoegen zodra foto-URLs bestaan
