@@ -426,16 +426,7 @@ html, body { scrollbar-width: none; -ms-overflow-style: none; }
   .section .card .card-grid { grid-template-columns: 1fr; }
 }
 
-/* Stock-style net-worth chart */
-.nw-chart-wrap {
-  margin: 14px 0 18px;
-  padding: 14px 16px 12px;
-  background: rgba(255, 255, 255, 0.025);
-  border: none;
-  border-radius: 12px;
-  position: relative;
-  overflow: hidden;
-}
+/* (net-worth line chart removed in v9.0 — donut & activity keep nw-chart-head/label/delta) */
 .nw-chart-head {
   display: flex;
   justify-content: space-between;
@@ -451,65 +442,8 @@ html, body { scrollbar-width: none; -ms-overflow-style: none; }
 .nw-chart-delta { font-variant-numeric: tabular-nums; color: var(--text-tertiary); }
 .nw-chart-delta.up   { color: #6BE3A4; }
 .nw-chart-delta.down { color: #FF8A8A; }
-.nw-chart-svg {
-  display: block;
-  width: 100%;
-  height: 200px;
-  color: var(--text-tertiary);
-  overflow: visible;
-  transition: color 0.4s ease;
-}
-.nw-chart-grid {
-  stroke: rgba(255,255,255,0.05);
-  stroke-width: 1;
-  stroke-dasharray: 2 4;
-  vector-effect: non-scaling-stroke;
-}
-.nw-chart-empty {
-  position: absolute;
-  inset: 28px 16px 12px;
-  font-size: 11px;
-  color: var(--text-tertiary);
-  text-align: center;
-  font-style: italic;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-.nw-chart-wrap.has-data .nw-chart-empty { display: none; }
 
 /* Stats overlay sitting at the bottom of the chart card */
-.nw-chart-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255,255,255,0.05);
-}
-@media (max-width: 720px) {
-  .nw-chart-stats { grid-template-columns: repeat(2, 1fr); }
-}
-.nw-stat {
-  display: flex; flex-direction: column; gap: 2px;
-  padding: 4px 6px;
-}
-.nw-stat-label {
-  font-size: 9px; letter-spacing: 0.16em; font-weight: 800;
-  text-transform: uppercase; color: var(--text-tertiary);
-  font-family: var(--font-mono);
-}
-.nw-stat-val {
-  font-size: 13px; font-weight: 700;
-  color: var(--text-primary);
-  font-variant-numeric: tabular-nums;
-  font-family: var(--font-mono);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 /* Two-column overview row: line chart + donut */
 .nw-overview-grid {
   display: grid;
@@ -521,7 +455,6 @@ html, body { scrollbar-width: none; -ms-overflow-style: none; }
 @media (max-width: 720px) {
   .nw-overview-grid { grid-template-columns: 1fr; }
 }
-.nw-overview-grid .nw-chart-wrap { margin: 0; }
 .nw-donut-wrap {
   position: relative;
   padding: 14px 16px 12px;
@@ -1577,7 +1510,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 14px !important;
 }
 .quick-add input::placeholder { color: rgba(255,255,255,0.5) !important; }
-.nw-chart-wrap { display: none !important; }
 </style>
 </head>
 <body>
@@ -1612,51 +1544,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
     <!-- Overview row: stock-style line chart on the left, donut allocation chart on the right -->
     <div class="nw-overview-grid">
-      <div class="nw-chart-wrap" id="nwChartWrap">
-        <div class="nw-chart-head">
-          <span class="nw-chart-label">All-time</span>
-          <span class="nw-chart-delta" id="nwChartDelta">—</span>
-        </div>
-        <svg class="nw-chart-svg" id="nwChartSvg" viewBox="0 0 600 200" preserveAspectRatio="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="nwChartGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stop-color="currentColor" stop-opacity="0.55"/>
-              <stop offset="60%"  stop-color="currentColor" stop-opacity="0.18"/>
-              <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <!-- Faint reference grid lines across the full chart height -->
-          <line class="nw-chart-grid" x1="0" x2="600" y1="40"  y2="40"/>
-          <line class="nw-chart-grid" x1="0" x2="600" y1="100" y2="100"/>
-          <line class="nw-chart-grid" x1="0" x2="600" y1="160" y2="160"/>
-          <path id="nwChartArea" fill="url(#nwChartGrad)" d=""/>
-          <path id="nwChartLine" fill="none" stroke="currentColor" stroke-width="2.4"
-                stroke-linejoin="round" stroke-linecap="round"
-                style="filter: drop-shadow(0 0 6px currentColor)" d=""/>
-        </svg>
-        <!-- Stats overlay — fills the empty space inside the chart card.
-             Always visible: shows what 1% is, plus high/low/current. -->
-        <div class="nw-chart-stats" id="nwChartStats">
-          <div class="nw-stat">
-            <div class="nw-stat-label">1% =</div>
-            <div class="nw-stat-val" id="nwStat1pct">—</div>
-          </div>
-          <div class="nw-stat">
-            <div class="nw-stat-label">All-time high</div>
-            <div class="nw-stat-val" id="nwStatHigh">—</div>
-          </div>
-          <div class="nw-stat">
-            <div class="nw-stat-label">All-time low</div>
-            <div class="nw-stat-val" id="nwStatLow">—</div>
-          </div>
-          <div class="nw-stat">
-            <div class="nw-stat-label">Snapshots</div>
-            <div class="nw-stat-val" id="nwStatCount">—</div>
-          </div>
-        </div>
-        <div class="nw-chart-empty" id="nwChartEmpty">Add or edit an asset to start tracking your net worth over time.</div>
-      </div>
-
       <div class="nw-donut-wrap">
         <div class="nw-chart-head">
           <span class="nw-chart-label">Allocation</span>
@@ -2005,7 +1892,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     if (netWorthTotal) netWorthTotal.textContent = fmtMoney(grand);
     if (netWorthBreakdown) netWorthBreakdown.textContent = breakdown.join('  •  ');
     logNetWorthSnapshot(grand);
-    renderNetWorthChart();
     renderAllocationDonut(sliceTotals, grand);
     renderActivity();
     if (typeof renderWishlist === 'function') renderWishlist();
@@ -2182,114 +2068,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     if (hist.length > NW_HISTORY_MAX) hist.splice(0, hist.length - NW_HISTORY_MAX);
     storeSet(NW_HISTORY_KEY, hist);
   }
-  function nwSmoothPath(points) {
-    if (points.length < 2) return '';
-    if (points.length === 2) return 'M' + points[0].x + ',' + points[0].y + ' L' + points[1].x + ',' + points[1].y;
-    const d = ['M' + points[0].x + ',' + points[0].y];
-    for (let i = 0; i < points.length - 1; i++) {
-      const p0 = points[i - 1] || points[i];
-      const p1 = points[i];
-      const p2 = points[i + 1];
-      const p3 = points[i + 2] || p2;
-      const c1x = p1.x + (p2.x - p0.x) / 6;
-      const c1y = p1.y + (p2.y - p0.y) / 6;
-      const c2x = p2.x - (p3.x - p1.x) / 6;
-      const c2y = p2.y - (p3.y - p1.y) / 6;
-      d.push('C' + c1x + ',' + c1y + ' ' + c2x + ',' + c2y + ' ' + p2.x + ',' + p2.y);
-    }
-    return d.join(' ');
-  }
-  function renderNetWorthChart() {
-    const wrap = document.getElementById('nwChartWrap');
-    const svg = document.getElementById('nwChartSvg');
-    const linePath = document.getElementById('nwChartLine');
-    const areaPath = document.getElementById('nwChartArea');
-    const deltaEl = document.getElementById('nwChartDelta');
-    if (!wrap || !svg || !linePath || !areaPath) return;
-    const hist = storeGet(NW_HISTORY_KEY) || [];
-    if (hist.length < 1) {
-      wrap.classList.remove('has-data');
-      linePath.setAttribute('d', '');
-      areaPath.setAttribute('d', '');
-      if (deltaEl) { deltaEl.textContent = '—'; deltaEl.classList.remove('up', 'down'); }
-      renderChartStats([]);
-      return;
-    }
-    wrap.classList.add('has-data');
-    const first = hist[0].v;
-    const last = hist[hist.length - 1].v;
-    const change = last - first;
-    const direction = Math.abs(change) < 0.005 ? 'flat' : (change > 0 ? 'up' : 'down');
-    const color = direction === 'up' ? '#6BE3A4' : direction === 'down' ? '#FF8A8A' : 'var(--text-tertiary)';
-    svg.style.color = color;
-    if (deltaEl) {
-      deltaEl.classList.remove('up', 'down');
-      if (direction === 'up')   deltaEl.classList.add('up');
-      if (direction === 'down') deltaEl.classList.add('down');
-      if (direction === 'flat') {
-        deltaEl.textContent = 'Flat';
-      } else if (Math.abs(first) < 0.5) {
-        // Baseline was effectively zero — % would be infinite. Show the
-        // absolute amount instead so "added 1,276" reads clearly.
-        const sign = change > 0 ? '+' : '—';
-        deltaEl.textContent = sign + fmtMoney(Math.abs(change));
-      } else {
-        const pct = (change / Math.abs(first)) * 100;
-        const sign = change > 0 ? '+' : '—';
-        const absPct = Math.abs(pct);
-        const pctStr = absPct >= 100 ? absPct.toFixed(0) : absPct >= 10 ? absPct.toFixed(1) : absPct.toFixed(2);
-        deltaEl.textContent = sign + pctStr + '%';
-      }
-    }
-    const W = 600, H = 200, pad = 8;
-    const vals = hist.map(p => p.v);
-    const minV = Math.min.apply(null, vals);
-    const maxV = Math.max.apply(null, vals);
-    const range = (maxV - minV) || Math.max(1, Math.abs(maxV));
-    if (hist.length === 1) {
-      const y = H / 2;
-      linePath.setAttribute('d', 'M0,' + y + ' L' + W + ',' + y);
-      areaPath.setAttribute('d', 'M0,' + y + ' L' + W + ',' + y + ' L' + W + ',' + H + ' L0,' + H + ' Z');
-      renderChartStats(hist);
-      return;
-    }
-    const points = hist.map((p, i) => ({
-      x: (i / (hist.length - 1)) * W,
-      y: H - pad - ((p.v - minV) / range) * (H - pad * 2)
-    }));
-    const lineD = nwSmoothPath(points);
-    linePath.setAttribute('d', lineD);
-    const lastPt = points[points.length - 1];
-    const firstPt = points[0];
-    areaPath.setAttribute('d', lineD + ' L' + lastPt.x + ',' + H + ' L' + firstPt.x + ',' + H + ' Z');
-    renderChartStats(hist);
-  }
-
-  // Stats overlay — what 1% is worth, all-time high/low, snapshot count.
-  // Reads the snapshot history (CHF base) and converts to display currency.
-  function renderChartStats(hist) {
-    const oneEl   = document.getElementById('nwStat1pct');
-    const highEl  = document.getElementById('nwStatHigh');
-    const lowEl   = document.getElementById('nwStatLow');
-    const countEl = document.getElementById('nwStatCount');
-    if (!oneEl) return;
-    if (!hist || !hist.length) {
-      oneEl.textContent = '—';
-      highEl.textContent = '—';
-      lowEl.textContent = '—';
-      countEl.textContent = '0';
-      return;
-    }
-    const vals = hist.map(p => p.v);
-    const last = vals[vals.length - 1];
-    const high = Math.max.apply(null, vals);
-    const low  = Math.min.apply(null, vals);
-    oneEl.textContent   = fmtMoney(last / 100);
-    highEl.textContent  = fmtMoney(high);
-    lowEl.textContent   = fmtMoney(low);
-    countEl.textContent = String(hist.length);
-  }
-
   NW_CATS.forEach(cat => {
     const addBtn = document.getElementById(cat.addId);
     const nameInput = document.getElementById(cat.nameId);

@@ -371,48 +371,6 @@ body {
 }
 
 /* ── Missions ────────────────────────────────────── */
-.missions-card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-.mission-row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 13px 14px;
-  border-bottom: 1px solid var(--line);
-  cursor: pointer;
-  transition: background 0.1s;
-  -webkit-tap-highlight-color: transparent;
-}
-.mission-row:last-child { border-bottom: none; }
-.mission-row:active { background: #F9F8F4; }
-.mission-row.done { opacity: 0.5; }
-.mission-check {
-  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
-  border: 2px solid var(--line-strong);
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s; background: transparent;
-}
-.mission-row.done .mission-check {
-  background: var(--green); border-color: var(--green);
-}
-.mission-check-icon { display: none; font-size: 11px; color: white; }
-.mission-row.done .mission-check-icon { display: block; }
-.mission-info { flex: 1; }
-.mission-name {
-  font-size: 14px; font-weight: 600; color: var(--ink);
-}
-.mission-streak {
-  font-size: 11px; color: var(--muted); margin-top: 2px;
-}
-.mission-xp {
-  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
-  color: var(--ember); background: rgba(212,99,62,0.08);
-  padding: 2px 8px; border-radius: 6px; white-space: nowrap;
-}
-
 /* v9: missions as Daily-tab quest cards */
 .missions-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 8px;

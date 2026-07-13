@@ -187,8 +187,8 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 ## AI-inzet per taak (credits-strategie, 2026-07-12)
 
 **SIMPEL — goedkoop model (Haiku-klasse):** geïsoleerd, exact omschreven, kopieerbaar patroon.
-- Net-worth grafiek-code echt verwijderen (nu alleen `display:none` op `.nw-chart-wrap`)
-- Dode `.mission-row`/`.missions-card` CSS in index.html verwijderen (v9.0 verving de rijen door mq-kaarten)
+- ~~Net-worth grafiek-code echt verwijderen~~ ✅ gedaan in v9.0 (HTML+JS+CSS weg; `logNetWorthSnapshot` datalogging bewust behouden voor een toekomstige chart)
+- ~~Dode `.mission-row`/`.missions-card` CSS verwijderen~~ ✅ gedaan in v9.0
 - Copy/tekst-aanpassingen (why-teksten, labels, knopteksten)
 - CSS-tweaks op aanwijzing (kleuren, marges, groottes)
 - SKILL_PHOTO_URL entries toevoegen zodra foto-URLs bestaan
