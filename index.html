@@ -2277,6 +2277,15 @@ window.openWeekly = function(){
     return '<div class="wk-dom"><div class="wk-dom-top"><span>'+WK_DOMAINS[d].label+'</span><span>'+pct+'%</span></div>'+
       '<div class="wk-bar"><div class="wk-bar-fill" style="width:'+pct+'%;background:'+WK_DOMAINS[d].color+'"></div></div></div>';
   }).join('')||'<div class="ci-clear" style="color:var(--muted)">No XP logged this week yet.</div>';
+  // gratitude words this week (v9.0 step 4): lastDate binnen het weekvenster
+  let gratTags='';
+  try{
+    const gitems=JSON.parse(localStorage.getItem('rpg_gratitude_v1'))||{};
+    const words=Object.entries(gitems)
+      .filter(([,d])=>d.lastDate>=from&&d.lastDate<toExcl)
+      .sort((a,b)=>(b[1].count||1)-(a[1].count||1)).slice(0,10);
+    gratTags=words.map(([w])=>'<span class="grat-tag">'+escapeHtml(w)+'</span>').join('');
+  }catch(e){}
   // top skills
   const defaults=window.RPG_DEFAULT_SKILLS||{};
   const top=Object.entries(cur.bySkill).sort((a,b)=>b[1]-a[1]).slice(0,3)
@@ -2288,6 +2297,7 @@ window.openWeekly = function(){
   else if(prev.total>0 && cur.total<prev.total*0.8) insight='Down vs last week. One strong day fixes this.';
   else if(domKeys.length && cur.byDomain[domKeys[0]]/domTotal>0.5) insight=WK_DOMAINS[domKeys[0]].label+' took most of your energy this week.';
   else if(vSteps===0) insight='Zero venture steps this week — 30 minutes tonight changes that.';
+  if(cur.total===0 && gratTags) insight='Quiet week on XP — but you kept noticing what\'s good. That habit carries the rest.';
 
   const overlay=document.createElement('div');
   overlay.className='checkin-overlay'; overlay.setAttribute('data-checkin','1');
@@ -2302,6 +2312,7 @@ window.openWeekly = function(){
     '</div>'+
     '<div class="ci-sec">Energy by domain</div>'+bars+
     (top?'<div class="ci-sec" style="margin-top:14px">Top skills</div>'+top:'')+
+    (gratTags?'<div class="ci-sec" style="margin-top:14px">Grateful for</div><div class="grat-tags" style="margin-top:8px">'+gratTags+'</div>':'')+
     '<div class="wk-insight">'+insight+'</div>'+
     '<button class="ci-close-btn" onclick="wkClose(this)">Close the week</button>'+
   '</div>';

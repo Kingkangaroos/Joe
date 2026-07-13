@@ -28,7 +28,7 @@ A gamified personal Life OS — version 0.1 of a future product. Skills, levels,
 | `index.html` | **Main** — agenda, daily quote, missions, focus skills, core tracker |
 | `character.html` | **Body / Daily / Quests / Skills / History** tabs |
 | `finance.html` | Net Worth / Maandlasten / Wishlist |
-| `gym.html` | Hevy-linked workout view (to be simplified) |
+| `gym.html` | Weight log + composition estimate + progress photos; primary flow = log in Hevy, view on Body (simplified in v9.0 — legacy manual coach removed) |
 | `health.html`, `po-water.html` | health & water trackers |
 | `settings.html` | focus skills, active skills, PIN, quotes + **Engine & nudges** (push/card prefs, focus minutes → `rpg_prefs_v1`) |
 | `xp.js` | skill definitions, XP/level math, habits, addXP/removeXP |
@@ -130,6 +130,7 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 
 ## 8. Version history
 
+- **v9.0 (session 2)** Weekly review now shows the week's gratitude words (from `rpg_gratitude_v1`, lastDate within the review window, top 10 by count) between Top skills and the insight, plus a new insight for quiet-XP-but-grateful weeks. gym.html simplified for real: the legacy manual coach fully excised — advanced `<details>` block, day pill, settings button, all three modals (exercise/rotation/settings), ~900 lines of coach JS and all orphaned CSS (pruned by class-presence check, brace-balance verified). 3,579 → 1,815 lines. KEPT: weight log + sparkline + delta, composition estimate (reads historical `po_coach_v1` logs; degrades gracefully to weight-trend-only as coach data ages), progress photos incl. camera/compare/Supabase Storage, and the full pc-sync layer with `PC_SYNCED_KEYS` untouched — so no device ever deletes another's coach history. Units stay as stored (kg); the settings modal that edited them is gone.
 - **v9.0** The v9 build list shipped in one session. (1) **Time Sketcher**: empty agenda hour → skill picker → practice suggestion straight from the quest ladder with tier-gate priority, placed as a normal block with quest-title hint; suggestion engine unit-tested against real xp.js+quests.js in all six states. (2) **Skill panel Daylight redesign**: entire dark sheet family (sd-panel, ql-*, day detail, gratitude detail, ms-confirm) native light; v8.10 contrast-override block deleted; inline dark leftovers fixed (white-on-white XP, invisible Not-yet button, dark textarea, weak green tags). (3) **Tier checklist** inside the skill panel with inline claims. (4) **Main missions in Daily-card style** (mq-* grid incl. why at decision time) + **gratitude box on Main** sharing the Daily tab's storage. Sync fix found in review: `rpg_gratitude_v1` was never in syncedKeys — added on index + character.
 
 - **v4.1** fixed dead character tabs, the add/sync-wipe bug, habit levels 0–10, subscriptions out of donut, PWA opens on Main
