@@ -303,6 +303,11 @@
       why:'Twice-daily brushing keeps plaque and gum inflammation down — and chronic gum disease is linked to higher cardiovascular risk in large cohort studies. Two minutes, twice, compounds for decades.',
       habitDesc:'Brush morning AND evening — both together count as the daily check. +1 point. Drops -1 per missed day.',
     },
+    household: {
+      xp:0, parentSkill:'lifestyle', icon:'🧹', label:'Household', active:true, isHabit:true,
+      why:'Visual clutter competes for your attention and is linked to higher cortisol and more procrastination. A daily reset keeps your space — and your head — clear. You think where you live.',
+      habitDesc:'One tidy/clean session — dishes, reset a room, laundry. Any real effort counts. +1 point. Drops -1 per missed day.',
+    },
 
     // ══ MIND — skills ═════════════════════════════════════════════════
     reading: {

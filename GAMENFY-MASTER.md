@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.5)
+# GAMENFY — Master Document (v9.6)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -129,6 +129,8 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 ---
 
 ## 8. Version history
+
+- **v9.6 — Household daily mission** (🧹, lifestyle domain, +15 XP on the Daily tab). Same full pattern as teeth (v9.1): xp.js habit def with an evidence-based why (visual clutter → attention load/cortisol/procrastination), character's ALL_DAILY_QUESTS + one-time append to stored active selections, settings toggle list kept in lockstep. Auto-appears in Main missions, evening check-in, streak, AND the Time Sketcher's Daily-missions group — which was the trigger: Joey wanted to plan "huis opruimen" into an agenda hour and had no matching option.
 
 - **v9.5 — Joey's feedback round 2 (diagnosed against live Supabase data).** Real-data check first: whistling/dancing are healthy in the cloud (`active:true`, lifestyle) and the wishlist code path is correct — the reported symptoms trace to the installed PWA icon opening the retired gym page + iOS serving stale pages. Fixes: (1) **gym.html retired** → instant redirect stub to index.html (fixes "app opens on gym" permanently, removes the page as requested; po_coach data untouched). (2) **Weight moved to the Body tab**: compact card (latest kg + 7-day delta), tap → Daylight sheet with comma-tolerant input, same `po_coach_weights` format ({dateKey, weight}), same-day entries replaced; **po-coach cloud sync now initialised from character.html** (sync.js is per-call safe, verified). (3) **Mission texts visible again**: mq-labels were muted-grey → now ink/700, why-text darker + truncation 82→110 chars, done-state gets strikethrough + dim (motivation readable at decision time). (4) **Settings caught up**: daily-quest toggles gained Grounding + Brush Teeth (list had drifted from character's), `rpg_gratitude_v1` added to settings' syncedKeys. (5) Wishlist placeholder now shows a comma example. Site-wide static check re-run: green.
 
