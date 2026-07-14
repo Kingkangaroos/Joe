@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.3)
+# GAMENFY — Master Document (v9.4)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -129,6 +129,8 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 ---
 
 ## 8. Version history
+
+- **v9.4 — Joey's fix round + full-site static audit.** (1) **Weight main screen on gym.html hidden** on request ("geen toegevoegde waarde") — one CSS rule, data/sync/JS untouched, trivially reversible. (2) **THE wishlist bug:** euro inputs were `type="number"` + `parseFloat` — on Dutch iOS a comma decimal blanks the field → NaN → silent no-op. New shared `euroNum()` parser (comma/dot decimals, thousands, € signs; 9 unit cases green) + six amount inputs converted to `type="text" inputmode="decimal"`: wishlist, all four net-worth quick-adds (incl. +/- delta edits), and maandlasten. (3) **Maandlasten form completed:** the JS supported weekly/yearly (`monthlyEquivalent`) and looked up a `#subPeriod` select that didn't exist — the select is now in the form and wired into `item.period`. (4) **Site-wide static audit** (all 8 pages: syntax, every inline `onclick` handler resolves, every `getElementById` target exists in DOM or dynamic HTML): 7 findings triaged → all false positives (guarded dynamic elements) except the fixed `#subPeriod`; `#subFromCat` (pay-from-account for subs) is half-built scaffolding, guarded no-op — PARKED as a future maandlasten feature rather than rushed in.
 
 - **v9.3 — scientific skills audit (roadmap item, Joey-approved).** Automated invariant scan across all 31 ladders / 328 quests (duplicate levels, gate coverage, XP monotonicity, tierLockInfo safety) + manual review of measurable ladders against established standards. Findings & fixes in `SKILLS-AUDIT.md`: 7 XP dips corrected (same-level, raise-only — done-keys untouched) and an 11-quest **endurance ladder** added (running benchmarks, sub-30 5K as the LV10 gate) for what was a physical-decay skill with zero content. Strength/calisthenics confirmed grounded in accepted progression standards and free of squat/deadlift by design. Private discipline skills left ladder-less per backlog.
 

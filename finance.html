@@ -1578,7 +1578,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <div id="bankList" class="nw-list"></div>
         <div class="quick-add">
           <input type="text" placeholder="Account name" id="bankName" />
-          <input type="number" placeholder="Amount" id="bankAmount" step="0.01" />
+          <input type="text" inputmode="decimal" placeholder="Amount" id="bankAmount" />
           <button class="quick-add-btn" id="bankAddBtn">+</button>
         </div>
       </div>
@@ -1588,7 +1588,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <div id="stocksList" class="nw-list"></div>
         <div class="quick-add">
           <input type="text" placeholder="Stock / fund" id="stocksName" />
-          <input type="number" placeholder="Value" id="stocksAmount" step="0.01" />
+          <input type="text" inputmode="decimal" placeholder="Value" id="stocksAmount" />
           <button class="quick-add-btn" id="stocksAddBtn">+</button>
         </div>
       </div>
@@ -1598,7 +1598,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <div id="cryptoList" class="nw-list"></div>
         <div class="quick-add">
           <input type="text" placeholder="Coin / wallet" id="cryptoName" />
-          <input type="number" placeholder="Value" id="cryptoAmount" step="0.01" />
+          <input type="text" inputmode="decimal" placeholder="Value" id="cryptoAmount" />
           <button class="quick-add-btn" id="cryptoAddBtn">+</button>
         </div>
       </div>
@@ -1608,7 +1608,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <div id="otherList" class="nw-list"></div>
         <div class="quick-add">
           <input type="text" placeholder="Asset name" id="otherName" />
-          <input type="number" placeholder="Value" id="otherAmount" step="0.01" />
+          <input type="text" inputmode="decimal" placeholder="Value" id="otherAmount" />
           <button class="quick-add-btn" id="otherAddBtn">+</button>
         </div>
       </div>
@@ -1640,9 +1640,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <div class="empty-state" id="subsEmpty">Nog geen vaste kosten</div>
     <div class="quick-add" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
       <input type="text" placeholder="Naam (bijv. Huur)" id="subName" style="grid-column:1/-1;width:100%;box-sizing:border-box" />
-      <input type="number" placeholder="Bedrag (€)" id="subAmount" step="0.01" inputmode="decimal" style="width:100%;box-sizing:border-box" />
+      <input type="text" inputmode="decimal" placeholder="Bedrag (€)" id="subAmount" style="width:100%;box-sizing:border-box" />
       <input type="number" placeholder="Dag vd maand" id="subDayOfMonth" min="1" max="31" inputmode="numeric" style="width:100%;box-sizing:border-box" />
       <input type="number" placeholder="Termijnen (optioneel, bijv. 6)" id="subPlanTotal" min="1" max="120" inputmode="numeric" style="width:100%;box-sizing:border-box" />
+      <select id="subPeriod" style="width:100%;box-sizing:border-box;grid-column:1/-1">
+        <option value="monthly">Maandelijks</option>
+        <option value="yearly">Jaarlijks</option>
+        <option value="weekly">Wekelijks</option>
+      </select>
       <button class="quick-add-btn" id="subAddBtn" onclick="window.__addSub && window.__addSub()" style="width:100%">+ Toevoegen</button>
     </div>
     <!-- Hidden elements for backwards compatibility with old JS references -->
@@ -1681,7 +1686,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <div class="wish-add-eyebrow">+ ADD AN ITEM</div>
     <div class="wish-add-row">
       <input type="text"   id="wishName"   placeholder="Item name (e.g. New iPhone Pro Max)" class="wish-input wish-input-name">
-      <input type="number" id="wishAmount" placeholder="Cost (€)" step="0.01" class="wish-input wish-input-amt">
+      <input type="text" inputmode="decimal" id="wishAmount" placeholder="Cost (€)" class="wish-input wish-input-amt">
       <button class="wish-add-btn" id="wishAddBtn" onclick="window.__addWish && window.__addWish()">+ Add</button>
     </div>
   </div>
@@ -1832,11 +1837,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       const v = input.value.trim();
       if (v === '') { renderAllNetWorth(); return; }
       let next = cur;
-      if (/^[+\-]\s*\d/.test(v)) {
-        const delta = parseFloat(v.replace(/\s+/g, ''));
-        if (!isNaN(delta)) next = cur + delta;
+      if (/^[+\-]/.test(v)) {
+        const sign = v[0] === '-' ? -1 : 1;
+        const delta = euroNum(v.slice(1));
+        if (!isNaN(delta)) next = cur + sign * delta;
       } else {
-        const n = parseFloat(v);
+        const n = euroNum(v);
         if (!isNaN(n)) next = n;
       }
       if (next < 0) next = 0;
@@ -2075,7 +2081,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     if (!addBtn) return;
     function doAdd() {
       const n = nameInput.value.trim();
-      const a = parseFloat(amtInput.value);
+      const a = euroNum(amtInput.value);
       if (!n || isNaN(a)) return;
       const items = storeGet('nw:' + cat.key) || [];
       items.push({ name: n, amount: a });
@@ -2265,16 +2271,36 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
 
+  // v9.4: EU-bedragen robuust parsen — komma of punt als decimaalteken,
+  // duizendtallen en €-tekens toegestaan. type="number" blankte komma-invoer
+  // op NL-toestellen (dat was de "kan niks toevoegen"-bug).
+  function euroNum(v) {
+    let s = String(v == null ? '' : v).trim().replace(/[€\s]/g, '');
+    if (!s) return NaN;
+    const c = s.lastIndexOf(','), d = s.lastIndexOf('.');
+    if (c > -1 && d > -1) {
+      if (c > d) s = s.replace(/\./g, '').replace(',', '.');
+      else       s = s.replace(/,/g, '');
+    } else if (c > -1) {
+      s = (s.split(',').length === 2 && s.split(',')[1].length !== 3)
+        ? s.replace(',', '.')          // 12,50 → 12.50
+        : s.replace(/,/g, '');          // 1,299 → 1299 (duizendtal)
+    }
+    return parseFloat(s);
+  }
+
   function doSubAdd() {
     const nEl=document.getElementById('subName'), aEl=document.getElementById('subAmount');
     if(!nEl||!aEl) return;
     const name = (nEl.value || '').trim();
-    const amount = parseFloat(aEl.value || 0);
+    const amount = euroNum(aEl.value);
     const dayOfMonth = parseInt(document.getElementById('subDayOfMonth')?.value || 0) || null;
     const planTotal = parseInt(document.getElementById('subPlanTotal')?.value || 0) || null;
     if (!name || !amount) { (!name?nEl:aEl).focus(); return; }
     const items = storeGet('subs') || [];
+    const period = document.getElementById('subPeriod')?.value || 'monthly';
     const item = { id: Date.now().toString(36), name, amount, dayOfMonth };
+    if (period !== 'monthly') item.period = period;
     if (planTotal) item.plan = { total: planTotal };
     items.push(item);
     storeSet('subs', items);
@@ -2388,7 +2414,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       const aEl = document.getElementById('wishAmount');
       if (!nEl || !aEl) return;
       const n = (nEl.value || '').trim();
-      const aRaw = parseFloat(aEl.value);
+      const aRaw = euroNum(aEl.value);
       if (!n || isNaN(aRaw)) { nEl.focus(); return; }
       const arr = storeGet('wishlist') || [];
       arr.push({
