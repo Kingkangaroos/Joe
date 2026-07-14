@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.6)
+# GAMENFY — Master Document (v9.7)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -129,6 +129,8 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 ---
 
 ## 8. Version history
+
+- **v9.7 — Coloring 🖍️ + Drawing ✏️** (creative domain) with full unlock ladders. Coloring: relaxation-first (why cites mandala-coloring anxiety studies), 10 quests from First Page to Zen Master (50 pages), gates covered at 8/20/42/70. Drawing: classic observation-first progression (lines → shapes → still life at the LV10 gate → perspective → hands → portrait → own style → commission-ready), 11 quests, gates at 10/24/46/74. Both have quickLogs and milestone arcs; invariant audit re-run over the now 349 quests: 0 findings; tier-lock mechanic verified end-to-end (lvl-15 capped at 10 until Still Life claimed).
 
 - **v9.6 — Household daily mission** (🧹, lifestyle domain, +15 XP on the Daily tab). Same full pattern as teeth (v9.1): xp.js habit def with an evidence-based why (visual clutter → attention load/cortisol/procrastination), character's ALL_DAILY_QUESTS + one-time append to stored active selections, settings toggle list kept in lockstep. Auto-appears in Main missions, evening check-in, streak, AND the Time Sketcher's Daily-missions group — which was the trigger: Joey wanted to plan "huis opruimen" into an agenda hour and had no matching option.
 

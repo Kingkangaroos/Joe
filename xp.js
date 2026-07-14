@@ -472,6 +472,38 @@
         100:'Elite mover — own the floor',
       },
     },
+    coloring: {
+      xp:0, parentSkill:'creative', icon:'🖍️', label:'Coloring', active:true,
+      why:'Structured coloring measurably lowers anxiety in studies (mandala coloring vs. free doodling) — focused attention with zero performance pressure. Active rest that still builds color sense.',
+      quickLog:[
+        {label:'Coloring session (20 min)', xp:20},
+        {label:'Full page finished',        xp:40},
+        {label:'Tried a new technique',     xp:35},
+      ],
+      milestones:{
+        10: 'Clean & calm — full pages, tidy edges, it relaxes you',
+        25: 'Color sense — deliberate palettes and smooth blends',
+        50: 'Craft — mandalas, texture, depth',
+        75: 'Style — your pages are recognizably yours',
+        100:'Zen Master — a finished body of work',
+      },
+    },
+    drawing: {
+      xp:0, parentSkill:'creative', icon:'✏️', label:'Drawing', active:true,
+      why:'Drawing trains observation itself — you learn to see proportion, light and form. Skill compounds with deliberate practice, and 15 focused minutes beat two distracted hours.',
+      quickLog:[
+        {label:'Sketch session (15 min)',   xp:20},
+        {label:'Focused study (30+ min)',   xp:40},
+        {label:'Finished piece',            xp:60},
+      ],
+      milestones:{
+        10: 'Observer — draw what you see, not what you think you see',
+        25: 'Constructor — perspective and form under control',
+        50: 'Portraitist — a face people recognize',
+        75: 'Own style — 10 works that are clearly yours',
+        100:'Commission-ready — people would pay for this',
+      },
+    },
     cooking: {
       xp:0, parentSkill:'lifestyle', icon:'🍳', label:'Cooking', active:true,
       quickLog:[

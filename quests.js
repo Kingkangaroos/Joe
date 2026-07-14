@@ -79,6 +79,35 @@
       { lvl: 90, title: 'Club Champion',        desc: 'Win your club championship.',                                xp: 5000 },
     ],
 
+    // Coloring — relaxation-first creative ladder (gates covered at 8/20/42/70)
+    coloring: [
+      { lvl: 1,  title: 'First Page',      desc: 'Color one full page, start to finish.',                          xp: 40 },
+      { lvl: 4,  title: 'Stay Inside',     desc: 'A full page with clean, controlled edges.',                      xp: 90 },
+      { lvl: 8,  title: 'Shade Curious',   desc: 'Use light and dark of one color to create depth.',               xp: 160 },
+      { lvl: 14, title: 'Palette Play',    desc: 'Finish a page with a deliberate color scheme (complementary or analogous).', xp: 260 },
+      { lvl: 20, title: 'Gradient Hands',  desc: 'Smooth blend between two colors on one surface.',                xp: 380 },
+      { lvl: 30, title: 'Texture',         desc: 'Add texture — stippling, hatching or layering — inside a page.', xp: 550 },
+      { lvl: 42, title: 'Full Mandala',    desc: 'Finish an intricate mandala completely.',                        xp: 800 },
+      { lvl: 55, title: 'Own Style',       desc: 'Five finished pages with a consistent, recognizable style.',     xp: 1100 },
+      { lvl: 70, title: 'Showpiece',       desc: 'One frame-worthy page — display it or gift it.',                 xp: 1600 },
+      { lvl: 88, title: 'Zen Master',      desc: 'Fifty completed pages in total.',                                xp: 2400 },
+    ],
+
+    // Drawing — classic observation-first progression (gates at 10/24/46/74)
+    drawing: [
+      { lvl: 1,  title: 'First Sketch',    desc: 'Draw anything for 15 minutes. Showing up is the quest.',         xp: 40 },
+      { lvl: 3,  title: 'Line Control',    desc: 'One page of straight lines, circles and ellipses.',              xp: 80 },
+      { lvl: 6,  title: 'Basic Shapes',    desc: 'Construct three objects from cubes, spheres and cylinders.',     xp: 150 },
+      { lvl: 10, title: 'Still Life',      desc: 'Draw a real object from observation.',                           xp: 300 },
+      { lvl: 16, title: 'Light & Shadow',  desc: 'A shaded sphere with a believable cast shadow.',                 xp: 420 },
+      { lvl: 24, title: 'Perspective',     desc: 'A one-point perspective scene (street, room, hallway).',         xp: 600 },
+      { lvl: 34, title: 'Hands',           desc: 'A believable hand study — the classic hard part.',               xp: 850 },
+      { lvl: 46, title: 'Portrait',        desc: 'A portrait from reference that people recognize.',               xp: 1200 },
+      { lvl: 60, title: 'From Imagination',desc: 'A full scene without any reference.',                            xp: 1700 },
+      { lvl: 74, title: 'Own Style',       desc: 'Ten works with a style that is clearly yours.',                  xp: 2300 },
+      { lvl: 90, title: 'Commission-Ready',desc: 'Make a piece someone would pay for — or actually sell one.',     xp: 3200 },
+    ],
+
     // Endurance — running benchmarks (couch-to-5K → half marathon; widely used,
     // provable via any tracked run). Gates: 10/22/48/74 cover 10/25/50/75.
     endurance: [
