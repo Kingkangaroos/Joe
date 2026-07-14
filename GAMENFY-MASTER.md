@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.1)
+# GAMENFY — Master Document (v9.2)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -129,6 +129,8 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 ---
 
 ## 8. Version history
+
+- **v9.2 — timezone fix.** The habit/XP engine determined "today" in UTC (`toISOString`) while every page uses local dates. In NL (UTC+2) that meant: between 00:00–02:00 the engine stamped habit checks, xpLog entries and decay on *yesterday* — after-midnight check-ins wrote to the wrong daily key, "XP today" missed night entries, streak chains could break, and the settings reminder dedup misfired. Now one rule everywhere: **calendar day = local day.** Fixed in xp.js (`todayStr`, checkHabit's yesterday), character.html (`todayKey`→`ymdLocal`, day-shift, week window, heatmap keys, milestone stamps) and settings.html (reminder key). Verified with a frozen-clock test at 00:30 Amsterdam: lastChecked and xpLog land on the local day and a yesterday-streak chains to 4 instead of breaking. Historical UTC-stamped dates differ by at most one day — no migration needed.
 
 - **v9.1** (1) **Brush Teeth 2× habit** added (`teeth`, body domain, 🦷): auto-appears in Main missions, evening check-in and streak; also added to the Daily tab (`ALL_DAILY_QUESTS` +10 XP) with the v7.8-style one-time append to stored active-quest selections. (2) **BUGFIX — Daily-tab checks never counted for habit levels:** the quest-card toggle only awarded XP and never called `checkHabitFor` or wrote `rpg_habitlog_v1`, so habit scores stayed at 0 and Main didn't show the check. Fixed: habit-mapped quests now credit score + log on check (deduped via the log) and decrement on uncheck (lastChecked only cleared when it matches that date). (3) **One-time backfill** (`rpg_daily_habit_backfill_v1`): walks the last 14 days of `rpg_daily_v1:*`, credits every done habit-quest that never reached the engine, oldest→newest so streaks chain; toast reports repairs. Unit-tested: 2-day scenario → score 2/streak 2, idempotent, no decay next day, non-habit quests (gym, no_porn) correctly skipped. (4) **Private daily quests on Main:** No Porn (+45) and Weed Control (+40) now render as PIN-locked cards after the habit cards (🔒/"PIN required"); unlock via the dark vault PIN sheet (sessionStorage `rpg_private_unlocked`, shared with character.html) shows real labels with skill LV, toggles write the same `rpg_daily_v1:<date>` storage as the Daily tab, Yesterday-toggle supported, and they count in the Day Score arc.
 

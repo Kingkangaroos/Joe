@@ -1337,7 +1337,9 @@ function loadChar(){
   try{ return JSON.parse(localStorage.getItem('rpg_character_v1'))||{skills:{},xpLog:[]}; }
   catch{ return {skills:{},xpLog:[]}; }
 }
-function todayKey(){ return new Date().toISOString().slice(0,10); }
+// v9.2: local calendar day (UTC toISOString wrote after-midnight checks to yesterday's key)
+function ymdLocal(d){ d=d||new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function todayKey(){ return ymdLocal(); }
 function getDailyKey(d){ return 'rpg_daily_v1:'+(d||todayKey()); }
 function loadDaily(d){ try{ return JSON.parse(localStorage.getItem(getDailyKey(d)))||{}; } catch{ return {}; } }
 function saveDaily(data,d){ try{ localStorage.setItem(getDailyKey(d),JSON.stringify(data)); } catch{} }
@@ -1356,7 +1358,7 @@ function setSelectedDate(d){
 function shiftSelectedDay(delta){
   const d = new Date(_selectedDate+'T12:00:00');
   d.setDate(d.getDate()+delta);
-  const newKey = d.toISOString().slice(0,10);
+  const newKey = ymdLocal(d);
   if(newKey > todayKey()) return; // geen toekomstige dagen
   setSelectedDate(newKey);
 }
@@ -1500,7 +1502,7 @@ const MILESTONES_KEY = 'rpg_milestones_v1';
 function loadMilestones(){ try{ return JSON.parse(localStorage.getItem(MILESTONES_KEY))||{}; } catch{ return {}; } }
 function saveMilestone(skillKey, level){
   const m=loadMilestones();
-  m[skillKey+'_'+level]={ confirmed:true, date:new Date().toISOString().slice(0,10) };
+  m[skillKey+'_'+level]={ confirmed:true, date:ymdLocal() };
   try{ localStorage.setItem(MILESTONES_KEY,JSON.stringify(m)); } catch{}
 }
 function isMilestoneConfirmed(skillKey, level){ return !!(loadMilestones()[skillKey+'_'+level]?.confirmed); }
@@ -1753,7 +1755,7 @@ function confirmSkillMilestone(skillKey, targetLevel, xpNeeded){
   if(typeof window.addXP==='function'&&xpNeeded>0)
     window.addXP(skillKey, xpNeeded, `Milestone confirmed: Level ${targetLevel}`);
   const conf=getConfirmedMilestones();
-  conf[`${skillKey}_${targetLevel}`]={ date:new Date().toISOString().slice(0,10), confirmed:true };
+  conf[`${skillKey}_${targetLevel}`]={ date:ymdLocal(), confirmed:true };
   localStorage.setItem('rpg_milestones_v1', JSON.stringify(conf));
   document.getElementById('sdOverlay')?.remove();
   renderCharacter();
@@ -2137,7 +2139,7 @@ function renderCharacter(){
 
   // XP this week
   const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
-  const weekKey = weekAgo.toISOString().slice(0,10);
+  const weekKey = ymdLocal(weekAgo);
   const xpWeek = (char.xpLog||[]).filter(e=>(e.date||'')>=weekKey&&(e.amount||0)>0)
     .reduce((s,e)=>s+(e.amount||0),0);
   const sxw = document.getElementById('statXpWeek');
@@ -2166,7 +2168,7 @@ function renderCharacter(){
   sections.innerHTML='';
 
   // ── Habit tiles FIRST ──────────────────────────────
-  const today = new Date().toISOString().slice(0,10);
+  const today = ymdLocal();
   const habitSkills = Object.entries(defaults)
     .filter(([,def])=>def.isHabit && def.active!==false)
     .map(([k,def])=>({
@@ -3117,7 +3119,7 @@ function renderHistory(){
   for(let i=13;i>=0;i--){
     const d=new Date(today);
     d.setDate(d.getDate()-i);
-    const key=d.toISOString().slice(0,10);
+    const key=ymdLocal(d);
     const daily=loadDaily(key);
     days14.push({date:key,score:daily.dayScore||0,day:d.getDate()});
   }

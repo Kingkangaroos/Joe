@@ -630,7 +630,7 @@ function scheduleReminder() {
   const [hours] = timeStr.split(':').map(Number);
   const now = new Date();
   const lastReminder = localStorage.getItem(LAST_REMIND);
-  const today = now.toISOString().slice(0, 10);
+  const today = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0'); // v9.2: local day
   if (lastReminder !== today && now.getHours() >= hours) {
     new Notification('King Joey', {
       body: 'Time for your daily check-in. Build the kingdom.',

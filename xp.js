@@ -702,7 +702,13 @@
   function saveHabits(h) {
     try { localStorage.setItem(HABITS_KEY, JSON.stringify(h)); } catch {}
   }
-  function todayStr() { return new Date().toISOString().slice(0, 10); }
+  // v9.2: LOCAL calendar day (was UTC via toISOString — in NL/UTC+2 the engine
+  // thought it was still yesterday between 00:00–02:00, stamping habits, xpLog
+  // and decay on the wrong day). All *.html pages already use local dates.
+  function todayStr() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
 
   function applyHabitDecay(habits) {
     const today = todayStr();
@@ -722,7 +728,8 @@
   window.checkHabit = function (habitId, label, icon) {
     const habits  = loadHabits();
     const today   = todayStr();
-    const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+    const yd = new Date(Date.now()-86400000);
+    const yesterday = yd.getFullYear() + '-' + String(yd.getMonth()+1).padStart(2,'0') + '-' + String(yd.getDate()).padStart(2,'0');
     if (!habits[habitId]) habits[habitId] = { label:label||habitId, icon:icon||'⭐', score:0, lastChecked:null, streak:0 };
     const h = habits[habitId];
     if (h.lastChecked === today) return h;
