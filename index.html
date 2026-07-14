@@ -1194,8 +1194,33 @@ function renderMissions() {
     </div>`;
   }).join('');
 
-  // Update arc
-  const pct = habitKeys.length ? doneCount / habitKeys.length : 0;
+  // v9.1: privé daily quests (XP-skills, geen habits) — PIN-vergrendeld op Main.
+  // Zelfde opslag als de Daily-tab: rpg_daily_v1:<date>.quests[id].done
+  const unlocked = sessionStorage.getItem('rpg_private_unlocked') === '1';
+  let privDone = 0;
+  container.innerHTML += PRIVATE_DAILY.map(q => {
+    let dd = {}; try { dd = JSON.parse(localStorage.getItem('rpg_daily_v1:' + today)) || {}; } catch (e) {}
+    const isDone = !!(dd.quests && dd.quests[q.id] && dd.quests[q.id].done);
+    if (isDone) privDone++;
+    if (!unlocked) {
+      return `<div class="mq-card${isDone?' done':''}" onclick="privatePinPrompt()">
+        <div class="mq-top"><span class="mq-icon">🔒</span><span class="mq-check">✓</span></div>
+        <div class="mq-label">Private quest</div>
+        <div class="mq-meta">PIN required</div>
+      </div>`;
+    }
+    const sxp = ((window.getCharacter ? window.getCharacter() : {skills:{}}).skills[q.skill]||{}).xp || 0;
+    const slvl = window.xpToLevel ? window.xpToLevel(sxp) : 1;
+    return `<div class="mq-card${isDone?' done':''}" onclick="togglePrivateQuest('${q.id}')">
+      <div class="mq-top"><span class="mq-icon">${q.icon}</span><span class="mq-check">✓</span></div>
+      <div class="mq-label">${q.label}</div>
+      <div class="mq-meta">LV ${slvl} · +${q.xp} XP</div>
+    </div>`;
+  }).join('');
+
+  // Update arc (privé quests tellen mee in de dagscore)
+  const totalCards = habitKeys.length + PRIVATE_DAILY.length;
+  const pct = totalCards ? (doneCount + privDone) / totalCards : 0;
   renderArc(pct);
 
   const arcXp = document.getElementById('arcXpToday');
@@ -1281,6 +1306,53 @@ window.setViewDay=function(day){
   renderMissions();
 };
 window.toggleMissionsDay=function(){ setViewDay(missionsDay==='today'?'yesterday':'today'); };
+// v9.1: spiegel van de privé entries in ALL_DAILY_QUESTS (character.html).
+// Dit zijn XP-skills met eigen quest-ladder — géén 0-10 habits.
+const PRIVATE_DAILY = [
+  { id:'no_porn',      icon:'🛡️', label:'No Porn',      skill:'no_porn',      xp:45 },
+  { id:'weed_control', icon:'🚫', label:'Weed Control', skill:'weed_control', xp:40 },
+];
+
+window.togglePrivateQuest = function(id){
+  if (sessionStorage.getItem('rpg_private_unlocked') !== '1') { privatePinPrompt(); return; }
+  const q = PRIVATE_DAILY.find(x => x.id === id); if (!q) return;
+  const date = missionsDay === 'yesterday' ? yesterdayStr() : todayStr();
+  let dd = {}; try { dd = JSON.parse(localStorage.getItem('rpg_daily_v1:' + date)) || {}; } catch (e) {}
+  if (!dd.quests) dd.quests = {};
+  const was = !!(dd.quests[id] && dd.quests[id].done);
+  dd.quests[id] = { done: !was };
+  try { localStorage.setItem('rpg_daily_v1:' + date, JSON.stringify(dd)); } catch (e) {}
+  if (!was && window.addXP)    window.addXP(q.skill, q.xp, q.label + (missionsDay==='yesterday' ? ' (yesterday)' : ''));
+  if (was  && window.removeXP) window.removeXP(q.skill, q.xp, q.label + ' unchecked');
+  showToast(was ? 'Unchecked' : '+' + q.xp + ' XP · ' + q.label);
+  renderMissions(); renderCharStrip();
+};
+
+window.privatePinPrompt = function(){
+  document.getElementById('pinBg')?.remove();
+  const bg = document.createElement('div');
+  bg.id = 'pinBg';
+  bg.style.cssText = 'position:fixed;inset:0;background:rgba(21,20,15,0.55);z-index:9400;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)';
+  bg.innerHTML = `<div style="background:#0e0e10;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px 24px;width:280px;text-align:center;color:#FAFAFA">
+    <div style="font-size:28px;margin-bottom:8px">🔒</div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:4px">Private section</div>
+    <div style="font-size:12px;color:rgba(244,243,239,0.55);margin-bottom:18px">Enter your PIN to continue</div>
+    <input id="pinInputMain" type="password" inputmode="numeric" maxlength="4" placeholder="••••"
+      style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:12px;color:#FAFAFA;font-size:22px;text-align:center;letter-spacing:10px;outline:none;box-sizing:border-box">
+    <div id="pinErrMain" style="font-size:11px;color:#FF6B6B;height:14px;margin-top:8px"></div>
+  </div>`;
+  bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
+  document.body.appendChild(bg);
+  const inp = document.getElementById('pinInputMain');
+  setTimeout(() => inp.focus(), 60);
+  inp.addEventListener('input', () => {
+    if (inp.value.length === 4) {
+      if (inp.value === '1111') { sessionStorage.setItem('rpg_private_unlocked','1'); bg.remove(); renderMissions(); }
+      else { document.getElementById('pinErrMain').textContent = 'Wrong PIN, try again'; inp.value=''; }
+    }
+  });
+};
+
 function yesterdayStr(){ const d=new Date(); d.setDate(d.getDate()-1);
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 
