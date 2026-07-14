@@ -16,7 +16,7 @@
     saving: [
       { lvl: 2,  title: 'Open a Savings Pot',   desc: 'Create a separate account just for savings.',                xp: 50 },
       { lvl: 4,  title: 'Auto-Transfer',        desc: 'Auto-move a fixed amount on payday — pay yourself first.',    xp: 100 },
-      { lvl: 7,  title: 'No-Spend Day',         desc: 'Get through a full day spending €0.',                        xp: 80 },
+      { lvl: 7,  title: 'No-Spend Day',         desc: 'Get through a full day spending €0.',                        xp: 150 },
       { lvl: 12, title: 'One Month Buffer',     desc: 'Save one month of expenses.',                                xp: 250 },
       { lvl: 25, title: 'Emergency Fund',       desc: 'Build a 3-month emergency fund.',                            xp: 700 },
       { lvl: 40, title: 'Half-Year Safe',       desc: '6 months of runway in the bank.',                            xp: 1300 },
@@ -78,14 +78,31 @@
       { lvl: 75, title: 'Tournament Win',       desc: 'Win a bracket at any sanctioned tournament.',                xp: 3000 },
       { lvl: 90, title: 'Club Champion',        desc: 'Win your club championship.',                                xp: 5000 },
     ],
+
+    // Endurance — running benchmarks (couch-to-5K → half marathon; widely used,
+    // provable via any tracked run). Gates: 10/22/48/74 cover 10/25/50/75.
+    endurance: [
+      { lvl: 2,  title: 'First Twenty',     desc: 'Run or jog 20 minutes non-stop — any pace.',                    xp: 60 },
+      { lvl: 5,  title: 'First 5K',         desc: 'Finish a 5K. Time irrelevant, finishing is the win.',           xp: 130 },
+      { lvl: 10, title: 'Sub-30 5K',        desc: 'Run 5K under 30:00 — the classic first benchmark.',             xp: 300 },
+      { lvl: 16, title: 'First 10K',        desc: 'Finish a 10K.',                                                 xp: 420 },
+      { lvl: 22, title: 'Sub-25 5K',        desc: 'Run 5K under 25:00.',                                           xp: 550 },
+      { lvl: 30, title: 'Zone-2 Hour',      desc: '60 minutes continuous at conversational (zone-2) pace.',        xp: 750 },
+      { lvl: 38, title: 'Sub-55 10K',       desc: 'Run 10K under 55:00.',                                          xp: 1000 },
+      { lvl: 48, title: 'Half Distance',    desc: 'Finish a half marathon (21.1 km).',                             xp: 1400 },
+      { lvl: 60, title: 'Sub-22 5K',        desc: 'Run 5K under 22:00.',                                           xp: 1900 },
+      { lvl: 74, title: 'Sub-1:50 Half',    desc: 'Half marathon under 1:50.',                                     xp: 2600 },
+      { lvl: 88, title: 'Sub-20 or 42K',    desc: '5K under 20:00 — or finish a full marathon.',                   xp: 3400 },
+    ],
+
     gym: [
       { lvl: 1,  title: 'Walk In',              desc: 'Complete your first logged workout.',                                 xp: 40 },
       { lvl: 2,  title: 'Learn Your Six',       desc: 'Nail form on your six lifts: bench, row, press, hip thrust, pulldown, weighted core.', xp: 60 },
       { lvl: 3,  title: 'Three in a Week',      desc: 'Train 3 times in one week.',                                          xp: 100 },
       { lvl: 5,  title: 'Log Everything',       desc: '10 workouts fully logged in Hevy.',                                   xp: 200 },
-      { lvl: 7,  title: 'Two-Week Streak',      desc: 'Train consistently for 2 full weeks.',                                xp: 180 },
+      { lvl: 7,  title: 'Two-Week Streak',      desc: 'Train consistently for 2 full weeks.',                                xp: 260 },
       { lvl: 10, title: 'Month of Iron',        desc: '12 workouts inside one calendar month.',                              xp: 350 },
-      { lvl: 15, title: 'Body Recomp',          desc: 'Notice your first visible muscle change.',                            xp: 300 },
+      { lvl: 15, title: 'Body Recomp',          desc: 'Notice your first visible muscle change.',                            xp: 480 },
       { lvl: 25, title: 'Quarter Consistent',   desc: 'Average 3 sessions per week for 12 straight weeks.',                  xp: 700 },
       { lvl: 40, title: 'Volume Milestone',     desc: '100,000 kg lifetime training volume in Hevy.',                        xp: 1200 },
       { lvl: 50, title: 'Century Club',         desc: '100 logged workouts total.',                                          xp: 1600 },
@@ -182,7 +199,7 @@
       { lvl: 3,  title: 'Three Blocks',         desc: '3 focus blocks in one day.',                                 xp: 100 },
       { lvl: 6,  title: 'Deep Ninety',            desc: 'One uninterrupted 90-min deep work block.',                  xp: 200 },
       { lvl: 12, title: 'Flow Week',            desc: '5 deep blocks in one week.',                                 xp: 400 },
-      { lvl: 20, title: 'Phone Away',           desc: 'A full work session with phone out of reach.',               xp: 350 },
+      { lvl: 20, title: 'Phone Away',           desc: 'A full work session with phone out of reach.',               xp: 550 },
       { lvl: 35, title: 'Deep Day',             desc: '4 hours of deep work in one day.',                           xp: 800 },
       { lvl: 55, title: 'Hundred Sessions',     desc: '100 logged deep work sessions.',                             xp: 1800 },
       { lvl: 80, title: 'Deep Master',          desc: 'Sustained deep work as a daily default.',                    xp: 3500 },
@@ -378,15 +395,15 @@
       { lvl: 11, title: 'Chemistry & Biology',   desc: 'How matter changes; how life organises itself.',             xp: 250 },
       { lvl: 14, title: 'Systems Thinking',      desc: 'Read about how complexity emerges from simple rules.',        xp: 350 },
       // Phase 2 — The mind
-      { lvl: 18, title: 'Neuroscience Basics',   desc: 'How the brain processes information (Sapolsky lectures).',     xp: 300 },
+      { lvl: 18, title: 'Neuroscience Basics',   desc: 'How the brain processes information (Sapolsky lectures).',     xp: 350 },
       { lvl: 22, title: 'Cognitive Psychology',  desc: 'Memory, attention, decision-making, creativity.',            xp: 350 },
       { lvl: 28, title: 'Consciousness',         desc: 'Read on philosophy of mind: what is "I"? + daily meditation.', xp: 450 },
       // Phase 3 — Language & logic
-      { lvl: 33, title: 'Critical Thinking',     desc: 'Learn logical fallacies & argumentation.',                   xp: 400 },
+      { lvl: 33, title: 'Critical Thinking',     desc: 'Learn logical fallacies & argumentation.',                   xp: 470 },
       { lvl: 38, title: 'Rhetoric & Writing',    desc: 'Practise expressing ideas clearly in writing.',              xp: 500 },
       { lvl: 42, title: 'Programming',           desc: 'Learn to code — the modern mathematics of the mind (Python).', xp: 600 },
       // Phase 4 — Humanity
-      { lvl: 47, title: 'World History',         desc: 'Patterns across time; history of philosophy.',               xp: 500 },
+      { lvl: 47, title: 'World History',         desc: 'Patterns across time; history of philosophy.',               xp: 600 },
       { lvl: 52, title: 'Economics',             desc: 'How value and power move through society.',                  xp: 600 },
       { lvl: 56, title: 'Art & Music History',   desc: 'How humans have tried to understand beauty.',                xp: 650 },
       // Phase 5 — The great thinkers
