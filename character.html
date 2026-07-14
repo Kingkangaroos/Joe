@@ -171,6 +171,21 @@ html, body {
 .rs-tile-level.zero { color:var(--faint); font-size:14px; font-weight:400; }
 .rs-tile-bar { width:100%; height:2px; background:var(--line); border-radius:1px; overflow:hidden; margin-top:2px; }
 .rs-tile-bar-fill { height:100%; background:var(--ember); border-radius:1px; }
+
+/* v9.5: Body-tab weight card */
+.wtb-card {
+  background:var(--card); border:1px solid var(--line); border-radius:16px;
+  padding:16px; margin-bottom:14px; cursor:pointer;
+  display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+  -webkit-tap-highlight-color:transparent;
+}
+.wtb-card:active { transform:scale(0.98); }
+.wtb-num { font-size:30px; font-weight:800; font-family:var(--font-display); letter-spacing:-0.03em; }
+.wtb-unit { font-size:13px; color:var(--muted); margin-left:4px; font-weight:600; }
+.wtb-delta { font-size:11px; font-family:var(--mono); font-weight:700; margin-left:10px; color:var(--muted); }
+.wtb-delta.down { color:var(--green); }
+.wtb-delta.up { color:var(--ember); }
+.wtb-hint { font-size:11px; color:var(--faint); }
 .rs-tile-max .rs-tile-level { font-size:10px; letter-spacing:0.08em; color:var(--gold); }
 
 /* ── Habit tiles ─────────────────────────────────── */
@@ -1187,6 +1202,16 @@ textarea {
     </div>
   </div>
 
+  <!-- Weight (v9.5 — moved here from the retired gym page; tap to log) -->
+  <div class="sec-title">Weight</div>
+  <div class="wtb-card" id="wtbCard" onclick="wtbOpenSheet()">
+    <div>
+      <span class="wtb-num" id="wtbNum">—</span><span class="wtb-unit">kg</span>
+      <span class="wtb-delta" id="wtbDelta"></span>
+    </div>
+    <div class="wtb-hint" id="wtbHint">Tap to log today's weight</div>
+  </div>
+
   <!-- Compact RS skills grid -->
   <div class="sec-title">Skills</div>
   <div id="rsCompactGrid" class="rs-compact-grid"></div>
@@ -1347,6 +1372,7 @@ function saveDaily(data,d){ try{ localStorage.setItem(getDailyKey(d),JSON.string
 // ── Selected date for Daily tab ────────────────────
 let _selectedDate = todayKey();
 document.addEventListener('DOMContentLoaded',()=>setTimeout(backfillDailyHabits,300));
+document.addEventListener('DOMContentLoaded',()=>setTimeout(wtbRender,200));
 function getSelectedDate(){ return _selectedDate; }
 function setSelectedDate(d){
   _selectedDate = d;
@@ -1376,6 +1402,7 @@ function showTab(id){
   if(idx>=0) tabs[idx].classList.add('active');
   if(id==='body')      { renderBody(); loadHevyWidget(); loadHealthMetrics(); }
   if(id==='character') { renderCharacter(); loadHevyWidget(); }
+  if(id==='body') { setTimeout(wtbRender,50); }
   if(id==='daily')     renderDaily();
   if(id==='skills')    renderSkillTree();
   if(id==='history')   renderHistory();
@@ -1823,6 +1850,56 @@ function renderBodyScan() {
 }
 
 // ── Compact RS skills grid ─────────────────────────────────────
+// ── Weight op Body (v9.5) — zelfde store als de oude gym-pagina ──
+const WTB_KEY = 'po_coach_weights';
+function wtbLoad(){ try{ const a=JSON.parse(localStorage.getItem(WTB_KEY)); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function wtbSave(a){ try{ localStorage.setItem(WTB_KEY, JSON.stringify(a)); }catch(e){} }
+function wtbParseNum(v){ let s=String(v==null?'':v).trim().replace(/[^0-9.,]/g,''); if(!s) return NaN; s=s.replace(',','.'); return parseFloat(s); }
+function wtbRender(){
+  const numEl=document.getElementById('wtbNum'); if(!numEl) return;
+  const arr=wtbLoad().slice().sort((a,b)=>a.dateKey<b.dateKey?-1:1);
+  const dEl=document.getElementById('wtbDelta'), hEl=document.getElementById('wtbHint');
+  if(!arr.length){ numEl.textContent='—'; dEl.textContent=''; return; }
+  const last=arr[arr.length-1];
+  numEl.textContent=(Math.round(last.weight*10)/10).toString();
+  const cutoff=ymdLocal(new Date(Date.now()-7*86400000));
+  const ref=arr.filter(e=>e.dateKey<=cutoff).pop() || arr[0];
+  const d=last.weight-ref.weight;
+  if(ref!==last && Math.abs(d)>=0.05){
+    dEl.textContent=(d>0?'+':'')+(Math.round(d*10)/10)+' kg / 7d';
+    dEl.className='wtb-delta '+(d<0?'down':'up');
+  } else dEl.textContent='';
+  if(hEl) hEl.textContent = last.dateKey===todayKey() ? 'Logged today · tap to correct' : 'Tap to log today\'s weight';
+}
+window.wtbOpenSheet=function(){
+  document.getElementById('wtbBg')?.remove();
+  const bg=document.createElement('div');
+  bg.id='wtbBg';
+  bg.style.cssText='position:fixed;inset:0;background:rgba(21,20,15,0.45);z-index:9350;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)';
+  bg.innerHTML=`<div style="background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;width:270px;text-align:center">
+    <div style="font-size:14px;font-weight:800;font-family:var(--font-display);margin-bottom:12px">Today's weight</div>
+    <input id="wtbInput" type="text" inputmode="decimal" placeholder="72,4"
+      style="width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--line-strong);border-radius:12px;padding:12px;font-size:22px;text-align:center;font-family:var(--mono);color:var(--ink);outline:none">
+    <button onclick="wtbSaveToday()" style="margin-top:12px;width:100%;padding:12px;border-radius:12px;border:none;background:var(--ink);color:#F4F3EF;font-weight:700;font-size:14px;cursor:pointer">Save</button>
+  </div>`;
+  bg.addEventListener('click',e=>{ if(e.target===bg) bg.remove(); });
+  document.body.appendChild(bg);
+  const inp=document.getElementById('wtbInput');
+  setTimeout(()=>inp.focus(),60);
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter') wtbSaveToday(); });
+};
+window.wtbSaveToday=function(){
+  const inp=document.getElementById('wtbInput'); if(!inp) return;
+  const w=wtbParseNum(inp.value);
+  if(isNaN(w)||w<30||w>250){ inp.value=''; inp.placeholder='30–250 kg'; return; }
+  const arr=wtbLoad().filter(e=>e.dateKey!==todayKey());
+  arr.push({ dateKey: todayKey(), weight: Math.round(w*10)/10 });
+  wtbSave(arr);
+  document.getElementById('wtbBg')?.remove();
+  wtbRender();
+  showToast('Weight logged · '+(Math.round(w*10)/10)+' kg');
+};
+
 function renderRSCompactGrid() {
   const container = document.getElementById('rsCompactGrid');
   if (!container) return;
@@ -3747,6 +3824,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   },0);
 
   if(typeof initCloudSync==='function'&&window.supabase){
+    // v9.5: gym.html is retired — its po-coach cloud sync lives here now
+    initCloudSync({appKey:'po-coach',syncedKeys:['po_coach_v1','po_coach_workout_done','po_coach_weights','po_coach_photos'],syncedPrefixes:[],onApplied:function(){ try{ wtbRender(); }catch(e){} }});
     initCloudSync({appKey:'rpg',syncedKeys:['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1','rpg_gratitude_v1'],syncedPrefixes:['rpg_daily_v1:','rpg_agenda_v1:']});
   }
 });
@@ -3762,6 +3841,7 @@ window.addEventListener('storage',()=>{
   const id=active.id.replace('tab-','');
   if(id==='body')      renderBody();
   if(id==='character') { renderCharacter(); loadHevyWidget(); }
+  if(id==='body') { setTimeout(wtbRender,50); }
   if(id==='daily')     renderDaily();
   if(id==='history')   renderHistory();
 });

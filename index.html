@@ -393,11 +393,13 @@ body {
   font-size: 9px; font-weight: 700; color: transparent;
 }
 .mq-card.done .mq-check { background: var(--green); border-color: var(--green); color: #fff; }
-.mq-label { font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 2px; }
-.mq-card.done .mq-label { color: var(--ink); }
-.mq-meta { font-size: 9px; font-family: var(--font-mono); color: var(--faint); }
+/* v9.5: labels waren muted-grijs (nauwelijks zichtbaar) — nu ink, why leesbaarder */
+.mq-label { font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.mq-card.done .mq-label { color: var(--ink); opacity: 0.55; text-decoration: line-through; text-decoration-color: rgba(46,139,95,0.5); }
+.mq-meta { font-size: 9px; font-family: var(--font-mono); color: var(--muted); }
 .mq-card.done .mq-meta { color: var(--green); }
-.mq-why { font-size: 9.5px; color: var(--muted); line-height: 1.45; margin-top: 6px; }
+.mq-why { font-size: 10px; color: #57544B; line-height: 1.5; margin-top: 6px; }
+.mq-card.done .mq-why { opacity: 0.45; }
 
 /* v9: gratitude box on Main */
 .grat-card {
@@ -1182,7 +1184,7 @@ function renderMissions() {
     const donedToday = hlogHas(k, today);
     if (donedToday) doneCount++;
     const lvl = h.score || 0;
-    const why = def.why ? (def.why.length > 82 ? def.why.slice(0, 82).replace(/\s+\S*$/,'') + '…' : def.why) : '';
+    const why = def.why ? (def.why.length > 110 ? def.why.slice(0, 110).replace(/\s+\S*$/,'') + '…' : def.why) : '';
     return `<div class="mq-card${donedToday?' done':''}" onclick="toggleMission('${k}')" data-key="${k}">
       <div class="mq-top">
         <span class="mq-icon">${def.icon||'⚡'}</span>

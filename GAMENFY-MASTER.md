@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.4)
+# GAMENFY — Master Document (v9.5)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -28,7 +28,7 @@ A gamified personal Life OS — version 0.1 of a future product. Skills, levels,
 | `index.html` | **Main** — agenda, daily quote, missions, focus skills, core tracker |
 | `character.html` | **Body / Daily / Quests / Skills / History** tabs |
 | `finance.html` | Net Worth / Maandlasten / Wishlist |
-| `gym.html` | Weight log + composition estimate + progress photos; primary flow = log in Hevy, view on Body (simplified in v9.0 — legacy manual coach removed) |
+| `gym.html` | RETIRED (v9.5) — instant redirect to index.html so old bookmarks and the installed PWA icon (added from this page) land on Main. Weight logging lives on the Body tab; po_coach_* localStorage data untouched, its cloud sync moved to character.html |
 | `health.html`, `po-water.html` | health & water trackers |
 | `settings.html` | focus skills, active skills, PIN, quotes + **Engine & nudges** (push/card prefs, focus minutes → `rpg_prefs_v1`) |
 | `xp.js` | skill definitions, XP/level math, habits, addXP/removeXP |
@@ -129,6 +129,8 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 ---
 
 ## 8. Version history
+
+- **v9.5 — Joey's feedback round 2 (diagnosed against live Supabase data).** Real-data check first: whistling/dancing are healthy in the cloud (`active:true`, lifestyle) and the wishlist code path is correct — the reported symptoms trace to the installed PWA icon opening the retired gym page + iOS serving stale pages. Fixes: (1) **gym.html retired** → instant redirect stub to index.html (fixes "app opens on gym" permanently, removes the page as requested; po_coach data untouched). (2) **Weight moved to the Body tab**: compact card (latest kg + 7-day delta), tap → Daylight sheet with comma-tolerant input, same `po_coach_weights` format ({dateKey, weight}), same-day entries replaced; **po-coach cloud sync now initialised from character.html** (sync.js is per-call safe, verified). (3) **Mission texts visible again**: mq-labels were muted-grey → now ink/700, why-text darker + truncation 82→110 chars, done-state gets strikethrough + dim (motivation readable at decision time). (4) **Settings caught up**: daily-quest toggles gained Grounding + Brush Teeth (list had drifted from character's), `rpg_gratitude_v1` added to settings' syncedKeys. (5) Wishlist placeholder now shows a comma example. Site-wide static check re-run: green.
 
 - **v9.4 — Joey's fix round + full-site static audit.** (1) **Weight main screen on gym.html hidden** on request ("geen toegevoegde waarde") — one CSS rule, data/sync/JS untouched, trivially reversible. (2) **THE wishlist bug:** euro inputs were `type="number"` + `parseFloat` — on Dutch iOS a comma decimal blanks the field → NaN → silent no-op. New shared `euroNum()` parser (comma/dot decimals, thousands, € signs; 9 unit cases green) + six amount inputs converted to `type="text" inputmode="decimal"`: wishlist, all four net-worth quick-adds (incl. +/- delta edits), and maandlasten. (3) **Maandlasten form completed:** the JS supported weekly/yearly (`monthlyEquivalent`) and looked up a `#subPeriod` select that didn't exist — the select is now in the form and wired into `item.period`. (4) **Site-wide static audit** (all 8 pages: syntax, every inline `onclick` handler resolves, every `getElementById` target exists in DOM or dynamic HTML): 7 findings triaged → all false positives (guarded dynamic elements) except the fixed `#subPeriod`; `#subFromCat` (pay-from-account for subs) is half-built scaffolding, guarded no-op — PARKED as a future maandlasten feature rather than rushed in.
 
