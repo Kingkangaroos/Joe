@@ -279,31 +279,37 @@
 
     // ══ BODY — habits (isHabit: true) ═════════════════════════════════
     sleep: {
+      benefits:[{d:3,t:'reaction time and focus recover'},{d:7,t:'insulin sensitivity measurably improves'},{d:14,t:'steadier mood, less irritability'},{d:30,t:'stronger immune function and memory consolidation'}],
       xp:0, parentSkill:'body', icon:'😴', label:'Sleep', active:true, isHabit:true,
       why:'7-9 hours is linked to better memory, hormone balance and muscle recovery. Chronic short sleep measurably raises illness and injury risk.',
       habitDesc:'8 hours sleep = +1 point. Less = proportionally less. Drops -1 per missed day.',
     },
     nutrition: {
+      benefits:[{d:1,t:'more satiety, less snacking'},{d:7,t:'faster recovery after training'},{d:30,t:'measurable body-composition effect'}],
       xp:0, parentSkill:'body', icon:'🥗', label:'Nutrition', active:true, isHabit:true,
       why:'Enough protein (~1.6-2.2 g/kg when training) is what actually builds and keeps muscle — training without it wastes half the work.',
       habitDesc:'Eat enough and healthy every day. +1 point. Drops -1 per missed day.',
     },
     walking: {
+      benefits:[{d:1,t:'instant mood lift and lower post-meal blood sugar'},{d:7,t:'cardio fitness starts building'},{d:21,t:'resting heart rate begins to drop'},{d:90,t:'measurably lower cardiovascular risk'}],
       xp:0, parentSkill:'body', icon:'👟', label:'10k Steps', active:true, isHabit:true,
       why:'Daily steps are strongly linked to lower all-cause mortality in large studies — most of the benefit kicks in around 7-9k steps.',
       habitDesc:'10,000 steps per day = full point. Less = proportionally less.',
     },
     grounding: {
+      benefits:[{d:1,t:'acute calm (small studies)'},{d:7,t:'better sleep quality reported'},{d:30,t:'steadier cortisol rhythm in early research'}],
       xp:0, parentSkill:'body', icon:'🌱', label:'Grounding', active:true, isHabit:true,
       why:'Early small studies link it to lower cortisol, less inflammation and better sleep. Evidence is young — but barefoot minutes outside also mean daylight, calm and zero cost.',
       habitDesc:'Bare feet on earth — grass, sand, soil. A few minutes counts. Daily reset.',
     },
     teeth: {
+      benefits:[{d:1,t:'plaque cleared today'},{d:14,t:'early gingivitis starts reversing'},{d:90,t:'stable gum health — lower systemic inflammation'}],
       xp:0, parentSkill:'body', icon:'🦷', label:'Brush Teeth 2×', active:true, isHabit:true,
       why:'Twice-daily brushing keeps plaque and gum inflammation down — and chronic gum disease is linked to higher cardiovascular risk in large cohort studies. Two minutes, twice, compounds for decades.',
       habitDesc:'Brush morning AND evening — both together count as the daily check. +1 point. Drops -1 per missed day.',
     },
     household: {
+      benefits:[{d:1,t:'less visual noise = easier focus'},{d:7,t:'lower baseline stress at home (cortisol research)'},{d:30,t:'tidying turns automatic — costs no willpower'}],
       xp:0, parentSkill:'lifestyle', icon:'🧹', label:'Household', active:true, isHabit:true,
       why:'Visual clutter competes for your attention and is linked to higher cortisol and more procrastination. A daily reset keeps your space — and your head — clear. You think where you live.',
       habitDesc:'One tidy/clean session — dishes, reset a room, laundry. Any real effort counts. +1 point. Drops -1 per missed day.',
@@ -350,11 +356,13 @@
 
     // ══ MIND — habits ═════════════════════════════════════════════════
     meditation: {
+      benefits:[{d:1,t:'heart rate and tension drop right after a session'},{d:4,t:'attention and working memory already improve (Zeidan 2010)'},{d:14,t:'less rumination, steadier emotional regulation'},{d:56,t:'8 weeks: structural amygdala & gray-matter changes (Hölzel 2011)'}],
       xp:0, parentSkill:'mind', icon:'🧘', label:'Meditation', active:true, isHabit:true,
       why:'8 weeks of regular practice measurably lowers amygdala stress-reactivity in imaging studies. Even single 10-20 min sessions reduce anxiety and sharpen attention.',
       habitDesc:'Meditate daily. +1 point. Drops -1 per missed day.',
     },
     gratitude: {
+      benefits:[{d:1,t:'direct positive-affect lift'},{d:21,t:'better sleep (Emmons & McCullough)'},{d:42,t:'6 weeks: lasting wellbeing gains in studies'}],
       xp:0, parentSkill:'mind', icon:'🙏', label:'Gratitude', active:true, isHabit:true,
       why:'Trials link written gratitude to higher wellbeing and better sleep quality — it trains your brain to scan for wins instead of threats.',
       habitDesc:'Write 3 things you\'re grateful for every day.',
@@ -561,23 +569,27 @@
 
     // ══ DISCIPLINE — private skills (PIN 1111) ════════════════════════
     no_porn: {
-      xp:0, parentSkill:'discipline', icon:'🛡️', label:'No Porn',
-      why:'Cutting supernormal stimulus recalibrates your reward system — most report noticeably better focus, drive and real-world motivation within weeks.',
-      active:true, private:true, quickLog:null,
+      xp:0, parentSkill:'discipline', icon:'🛡️', label:'No Porn', active:true, private:true,
+      why:'Frequent use trains your reward system on supernormal stimuli: fMRI work shows stronger cue-reactivity and altered reward-circuit structure in heavy users (Voon 2014; Kühn & Gallinat 2014). Quitting reverses the pattern — real rewards (people, goals, touch) start registering again.',
+      benefits:[{d:7,t:'cue-driven urges weaken, energy returns'},{d:14,t:'motivation and drive toward real goals rise'},{d:30,t:'reward sensitivity noticeably recovering'},{d:90,t:'the classic reboot window — stable new baseline'}],
+      quickLog:null,
     },
     weed_control: {
-      xp:0, parentSkill:'discipline', icon:'🚫', label:'Weed Control',
-      why:'REM sleep and short-term memory measurably recover within weeks of cutting back — better dreams, sharper recall, steadier energy.',
-      active:true, private:true, quickLog:null,
+      xp:0, parentSkill:'discipline', icon:'🚫', label:'Weed Control', active:true, private:true,
+      why:'THC suppresses REM sleep and measurably impairs verbal memory (Auer 2016); chronic use blunts the dopamine system — less motivation and less pleasure from ordinary things (Volkow 2014; Bloomfield 2016). The good news: memory largely recovers within ~4 weeks of abstinence.',
+      benefits:[{d:2,t:'REM rebound: vivid dreams return'},{d:7,t:'sleep architecture normalises'},{d:28,t:'verbal memory largely recovered (abstinence studies)'},{d:90,t:'motivation/dopamine at a new baseline'}],
+      quickLog:null,
     },
 
     // ══ DISCIPLINE — habits (NOT private) ══════════════════════════════
     screen_time: {
+      benefits:[{d:1,t:'faster sleep onset tonight'},{d:7,t:'attention span recovers'},{d:30,t:'lower anxiety scores in research'}],
       xp:0, parentSkill:'discipline', icon:'📵', label:'Screen Time', active:true, isHabit:true,
       why:'Less passive scrolling is linked to better mood and sleep — screens before bed delay melatonin and push your sleep back.',
       habitDesc:'Conscious screen time: < 2h entertainment per day = full point.',
     },
     cold_shower: {
+      benefits:[{d:1,t:'noradrenaline spike: alert and awake'},{d:7,t:'mood stabilises'},{d:30,t:'29% fewer sick days (Buijze 2016, PLOS)'}],
       xp:0, parentSkill:'discipline', icon:'🚿', label:'Cold Shower', active:true, isHabit:true,
       why:'Cold triggers a noradrenaline and dopamine surge (alertness, mood). A Dutch trial found ~29% fewer sick days in the cold-shower group.',
       habitDesc:'Cold shower every day. +1 point. Drops -1 per missed day.',

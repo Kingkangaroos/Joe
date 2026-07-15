@@ -163,8 +163,8 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
   <a href="finance.html" class="bottombar-tab" data-page="finance">
     <span class="bottombar-tab-icon">💰</span><span>Finance</span>
   </a>
-  <a href="settings.html" class="bottombar-tab" data-page="settings">
-    <span class="bottombar-tab-icon">⚙️</span><span>Settings</span>
+  <a href="jarvis.html" class="bottombar-tab" data-page="jarvis">
+    <span class="bottombar-tab-icon">🤖</span><span>Jarvis</span>
   </a>
 </nav>`;
 
@@ -183,6 +183,7 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
     if (p.endsWith('character.html')) return h === '#skills' ? 'skills' : 'character';
     if (p.endsWith('finance.html')) return 'finance';
     if (p.endsWith('settings.html')) return 'settings';
+    if (p.endsWith('jarvis.html')) return 'jarvis';
     return 'main';
   }
 
@@ -203,6 +204,14 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
     const topWrap = document.createElement('div');
     topWrap.innerHTML = topbarHtml.trim();
     document.body.insertBefore(topWrap.firstChild, document.body.firstChild);
+    const tbEl = document.getElementById('topbar');
+    if (tbEl) {
+      const gear = document.createElement('a');
+      gear.href = 'settings.html'; gear.textContent = '⚙️';
+      gear.setAttribute('aria-label', 'Settings');
+      gear.style.cssText = 'text-decoration:none;font-size:18px;padding:8px 6px;margin-right:auto;-webkit-tap-highlight-color:transparent';
+      tbEl.appendChild(gear);
+    }
     const bottomWrap = document.createElement('div');
     bottomWrap.innerHTML = bottombarHtml.trim();
     document.body.appendChild(bottomWrap.firstChild);

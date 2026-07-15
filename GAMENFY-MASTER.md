@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.11)
+# GAMENFY — Master Document (v9.12)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -141,6 +141,8 @@ Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
 3. `pg_net` in public schema — hygiëne, laag risico.
 
 ## 8. Version history
+
+- **v9.12 — science layer + celebration + Jarvis in the nav.** (1) **Benefits timelines** on all 12 habits + both private skills in xp.js: `benefits:[{d,t}]` stages with real research anchors (Zeidan 2010 attention, Hölzel 2011 amygdala, Emmons & McCullough gratitude/sleep, Buijze 2016 cold-shower sick days, Auer 2016 verbal memory, Voon/Kühn cue-reactivity; small-study claims hedged). (2) **Private whys rewritten** scientifically — the "why not do it and what it costs you" Joey asked for; `quickLog:null` preserved exactly (a fabricated quickLog was caught by diffing against HEAD and reverted). (3) **Celebration overlay**: checking a habit today (incl. private daily quests, whose streak is computed by walking rpg_daily_v1 backwards) pops confetti (34 CSS particles, Daylight palette) + "X days in a row!" + "Already yours: <current benefit>" + "Keep going → day Y: <next benefit>"; all-stages-done shows a crown line; tap or 4.2s dismisses. Yesterday-toggles keep the plain toast. (4) Mission cards show 🔥Nd at streak >1; unlocked private cards now show their why. (5) **Jarvis got a real place in the nav**: the bottombar Settings slot is now 🤖 Jarvis; Settings moved to a gear in the topbar.
 
 - **v9.11 — JARVIS 2.0 FASE 1 LIVE.** Jarvis kan nu zelf handelen. Edge function v5: Gemini function calling met zes tools (award_xp / check_habit / claim_quest / plan_agenda / get_state / propose_change), een gegenereerde kennis-kaart uit xp.js+quests.js (45 skills incl. quickLog-XP-ankers, 33 quest-ladders met XP per level) voor server-side validatie, GAMENFY-kennisblok in het prompt, tool-loop max 5 rondes, spraak (v9.10) werkt door alles heen. Acties gaan naar `app_state.jarvis_actions`; xp.js kreeg een **consumer** (poll bij load + 60s) die ze uitvoert via de eigen engine — addXP/checkHabitFor/setQuestDone — met consumed-first-marking, een gesynct applied-ledger (`rpg_jarvis_applied_v1`, aan syncedKeys toegevoegd op index/character/settings) en een canApply-guard zodat pagina's zonder quests.js quest-claims laten staan voor index/character. Consumer end-to-end gesimuleerd: XP + habit + quest correct, ongeldige skill veilig geskipt, idempotent, één cloud-write. propose_change vult `jarvis_backlog` — **Claudia leest die rij voortaan aan het begin van elke sessie**. Verbeter-ideeën gaan dus via Jarvis vanzelf naar de bouwer.
 

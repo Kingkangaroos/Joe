@@ -798,6 +798,44 @@ body {
 }
 .agenda-block-hint { opacity: 0.75; font-weight: 400; }
 
+/* v9.12: habit celebration — streak + science benefits, front and center */
+.cel-bg {
+  position: fixed; inset: 0; z-index: 9500;
+  background: rgba(21,20,15,0.5);
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  animation: celFade 0.2s ease;
+}
+@keyframes celFade { from { opacity: 0; } }
+.cel-card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 22px; padding: 26px 22px; width: 300px; text-align: center;
+  animation: celPop 0.35s cubic-bezier(0.22,1.4,0.36,1);
+  position: relative; z-index: 2;
+}
+@keyframes celPop { from { transform: scale(0.7); opacity: 0; } }
+.cel-icon { font-size: 44px; line-height: 1; }
+.cel-streak {
+  font-family: var(--font-display); font-weight: 800; font-size: 21px;
+  letter-spacing: -0.02em; margin-top: 10px;
+}
+.cel-now {
+  margin-top: 12px; font-size: 12.5px; line-height: 1.5; color: var(--ink);
+  background: rgba(46,139,95,0.08); border: 1px solid rgba(46,139,95,0.3);
+  border-radius: 12px; padding: 10px 12px;
+}
+.cel-now b { color: var(--green); }
+.cel-next { margin-top: 9px; font-size: 11.5px; line-height: 1.5; color: var(--muted); }
+.cel-next b { color: var(--ink); }
+.cel-conf {
+  position: absolute; top: -10px; width: 8px; height: 12px; border-radius: 2px;
+  animation: celFall linear forwards; pointer-events: none; z-index: 1;
+}
+@keyframes celFall {
+  from { transform: translateY(-4vh) rotate(0deg); opacity: 1; }
+  to   { transform: translateY(105vh) rotate(720deg); opacity: 0.6; }
+}
+
 /* Planner chips (tap a mission/skill to plan it) */
 .plan-tray {
   background: var(--card); border: 1px solid var(--line);
@@ -1191,7 +1229,7 @@ function renderMissions() {
         <span class="mq-check">✓</span>
       </div>
       <div class="mq-label">${def.label}</div>
-      <div class="mq-meta">${lvl >= 10 ? '👑 mastered' : 'Lv ' + lvl + '/10'} · +15 XP</div>
+      <div class="mq-meta">${lvl >= 10 ? '👑 mastered' : 'Lv ' + lvl + '/10'} · +15 XP${(h.streak||0) > 1 ? ' · 🔥' + h.streak + 'd' : ''}</div>
       ${why ? `<div class="mq-why">${why}</div>` : ''}
     </div>`;
   }).join('');
@@ -1213,10 +1251,13 @@ function renderMissions() {
     }
     const sxp = ((window.getCharacter ? window.getCharacter() : {skills:{}}).skills[q.skill]||{}).xp || 0;
     const slvl = window.xpToLevel ? window.xpToLevel(sxp) : 1;
+    const pdef = defaults[q.skill] || {};
+    const pwhy = pdef.why ? (pdef.why.length > 110 ? pdef.why.slice(0, 110).replace(/\s+\S*$/,'') + '…' : pdef.why) : '';
     return `<div class="mq-card${isDone?' done':''}" onclick="togglePrivateQuest('${q.id}')">
       <div class="mq-top"><span class="mq-icon">${q.icon}</span><span class="mq-check">✓</span></div>
       <div class="mq-label">${q.label}</div>
       <div class="mq-meta">LV ${slvl} · +${q.xp} XP</div>
+      ${pwhy ? `<div class="mq-why">${pwhy}</div>` : ''}
     </div>`;
   }).join('');
 
@@ -1326,7 +1367,20 @@ window.togglePrivateQuest = function(id){
   try { localStorage.setItem('rpg_daily_v1:' + date, JSON.stringify(dd)); } catch (e) {}
   if (!was && window.addXP)    window.addXP(q.skill, q.xp, q.label + (missionsDay==='yesterday' ? ' (yesterday)' : ''));
   if (was  && window.removeXP) window.removeXP(q.skill, q.xp, q.label + ' unchecked');
-  showToast(was ? 'Unchecked' : '+' + q.xp + ' XP · ' + q.label);
+  if (!was && missionsDay !== 'yesterday') {
+    // opeenvolgende dagen terugtellen vanuit vandaag
+    let s = 0;
+    for (let i = 0; i < 365; i++) {
+      const d = new Date(Date.now() - i * 86400000);
+      const ds = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+      let dx = {}; try { dx = JSON.parse(localStorage.getItem('rpg_daily_v1:' + ds)) || {}; } catch (e) {}
+      if (dx.quests && dx.quests[id] && dx.quests[id].done) s++; else break;
+    }
+    const pdef = (window.RPG_DEFAULT_SKILLS || {})[q.skill] || { icon: q.icon, why: '' };
+    celebrateHabit({ icon: q.icon, why: pdef.why, benefits: pdef.benefits }, s || 1);
+  } else {
+    showToast(was ? 'Unchecked' : '+' + q.xp + ' XP · ' + q.label);
+  }
   renderMissions(); renderCharStrip();
 };
 
@@ -1357,6 +1411,35 @@ window.privatePinPrompt = function(){
 
 function yesterdayStr(){ const d=new Date(); d.setDate(d.getDate()-1);
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+// ── Habit celebration (v9.12): confetti + science-based streak stages ──
+function benefitStages(benefits, streak){
+  const list = Array.isArray(benefits) ? benefits.slice().sort((a,b)=>a.d-b.d) : [];
+  const now = list.filter(b => b.d <= streak).pop() || null;
+  const next = list.find(b => b.d > streak) || null;
+  return { now, next };
+}
+function celebrateHabit(def, streak){
+  document.getElementById('celBg')?.remove();
+  const { now, next } = benefitStages(def.benefits, streak);
+  const bg = document.createElement('div');
+  bg.className = 'cel-bg'; bg.id = 'celBg';
+  const colors = ['#C9A227','#D4633E','#2E8B5F','#4FC3D9'];
+  let conf = '';
+  for (let i = 0; i < 34; i++) {
+    conf += `<div class="cel-conf" style="left:${Math.random()*100}%;background:${colors[i%4]};animation-duration:${(1.4+Math.random()*1.2).toFixed(2)}s;animation-delay:${(Math.random()*0.35).toFixed(2)}s"></div>`;
+  }
+  bg.innerHTML = conf + `<div class="cel-card">
+    <div class="cel-icon">${def.icon || '⚡'}</div>
+    <div class="cel-streak">${streak} ${streak === 1 ? 'day' : 'days'} in a row!</div>
+    ${now ? `<div class="cel-now"><b>Already yours:</b> ${now.t}</div>` : (def.why ? `<div class="cel-now">${def.why.length>110?def.why.slice(0,110).replace(/\s+\S*$/,'')+'…':def.why}</div>` : '')}
+    ${next ? `<div class="cel-next">Keep going → <b>day ${next.d}:</b> ${next.t}</div>` : `<div class="cel-next">👑 Every stage unlocked — this is who you are now.</div>`}
+  </div>`;
+  const close = () => bg.remove();
+  bg.addEventListener('click', close);
+  document.body.appendChild(bg);
+  setTimeout(close, 4200);
+}
 
 window.toggleMission = function(key) {
   if (missionsDay === 'yesterday') {
@@ -1395,7 +1478,7 @@ window.toggleMission = function(key) {
     const result = window.checkHabit(key, def.label, def.icon);
     hlogSet(key, today, true);
     if (window.addXP) window.addXP(key, 15, 'Habit: ' + def.label);
-    showToast('+15 XP · ' + def.label + ' · Level ' + (result.score||1) + '/10' + ((result.score||0) >= 10 ? ' 👑' : ''));
+    celebrateHabit(def, result.streak || 1);
   }
   renderMissions();
   renderCharStrip();
