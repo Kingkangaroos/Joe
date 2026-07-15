@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.9)
+# GAMENFY — Master Document (v9.10)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -129,6 +129,8 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 ---
 
 ## 8. Version history
+
+- **v9.10 — Dutch voice messages for Jarvis.** Mic button in jarvis.html: tap → record (MediaRecorder, audio/mp4 on iOS with webm fallback, 60s cap, pulsing stop button), tap again → base64 audio POSTs to the jarvis function. Edge function v4 accepts {message} OR {audio:{data,mime}} and feeds the audio straight to Gemini as inlineData — transcription + coaching answer in ONE multimodal call, no separate STT service, same free key. The reply carries a <heard>-wrapped Dutch transcript which the client swaps into the user bubble (🎙️ "…") and which becomes the textual history entry, so memory stays clean text. Typing unchanged. This also pre-solves voice for Jarvis 2.0: the future function-calling loop receives the same transcribed intent.
 
 - **v9.9 — two build-ready designs, no code shipped to the app.** (1) `JARVIS-2.0-DESIGN.md`: full architecture for a self-sufficient Jarvis — Gemini function calling (award_xp / check_habit / claim_quest / plan_agenda / get_state / remember / propose_change), an **action queue** in a dedicated `app_state.jarvis_actions` row consumed client-side through the existing engine (mandatory because sync.js pushes whole blobs last-write-wins — server writes into `rpg` would be wiped), a GAMENFY knowledge block in the system prompt, honest limits (site-editing becomes a `jarvis_backlog` for Claudia, not autonomous pushes), 3 phases with a concrete definition-of-done. NEXT DEDICATED SESSION = phase 1. (2) `FITBIT-SETUP.md` + `server/fitbit-sync/index.ts`: complete OAuth+daily-pull scaffold (authorize/callback/pull modes, token refresh, steps/sleep/RHR/weight → app_state.health_fitbit). Blocks on exactly two strings from Joey: Fitbit Client ID + Secret from dev.fitbit.com (10-min registration, doable before the device arrives).
 

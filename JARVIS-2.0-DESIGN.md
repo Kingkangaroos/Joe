@@ -54,6 +54,11 @@ De edge function declareert tools; Gemini kiest, wij voeren uit, loop tot antwoo
 - Context-builder uitbreiden: habit-scores van vandaag, agenda van vandaag,
   quests binnen bereik van een gate, gewichtstrend (po-coach rij).
 
+## Al gebouwd (v9.10)
+- **Nederlandse spraakberichten**: mic in jarvis.html → audio rechtstreeks naar
+  Gemini (multimodaal, één call = transcript + antwoord). Fase 1 hoeft spraak
+  dus niet meer te bouwen; de tool-loop krijgt dezelfde getranscribeerde intent.
+
 ## Fasering
 1. **Fase 1 (één sessie):** action-queue consumer in xp.js + edge function v4
    met bovenstaande tools + kennisblok. Daarmee staat 90% van Joey's wens.
