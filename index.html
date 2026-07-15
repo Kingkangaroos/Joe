@@ -797,6 +797,30 @@ body {
   color: var(--muted); font-size: 13px; cursor: pointer;
 }
 .agenda-block-hint { opacity: 0.75; font-weight: 400; }
+.agenda-block-half {
+  font-size: 8.5px; font-family: var(--font-mono); font-weight: 800;
+  background: rgba(255,255,255,0.25); border-radius: 5px; padding: 1px 4px;
+  margin-right: 5px; flex-shrink: 0;
+}
+.ts-half { display: flex; border: 1px solid var(--line-strong); border-radius: 9px; overflow: hidden; flex-shrink: 0; }
+.ts-half button {
+  border: none; background: var(--bg); color: var(--muted);
+  font-size: 11px; font-weight: 700; font-family: var(--font-mono);
+  padding: 6px 10px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.ts-half button.on { background: var(--ink); color: #F4F3EF; }
+.ts-custom { display: flex; gap: 7px; margin-top: 10px; }
+.ts-custom input {
+  flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--line-strong);
+  border-radius: 10px; padding: 9px 12px; font-size: 13.5px; color: var(--ink); outline: none;
+  -webkit-appearance: none;
+}
+.ts-custom input::placeholder { color: var(--faint); }
+.ts-custom button {
+  flex-shrink: 0; padding: 9px 13px; border-radius: 10px; border: none;
+  background: var(--ink); color: #F4F3EF; font-weight: 700; font-size: 12.5px;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
 
 /* v9.12: habit celebration — streak + science benefits, front and center */
 .cel-bg {
@@ -1844,12 +1868,13 @@ function renderAgenda() {
 
   let html = '';
   for (let h = AGENDA_START_HOUR; h <= AGENDA_END_HOUR; h++) {
-    const slotItems = items.filter(it => it.time === h);
+    const slotItems = items.filter(it => Math.floor(it.time) === h).sort((a,b) => a.time - b.time);
     const blocks = slotItems.map((it, idx) => {
       const color = it.type === 'mission' ? 'var(--green)' : it.type === 'skill' ? 'var(--ember)' : 'var(--ink-card)';
       const hint = it.hint ? ` <span class="agenda-block-hint">· ${it.hint}</span>` : '';
+      const half = (it.time % 1) ? `<span class="agenda-block-half">:30</span>` : '';
       return `<div class="agenda-block${it.done?' done':''}" style="background:${color}" onclick="toggleAgendaBlock('${key}',${h},${idx},event)">
-        <span class="agenda-block-icon">${it.icon||'•'}</span>
+        ${half}<span class="agenda-block-icon">${it.icon||'•'}</span>
         <span class="agenda-block-text">${it.label}${hint}</span>
         <span class="agenda-block-x" onclick="removeAgendaBlock('${key}',${h},${idx},event)">×</span>
       </div>`;
@@ -1881,13 +1906,13 @@ window.toggleAgendaBlock = function(key, hour, idx, e) {
   if (e) e.stopPropagation();
   if (e && e.target && e.target.classList.contains('agenda-block-x')) return;
   const items = loadAgenda(key);
-  const matches = items.filter(it => it.time === hour);
+  const matches = items.filter(it => Math.floor(it.time) === hour).sort((a,b) => a.time - b.time);
   const it = matches[idx];
   if (!it) return;
   it.done = !it.done;
   saveAgenda(key, items);
   // award XP only when marking done today/past, for missions/skills
-  if (it.done && it.key && window.addXP && agendaOffset <= 0) {
+  if (it.done && (it.key || it.type === 'custom') && window.addXP && agendaOffset <= 0) {
     if (it.type === 'mission' && window.checkHabit) {
       window.checkHabit(it.key, it.label, it.icon);
       window.addXP(it.key, 15, 'Agenda: ' + it.label);
@@ -1895,6 +1920,9 @@ window.toggleAgendaBlock = function(key, hour, idx, e) {
     } else if (it.type === 'skill') {
       window.addXP(it.key, 20, 'Agenda: ' + it.label);
       showToast('✓ ' + it.label + ' · +20 XP');
+    } else if (it.type === 'custom') {
+      window.addXP('planning', 10, 'Task: ' + it.label);
+      showToast('✓ ' + it.label + ' · +10 XP');
     } else {
       showToast('✓ ' + it.label);
     }
@@ -1905,12 +1933,9 @@ window.toggleAgendaBlock = function(key, hour, idx, e) {
 window.removeAgendaBlock = function(key, hour, idx, e) {
   if (e) e.stopPropagation();
   const items = loadAgenda(key);
-  let seen = -1;
-  const filtered = items.filter(it => {
-    if (it.time !== hour) return true;
-    seen++;
-    return seen !== idx;
-  });
+  const matches = items.filter(it => Math.floor(it.time) === hour).sort((a,b) => a.time - b.time);
+  const target = matches[idx];
+  const filtered = items.filter(it => it !== target);
   saveAgenda(key, filtered);
   renderAgenda();
 };
@@ -2094,8 +2119,17 @@ function openTimeSketcher(key, hour) {
   bg.innerHTML = `<div class="ts-sheet">
     <div class="ts-handle"></div>
     <div class="ts-head">
-      <div class="ts-title">Sketch ${hourLabel(hour)}</div>
-      <div class="ts-sub">${d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})} · pick what this hour is for</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <div class="ts-title">Sketch ${hourLabel(hour)}</div>
+        <div class="ts-half" id="tsHalf">
+          <button class="on" onclick="tsSetHalf(0,event)">:00</button><button onclick="tsSetHalf(0.5,event)">:30</button>
+        </div>
+      </div>
+      <div class="ts-sub">${d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})} · pick a skill — or type your own task</div>
+      <div class="ts-custom">
+        <input id="tsCustomName" type="text" maxlength="48" placeholder="Your own task… (tap a skill to link it)">
+        <button onclick="tsPlaceCustom('${key}',${hour})">+ Add</button>
+      </div>
     </div>
     <div class="ts-body" id="tsBody">${listHtml}</div>
     <button class="ts-cancel" onclick="document.getElementById('tsBg')?.remove()">Cancel</button>
@@ -2104,7 +2138,40 @@ function openTimeSketcher(key, hour) {
   document.body.appendChild(bg);
 }
 
+window._tsHalf = 0;
+window.tsSetHalf = function(v, e) {
+  if (e) e.stopPropagation();
+  window._tsHalf = v;
+  document.querySelectorAll('#tsHalf button').forEach((b,i) => b.classList.toggle('on', (i===0) === (v===0)));
+};
+window.tsPlaceCustom = function(key, hour) {
+  const inp = document.getElementById('tsCustomName');
+  const name = (inp && inp.value || '').trim();
+  if (!name) { if (inp) inp.focus(); return; }
+  const items = loadAgenda(key);
+  items.push({ time: hour + (window._tsHalf || 0), key: null, label: name, icon: '📝', type: 'custom', done: false });
+  saveAgenda(key, items);
+  window._tsHalf = 0;
+  document.getElementById('tsBg')?.remove();
+  renderAgenda();
+  showToast('Added · ' + name);
+};
 window.tsPick = function(key, hour, skillKey) {
+  // eigen taaknaam getypt? → direct linken aan deze skill en plaatsen
+  const inp = document.getElementById('tsCustomName');
+  const custom = (inp && inp.value || '').trim();
+  if (custom) {
+    const def = (window.RPG_DEFAULT_SKILLS||{})[skillKey] || {};
+    const items = loadAgenda(key);
+    items.push({ time: hour + (window._tsHalf || 0), key: skillKey, label: custom,
+                 icon: def.icon || '⭐', type: def.isHabit ? 'mission' : 'skill', done: false });
+    saveAgenda(key, items);
+    window._tsHalf = 0;
+    document.getElementById('tsBg')?.remove();
+    renderAgenda();
+    showToast('Added · ' + custom + ' → ' + (def.label || skillKey));
+    return;
+  }
   const body = document.getElementById('tsBody');
   if (!body) return;
   const def = (window.RPG_DEFAULT_SKILLS||{})[skillKey] || {};
@@ -2149,7 +2216,7 @@ function tsPlace() {
   const def = (window.RPG_DEFAULT_SKILLS||{})[p.skillKey] || {};
   const items = loadAgenda(p.key);
   items.push({
-    time: p.hour, key: p.skillKey,
+    time: p.hour + (window._tsHalf || 0), key: p.skillKey,
     label: def.label || p.skillKey,
     icon: def.icon || '⭐',
     type: def.isHabit ? 'mission' : 'skill',
@@ -2158,6 +2225,7 @@ function tsPlace() {
   });
   saveAgenda(p.key, items);
   window._tsPending = null;
+  window._tsHalf = 0;
   document.getElementById('tsBg')?.remove();
   renderAgenda();
   showToast('Sketched · ' + (def.label || p.skillKey) + ' at ' + hourLabel(p.hour));

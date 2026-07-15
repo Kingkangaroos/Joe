@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.12)
+# GAMENFY — Master Document (v9.13)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -141,6 +141,8 @@ Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
 3. `pg_net` in public schema — hygiëne, laag risico.
 
 ## 8. Version history
+
+- **v9.13 — half-hour agenda + custom tasks.** Agenda `time` may now be fractional (14.5 = 14:30): rows still render per hour but match on `Math.floor(time)` with a time-sort, blocks with a half get a small :30 chip, and toggle/remove use the identical floored+sorted filter so indices stay consistent (unit-tested incl. removing the right duplicate-:30 block). The Time Sketcher header gained a :00/:30 segmented toggle applying to every placement. NEW custom tasks: an input at the top of the sketch sheet — type a name + Add places an unlinked 📝 task (completing it = +10 XP Planning, "Task: <name>"); type a name and then TAP A SKILL to link it (block takes the skill's icon/type and awards its normal agenda XP). Jarvis' plan_agenda keeps whole hours.
 
 - **v9.12 — science layer + celebration + Jarvis in the nav.** (1) **Benefits timelines** on all 12 habits + both private skills in xp.js: `benefits:[{d,t}]` stages with real research anchors (Zeidan 2010 attention, Hölzel 2011 amygdala, Emmons & McCullough gratitude/sleep, Buijze 2016 cold-shower sick days, Auer 2016 verbal memory, Voon/Kühn cue-reactivity; small-study claims hedged). (2) **Private whys rewritten** scientifically — the "why not do it and what it costs you" Joey asked for; `quickLog:null` preserved exactly (a fabricated quickLog was caught by diffing against HEAD and reverted). (3) **Celebration overlay**: checking a habit today (incl. private daily quests, whose streak is computed by walking rpg_daily_v1 backwards) pops confetti (34 CSS particles, Daylight palette) + "X days in a row!" + "Already yours: <current benefit>" + "Keep going → day Y: <next benefit>"; all-stages-done shows a crown line; tap or 4.2s dismisses. Yesterday-toggles keep the plain toast. (4) Mission cards show 🔥Nd at streak >1; unlocked private cards now show their why. (5) **Jarvis got a real place in the nav**: the bottombar Settings slot is now 🤖 Jarvis; Settings moved to a gear in the topbar.
 
