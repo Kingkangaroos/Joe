@@ -128,6 +128,18 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 
 ---
 
+## Security-notities (Supabase advisors, 2026-07-15)
+Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
+(één gebruiker, publishable key in publieke repo):
+1. `app_state` RLS: anon INSERT/UPDATE altijd-true — **by design**: de hele
+   device-sync schrijft met de publishable key. Consequentie: iedereen met de
+   key (die in de repo staat) kan de app-state lezen/schrijven. Echte fix =
+   Supabase Auth invoeren (groter project, geparkeerd).
+2. Bucket `progress-photos` is publiek listbaar — voortgangsfoto's zijn dus
+   opvraagbaar voor wie de bucket-URL kent. Overwegen: listing-policy weghalen
+   (URL's blijven werken) — kleine fix, kan in een volgende sessie.
+3. `pg_net` in public schema — hygiëne, laag risico.
+
 ## 8. Version history
 
 - **v9.11 — JARVIS 2.0 FASE 1 LIVE.** Jarvis kan nu zelf handelen. Edge function v5: Gemini function calling met zes tools (award_xp / check_habit / claim_quest / plan_agenda / get_state / propose_change), een gegenereerde kennis-kaart uit xp.js+quests.js (45 skills incl. quickLog-XP-ankers, 33 quest-ladders met XP per level) voor server-side validatie, GAMENFY-kennisblok in het prompt, tool-loop max 5 rondes, spraak (v9.10) werkt door alles heen. Acties gaan naar `app_state.jarvis_actions`; xp.js kreeg een **consumer** (poll bij load + 60s) die ze uitvoert via de eigen engine — addXP/checkHabitFor/setQuestDone — met consumed-first-marking, een gesynct applied-ledger (`rpg_jarvis_applied_v1`, aan syncedKeys toegevoegd op index/character/settings) en een canApply-guard zodat pagina's zonder quests.js quest-claims laten staan voor index/character. Consumer end-to-end gesimuleerd: XP + habit + quest correct, ongeldige skill veilig geskipt, idempotent, één cloud-write. propose_change vult `jarvis_backlog` — **Claudia leest die rij voortaan aan het begin van elke sessie**. Verbeter-ideeën gaan dus via Jarvis vanzelf naar de bouwer.
