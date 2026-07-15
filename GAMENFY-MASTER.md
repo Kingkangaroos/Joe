@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.7)
+# GAMENFY — Master Document (v9.8)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -104,7 +104,7 @@ A gamified personal Life OS — version 0.1 of a future product. Skills, levels,
 - **Rows:** `apple_health:yyyy-MM-dd` in `app_state` — fields `steps` (legacy quirk: sometimes `steps ` with trailing space), `active_energy` (sometimes string), `weight`, `sleep_minutes`, `resting_hr`. The Body tab reads these; any source may write them.
 - **Current source:** iOS Shortcut (BROKEN since 2026-06-09 — date-variable defect; Joey fixes, or the Fitbit Air replaces it). Shortcuts pitfall: "no internet connection" usually = Rich Text URL formatting.
 - **Incoming source:** Fitbit Air → Google Health API via edge function `health-sync` (deployed skeleton, REPLACE_ME Google OAuth credentials; endpoint paths carry TODO-verify markers). Setup steps in the v8.4 changelog entry. Schedule nightly cron after first successful manual run.
-- **Edge functions live in this project:** `send-daily-push` (v3: morning/evening modes, prefs-aware, skips evening when day closed; crons `gamenfy-morning-push` 06:30 UTC + `gamenfy-daily-push` 17:30 UTC), `import-media` (copies remote images into public storage bucket `skills`), `jarvis` (chat brain — currently expects an API key const; **decision: Google Gemini free tier**, awaiting Joey's key from aistudio.google.com. The complete Gemini replacement is READY in `server/jarvis-gemini/index.ts` in this repo — deploy + set GEMINI_API_KEY/PUSH_SECRET secrets and it's live; auth stays the shared x-push-secret pattern, no secrets in the repo), `health-sync` (above). All guarded by a shared secret header; VAPID keys live only inside `send-daily-push`.
+- **Edge functions live in this project:** `send-daily-push` (v3: morning/evening modes, prefs-aware, skips evening when day closed; crons `gamenfy-morning-push` 06:30 UTC + `gamenfy-daily-push` 17:30 UTC), `import-media` (copies remote images into public storage bucket `skills`), `jarvis` (chat brain — **LIVE on Google Gemini since v9.8**, model `gemini-flash-latest`, deployed as function version 3 with `verify_jwt:false` + the original `x-jarvis-pin` auth. Identical behavior to v8.3: persistent history + <remember> notes in `app_state.jarvis_memory`, live context (streak/ventures/top skills). Gemini key lives ONLY server-side in the deployed function; the repo copy in `server/jarvis-gemini/` uses env vars. Bonus fix: the v8.3 week-filter for top skills had a malformed date comparison — cleaned up in the Gemini port), `health-sync` (above). All guarded by a shared secret header; VAPID keys live only inside `send-daily-push`.
 - **Supabase REST from clients:** publishable key as both `apikey` and `Authorization: Bearer`, `Prefer: resolution=merge-duplicates` for upserts.
 
 ---
@@ -129,6 +129,8 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 ---
 
 ## 8. Version history
+
+- **v9.8 — Jarvis LIVE on Gemini.** Joey delivered his Google AI Studio key; the jarvis edge function was redeployed (v3) swapping Anthropic → Gemini `gemini-flash-latest` while keeping everything else byte-compatible: x-jarvis-pin auth, persistent history + <remember> long-term notes in app_state, live streak/venture/top-skill context, same {message}→{reply} interface so jarvis.html needed zero changes. First deploy attempt flipped verify_jwt to true (MCP default) which would have 401'd the PIN-based client — caught and redeployed with verify_jwt:false per the original design. Also fixed a malformed week-filter date comparison from v8.3 in the port. Key lives server-side only.
 
 - **v9.7 — Coloring 🖍️ + Drawing ✏️** (creative domain) with full unlock ladders. Coloring: relaxation-first (why cites mandala-coloring anxiety studies), 10 quests from First Page to Zen Master (50 pages), gates covered at 8/20/42/70. Drawing: classic observation-first progression (lines → shapes → still life at the LV10 gate → perspective → hands → portrait → own style → commission-ready), 11 quests, gates at 10/24/46/74. Both have quickLogs and milestone arcs; invariant audit re-run over the now 349 quests: 0 findings; tier-lock mechanic verified end-to-end (lvl-15 capped at 10 until Still Life claimed).
 

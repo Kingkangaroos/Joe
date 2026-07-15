@@ -12,7 +12,7 @@
 //  - no secrets in this public repo — everything via Deno.env
 // =============================================================
 
-const GEMINI_MODEL = "gemini-2.0-flash"; // free-tier friendly
+const GEMINI_MODEL = "gemini-flash-latest"; // matches the DEPLOYED function (v9.8, live since 2026-07-15)
 
 const SYSTEM_PROMPT = `You are Jarvis, the in-app coach of Gamenfy — Joey's gamified Life OS.
 Be concise, warm and action-first. English only. No emoji walls, no bullet spam.
