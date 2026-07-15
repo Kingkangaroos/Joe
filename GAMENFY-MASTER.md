@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.8)
+# GAMENFY — Master Document (v9.9)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -129,6 +129,8 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 ---
 
 ## 8. Version history
+
+- **v9.9 — two build-ready designs, no code shipped to the app.** (1) `JARVIS-2.0-DESIGN.md`: full architecture for a self-sufficient Jarvis — Gemini function calling (award_xp / check_habit / claim_quest / plan_agenda / get_state / remember / propose_change), an **action queue** in a dedicated `app_state.jarvis_actions` row consumed client-side through the existing engine (mandatory because sync.js pushes whole blobs last-write-wins — server writes into `rpg` would be wiped), a GAMENFY knowledge block in the system prompt, honest limits (site-editing becomes a `jarvis_backlog` for Claudia, not autonomous pushes), 3 phases with a concrete definition-of-done. NEXT DEDICATED SESSION = phase 1. (2) `FITBIT-SETUP.md` + `server/fitbit-sync/index.ts`: complete OAuth+daily-pull scaffold (authorize/callback/pull modes, token refresh, steps/sleep/RHR/weight → app_state.health_fitbit). Blocks on exactly two strings from Joey: Fitbit Client ID + Secret from dev.fitbit.com (10-min registration, doable before the device arrives).
 
 - **v9.8 — Jarvis LIVE on Gemini.** Joey delivered his Google AI Studio key; the jarvis edge function was redeployed (v3) swapping Anthropic → Gemini `gemini-flash-latest` while keeping everything else byte-compatible: x-jarvis-pin auth, persistent history + <remember> long-term notes in app_state, live streak/venture/top-skill context, same {message}→{reply} interface so jarvis.html needed zero changes. First deploy attempt flipped verify_jwt to true (MCP default) which would have 401'd the PIN-based client — caught and redeployed with verify_jwt:false per the original design. Also fixed a malformed week-filter date comparison from v8.3 in the port. Key lives server-side only.
 
