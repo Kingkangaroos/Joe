@@ -714,7 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (inp) inp.value = localStorage.getItem(HEVY_KEY) || '';
 
   if (typeof initCloudSync === 'function' && window.supabase) {
-    initCloudSync({ appKey: 'rpg', syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1','rpg_gratitude_v1'], syncedPrefixes: ['rpg_daily_v1:','rpg_agenda_v1:'] });
+    initCloudSync({ appKey: 'rpg', syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1','rpg_gratitude_v1','rpg_jarvis_applied_v1'], syncedPrefixes: ['rpg_daily_v1:','rpg_agenda_v1:'] });
   }
 });
 </script>

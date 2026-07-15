@@ -963,3 +963,130 @@
   else initRPGSync();
 
 })();
+
+// =============================================================
+// Jarvis action queue consumer (v9.11 — Jarvis 2.0 fase 1)
+// Jarvis (edge function) schrijft acties naar app_state.jarvis_actions;
+// deze consumer voert ze uit via de BESTAANDE engine (addXP/checkHabitFor/
+// setQuestDone) zodat streaks, decay en tier-gates automatisch kloppen.
+// Jarvis schrijft NOOIT in de rpg-rij zelf (whole-blob last-write-wins).
+// Dedupe: consumed-flag in de rij (eerst gemarkeerd, dan toegepast) +
+// lokaal/gesynct ledger rpg_jarvis_applied_v1.
+// =============================================================
+(function(){
+  var JV_SB_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co';
+  var JV_SB_KEY = 'sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
+  var LEDGER_KEY = 'rpg_jarvis_applied_v1';
+  var busy = false;
+
+  function ledger(){ try { return JSON.parse(localStorage.getItem(LEDGER_KEY)) || []; } catch(e){ return []; } }
+  function ledgerAdd(ids){
+    try {
+      var l = ledger().concat(ids);
+      localStorage.setItem(LEDGER_KEY, JSON.stringify(l.slice(-200)));
+    } catch(e){}
+  }
+  function localDay(){
+    var d = new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+
+  function applyAction(a){
+    var defs = window.RPG_DEFAULT_SKILLS || {};
+    var p = a.payload || {};
+    try {
+      if (a.type === 'addXP') {
+        if (!defs[p.skill]) return 'skip';
+        var amt = Math.max(1, Math.min(500, Math.round(p.amount || 0)));
+        if (!amt) return 'skip';
+        window.addXP(p.skill, amt, p.reason || 'Via Jarvis');
+        return '+' + amt + ' XP ' + (defs[p.skill].label || p.skill);
+      }
+      if (a.type === 'checkHabit') {
+        var d = defs[p.key];
+        if (!d || !d.isHabit) return 'skip';
+        var date = (typeof p.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(p.date)) ? p.date : localDay();
+        // habit-log bijwerken zodat Main/Daily de check zien (zelfde formaat als de pagina's)
+        try {
+          var hl = JSON.parse(localStorage.getItem('rpg_habitlog_v1')) || {};
+          if (hl[p.key] && hl[p.key][date]) return 'skip'; // al gecheckt die dag
+          hl[p.key] = hl[p.key] || {}; hl[p.key][date] = true;
+          localStorage.setItem('rpg_habitlog_v1', JSON.stringify(hl));
+        } catch(e){}
+        if (window.checkHabitFor) window.checkHabitFor(p.key, date, d.label, d.icon);
+        return (d.icon || '') + ' ' + (d.label || p.key) + ' \u2713';
+      }
+      if (a.type === 'claimQuest') {
+        var lad = (window.RPG_QUESTS || {})[p.skill] || [];
+        var q = lad.find(function(x){ return x.lvl === p.lvl; });
+        if (!q) return 'skip';
+        var done = window.getQuestsDone ? window.getQuestsDone() : {};
+        if (done[p.skill + ':' + p.lvl]) return 'skip';
+        window.setQuestDone(p.skill, p.lvl, true);
+        window.addXP(p.skill, q.xp, 'Quest complete (Lvl ' + p.lvl + ') via Jarvis');
+        return '\ud83c\udfc6 ' + q.title + ' +' + q.xp + ' XP';
+      }
+      if (a.type === 'planAgenda') {
+        var sd = defs[p.skillKey];
+        if (!sd) return 'skip';
+        var hour = Math.max(6, Math.min(23, Math.round(p.hour || 0)));
+        var dateK = (typeof p.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(p.date)) ? p.date : localDay();
+        var ak = 'rpg_agenda_v1:' + dateK;
+        var items; try { items = JSON.parse(localStorage.getItem(ak)) || []; } catch(e){ items = []; }
+        items.push({ time: hour, key: p.skillKey, label: sd.label || p.skillKey, icon: sd.icon || '\u2b50',
+                     type: sd.isHabit ? 'mission' : 'skill', done: false });
+        try { localStorage.setItem(ak, JSON.stringify(items)); } catch(e){}
+        return '\ud83d\uddd3\ufe0f ' + (sd.label || p.skillKey) + ' om ' + hour + ':00';
+      }
+    } catch(e){}
+    return 'skip';
+  }
+
+  async function consume(){
+    if (busy) return;
+    busy = true;
+    try {
+      var r = await fetch(JV_SB_URL + '/rest/v1/app_state?key=eq.jarvis_actions&select=data',
+        { headers: { apikey: JV_SB_KEY, Authorization: 'Bearer ' + JV_SB_KEY } });
+      if (!r.ok) return;
+      var rows = await r.json();
+      var data = (rows[0] && rows[0].data) || {};
+      var queue = Array.isArray(data.queue) ? data.queue : [];
+      var seen = ledger();
+      // alleen consumeren wat DEZE pagina kan toepassen — anders blijft de
+      // actie staan voor index/character (die laden quests.js wel)
+      function canApply(a){
+        if (a.type === 'claimQuest') return !!(window.setQuestDone && window.RPG_QUESTS);
+        if (a.type === 'checkHabit') return !!window.checkHabitFor;
+        if (a.type === 'addXP' || a.type === 'planAgenda') return !!window.addXP;
+        return false;
+      }
+      var pending = queue.filter(function(a){ return a && a.id && !a.consumed && seen.indexOf(a.id) < 0 && canApply(a); });
+      if (!pending.length) return;
+      // EERST consumed markeren in de cloud (race-window minimaliseren), dan toepassen
+      var ids = pending.map(function(a){ return a.id; });
+      var newQueue = queue.map(function(a){ return ids.indexOf(a.id) >= 0 ? Object.assign({}, a, { consumed: true }) : a; });
+      await fetch(JV_SB_URL + '/rest/v1/app_state', {
+        method: 'POST',
+        headers: { apikey: JV_SB_KEY, Authorization: 'Bearer ' + JV_SB_KEY,
+                   'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' },
+        body: JSON.stringify({ key: 'jarvis_actions', data: { queue: newQueue.slice(-100) }, updated_at: new Date().toISOString() })
+      });
+      ledgerAdd(ids);
+      var lines = [];
+      pending.sort(function(a,b){ return (a.ts||0)-(b.ts||0); }).forEach(function(a){
+        var res = applyAction(a);
+        if (res && res !== 'skip') lines.push(res);
+      });
+      if (lines.length && typeof window.showToast === 'function') {
+        window.showToast('Jarvis: ' + lines.slice(0,3).join(' \u00b7 ') + (lines.length>3 ? ' \u2026' : ''));
+      }
+    } catch(e){} finally { busy = false; }
+  }
+
+  window.jarvisConsumeActions = consume;
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(consume, 1500); });
+  } else { setTimeout(consume, 1500); }
+  setInterval(consume, 60000);
+})();

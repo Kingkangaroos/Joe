@@ -59,6 +59,11 @@ De edge function declareert tools; Gemini kiest, wij voeren uit, loop tot antwoo
   Gemini (multimodaal, één call = transcript + antwoord). Fase 1 hoeft spraak
   dus niet meer te bouwen; de tool-loop krijgt dezelfde getranscribeerde intent.
 
+## Status
+**FASE 1 IS LIVE (v9.11).** Definition of done gehaald in simulatie; praktijktest
+door Joey is de laatste stap. Fase 2 (proactieve ochtend-push) en fase 3
+(Fitbit-context) staan open.
+
 ## Fasering
 1. **Fase 1 (één sessie):** action-queue consumer in xp.js + edge function v4
    met bovenstaande tools + kennisblok. Daarmee staat 90% van Joey's wens.

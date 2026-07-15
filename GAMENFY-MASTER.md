@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.10)
+# GAMENFY — Master Document (v9.11)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -129,6 +129,8 @@ Business ideas as structured ladders: **phases → steps doable in a single even
 ---
 
 ## 8. Version history
+
+- **v9.11 — JARVIS 2.0 FASE 1 LIVE.** Jarvis kan nu zelf handelen. Edge function v5: Gemini function calling met zes tools (award_xp / check_habit / claim_quest / plan_agenda / get_state / propose_change), een gegenereerde kennis-kaart uit xp.js+quests.js (45 skills incl. quickLog-XP-ankers, 33 quest-ladders met XP per level) voor server-side validatie, GAMENFY-kennisblok in het prompt, tool-loop max 5 rondes, spraak (v9.10) werkt door alles heen. Acties gaan naar `app_state.jarvis_actions`; xp.js kreeg een **consumer** (poll bij load + 60s) die ze uitvoert via de eigen engine — addXP/checkHabitFor/setQuestDone — met consumed-first-marking, een gesynct applied-ledger (`rpg_jarvis_applied_v1`, aan syncedKeys toegevoegd op index/character/settings) en een canApply-guard zodat pagina's zonder quests.js quest-claims laten staan voor index/character. Consumer end-to-end gesimuleerd: XP + habit + quest correct, ongeldige skill veilig geskipt, idempotent, één cloud-write. propose_change vult `jarvis_backlog` — **Claudia leest die rij voortaan aan het begin van elke sessie**. Verbeter-ideeën gaan dus via Jarvis vanzelf naar de bouwer.
 
 - **v9.10 — Dutch voice messages for Jarvis.** Mic button in jarvis.html: tap → record (MediaRecorder, audio/mp4 on iOS with webm fallback, 60s cap, pulsing stop button), tap again → base64 audio POSTs to the jarvis function. Edge function v4 accepts {message} OR {audio:{data,mime}} and feeds the audio straight to Gemini as inlineData — transcription + coaching answer in ONE multimodal call, no separate STT service, same free key. The reply carries a <heard>-wrapped Dutch transcript which the client swaps into the user bubble (🎙️ "…") and which becomes the textual history entry, so memory stays clean text. Typing unchanged. This also pre-solves voice for Jarvis 2.0: the future function-calling loop receives the same transcribed intent.
 
