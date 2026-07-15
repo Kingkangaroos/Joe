@@ -386,6 +386,8 @@ body {
 .mq-card.done { background: rgba(46,139,95,0.06); border-color: rgba(46,139,95,0.25); }
 .mq-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
 .mq-icon { font-size: 17px; }
+.mq-check { position: relative; }
+.mq-check::after { content:''; position:absolute; inset:-10px; }
 .mq-check {
   width: 16px; height: 16px; border-radius: 50%;
   border: 1.5px solid var(--line-strong);
@@ -797,6 +799,55 @@ body {
   color: var(--muted); font-size: 13px; cursor: pointer;
 }
 .agenda-block-hint { opacity: 0.75; font-weight: 400; }
+
+/* v9.14: mission detail — the "why" front and center before you check */
+.md-bg {
+  position: fixed; inset: 0; z-index: 9450;
+  background: rgba(21,20,15,0.45);
+  display: flex; align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.md-sheet {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 22px 22px 0 0; width: 100%; max-width: 480px;
+  max-height: 86vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 0 18px calc(env(safe-area-inset-bottom,0px) + 18px);
+  animation: tsUp 0.25s cubic-bezier(0.22,1,0.36,1);
+}
+.md-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--line-strong); margin: 12px auto 14px; }
+.md-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.md-icon { font-size: 34px; }
+.md-title { font-family: var(--font-display); font-weight: 800; font-size: 19px; letter-spacing: -0.02em; }
+.md-sub { font-size: 11px; font-family: var(--font-mono); color: var(--muted); margin-top: 2px; }
+.md-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.md-stat { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 10px 6px; text-align: center; }
+.md-stat-num { font-family: var(--font-display); font-weight: 800; font-size: 19px; }
+.md-stat-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+.md-stat.fire .md-stat-num { color: var(--ember); }
+.md-stat.done .md-stat-num { color: var(--green); }
+.md-stat.miss .md-stat-num { color: var(--muted); }
+.md-sec { font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin: 14px 0 8px; display: flex; align-items: center; gap: 8px; }
+.md-sec::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.md-why { font-size: 13px; line-height: 1.55; color: var(--ink); }
+.md-benefit { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); align-items: flex-start; }
+.md-benefit:last-child { border-bottom: none; }
+.md-b-mark { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--line-strong);
+  display: flex; align-items: center; justify-content: center; font-size: 10px; color: transparent; margin-top: 1px; }
+.md-benefit.got .md-b-mark { background: var(--green); border-color: var(--green); color: #fff; }
+.md-b-body { flex: 1; }
+.md-b-day { font-size: 9px; font-family: var(--font-mono); font-weight: 700; color: var(--muted); }
+.md-benefit.got .md-b-day { color: var(--green); }
+.md-b-text { font-size: 12.5px; line-height: 1.45; color: var(--ink); }
+.md-benefit:not(.got) .md-b-text { color: var(--muted); }
+.md-check {
+  display: block; width: 100%; margin-top: 16px; padding: 14px; border-radius: 14px; border: none;
+  background: var(--ink); color: #F4F3EF; font-family: var(--font-display); font-weight: 700; font-size: 15px;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.md-check:active { transform: scale(0.98); }
+.md-check.is-done { background: rgba(46,139,95,0.1); color: var(--green); border: 1px solid var(--green); }
+.md-uncheck { display: block; width: 100%; margin-top: 8px; padding: 8px; background: none; border: none;
+  color: var(--faint); font-size: 12px; cursor: pointer; text-decoration: underline; }
 .agenda-block-half {
   font-size: 8.5px; font-family: var(--font-mono); font-weight: 800;
   background: rgba(255,255,255,0.25); border-radius: 5px; padding: 1px 4px;
@@ -1247,10 +1298,10 @@ function renderMissions() {
     if (donedToday) doneCount++;
     const lvl = h.score || 0;
     const why = def.why ? (def.why.length > 110 ? def.why.slice(0, 110).replace(/\s+\S*$/,'') + '…' : def.why) : '';
-    return `<div class="mq-card${donedToday?' done':''}" onclick="toggleMission('${k}')" data-key="${k}">
+    return `<div class="mq-card${donedToday?' done':''}" onclick="openMissionDetail('${k}')" data-key="${k}">
       <div class="mq-top">
         <span class="mq-icon">${def.icon||'⚡'}</span>
-        <span class="mq-check">✓</span>
+        <span class="mq-check" onclick="event.stopPropagation();toggleMission('${k}')">✓</span>
       </div>
       <div class="mq-label">${def.label}</div>
       <div class="mq-meta">${lvl >= 10 ? '👑 mastered' : 'Lv ' + lvl + '/10'} · +15 XP${(h.streak||0) > 1 ? ' · 🔥' + h.streak + 'd' : ''}</div>
@@ -1277,8 +1328,8 @@ function renderMissions() {
     const slvl = window.xpToLevel ? window.xpToLevel(sxp) : 1;
     const pdef = defaults[q.skill] || {};
     const pwhy = pdef.why ? (pdef.why.length > 110 ? pdef.why.slice(0, 110).replace(/\s+\S*$/,'') + '…' : pdef.why) : '';
-    return `<div class="mq-card${isDone?' done':''}" onclick="togglePrivateQuest('${q.id}')">
-      <div class="mq-top"><span class="mq-icon">${q.icon}</span><span class="mq-check">✓</span></div>
+    return `<div class="mq-card${isDone?' done':''}" onclick="openMissionDetail('${q.skill}',1,'${q.id}')">
+      <div class="mq-top"><span class="mq-icon">${q.icon}</span><span class="mq-check" onclick="event.stopPropagation();togglePrivateQuest('${q.id}')">✓</span></div>
       <div class="mq-label">${q.label}</div>
       <div class="mq-meta">LV ${slvl} · +${q.xp} XP</div>
       ${pwhy ? `<div class="mq-why">${pwhy}</div>` : ''}
@@ -1465,6 +1516,101 @@ function celebrateHabit(def, streak){
   setTimeout(close, 4200);
 }
 
+// ── Mission detail (v9.14): the why, your record, the stages — then check ──
+function missionStats(key, isPrivate, privateId) {
+  const today = todayStr();
+  let dates = [];
+  if (isPrivate) {
+    for (let i = 0; i < 365; i++) {
+      const d = new Date(Date.now() - i * 86400000);
+      const ds = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+      let dx = {}; try { dx = JSON.parse(localStorage.getItem('rpg_daily_v1:' + ds)) || {}; } catch (e) {}
+      if (dx.quests && dx.quests[privateId] && dx.quests[privateId].done) dates.push(ds);
+    }
+  } else {
+    let hl = {}; try { hl = JSON.parse(localStorage.getItem('rpg_habitlog_v1')) || {}; } catch (e) {}
+    dates = Object.keys(hl[key] || {});
+  }
+  dates.sort();
+  const total = dates.length;
+  const checkedToday = dates.includes(today);
+  // streak: opeenvolgend, eindigend vandaag of gisteren
+  let streak = 0;
+  let cursor = checkedToday ? today : yesterdayStr();
+  const set = new Set(dates);
+  while (set.has(cursor)) {
+    streak++;
+    const p = cursor.split('-').map(Number);
+    const d = new Date(p[0], p[1]-1, p[2]-1);
+    cursor = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  // gemist: dagen tussen eerste log en gisteren zonder check
+  let missed = 0;
+  if (total) {
+    const first = dates[0].split('-').map(Number);
+    const span = Math.floor((new Date().setHours(0,0,0,0) - new Date(first[0], first[1]-1, first[2]).getTime()) / 86400000); // t/m gisteren
+    const doneBeforeToday = total - (checkedToday ? 1 : 0);
+    missed = Math.max(0, span - doneBeforeToday);
+  }
+  return { total, streak, missed, checkedToday };
+}
+
+window.openMissionDetail = function(key, isPrivate, privateId) {
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
+  const def = defaults[key] || {};
+  const st = missionStats(key, !!isPrivate, privateId);
+  const habits = window.getHabits ? window.getHabits() : {};
+  const lvlLine = isPrivate
+    ? 'LV ' + (window.xpToLevel ? window.xpToLevel(((window.getCharacter()||{skills:{}}).skills[key]||{}).xp||0) : 1) + ' · abstinence quest'
+    : 'Habit score ' + ((habits[key]||{}).score||0) + '/10 · +15 XP per check';
+  const benefits = Array.isArray(def.benefits) ? def.benefits.slice().sort((a,b)=>a.d-b.d) : [];
+  const bHtml = benefits.map(b => `
+    <div class="md-benefit${st.streak >= b.d ? ' got' : ''}">
+      <div class="md-b-mark">✓</div>
+      <div class="md-b-body">
+        <div class="md-b-day">DAY ${b.d}${st.streak >= b.d ? ' · YOURS' : ''}</div>
+        <div class="md-b-text">${b.t}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('mdBg')?.remove();
+  const bg = document.createElement('div');
+  bg.className = 'md-bg'; bg.id = 'mdBg';
+  bg.innerHTML = `<div class="md-sheet">
+    <div class="md-handle"></div>
+    <div class="md-head">
+      <span class="md-icon">${def.icon || '⚡'}</span>
+      <div>
+        <div class="md-title">${def.label || key}</div>
+        <div class="md-sub">${lvlLine}</div>
+      </div>
+    </div>
+    <div class="md-stats">
+      <div class="md-stat fire"><div class="md-stat-num">${st.streak}</div><div class="md-stat-lbl">🔥 streak</div></div>
+      <div class="md-stat done"><div class="md-stat-num">${st.total}</div><div class="md-stat-lbl">✓ total days</div></div>
+      <div class="md-stat miss"><div class="md-stat-num">${st.missed}</div><div class="md-stat-lbl">missed</div></div>
+    </div>
+    ${def.why ? `<div class="md-sec">Why this matters</div><div class="md-why">${def.why}</div>` : ''}
+    ${bHtml ? `<div class="md-sec">What consistency earns you</div>${bHtml}` : ''}
+    <button class="md-check${st.checkedToday ? ' is-done' : ''}" onclick="mdCheck('${key}',${isPrivate?1:0},'${privateId||''}')">
+      ${st.checkedToday ? '✓ Done today' : (missionsDay === 'yesterday' ? 'Check for yesterday' : 'Check today ✓')}
+    </button>
+    ${st.checkedToday && !isPrivate && missionsDay !== 'yesterday' ? `<button class="md-uncheck" onclick="mdUncheck('${key}')">undo today's check</button>` : ''}
+  </div>`;
+  bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
+  document.body.appendChild(bg);
+};
+window.mdCheck = function(key, isPrivate, privateId) {
+  const st = missionStats(key, !!isPrivate, privateId);
+  document.getElementById('mdBg')?.remove();
+  if (st.checkedToday && missionsDay !== 'yesterday') return; // al gedaan
+  if (isPrivate) window.togglePrivateQuest(privateId);
+  else window.toggleMission(key);
+};
+window.mdUncheck = function(key) {
+  document.getElementById('mdBg')?.remove();
+  window.toggleMission(key); // vandaag-tak detecteert wasDone → uncheck
+};
+
 window.toggleMission = function(key) {
   if (missionsDay === 'yesterday') {
     const defaults = window.RPG_DEFAULT_SKILLS || {};
@@ -1624,7 +1770,7 @@ window.focusLog = function(key, xp, label, e) {
 };
 
 // ── Core Tracker ─────────────────────────────────────────────
-const CORE_SKILLS = ['whistling', 'dancing'];
+const CORE_SKILLS = ['whistling'] // dancing verhuisd naar reguliere skills (Joey pakt het actief op, v9.14);
 
 function renderCoreTracker() {
   const container = document.getElementById('coreSkills');

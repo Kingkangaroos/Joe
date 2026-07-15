@@ -4,7 +4,15 @@ Doel: dagelijkse pull van stappen, slaap, hartslag-in-rust en (waar aanwezig)
 gewicht uit Fitbit → `app_state.health_fitbit` → Body-tab + Jarvis-context.
 Route: **Fitbit Web API met OAuth 2.0 PKCE** (gratis, geen Google-Premium nodig).
 
-## Joey's stappen (±10 min, kan al vóór het device er is)
+## Realiteit per mei 2026 (geverifieerd)
+De Fitbit-app bestaat inderdaad niet meer — hij heet nu de **Google Health app**
+(iOS 16.4+). De Fitbit Air koppel je dáárin met je Google-account. De
+developer-API op dev.fitbit.com blijft gewoon werken (Strava/MFP draaien erop);
+je logt daar in met je Google-account. Ons plan verandert dus niet.
+
+## Joey's stappen (±15 min)
+0. Installeer de **Google Health** app uit de App Store, log in met je
+   Google-account en koppel de Fitbit Air volgens de app-instructies.
 1. Ga naar https://dev.fitbit.com/apps → log in met je Fitbit/Google-account →
    **Register an app**.
 2. Vul in:

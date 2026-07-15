@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.13)
+# GAMENFY — Master Document (v9.14)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -141,6 +141,8 @@ Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
 3. `pg_net` in public schema — hygiëne, laag risico.
 
 ## 8. Version history
+
+- **v9.14 — mission detail sheets + no_porn diagnosis + housekeeping.** (1) **Tapping a mission card now opens a detail sheet first** (the check-circle stays a one-tap quick toggle): header with icon/label + habit score (or skill LV for private), three stat tiles (🔥 current streak · ✓ total days ever, from rpg_habitlog_v1 or a 365-day rpg_daily_v1 walk for private · missed days since first log), the FULL why, and the benefits timeline as a checklist where earned stages are green-checked "DAY n · YOURS" and future ones show their unlock day — then a big Check button (routes through the normal toggle, so confetti still fires) and an undo link when already checked. Stats logic unit-tested (gap-streak, private walk-back). (2) **no_porn "level 2" diagnosed from live data**: today's check/uncheck cycles were perfectly symmetric; the 90 XP came from two stale June-1 "+45 Geen porno" entries from an old flow. A −90 correction action is queued (and the consumer clamp was widened to allow negative Jarvis corrections, −500..500). (3) Dancing removed from the Core Tracker (actively picked up → lives with regular skills). (4) FITBIT-SETUP verified against May-2026 reality: Fitbit app → Google Health app; dev.fitbit.com API unchanged. (5) PARKED — "purpose-driven focus skills": goal-first design session where Joey defines 2-3 concrete goals and focus skills + quest priorities derive from them.
 
 - **v9.13 — half-hour agenda + custom tasks.** Agenda `time` may now be fractional (14.5 = 14:30): rows still render per hour but match on `Math.floor(time)` with a time-sort, blocks with a half get a small :30 chip, and toggle/remove use the identical floored+sorted filter so indices stay consistent (unit-tested incl. removing the right duplicate-:30 block). The Time Sketcher header gained a :00/:30 segmented toggle applying to every placement. NEW custom tasks: an input at the top of the sketch sheet — type a name + Add places an unlinked 📝 task (completing it = +10 XP Planning, "Task: <name>"); type a name and then TAP A SKILL to link it (block takes the skill's icon/type and awards its normal agenda XP). Jarvis' plan_agenda keeps whole hours.
 

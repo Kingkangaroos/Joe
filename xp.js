@@ -1009,10 +1009,10 @@
     try {
       if (a.type === 'addXP') {
         if (!defs[p.skill]) return 'skip';
-        var amt = Math.max(1, Math.min(500, Math.round(p.amount || 0)));
+        var amt = Math.max(-500, Math.min(500, Math.round(p.amount || 0)));
         if (!amt) return 'skip';
         window.addXP(p.skill, amt, p.reason || 'Via Jarvis');
-        return '+' + amt + ' XP ' + (defs[p.skill].label || p.skill);
+        return (amt > 0 ? '+' : '') + amt + ' XP ' + (defs[p.skill].label || p.skill);
       }
       if (a.type === 'checkHabit') {
         var d = defs[p.key];
