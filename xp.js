@@ -760,12 +760,25 @@
   }
 
   function applyHabitDecay(habits) {
+    // v9.15 FIX: decay is −1 per gemiste dag, maar de oude versie trok elke
+    // run het TOTALE aantal gemiste dagen af van de al-verlaagde score
+    // (kwadratisch verval: 3 dagen missen = score 5 → 0 i.p.v. 3).
+    // decayedThrough onthoudt tot welke dag al is afgeschreven.
     const today = todayStr();
     let changed = false;
     for (const h of Object.values(habits)) {
       if (!h.lastChecked) continue;
-      const diffDays = Math.floor((new Date(today) - new Date(h.lastChecked)) / 86400000);
-      if (diffDays > 1) { h.score = Math.max(0, (h.score||0) - (diffDays-1)); changed = true; }
+      const totalMissed = Math.max(0, Math.floor((new Date(today) - new Date(h.lastChecked)) / 86400000) - 1);
+      if (totalMissed === 0) continue;
+      const already = h.decayedThrough
+        ? Math.max(0, Math.floor((new Date(h.decayedThrough) - new Date(h.lastChecked)) / 86400000) - 1)
+        : 0;
+      const newMissed = totalMissed - already;
+      if (newMissed > 0) {
+        h.score = Math.max(0, (h.score||0) - newMissed);
+        h.decayedThrough = today;
+        changed = true;
+      }
     }
     if (changed) saveHabits(habits);
     return habits;

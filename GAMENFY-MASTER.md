@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.14)
+# GAMENFY — Master Document (v9.15)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -141,6 +141,8 @@ Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
 3. `pg_net` in public schema — hygiëne, laag risico.
 
 ## 8. Version history
+
+- **v9.15 — decay bug fixed + fresh-start reset.** (1) **Confirmed design**: missing a day drops the habit score by exactly −1 (max 10) — but `applyHabitDecay` had a compounding bug: every run subtracted the TOTAL missed-day count from the already-decayed score, so opening the app daily during a 3-day gap took a score of 5 to 0 instead of 2 (quadratic decay). Fixed with a `decayedThrough` anchor that remembers what's already been written off; unit-tested day-by-day vs skip-ahead — identical outcomes (5→4→3→2), and a re-check after the gap gives +1 from the decayed value with streak reset to 1. (2) **Reset & start fresh** in the mission detail sheet (habits AND private quests): double-tap-to-confirm link → writes a per-key marker in `rpg_habit_reset_v1` (new synced key on index/character/settings) so streak/total/missed count from today, zeroes the habit engine's score/streak/lastChecked/decay anchor — **XP stays untouched, earned is earned** — and reopens the sheet at day-1. Stats-filter unit-tested (10-day history + reset yesterday → total 2, missed 0).
 
 - **v9.14 — mission detail sheets + no_porn diagnosis + housekeeping.** (1) **Tapping a mission card now opens a detail sheet first** (the check-circle stays a one-tap quick toggle): header with icon/label + habit score (or skill LV for private), three stat tiles (🔥 current streak · ✓ total days ever, from rpg_habitlog_v1 or a 365-day rpg_daily_v1 walk for private · missed days since first log), the FULL why, and the benefits timeline as a checklist where earned stages are green-checked "DAY n · YOURS" and future ones show their unlock day — then a big Check button (routes through the normal toggle, so confetti still fires) and an undo link when already checked. Stats logic unit-tested (gap-streak, private walk-back). (2) **no_porn "level 2" diagnosed from live data**: today's check/uncheck cycles were perfectly symmetric; the 90 XP came from two stale June-1 "+45 Geen porno" entries from an old flow. A −90 correction action is queued (and the consumer clamp was widened to allow negative Jarvis corrections, −500..500). (3) Dancing removed from the Core Tracker (actively picked up → lives with regular skills). (4) FITBIT-SETUP verified against May-2026 reality: Fitbit app → Google Health app; dev.fitbit.com API unchanged. (5) PARKED — "purpose-driven focus skills": goal-first design session where Joey defines 2-3 concrete goals and focus skills + quest priorities derive from them.
 

@@ -1517,8 +1517,13 @@ function celebrateHabit(def, streak){
 }
 
 // ── Mission detail (v9.14): the why, your record, the stages — then check ──
+const HABIT_RESET_KEY = 'rpg_habit_reset_v1';
+function habitResetDate(key) {
+  try { return (JSON.parse(localStorage.getItem(HABIT_RESET_KEY)) || {})[key] || null; } catch (e) { return null; }
+}
 function missionStats(key, isPrivate, privateId) {
   const today = todayStr();
+  const resetFrom = habitResetDate(key);
   let dates = [];
   if (isPrivate) {
     for (let i = 0; i < 365; i++) {
@@ -1531,6 +1536,7 @@ function missionStats(key, isPrivate, privateId) {
     let hl = {}; try { hl = JSON.parse(localStorage.getItem('rpg_habitlog_v1')) || {}; } catch (e) {}
     dates = Object.keys(hl[key] || {});
   }
+  if (resetFrom) dates = dates.filter(d => d >= resetFrom);
   dates.sort();
   const total = dates.length;
   const checkedToday = dates.includes(today);
@@ -1595,6 +1601,7 @@ window.openMissionDetail = function(key, isPrivate, privateId) {
       ${st.checkedToday ? '✓ Done today' : (missionsDay === 'yesterday' ? 'Check for yesterday' : 'Check today ✓')}
     </button>
     ${st.checkedToday && !isPrivate && missionsDay !== 'yesterday' ? `<button class="md-uncheck" onclick="mdUncheck('${key}')">undo today's check</button>` : ''}
+    <button class="md-uncheck" id="mdResetBtn" onclick="mdReset('${key}',${isPrivate?1:0},'${privateId||''}',event)">↺ Reset & start fresh</button>
   </div>`;
   bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
   document.body.appendChild(bg);
@@ -1605,6 +1612,31 @@ window.mdCheck = function(key, isPrivate, privateId) {
   if (st.checkedToday && missionsDay !== 'yesterday') return; // al gedaan
   if (isPrivate) window.togglePrivateQuest(privateId);
   else window.toggleMission(key);
+};
+window.mdReset = function(key, isPrivate, privateId, e) {
+  const btn = e && e.target;
+  if (btn && !btn.dataset.arm) {
+    btn.dataset.arm = '1';
+    btn.textContent = 'Tap again to confirm — counters restart from today (XP stays)';
+    btn.style.color = 'var(--ember)';
+    setTimeout(() => { if (btn.dataset.arm) { btn.dataset.arm=''; btn.textContent='↺ Reset & start fresh'; btn.style.color=''; } }, 3500);
+    return;
+  }
+  // marker: statistieken tellen vanaf vandaag
+  try {
+    const m = JSON.parse(localStorage.getItem(HABIT_RESET_KEY)) || {};
+    m[key] = todayStr();
+    localStorage.setItem(HABIT_RESET_KEY, JSON.stringify(m));
+  } catch (err) {}
+  // habit-engine: score/streak/decay-anker schoon (XP blijft — verdiend is verdiend)
+  if (!isPrivate && window.getHabits && window.saveHabits) {
+    const hs = window.getHabits();
+    if (hs[key]) { hs[key].score = 0; hs[key].streak = 0; hs[key].lastChecked = null; delete hs[key].decayedThrough; window.saveHabits(hs); }
+  }
+  document.getElementById('mdBg')?.remove();
+  renderMissions(); renderCharStrip();
+  showToast('↺ Fresh start — day 1 begins now');
+  openMissionDetail(key, !!isPrivate, privateId || undefined);
 };
 window.mdUncheck = function(key) {
   document.getElementById('mdBg')?.remove();
@@ -2941,7 +2973,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initCloudSync === 'function' && window.supabase) {
     initCloudSync({
       appKey: 'rpg',
-      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1','rpg_gratitude_v1','rpg_jarvis_applied_v1'],
+      syncedKeys: ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1','rpg_gratitude_v1','rpg_jarvis_applied_v1','rpg_habit_reset_v1'],
       syncedPrefixes: ['rpg_daily_v1:','rpg_agenda_v1:','rpg_todo_v1:']
     });
   }
