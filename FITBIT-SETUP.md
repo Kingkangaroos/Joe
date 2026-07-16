@@ -4,6 +4,17 @@ Doel: dagelijkse pull van stappen, slaap, hartslag-in-rust en (waar aanwezig)
 gewicht uit Fitbit → `app_state.health_fitbit` → Body-tab + Jarvis-context.
 Route: **Fitbit Web API met OAuth 2.0 PKCE** (gratis, geen Google-Premium nodig).
 
+## UPDATE juli 2026: twee routes (geverifieerd)
+Google lanceerde eind mei de **Google Health API** (health.googleapis.com/v4,
+registratie via Google Cloud Console, Google OAuth 2.0) als opvolger van de
+Fitbit Web API. De oude API **stopt eind september 2026** maar werkt tot dan
+gewoon naast de nieuwe. Strategie: **Route A (dev.fitbit.com) NU** — 15 min,
+scaffold ligt klaar, data stroomt vandaag; **Route B (Google Health API) in
+augustus** — Claudia herschrijft fitbit-sync naar de v4-endpoints + Google
+OAuth vóór de september-deadline. Let op bij B: alle scopes zijn "Restricted";
+voor persoonlijk gebruik draait de app in Testing-mode (jezelf als testuser),
+mogelijk met periodieke her-consent — Claudia vangt dat af in de sync.
+
 ## Realiteit per mei 2026 (geverifieerd)
 De Fitbit-app bestaat inderdaad niet meer — hij heet nu de **Google Health app**
 (iOS 16.4+). De Fitbit Air koppel je dáárin met je Google-account. De
