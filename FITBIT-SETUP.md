@@ -21,7 +21,7 @@ nieuwe API vereist. Route A (legacy) is vervallen; dit is nu het plan.
    OAuth client ID** → type **Web application**:
    - Name: `gamenfy-sync`
    - Authorized redirect URI (exact):
-     `https://ttxjsoahmtennnufgeqx.supabase.co/functions/v1/fitbit-sync?cb=1`
+     `https://ttxjsoahmtennnufgeqx.supabase.co/functions/v1/fitbit-sync`
 5. Kopieer de **Client ID** en **Client Secret** → plak beide in de chat
    bij Claudia.
 
@@ -32,6 +32,12 @@ nieuwe API vereist. Route A (legacy) is vervallen; dit is nu het plan.
    activity/steps, sleep, heart rate/RHR, body/weight).
 2. Deployt, stuurt Joey één autorisatie-link → "Toestaan" op je telefoon.
 3. Dagelijkse pull → `app_state.health_fitbit` → Body-tab + Jarvis-context.
+
+## Let op bij het credentials-formulier
+- **Authorised JavaScript origins: LEEG laten** (dat veld is voor browser-apps;
+  een URL met pad geeft daar "Invalid origin").
+- De URL hoort bij **Authorised redirect URIs** (het veld eronder), zonder
+  querytekens — de functie herkent de callback aan Google's eigen ?code=.
 
 ## Bekende kanttekening
 Testing-mode met restricted scopes kan periodieke her-consent vragen
@@ -53,7 +59,7 @@ je logt daar in met je Google-account. Ons plan verandert dus niet.
 2. Vul in:
    - Application name: `Gamenfy` · Description/website: je Vercel-URL
    - OAuth 2.0 Application Type: **Personal**  ← belangrijk (geeft intraday + alleen jouw data)
-   - Redirect URL: `https://ttxjsoahmtennnufgeqx.supabase.co/functions/v1/fitbit-sync?cb=1`
+   - Redirect URL: `https://ttxjsoahmtennnufgeqx.supabase.co/functions/v1/fitbit-sync`
    - Access: Read Only
 3. Na opslaan zie je **Client ID** en **Client Secret** → plak die twee in de chat
    bij Claudia. Meer is er niet.

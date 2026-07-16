@@ -6,7 +6,7 @@
 //             van gisteren+vandaag → app_state.health_fitbit
 const CLIENT_ID = 'REPLACE_ME';
 const CLIENT_SECRET = 'REPLACE_ME';
-const REDIRECT = 'https://ttxjsoahmtennnufgeqx.supabase.co/functions/v1/fitbit-sync?cb=1';
+const REDIRECT = 'https://ttxjsoahmtennnufgeqx.supabase.co/functions/v1/fitbit-sync';
 const SCOPES = 'activity heartrate sleep weight profile';
 const SB_URL = Deno.env.get('SUPABASE_URL')!;
 const SB_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
     a.searchParams.set('scope', SCOPES);
     return Response.redirect(a.toString(), 302);
   }
-  if (u.searchParams.has('cb')) {
+  if (u.searchParams.has('code')) {
     const code = u.searchParams.get('code') ?? '';
     const t = await tokenCall(new URLSearchParams({
       grant_type: 'authorization_code', code, redirect_uri: REDIRECT, client_id: CLIENT_ID }));
