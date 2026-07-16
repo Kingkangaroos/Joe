@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.18)
+# GAMENFY — Master Document (v9.19)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -141,6 +141,8 @@ Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
 3. `pg_net` in public schema — hygiëne, laag risico.
 
 ## 8. Version history
+
+- **v9.19 — Jarvis fase 3 (Fitbit-context) + security-fix.** (1) Session-start ritueel gedaan: jarvis_backlog leeg, 0 openstaande acties → de −90 no_porn-correctie is op Joey's toestel toegepast. (2) **Jarvis edge function v6**: `health_fitbit` wordt bij elk bericht meegeladen — de live status toont nu "Fitbit vandaag: X stappen, slaap Yu, RHR Z, N zone-min · gisteren: …", `get_state` kent de nieuwe sectie **health** (laatste 7 dagen) en het systeem-prompt bevat een coaching-instructie voor gezondheidsdata (weinig slaap → rustiger dag; weinig stappen → wandeling koppelen aan de 10k-habit; dalende RHR → conditiewinst benoemen). Daarmee zijn alle drie de Jarvis 2.0-fasen uit het ontwerp afgerond behalve fase 2 (ochtend-push) — die staat nog open. (3) **progress-photos bucket op private** gezet: de foto-UI verdween met de gym-pagina (alleen de sync-key resteert, niets toont of uploadt nog), dus publieke toegang was puur risico zonder functie. Foto's blijven bewaard; een toekomstige Body-tab feature gebruikt signed URLs.
 
 - **v9.18 — Google Health-stijl metric details (Daylight-skin).** Joey wilde de presentatie van de Google Health app gekloond: de Body-tab metric-sheet is herbouwd naar dat layout-patroon — periode-pills **W/M/3M** (7/30/90 dagen, live herrenderen), groot **bereik-getal** ("5.762–6.283" / "5h 39m – …") met context-subtitel (high · avg · goal), en een **vloeiende lijngrafiek** (Catmull-Rom → bezier SVG, gaten in data breken de lijn netjes i.p.v. naar nul te duiken, losse dagen worden punten) met **gestippelde referentielijnen** à la Google Health: groen voor het doel (10k stappen / 8h slaap) en grijs voor het periodegemiddelde, labels rechts op de as. Slaap formatteert als "7h 20m". Alles in Daylight (bone-white) conform Joey's vaste stijlregel — structuur gekloond, huid van onszelf. hmSmoothPath unit-getest.
 
