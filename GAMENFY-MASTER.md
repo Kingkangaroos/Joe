@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.17)
+# GAMENFY — Master Document (v9.18)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -141,6 +141,8 @@ Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
 3. `pg_net` in public schema — hygiëne, laag risico.
 
 ## 8. Version history
+
+- **v9.18 — Google Health-stijl metric details (Daylight-skin).** Joey wilde de presentatie van de Google Health app gekloond: de Body-tab metric-sheet is herbouwd naar dat layout-patroon — periode-pills **W/M/3M** (7/30/90 dagen, live herrenderen), groot **bereik-getal** ("5.762–6.283" / "5h 39m – …") met context-subtitel (high · avg · goal), en een **vloeiende lijngrafiek** (Catmull-Rom → bezier SVG, gaten in data breken de lijn netjes i.p.v. naar nul te duiken, losse dagen worden punten) met **gestippelde referentielijnen** à la Google Health: groen voor het doel (10k stappen / 8h slaap) en grijs voor het periodegemiddelde, labels rechts op de as. Slaap formatteert als "7h 20m". Alles in Daylight (bone-white) conform Joey's vaste stijlregel — structuur gekloond, huid van onszelf. hmSmoothPath unit-getest.
 
 - **v9.17 — FITBIT AIR DATA STROOMT LIVE. 🎉** De volledige Google Health-keten werkt end-to-end, gekalibreerd op Joey's echte data via een snelle debug-loop (fout in de rij → docs → herdeploy, 6 functie-iteraties): (1) OAuth vereiste test-user-registratie (`joeysiemons@hotmail.com`) en het aanzetten van de Health API in het Cloud-project; (2) dailyRollUp-schema bleek `range:{start,end}` met CivilDateTime, response `rollupDataPoints[].civilStartTime` + union values; (3) steps = `countSum` ✓; (4) AZM = `sumInFatBurn/Cardio/PeakHeartZone` → fatBurn + 2×(cardio+peak); (5) **sleep ondersteunt geen dailyRollUp** → list-endpoint + eigen stages-sommatie (niet-AWAKE), dag = lokale wektijd via utcOffset; (6) **RHR idem** → list, dag genest in `dailyRestingHeartRate.date`, waarde `beatsPerMinute`. Eerste echte waarden: 6.283 stappen vandaag / 5.762 gisteren, RHR 66/82, slaap 339 min, AZM 12/14. Weight blijft handmatig (Air heeft geen weegschaal) — de Body-tab weight-kaart (v9.5) is daarvoor. Function v6 (code-v7) **accumuleert nu 60 dagen historie** met null-safe merge per veld; **pg_cron job 3** pullt om 6:05/13:05/21:05 UTC. Body-tab `hmFetchAll` merget de health_fitbit-rij over de (sinds 9 juni dode) Apple Health-data heen — kaarten en grafieken vullen zich vanzelf. Testing-mode kanttekening blijft: bij token-verloop zet de functie needs_reauth en is ?auth=1 één tik.
 

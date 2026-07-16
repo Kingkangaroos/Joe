@@ -1007,6 +1007,15 @@ textarea {
 .hm-sheet-val { font-family:var(--font-display); font-weight:800; font-size:34px; color:var(--ink); line-height:1; font-variant-numeric:tabular-nums; }
 .hm-sheet-sub { font-size:12px; color:var(--muted); margin-top:4px; }
 .hm-sheet-chart { margin:20px 0 6px; display:flex; align-items:flex-end; gap:3px; height:120px; }
+/* v9.18: Google Health-stijl (Daylight-skin) */
+.hm-tabs { display:flex; gap:6px; margin:12px 0 16px; }
+.hm-tabs button {
+  flex:1; padding:8px 0; border-radius:999px; border:1px solid var(--line-strong);
+  background:var(--bg); color:var(--muted); font-size:12px; font-weight:700;
+  cursor:pointer; -webkit-tap-highlight-color:transparent; font-family:var(--font-mono);
+}
+.hm-tabs button.on { background:var(--ink); color:#F4F3EF; border-color:var(--ink); }
+.hm-line-chart { width:100%; height:150px; margin:16px 0 4px; display:block; }
 .hm-sheet-chart .hm-bar { border-radius:3px 3px 0 0; }
 .hm-axis { display:flex; justify-content:space-between; font-size:9px; font-family:var(--mono); color:var(--faint); margin-bottom:16px; }
 .hm-stats { display:flex; gap:10px; }
@@ -3774,30 +3783,114 @@ async function loadHealthMetrics(){
   }).join('');
 }
 
+// v9.18: Google Health-stijl metric detail (gekloond layout, Daylight-skin)
+let hmSheetPeriod = 7;
+function hmSmoothPath(pts, W, H, pad){
+  // Catmull-Rom → cubic bezier voor een vloeiende Google Health-achtige lijn
+  if (pts.length < 2) return '';
+  let dPath = 'M ' + pts[0][0] + ' ' + pts[0][1];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+    const c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = p1[1] + (p2[1] - p0[1]) / 6;
+    const c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = p2[1] - (p3[1] - p1[1]) / 6;
+    dPath += ' C ' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) + ' ' + c2x.toFixed(1) + ' ' + c2y.toFixed(1) + ' ' + p2[0] + ' ' + p2[1];
+  }
+  return dPath;
+}
+function hmGoalFor(id){
+  if (id === 'steps') return { v: 10000, label: '10k goal' };
+  if (id === 'sleep') return { v: 480, label: '8h' };
+  return null;
+}
+function hmFmtVal(id, v){
+  if (v == null) return '—';
+  if (id === 'sleep') { const h = Math.floor(v/60), mm = Math.round(v%60); return h + 'h ' + String(mm).padStart(2,'0') + 'm'; }
+  return Math.round(v).toLocaleString();
+}
+function hmRenderSheetBody(m, id){
+  const days = hmSheetPeriod;
+  const series = hmSeries(days, m.getter);
+  const logged = series.filter(p => p.val);
+  const vals = logged.map(p => p.val);
+  const lo = vals.length ? Math.min(...vals) : 0;
+  const hi = vals.length ? Math.max(...vals) : 0;
+  const avg = vals.length ? vals.reduce((a,b)=>a+b,0) / vals.length : 0;
+  const goal = hmGoalFor(id);
+
+  // schaal
+  const W = 320, H = 150, padT = 10, padB = 18, padR = 40, padL = 6;
+  let yMax = Math.max(hi, goal ? goal.v : 0, 1) * 1.12;
+  let yMin = id === 'rhr' || id === 'weight' ? Math.max(0, lo * 0.9) : 0;
+  if (yMax === yMin) yMax = yMin + 1;
+  const x = i => padL + (i / Math.max(1, series.length - 1)) * (W - padL - padR);
+  const y = v => padT + (1 - (v - yMin) / (yMax - yMin)) * (H - padT - padB);
+
+  // lijnsegmenten over gaten heen breken
+  let segs = [], cur = [];
+  series.forEach((p, i) => {
+    if (p.val) cur.push([x(i), +y(p.val).toFixed(1)]);
+    else if (cur.length) { segs.push(cur); cur = []; }
+  });
+  if (cur.length) segs.push(cur);
+  const paths = segs.map(s => s.length === 1
+    ? '<circle cx="'+s[0][0]+'" cy="'+s[0][1]+'" r="3" fill="'+m.color+'"/>'
+    : '<path d="'+hmSmoothPath(s, W, H)+'" fill="none" stroke="'+m.color+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>').join('');
+
+  // gestippelde referentielijnen (Google Health-stijl) + rechter labels
+  let refs = '';
+  const refLine = (v, color, label) => {
+    const yy = y(v).toFixed(1);
+    return '<line x1="'+padL+'" y1="'+yy+'" x2="'+(W-padR)+'" y2="'+yy+'" stroke="'+color+'" stroke-width="1.5" stroke-dasharray="1.5 5" stroke-linecap="round"/>' +
+           '<text x="'+(W-padR+6)+'" y="'+(+yy+3.5)+'" font-size="10" font-weight="700" fill="#6F6C63" font-family="ui-monospace,monospace">'+label+'</text>';
+  };
+  if (goal && goal.v < yMax) refs += refLine(goal.v, '#2E8B5F', id==='sleep' ? '8h' : '10k');
+  if (avg) refs += refLine(avg, '#C9C6BD', id==='sleep' ? hmFmtVal('sleep', avg) : Math.round(avg).toLocaleString());
+
+  const xl = series[0].date.slice(5).replace('-', '/');
+  const xr = series[series.length-1].date.slice(5).replace('-', '/');
+  const rangeTxt = vals.length
+    ? (id === 'sleep' ? hmFmtVal('sleep', lo) + ' – ' + hmFmtVal('sleep', hi) : Math.round(lo).toLocaleString() + '–' + Math.round(hi).toLocaleString())
+    : '—';
+  const subTxt = vals.length
+    ? 'High of ' + hmFmtVal(id, hi) + (m.unit ? ' ' + m.unit : '') + ' · avg ' + hmFmtVal(id, avg) + (goal ? ' · goal ' + (id==='sleep'?'8h':goal.v.toLocaleString()) : '')
+    : 'No data in this period yet';
+
+  return '<div class="hm-sheet-val">' + rangeTxt + (m.unit && vals.length ? '<span class="hm-unit">' + m.unit + '</span>' : '') + '</div>' +
+    '<div class="hm-sheet-sub">' + subTxt + '</div>' +
+    '<svg class="hm-line-chart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' + refs + paths + '</svg>' +
+    '<div class="hm-axis"><span>' + xl + '</span><span>' + xr + '</span></div>' +
+    '<div class="hm-stats">' +
+      '<div class="hm-stat"><div class="hm-stat-val">' + hmFmtVal(id, avg || null) + '</div><div class="hm-stat-lbl">Average</div></div>' +
+      '<div class="hm-stat"><div class="hm-stat-val">' + hmFmtVal(id, hi || null) + '</div><div class="hm-stat-lbl">' + (id==='rhr'?'Highest':'Best') + '</div></div>' +
+      '<div class="hm-stat"><div class="hm-stat-val">' + logged.length + '/' + days + '</div><div class="hm-stat-lbl">Days</div></div>' +
+    '</div>';
+}
+window.hmSetPeriod = function(id, days, e){
+  if (e) e.stopPropagation();
+  hmSheetPeriod = days;
+  document.querySelectorAll('.hm-tabs button').forEach(b => b.classList.toggle('on', Number(b.dataset.d) === days));
+  const body = document.getElementById('hmSheetBody');
+  if (body) hmFetchAll().then(d => {
+    const m = hmMetricDefs(d).find(x => x.id === id);
+    if (m) body.innerHTML = hmRenderSheetBody(m, id);
+  });
+};
 window.openHmSheet = async function(id){
   const d = await hmFetchAll();
   const m = hmMetricDefs(d).find(x=>x.id===id);
   if(!m) return;
-  const series30 = hmSeries(30, m.getter);
-  const logged = series30.filter(p=>p.val);
-  const avg = logged.length?Math.round(logged.reduce((a,p)=>a+p.val,0)/logged.length):0;
-  const best = logged.length?Math.max(...logged.map(p=>p.val)):0;
-  const stale = (id==='steps'||id==='energy') && d.lastHealthDate && d.lastHealthDate < hmDateStr(-2);
+  hmSheetPeriod = 7;
   const overlay=document.createElement('div');
   overlay.className='hm-overlay';
   overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
   overlay.innerHTML = '<div class="hm-sheet">'+
-    '<div class="hm-sheet-kicker" style="color:'+m.color+'"><div class="hm-dot" style="background:'+m.color+'"></div>'+m.label+' · last 30 days</div>'+
-    '<div class="hm-sheet-val">'+(m.today?m.today.toLocaleString():'—')+(m.unit&&m.today?'<span class="hm-unit">'+m.unit+'</span>':'')+'</div>'+
-    '<div class="hm-sheet-sub">'+m.sub+'</div>'+
-    '<div class="hm-sheet-chart">'+hmBars(series30, m.color, 120)+'</div>'+
-    '<div class="hm-axis"><span>'+series30[0].date.slice(5)+'</span><span>'+series30[29].date.slice(5)+'</span></div>'+
-    '<div class="hm-stats">'+
-      '<div class="hm-stat"><div class="hm-stat-val">'+(avg?avg.toLocaleString():'—')+'</div><div class="hm-stat-lbl">Daily avg</div></div>'+
-      '<div class="hm-stat"><div class="hm-stat-val">'+(best?best.toLocaleString():'—')+'</div><div class="hm-stat-lbl">Best day</div></div>'+
-      '<div class="hm-stat"><div class="hm-stat-val">'+logged.length+'/30</div><div class="hm-stat-lbl">Days logged</div></div>'+
+    '<div class="hm-sheet-kicker" style="color:'+m.color+'"><div class="hm-dot" style="background:'+m.color+'"></div>'+m.label+'</div>'+
+    '<div class="hm-tabs">'+
+      '<button class="on" data-d="7" onclick="hmSetPeriod(\''+id+'\',7,event)">W</button>'+
+      '<button data-d="30" onclick="hmSetPeriod(\''+id+'\',30,event)">M</button>'+
+      '<button data-d="90" onclick="hmSetPeriod(\''+id+'\',90,event)">3M</button>'+
     '</div>'+
-    (stale?'<div class="hm-note">Health sync looks stale — last data '+d.lastHealthDate+'. Check the Apple Health sync Shortcut on your phone.</div>':'')+
+    '<div id="hmSheetBody">'+hmRenderSheetBody(m, id)+'</div>'+
   '</div>';
   document.body.appendChild(overlay);
 };
