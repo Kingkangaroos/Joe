@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.15)
+# GAMENFY — Master Document (v9.16)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -141,6 +141,8 @@ Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
 3. `pg_net` in public schema — hygiëne, laag risico.
 
 ## 8. Version history
+
+- **v9.16 — GOOGLE HEALTH SYNC DEPLOYED.** dev.fitbit.com bleek dicht voor nieuwe registraties; Joey registreerde in de Google Cloud Console (project `gamenfy`, OAuth web client, Testing-mode met zichzelf als test user, redirect = de fitbit-sync URL mét ?cb=1 zoals geregistreerd). Edge function `fitbit-sync` v1 live: Google OAuth 2.0 (access_type=offline, prompt=consent), tokens in `app_state.google_health_tokens` met auto-refresh en needs_reauth-detectie (Testing-mode tokens kunnen verlopen), daily pull van steps / active-zone-minutes / sleep / daily-resting-heart-rate / weight via `POST health.googleapis.com/v4/users/me/dataTypes/{type}/dataPoints:dailyRollUp` voor gisteren+vandaag → `app_state.health_fitbit`. Veldextractie is tolerant (deepFind over kandidaat-veldnamen) en API-fouten landen in `.debug` — na Joey's eerste autorisatie kan Claudia via pg_net de pull draaien en de exacte v4-responsevorm kalibreren. **Volgende stap: Joey opent de ?auth=1-link en tikt Toestaan.** Daarna: Body-tab koppelen aan health_fitbit + dagelijkse cron.
 
 - **v9.15 — decay bug fixed + fresh-start reset.** (1) **Confirmed design**: missing a day drops the habit score by exactly −1 (max 10) — but `applyHabitDecay` had a compounding bug: every run subtracted the TOTAL missed-day count from the already-decayed score, so opening the app daily during a 3-day gap took a score of 5 to 0 instead of 2 (quadratic decay). Fixed with a `decayedThrough` anchor that remembers what's already been written off; unit-tested day-by-day vs skip-ahead — identical outcomes (5→4→3→2), and a re-check after the gap gives +1 from the decayed value with streak reset to 1. (2) **Reset & start fresh** in the mission detail sheet (habits AND private quests): double-tap-to-confirm link → writes a per-key marker in `rpg_habit_reset_v1` (new synced key on index/character/settings) so streak/total/missed count from today, zeroes the habit engine's score/streak/lastChecked/decay anchor — **XP stays untouched, earned is earned** — and reopens the sheet at day-1. Stats-filter unit-tested (10-day history + reset yesterday → total 2, missed 0).
 
