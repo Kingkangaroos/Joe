@@ -3676,6 +3676,28 @@ async function hmFetchAll(){
       }
     }
   }catch(e){}
+  // Google Health / Fitbit Air rij (v9.17) — vult aan waar Apple Health stopte
+  try{
+    const r2 = await fetch(HM_SB_URL+'/rest/v1/app_state?key=eq.health_fitbit&select=data',
+      { headers:{ apikey:HM_SB_KEY, Authorization:'Bearer '+HM_SB_KEY } });
+    if(r2.ok){
+      const rows2 = await r2.json();
+      const fb = (rows2[0]||{}).data || {};
+      for(const [k,v] of Object.entries(fb)){
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(k) || !v || typeof v!=='object') continue;
+        const cur = out.byDate[k] || { steps:0, energy:0, weight:0, sleep:0, rhr:0 };
+        out.byDate[k] = {
+          steps:  v.steps!=null ? Math.round(Number(v.steps)) : cur.steps,
+          energy: cur.energy,
+          weight: v.weightKg!=null ? Number(v.weightKg) : cur.weight,
+          sleep:  v.sleepMinutes!=null ? Math.round(Number(v.sleepMinutes)) : cur.sleep,
+          rhr:    v.restingHR!=null ? Math.round(Number(v.restingHR)) : cur.rhr,
+        };
+        if(!out.lastHealthDate || k>out.lastHealthDate) out.lastHealthDate=k;
+      }
+    }
+  }catch(e){}
+
   // Hevy volume per day
   try{
     const apiKey = localStorage.getItem('hevy_api_key');
