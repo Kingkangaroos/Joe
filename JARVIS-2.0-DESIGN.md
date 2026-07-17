@@ -60,9 +60,10 @@ De edge function declareert tools; Gemini kiest, wij voeren uit, loop tot antwoo
   dus niet meer te bouwen; de tool-loop krijgt dezelfde getranscribeerde intent.
 
 ## Status
-**FASE 1 IS LIVE (v9.11).** Definition of done gehaald in simulatie; praktijktest
-door Joey is de laatste stap. Fase 2 (proactieve ochtend-push) en fase 3
-(Fitbit-context) staan open.
+**ALLE FASEN LIVE.** Fase 1 (v9.11, tools + actie-wachtrij, door Joey in de praktijk
+gebruikt incl. spraak), fase 3 (v9.19, Fitbit-context + health-sectie), fase 2
+(v9.20, Gemini-geschreven ochtendbrief met verse slaapdata, structured output,
+brief loopt door in het chat-geheugen). Het ontwerp is volledig uitgevoerd.
 
 ## Fasering
 1. **Fase 1 (één sessie):** action-queue consumer in xp.js + edge function v4

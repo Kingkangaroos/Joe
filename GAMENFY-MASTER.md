@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.19)
+# GAMENFY — Master Document (v9.20)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -141,6 +141,8 @@ Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
 3. `pg_net` in public schema — hygiëne, laag risico.
 
 ## 8. Version history
+
+- **v9.20 — JARVIS 2.0 COMPLEET: fase 2, de ochtendbrief, is live.** send-daily-push v7: in morning-mode schrijft **Gemini** de push — input = streak, verse Fitbit-slaap/stappen/RHR (fitbit-sync cron draait 25 min eerder, dus de slaapdata is altijd vers), open venture-stap en Jarvis' eigen notities over Joey; output via **structured output** (responseMimeType application/json + responseSchema — nodig omdat vrije-vorm JSON twee keer faalde: eerst vrat thinking het tokenbudget op ondanks thinkingBudget:0-poging, daarna raakte het model verward door een prompt-regel over aanhalingstekens; schema-dwang loste beide definitief op, gevonden via de push_debug-vangstrij). Fallback = het oude statische bericht (author-veld in de response toont welke won). De brief wordt óók als assistant-bericht in jarvis_memory gezet zodat het gesprek in de Jarvis-tab naadloos doorloopt vanaf de ochtendgroet, en de push opent op jarvis.html. Live getest: *"Tijd voor actie, Joey! ⚡ — Met 6u slaap is focus goud waard. Zet vandaag de timer op 30 minuten en definieer de eerste product-stap van je venture."* — echte slaapdata + Grip stap 1. Settings-toggle morning_push wordt gerespecteerd; cron ongewijzigd (6:30 UTC). **Alle drie de Jarvis 2.0-fasen uit het ontwerp zijn hiermee af.**
 
 - **v9.19 — Jarvis fase 3 (Fitbit-context) + security-fix.** (1) Session-start ritueel gedaan: jarvis_backlog leeg, 0 openstaande acties → de −90 no_porn-correctie is op Joey's toestel toegepast. (2) **Jarvis edge function v6**: `health_fitbit` wordt bij elk bericht meegeladen — de live status toont nu "Fitbit vandaag: X stappen, slaap Yu, RHR Z, N zone-min · gisteren: …", `get_state` kent de nieuwe sectie **health** (laatste 7 dagen) en het systeem-prompt bevat een coaching-instructie voor gezondheidsdata (weinig slaap → rustiger dag; weinig stappen → wandeling koppelen aan de 10k-habit; dalende RHR → conditiewinst benoemen). Daarmee zijn alle drie de Jarvis 2.0-fasen uit het ontwerp afgerond behalve fase 2 (ochtend-push) — die staat nog open. (3) **progress-photos bucket op private** gezet: de foto-UI verdween met de gym-pagina (alleen de sync-key resteert, niets toont of uploadt nog), dus publieke toegang was puur risico zonder functie. Foto's blijven bewaard; een toekomstige Body-tab feature gebruikt signed URLs.
 
