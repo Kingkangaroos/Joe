@@ -8,12 +8,20 @@
   const SUPABASE_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
 
+  // v9.23: one live sync instance per appKey. Duplicate inits (e.g. a page's own
+  // config next to the xp.js fallback) previously raced each other; the instance
+  // with the narrowest key list could overwrite the whole cloud row with a subset
+  // and the realtime echo then deleted the missing keys locally (allowDelete).
+  window.__cloudSyncRegistry = window.__cloudSyncRegistry || {};
   window.initCloudSync = function (config) {
     const appKey = config && config.appKey;
     const syncedKeys = (config && config.syncedKeys) || [];
     const syncedPrefixes = (config && config.syncedPrefixes) || [];
     const onApplied = config && config.onApplied;
     if (!appKey || !window.supabase) return;
+    if (syncedKeys.length === 0 && syncedPrefixes.length === 0) return; // empty scope (e.g. shared config not loaded yet): no-op, don't claim the registry slot
+    if (window.__cloudSyncRegistry[appKey]) return; // first init wins
+    window.__cloudSyncRegistry[appKey] = true;
     if (!SUPABASE_URL || !SUPABASE_KEY) return;
     if (SUPABASE_URL.indexOf('PASTE-') === 0 || SUPABASE_KEY.indexOf('PASTE-') === 0) return;
 
@@ -66,8 +74,14 @@
           if (local !== incoming) { try { origSet(k, incoming); changed = true; } catch (e) {} }
         }
         if (allowDelete) {
-          for (const k of listAllKeys()) {
-            if (!(k in remote)) { try { origRemove(k); changed = true; } catch (e) {} }
+          const missing = listAllKeys().filter((k) => !(k in remote));
+          if (missing.length > 3) {
+            // v9.23 safety net: a remote blob that lacks 4+ of our local keys is a
+            // stripped/partial write, not a real cross-device delete (real deletes
+            // in this app are single keys). Heal the cloud instead of wiping local.
+            schedulePush();
+          } else {
+            for (const k of missing) { try { origRemove(k); changed = true; } catch (e) {} }
           }
         }
       } finally { suppressSync = false; }
