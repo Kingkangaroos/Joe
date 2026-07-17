@@ -848,6 +848,25 @@ body {
 .md-check.is-done { background: rgba(46,139,95,0.1); color: var(--green); border: 1px solid var(--green); }
 .md-uncheck { display: block; width: 100%; margin-top: 8px; padding: 8px; background: none; border: none;
   color: var(--faint); font-size: 12px; cursor: pointer; text-decoration: underline; }
+/* v9.22: week strip — je week in één oogopslag, tik om te springen */
+.aw-strip { display:flex; gap:6px; margin:2px 0 12px; }
+.aw-day {
+  flex:1; min-width:0; background:var(--card); border:1px solid var(--line);
+  border-radius:12px; padding:7px 2px 6px; text-align:center; cursor:pointer;
+  -webkit-tap-highlight-color:transparent; position:relative;
+}
+.aw-day:active { transform:scale(0.95); }
+.aw-day.sel { border-color:var(--ink); background:var(--ink); }
+.aw-day.sel .aw-dow, .aw-day.sel .aw-num { color:#F4F3EF; }
+.aw-day.today:not(.sel) { border-color:var(--ember); }
+.aw-dow { font-size:8.5px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); }
+.aw-num { font-size:14px; font-weight:800; font-family:var(--font-display); color:var(--ink); line-height:1.25; }
+.aw-dots { display:flex; justify-content:center; gap:2.5px; height:5px; margin-top:3px; }
+.aw-dot { width:4px; height:4px; border-radius:50%; }
+.aw-dot.done { opacity:0.35; }
+.aw-more { font-size:7px; color:var(--faint); line-height:5px; }
+.aw-day.sel .aw-dot { box-shadow:0 0 0 1px rgba(244,243,239,0.4); }
+
 .agenda-block-half {
   font-size: 8.5px; font-family: var(--font-mono); font-weight: 800;
   background: rgba(255,255,255,0.25); border-radius: 5px; padding: 1px 4px;
@@ -1120,6 +1139,7 @@ body {
       </div>
       <button class="agenda-nav-btn" onclick="agendaShift(1)" aria-label="Next day">›</button>
     </div>
+    <div id="agendaWeekStrip" class="aw-strip"></div>
     <div class="agenda-body" id="agendaBody"></div>
   </div>
 
@@ -2036,8 +2056,33 @@ function renderAgendaDayLabel() {
   else { name.textContent = d.toLocaleDateString('en-GB',{weekday:'long'}); wrap.classList.remove('is-today'); }
   sub.textContent = d.toLocaleDateString('en-GB',{day:'numeric',month:'long'});
 }
+function renderWeekStrip() {
+  const el = document.getElementById('agendaWeekStrip');
+  if (!el) return;
+  let html = '';
+  for (let off = -1; off <= 5; off++) {
+    const d = dateForOffset(off);
+    const key = dateKey(d);
+    let items = []; try { items = loadAgenda(key) || []; } catch (e) {}
+    const dots = items.slice(0, 4).map(it => {
+      const color = it.type === 'mission' ? 'var(--green)' : it.type === 'skill' ? 'var(--ember)' : 'var(--ink-card)';
+      return `<span class="aw-dot${it.done ? ' done' : ''}" style="background:${color}"></span>`;
+    }).join('') + (items.length > 4 ? '<span class="aw-more">+</span>' : '');
+    html += `<div class="aw-day${off === agendaOffset ? ' sel' : ''}${off === 0 ? ' today' : ''}" onclick="awJump(${off})">
+      <div class="aw-dow">${d.toLocaleDateString('en-GB',{weekday:'short'}).slice(0,2)}</div>
+      <div class="aw-num">${d.getDate()}</div>
+      <div class="aw-dots">${dots}</div>
+    </div>`;
+  }
+  el.innerHTML = html;
+}
+window.awJump = function(off) {
+  agendaOffset = off;
+  renderAgenda();
+};
 function renderAgenda() {
   renderAgendaDayLabel();
+  renderWeekStrip();
   const body = document.getElementById('agendaBody');
   if (!body) return;
   const key = dateKey(dateForOffset(agendaOffset));

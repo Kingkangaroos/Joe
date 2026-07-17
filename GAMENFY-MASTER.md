@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.21)
+# GAMENFY — Master Document (v9.22)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -142,6 +142,8 @@ Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
 3. `pg_net` in public schema — hygiëne, laag risico.
 
 ## 8. Version history
+
+- **v9.22 — week-strip + Jarvis E2E-bewijs.** (1) Laatste open roadmap-item gebouwd: een **week-strip** boven de Main-agenda — 7 dag-chips (gisteren t/m +5) met weekdag, datum, en max 4 gekleurde dots per gepland blok (groen=mission, ember=skill, ink=custom; gedimd als gedaan, "+" bij meer). Vandaag krijgt een ember-ring, de geselecteerde dag inverteert naar ink. Tik = spring direct naar die dag (zet agendaOffset), strip herrendert mee met elke agenda-wijziging. Je week in één oogopslag, plannen zonder pijltjes-klikken. (2) **Jarvis 2.0 fase 1 nu ook E2E-bewezen in productie**: via pg_net een leesvraag gesteld ("welke habits staan vandaag open?") — Jarvis riep zelfstandig get_state aan en antwoordde met de werkelijk openstaande habits (cold_shower, walking) uit de live data. De tool-loop werkt buiten simulatie. Sitecheck: 8 bevindingen, allemaal eerder getriagede vals-positieven (guarded dynamische overlays) + de geparkeerde subFromCat.
 
 - **v9.21 — waarheidsronde in het masterdoc + wees-functie opgeruimd.** §7 (health/server) beschreef nog het oude `health-sync`-skelet als "incoming source" en verouderde functie-versies — volledig herschreven naar de v9.20-werkelijkheid (fitbit-sync pipeline incl. alle gekalibreerde v4-schema-kennis, actuele functieversies, crons, debug-patroon). De wees-functie `health-sync` (REPLACE_ME-skelet) is overschreven met een 410-tombstone die naar fitbit-sync verwijst (MCP kan functies niet verwijderen; definitief weghalen kan via het dashboard). Server-mirrors in de repo geactualiseerd. Sessie-ritueel: backlog leeg, wachtrij leeg, Vercel-deploy geverifieerd.
 
