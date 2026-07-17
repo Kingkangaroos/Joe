@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.20)
+# GAMENFY — Master Document (v9.21)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -99,13 +99,14 @@ A gamified personal Life OS — version 0.1 of a future product. Skills, levels,
 
 ---
 
-## 7. Health data pipeline & server side
+## 7. Health data pipeline & server side (accuraat per v9.21)
 
-- **Rows:** `apple_health:yyyy-MM-dd` in `app_state` — fields `steps` (legacy quirk: sometimes `steps ` with trailing space), `active_energy` (sometimes string), `weight`, `sleep_minutes`, `resting_hr`. The Body tab reads these; any source may write them.
-- **Current source:** iOS Shortcut (BROKEN since 2026-06-09 — date-variable defect; Joey fixes, or the Fitbit Air replaces it). Shortcuts pitfall: "no internet connection" usually = Rich Text URL formatting.
-- **Incoming source:** Fitbit Air → Google Health API via edge function `health-sync` (deployed skeleton, REPLACE_ME Google OAuth credentials; endpoint paths carry TODO-verify markers). Setup steps in the v8.4 changelog entry. Schedule nightly cron after first successful manual run.
-- **Edge functions live in this project:** `send-daily-push` (v3: morning/evening modes, prefs-aware, skips evening when day closed; crons `gamenfy-morning-push` 06:30 UTC + `gamenfy-daily-push` 17:30 UTC), `import-media` (copies remote images into public storage bucket `skills`), `jarvis` (chat brain — **LIVE on Google Gemini since v9.8**, model `gemini-flash-latest`, deployed as function version 3 with `verify_jwt:false` + the original `x-jarvis-pin` auth. Identical behavior to v8.3: persistent history + <remember> notes in `app_state.jarvis_memory`, live context (streak/ventures/top skills). Gemini key lives ONLY server-side in the deployed function; the repo copy in `server/jarvis-gemini/` uses env vars. Bonus fix: the v8.3 week-filter for top skills had a malformed date comparison — cleaned up in the Gemini port), `health-sync` (above). All guarded by a shared secret header; VAPID keys live only inside `send-daily-push`.
-- **Supabase REST from clients:** publishable key as both `apikey` and `Authorization: Bearer`, `Prefer: resolution=merge-duplicates` for upserts.
+- **Primaire bron: Fitbit Air → Google Health API v4** via edge function `fitbit-sync` (v6). OAuth-tokens in `app_state.google_health_tokens` (auto-refresh, `needs_reauth`-vlag bij verlopen test-app-consent → dan is `?auth=1` één tik). Daily pull (cron `fitbit-sync-pull`, 6:05/13:05/21:05 UTC) → `app_state.health_fitbit`: per datum `{steps, activeMinutes, sleepMinutes, restingHR, weightKg}`, **60 dagen accumulerend**, null-safe merge per veld. Gekalibreerde v4-kennis: dailyRollUp body `{range:{start,end}, windowSizeDays}`, response `rollupDataPoints[].civilStartTime`, steps=`countSum`, AZM=`sumIn*HeartZone` (totaal = fatBurn + 2×cardio + 2×peak), **sleep en RHR ondersteunen GEEN dailyRollUp** → list-endpoint; slaap = som niet-AWAKE stages op lokale wekdatum, RHR genest in `dailyRestingHeartRate.{date,beatsPerMinute}`. Weight komt niet van de Air (geen weegschaal) → handmatige weight-kaart op Body (v9.5, `po_coach_weights`).
+- **Body-tab:** `hmFetchAll` merget `health_fitbit` óver de legacy `apple_health:yyyy-MM-dd`-rijen (dood sinds 2026-06-09; Shortcut-fix bij Joey optioneel geworden). Metric-details in Google Health-stijl (v9.18).
+- **Edge functions live:** `jarvis` v6 (Gemini function calling + actie-wachtrij + spraak + Fitbit-context, x-jarvis-pin auth), `send-daily-push` v7 (ochtendbrief door Gemini met structured output, avond statisch; prefs-aware; VAPID alleen hier), `fitbit-sync` v6, `import-media` v2 (secret-protected → skills-bucket), `health-sync` v2 = **TOMBSTONE** (410; oude REPLACE_ME-skelet vervangen door fitbit-sync — mag via dashboard weg).
+- **Crons:** `gamenfy-morning-push` 06:30 UTC (25 min ná de fitbit-pull → verse slaapdata in de brief), `gamenfy-daily-push` 17:30 UTC, `fitbit-sync-pull` 6:05/13:05/21:05 UTC.
+- **Debug-patroon:** rijen `push_debug` en `health_fitbit.debug` vangen ruwe API-fouten voor snelle iteratie via pg_net + SQL.
+- **Supabase REST vanaf clients:** publishable key als `apikey` + `Authorization: Bearer`, `Prefer: resolution=merge-duplicates` voor upserts.
 
 ---
 
@@ -141,6 +142,8 @@ Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
 3. `pg_net` in public schema — hygiëne, laag risico.
 
 ## 8. Version history
+
+- **v9.21 — waarheidsronde in het masterdoc + wees-functie opgeruimd.** §7 (health/server) beschreef nog het oude `health-sync`-skelet als "incoming source" en verouderde functie-versies — volledig herschreven naar de v9.20-werkelijkheid (fitbit-sync pipeline incl. alle gekalibreerde v4-schema-kennis, actuele functieversies, crons, debug-patroon). De wees-functie `health-sync` (REPLACE_ME-skelet) is overschreven met een 410-tombstone die naar fitbit-sync verwijst (MCP kan functies niet verwijderen; definitief weghalen kan via het dashboard). Server-mirrors in de repo geactualiseerd. Sessie-ritueel: backlog leeg, wachtrij leeg, Vercel-deploy geverifieerd.
 
 - **v9.20 — JARVIS 2.0 COMPLEET: fase 2, de ochtendbrief, is live.** send-daily-push v7: in morning-mode schrijft **Gemini** de push — input = streak, verse Fitbit-slaap/stappen/RHR (fitbit-sync cron draait 25 min eerder, dus de slaapdata is altijd vers), open venture-stap en Jarvis' eigen notities over Joey; output via **structured output** (responseMimeType application/json + responseSchema — nodig omdat vrije-vorm JSON twee keer faalde: eerst vrat thinking het tokenbudget op ondanks thinkingBudget:0-poging, daarna raakte het model verward door een prompt-regel over aanhalingstekens; schema-dwang loste beide definitief op, gevonden via de push_debug-vangstrij). Fallback = het oude statische bericht (author-veld in de response toont welke won). De brief wordt óók als assistant-bericht in jarvis_memory gezet zodat het gesprek in de Jarvis-tab naadloos doorloopt vanaf de ochtendgroet, en de push opent op jarvis.html. Live getest: *"Tijd voor actie, Joey! ⚡ — Met 6u slaap is focus goud waard. Zet vandaag de timer op 30 minuten en definieer de eerste product-stap van je venture."* — echte slaapdata + Grip stap 1. Settings-toggle morning_push wordt gerespecteerd; cron ongewijzigd (6:30 UTC). **Alle drie de Jarvis 2.0-fasen uit het ontwerp zijn hiermee af.**
 

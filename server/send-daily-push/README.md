@@ -1,0 +1,1 @@
+Deployed als v7 (v9.20): morning-mode laat Gemini de brief schrijven (structured output, thinkingBudget 0), fallback statisch, brief ook naar jarvis_memory. Bron leeft gedeployed; secrets (VAPID, push-secret, Gemini-key) staan alleen daar.
