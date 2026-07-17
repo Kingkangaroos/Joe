@@ -1583,6 +1583,15 @@ const SKILL_PHOTO_URL = {
   investing: 'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/investing.jpg',
   budgeting: 'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/budgeting.jpg',
   net_worth: 'https://ttxjsoahmtennnufgeqx.supabase.co/storage/v1/object/public/skills/net_worth.jpg',
+  // v9.23: Unsplash free-route (licentie per foto geverifieerd: 'Free to use under the Unsplash License';
+  // gehotlinkt via images.unsplash.com CDN zoals de Unsplash-richtlijnen vragen). Swap-kandidaten voor Higgsfield.
+  tennis: 'https://images.unsplash.com/photo-1669139185686-5e0b2355a104?q=80&w=800&auto=format&fit=crop',
+  gym: 'https://images.unsplash.com/photo-1603077492340-e6e62b2a688b?q=80&w=800&auto=format&fit=crop',
+  endurance: 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=800&auto=format&fit=crop',
+  reading: 'https://images.unsplash.com/photo-1680444253285-56ff398917f0?q=80&w=800&auto=format&fit=crop',
+  piano: 'https://images.unsplash.com/photo-1566851894296-f6b52f0adb61?q=80&w=800&auto=format&fit=crop',
+  cooking: 'https://images.unsplash.com/photo-1516824711718-9c1e683412ac?q=80&w=800&auto=format&fit=crop',
+  drawing: 'https://images.unsplash.com/photo-1593472807861-5bb884af28f6?q=80&w=800&auto=format&fit=crop',
 };
 function skillPhotoUrl(key){
   if(SKILL_PHOTO_URL[key]) return SKILL_PHOTO_URL[key];
