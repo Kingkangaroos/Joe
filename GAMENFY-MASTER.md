@@ -141,6 +141,29 @@ Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
    (URL's blijven werken) — kleine fix, kan in een volgende sessie.
 3. `pg_net` in public schema — hygiëne, laag risico.
 
+
+## v10-plan — data-gedreven (vastgelegd 2026-07-18, audit-sessie)
+
+Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → wk25-26:0 → wk29:7 (herstel valt exact samen met de start van de Jarvis-ochtendbrief → de coach-loop is de bewezen hefboom). Slechts 15 van 74 skills ooit aangeraakt; het actieve cluster is body + discipline + mindfulness. Fitbit levert dagelijks slaap/RHR/stappen/AZM maar voedt Jarvis en de brief nog niet; index.html leest stappen nog van het dode apple_health-kanaal (stil sinds 2026-06-09).
+
+**A. Coach-loop versterken (hoogste prioriteit)**
+1. Fitbit → Jarvis + ochtendbrief: health_fitbit meesturen in get_state en in de brief-prompt ("je sliep 6u01, RHR 62 — vandaag licht herstel + meditatie"). Twee edge-function-edits.
+2. index.html stappen-widget: fallback van apple_health naar health_fitbit (5 weken dood; ~10 regels).
+3. Adaptieve brief: na 2+ dagen zonder XP schakelt de brief naar één micro-doel i.p.v. een vol programma (anti-cliff, zie wk25-26).
+
+**B. Focus boven breedte (15/74-inzicht)**
+4. Season-concept: 3 focus-skills per maand, bovenaan de grid, rest gedimd; hergebruik rpg_focus_skills_v1.
+5. Boss quest per season (uitgesteld sinds het v3.0-besluit "boss quests later"): één grote maanddoelquest.
+
+**C. Oude parkeerlijst, nu relevant**
+6. Check-in verrijking / word cloud (v3.0-parkeerlijst, klein).
+7. Drag-to-move agenda (backlog 2026-07-12).
+8. Week-strip → volledige weekweergave.
+
+**D. Onderhoud**
+9. Supabase Auth (vervangt het geaccepteerde anon-write-risico).
+10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
+
 ## 8. Version history
 
 - **v9.24 — Tweede sync-scope-wipe gedicht + data-cleanup (audit deel 2).** po-water.html synchroniseerde appKey 'health' met alléén `po_water_v1` terwijl health.html de volle scope had — zelfde bug-klasse als v9.23: elke water-log overschreef de hele health-cloudrij, waardoor waterhistorie en `stack:taken:*` uit de cloud verdwenen (supplementen-items overleefden als laatste writer). Fix: po-water gebruikt nu exact dezelfde keylijst+prefixes als health.html; de v9.23 delete-guard beschermt lokale data al. Device-data heelt de cloud automatisch bij het eerstvolgende bezoek (hasLocalOnly-push). Verder: 4 junk-rijen van het kapotte Apple Health-shortcut verwijderd (`apple_health:test` ×2, lege datums ×2). Gewichtslogs bleken veilig (po_coach_weights onder de single-instance po-coach scope). Les vastgelegd: **elke appKey heeft precies één canonieke sync-scope; pagina's mogen nooit een eigen smallere lijst voeren.**
