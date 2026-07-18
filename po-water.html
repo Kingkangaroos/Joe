@@ -1123,7 +1123,11 @@ document.addEventListener('DOMContentLoaded', function () {
   if (typeof initCloudSync !== 'function') return;
   initCloudSync({
     appKey: 'health',
-    syncedKeys: ['po_water_v1'],
+    // v9.24: zelfde volledige scope als health.html — een smallere lijst hier
+    // overschreef de hele 'health'-cloudrij met alleen po_water_v1 (zelfde
+    // bug-klasse als de rpg-sync-wipe uit v9.23).
+    syncedKeys: ['stack:items', 'stack:version', 'stack:low', 'po_water_v1'],
+    syncedPrefixes: ['stack:taken:'],
     onApplied: function () { window.dispatchEvent(new Event('storage')); }
   });
 });
