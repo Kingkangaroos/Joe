@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ANWB Routes — Gamenfy</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root {
+  --bg: #F4F3EF; --card: #FFFFFF; --line: #E8E6DF; --line-strong: #DBD8CF;
+  --ink: #15140F; --muted: #6F6C63; --faint: #A6A399;
+  --green: #2E8B5F; --ember: #D4633E; --gold: #C9A227;
+  --font-display: -apple-system, "SF Pro Display", "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system, "SF Pro Text", "Segoe UI", sans-serif;
+  padding:16px 16px calc(env(safe-area-inset-bottom,0px) + 90px);
+  max-width:520px; margin:0 auto;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── hero ── */
+.rt-hero {
+  background:var(--card); border:1px solid var(--line); border-radius:18px;
+  padding:18px; margin-bottom:14px;
+}
+.rt-kicker { font-size:9px; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); }
+.rt-title { font-family:var(--font-display); font-weight:800; font-size:21px; letter-spacing:-0.02em; margin-top:4px; }
+.rt-big { display:flex; align-items:baseline; gap:8px; margin-top:10px; }
+.rt-big-num { font-family:var(--font-display); font-weight:800; font-size:36px; letter-spacing:-0.03em; }
+.rt-big-sub { font-size:12px; color:var(--muted); font-weight:600; }
+.rt-bar { height:6px; background:var(--bg); border:1px solid var(--line); border-radius:3px; margin-top:12px; overflow:hidden; }
+.rt-bar-fill { height:100%; background:var(--green); border-radius:3px; transition:width 0.4s ease; }
+.rt-hero-meta { display:flex; justify-content:space-between; margin-top:8px; font-size:10.5px; font-family:var(--font-mono); color:var(--muted); }
+
+/* ── randomizer ── */
+.rr-card {
+  background:var(--card); border:1px solid var(--line); border-radius:18px;
+  padding:18px; margin-bottom:16px; text-align:center;
+}
+.rr-btn {
+  width:100%; padding:15px; border:none; border-radius:14px;
+  background:var(--ink); color:#F4F3EF;
+  font-family:var(--font-display); font-weight:700; font-size:15px;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+.rr-btn:active { transform:scale(0.98); }
+.rr-pick { margin-top:14px; animation:rrPop 0.3s cubic-bezier(0.22,1.4,0.36,1); }
+@keyframes rrPop { from { transform:scale(0.85); opacity:0; } }
+.rr-hex {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:52px; height:52px; border-radius:14px;
+  background:var(--ember); color:#fff;
+  font-family:var(--font-display); font-weight:800; font-size:21px;
+}
+.rr-name { font-family:var(--font-display); font-weight:800; font-size:17px; margin-top:8px; letter-spacing:-0.01em; }
+.rr-meta { font-size:11px; font-family:var(--font-mono); color:var(--muted); margin-top:3px; }
+.rr-actions { display:flex; gap:8px; margin-top:14px; }
+.rr-actions button {
+  flex:1; padding:11px; border-radius:12px; font-weight:700; font-size:13px;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+.rr-reroll { background:var(--bg); border:1px solid var(--line-strong); color:var(--muted); }
+.rr-done { background:var(--green); border:none; color:#fff; }
+.rr-hint { font-size:10.5px; color:var(--faint); margin-top:10px; }
+
+/* ── lijst ── */
+.rt-prov { font-size:9px; font-weight:800; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin:18px 2px 8px; display:flex; align-items:center; gap:8px; }
+.rt-prov::after { content:''; flex:1; height:1px; background:var(--line); }
+.rt-prov-count { font-family:var(--font-mono); color:var(--faint); letter-spacing:0; text-transform:none; }
+.rt-row {
+  background:var(--card); border:1px solid var(--line); border-radius:13px;
+  padding:11px 12px; margin-bottom:7px;
+  display:flex; align-items:center; gap:11px; cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.rt-row:active { transform:scale(0.99); }
+.rt-row.done { opacity:0.55; }
+.rt-num {
+  flex-shrink:0; width:32px; height:32px; border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg); border:1px solid var(--line-strong);
+  font-family:var(--font-mono); font-weight:800; font-size:12px; color:var(--muted);
+}
+.rt-row.done .rt-num { background:var(--green); border-color:var(--green); color:#fff; }
+.rt-row.picked .rt-num { background:var(--ember); border-color:var(--ember); color:#fff; }
+.rt-body { flex:1; min-width:0; }
+.rt-name { font-size:13.5px; font-weight:700; line-height:1.3; }
+.rt-row.done .rt-name { text-decoration:line-through; text-decoration-color:rgba(46,139,95,0.5); }
+.rt-km { font-size:10px; font-family:var(--font-mono); color:var(--muted); margin-top:1px; }
+.rt-check {
+  flex-shrink:0; width:24px; height:24px; border-radius:50%;
+  border:1.5px solid var(--line-strong);
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; color:transparent;
+}
+.rt-row.done .rt-check { background:var(--green); border-color:var(--green); color:#fff; }
+
+.rt-toast {
+  position:fixed; bottom:calc(env(safe-area-inset-bottom,0px) + 100px); left:50%; transform:translateX(-50%);
+  background:var(--ink); color:#F4F3EF; font-size:13px; font-weight:600;
+  padding:10px 18px; border-radius:999px; z-index:9600; white-space:nowrap;
+  opacity:0; transition:opacity 0.25s ease; pointer-events:none; max-width:90vw; overflow:hidden; text-overflow:ellipsis;
+}
+.rt-toast.show { opacity:1; }
+</style>
+</head>
+<body>
+
+<div class="rt-hero">
+  <div class="rt-kicker">Side Quest · ANWB Wandelgids</div>
+  <div class="rt-title">🥾 Walk the whole book</div>
+  <div class="rt-big"><span class="rt-big-num" id="rtCount">0</span><span class="rt-big-sub">/ 100 routes</span></div>
+  <div class="rt-bar"><div class="rt-bar-fill" id="rtBar" style="width:0%"></div></div>
+  <div class="rt-hero-meta"><span id="rtKm">0 km walked</span><span id="rtLeft">100 to go</span></div>
+</div>
+
+<div class="rr-card">
+  <button class="rr-btn" id="rrBtn" onclick="rrRoll()">🎲 Roll my next route</button>
+  <div id="rrPickWrap"></div>
+</div>
+
+<div id="rtList"></div>
+
+<div class="rt-toast" id="rtToast"></div>
+
+<script src="xp.js"></script>
+<script src="topbar.js"></script>
+<script>
+// ═══ ANWB routes — volledige index uit het boekje (nr, naam, provincie, km) ═══
+const ROUTES = [
+  [1,'Rottige Meente-route','Friesland',9],[2,'Nannewijdroute','Friesland',9],[3,'Weversbuurtwandeling','Friesland',10],[4,'Bosberg- en Kraaiheipollenwandeling','Friesland',10],
+  [5,'Orchideeënpad','Groningen',7],[6,'Appèlbergenwandeling','Groningen',5],[7,'Ter Wupping-route','Groningen',5],[8,'Sellingerbossen- en Ter Borg-route','Groningen',9],[9,'Ter Apelerbossen-route','Groningen',15],
+  [10,'Landgoederen Eelde-route','Drenthe',12],[11,'Stad der Paleizen-route','Drenthe',5],[12,'Rolder es-route','Drenthe',10],[13,'Bijvoetpad','Drenthe',13],[14,'Emmerdennenroute','Drenthe',12],[15,'Westerbork-Zwiggelteroute','Drenthe',10],[16,'Anserdennenroute','Drenthe',6],[17,'Sterreboschroute','Drenthe',3],
+  [18,'Natuurpad de Reest','Overijssel',8],[19,'Archemerbergroute','Overijssel',7],[20,'Meertjes- en Eerderbossenroute','Overijssel',7],[21,'Engbertsdijksvenen Heidepad','Overijssel',5],[22,'Bornsebeekwandeling','Overijssel',6],[23,'Haaksbergerveenroute','Overijssel',8],[24,'Twilhaarwandeling','Overijssel',7],[25,'Sprengenbergwandeling','Overijssel',6],
+  [26,'Kuilen- en Welshroute','Flevoland',8],[27,'Schoklandroute','Flevoland',10],[28,'Lange Zeewolderoute','Flevoland',8],
+  [29,'Hulshorster Bosrandroute','Gelderland',20],[30,'Elspeetsche Heide-route','Gelderland',17],[31,'Tonnenberg- en Rekenkamerroute','Gelderland',6],[32,'Drie Kieftenroute','Gelderland',13],[33,'Berkelvalleiroute','Gelderland',18],[34,'Grote Veld-route','Gelderland',16],[35,'Varsselroute','Gelderland',10],[36,'Bekermarkroute','Gelderland',7],[37,'Kammenroute','Gelderland',5],[38,'St Hubertuswandeling','Gelderland',7],[39,'Planken Wambuis-route','Gelderland',8],[40,'Duivelsbergroute','Gelderland',9],[41,'Nederhemert-Zuid-route','Gelderland',4],
+  [42,'Bioklandroute','Utrecht',8],[43,'Grechtroute','Utrecht',8],[44,'Kaapse Bossen-route','Utrecht',11],[45,'Leersumse Plassen-route','Utrecht',7],[46,'Stulp- en Kasteeltuinwandeling','Utrecht',6],[47,'Groenekanroute','Utrecht',12],[48,'Westbroekroute','Utrecht',12],
+  [49,'Dudokroute','Noord-Holland',9],[50,'Boekesteynroute','Noord-Holland',6],[51,'Bommelsteinroute','Noord-Holland',10],[52,'Aetsveldroute','Noord-Holland',10],[53,'Muiderbergroute','Noord-Holland',10],[54,'Enkhuizenroute','Noord-Holland',6],[55,'Geul- en Horspoldersroute','Noord-Holland',15],[56,'Fort Kijkduinroute','Noord-Holland',7],[57,'Zwanenwaterroute','Noord-Holland',7],[58,'Ganzenveldroute','Noord-Holland',11],[59,'Brederoderoute','Noord-Holland',6],[60,'Haarlem monumentenwandeling','Noord-Holland',7],
+  [61,'Natuurpad Piet Floris en Kachelduinwandeling','Zuid-Holland',8],[62,'Oostgeerroute','Zuid-Holland',8],[63,'Weegjeroute','Zuid-Holland',11],[64,'Goudse Hout-route','Zuid-Holland',8],[65,'Cabauwse Jacobsroute','Zuid-Holland',14],[66,'Hitlandroute','Zuid-Holland',10],[67,'Loetbosroute','Zuid-Holland',11],[68,'Rhoonse griendenroute','Zuid-Holland',7],[69,'Maassluisroute','Zuid-Holland',6],[70,'Nachtegalen- en Berkenroute','Zuid-Holland',8],[71,'Tiengemetenroute','Zuid-Holland',9],
+  [72,'Ringroute','Zeeland',3],[73,'Patriciërs- en Piratenroute','Zeeland',5],[74,'Schuilhuttocht','Zeeland',10],[75,'Mondriaanroute','Zeeland',5],
+  [76,'Kraaijenberg-Hildernisseroute','Noord-Brabant',9],[77,'Chaamse bossen-route','Noord-Brabant',12],[78,'Bredaas kwartiertje','Noord-Brabant',5],[79,'Vennenroute','Noord-Brabant',6],[80,'Capucijnenberg- en Zwarte Berg-wandeling','Noord-Brabant',8],[81,'Huis ter Heide-route','Noord-Brabant',7],[82,'Mortelenroute','Noord-Brabant',6],[83,'Waschvenroute en Konijnenloopje','Noord-Brabant',6],[84,'Tongelreeproute','Noord-Brabant',7],[85,'Zomervenroute','Noord-Brabant',9],[86,'Bosch Rondje','Noord-Brabant',5],[87,'Herperduinroute','Noord-Brabant',11],[88,'Ullingse bergenroute','Noord-Brabant',6],
+  [89,'Kiekbergroute','Limburg',6],[90,'Bergerbosroute','Limburg',6],[91,'Hamertroute','Limburg',6],[92,'Mariapeelroute','Limburg',9],[93,'Rietbeek- en Houtsbergroute','Limburg',14],[94,'Kwir- en Hanssumroute','Limburg',12],[95,'Kastelen- en Grathemerroute','Limburg',9],[96,'Paardengat- en Reewegroute','Limburg',9],[97,'Brunssummerheideroute','Limburg',7],[98,'Rond de Riesenberg','Limburg',9],[99,'Gerendalroute','Limburg',6],[100,'Gulpdalroute','Limburg',6],
+];
+const RT_KEY = 'rpg_routes_v1';
+const RT_MILESTONES = { 10:100, 25:250, 50:500, 75:750, 100:2000 };
+
+function rtLoad(){ try { const s = JSON.parse(localStorage.getItem(RT_KEY)); return s && typeof s==='object' ? s : { done:{}, current:null }; } catch(e){ return { done:{}, current:null }; } }
+function rtSave(s){ try { localStorage.setItem(RT_KEY, JSON.stringify(s)); } catch(e){} }
+function rtToast(msg){
+  const t = document.getElementById('rtToast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._tm); t._tm = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+function todayKey(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+function rtRender(){
+  const s = rtLoad();
+  const doneNums = Object.keys(s.done).map(Number);
+  const doneCount = doneNums.length;
+  const kmDone = ROUTES.filter(r=>doneNums.includes(r[0])).reduce((a,r)=>a+r[3],0);
+
+  document.getElementById('rtCount').textContent = doneCount;
+  document.getElementById('rtBar').style.width = doneCount + '%';
+  document.getElementById('rtKm').textContent = kmDone + ' km walked';
+  document.getElementById('rtLeft').textContent = doneCount>=100 ? '👑 Book complete!' : (100-doneCount) + ' to go';
+
+  // randomizer-pick
+  const wrap = document.getElementById('rrPickWrap');
+  const cur = s.current && !s.done[s.current] ? ROUTES.find(r=>r[0]===s.current) : null;
+  if (cur) {
+    wrap.innerHTML = `<div class="rr-pick">
+      <div class="rr-hex">${cur[0]}</div>
+      <div class="rr-name">${cur[1]}</div>
+      <div class="rr-meta">${cur[2]} · ${cur[3]} km · +${20+3*cur[3]} XP Endurance</div>
+      <div class="rr-actions">
+        <button class="rr-reroll" onclick="rrRoll()">↻ Re-roll</button>
+        <button class="rr-done" onclick="rtToggle(${cur[0]})">Route gelopen ✓</button>
+      </div>
+    </div>`;
+    document.getElementById('rrBtn').style.display = 'none';
+  } else {
+    wrap.innerHTML = doneCount>=100 ? '<div class="rr-hint">Alle 100 gelopen. Legende. 👑</div>' : '';
+    document.getElementById('rrBtn').style.display = doneCount>=100 ? 'none' : 'block';
+  }
+
+  // lijst per provincie
+  const list = document.getElementById('rtList');
+  let html = '', prov = '';
+  for (const [num,name,p,km] of ROUTES) {
+    if (p !== prov) {
+      prov = p;
+      const provRoutes = ROUTES.filter(r=>r[2]===p);
+      const provDone = provRoutes.filter(r=>doneNums.includes(r[0])).length;
+      html += `<div class="rt-prov">${p} <span class="rt-prov-count">${provDone}/${provRoutes.length}</span></div>`;
+    }
+    const isDone = !!s.done[num];
+    const isPicked = s.current === num && !isDone;
+    html += `<div class="rt-row${isDone?' done':''}${isPicked?' picked':''}" onclick="rtToggle(${num})">
+      <div class="rt-num">${num}</div>
+      <div class="rt-body">
+        <div class="rt-name">${name}</div>
+        <div class="rt-km">${km} km${isDone ? ' · ✓ ' + s.done[num] : ''}${isPicked ? ' · 🎲 next up' : ''}</div>
+      </div>
+      <div class="rt-check">✓</div>
+    </div>`;
+  }
+  list.innerHTML = html;
+}
+
+window.rrRoll = function(){
+  const s = rtLoad();
+  const remaining = ROUTES.filter(r => !s.done[r[0]] && r[0] !== s.current);
+  const pool = remaining.length ? remaining : ROUTES.filter(r => !s.done[r[0]]);
+  if (!pool.length) { rtToast('Alles gelopen — boekje uit! 👑'); return; }
+  s.current = pool[Math.floor(Math.random()*pool.length)][0];
+  rtSave(s);
+  rtRender();
+};
+
+window.rtToggle = function(num){
+  const s = rtLoad();
+  const r = ROUTES.find(x=>x[0]===num);
+  if (!r) return;
+  if (s.done[num]) {
+    // ont-vinken: XP netjes terugnemen
+    delete s.done[num];
+    rtSave(s);
+    if (window.removeXP) window.removeXP('endurance', 20+3*r[3], 'ANWB #'+num+' unchecked');
+    rtToast('Unchecked · ' + r[1]);
+  } else {
+    s.done[num] = todayKey();
+    if (s.current === num) s.current = null;
+    rtSave(s);
+    const xp = 20+3*r[3];
+    if (window.addXP) window.addXP('endurance', xp, 'ANWB route #'+num+': '+r[1]+' ('+r[3]+' km)');
+    const count = Object.keys(s.done).length;
+    const bonus = RT_MILESTONES[count];
+    if (bonus && window.addXP) {
+      window.addXP('endurance', bonus, 'ANWB milestone: '+count+' routes gelopen!');
+      rtToast('🏆 '+count+' routes! +'+(xp+bonus)+' XP Endurance');
+    } else {
+      rtToast('✓ '+r[1]+' · +'+xp+' XP Endurance');
+    }
+  }
+  rtRender();
+};
+
+rtRender();
+</script>
+</body>
+</html>

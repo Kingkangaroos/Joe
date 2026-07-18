@@ -1222,6 +1222,16 @@ textarea {
   </div>
 
   <!-- Compact RS skills grid -->
+  <!-- ANWB Routes side quest (v9.25) -->
+  <a href="routes.html" class="wtb-card" style="text-decoration:none;color:inherit">
+    <div>
+      <span style="font-size:22px">🥾</span>
+      <span style="font-family:var(--font-display);font-weight:800;font-size:15px;margin-left:8px">ANWB Routes</span>
+      <span class="wtb-delta" id="rtBadge"></span>
+    </div>
+    <div class="wtb-hint">Walk the whole book →</div>
+  </a>
+
   <div class="sec-title">Skills</div>
   <div id="rsCompactGrid" class="rs-compact-grid"></div>
 
@@ -1411,7 +1421,11 @@ function showTab(id){
   if(idx>=0) tabs[idx].classList.add('active');
   if(id==='body')      { renderBody(); loadHevyWidget(); loadHealthMetrics(); }
   if(id==='character') { renderCharacter(); loadHevyWidget(); }
-  if(id==='body') { setTimeout(wtbRender,50); }
+  if(id==='body') { setTimeout(wtbRender,50); setTimeout(function(){
+    try { const s = JSON.parse(localStorage.getItem('rpg_routes_v1'))||{done:{}};
+      const el = document.getElementById('rtBadge');
+      if (el) el.textContent = Object.keys(s.done).length + '/100'; } catch(e){}
+  },60); }
   if(id==='daily')     renderDaily();
   if(id==='skills')    renderSkillTree();
   if(id==='history')   renderHistory();
@@ -3968,7 +3982,11 @@ window.addEventListener('storage',()=>{
   const id=active.id.replace('tab-','');
   if(id==='body')      renderBody();
   if(id==='character') { renderCharacter(); loadHevyWidget(); }
-  if(id==='body') { setTimeout(wtbRender,50); }
+  if(id==='body') { setTimeout(wtbRender,50); setTimeout(function(){
+    try { const s = JSON.parse(localStorage.getItem('rpg_routes_v1'))||{done:{}};
+      const el = document.getElementById('rtBadge');
+      if (el) el.textContent = Object.keys(s.done).length + '/100'; } catch(e){}
+  },60); }
   if(id==='daily')     renderDaily();
   if(id==='history')   renderHistory();
 });

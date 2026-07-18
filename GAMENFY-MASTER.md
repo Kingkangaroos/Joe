@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.23)
+# GAMENFY — Master Document (v9.25)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -165,6 +165,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v9.25 — ANWB Routes side quest 🥾** (gebouwd parallel aan v9.23-24 van de zustersessie; netjes gerebased op haar sync-refactor — rpg_routes_v1 zit in de nieuwe canonieke RPG_SYNC_KEYS, één plek i.p.v. drie). Nieuwe `routes.html`: alle 100 routes uit Joey's ANWB-gids getranscribeerd (nr/naam/provincie/km, per provincie met tellers), voortgangs-hero (X/100 + km + balk), **🎲 randomizer** die alleen uit ongelopen routes rolt met re-roll en persistente "next up"-markering, tik-om-af-te-vinken met datum. XP → **Endurance: 20 + 3×km**, mijlpalen 10/25/50/75 (+100/250/500/750), **+2000 bij boek uit**; ont-vinken neemt XP terug. Toegang via Body-tab-kaart met live X/100-badge. Logica unit-getest (roll-bereik, XP, milestone, 50-rolls-exclusie, uncheck). Km's komen van een boekfoto — afwijking = één regel in ROUTES.
 
 - **v9.24 — Tweede sync-scope-wipe gedicht + data-cleanup (audit deel 2).** po-water.html synchroniseerde appKey 'health' met alléén `po_water_v1` terwijl health.html de volle scope had — zelfde bug-klasse als v9.23: elke water-log overschreef de hele health-cloudrij, waardoor waterhistorie en `stack:taken:*` uit de cloud verdwenen (supplementen-items overleefden als laatste writer). Fix: po-water gebruikt nu exact dezelfde keylijst+prefixes als health.html; de v9.23 delete-guard beschermt lokale data al. Device-data heelt de cloud automatisch bij het eerstvolgende bezoek (hasLocalOnly-push). Verder: 4 junk-rijen van het kapotte Apple Health-shortcut verwijderd (`apple_health:test` ×2, lege datums ×2). Gewichtslogs bleken veilig (po_coach_weights onder de single-instance po-coach scope). Les vastgelegd: **elke appKey heeft precies één canonieke sync-scope; pagina's mogen nooit een eigen smallere lijst voeren.**
 
