@@ -1,7 +1,54 @@
-# GAMENFY — Master Document (v9.25)
+# GAMENFY — Master Document (v9.26)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
+
+---
+
+## 0. KERN VAN WAARHEID — geverifieerd uit de code (v9.26 · 2026-07-19)
+
+> Deze sectie is **afgeleid uit de repo-code van deze sessie**, niet uit eerdere samenvattingen.
+> Bij tegenspraak wint §0. De secties eronder (1–8a) zijn beschrijvend en kunnen driften;
+> de changelog (§8) is append-only geschiedenis. Herbouw §0 door de code opnieuw te lezen, niet door dit over te schrijven.
+>
+> **Bronmarkering per claim:** ✓ = geverifieerd uit repo-code deze sessie · ⚠ = alleen in changelog / server-side, **niet** verifieerbaar vanuit de repo · ✎ = vereist live Supabase om te bevestigen.
+
+**App & stack**
+- ✓ App heet **Gamenfy** (manifest.json). Vanilla HTML/CSS/JS, geen build-stap.
+- ⚠ Deploy via Vercel op push naar `main` (mechanisme zelf niet uit code te lezen; consistent met alle sessies).
+- ✓ Supabase project **ttxjsoahmtennnufgeqx**, publishable key **sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab**, tabel `public.app_state(key text, data jsonb, updated_at)`.
+- ✓ De client roept **maar één** edge function direct aan: `functions/v1/jarvis`. Alle andere zijn server-side (cron/secret).
+
+**Bestanden (regels · rol, ✓ uit code)**
+- `index.html` (3038) — Main-tab. · `character.html` (3998) — Body + Skills + veel engine-consumers + Body-health-reader (`health_fitbit`). · `finance.html` (2596). · `health.html` (1055) — supplement-stack + water-iframe. · `po-water.html` (1136). · `settings.html` (767). · `jarvis.html` (202) — coach-tab. · `routes.html` (255) — ANWB side quest.
+- Shared JS: `xp.js` (1130) — **engine + single source of truth voor level-formule + DEFAULT_SKILLS + RPG-sync-scope**. · `sync.js` (155) — cloud-sync helper. · `topbar.js` (365) — nav. · `checkin.js` (110). · `ventures.js` (133). · `quests.js` (490). · `push.js` (100). · `sw.js` (30) — service worker.
+- ✓ `gym.html` (17) = **redirect-stub, gepensioneerd**. · ✓ `BUILD_DASHBOARD.md` = **legacy artefact** in de repo, hoort niet bij de app — negeren.
+
+**Skills & habits (✓ uit DEFAULT_SKILLS in xp.js)**
+- ✓ **46 skills** gedefinieerd in code (incl. `good_deed`, v9.26). *(Let op: de v10-audit noemde "74 skills" — dat getal is **niet** reproduceerbaar uit de code en telt vermoedelijk de live `rpg_character_v1.skills`-blob incl. verouderde keys. ✎ = alleen via live Supabase te bevestigen; behandel 46 als de code-waarheid.)*
+- ✓ **11 daily habits** (`isHabit:true`): `sleep, nutrition, walking, grounding, teeth, household, meditation, gratitude, good_deed, screen_time, cold_shower`.
+- ✓ De **daily-missions-lijst** (active quests) is een aparte descriptor-set in `character.html`/`settings.html` en bevat óók niet-habit-skills (o.a. `reading`, `planning`, `no_porn`). "Daily mission" ≠ per se `isHabit`.
+
+**Sync-architectuur — één canonieke scope per appKey (✓ uit code; dit is de v9.23/9.24-fix)**
+- ✓ `rpg` → `window.RPG_SYNC_KEYS` (20 keys) + `RPG_SYNC_PREFIXES` (`rpg_daily_v1:`, `rpg_agenda_v1:`, `rpg_todo_v1:`). **Identiek** gebruikt door index.html, character.html, settings.html én xp.js.
+- ✓ `health` → `['stack:items','stack:version','stack:low','po_water_v1']` + prefix `stack:taken:`. Gebruikt door **zowel health.html als po-water.html** (v9.24-fix, met uitleg-comment in po-water.html).
+- ✓ `finance` → `['subs','wishlist','nw_currency','nw:activity','nw:history']` + prefix `nw:`.
+- ✓ `po-coach` → `['po_coach_v1','po_coach_workout_done','po_coach_weights','po_coach_photos']` (in character.html).
+- Regel: pagina's dragen **nooit** een eigen smallere lijst; scope-drift = de wipe-bug.
+
+**Health-pipeline (gemengd)**
+- ✓ Client leest de `health_fitbit`-rij als **één rij met per-datum keys** `{steps, activeMinutes, sleepMinutes, restingHR, weightKg}` (bevestigd uit character.html's reader). Body merget dit óver het dode `apple_health:*`-kanaal.
+- ✓ v9.26: index.html's stappen-XP leest nu Fitbit-first (apple_health = fallback).
+- ⚠ `jarvis` edge function "v6 incl. health + Fitbit-context": de repo heeft alleen een **1-regel header-stub** (`server/jarvis/index.ts`); volledige bron leeft server-side. Niet her-geverifieerd tegen de live functie.
+- ⚠ `send-daily-push` (Gemini-ochtendbrief v7): **geen index.ts-mirror** in de repo (alleen README) — volledig server-side, niet te checken van hieruit.
+- ✓/⚠ `fitbit-sync`: volledige `index.ts` staat wél in de repo (leesbaar); deploy/cron-status is server-side.
+- ✎ Crons (`gamenfy-morning-push` 06:30, `gamenfy-daily-push` 17:30, `fitbit-sync-pull` 6:05/13:05/21:05 UTC): pg_cron, alleen via live Supabase te bevestigen.
+
+**Correcties gevonden deze sessie (de drift die dit document opschoont)**
+1. ✓ "Fitbit voedt Jarvis/brief nog niet" (v10-audit) → **onjuist**; gedaan sinds v9.19/v9.20. Gecorrigeerd in §v10.
+2. "15 van 74 skills" → code kent **46**; 74 is een live-blob-telling (✎).
+3. ✓ index.html las stappen van het dode apple_health-kanaal → gefixt v9.26.
+4. `CLAUDE-CONTEXT.md` (project-knowledge, niet in repo) + `BUILD_DASHBOARD.md` beschrijven een **oudere dark-theme generatie** ("King Joey's Dashboard", index appKey `goals`, `#0a0a0b`) — **niet** het huidige Daylight-Gamenfy. Stale — niet als bron gebruiken.
 
 ---
 
@@ -144,11 +191,11 @@ Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
 
 ## v10-plan — data-gedreven (vastgelegd 2026-07-18, audit-sessie)
 
-Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → wk25-26:0 → wk29:7 (herstel valt exact samen met de start van de Jarvis-ochtendbrief → de coach-loop is de bewezen hefboom). Slechts 15 van 74 skills ooit aangeraakt; het actieve cluster is body + discipline + mindfulness. Fitbit levert dagelijks slaap/RHR/stappen/AZM maar voedt Jarvis en de brief nog niet; index.html leest stappen nog van het dode apple_health-kanaal (stil sinds 2026-06-09).
+Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → wk25-26:0 → wk29:7 (herstel valt exact samen met de start van de Jarvis-ochtendbrief → de coach-loop is de bewezen hefboom). Slechts 15 van 74 skills ooit aangeraakt; het actieve cluster is body + discipline + mindfulness. Fitbit levert dagelijks slaap/RHR/stappen/AZM. *(Correctie v9.26: de audit stelde dat Fitbit Jarvis en de brief nog niet voedde — dat klopte niet; v9.19 wire'de health_fitbit in Jarvis get_state en v9.20 in de ochtendbrief-prompt. Alleen index.html las stappen nog van het dode apple_health-kanaal; dat is in v9.26 gefixt.)*
 
 **A. Coach-loop versterken (hoogste prioriteit)**
-1. Fitbit → Jarvis + ochtendbrief: health_fitbit meesturen in get_state en in de brief-prompt ("je sliep 6u01, RHR 62 — vandaag licht herstel + meditatie"). Twee edge-function-edits.
-2. index.html stappen-widget: fallback van apple_health naar health_fitbit (5 weken dood; ~10 regels).
+1. ✅ **AF (al in v9.19/v9.20, niet v10)** — Fitbit → Jarvis + ochtendbrief: health_fitbit zit in get_state én de brief-prompt.
+2. ✅ **AF (v9.26)** — index.html stappen-widget: Fitbit-first, apple_health als fallback. Stappen-XP loopt weer.
 3. Adaptieve brief: na 2+ dagen zonder XP schakelt de brief naar één micro-doel i.p.v. een vol programma (anti-cliff, zie wk25-26).
 
 **B. Focus boven breedte (15/74-inzicht)**
@@ -165,6 +212,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v9.26 — Good Deed daily mission + stappen-widget gerepareerd + waarheidsronde.** (1) Nieuwe daily habit **Good Deed 🤲** (parentSkill mind, naast Gratitude): één bewuste goede daad per dag, +1 punt / −1 per gemiste dag, science-based why + benefits-timeline (helper's high dag 1 → Lyubomirsky kindness-trials dag 7 → sterkere sociale band + lagere stressreactie dag 30). Toegevoegd in DEFAULT_SKILLS (xp.js), mission-descriptors in character.html + settings.html, in DEFAULT_ACTIVE_QUESTS, met one-time migratie (`good_deed` idem household) zodat hij bij Joey's bestaande selectie verschijnt. Detail-sheet, streak-stats, decay en confetti werken automatisch mee (habit-agnostisch, identiek aan Household sinds v9.6). (2) **Stappen-XP gerepareerd**: index.html's `loadStepsXP` (was `loadAppleHealth`) leest nu **Fitbit-first** uit de `health_fitbit`-rij (today.steps), met apple_health als fallback — het apple-kanaal lag dood sinds 2026-06-09, dus stappen-endurance-XP stond 5+ weken stil. Formule (10k steps→50 XP, XP-guard per dag) ongewijzigd. (3) **Waarheidsronde**: de v10-audit beweerde dat Fitbit Jarvis/brief nog niet voedde — onjuist, dat was al v9.19/v9.20; v10-item 1 gecorrigeerd naar AF, item 2 nu AF. (4) **Nieuwe §0 "Kern van Waarheid"** bovenaan het masterdoc: volledig uit de repo-code van deze sessie afgeleid (niet uit oude samenvattingen), met bronmarkering per claim (✓ geverifieerd / ⚠ server-side / ✎ live-Supabase-nodig) en een correctielijst — bedoeld om de changelog-drift die dit soort misinformatie veroorzaakt te stoppen. Bij tegenspraak wint §0. Syntax + aanwezigheid van alle edits gevalideerd.
 
 - **v9.25 — ANWB Routes side quest 🥾** (gebouwd parallel aan v9.23-24 van de zustersessie; netjes gerebased op haar sync-refactor — rpg_routes_v1 zit in de nieuwe canonieke RPG_SYNC_KEYS, één plek i.p.v. drie). Nieuwe `routes.html`: alle 100 routes uit Joey's ANWB-gids getranscribeerd (nr/naam/provincie/km, per provincie met tellers), voortgangs-hero (X/100 + km + balk), **🎲 randomizer** die alleen uit ongelopen routes rolt met re-roll en persistente "next up"-markering, tik-om-af-te-vinken met datum. XP → **Endurance: 20 + 3×km**, mijlpalen 10/25/50/75 (+100/250/500/750), **+2000 bij boek uit**; ont-vinken neemt XP terug. Toegang via Body-tab-kaart met live X/100-badge. Logica unit-getest (roll-bereik, XP, milestone, 50-rolls-exclusie, uncheck). Km's komen van een boekfoto — afwijking = één regel in ROUTES.
 

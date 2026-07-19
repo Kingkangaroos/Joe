@@ -2406,6 +2406,7 @@ const ALL_DAILY_QUESTS=[
   {id:'grounding',    icon:'🌱',label:'Grounding',       skill:'grounding',    xp:15},
   {id:'teeth',        icon:'🦷',label:'Brush Teeth 2×',  skill:'teeth',        xp:10},
   {id:'household',    icon:'🧹',label:'Household',       skill:'household',    xp:15},
+  {id:'good_deed',    icon:'🤲',label:'Good Deed',       skill:'good_deed',    xp:15},
   {id:'planning',     icon:'📅',label:'Plan the day',    skill:'planning',     xp:15},
 ];
 // v9.1: habit-log helpers (zelfde formaat als index.html — rpg_habitlog_v1)
@@ -2414,13 +2415,15 @@ function dhSave(l){ try{ localStorage.setItem('rpg_habitlog_v1', JSON.stringify(
 function dhHas(key,date){ const l=dhLoad(); return !!(l[key]&&l[key][date]); }
 function dhSet(key,date,val){ const l=dhLoad(); l[key]=l[key]||{}; if(val) l[key][date]=true; else delete l[key][date]; dhSave(l); }
 const ACTIVE_QUESTS_KEY='rpg_active_quests_v1';
-const DEFAULT_ACTIVE_QUESTS=['workout','meditation','no_porn','weed_control','reading','outreach','gratitude','nutrition','grounding','teeth','household'];
+const DEFAULT_ACTIVE_QUESTS=['workout','meditation','no_porn','weed_control','reading','outreach','gratitude','nutrition','grounding','teeth','household','good_deed'];
 // v7.8 one-time: surface Grounding in the Daily tab for existing stored selections
 try{ const _aq=JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if(Array.isArray(_aq)&&!_aq.includes('grounding')){ _aq.push('grounding'); localStorage.setItem(ACTIVE_QUESTS_KEY, JSON.stringify(_aq)); } }catch(e){}
 // v9.1 one-time: surface Brush Teeth in the Daily tab for existing stored selections
 try{ const _aq2=JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if(Array.isArray(_aq2)&&!_aq2.includes('teeth')){ _aq2.push('teeth'); localStorage.setItem(ACTIVE_QUESTS_KEY, JSON.stringify(_aq2)); } }catch(e){}
 // v9.6 one-time: Household idem
 try{ const _aq3=JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if(Array.isArray(_aq3)&&!_aq3.includes('household')){ _aq3.push('household'); localStorage.setItem(ACTIVE_QUESTS_KEY, JSON.stringify(_aq3)); } }catch(e){}
+// v9.26 one-time: Good Deed idem
+try{ const _aq4=JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if(Array.isArray(_aq4)&&!_aq4.includes('good_deed')){ _aq4.push('good_deed'); localStorage.setItem(ACTIVE_QUESTS_KEY, JSON.stringify(_aq4)); } }catch(e){}
 function getActiveQuestIds(){
   try{ const s=JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if(Array.isArray(s)) return s; } catch{}
   return [...DEFAULT_ACTIVE_QUESTS];

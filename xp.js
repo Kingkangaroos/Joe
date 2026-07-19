@@ -367,6 +367,12 @@
       why:'Trials link written gratitude to higher wellbeing and better sleep quality — it trains your brain to scan for wins instead of threats.',
       habitDesc:'Write 3 things you\'re grateful for every day.',
     },
+    good_deed: {
+      benefits:[{d:1,t:'"helper\'s high" — a mood lift right after (oxytocin/endorphin response)'},{d:7,t:'a week of daily kind acts raises measured wellbeing (Lyubomirsky kindness trials)'},{d:30,t:'stronger social bonds and lower stress reactivity — you start seeing yourself as someone who helps'}],
+      xp:0, parentSkill:'mind', icon:'🤲', label:'Good Deed', active:true, isHabit:true,
+      why:'Kindness-intervention studies link doing deliberate good deeds to higher happiness and lower stress — giving reliably lifts the giver, not only the receiver. Small, real acts count.',
+      habitDesc:'Do one deliberate good deed for someone — help, give, a genuine kind gesture. +1 point. Drops -1 per missed day.',
+    },
 
     // ══ BUSINESS — skills ═════════════════════════════════════════════
     sales: {

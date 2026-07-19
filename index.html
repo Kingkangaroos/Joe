@@ -1899,29 +1899,43 @@ window.coreLog = function(key, xp, label) {
   renderCharStrip();
 };
 
-// ── Apple Health XP (v2.3 — carry-over) ──────────────────────
-(async function loadAppleHealth() {
+// ── Steps → Endurance XP (v9.26 — Fitbit-first, Apple Health fallback) ──
+// Het Apple Health-kanaal ligt stil sinds 2026-06-09; Fitbit Air (health_fitbit) is nu de bron.
+// health_fitbit is één rij met per-datum keys {steps, activeMinutes, sleepMinutes, restingHR, weightKg}.
+(async function loadStepsXP() {
   const SB_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co';
   const SB_KEY = 'sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
   const today = todayStr();
   const XP_GUARD = 'ah_xp_given:' + today;
+  const hdr = { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } };
+  let steps = 0, energy = 0, src = '';
+  // 1) Fitbit Air — primaire bron
   try {
-    const res = await fetch(`${SB_URL}/rest/v1/app_state?key=eq.apple_health:${today}&select=data`, {
-      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
-    });
-    const rows = await res.json();
-    if (!rows || !rows.length) return;
-    const d = rows[0].data || {};
-    const steps   = parseInt(d['steps '] || d.steps || 0);
-    const energy  = parseInt(d['active_energy'] || d.energy || 0);
-    if (!localStorage.getItem(XP_GUARD) && (steps>0||energy>0) && window.addXP) {
-      const xp = Math.round(Math.min(steps/10000,1)*50 + Math.min(energy/600,1)*50);
-      if (xp > 0) {
-        window.addXP('endurance', xp, 'Apple Health — steps + active energy');
-        localStorage.setItem(XP_GUARD, '1');
-      }
+    const r = await fetch(`${SB_URL}/rest/v1/app_state?key=eq.health_fitbit&select=data`, hdr);
+    if (r.ok) {
+      const rows = await r.json();
+      const day = ((rows[0] || {}).data || {})[today];
+      if (day && day.steps != null) { steps = parseInt(day.steps) || 0; src = 'Fitbit'; }
     }
   } catch(e) {}
+  // 2) Apple Health — fallback (legacy kanaal)
+  if (steps === 0 && energy === 0) {
+    try {
+      const res = await fetch(`${SB_URL}/rest/v1/app_state?key=eq.apple_health:${today}&select=data`, hdr);
+      const rows = await res.json();
+      const d = (rows && rows[0] && rows[0].data) || {};
+      steps  = parseInt(d['steps '] || d.steps || 0) || 0;
+      energy = parseInt(d['active_energy'] || d.energy || 0) || 0;
+      if (steps>0 || energy>0) src = 'Apple Health';
+    } catch(e) {}
+  }
+  if (!localStorage.getItem(XP_GUARD) && (steps>0 || energy>0) && window.addXP) {
+    const xp = Math.round(Math.min(steps/10000,1)*50 + Math.min(energy/600,1)*50);
+    if (xp > 0) {
+      window.addXP('endurance', xp, src + ' — steps' + (energy>0 ? ' + active energy' : ''));
+      localStorage.setItem(XP_GUARD, '1');
+    }
+  }
 })();
 
 // ── Daily Quote ──────────────────────────────────────────────
