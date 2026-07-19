@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.27)
+# GAMENFY — Master Document (v9.28)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -214,6 +214,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v9.28 — Skill-detailsheets verrijkt: motiverende `why` voor alle 46 skills.** 31 skills hadden nog geen `why`-tekst in hun detail-sheet (vooral de niet-habit skills: money, body, work, creatief, sociaal). Toegevoegd via één schoon, additief blok in xp.js (`SKILL_WHY`-map + guarded loop die alleen `why` zet wáár die ontbreekt — nooit overschrijft, nooit gedrag raakt: levels/quests/tier-locks blijven identiek). Teksten zijn hedged en on-brand (motiverende betekenis + wetenschappelijk waar dat kan, "linked to"/"in studies" i.p.v. harde claims). Nu heeft élke skill een why. Bewust géén `benefits`-timelines aan niet-habit skills gehangen: die fysiologische dag-1/7/30-boog past bij dagelijkse gewoonten, niet bij practice-skills — dat zou geforceerd/onjuist zijn. `?v=` gebumpt naar 9.28 per het release-ritueel. Statisch gevalideerd (syntax + 31/31 keys exact match, geen typo's, geen overwrites).
 
 - **v9.27 — Cache-busting zodat nieuwe features Joey's apparaten écht bereiken + sync-diagnose.** Kernprobleem gevonden: gedeelde JS werd geladen zonder cache-busting (`<script src="xp.js">`), dus browsers/CDN serveerden oude code — Joey's data kwam wél terug (Supabase, los van codeversie) maar nieuwe features (Good Deed etc.) bleven weg. Fix: `?v=9.27` toegevoegd aan alle 28 interne script-tags over 8 pagina's (externe CDN ongemoeid). Release-ritueel vastgelegd in §0: bump `?v=` bij elke release. **Sync-diagnose (live Supabase):** (a) maandlasten/agenda stonden correct in de cloud — het probleem was puur dat de telefoon niet pullde; (b) **root-cause = realtime stond uit** (`supabase_realtime` leeg, `app_state` niet in de publicatie), dus geen live cross-device updates; **fix toegepast in deze sessie** (migratie `enable_realtime_app_state`, geverifieerd) — live sync staat nu AAN, geen herstart meer nodig; (c) bevestigd dat de live character 74 skills heeft vs 46 in code (28 legacy). **Bewust NIET gedaan:** een merge-op-push in sync.js — zonder per-veld tijdstempels/realtime zou dat legitieme verwijderingen terugtoveren (mooi-maar-kapot). De realtime-migratie is de juiste fix. Good Deed + stappen-fix (v9.26) verschijnen nu vanzelf zodra Joey's apparaat de geversioneerde JS laadt.
 

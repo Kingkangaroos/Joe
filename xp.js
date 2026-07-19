@@ -980,6 +980,46 @@
   window.tierLockInfo = tierLockInfo;
 
   window.RPG_PARENT_SKILLS  = PARENT_SKILLS;
+  // v9.28: enrichment — a motivational, hedged 'why' for skills that lacked one.
+  // Purely additive & display-only: only sets why where missing, never overwrites,
+  // never touches behaviour (levels/quests/tier-locks). Renders in the skill detail sheet.
+  const SKILL_WHY = {
+    saving: 'Savings buy freedom, not stuff — a cash buffer turns emergencies into inconveniences and lets you say no to bad options.',
+    investing: 'Compounding rewards time in the market over timing it; broad, boring, consistent investing is what quietly builds wealth.',
+    budgeting: "A budget isn't restriction — it's telling your money where to go so it stops disappearing. Awareness alone shifts spending.",
+    net_worth: 'Tracking net worth turns vague money-anxiety into one honest number you can move — what gets measured gets managed.',
+    gym: 'Resistance training is one of the best-evidenced levers for long-term health: strength, bone density, metabolism and mood all respond to it.',
+    tennis: 'Tennis blends cardio, coordination and split-second decisions — a sport you can play for life, and the footwork sharpens the mind too.',
+    calisthenics: 'Bodyweight training builds real, controllable strength and mobility with almost no gear — mastery of your own body carries everywhere.',
+    core: 'A strong core is the transfer station for nearly every movement — it protects your back and makes every lift and sport safer.',
+    stretching: "Regular mobility work keeps joints usable and reduces stiffness; flexibility you don't train is flexibility you slowly lose.",
+    strength: 'Getting stronger improves almost everything downstream — posture, injury resistance, confidence, and how capable you feel each day.',
+    recovery: 'Progress happens during recovery, not the workout — sleep, rest and deloads are when the body actually adapts and grows.',
+    endurance: 'Aerobic fitness is strongly linked to longevity and energy; a bigger engine means everyday life simply costs you less effort.',
+    reading: "Reading is compounding for the mind — it borrows other people's decades of thinking and is tied to sharper focus and vocabulary.",
+    focus: 'Deep, undistracted focus is where your best work lives; attention is trainable, and protecting it is a rare modern edge.',
+    journaling: 'Writing things down offloads mental clutter — expressive writing is linked in studies to lower stress and clearer thinking.',
+    sales: 'Selling is just understanding what someone needs and helping them get it — a skill that pays in every job, venture and relationship.',
+    marketing: "Marketing is empathy at scale: knowing who you're talking to and why they'd care. Master it and good work stops going unseen.",
+    ai_tools: 'Fluency with AI tools is fast becoming a baseline multiplier — the leverage goes to people who can direct these systems well.',
+    coding: 'Code is leverage: build once, run forever. Even basic fluency lets you automate the boring and turn ideas into working things.',
+    whistling: 'A clean finger-whistle is equal parts breath control and precise tongue placement — a fun, low-stakes skill that trains patience and feedback.',
+    dancing: 'Dancing pairs music, memory and movement — it lifts mood, sharpens coordination, and is one of the most social ways to stay active.',
+    cooking: 'Cooking is a compounding life skill — cheaper, healthier and better-tasting than the alternatives, and a reliable way to care for people.',
+    puzzling: 'Puzzles give the brain focused, satisfying reps at pattern-finding and patience — a calm kind of problem-solving practice.',
+    social: 'Relationships are among the strongest predictors of a happy life; social skill is trainable, and small consistent reps build real connection.',
+    dating: "Dating well starts with being someone you'd want to date — curiosity, honesty and self-respect matter more than any tactic.",
+    planning: 'A few minutes planning the day beats hours of drift — deciding in advance is how you stop reacting and start steering.',
+    languages: 'A new language rewires how you think and opens whole cultures; consistent small exposure beats rare cramming every time.',
+    learning: 'Knowing how to learn is the meta-skill behind every other one — spacing, self-testing and a bit of struggle are what make it stick.',
+    superiority: 'Real self-respect is quiet: it comes from keeping promises to yourself, not from comparison. Standards you hold beat status you chase.',
+    piano: 'Piano trains both hands, ears and patience at once; few hobbies give such rich feedback, and the progress is deeply satisfying to feel.',
+    content: 'Making things in public compounds — every piece is a rep in taste, voice and consistency, and the archive keeps working for you.',
+  };
+  for (const k in SKILL_WHY) {
+    if (DEFAULT_SKILLS[k] && !DEFAULT_SKILLS[k].why) DEFAULT_SKILLS[k].why = SKILL_WHY[k];
+  }
+
   window.RPG_DEFAULT_SKILLS = DEFAULT_SKILLS;
   window.RPG_MAX_LEVEL      = MAX_LEVEL;
   window.RPG_CATEGORY_ORDER = ['money','body','mind','business','lifestyle','knowledge'];
