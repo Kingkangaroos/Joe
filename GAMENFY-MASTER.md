@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.26)
+# GAMENFY — Master Document (v9.27)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -16,6 +16,8 @@
 **App & stack**
 - ✓ App heet **Gamenfy** (manifest.json). Vanilla HTML/CSS/JS, geen build-stap.
 - ⚠ Deploy via Vercel op push naar `main` (mechanisme zelf niet uit code te lezen; consistent met alle sessies).
+- ✓ **Cache-busting (v9.27)**: alle interne scripts worden geladen als `src="xp.js?v=9.27"` (28 tags over 8 pagina's). **RELEASE-RITUEEL: bump `?v=` op álle script-includes naar het nieuwe versienummer bij elke release** — anders serveren browsers/CDN oude JS en verschijnen nieuwe features niet op Joey's apparaten (dit was de oorzaak van "ik zie mijn nieuwe dingen niet"; data synct los want dat is Supabase, niet code).
+- ✎ **Realtime cross-device sync staat UIT**: `supabase_realtime`-publicatie is leeg — `app_state` zit er niet in. Daardoor vuurt de realtime-subscriptie in sync.js nooit tussen apparaten; elk apparaat synct alleen bij openen. **Fix ligt klaar** (`alter publication supabase_realtime add table public.app_state;`) maar wacht op Joey's approval-tik. Tot dan: multi-device-invoer verschijnt pas na app-herstart, en de laatste-schrijver-wint-race kan invoer overschrijven.
 - ✓ Supabase project **ttxjsoahmtennnufgeqx**, publishable key **sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab**, tabel `public.app_state(key text, data jsonb, updated_at)`.
 - ✓ De client roept **maar één** edge function direct aan: `functions/v1/jarvis`. Alle andere zijn server-side (cron/secret).
 
@@ -25,7 +27,7 @@
 - ✓ `gym.html` (17) = **redirect-stub, gepensioneerd**. · ✓ `BUILD_DASHBOARD.md` = **legacy artefact** in de repo, hoort niet bij de app — negeren.
 
 **Skills & habits (✓ uit DEFAULT_SKILLS in xp.js)**
-- ✓ **46 skills** gedefinieerd in code (incl. `good_deed`, v9.26). *(Let op: de v10-audit noemde "74 skills" — dat getal is **niet** reproduceerbaar uit de code en telt vermoedelijk de live `rpg_character_v1.skills`-blob incl. verouderde keys. ✎ = alleen via live Supabase te bevestigen; behandel 46 als de code-waarheid.)*
+- ✓ **46 skills** gedefinieerd in code (DEFAULT_SKILLS, incl. `good_deed`, v9.26). ✓ **Live `rpg_character_v1.skills` bevat 74 skills** (bevestigd via Supabase deze sessie) — dus **28 verouderde/orphaned skills** leven nog in de character-blob maar zijn uit de code verwijderd. De code is defensief (`DEFAULT_SKILLS[k]||{}`), dus dit breekt niks; opschonen van de blob vereist een aparte, voorzichtige migratie. "46" = wat de app kent; "74" = historische blob.
 - ✓ **11 daily habits** (`isHabit:true`): `sleep, nutrition, walking, grounding, teeth, household, meditation, gratitude, good_deed, screen_time, cold_shower`.
 - ✓ De **daily-missions-lijst** (active quests) is een aparte descriptor-set in `character.html`/`settings.html` en bevat óók niet-habit-skills (o.a. `reading`, `planning`, `no_porn`). "Daily mission" ≠ per se `isHabit`.
 
@@ -46,7 +48,7 @@
 
 **Correcties gevonden deze sessie (de drift die dit document opschoont)**
 1. ✓ "Fitbit voedt Jarvis/brief nog niet" (v10-audit) → **onjuist**; gedaan sinds v9.19/v9.20. Gecorrigeerd in §v10.
-2. "15 van 74 skills" → code kent **46**; 74 is een live-blob-telling (✎).
+2. ✓ "15 van 74 skills" → **bevestigd**: 74 = live character-blob, 46 = in code gedefinieerd. De 28 extra zijn legacy skills die nog in de blob zitten. Geen bug, wel opruimbaar.
 3. ✓ index.html las stappen van het dode apple_health-kanaal → gefixt v9.26.
 4. `CLAUDE-CONTEXT.md` (project-knowledge, niet in repo) + `BUILD_DASHBOARD.md` beschrijven een **oudere dark-theme generatie** ("King Joey's Dashboard", index appKey `goals`, `#0a0a0b`) — **niet** het huidige Daylight-Gamenfy. Stale — niet als bron gebruiken.
 
@@ -212,6 +214,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v9.27 — Cache-busting zodat nieuwe features Joey's apparaten écht bereiken + sync-diagnose.** Kernprobleem gevonden: gedeelde JS werd geladen zonder cache-busting (`<script src="xp.js">`), dus browsers/CDN serveerden oude code — Joey's data kwam wél terug (Supabase, los van codeversie) maar nieuwe features (Good Deed etc.) bleven weg. Fix: `?v=9.27` toegevoegd aan alle 28 interne script-tags over 8 pagina's (externe CDN ongemoeid). Release-ritueel vastgelegd in §0: bump `?v=` bij elke release. **Sync-diagnose (live Supabase):** (a) maandlasten/agenda stonden correct in de cloud — het probleem was puur dat de telefoon niet pullde; (b) **root-cause = realtime staat uit** (`supabase_realtime` leeg, `app_state` niet in de publicatie), dus geen live cross-device updates; migratie-fix ligt klaar maar wacht op Joey's approval-tik; (c) bevestigd dat de live character 74 skills heeft vs 46 in code (28 legacy). **Bewust NIET gedaan:** een merge-op-push in sync.js — zonder per-veld tijdstempels/realtime zou dat legitieme verwijderingen terugtoveren (mooi-maar-kapot). De realtime-migratie is de juiste fix. Good Deed + stappen-fix (v9.26) verschijnen nu vanzelf zodra Joey's apparaat de geversioneerde JS laadt.
 
 - **v9.26 — Good Deed daily mission + stappen-widget gerepareerd + waarheidsronde.** (1) Nieuwe daily habit **Good Deed 🤲** (parentSkill mind, naast Gratitude): één bewuste goede daad per dag, +1 punt / −1 per gemiste dag, science-based why + benefits-timeline (helper's high dag 1 → Lyubomirsky kindness-trials dag 7 → sterkere sociale band + lagere stressreactie dag 30). Toegevoegd in DEFAULT_SKILLS (xp.js), mission-descriptors in character.html + settings.html, in DEFAULT_ACTIVE_QUESTS, met one-time migratie (`good_deed` idem household) zodat hij bij Joey's bestaande selectie verschijnt. Detail-sheet, streak-stats, decay en confetti werken automatisch mee (habit-agnostisch, identiek aan Household sinds v9.6). (2) **Stappen-XP gerepareerd**: index.html's `loadStepsXP` (was `loadAppleHealth`) leest nu **Fitbit-first** uit de `health_fitbit`-rij (today.steps), met apple_health als fallback — het apple-kanaal lag dood sinds 2026-06-09, dus stappen-endurance-XP stond 5+ weken stil. Formule (10k steps→50 XP, XP-guard per dag) ongewijzigd. (3) **Waarheidsronde**: de v10-audit beweerde dat Fitbit Jarvis/brief nog niet voedde — onjuist, dat was al v9.19/v9.20; v10-item 1 gecorrigeerd naar AF, item 2 nu AF. (4) **Nieuwe §0 "Kern van Waarheid"** bovenaan het masterdoc: volledig uit de repo-code van deze sessie afgeleid (niet uit oude samenvattingen), met bronmarkering per claim (✓ geverifieerd / ⚠ server-side / ✎ live-Supabase-nodig) en een correctielijst — bedoeld om de changelog-drift die dit soort misinformatie veroorzaakt te stoppen. Bij tegenspraak wint §0. Syntax + aanwezigheid van alle edits gevalideerd.
 
