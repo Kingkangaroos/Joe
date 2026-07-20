@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.29)
+# GAMENFY — Master Document (v9.30)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v9.30 — Elke daily mission opent nu compleet (why + benefits) — Joey's quest-visie afgemaakt.** Uit twee recente chats (12 + 19 juli): Joey wil dat elke today's mission z'n eigen scherm heeft met streak-stats (dagen volgehouden / slip-ups), een "why this matters", en een benefits-opsomming — een motivatieboost per tik. **Bevinding: die mission-detail (`openMissionDetail`, index.html) was al volledig gebouwd** (🔥 streak / ✓ total / missed + "Why this matters" + "What consistency earns you" met YOURS-markering). Hij zag het niet door (a) stale cache (v9.27-fix) en (b) lege why-tekst (v9.28-fix). Deze release vult het laatste gat: `reading`, `gym` (workout) en `sales` (outreach) misten nog een benefits-tijdlijn, waardoor die missions leeg openden bij "What consistency earns you" — nu day-based aangevuld (additief, display-only, guarded). Quests-pagina-visie (12 juli) is al gerealiseerd door de Daylight-redesign: quests zitten ín de skills met "▶ Your next step · unlocks Lvl X" + tier-checklist, leesbaar, met domein-chips op de Skills-view (de losse verwarrende Quests-tab was juist verwijderd). `?v=` naar 9.30. Gevalideerd.
 
 - **v9.29 — Level-milestones voor alle 46 skills + audit-correctie.** 20 skills (14 habits + marketing/social/dating/planning/learning/content) hadden nog geen `milestones` in hun detail-sheet. Toegevoegd via één additief guarded blok in xp.js (`MILESTONE_FILL` — zet alleen milestones wáár die ontbreken, nooit overschrijven). Milestones zijn **display-only** beschrijvende level-doelen (geen quests/tier-locks), on-brand geschreven (realistisch, motiverend). Nu heeft élke skill zowel `why` als `milestones`. **Belangrijke audit-correctie:** de levelformule-duplicatie in character.html is NIET cosmetisch/opruimbaar zoals een eerdere notitie zei — character.html laadt xp.js met `defer` terwijl het inline-script al tijdens parsen draait (vóór xp.js), dus de lokale `xpToLevel`/`xpForLevel` zijn *nodig*. §0 gecorrigeerd; niet verwijderen. `?v=` naar 9.29. Statisch gevalideerd (20/20 keys, geen overwrites, alle pagina's schoon).
 

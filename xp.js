@@ -1049,6 +1049,19 @@
     if (DEFAULT_SKILLS[k] && !DEFAULT_SKILLS[k].milestones) DEFAULT_SKILLS[k].milestones = MILESTONE_FILL[k];
   }
 
+  // v9.30: benefits timelines for the daily-mission skills that lacked them
+  // (workout→gym, reading, outreach→sales). These are practised daily, so a day-based
+  // arc fits and fills the "What consistency earns you" section of the mission sheet.
+  // Additive & display-only; only sets benefits where missing.
+  const BENEFITS_FILL = {
+    reading: [{d:1,t:'a calmer, more focused mind after a single session'},{d:7,t:'reading turns into a craving instead of a chore'},{d:30,t:'noticeably sharper vocabulary and attention span'},{d:90,t:'a genuinely better-informed way of thinking'}],
+    gym:     [{d:1,t:'mood and energy lift from one session'},{d:14,t:'first real strength gains and better sleep'},{d:30,t:'visible tone and a body that feels capable'},{d:90,t:'a stronger, more resilient physique that carries everywhere'}],
+    sales:   [{d:1,t:'the first ask is the scariest — and you did it'},{d:7,t:'rejection stops stinging as reps build calm'},{d:30,t:'a real pipeline and a repeatable approach'},{d:90,t:'selling feels natural — a skill that pays for life'}],
+  };
+  for (const k in BENEFITS_FILL) {
+    if (DEFAULT_SKILLS[k] && !DEFAULT_SKILLS[k].benefits) DEFAULT_SKILLS[k].benefits = BENEFITS_FILL[k];
+  }
+
   window.RPG_DEFAULT_SKILLS = DEFAULT_SKILLS;
   window.RPG_MAX_LEVEL      = MAX_LEVEL;
   window.RPG_CATEGORY_ORDER = ['money','body','mind','business','lifestyle','knowledge'];
