@@ -979,6 +979,24 @@
   window.TIER_GATES   = TIER_GATES;
   window.tierLockInfo = tierLockInfo;
 
+  // v9.31: quests are achievements — done = claimable — blocked ONLY by an unclaimed
+  // tier-gate quest at a LOWER level. Never gated by the player's current XP level
+  // (claiming a quest is how you earn the XP that levels you up). Canon: use everywhere.
+  function questClaimable (skillName, qlvl) {
+    const ladder = window.RPG_QUESTS && window.RPG_QUESTS[skillName];
+    if (!ladder || !ladder.length || typeof window.getQuestsDone !== 'function') return true;
+    const done = window.getQuestsDone();
+    for (const g of TIER_GATES) {
+      let gq = null;
+      for (const q of ladder) { if (q.lvl <= g && (!gq || q.lvl > gq.lvl)) gq = q; }
+      if (gq && gq.lvl < qlvl && !done[skillName + ':' + gq.lvl]) {
+        return { ok: false, gate: gq.lvl, gateTitle: gq.title };
+      }
+    }
+    return { ok: true };
+  }
+  window.questClaimable = questClaimable;
+
   window.RPG_PARENT_SKILLS  = PARENT_SKILLS;
   // v9.28: enrichment — a motivational, hedged 'why' for skills that lacked one.
   // Purely additive & display-only: only sets why where missing, never overwrites,

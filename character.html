@@ -10,11 +10,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=9.30" defer></script>
-<script src="topbar.js?v=9.30" defer></script>
-<script src="xp.js?v=9.30" defer></script>
-<script src="quests.js?v=9.30" defer></script>
-<script src="ventures.js?v=9.30" defer></script>
+<script src="sync.js?v=9.31" defer></script>
+<script src="topbar.js?v=9.31" defer></script>
+<script src="xp.js?v=9.31" defer></script>
+<script src="quests.js?v=9.31" defer></script>
+<script src="ventures.js?v=9.31" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1679,29 +1679,30 @@ function openSkillDetail(skillKey){
   // claimable inline. Locked rows show at which level they unlock.
   let tierChecklistHtml='';
   if(ladder.length){
-    const gates=window.TIER_GATES||[10,25,50,75];
-    const gate=tl.locked?tl.gate:gates.find(g=>g>=level);
-    if(gate){
-      const done=window.getQuestsDone?window.getQuestsDone():{};
-      const remaining=ladder.filter(q=>q.lvl<=gate&&!done[skillKey+':'+q.lvl]);
-      const rows=remaining.map(q=>{
-        const unlocked=q.lvl<=level;
-        return `<div class="sd-tier-row">
-          <div class="sd-tier-lvl">LV ${q.lvl}</div>
-          <div class="sd-tier-name${unlocked?'':' locked'}">${q.title}</div>
-          ${unlocked
+    const doneQ=window.getQuestsDone?window.getQuestsDone():{};
+    const sorted=ladder.slice().sort((a,b)=>a.lvl-b.lvl);
+    const rows=sorted.map(q=>{
+      const isDone=!!doneQ[skillKey+':'+q.lvl];
+      const cl=window.questClaimable?window.questClaimable(skillKey,q.lvl):{ok:q.lvl<=level};
+      const claimable=!!cl.ok;
+      return `<div class="sd-tier-row">
+        <div class="sd-tier-lvl">LV ${q.lvl}</div>
+        <div class="sd-tier-name${(isDone||claimable)?'':' locked'}">${q.title}</div>
+        ${isDone
+          ?`<div class="sd-tier-lock" style="color:var(--green,#3a9)">✓ done</div>`
+          :claimable
             ?`<button class="sd-tier-claim" onclick="sdClaimQuest('${skillKey}',${q.lvl},${q.xp})">Claim +${q.xp}</button>`
-            :`<div class="sd-tier-lock">unlocks LV ${q.lvl}</div>`}
-        </div>`;
-      }).join('');
-      tierChecklistHtml=`<div class="sd-tier">
-        <div class="sd-tier-head">
-          <div class="sd-tier-title">Tier gate · Level ${gate}</div>
-          <div class="sd-tier-count">${remaining.length?remaining.length+' to go':'clear'}</div>
-        </div>
-        ${remaining.length?rows:'<div class="sd-tier-clear">✓ Gate clear — nothing between you and Level '+gate+'</div>'}
+            :`<div class="sd-tier-lock">🔒 gate LV ${cl.gate}</div>`}
       </div>`;
-    }
+    }).join('');
+    const claimedCount=sorted.filter(q=>doneQ[skillKey+':'+q.lvl]).length;
+    tierChecklistHtml=`<div class="sd-tier">
+      <div class="sd-tier-head">
+        <div class="sd-tier-title">Quest path</div>
+        <div class="sd-tier-count">${claimedCount}/${sorted.length} claimed</div>
+      </div>
+      ${rows}
+    </div>`;
   }
 
   const logBtns=(def.quickLog||[]).map(q=>`
@@ -2976,10 +2977,11 @@ function renderQuestLadder(){
   cont.innerHTML=(tl.locked?'<div class="sd-tierlock" style="margin-bottom:12px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px;flex-shrink:0"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg><div><b>Tier locked at Level '+tl.gate+'.</b> Claim "'+tl.quest.title+'" to unlock the next tier.</div></div>':'')+
   '<div class="quest-ladder">'+ladder.map(q=>{
     const isDone=!!done[k+':'+q.lvl];
-    const unlocked=level>=q.lvl;
+    const cl=window.questClaimable?window.questClaimable(k,q.lvl):{ok:level>=q.lvl};
+    const claimable=!!cl.ok;
     const isGate=gateLvls.has(q.lvl);
-    const state=isDone?'done':unlocked?'unlocked':'locked';
-    const dot=isDone?'✓':unlocked?'★':'🔒';
+    const state=isDone?'done':claimable?'unlocked':'locked';
+    const dot=isDone?'✓':claimable?'★':'🔒';
     return '<div class="quest-node '+state+(isGate?' gate':'')+'">'+
       '<div class="quest-node-dot">'+dot+'</div>'+
       '<div class="quest-card2">'+
@@ -2989,9 +2991,9 @@ function renderQuestLadder(){
           '<span class="quest-card2-xp">+'+q.xp+' XP</span>'+
           (isDone
             ? '<button class="quest-claim" onclick="toggleQuest(\''+k+'\','+q.lvl+','+q.xp+')">✓ Done</button>'
-            : unlocked
+            : claimable
               ? '<button class="quest-claim" onclick="toggleQuest(\''+k+'\','+q.lvl+','+q.xp+')">Claim</button>'
-              : '<span class="quest-locked-note">Reach level '+q.lvl+'</span>')+
+              : '<span class="quest-locked-note">🔒 Clear the LV '+cl.gate+' gate first</span>')+
         '</div>'+
       '</div>'+
     '</div>';
