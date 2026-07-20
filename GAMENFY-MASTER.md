@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.28)
+# GAMENFY — Master Document (v9.29)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -56,7 +56,7 @@
 - ✓ Alle `onclick`/`onchange`-handlers over de 8 pagina's zijn gedefinieerd — geen stille crash-knoppen.
 - ✓ Datum-sleutels zijn consistent: index.html/xp.js `todayStr()` en character.html `ymdLocal()`/`todayKey()` gebruiken allemaal de **lokale kalenderdag** (v9.2-fix tegen UTC-na-middernacht). Geen cross-tab datum-mismatch.
 - ✓ Quest-ladders zijn correct bedraad (`window.RPG_QUESTS` → skill-detailsheet). `tierLockInfo` lockt skills **zonder** ladder nooit (dus ladderloze habits lopen vrij door; een ladder aan een habit hangen = tier-gates toevoegen = gedragswijziging).
-- ⚠ **Bekende cosmetische cleanup**: character.html (regel ~1377) definieert een **lokale kopie** van `xpToLevel`/`xpForLevel`, byte-identiek aan xp.js. Geen live-bug (formules gelijk), maar schendt de "xp.js = enige bron"-canon. Bewust níet 's nachts herschreven: elke fix heeft edge-cases (TDZ bij `const`, recursie doordat een top-level `function`-declaratie `window.xpToLevel` overschrijft, of verlies van resilience als xp.js niet laadt). Doen mét Joey erbij.
+- ✓ **Levelformule-duplicatie in character.html is INTENTIONEEL, niet opruimen.** character.html laadt xp.js met `defer`, maar het inline-script (regel 1356) draait al tijdens het parsen — dus vóór de deferred xp.js. Daardoor bestaat `window.xpToLevel` nog niet als dat inline-script start, en heeft character.html zijn eigen lokale `xpToLevel`/`xpForLevel` nodig (byte-identiek aan xp.js gehouden). **Niet verwijderen** — dat zou de level-weergave kunnen breken. (Eerdere sessie-notitie noemde dit een cleanup-item; dat was fout, hierbij gecorrigeerd.) De andere "gedupliceerde" helpers per pagina zijn om dezelfde reden bewust lokaal.
 
 ---
 
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v9.29 — Level-milestones voor alle 46 skills + audit-correctie.** 20 skills (14 habits + marketing/social/dating/planning/learning/content) hadden nog geen `milestones` in hun detail-sheet. Toegevoegd via één additief guarded blok in xp.js (`MILESTONE_FILL` — zet alleen milestones wáár die ontbreken, nooit overschrijven). Milestones zijn **display-only** beschrijvende level-doelen (geen quests/tier-locks), on-brand geschreven (realistisch, motiverend). Nu heeft élke skill zowel `why` als `milestones`. **Belangrijke audit-correctie:** de levelformule-duplicatie in character.html is NIET cosmetisch/opruimbaar zoals een eerdere notitie zei — character.html laadt xp.js met `defer` terwijl het inline-script al tijdens parsen draait (vóór xp.js), dus de lokale `xpToLevel`/`xpForLevel` zijn *nodig*. §0 gecorrigeerd; niet verwijderen. `?v=` naar 9.29. Statisch gevalideerd (20/20 keys, geen overwrites, alle pagina's schoon).
 
 - **v9.28 — Skill-detailsheets verrijkt: motiverende `why` voor alle 46 skills.** 31 skills hadden nog geen `why`-tekst in hun detail-sheet (vooral de niet-habit skills: money, body, work, creatief, sociaal). Toegevoegd via één schoon, additief blok in xp.js (`SKILL_WHY`-map + guarded loop die alleen `why` zet wáár die ontbreekt — nooit overschrijft, nooit gedrag raakt: levels/quests/tier-locks blijven identiek). Teksten zijn hedged en on-brand (motiverende betekenis + wetenschappelijk waar dat kan, "linked to"/"in studies" i.p.v. harde claims). Nu heeft élke skill een why. Bewust géén `benefits`-timelines aan niet-habit skills gehangen: die fysiologische dag-1/7/30-boog past bij dagelijkse gewoonten, niet bij practice-skills — dat zou geforceerd/onjuist zijn. `?v=` gebumpt naar 9.28 per het release-ritueel. Statisch gevalideerd (syntax + 31/31 keys exact match, geen typo's, geen overwrites).
 

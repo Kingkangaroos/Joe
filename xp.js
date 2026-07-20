@@ -1020,6 +1020,35 @@
     if (DEFAULT_SKILLS[k] && !DEFAULT_SKILLS[k].why) DEFAULT_SKILLS[k].why = SKILL_WHY[k];
   }
 
+  // v9.29: enrichment — descriptive level milestones for skills that lacked them.
+  // Display-only (rendered in the skill detail sheet). Never overwrites, never gates
+  // (milestones are labels, not quests/tier-locks). Additive & safe.
+  const MILESTONE_FILL = {
+    sleep:      { 10:'7+ hours most nights', 25:'Consistent sleep & wake times', 50:'Rarely need an alarm', 75:'Deep, restorative sleep is the norm', 100:'Sleep is dialed — a real recovery superpower' },
+    nutrition:  { 10:'Mostly whole foods', 25:'Protein at every meal', 50:'Eating supports your goals automatically', 75:'Dialed intake without tracking', 100:'Nutrition runs on autopilot' },
+    walking:    { 10:'Daily walks are a habit', 25:'8k+ steps most days', 50:'10k a natural baseline', 75:'Walking is your thinking time', 100:'Effortlessly active all day' },
+    grounding:  { 10:'A daily grounding moment', 25:'Calmer baseline', 50:'You reset yourself on demand', 75:'Grounded under pressure', 100:'Unshakeable presence' },
+    teeth:      { 10:'Twice-daily brushing locked in', 25:'Flossing is automatic', 50:'Spotless check-ups', 75:'Healthiest mouth of your life', 100:'Dental routine on full autopilot' },
+    household:  { 10:'Basics stay on top of', 25:'Home rarely gets messy', 50:'A calm, ordered space', 75:'Systems that run themselves', 100:'Effortlessly tidy home' },
+    journaling: { 10:'Writing a few times a week', 25:'A daily reflection habit', 50:'Clearer thinking on paper', 75:'Years of self-knowledge banked', 100:'Journaling is how you process life' },
+    meditation: { 10:'A daily sit', 25:'10-minute sessions with ease', 50:'Calmer and less reactive', 75:'20-minute sessions feel natural', 100:'Deep equanimity — a trained mind' },
+    gratitude:  { 10:'A daily gratitude habit', 25:'You notice the good more', 50:'A default positive lens', 75:'Resilient through hard days', 100:'Gratitude is your baseline' },
+    good_deed:  { 10:'Kindness is a daily reflex', 25:'People feel your impact', 50:'Known for generosity', 75:'Kindness shapes who you are', 100:'A genuine force for good' },
+    marketing:  { 10:'Understand your audience', 25:'Messages that land', 50:'Campaigns that convert', 75:'A brand people remember', 100:'Marketing mastery' },
+    social:     { 10:'Comfortable in most rooms', 25:'Easy conversations', 50:'People gravitate to you', 75:'A wide, warm network', 100:'Effortless social presence' },
+    dating:     { 10:'Confident putting yourself out there', 25:'Genuine connections', 50:'Attracting the right people', 75:'Clear on what you want', 100:'Relationship-ready and secure' },
+    planning:   { 10:'A daily planning habit', 25:'Weeks map to your goals', 50:'You steer instead of drift', 75:'Long-term vision on track', 100:'Master of your own time' },
+    no_porn:    { 10:'First real clean streak', 25:'Urges fading', 50:'Freedom returning', 75:'Barely a thought', 100:'Fully free' },
+    weed_control:{ 10:'Cutting back consistently', 25:'Clearer head', 50:'In full control', 75:'Rarely tempted', 100:'Entirely on your terms' },
+    screen_time:{ 10:'Aware of your usage', 25:'Fewer mindless pickups', 50:'Phone serves you, not the reverse', 75:'Deep attention restored', 100:'Screens fully under control' },
+    cold_shower:{ 10:'Cold rinses becoming routine', 25:'The dread is gone', 50:'You seek the cold', 75:'Cold is your morning edge', 100:'Ice-cold resilience' },
+    learning:   { 10:'Learning is a routine', 25:'You pick up skills fast', 50:'Spaced repetition that sticks', 75:'You can learn almost anything', 100:'A true autodidact' },
+    content:    { 10:'Publishing regularly', 25:'Finding your voice', 50:'A growing audience', 75:'Content that compounds', 100:'A body of work that speaks for itself' },
+  };
+  for (const k in MILESTONE_FILL) {
+    if (DEFAULT_SKILLS[k] && !DEFAULT_SKILLS[k].milestones) DEFAULT_SKILLS[k].milestones = MILESTONE_FILL[k];
+  }
+
   window.RPG_DEFAULT_SKILLS = DEFAULT_SKILLS;
   window.RPG_MAX_LEVEL      = MAX_LEVEL;
   window.RPG_CATEGORY_ORDER = ['money','body','mind','business','lifestyle','knowledge'];
