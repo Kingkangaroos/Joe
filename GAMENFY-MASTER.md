@@ -52,6 +52,12 @@
 3. ✓ index.html las stappen van het dode apple_health-kanaal → gefixt v9.26.
 4. `CLAUDE-CONTEXT.md` (project-knowledge, niet in repo) + `BUILD_DASHBOARD.md` beschrijven een **oudere dark-theme generatie** ("King Joey's Dashboard", index appKey `goals`, `#0a0a0b`) — **niet** het huidige Daylight-Gamenfy. Stale — niet als bron gebruiken.
 
+**Code-gezondheid — audit deze sessie (✓ = nagetrokken)**
+- ✓ Alle `onclick`/`onchange`-handlers over de 8 pagina's zijn gedefinieerd — geen stille crash-knoppen.
+- ✓ Datum-sleutels zijn consistent: index.html/xp.js `todayStr()` en character.html `ymdLocal()`/`todayKey()` gebruiken allemaal de **lokale kalenderdag** (v9.2-fix tegen UTC-na-middernacht). Geen cross-tab datum-mismatch.
+- ✓ Quest-ladders zijn correct bedraad (`window.RPG_QUESTS` → skill-detailsheet). `tierLockInfo` lockt skills **zonder** ladder nooit (dus ladderloze habits lopen vrij door; een ladder aan een habit hangen = tier-gates toevoegen = gedragswijziging).
+- ⚠ **Bekende cosmetische cleanup**: character.html (regel ~1377) definieert een **lokale kopie** van `xpToLevel`/`xpForLevel`, byte-identiek aan xp.js. Geen live-bug (formules gelijk), maar schendt de "xp.js = enige bron"-canon. Bewust níet 's nachts herschreven: elke fix heeft edge-cases (TDZ bij `const`, recursie doordat een top-level `function`-declaratie `window.xpToLevel` overschrijft, of verlies van resilience als xp.js niet laadt). Doen mét Joey erbij.
+
 ---
 
 ## 1. What Gamenfy is
