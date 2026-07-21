@@ -328,11 +328,12 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 **~~Next dedicated session — scientific skills audit~~ ✅ DONE in v9.3 — see `SKILLS-AUDIT.md` (0 open issues; 7 XP dips fixed, endurance ladder added). Original scope:** review all 28 skills against: (a) level pacing (levels 1-100 should map to realistic time-投入: ~1 level/week early, slowing later; tier gates at 10/25/50/75 must be provable real-world milestones), (b) quest ladders grounded in established progression science (strength: double-progression & 1RM standards; calisthenics: skill progressions; piano: graded repertoire (ABRSM-like); reading: volume+retention; meditation: duration+consistency findings; money: percentage-based benchmarks), (c) habit XP/decay rates consistent (currently +15/check, -1 level per 14 idle days for physical skills). Deliverable: one build doc updating quests.js + xp.js milestones with sources noted per ladder.
 
 **Backlog:**
-- [ ] Three-times-daily Apple Health sync setup
-- [ ] Optional drag-to-move in the agenda (currently tap-to-plan)
-- [ ] Realistic skill illustrations / celebration clips via Higgsfield (needs credits)
-- [ ] Quest ladders for private discipline skills (intentionally omitted for now)
-- [ ] Weekly/monthly agenda views (currently day view only)
+- [x] ~~Three-times-daily Apple Health sync setup~~ — **obsoleet**: Apple Health-pad geretireerd (stappen v9.26, gewicht v9.34); Fitbit via Google Health is de bron.
+- [ ] Optional drag-to-move in the agenda (currently tap-to-plan) — front-end maar drag-drop op mobiel = ontwerp/risico, met Joey doen.
+- [ ] Realistic skill illustrations / celebration clips via Higgsfield (needs credits — workspace op 0, free plan).
+- [ ] Quest ladders for private discipline skills (bewust weggelaten; zou tier-gates op no_porn/weed_control zetten = gedragskeuze).
+- [ ] Weekly/monthly agenda views (currently day view only) — front-end, ontwerpkeuze, met Joey doen.
+- [ ] Fitbit **hourly/intraday** pull + beweegnudges (v9.33 leverde de front-end coach-kaart; de intraday edge function + cron vereisen Joey's Supabase-taps).
 
 ---
 
