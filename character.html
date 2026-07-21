@@ -10,11 +10,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=9.33" defer></script>
-<script src="topbar.js?v=9.33" defer></script>
-<script src="xp.js?v=9.33" defer></script>
-<script src="quests.js?v=9.33" defer></script>
-<script src="ventures.js?v=9.33" defer></script>
+<script src="sync.js?v=9.34" defer></script>
+<script src="topbar.js?v=9.34" defer></script>
+<script src="xp.js?v=9.34" defer></script>
+<script src="quests.js?v=9.34" defer></script>
+<script src="ventures.js?v=9.34" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -3627,18 +3627,29 @@ function renderBody(){
   }
 }
 
-function renderBodyComposition(){
+async function renderBodyComposition(){
   const wEl=document.getElementById('bodyCompWeight');
   const fEl=document.getElementById('bodyCompFat');
   const mEl=document.getElementById('bodyCompMuscle');
-  // Try latest apple_health row from localStorage cache if present
   let weight='—', fat='—', muscle='—';
+  // v9.34: Fitbit (cloud health_fitbit) is the primary source for weight — the apple_health
+  // channel has been dead since 2026-06-09. Fat/muscle stay '—' (Fitbit Air has no body-fat sensor).
+  try{
+    const SB='https://ttxjsoahmtennnufgeqx.supabase.co', KEY='sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
+    const r=await fetch(SB+'/rest/v1/app_state?key=eq.health_fitbit&select=data',{headers:{apikey:KEY,Authorization:'Bearer '+KEY}});
+    if(r.ok){
+      const rows=await r.json(); const data=((rows[0]||{}).data)||{};
+      const dates=Object.keys(data).sort().reverse();
+      for(const dt of dates){ const kg=data[dt]&&data[dt].weightKg; if(kg!=null){ weight=Math.round(parseFloat(kg))+' kg'; break; } }
+    }
+  }catch(e){}
+  // Apple Health (legacy localStorage) — fallback for weight, plus fat/muscle if ever present again
   try{
     for(let i=0;i<localStorage.length;i++){
       const key=localStorage.key(i);
       if(key && key.startsWith('apple_health:')){
         const d=JSON.parse(localStorage.getItem(key))||{};
-        if(d.weight) weight=Math.round(parseFloat(d.weight))+' kg';
+        if(weight==='—' && d.weight) weight=Math.round(parseFloat(d.weight))+' kg';
         if(d.body_fat||d['body_fat']) fat=Math.round(parseFloat(d.body_fat||d['body_fat']))+'%';
         if(d.muscle_mass) muscle=Math.round(parseFloat(d.muscle_mass))+' kg';
       }

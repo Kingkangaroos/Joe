@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.33)
+# GAMENFY — Master Document (v9.34)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v9.34 — Body composition-gewicht uit Fitbit (Apple Health-restant geretireerd).** `renderBodyComposition` op de Body-tab las gewicht/vet/spier alleen uit het dode `apple_health`-kanaal (localStorage, stil sinds 2026-06-09) → toonde "—" terwijl Fitbit het gewicht (`weightKg`) wél heeft. Nu async: leest de meest recente `weightKg` uit de cloud-`health_fitbit`-rij (apple_health blijft legacy-fallback). Vet/spier blijven eerlijk "—" (Fitbit Air heeft geen vetsensor). Zelfde klasse fix als de stappen-widget (v9.26). Hiermee is het roadmap-item "Apple Health-sync-pad retireren" praktisch rond: de enige andere apple_health-fetch (Body-health-merge) geeft Fitbit al voorrang. `?v=` naar 9.34. Gevalideerd.
 
 - **v9.33 — Fitbit Coach: data-gedreven advies op Main (front-end, stap 1 van Joey's hourly-wens).** Nieuwe coach-kaart op Main die vandaags `health_fitbit` leest en één contextuele Engelse tip geeft, tijd-afhankelijk: 's ochtends **recovery** (uit slaap + RHR: <6u → hou training licht; ≥7u → goed hersteld, mooie dag voor zwaar), 's middags **stappen-inhaal** (<3k → 25-min wandeling richting 8k; on-track melding), 's avonds **ring sluiten** (nog X tot 8k). Hergebruikt de bestaande Fitbit-fetch in `loadStepsXP` (geen dubbele call), inline-styling (geen nieuwe CSS), verbergt zichzelf zonder data — kan niks breken. Dit levert Joey's "advies o.b.v. data" nu al op de dagelijkse aggregaten. **Hourly-laag = nog te doen, vereist Joey's Supabase-taps** (zie roadmap). `?v=` naar 9.33. Gevalideerd.
 
