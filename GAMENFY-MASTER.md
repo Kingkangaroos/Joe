@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.34)
+# GAMENFY — Master Document (v10.0)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -197,7 +197,7 @@ Vier WARN-bevindingen, allemaal bewuste trade-offs van de huidige architectuur
 3. `pg_net` in public schema — hygiëne, laag risico.
 
 
-## v10-plan — data-gedreven (vastgelegd 2026-07-18, audit-sessie)
+## v10-plan — data-gedreven (vastgelegd 2026-07-18) — ⚠️ VERVANGEN door de v10-roadmap in §9 (2026-07-21); hieronder alleen als historie
 
 Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → wk25-26:0 → wk29:7 (herstel valt exact samen met de start van de Jarvis-ochtendbrief → de coach-loop is de bewezen hefboom). Slechts 15 van 74 skills ooit aangeraakt; het actieve cluster is body + discipline + mindfulness. Fitbit levert dagelijks slaap/RHR/stappen/AZM. *(Correctie v9.26: de audit stelde dat Fitbit Jarvis en de brief nog niet voedde — dat klopte niet; v9.19 wire'de health_fitbit in Jarvis get_state en v9.20 in de ochtendbrief-prompt. Alleen index.html las stappen nog van het dode apple_health-kanaal; dat is in v9.26 gefixt.)*
 
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.0 — Nieuwe fase: v9-lijn geconsolideerd, v10-roadmap vastgesteld.** Milestone-bump. De hele v9.26 → v9.34-reeks is afgerond (quest-claim/tier-gate-fix, realtime sync, cache-busting, why's/milestones/benefits, iconen, Fitbit-coach, stappen- & gewichtsfix, Apple Health geretireerd). §9 bevat nu een schone **v10-roadmap** met 6 tracks (Fitbit-intelligentie, seasons & progressie, agenda, visuele polish, data/infra, productvisie), elke taak getagd 🟢 zelfstandig / 🟡 feedback / 🔵 Supabase-tap / 💳 credits, plus een expliciete lijst beslissingen die Joey's input vereisen. De oude data-gedreven v10-plan-sectie is als vervangen gemarkeerd (blijft als historie). `?v=` naar 10.0 (release-ritueel).
 
 - **v9.34 — Body composition-gewicht uit Fitbit (Apple Health-restant geretireerd).** `renderBodyComposition` op de Body-tab las gewicht/vet/spier alleen uit het dode `apple_health`-kanaal (localStorage, stil sinds 2026-06-09) → toonde "—" terwijl Fitbit het gewicht (`weightKg`) wél heeft. Nu async: leest de meest recente `weightKg` uit de cloud-`health_fitbit`-rij (apple_health blijft legacy-fallback). Vet/spier blijven eerlijk "—" (Fitbit Air heeft geen vetsensor). Zelfde klasse fix als de stappen-widget (v9.26). Hiermee is het roadmap-item "Apple Health-sync-pad retireren" praktisch rond: de enige andere apple_health-fetch (Body-health-merge) geeft Fitbit al voorrang. `?v=` naar 9.34. Gevalideerd.
 
@@ -311,29 +313,47 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 
 ---
 
-## 9. Roadmap / open items
+## 9. Roadmap — v10 (vastgesteld 2026-07-21, vervangt de oude v10-plan-sectie)
 
-**v9 build list — status (v9.0):**
-1. [x] Time Sketcher (agenda × skills × quests × XP)
-2. [x] Main missions in Daily-card style + gratitude box on Main
-3. [x] Tier checklist inside skill detail (inline claims)
-4. [x] Skill-panel Daylight redesign
-5. [ ] Verify with Joey: maandlasten add-flow fixed in v8.8/v8.10 · new agenda/missions look approved on device
+> De v9-lijn (v9.26 → v9.34) is afgerond en geconsolideerd: quest-claim/tier-gate-fix, realtime cross-device sync, cache-busting, why's + milestones + benefits voor alle skills, topical iconen, Fitbit-coach, stappen- én gewichtsfix (Apple Health geretireerd). v10 opent een nieuwe fase. Legenda per taak: 🟢 = Claudia kan dit zelfstandig bouwen · 🟡 = vereist Joey's ontwerp/beslissing · 🔵 = vereist Joey's Supabase-approval (edge function/cron/migratie) · 💳 = vereist Higgsfield-credits.
 
-**Next builds (in order):**
-1. [x] **Jarvis daily check-in + streak + automatic push** — shipped in v7.1/v7.2. Joey only taps "Turn on" once in the home-screen app.
-2. [x] **Tier-lock system** — shipped in v7.4 (gates at 10/25/50/75, gate quest required, XP never lost).
-3. [~] **Skill photos** — in progress (v7.5): 3/28 done (strength, coding, sales), pipeline + style template locked in the v7.5 changelog entry. Blocked on Higgsfield credits (0 left, free plan) — continue in batches.
+### Track A — Fitbit-intelligentie & de coach-loop  *(hoogste dagelijkse waarde)*
+- A1. 🔵 **Intraday/hourly pull** — fitbit-sync edge function omzetten naar uur-buckets (steps + HR) in `health_fitbit_intraday`; cron 3×/dag → elk uur; intraday-scope van de Google/Fitbit-app verifiëren.
+- A2. 🟢 **Beweeg-/inhaalnudges in-app** — voortbouwen op de v9.33 coach-kaart zodra uurdata bestaat (dag-versie is al live).
+- A3. 🔵 **Adaptieve ochtendbrief** — na 2+ dagen zonder XP schakelt Jarvis' brief van toon/urgentie; RHR- en slaaptrend-advies verweven (send-daily-push).
+- A4. 🟡 **Push-beleid** — welke nudges wil je als push vs alleen in-app? (voorkomt notificatiemoeheid)
 
-**~~Next dedicated session — scientific skills audit~~ ✅ DONE in v9.3 — see `SKILLS-AUDIT.md` (0 open issues; 7 XP dips fixed, endurance ladder added). Original scope:** review all 28 skills against: (a) level pacing (levels 1-100 should map to realistic time-投入: ~1 level/week early, slowing later; tier gates at 10/25/50/75 must be provable real-world milestones), (b) quest ladders grounded in established progression science (strength: double-progression & 1RM standards; calisthenics: skill progressions; piano: graded repertoire (ABRSM-like); reading: volume+retention; meditation: duration+consistency findings; money: percentage-based benchmarks), (c) habit XP/decay rates consistent (currently +15/check, -1 level per 14 idle days for physical skills). Deliverable: one build doc updating quests.js + xp.js milestones with sources noted per ladder.
+### Track B — Seasons & progressiediepte
+- B1. 🟡 **Season-concept** — 3 focus-skills/maand via bestaande `rpg_focus_skills_v1`: hoe start een season, handmatig of automatisch kiezen, wat levert 'm op?
+- B2. 🟡 **Boss quest per season** — één grote maanddoelquest; wat definieert 'm en wat is de beloning?
+- B3. 🟡 **Ladders voor gewoonten** — habits een quest-ladder geven zet tier-gates op je dagelijkse skills (gedragswijziging): wil je dat wel/niet?
 
-**Backlog:**
-- [x] ~~Three-times-daily Apple Health sync setup~~ — **obsoleet**: Apple Health-pad geretireerd (stappen v9.26, gewicht v9.34); Fitbit via Google Health is de bron.
-- [ ] Optional drag-to-move in the agenda (currently tap-to-plan) — front-end maar drag-drop op mobiel = ontwerp/risico, met Joey doen.
-- [ ] Realistic skill illustrations / celebration clips via Higgsfield (needs credits — workspace op 0, free plan).
-- [ ] Quest ladders for private discipline skills (bewust weggelaten; zou tier-gates op no_porn/weed_control zetten = gedragskeuze).
-- [ ] Weekly/monthly agenda views (currently day view only) — front-end, ontwerpkeuze, met Joey doen.
-- [ ] Fitbit **hourly/intraday** pull + beweegnudges (v9.33 leverde de front-end coach-kaart; de intraday edge function + cron vereisen Joey's Supabase-taps).
+### Track C — Agenda & planning
+- C1. 🟡 **Week/maand-weergave** (nu dag-only) — layout-ontwerp.
+- C2. 🟡 **Drag-to-move agendablokken** — interactie-ontwerp + mobiel drag-risico.
+
+### Track D — Visuele & content-polish
+- D1. 💳 **Skill-fototegels** (Higgsfield) — ~32 tegels, Daylight-stijl vastgelegd; wacht op credits.
+- D2. 🟡 **Core skill tracker UI** onder Body (finger fluiten, dansen) — skills+ladders bestaan al; de Body-sectie zelf is ontwerp.
+- D3. 🟢 **Doorlopende icoon/content-polish** waar veilig.
+
+### Track E — Data-integriteit & infra
+- E1. 🟢 **Per-veld tijdstempel-merge in sync.js** — extra vangnet nu realtime aan staat; voorzichtig, front-end, met tests.
+- E2. 🔵 **Legacy-skill-opschoning** — 28 verouderde skills uit de character-blob (destructieve migratie; jouw OK + tap).
+- E3. 🔵🟡 **Supabase Auth** — groter project, geparkeerd; jouw beslissing + setup.
+
+### Track F — Productvisie (langere horizon)
+- F1. 🟡 **Publieke platform-richting** — skill-levels die echte uitkomsten beïnvloeden (leningen/verzekering/sociaal). Strategisch; jouw koers.
+
+### ⛳ Waar Claudia nu Joey's feedback voor nodig heeft (beantwoord in één keer → deblokkeert meerdere tracks)
+1. **Seasons (B1/B2):** start een season automatisch op de 1e van de maand of kies jij 'm? En wat is de beloning voor een afgeronde season / boss quest?
+2. **Habit-ladders (B3):** wil je tier-gates op je dagelijkse gewoonten (ja/nee)?
+3. **Agenda (C1/C2):** eerst week-weergave of eerst drag-to-move? En dag→week: swipe of knop?
+4. **Core tracker (D2):** hoe wil je de Body-sectie voor fluiten/dansen zien — een aparte "Core skills"-rij, of gewoon tussen de andere skills?
+5. **Push-beleid (A4):** mag ik nudges als push sturen, of hou je die liever alleen in de app?
+6. **Prioriteit:** welke track pak ik ná v10.0 als eerste — A (Fitbit-hourly), B (seasons), of C (agenda)?
+
+Track A1/A3, E2, E3 wachten sowieso op je Supabase-taps; D1 op Higgsfield-credits. E1 en A2/D3 kan ik zelfstandig oppakken zodra je zegt: go.
 
 ---
 
