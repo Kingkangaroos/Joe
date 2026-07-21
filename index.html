@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=9.32" defer></script>
-<script src="topbar.js?v=9.32" defer></script>
-<script src="xp.js?v=9.32" defer></script>
-<script src="quests.js?v=9.32" defer></script>
-<script src="ventures.js?v=9.32" defer></script>
-<script src="checkin.js?v=9.32" defer></script>
-<script src="push.js?v=9.32" defer></script>
+<script src="sync.js?v=9.33" defer></script>
+<script src="topbar.js?v=9.33" defer></script>
+<script src="xp.js?v=9.33" defer></script>
+<script src="quests.js?v=9.33" defer></script>
+<script src="ventures.js?v=9.33" defer></script>
+<script src="checkin.js?v=9.33" defer></script>
+<script src="push.js?v=9.33" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1106,6 +1106,11 @@ body {
     <div class="checkin-cta" id="checkinCta" onclick="openCheckin()"></div>
   </div>
 
+  <!-- Fitbit Coach tip (v9.33 — data-driven advice from today's Fitbit data) -->
+  <div id="fitbitCoachWrap" style="display:none;margin-bottom:12px">
+    <div id="fitbitCoachCard" style="background:var(--card,#fff);border:1px solid var(--line,rgba(0,0,0,0.08));border-radius:16px;padding:14px 16px"></div>
+  </div>
+
   <!-- Push setup (one-time) -->
   <div class="push-card" id="pushCard" style="display:none"></div>
 
@@ -1899,6 +1904,47 @@ window.coreLog = function(key, xp, label) {
   renderCharStrip();
 };
 
+// ── Fitbit Coach (v9.33) — one contextual, data-driven line from today's Fitbit data ──
+function renderFitbitCoach(day){
+  const wrap=document.getElementById('fitbitCoachWrap');
+  const card=document.getElementById('fitbitCoachCard');
+  if(!wrap||!card) return;
+  if(!day){ wrap.style.display='none'; return; }
+  const hour=new Date().getHours();
+  const steps=parseInt(day.steps)||0;
+  const sleepMin=parseInt(day.sleepMinutes)||0;
+  const rhr=parseInt(day.restingHR)||0;
+  const GOAL=8000;
+  const hrs=sleepMin/60;
+  const sleepTxt=sleepMin?Math.floor(hrs)+'h'+String(sleepMin%60).padStart(2,'0'):'';
+  const nf=n=>n.toLocaleString('en-US');
+  let tip='', label='COACH';
+  if(hour<11){
+    label='RECOVERY';
+    if(sleepMin){
+      if(hrs<6) tip='You slept <b>'+sleepTxt+'</b> — keep training light today and aim for an early night.';
+      else if(hrs<7) tip='<b>'+sleepTxt+'</b> of sleep — okay. A short morning walk will wake you up.';
+      else tip='<b>'+sleepTxt+'</b> of sleep — well recovered. A good day for a hard session.';
+      if(rhr) tip+=' Resting HR '+rhr+' bpm.';
+    } else if(rhr){ tip='Resting heart rate today <b>'+rhr+' bpm</b>.'; }
+    else { wrap.style.display='none'; return; }
+  } else if(hour<18){
+    label='TODAY';
+    if(steps>=GOAL) tip='<b>'+nf(steps)+'</b> steps — daily goal already reached.';
+    else if(steps>=3000) tip='<b>'+nf(steps)+'</b> steps — on track, ~'+nf(GOAL-steps)+' to go for 8k.';
+    else if(steps>0) tip='Only <b>'+nf(steps)+'</b> steps so far — a ~25-min walk gets you toward 8k.';
+    else { wrap.style.display='none'; return; }
+  } else {
+    label='EVENING';
+    if(steps>=GOAL) tip='<b>'+nf(steps)+'</b> steps — nicely closed out.';
+    else if(steps>0) tip='~<b>'+nf(GOAL-steps)+'</b> steps to 8k — a walk around the block closes it.';
+    else { wrap.style.display='none'; return; }
+  }
+  card.innerHTML='<div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--text-tertiary,#8a8a8a);margin-bottom:4px">'+label+'</div>'
+    +'<div style="font-size:14px;line-height:1.4;color:var(--text-primary,#1a1a1a)">'+tip+'</div>';
+  wrap.style.display='';
+}
+
 // ── Steps → Endurance XP (v9.26 — Fitbit-first, Apple Health fallback) ──
 // Het Apple Health-kanaal ligt stil sinds 2026-06-09; Fitbit Air (health_fitbit) is nu de bron.
 // health_fitbit is één rij met per-datum keys {steps, activeMinutes, sleepMinutes, restingHR, weightKg}.
@@ -1908,13 +1954,14 @@ window.coreLog = function(key, xp, label) {
   const today = todayStr();
   const XP_GUARD = 'ah_xp_given:' + today;
   const hdr = { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } };
-  let steps = 0, energy = 0, src = '';
+  let steps = 0, energy = 0, src = '', fitbitDay = null;
   // 1) Fitbit Air — primaire bron
   try {
     const r = await fetch(`${SB_URL}/rest/v1/app_state?key=eq.health_fitbit&select=data`, hdr);
     if (r.ok) {
       const rows = await r.json();
       const day = ((rows[0] || {}).data || {})[today];
+      fitbitDay = day || null;
       if (day && day.steps != null) { steps = parseInt(day.steps) || 0; src = 'Fitbit'; }
     }
   } catch(e) {}
@@ -1936,6 +1983,7 @@ window.coreLog = function(key, xp, label) {
       localStorage.setItem(XP_GUARD, '1');
     }
   }
+  try { renderFitbitCoach(fitbitDay); } catch(e) {}
 })();
 
 // ── Daily Quote ──────────────────────────────────────────────

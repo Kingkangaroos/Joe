@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.32)
+# GAMENFY — Master Document (v9.33)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v9.33 — Fitbit Coach: data-gedreven advies op Main (front-end, stap 1 van Joey's hourly-wens).** Nieuwe coach-kaart op Main die vandaags `health_fitbit` leest en één contextuele Engelse tip geeft, tijd-afhankelijk: 's ochtends **recovery** (uit slaap + RHR: <6u → hou training licht; ≥7u → goed hersteld, mooie dag voor zwaar), 's middags **stappen-inhaal** (<3k → 25-min wandeling richting 8k; on-track melding), 's avonds **ring sluiten** (nog X tot 8k). Hergebruikt de bestaande Fitbit-fetch in `loadStepsXP` (geen dubbele call), inline-styling (geen nieuwe CSS), verbergt zichzelf zonder data — kan niks breken. Dit levert Joey's "advies o.b.v. data" nu al op de dagelijkse aggregaten. **Hourly-laag = nog te doen, vereist Joey's Supabase-taps** (zie roadmap). `?v=` naar 9.33. Gevalideerd.
 
 - **v9.32 — Topical skill-iconen i.p.v. generieke sterretjes (gratis visuele polish).** Fotoscontext: Higgsfield-workspace zit op 0 credits (free plan) en Joey wilde geen betaalde/trial-route — en een gratis platte gradient-tegel zou de al-cohesieve icoon-laag (domein-radialgradient + custom line-icoon) juist *downgraden*, dus die is bewust niet gebouwd. Wél gedaan: 7 skills die terugvielen op een generiek line-art-sterretje kregen een passend **bestaand** line-icoon (nutrition→chef, walking→run, grounding→lotus, gratitude→heart, good_deed→handshake, coloring→pen, drawing→pen) — geen nieuwe SVG-paden verzonnen, alleen bewezen iconen hergebruikt (nul risico). De 5 zonder goede match (sleep, teeth, household, screen_time, cold_shower) blijven een sterretje: een verkeerd icoon is slechter dan een neutraal. Echte foto-tegels blijven de enige upgrade die credits vereist. `?v=` naar 9.32. Gevalideerd.
 
