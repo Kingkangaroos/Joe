@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v9.31)
+# GAMENFY — Master Document (v9.32)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v9.32 — Topical skill-iconen i.p.v. generieke sterretjes (gratis visuele polish).** Fotoscontext: Higgsfield-workspace zit op 0 credits (free plan) en Joey wilde geen betaalde/trial-route — en een gratis platte gradient-tegel zou de al-cohesieve icoon-laag (domein-radialgradient + custom line-icoon) juist *downgraden*, dus die is bewust niet gebouwd. Wél gedaan: 7 skills die terugvielen op een generiek line-art-sterretje kregen een passend **bestaand** line-icoon (nutrition→chef, walking→run, grounding→lotus, gratitude→heart, good_deed→handshake, coloring→pen, drawing→pen) — geen nieuwe SVG-paden verzonnen, alleen bewezen iconen hergebruikt (nul risico). De 5 zonder goede match (sleep, teeth, household, screen_time, cold_shower) blijven een sterretje: een verkeerd icoon is slechter dan een neutraal. Echte foto-tegels blijven de enige upgrade die credits vereist. `?v=` naar 9.32. Gevalideerd.
 
 - **v9.31 — Quest-claim + tier-gates gerepareerd (Joey's calisthenics-fout) + volledige ladder per skill.** **De bug:** claimen was gated op `level >= q.lvl` — je kon een quest pas claimen als je level al hoog genoeg was, terwijl de quest-XP juist is wat je naar dat level brengt. Gevolg: een beginner kon zelfs de eerste calisthenics-quest ("Newbie Base", lvl 3) niet claimen. **De fix (jouw ontwerp):** nieuwe canonieke `window.questClaimable(skill,lvl)` in xp.js — *quests zijn achievements: done = claimbaar, alleen geblokkeerd door een niet-geclaimde tier-gate-quest op een lager level* (nooit door je huidige XP-level). Toegepast in béide render-plekken (de Quests-view `renderQuestLadder` én de skill-detail-checklist). Locked-rijen tonen nu "🔒 Clear the LV X gate first" i.p.v. het misleidende "Reach level X". **Skill-detail toont nu de vólledige ladder** (alle quests van de skill met done/claim/gate-status + "X/Y claimed") i.p.v. alleen tot de eerstvolgende gate — zodat je per skill al z'n quests ziet als je erop klikt. **Audit over alle 33 ladders:** allemaal gezond (gesorteerd, unieke levels, 1-100, oplopende XP, gates dekbaar); habits hebben terecht geen ladder/gates. Logica unit-getest op calisthenics-scenario's (gates 8→22→40→64 in volgorde clearbaar). `?v=` naar 9.31. Gevalideerd.
 

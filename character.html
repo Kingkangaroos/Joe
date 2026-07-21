@@ -10,11 +10,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=9.31" defer></script>
-<script src="topbar.js?v=9.31" defer></script>
-<script src="xp.js?v=9.31" defer></script>
-<script src="quests.js?v=9.31" defer></script>
-<script src="ventures.js?v=9.31" defer></script>
+<script src="sync.js?v=9.32" defer></script>
+<script src="topbar.js?v=9.32" defer></script>
+<script src="xp.js?v=9.32" defer></script>
+<script src="quests.js?v=9.32" defer></script>
+<script src="ventures.js?v=9.32" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -2807,6 +2807,8 @@ const SKILL_ICON_KEY = {
   languages:'globe', piano:'piano', learning:'cap', superiority:'lotus',
   whistling:'whistle', dancing:'dance',
   no_porn:'shield', weed_control:'shield',
+  // v9.32: topical icons for skills that fell back to a generic star (reusing existing line-icons)
+  nutrition:'chef', walking:'run', grounding:'lotus', gratitude:'heart', good_deed:'handshake', coloring:'pen', drawing:'pen',
 };
 function skillIconSvg(key, color){
   const name = SKILL_ICON_KEY[key] || 'star';
