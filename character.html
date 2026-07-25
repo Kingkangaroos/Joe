@@ -10,11 +10,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.1" defer></script>
-<script src="topbar.js?v=10.1" defer></script>
-<script src="xp.js?v=10.1" defer></script>
-<script src="quests.js?v=10.1" defer></script>
-<script src="ventures.js?v=10.1" defer></script>
+<script src="sync.js?v=10.2" defer></script>
+<script src="topbar.js?v=10.2" defer></script>
+<script src="xp.js?v=10.2" defer></script>
+<script src="quests.js?v=10.2" defer></script>
+<script src="ventures.js?v=10.2" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1157,6 +1157,17 @@ textarea {
   <div class="sec-title" style="margin-top:4px">Body Skills</div>
   <div class="body-skills-grid" id="bodySkillsGrid"></div>
 
+  <!-- ANWB Routes side quest (v10.2 — moved here from the hidden legacy tab so it's actually visible) -->
+  <div class="sec-title" style="margin-top:4px">Walking</div>
+  <a href="routes.html" class="wtb-card" style="text-decoration:none;color:inherit;display:block">
+    <div>
+      <span style="font-size:22px">🥾</span>
+      <span style="font-family:var(--font-display);font-weight:800;font-size:15px;margin-left:8px">ANWB Routes</span>
+      <span class="wtb-delta" id="rtBadge"></span>
+    </div>
+    <div class="wtb-hint">🎲 Roll a random route to walk →</div>
+  </a>
+
   <!-- Hevy Last Workout + analysis -->
   <button class="assess-btn" onclick="runHevyAnalysis()" style="margin-top:14px"><span>🏋️ Analyze my Hevy strength</span></button>
   <div id="hevyWidget"></div>
@@ -1222,15 +1233,6 @@ textarea {
   </div>
 
   <!-- Compact RS skills grid -->
-  <!-- ANWB Routes side quest (v9.25) -->
-  <a href="routes.html" class="wtb-card" style="text-decoration:none;color:inherit">
-    <div>
-      <span style="font-size:22px">🥾</span>
-      <span style="font-family:var(--font-display);font-weight:800;font-size:15px;margin-left:8px">ANWB Routes</span>
-      <span class="wtb-delta" id="rtBadge"></span>
-    </div>
-    <div class="wtb-hint">🎲 Roll a random route to walk →</div>
-  </a>
 
   <div class="sec-title">Skills</div>
   <div id="rsCompactGrid" class="rs-compact-grid"></div>
