@@ -25,7 +25,7 @@
     if (!SUPABASE_URL || !SUPABASE_KEY) return;
     if (SUPABASE_URL.indexOf('PASTE-') === 0 || SUPABASE_KEY.indexOf('PASTE-') === 0) return;
 
-    let supa = null, pushTimer = null, suppressSync = false, lastSyncedJson = null;
+    let supa = null, pushTimer = null, suppressSync = false, lastSyncedJson = null, ready = false;
 
     function matches(k) {
       if (!k) return false;
@@ -89,7 +89,7 @@
       return changed;
     }
     async function pushNow() {
-      if (!supa) return;
+      if (!supa || !ready) return;
       const state = collect();
       const json = JSON.stringify(state);
       if (json === lastSyncedJson) return;
@@ -103,6 +103,7 @@
     }
     function schedulePush() { clearTimeout(pushTimer); pushTimer = setTimeout(pushNow, 250); }
     function flushOnUnload() {
+      if (!ready) return;
       const state = collect();
       const json = JSON.stringify(state);
       if (json === lastSyncedJson) return;
@@ -128,14 +129,18 @@
         if (!error && data && data.data && Object.keys(data.data).length > 0) {
           lastSyncedJson = JSON.stringify(data.data);
           applyRemote(data.data, false); // initial load: never delete local-only items
+          ready = true; // v10.1: pull complete — pushes are now safe (this is the stale-load-clobber fix)
           // If we have local items the cloud doesn't know about, push the merged state.
           let hasLocalOnly = false;
           for (const k of listAllKeys()) { if (!(k in data.data)) { hasLocalOnly = true; break; } }
           if (hasLocalOnly) schedulePush();
         } else if (Object.keys(collect()).length > 0) {
+          ready = true; // no cloud row yet but we have local data — safe to seed the cloud
           schedulePush();
+        } else {
+          ready = true; // nothing anywhere yet
         }
-      } catch (e) {}
+      } catch (e) { ready = true; /* pull failed: allow later user-driven pushes, but the stale on-load writes already fired their (suppressed) push and are dropped */ }
       supa.channel('app_state_' + appKey)
         .on('postgres_changes', {
           event: '*', schema: 'public', table: 'app_state', filter: 'key=eq.' + appKey,

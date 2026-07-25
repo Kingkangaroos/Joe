@@ -790,7 +790,38 @@
     return habits;
   }
 
-  window.getHabits   = function () { return applyHabitDecay(loadHabits()); };
+  // v10.1: heal habit state from the authoritative per-day log (rpg_habitlog_v1).
+  // A sync clobber could leave habits[key].lastChecked/score stale while the day-log
+  // still records the real checks — this reconciles FORWARD only (never downgrades),
+  // so the divergence Joey saw ("checked it but shows Lv 0") self-heals.
+  function reconcileHabitsFromLog(habits) {
+    let log; try { log = JSON.parse(localStorage.getItem('rpg_habitlog_v1')) || {}; } catch (e) { return habits; }
+    let changed = false;
+    for (const key in log) {
+      const h = habits[key];
+      if (!h || !log[key]) continue;
+      const dates = Object.keys(log[key]).filter(function (d) { return log[key][d]; }).sort();
+      if (!dates.length) continue;
+      const last = dates[dates.length - 1];
+      if (!h.lastChecked || h.lastChecked < last) {
+        var streak = 1;
+        for (var i = dates.length - 1; i > 0; i--) {
+          var p = dates[i].split('-').map(Number);
+          var d = new Date(p[0], p[1] - 1, p[2] - 1);
+          var prev = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+          if (dates[i - 1] === prev) streak++; else break;
+        }
+        h.lastChecked = last;
+        h.streak = Math.max(h.streak || 0, streak);
+        h.score = Math.max(h.score || 0, Math.min(10, streak));
+        changed = true;
+      }
+    }
+    if (changed) saveHabits(habits);
+    return habits;
+  }
+
+  window.getHabits   = function () { return applyHabitDecay(reconcileHabitsFromLog(loadHabits())); };
   window.saveHabits  = saveHabits;
 
   window.checkHabit = function (habitId, label, icon) {

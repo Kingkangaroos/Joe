@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.0)
+# GAMENFY — Master Document (v10.1)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.1 — Daily-mission-audit: sync-clobber die habit-checks opat, GEREPAREERD.** Joey meldde dat gratitude na een dag weer op Lv 0 stond en gisteren unchecked leek. **Audit (live data):** de per-dag-log (`rpg_habitlog_v1`) had gratitude-checks op 12+15 juli, maar de habit zelf stond op `lastChecked: 6 juni, score 0` — de twee bronnen waren uit elkaar gelopen, en recente checks stonden in geen van beide. **Root-cause in sync.js:** `localStorage.setItem` is gepatcht om bij elke matched write te pushen (250ms debounce), óók tijdens het laden — vóór de cloud-pull binnen is. xp.js schrijft bij het openen (decay/seeding) → dat pusht de VEROUDERDE lokale staat en overschrijft de verse cloud vóór de pull klaar is (`lastSyncedJson` is dan nog null → push gaat gegarandeerd door). **Fix:** een `ready`-flag — `pushNow`/`flushOnUnload` pushen niets vóór de initiële pull is voltooid (in alle init-takken op `true` gezet; bij pull-fout wel latere user-pushes, maar de verouderde on-load-writes worden gedropt). Raakt de delete-guard niet, dus geen regressie. **Plus** een heal-forward reconcile in xp.js: `getHabits` herstelt `lastChecked`/`streak`/`score` uit de authoritatieve dag-log (verlaagt nooit), zodat bestaande divergentie zichzelf heelt. **Routes-randomizer:** die bestond al (Body-tab, kaart "🥾 ANWB Routes" tussen Weight en Skills → routes.html met 🎲 "Roll my next route"); hint aangepast naar "🎲 Roll a random route to walk →" zodat 'ie herkenbaar is. Workout-challenge-per-dag: geen eerdere spec gevonden — apart uitgevraagd. `?v=` naar 10.1. Alles gevalideerd (sync.js + xp.js + 8 pagina's parsen schoon).
 
 - **v10.0 — Nieuwe fase: v9-lijn geconsolideerd, v10-roadmap vastgesteld.** Milestone-bump. De hele v9.26 → v9.34-reeks is afgerond (quest-claim/tier-gate-fix, realtime sync, cache-busting, why's/milestones/benefits, iconen, Fitbit-coach, stappen- & gewichtsfix, Apple Health geretireerd). §9 bevat nu een schone **v10-roadmap** met 6 tracks (Fitbit-intelligentie, seasons & progressie, agenda, visuele polish, data/infra, productvisie), elke taak getagd 🟢 zelfstandig / 🟡 feedback / 🔵 Supabase-tap / 💳 credits, plus een expliciete lijst beslissingen die Joey's input vereisen. De oude data-gedreven v10-plan-sectie is als vervangen gemarkeerd (blijft als historie). `?v=` naar 10.0 (release-ritueel).
 
