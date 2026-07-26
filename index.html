@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.3" defer></script>
-<script src="topbar.js?v=10.3" defer></script>
-<script src="xp.js?v=10.3" defer></script>
-<script src="quests.js?v=10.3" defer></script>
-<script src="ventures.js?v=10.3" defer></script>
-<script src="checkin.js?v=10.3" defer></script>
-<script src="push.js?v=10.3" defer></script>
+<script src="sync.js?v=10.4" defer></script>
+<script src="topbar.js?v=10.4" defer></script>
+<script src="xp.js?v=10.4" defer></script>
+<script src="quests.js?v=10.4" defer></script>
+<script src="ventures.js?v=10.4" defer></script>
+<script src="checkin.js?v=10.4" defer></script>
+<script src="push.js?v=10.4" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1049,12 +1049,12 @@ body {
   <!-- Greeting -->
   <div class="greeting">
     <div style="display:flex;align-items:center;gap:10px">
-      <button class="day-nav-btn" id="dayNavBack" onclick="setViewDay('yesterday')">‹</button>
+      <button class="day-nav-btn" id="dayNavBack" onclick="setViewDay(missionsDayOffset-1)">‹</button>
       <div>
         <div class="greeting-time" id="greetingText">Good morning, Joey</div>
         <div class="greeting-date" id="greetingDate"></div>
       </div>
-      <button class="day-nav-btn" id="dayNavFwd" onclick="setViewDay('today')" style="display:none">›</button>
+      <button class="day-nav-btn" id="dayNavFwd" onclick="setViewDay(missionsDayOffset+1)" style="display:none">›</button>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
     <button class="streak-pill jarvis-pill" onclick="location.href='jarvis.html'" title="Jarvis">
@@ -1291,7 +1291,7 @@ function renderMissions() {
   if (!window.getHabits) { setTimeout(renderMissions, 50); return; }
   const habits = window.getHabits();
   const defaults = window.RPG_DEFAULT_SKILLS || {};
-  const today = missionsDay === 'yesterday' ? yesterdayStr() : todayStr();
+  const today = viewedDateStr();
 
   // Collect habits from defaults
   const habitKeys = Object.keys(defaults).filter(k => defaults[k].isHabit && !defaults[k].private && defaults[k].active !== false);
@@ -1429,26 +1429,30 @@ function hlogSet(key, date, val){
   hlogSave(l);
 }
 
-let missionsDay='today';
-window.setViewDay=function(day){
-  missionsDay = day;
-  const yest = missionsDay==='yesterday';
-  document.getElementById('missionsHead').textContent = yest ? "Yesterday's Missions" : "Today's Missions";
-  document.getElementById('missionsDayBtn').textContent = yest ? 'Back to today' : 'Yesterday';
-  document.getElementById('dayNavBack').style.display = yest ? 'none' : 'flex';
-  document.getElementById('dayNavFwd').style.display  = yest ? 'flex' : 'none';
+let missionsDayOffset=0; const MISSIONS_MAX_BACK=13;
+function viewedDateStr(){ const d=new Date(); d.setDate(d.getDate()+missionsDayOffset); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function viewedDateLabel(){ if(missionsDayOffset===0) return 'Today'; if(missionsDayOffset===-1) return 'Yesterday'; const d=new Date(); d.setDate(d.getDate()+missionsDayOffset); return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
+window.setViewDay=function(offset){
+  missionsDayOffset = Math.max(-MISSIONS_MAX_BACK, Math.min(0, offset|0));
+  const off = missionsDayOffset;
+  const isToday = off===0;
+  const label = viewedDateLabel();
+  document.getElementById('missionsHead').textContent = isToday ? "Today's Missions" : "Missions · " + label;
+  const btn=document.getElementById('missionsDayBtn'); if(btn) btn.textContent = isToday ? '‹ Back-fill' : 'Back to today';
+  const back=document.getElementById('dayNavBack'); if(back) back.style.display = off > -MISSIONS_MAX_BACK ? 'flex' : 'none';
+  const fwd=document.getElementById('dayNavFwd');  if(fwd)  fwd.style.display  = off < 0 ? 'flex' : 'none';
   const gd = document.getElementById('greetingDate');
   const gt = document.getElementById('greetingText');
-  if (yest) {
-    const d=new Date(); d.setDate(d.getDate()-1);
-    gt.textContent = 'Yesterday';
+  if (!isToday && gt && gd) {
+    const d=new Date(); d.setDate(d.getDate()+off);
+    gt.textContent = (off===-1?'Yesterday':d.toLocaleDateString('en-GB',{weekday:'long'}));
     gd.textContent = d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}) + ' — fill in what you did';
   } else {
     renderGreeting();
   }
   renderMissions();
 };
-window.toggleMissionsDay=function(){ setViewDay(missionsDay==='today'?'yesterday':'today'); };
+window.toggleMissionsDay=function(){ setViewDay(missionsDayOffset===0 ? -1 : 0); };
 // v9.1: spiegel van de privé entries in ALL_DAILY_QUESTS (character.html).
 // Dit zijn XP-skills met eigen quest-ladder — géén 0-10 habits.
 const PRIVATE_DAILY = [
@@ -1459,15 +1463,15 @@ const PRIVATE_DAILY = [
 window.togglePrivateQuest = function(id){
   if (sessionStorage.getItem('rpg_private_unlocked') !== '1') { privatePinPrompt(); return; }
   const q = PRIVATE_DAILY.find(x => x.id === id); if (!q) return;
-  const date = missionsDay === 'yesterday' ? yesterdayStr() : todayStr();
+  const date = viewedDateStr();
   let dd = {}; try { dd = JSON.parse(localStorage.getItem('rpg_daily_v1:' + date)) || {}; } catch (e) {}
   if (!dd.quests) dd.quests = {};
   const was = !!(dd.quests[id] && dd.quests[id].done);
   dd.quests[id] = { done: !was };
   try { localStorage.setItem('rpg_daily_v1:' + date, JSON.stringify(dd)); } catch (e) {}
-  if (!was && window.addXP)    window.addXP(q.skill, q.xp, q.label + (missionsDay==='yesterday' ? ' (yesterday)' : ''));
+  if (!was && window.addXP)    window.addXP(q.skill, q.xp, q.label + (missionsDayOffset<0 ? ' ('+viewedDateStr()+')' : ''));
   if (was  && window.removeXP) window.removeXP(q.skill, q.xp, q.label + ' unchecked');
-  if (!was && missionsDay !== 'yesterday') {
+  if (!was && missionsDayOffset===0) {
     // opeenvolgende dagen terugtellen vanuit vandaag
     let s = 0;
     for (let i = 0; i < 365; i++) {
@@ -1623,9 +1627,9 @@ window.openMissionDetail = function(key, isPrivate, privateId) {
     ${def.why ? `<div class="md-sec">Why this matters</div><div class="md-why">${def.why}</div>` : ''}
     ${bHtml ? `<div class="md-sec">What consistency earns you</div>${bHtml}` : ''}
     <button class="md-check${st.checkedToday ? ' is-done' : ''}" onclick="mdCheck('${key}',${isPrivate?1:0},'${privateId||''}')">
-      ${st.checkedToday ? '✓ Done today' : (missionsDay === 'yesterday' ? 'Check for yesterday' : 'Check today ✓')}
+      ${st.checkedToday ? '✓ Done' : (missionsDayOffset<0 ? 'Check for '+viewedDateLabel() : 'Check today ✓')}
     </button>
-    ${st.checkedToday && !isPrivate && missionsDay !== 'yesterday' ? `<button class="md-uncheck" onclick="mdUncheck('${key}')">undo today's check</button>` : ''}
+    ${st.checkedToday && !isPrivate ? `<button class="md-uncheck" onclick="mdUncheck('${key}')">undo this day's check</button>` : ''}
     <button class="md-uncheck" id="mdResetBtn" onclick="mdReset('${key}',${isPrivate?1:0},'${privateId||''}',event)">↺ Reset & start fresh</button>
   </div>`;
   bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
@@ -1634,7 +1638,7 @@ window.openMissionDetail = function(key, isPrivate, privateId) {
 window.mdCheck = function(key, isPrivate, privateId) {
   const st = missionStats(key, !!isPrivate, privateId);
   document.getElementById('mdBg')?.remove();
-  if (st.checkedToday && missionsDay !== 'yesterday') return; // al gedaan
+  if (st.checkedToday && missionsDayOffset===0) return; // al gedaan (today)
   if (isPrivate) window.togglePrivateQuest(privateId);
   else window.toggleMission(key);
 };
@@ -1669,43 +1673,25 @@ window.mdUncheck = function(key) {
 };
 
 window.toggleMission = function(key) {
-  if (missionsDay === 'yesterday') {
-    const defaults = window.RPG_DEFAULT_SKILLS || {};
-    const def = defaults[key] || {};
-    const y = yesterdayStr();
-    if (hlogHas(key, y)) {
-      showToast('Already counted for yesterday');
-    } else {
-      if (window.checkHabitFor) window.checkHabitFor(key, y, def.label, def.icon);
-      hlogSet(key, y, true);
-      if (window.addXP) window.addXP(key, 15, 'Habit (yesterday): ' + def.label);
-      try { const st = JSON.parse(localStorage.getItem('rpg_streak_v1')) || { days:{} };
-        st.days = st.days || {}; st.days[y] = true;
-        localStorage.setItem('rpg_streak_v1', JSON.stringify(st)); } catch (e) {}
-      showToast('+15 XP \u00b7 ' + def.label + ' \u00b7 counted for yesterday');
-    }
-    renderMissions(); renderCharStrip();
-    if (window.Streak) { renderStreakPill(); renderCheckinCard(); }
-    return;
-  }
-  if (!window.checkHabit || !window.uncheckHabit) return;
+  if (!window.checkHabit) return;
   const defaults = window.RPG_DEFAULT_SKILLS || {};
   const def = defaults[key] || {};
-  const habits = window.getHabits ? window.getHabits() : {};
-  const h = habits[key] || {};
-  const today = todayStr();
-  const wasDone = h.lastChecked === today;
-
-  if (wasDone) {
-    window.uncheckHabit(key);
-    hlogSet(key, today, false);
-    if (window.addXP) window.addXP(key, -15, 'Habit unchecked: ' + def.label);
-    showToast('Habit unchecked');
+  const date = viewedDateStr();
+  const isToday = (missionsDayOffset === 0);
+  const done = hlogHas(key, date);
+  if (done) {
+    if (isToday && window.uncheckHabit) window.uncheckHabit(key);
+    hlogSet(key, date, false);
+    if (window.addXP) window.addXP(key, -15, 'Habit unchecked: ' + def.label + (isToday ? '' : ' (' + date + ')'));
+    try { const st = JSON.parse(localStorage.getItem('rpg_streak_v1')) || { days:{} }; if (st.days) delete st.days[date]; localStorage.setItem('rpg_streak_v1', JSON.stringify(st)); } catch (e) {}
+    showToast('Unchecked' + (isToday ? '' : ' \u00b7 ' + viewedDateLabel()));
   } else {
-    const result = window.checkHabit(key, def.label, def.icon);
-    hlogSet(key, today, true);
-    if (window.addXP) window.addXP(key, 15, 'Habit: ' + def.label);
-    celebrateHabit(def, result.streak || 1);
+    if (isToday) { const result = window.checkHabit(key, def.label, def.icon); celebrateHabit(def, (result && result.streak) || 1); }
+    else if (window.checkHabitFor) window.checkHabitFor(key, date, def.label, def.icon);
+    hlogSet(key, date, true);
+    if (window.addXP) window.addXP(key, 15, 'Habit: ' + def.label + (isToday ? '' : ' (' + date + ')'));
+    try { const st = JSON.parse(localStorage.getItem('rpg_streak_v1')) || { days:{} }; st.days = st.days || {}; st.days[date] = true; localStorage.setItem('rpg_streak_v1', JSON.stringify(st)); } catch (e) {}
+    showToast('+15 XP \u00b7 ' + def.label + (isToday ? '' : ' \u00b7 ' + viewedDateLabel()));
   }
   renderMissions();
   renderCharStrip();
