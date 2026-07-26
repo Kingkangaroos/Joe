@@ -49,6 +49,33 @@
         ]
       },
       {
+        id: 'sell_websites',
+        name: 'Websites Verkopen',
+        tagline: 'Build & sell simple websites to local businesses',
+        status: 'active',
+        phases: [
+          { id: 'p1', name: 'Set up shop', steps: [
+            { id: 's1', title: 'Pick your offer',      detail: 'One clear package: e.g. a sharp 1-page site for local businesses (restaurants, salons, trades) at a fixed price. Write who it is for and the price.', minutes: 30, xp: { sales: 20 } },
+            { id: 's2', title: 'Build a demo site',    detail: 'Make one great-looking demo site for a fictional local business. This is your portfolio and your template in one.', minutes: 120, xp: { coding: 60, ai_tools: 20 } },
+            { id: 's3', title: 'Template it',          detail: 'Turn the demo into a reusable template you can rebrand for a new business in under an hour.', minutes: 90, xp: { coding: 40, ai_tools: 20 } },
+          ]},
+          { id: 'p2', name: 'First client', steps: [
+            { id: 's4', title: 'Hit list',             detail: '20 local businesses with a weak or missing website. Note name, what they do, and their current site (or lack of one).', minutes: 45, xp: { marketing: 30 } },
+            { id: 's5', title: 'Personalized demos',   detail: 'For 3 of them, rebrand your template with their name/photos so they see THEIR site live. ~1 hour each with the template.', minutes: 120, xp: { coding: 40, marketing: 30 } },
+            { id: 's6', title: 'Reach out',            detail: 'Email, DM or walk in to those 3 with the live demo link: "I already built you a preview — want it?" Low pressure, high impact.', minutes: 60, xp: { sales: 50 } },
+            { id: 's7', title: 'First euro',           detail: 'A business pays for their site. Revenue exists.', minutes: 0, xp: { sales: 120, marketing: 40 }, boss: true },
+          ]},
+          { id: 'p3', name: 'Deliver & systemize', steps: [
+            { id: 's8', title: 'Launch it',            detail: 'Get their domain live, hand it over, and collect a testimonial.', minutes: 90, xp: { coding: 40, sales: 20 } },
+            { id: 's9', title: 'Recurring offer',      detail: 'Offer hosting + maintenance for a small monthly fee. Recurring revenue beats one-offs.', minutes: 45, xp: { sales: 40 } },
+            { id: 's10', title: 'Referral ask',        detail: 'Ask your first client for 2 referrals. Happy clients are your best sales channel.', minutes: 30, xp: { sales: 30 } },
+          ]},
+          { id: 'p4', name: 'Scale or stop', steps: [
+            { id: 's11', title: 'Review',              detail: 'Time per site, price, repeat interest. Decide: raise prices, niche down, or archive with lessons.', minutes: 45, xp: { sales: 40 } },
+          ]},
+        ]
+      },
+      {
         id: 'gamenfy_public',
         name: 'Gamenfy Public',
         tagline: 'From personal dashboard to something others can use',
@@ -73,12 +100,25 @@
   };
 
   function load () {
+    let data = null;
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw) return JSON.parse(raw);
+      if (raw) data = JSON.parse(raw);
     } catch (e) { /* fall through to seed */ }
-    save(SEED);
-    return JSON.parse(JSON.stringify(SEED));
+    if (!data) { save(SEED); data = JSON.parse(JSON.stringify(SEED)); }
+    // v10.5 migration: additively add any newly-shipped SEED ventures the user doesn't have yet.
+    try {
+      data.ventures = data.ventures || [];
+      let changed = false;
+      (SEED.ventures || []).forEach(function (sv) {
+        if (!data.ventures.some(function (v) { return v.id === sv.id; })) {
+          data.ventures.push(JSON.parse(JSON.stringify(sv)));
+          changed = true;
+        }
+      });
+      if (changed) save(data);
+    } catch (e) {}
+    return data;
   }
 
   function save (data) {

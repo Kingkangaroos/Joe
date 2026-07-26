@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.4)
+# GAMENFY — Master Document (v10.5)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.5 — Dagelijkse workout-challenge + venture "Websites Verkopen".** (1) **Workout-challenge** op Main: een roterende bodyweight-challenge (Push/Pull/Core — geen squats/deadlifts, past bij Joey's profiel): push-ups, plank, pull-ups, hollow rock, pike push-ups, dips, hanging leg raises, hollow hold. Deterministisch per dag (day-of-year rotatie), afvinken geeft XP naar calisthenics/core, staat per dag in `rpg_daily_v1:DATE.workout_challenge` (gesynct via de bestaande prefix). Zelfstandige card met inline-styling. (2) **Nieuwe venture "Websites Verkopen"** in ventures.js: websites bouwen & verkopen aan lokale bedrijven (4 fasen: set up shop → first client → deliver & systemize → scale/stop, met een "First euro" boss-step), XP naar coding/ai_tools/sales/marketing. Plus een **migratie in `load()`** die nieuwe SEED-ventures additief bij bestaande gebruikers bijzet (Joey heeft al `rpg_ventures_v1`, dus seed-only zou 'm niet toevoegen). De "Life of making money"-projectchats waren onbereikbaar (chat-zoek is project-scoped), dus de venture is uit algemene kennis opgebouwd en bijschaafbaar. `?v=` naar 10.5. Gevalideerd. **Nog open:** budgeting-skill-reset (wacht op Joey's expliciete "reset skills"), plaatsing Path to Superiority.
 
 - **v10.4 — Multi-day back-fill voor daily missions + aparte Quests-subview verborgen.** (1) De Main-dag-navigatie was binair (today/yesterday); nu een **dag-offset tot 14 dagen terug** (`missionsDayOffset`, helpers `viewedDateStr`/`viewedDateLabel`). De ‹ / › pijltjes schuiven per dag; op elke bekeken dag kun je missions **check/uncheck** (backfill via `checkHabitFor`, XP ±15, streak-mark). Alle 11 `missionsDay`-verwijzingen omgezet naar de offset (renderMissions, toggleMission, togglePrivateQuest, mission-detail). Zo kan Joey ook vorige week nog invullen → beter te tracken vanaf het begin. (2) De **📜 Quests-subview** in de Skills-toolbar is verborgen (`display:none`) — quests staan nu per skill in de skill-detail (v9.31/v10.3), dus de aparte view was overbodig/onoverzichtelijk. `?v=` naar 10.4. Gevalideerd. **Nog te doen (deze sessie aangevraagd):** budgeting-level-audit (level 20 uit assessment, 0 quests geclaimd — resetvoorstel ligt bij Joey), workout-challenge-per-dag, venture "websites verkopen", plaatsing Path to Superiority.
 

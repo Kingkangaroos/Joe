@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.4" defer></script>
-<script src="topbar.js?v=10.4" defer></script>
-<script src="xp.js?v=10.4" defer></script>
-<script src="quests.js?v=10.4" defer></script>
-<script src="ventures.js?v=10.4" defer></script>
-<script src="checkin.js?v=10.4" defer></script>
-<script src="push.js?v=10.4" defer></script>
+<script src="sync.js?v=10.5" defer></script>
+<script src="topbar.js?v=10.5" defer></script>
+<script src="xp.js?v=10.5" defer></script>
+<script src="quests.js?v=10.5" defer></script>
+<script src="ventures.js?v=10.5" defer></script>
+<script src="checkin.js?v=10.5" defer></script>
+<script src="push.js?v=10.5" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1111,6 +1111,11 @@ body {
     <div id="fitbitCoachCard" style="background:var(--card,#fff);border:1px solid var(--line,rgba(0,0,0,0.08));border-radius:16px;padding:14px 16px"></div>
   </div>
 
+  <!-- Daily Workout Challenge (v10.5) -->
+  <div id="workoutChallengeWrap" style="margin-bottom:12px">
+    <div id="workoutChallengeCard" style="background:var(--card,#fff);border:1px solid var(--line,rgba(0,0,0,0.08));border-radius:16px;padding:14px 16px"></div>
+  </div>
+
   <!-- Push setup (one-time) -->
   <div class="push-card" id="pushCard" style="display:none"></div>
 
@@ -1890,6 +1895,51 @@ window.coreLog = function(key, xp, label) {
   renderCharStrip();
 };
 
+// ── Daily Workout Challenge (v10.5) — rotating bodyweight challenge, Push/Pull/Core (no squats/deadlifts) ──
+const WORKOUT_CHALLENGES = [
+  { name:'Push-ups',           target:'30 reps',    skill:'calisthenics', xp:20, icon:'\uD83D\uDCAA' },
+  { name:'Plank hold',         target:'2 minutes',  skill:'core',         xp:20, icon:'\uD83E\uDDF1' },
+  { name:'Pull-ups',           target:'8 reps',     skill:'calisthenics', xp:25, icon:'\uD83C\uDD99' },
+  { name:'Hollow rock',        target:'45 seconds', skill:'core',         xp:20, icon:'\uD83C\uDF19' },
+  { name:'Pike push-ups',      target:'15 reps',    skill:'calisthenics', xp:20, icon:'\uD83D\uDD3A' },
+  { name:'Dips',               target:'20 reps',    skill:'calisthenics', xp:20, icon:'\u2B07\uFE0F' },
+  { name:'Hanging leg raises', target:'12 reps',    skill:'core',         xp:25, icon:'\uD83E\uDDB5' },
+  { name:'Hollow hold',        target:'60 seconds', skill:'core',         xp:20, icon:'\u23F3' },
+];
+function todaysWorkoutChallenge(){
+  const d=new Date(); const start=new Date(d.getFullYear(),0,0);
+  const doy=Math.floor((d-start)/86400000);
+  return WORKOUT_CHALLENGES[((doy % WORKOUT_CHALLENGES.length)+WORKOUT_CHALLENGES.length)%WORKOUT_CHALLENGES.length];
+}
+function workoutChallengeDone(dateStr){
+  try{ const dd=JSON.parse(localStorage.getItem('rpg_daily_v1:'+dateStr))||{}; return !!dd.workout_challenge; }catch(e){ return false; }
+}
+window.toggleWorkoutChallenge=function(){
+  const date=todayStr(); const c=todaysWorkoutChallenge();
+  let dd={}; try{ dd=JSON.parse(localStorage.getItem('rpg_daily_v1:'+date))||{}; }catch(e){}
+  const was=!!dd.workout_challenge;
+  dd.workout_challenge=!was;
+  try{ localStorage.setItem('rpg_daily_v1:'+date, JSON.stringify(dd)); }catch(e){}
+  if(!was && window.addXP) window.addXP(c.skill, c.xp, 'Daily challenge: '+c.name);
+  else if(was && window.addXP) window.addXP(c.skill, -c.xp, 'Daily challenge unchecked: '+c.name);
+  if(!was) showToast('+'+c.xp+' XP \u00b7 '+c.name);
+  renderWorkoutChallenge();
+  if(window.renderCharStrip) renderCharStrip();
+};
+function renderWorkoutChallenge(){
+  const card=document.getElementById('workoutChallengeCard'); if(!card) return;
+  const c=todaysWorkoutChallenge(); const done=workoutChallengeDone(todayStr());
+  card.innerHTML=
+    '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">'
+    +'<div>'
+      +'<div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--text-tertiary,#8a8a8a);margin-bottom:2px">DAILY CHALLENGE</div>'
+      +'<div style="font-size:15px;font-weight:700;color:var(--text-primary,#1a1a1a)">'+c.icon+' '+c.name+'</div>'
+      +'<div style="font-size:13px;color:var(--text-secondary,#666)">'+c.target+' \u00b7 +'+c.xp+' XP</div>'
+    +'</div>'
+    +'<button onclick="toggleWorkoutChallenge()" style="border:none;border-radius:12px;padding:10px 14px;font-weight:700;font-size:13px;cursor:pointer;color:#fff;background:'+(done?'var(--green,#3a9)':'var(--ink,#1a1a1a)')+'">'+(done?'\u2713 Done':'Complete')+'</button>'
+    +'</div>';
+}
+
 // ── Fitbit Coach (v9.33) — one contextual, data-driven line from today's Fitbit data ──
 function renderFitbitCoach(day){
   const wrap=document.getElementById('fitbitCoachWrap');
@@ -2652,7 +2702,7 @@ window.ciMission = function(key, btn) {
 function refreshAfterCiAction(btn) {
   const sheet = btn && btn.closest('.checkin-sheet');
   if (sheet) renderCheckinSheet(sheet);
-  renderStreakPill(); renderCheckinCard(); renderNextMove(); renderMissions(); renderArc(0);
+  renderStreakPill(); renderCheckinCard(); renderNextMove(); renderMissions(); renderArc(0); try{renderWorkoutChallenge();}catch(e){}
 }
 
 window.ciCloseDay = function(btn) {
@@ -2996,7 +3046,7 @@ window.focusComplete=function(btn){
     const xpTxt=Object.keys(hit.xp||{}).map(k=>'+'+hit.xp[k]+' '+k.replace('_',' ')).join(' \u00b7 ');
     showToast(xpTxt+' \u00b7 '+hit.title);
   }
-  renderNextMove(); renderStreakPill(); renderCheckinCard(); renderArc(0); renderMissions();
+  renderNextMove(); renderStreakPill(); renderCheckinCard(); renderArc(0); renderMissions(); try{renderWorkoutChallenge();}catch(e){}
 };
 window.focusQuit=function(){
   focusSave(null); clearInterval(focusTick);
