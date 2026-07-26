@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.2)
+# GAMENFY — Master Document (v10.3)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.3 — DE ROOT-CAUSE waarom fixes Joey niet bereikten: HTML werd gecachet. + daily-mission-audit + quests-in-skill.** **Kernprobleem gevonden:** cache-busting (`?v=`) zat alleen op de externe scripts, niet op de HTML-documenten zelf. Als `index.html`/`character.html` door de browser/CDN gecachet zijn, laadt Joey oude inline-code én oude `?v=`-verwijzingen → **geen enkele fix bereikt hem** (verklaart "ik vraag het al vaker maar er gebeurt niets", de habit-checks die niet optelden, de quests-in-skill die hij niet zag). Bevestigd in live data: gratitude-checks van 24/25 juli stonden nergens terwijl de rij vandaag wél geschreven was → zijn toestel draaide oude code. **Fix:** `vercel.json` met `Cache-Control: no-cache, must-revalidate` op alle HTML → HTML wordt voortaan altijd vers opgehaald (en verwijst dan naar de actuele `?v=`-scripts). **Eenmalig** moet Joey nog één harde refresh / PWA opnieuw toevoegen om de nieuwe headers op te pikken; daarna stromen alle updates vanzelf. **Daily-mission-audit:** het model klopt al in code — check = +1 (max 10), gemiste dag = −1, cap 10, nooit nul bij checken; v10.1 voegde heal-from-log toe. Het "2 dagen gedaan maar Lv 0"-gevoel kwam puur doordat de checks niet persisteerden (oude code + clobber), niet door verkeerde telling. **Quests-in-skill:** v9.31 zette de volledige quest-ladder al ín de skill-detail (sectie hernoemd "Quest path" → "Quests"); tik een skill → je ziet en claimt z'n quests. De aparte "📜 Quests"-subview in de Skills-tab blijft als optionele bladeraar. `?v=` naar 10.3. Gevalideerd.
 
 - **v10.2 — Routes-kaart was ONZICHTBAAR (stond in de verborgen legacy-tab) — verplaatst naar de echte Body-tab.** Joey zag de ANWB-routes-randomizer nergens. Oorzaak: de kaart (v9.25) stond in `#tab-character` — de legacy sub-screen met `display:none` ("kept for compatibility"), niet in het zichtbare `#tab-body`. Daardoor was 'ie sinds v9.25 nooit te zien, ongeacht cache. Nu verplaatst naar de zichtbare Body-tab onder een nieuwe "Walking"-kop, na Body Skills. `#rtBadge` (X/100) werkt mee (zelfde id, JS ongewijzigd). `?v=` naar 10.2. Gevalideerd (kaart zit nu aantoonbaar in tab-body, vóór tab-character opent).
 
