@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.5)
+# GAMENFY — Master Document (v10.6)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.6 — Gezondheids-/regressiecheck van de hele v9.26→v10.5-reeks (schoon) + workout-challenge-streak.** Na ~15 snelle releases die op elkaar inhaken een volledige audit gedaan: alle gedeelde JS + 8 pagina's parsen schoon, alle onclick/onchange-handlers gedefinieerd, geen dubbele functiedefinities, workout-skills (calisthenics/core) bestaan, multi-day datum-offset-logica klopt (0→vandaag … −13→2 weken), challenge-rotatie sluitend, ventures-migratie + `sell_websites` aanwezig, vercel.json valide. **Geen regressies.** Toegevoegd: een **streak-badge (🔥 Xd)** op de workout-challenge-kaart (telt opeenvolgende voltooide dagen uit `rpg_daily_v1:*`, met grace voor vandaag). `?v=` naar 10.6. Gevalideerd. **Nog open (jouw beslissing):** budgeting-skill-reset ("reset skills"), plaatsing Path to Superiority.
 
 - **v10.5 — Dagelijkse workout-challenge + venture "Websites Verkopen".** (1) **Workout-challenge** op Main: een roterende bodyweight-challenge (Push/Pull/Core — geen squats/deadlifts, past bij Joey's profiel): push-ups, plank, pull-ups, hollow rock, pike push-ups, dips, hanging leg raises, hollow hold. Deterministisch per dag (day-of-year rotatie), afvinken geeft XP naar calisthenics/core, staat per dag in `rpg_daily_v1:DATE.workout_challenge` (gesynct via de bestaande prefix). Zelfstandige card met inline-styling. (2) **Nieuwe venture "Websites Verkopen"** in ventures.js: websites bouwen & verkopen aan lokale bedrijven (4 fasen: set up shop → first client → deliver & systemize → scale/stop, met een "First euro" boss-step), XP naar coding/ai_tools/sales/marketing. Plus een **migratie in `load()`** die nieuwe SEED-ventures additief bij bestaande gebruikers bijzet (Joey heeft al `rpg_ventures_v1`, dus seed-only zou 'm niet toevoegen). De "Life of making money"-projectchats waren onbereikbaar (chat-zoek is project-scoped), dus de venture is uit algemene kennis opgebouwd en bijschaafbaar. `?v=` naar 10.5. Gevalideerd. **Nog open:** budgeting-skill-reset (wacht op Joey's expliciete "reset skills"), plaatsing Path to Superiority.
 
