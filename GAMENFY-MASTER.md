@@ -412,6 +412,16 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 - **#8 Roadmaps:** kritisch naar **ALLE** skills kijken (vooral piano + knowledge, maar per skill echt doordenken). Moet **specifiek + meetbaar**: idealiter echte oefen-sommen / een mini-"examen" per level (“als je deze sommen kan, zit je op dit level”). LearnMath-voorbeeld (van ChatGPT): rekenen → breuken → procenten → algebra — maar mét concrete sommen, niet alleen de onderwerpen. Joey snapt dat 1 som ≠ hele stof; wil meetbare checkpoints.
 - **#9 Fitbit:** Joey wil de stappen NU om parallel uit te voeren.
 
+### 🔁 Verfijningen (2026-07-28, deel 6) — Fitbit-data breed + Body-tab + reset-knop
+- **Fitbit-sync: veel meer Google Health-data ophalen** dan nu (nu: steps/AZM/sleep/RHR/weight). Joey wil ook: **HRV, resting HR, blood oxygen (SpO2), breathing rate, skin-temp-variatie, distance, current HR**, en week/maand-trends. → Jarvis moet dit gebruiken voor een **readiness-achtige, kritische blik op zijn "body system"** (Google Health berekent readiness uit HRV + recente slaap + resting HR).
+- **Veilige aanpak:** dit als **aparte edge function** (`fitbit-intraday`, eigen rij `health_fitbit_intraday`) bouwen, zodat de werkende `fitbit-sync` (dagelijkse pijplijn) NIET kan breken. Uur-buckets steps+HR + de extra vitals daar.
+- **Body-tab motiveert niet meer:** overweegt te veel op gym/kracht (Hevy gebruikt hij voorlopig NIET — klaar met zware sportschool). Zijn echte activiteit (veel **cardio + tennis + endurance**) wordt niet getoond → daardoor kijkt hij er nauwelijks naar. **Body moet cardio/tennis/endurance reflecteren.**
+- **Body-grafieken à la Google Health:** steps (en andere metrics) met **dag/week/maand-toggle**, **uur-detail** bij tik, **scrubben met je vinger** om waarden te zien, en een **pijltje terug** naar vorige dag/week/maand. Nu: steps alleen per week, kan niet naar vorige week; maand-view zit vast in huidige maand, kan niet verder terug. Frustreert → kijkt er weinig naar.
+- **Per-skill reset-knop:** op ELKE skill, zodat Joey niet elke keer hoeft te vragen. (Claudia bouwt dit nu, met bevestiging.)
+- **Core nu resetten:** Joey zette core op level 11 als test (om de gespierde body-visualisatie te zien) → mag terug naar 0.
+- **Body-visualisatie wordt gespierder bij hoger level** (vindt hij grappig); foto's daarover later.
+- Joey pakt calisthenics/endurance/**core** weer op — meer core-gefocust.
+
 
 > De v9-lijn (v9.26 → v9.34) is afgerond en geconsolideerd: quest-claim/tier-gate-fix, realtime cross-device sync, cache-busting, why's + milestones + benefits voor alle skills, topical iconen, Fitbit-coach, stappen- én gewichtsfix (Apple Health geretireerd). v10 opent een nieuwe fase. Legenda per taak: 🟢 = Claudia kan dit zelfstandig bouwen · 🟡 = vereist Joey's ontwerp/beslissing · 🔵 = vereist Joey's Supabase-approval (edge function/cron/migratie) · 💳 = vereist Higgsfield-credits.
 
