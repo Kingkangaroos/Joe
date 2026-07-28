@@ -341,6 +341,33 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 
 ## 9. Roadmap — v10 (vastgesteld 2026-07-21, vervangt de oude v10-plan-sectie)
 
+### ✅ Besluiten van Joey + bijgewerkte to-do (2026-07-28, discussie-sessie — nog NIET gebouwd)
+
+**Afgerond / van de lijst af:**
+- Gemini API-key → werkt gewoon (Jarvis draait). Resolved.
+- Apple Health shortcut → **volledig skippen**, Fitbit heeft het vervangen. Overal verwijderen.
+- Push-beleid-vraag → hij krijgt al notificaties; prima zo. Geen open vraag meer.
+- Skills-reset (gedaan), Higgsfield/credits (van tafel), meeste skill-foto's (gratis Pexels-route loopt).
+- Habit-ladders → blijven zoals ze zijn (behalve meditation, zie hieronder).
+
+**Bevestigde to-do (later bouwen, eerst bespreken):**
+1. **Meditation-ladder uitbreiden** — meer quests + unlock-path (rest van de habits blijft ongewijzigd).
+2. **Agenda week-weergave** = gewenst; maand-weergave = nice-to-have. Drag-to-move = NIET nodig.
+3. **Agenda tijd-granulariteit fixen** — klikken om te plannen moet flexibele duur toestaan (30 min, 1,5 uur, enz.); het huidige halfuur-systeem is te rigide (kan geen half uurtje of anderhalf uur vullen). Echte usability-fix.
+4. **Core skills-sectie onder Body** — op de plek van "new skill / finger whistling": een **horizontaal scrollbare rij van ALLE skills waaraan XP is toegevoegd, nieuwste eerst**, naar rechts scrollen voor oudere (mag oneindig). Vervangt de huidige focus-skills-weergave.
+5. **Quest "hoe-behaal-ik-dit"-roadmaps** — per tier-gate/quest concrete stap-voor-stap-uitleg wat te doen/leren (bijv. "learn math" → echte stappen; piano → eerst linkerhand, enz.). Grote content-feature, vooral voor knowledge maar ook skill-specifiek. Joey mist dit het meest bij Path to Superiority (plek maakt niet uit, het PAD ontbreekt).
+6. **Fitbit hourly / slimmere Jarvis** — intraday-data zodat Jarvis meer snapt (zoals de Google Health-briefing die hij nu trial't). Vereist Supabase → Claudia neemt Joey **stap voor stap** mee.
+7. **"Websites Verkopen"-venture** — vragen/quests toevoegen; hero-foto's t.z.t.
+8. **Vormgeving-overhaul + scroll-animaties** — wacht op Joey's referenties (via NAAM van sites/apps, niet uploads).
+9. **Wishlist-fix** — bedrag-veld is onduidelijk/onleesbaar; labels + add-flow verhelderen.
+10. **"Access my levels"** — kritisch auditen (nog niet gedaan).
+11. **Laatste skill-foto's** — marketing/ai_tools/content/languages/teeth afmaken.
+
+**Nog te beslissen door Joey:**
+- **Seasons:** wil hij het concept (maandelijkse focus + boss quest), 21→21 of kalendermaand? Of skippen.
+- **Prioriteit:** welke grote track eerst — later te bespreken.
+
+
 > De v9-lijn (v9.26 → v9.34) is afgerond en geconsolideerd: quest-claim/tier-gate-fix, realtime cross-device sync, cache-busting, why's + milestones + benefits voor alle skills, topical iconen, Fitbit-coach, stappen- én gewichtsfix (Apple Health geretireerd). v10 opent een nieuwe fase. Legenda per taak: 🟢 = Claudia kan dit zelfstandig bouwen · 🟡 = vereist Joey's ontwerp/beslissing · 🔵 = vereist Joey's Supabase-approval (edge function/cron/migratie) · 💳 = vereist Higgsfield-credits.
 
 ### Track A — Fitbit-intelligentie & de coach-loop  *(hoogste dagelijkse waarde)*
