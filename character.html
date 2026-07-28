@@ -10,11 +10,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.14" defer></script>
-<script src="topbar.js?v=10.14" defer></script>
-<script src="xp.js?v=10.14" defer></script>
-<script src="quests.js?v=10.14" defer></script>
-<script src="ventures.js?v=10.14" defer></script>
+<script src="sync.js?v=10.15" defer></script>
+<script src="topbar.js?v=10.15" defer></script>
+<script src="xp.js?v=10.15" defer></script>
+<script src="quests.js?v=10.15" defer></script>
+<script src="ventures.js?v=10.15" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1634,6 +1634,25 @@ function skillPhotoUrl(key){
   return 'img/skills/'+key+'.jpg';
 }
 
+window.resetSkill=function(key){
+  const def=(window.RPG_DEFAULT_SKILLS||{})[key]||{};
+  const name=def.label||key;
+  if(!confirm('Reset "'+name+'" to level 1?\n\nThis clears its XP, claimed quests and confirmed milestones for this skill. This cannot be undone.')) return;
+  try{ const ch=JSON.parse(localStorage.getItem('rpg_character_v1'))||{};
+    if(ch.skills&&ch.skills[key]){ ch.skills[key].xp=0; localStorage.setItem('rpg_character_v1', JSON.stringify(ch)); } }catch(e){}
+  try{ const q=JSON.parse(localStorage.getItem('rpg_quests_done_v1'))||{}; let ch=false;
+    for(const k of Object.keys(q)){ if(k.indexOf(key+':')===0){ delete q[k]; ch=true; } }
+    if(ch) localStorage.setItem('rpg_quests_done_v1', JSON.stringify(q)); }catch(e){}
+  try{ const m=JSON.parse(localStorage.getItem('rpg_milestones_v1'))||{}; let ch=false;
+    for(const k of Object.keys(m)){ if(k.indexOf(key+'_')===0){ delete m[k]; ch=true; } }
+    if(ch) localStorage.setItem('rpg_milestones_v1', JSON.stringify(m)); }catch(e){}
+  document.getElementById('sdOverlay')?.remove();
+  if(window.showToast) showToast(name+' reset to level 1');
+  try{ if(window.renderSkills) renderSkills(); }catch(e){}
+  try{ if(window.renderBodySkills) renderBodySkills(); }catch(e){}
+  try{ if(window.renderCharStrip) renderCharStrip(); }catch(e){}
+};
+
 function openSkillDetail(skillKey){
   const defaults=window.RPG_DEFAULT_SKILLS||{};
   const def=defaults[skillKey]||{};
@@ -1789,6 +1808,7 @@ function openSkillDetail(skillKey){
         </div>
       </div>
       ${msLevels.length?`<div class="sd-unlock-title">Unlock Path</div>${msRows}`:''}
+      <button class="sd-close" onclick="resetSkill('${skillKey}')" style="background:none;color:#b04a5a;border:1px solid rgba(176,74,90,0.3);margin-bottom:8px">Reset this skill</button>
       <button class="sd-close" onclick="document.getElementById('sdOverlay')?.remove()">Close</button>
     </div>`;
 

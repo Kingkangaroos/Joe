@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.14)
+# GAMENFY — Master Document (v10.15)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.15 — Per-skill reset-knop + core gereset.** Elke skill-detail heeft nu onderaan een **"Reset this skill"**-knop (met bevestiging) die XP→0, geclaimde quests (`skill:level`) en bevestigde milestones (`skill_x`) van díe skill wist — Joey hoeft resets niet meer aan Claudia te vragen. Core is via de cloud teruggezet naar level 1 (Joey had 'm op level 11 gezet als test voor de gespierde body-visualisatie). `?v=` naar 10.15. Gevalideerd. **Volgende:** aparte `fitbit-intraday`-functie (breed: uur steps+HR + HRV/SpO2/breathing/skin-temp/distance → Jarvis readiness), Body-tab Google-Health-style grafieken, #2 wishlist, #3 agenda.
 
 - **v10.14 — Prioriteit #1: gratitude-woorden-bug gefixt.** `renderGratitude` toonde alleen woorden met `lastDate === vandaag`; een stale sync-pull van het aggregaat `rpg_gratitude_v1` (cloud t/m 15 juli) overschreef Joey's lokale toevoegingen van vandaag → `lastDate` sprong terug → woorden verdwenen. Fix: woorden van vandaag worden nu als lijst opgeslagen in `rpg_daily_v1:DATE.gratitudeWords` en de weergave rendert daaruit (met fallback naar het oude aggregaat). De dag-key heeft nog geen oude cloud-versie voor vandaag, dus overleeft de pull. Aggregaat blijft voor weekstats. `?v=` naar 10.14. Gevalideerd. **Volgende:** #2 wishlist, #3 agenda.
 
