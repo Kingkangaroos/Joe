@@ -10,11 +10,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.9" defer></script>
-<script src="topbar.js?v=10.9" defer></script>
-<script src="xp.js?v=10.9" defer></script>
-<script src="quests.js?v=10.9" defer></script>
-<script src="ventures.js?v=10.9" defer></script>
+<script src="sync.js?v=10.11" defer></script>
+<script src="topbar.js?v=10.11" defer></script>
+<script src="xp.js?v=10.11" defer></script>
+<script src="quests.js?v=10.11" defer></script>
+<script src="ventures.js?v=10.11" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1608,6 +1608,12 @@ const SKILL_PHOTO_URL = {
   piano: 'https://images.unsplash.com/photo-1566851894296-f6b52f0adb61?q=80&w=800&auto=format&fit=crop',
   cooking: 'https://images.unsplash.com/photo-1516824711718-9c1e683412ac?q=80&w=800&auto=format&fit=crop',
   drawing: 'https://images.unsplash.com/photo-1593472807861-5bb884af28f6?q=80&w=800&auto=format&fit=crop',
+  // v10.11: Pexels free-route (Pexels License: free to use, no attribution required; hotlinked via images.pexels.com CDN).
+  // Sourced via web search of individual Pexels photo pages; real photos replacing the generated gradient tiles.
+  calisthenics: 'https://images.pexels.com/photos/10506371/pexels-photo-10506371.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  nutrition: 'https://images.pexels.com/photos/8230033/pexels-photo-8230033.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  sleep: 'https://images.pexels.com/photos/9615241/pexels-photo-9615241.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  walking: 'https://images.pexels.com/photos/1242471/pexels-photo-1242471.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
 };
 function skillPhotoUrl(key){
   if(SKILL_PHOTO_URL[key]) return SKILL_PHOTO_URL[key];
