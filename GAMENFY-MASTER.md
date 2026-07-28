@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.11)
+# GAMENFY — Master Document (v10.12)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.12 — Echte foto's batch 2 (+7 skills → 11 totaal).** Via de Pexels-route toegevoegd: **learning** (6550408 boeken op bureau), **focus** (37831090 student in zonlicht), **journaling** (5797899 open notitieboek+mok), **social** (9287491 lachende vrienden), **superiority** (30769221 bergtop bij zonsopgang), **coloring** (532231 kleurpotloden flatlay), **dancing** (6453620 dansende vrouw studio). Truc bevestigd: brede concrete onderwerp-zoekopdrachten leveren meerdere losse Pexels-foto's tegelijk; abstracte termen (meditation, plank) geven vooral betaalde sites die NIET gebruikt worden. Gevoelige skills (no_porn/weed_control/screen_time) houden bewust hun neutrale gradient-tegel. Resterende ~21 skills: deels nog te doen, deels blijven ze een nette gradient (gemengd resultaat is prima). `?v=` naar 10.12. Gevalideerd.
 
 - **v10.11 — Echte foto's via de gratis Pexels-route (eerste batch: 4 skills).** Higgsfield is definitief van tafel (Joey's keuze). Werkende gratis route gevonden: web-search naar concrete onderwerpen ("… pexels free stock photo") geeft losse Pexels-fotopagina's met ID; de gratis-te-hotlinken CDN-URL is `images.pexels.com/photos/<id>/pexels-photo-<id>.jpeg` (Pexels License: vrij te gebruiken, geen naamsvermelding). Eerste batch gewired in `SKILL_PHOTO_URL` (overschrijft de gradient-tegels): **calisthenics** (10506371), **nutrition** (8230033), **sleep** (9615241), **walking** (1242471). Leerpunt: concrete onderwerpen werken (nutrition/sleep/walking gaven direct losse foto's); abstracte termen (meditation) geven vooral betaalde sites (Getty/iStock/Dreamstime) die NIET gebruikt worden. Rest volgt in batches. `?v=` naar 10.11. Gevalideerd.
 

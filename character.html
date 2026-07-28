@@ -10,11 +10,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.11" defer></script>
-<script src="topbar.js?v=10.11" defer></script>
-<script src="xp.js?v=10.11" defer></script>
-<script src="quests.js?v=10.11" defer></script>
-<script src="ventures.js?v=10.11" defer></script>
+<script src="sync.js?v=10.12" defer></script>
+<script src="topbar.js?v=10.12" defer></script>
+<script src="xp.js?v=10.12" defer></script>
+<script src="quests.js?v=10.12" defer></script>
+<script src="ventures.js?v=10.12" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1614,6 +1614,14 @@ const SKILL_PHOTO_URL = {
   nutrition: 'https://images.pexels.com/photos/8230033/pexels-photo-8230033.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
   sleep: 'https://images.pexels.com/photos/9615241/pexels-photo-9615241.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
   walking: 'https://images.pexels.com/photos/1242471/pexels-photo-1242471.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  // v10.12: batch 2 (concrete Pexels subjects — real photos over the gradient tiles)
+  learning: 'https://images.pexels.com/photos/6550408/pexels-photo-6550408.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  focus: 'https://images.pexels.com/photos/37831090/pexels-photo-37831090.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  journaling: 'https://images.pexels.com/photos/5797899/pexels-photo-5797899.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  social: 'https://images.pexels.com/photos/9287491/pexels-photo-9287491.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  superiority: 'https://images.pexels.com/photos/30769221/pexels-photo-30769221.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  coloring: 'https://images.pexels.com/photos/532231/pexels-photo-532231.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  dancing: 'https://images.pexels.com/photos/6453620/pexels-photo-6453620.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
 };
 function skillPhotoUrl(key){
   if(SKILL_PHOTO_URL[key]) return SKILL_PHOTO_URL[key];
