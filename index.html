@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.8" defer></script>
-<script src="topbar.js?v=10.8" defer></script>
-<script src="xp.js?v=10.8" defer></script>
-<script src="quests.js?v=10.8" defer></script>
-<script src="ventures.js?v=10.8" defer></script>
-<script src="checkin.js?v=10.8" defer></script>
-<script src="push.js?v=10.8" defer></script>
+<script src="sync.js?v=10.9" defer></script>
+<script src="topbar.js?v=10.9" defer></script>
+<script src="xp.js?v=10.9" defer></script>
+<script src="quests.js?v=10.9" defer></script>
+<script src="ventures.js?v=10.9" defer></script>
+<script src="checkin.js?v=10.9" defer></script>
+<script src="push.js?v=10.9" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1309,7 +1309,7 @@ function dayHasActivity(ds){
   try{ const l=JSON.parse(localStorage.getItem('rpg_habitlog_v1'))||{}; for(const k in l){ if(l[k]&&l[k][ds]) return true; } }catch(e){}
   return false;
 }
-function renderWeekStrip(){
+function renderMissionsWeek(){
   const el=document.getElementById('weekStrip'); if(!el) return;
   const letters=['S','M','T','W','T','F','S'];
   let html='';
@@ -1334,7 +1334,7 @@ function renderMissions() {
   if (!window.getHabits) { setTimeout(renderMissions, 50); return; }
   const habits = window.getHabits();
   const defaults = window.RPG_DEFAULT_SKILLS || {};
-  try { renderWeekStrip(); } catch(e){}
+  try { renderMissionsWeek(); } catch(e){}
   const today = viewedDateStr();
 
   // Collect habits from defaults

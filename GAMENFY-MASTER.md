@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.8)
+# GAMENFY — Master Document (v10.9)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.9 — Fix: naam-botsing `renderWeekStrip` (mijn missions-strip vs de bestaande agenda-strip).** De health-check-reflex ving het: er bestond al een `renderWeekStrip()` voor de agenda (`#agendaWeekStrip`). Mijn v10.7/v10.8 missions-week-strip gebruikte dezelfde naam → door JS-hoisting won de latere (agenda-)definitie, dus mijn strip werd nooit gevuld (leeg op Main). Mijn functie hernoemd naar `renderMissionsWeek()` + de aanroep in `renderMissions` bijgewerkt; de agenda-strip blijft ongemoeid. Nu werken beide. Les: bij nieuwe top-level functienamen eerst grep'en op bestaande definities. `?v=` naar 10.9. Gevalideerd (1 def per naam).
 
 - **v10.8 — Week-strip toont nu voltooiings-fractie (pie-vulling) i.p.v. binaire stip.** Elke dag-stip in de week-strip vult nu naar rato van hoeveel van je actieve daily missions je die dag deed (conic-gradient pie in ember; `dayCompletion` = afgevinkte habit-missions / totaal actieve habits, uit `rpg_habitlog_v1`). Dagen met alleen niet-habit-activiteit (bijv. workout-challenge) tonen een lichte ember-stip via `dayHasActivity`-fallback. Zo zie je in één oogopslag niet alleen óf maar hóe compleet elke dag was — echte consistentie-tracking. Read-only, additief. `?v=` naar 10.8. Gevalideerd (één definitie per functie).
 
