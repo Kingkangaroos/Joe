@@ -374,6 +374,12 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 - **Quest-roadmaps (#5): moeten op wetenschappelijk bewijs gebaseerd zijn.**
 - **🚨 BUG (prioriteit): gratitude-woorden verdwijnen.** Cloud heeft t/m 2026-07-15; vandaag ingevulde woorden persisteren niet. Save-pad van rpg_gratitude_v1 onderzoeken (reset was NIET de oorzaak).
 
+### 🔁 Verfijningen (2026-07-28, deel 3)
+- **Free time-blok: BEHOUDEN** als lichte motivatie-reminder (de "leisure time / benut je uur"-vibe vindt hij leuk). Maar: bij tikken op een uur wil hij (a) zien wat er te doen is én (b) **zelf een taak kunnen toevoegen die blijft staan** (persisteert).
+- **Jarvis motiverender + personaliseerbaar.** Huidige berichten voelen generiek ("define the product") en altijd op dezelfde tijden → niet motiverend. Wil meer "get your ass to work"-energie, en zelf kunnen aangeven wat Jarvis tegen hem zegt. Claudia stelt hem calibratie-vragen om de juiste toon/triggers te leren.
+- **Agenda (bijgewerkt):** halfuur-granulariteit is prima, MAAR: (a) twee losse halfuur-blokken in één uur moeten allebei makkelijk tikbaar zijn zonder per ongeluk het kruisje te raken (meer ruimte per halfuur); (b) **drag-to-move WEL gewenst** — niet om te plannen, maar om een bestaand blok makkelijk naar een ander/volgend uur te slepen als het in het verkeerde uur staat.
+- **Seasons: ook een handmatig tik-systeem** naast Jarvis — hij wil autonomie om skills + doel zelf te zetten (vertrouwt Jarvis niet blind). Jarvis-suggestie voor de master-quest = optioneel, niet verplicht.
+
 
 > De v9-lijn (v9.26 → v9.34) is afgerond en geconsolideerd: quest-claim/tier-gate-fix, realtime cross-device sync, cache-busting, why's + milestones + benefits voor alle skills, topical iconen, Fitbit-coach, stappen- én gewichtsfix (Apple Health geretireerd). v10 opent een nieuwe fase. Legenda per taak: 🟢 = Claudia kan dit zelfstandig bouwen · 🟡 = vereist Joey's ontwerp/beslissing · 🔵 = vereist Joey's Supabase-approval (edge function/cron/migratie) · 💳 = vereist Higgsfield-credits.
 
