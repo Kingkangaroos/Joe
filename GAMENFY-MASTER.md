@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.9)
+# GAMENFY — Master Document (v10.10)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.10 — Zelf-gegenereerde skill-tegels voor de 32 skills zonder afbeelding (geen credits nodig).** Higgsfield staat op 0 credits (free plan) en is het enige AI-beeldmodel dat Claude kan aanroepen — dus geen fotorealisme mogelijk. In plaats van weer "nee": met Python/PIL **32 cohesieve Daylight-tegels** gegenereerd (zacht diagonaal kleurverloop in de domeinkleur + subtiel geblurd motief + lichte vignette, per skill licht gevarieerd via een hash-seed), opgeslagen als `img/skills/<key>.jpg`. `skillPhotoUrl` wees daar al naar als fallback, dus ze worden **automatisch opgepikt zonder codewijziging** — waar de detail-banner eerst leeg was, staat nu een tegel; in de grid een cohesieve gekleurde tegel. Kwaliteit visueel gecontroleerd (3 samples) vóór commit. Geen foto's, maar echte zelf-gemaakte beelden die niks kosten en niet kunnen breken (opaque JPG's, geen externe afhankelijkheid). Zodra er ooit Higgsfield-credits zijn, kunnen echte foto's dit via `SKILL_PHOTO_URL` overschrijven.
 
 - **v10.9 — Fix: naam-botsing `renderWeekStrip` (mijn missions-strip vs de bestaande agenda-strip).** De health-check-reflex ving het: er bestond al een `renderWeekStrip()` voor de agenda (`#agendaWeekStrip`). Mijn v10.7/v10.8 missions-week-strip gebruikte dezelfde naam → door JS-hoisting won de latere (agenda-)definitie, dus mijn strip werd nooit gevuld (leeg op Main). Mijn functie hernoemd naar `renderMissionsWeek()` + de aanroep in `renderMissions` bijgewerkt; de agenda-strip blijft ongemoeid. Nu werken beide. Les: bij nieuwe top-level functienamen eerst grep'en op bestaande definities. `?v=` naar 10.9. Gevalideerd (1 def per naam).
 
