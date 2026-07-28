@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.6" defer></script>
-<script src="topbar.js?v=10.6" defer></script>
-<script src="xp.js?v=10.6" defer></script>
-<script src="quests.js?v=10.6" defer></script>
-<script src="ventures.js?v=10.6" defer></script>
-<script src="checkin.js?v=10.6" defer></script>
-<script src="push.js?v=10.6" defer></script>
+<script src="sync.js?v=10.7" defer></script>
+<script src="topbar.js?v=10.7" defer></script>
+<script src="xp.js?v=10.7" defer></script>
+<script src="quests.js?v=10.7" defer></script>
+<script src="ventures.js?v=10.7" defer></script>
+<script src="checkin.js?v=10.7" defer></script>
+<script src="push.js?v=10.7" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1176,6 +1176,7 @@ body {
   <!-- Today's Missions -->
   <div class="sec-head" style="display:flex;align-items:center;justify-content:space-between"><span id="missionsHead">Today's Missions</span>
     <button class="nm-add" id="missionsDayBtn" onclick="toggleMissionsDay()">Yesterday</button></div>
+  <div id="weekStrip" style="display:flex;gap:2px;margin:2px 0 10px;padding:0 4px"></div>
   <div class="missions-grid" id="missionsCard">
     <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px;grid-column:1/-1">Loading habits…</div>
   </div>
@@ -1292,10 +1293,34 @@ function renderArc(pct) {
 }
 
 // ── Missions ─────────────────────────────────────────────────
+function dayHasActivity(ds){
+  try{ const st=JSON.parse(localStorage.getItem('rpg_streak_v1'))||{}; if(st.days&&st.days[ds]) return true; }catch(e){}
+  try{ const l=JSON.parse(localStorage.getItem('rpg_habitlog_v1'))||{}; for(const k in l){ if(l[k]&&l[k][ds]) return true; } }catch(e){}
+  return false;
+}
+function renderWeekStrip(){
+  const el=document.getElementById('weekStrip'); if(!el) return;
+  const letters=['S','M','T','W','T','F','S'];
+  let html='';
+  for(let off=-6; off<=0; off++){
+    const d=new Date(); d.setDate(d.getDate()+off);
+    const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const active=dayHasActivity(ds);
+    const sel=(off===missionsDayOffset);
+    const dotColor=active?'var(--ember,#c8622a)':'var(--line,rgba(0,0,0,0.14))';
+    html+='<button onclick="setViewDay('+off+')" aria-label="'+ds+'" style="flex:1;background:none;border:none;padding:4px 0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px">'
+      +'<span style="font-size:10px;font-weight:'+(sel?'800':'600')+';color:'+(sel?'var(--ink,#1a1a1a)':'var(--text-tertiary,#8a8a8a)')+'">'+letters[d.getDay()]+'</span>'
+      +'<span style="width:11px;height:11px;border-radius:50%;background:'+dotColor+(sel?';outline:2px solid var(--ink,#1a1a1a);outline-offset:2px':'')+'"></span>'
+      +'</button>';
+  }
+  el.innerHTML=html;
+}
+
 function renderMissions() {
   if (!window.getHabits) { setTimeout(renderMissions, 50); return; }
   const habits = window.getHabits();
   const defaults = window.RPG_DEFAULT_SKILLS || {};
+  try { renderWeekStrip(); } catch(e){}
   const today = viewedDateStr();
 
   // Collect habits from defaults

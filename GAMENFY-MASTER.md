@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.6)
+# GAMENFY — Master Document (v10.7)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.7 — Week-strip op Main (7-daagse tracking) — lost Joey's "ik kan het nooit goed tracken" op.** Boven de missions-lijst nu een compacte strip van de laatste 7 dagen: per dag een letter + stip die oplicht (ember) als je die dag activiteit had (uit `rpg_streak_v1.days` of `rpg_habitlog_v1`). De huidige bekeken dag is gemarkeerd; **tik een dag → springt erheen** (benut de multi-day nav van v10.4, zodat je direct kunt bijvullen). Read-only + additief (kan niks breken), rendert mee in `renderMissions`. `?v=` naar 10.7. Gevalideerd.
 
 - **v10.6 — Gezondheids-/regressiecheck van de hele v9.26→v10.5-reeks (schoon) + workout-challenge-streak.** Na ~15 snelle releases die op elkaar inhaken een volledige audit gedaan: alle gedeelde JS + 8 pagina's parsen schoon, alle onclick/onchange-handlers gedefinieerd, geen dubbele functiedefinities, workout-skills (calisthenics/core) bestaan, multi-day datum-offset-logica klopt (0→vandaag … −13→2 weken), challenge-rotatie sluitend, ventures-migratie + `sell_websites` aanwezig, vercel.json valide. **Geen regressies.** Toegevoegd: een **streak-badge (🔥 Xd)** op de workout-challenge-kaart (telt opeenvolgende voltooide dagen uit `rpg_daily_v1:*`, met grace voor vandaag). `?v=` naar 10.6. Gevalideerd. **Nog open (jouw beslissing):** budgeting-skill-reset ("reset skills"), plaatsing Path to Superiority.
 
