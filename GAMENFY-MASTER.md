@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.12)
+# GAMENFY — Master Document (v10.13)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.13 — Echte foto's batch 3 (+5 skills → 16 totaal).** Toegevoegd: **dating** (17746292 diner-date), **planning** (33136468 weekplanner-bureau), **puzzling** (30708396 puzzelstukjes), **household** (3177257 schoonmaakspullen), **cold_shower** (688559 blauwe waterval, CC0). Samen met de 14 bestaande tegels hebben nu 30 van de 46 skills een echt beeld. Miss deze ronde: content/marketing (alleen betaalde sites). Resterend op gradient: abstracte/gevoelige skills (meditation, gratitude, core, grounding, recovery, stretching, good_deed, whistling) + retry-baar (marketing, ai_tools, content, languages, teeth). `?v=` naar 10.13. Gevalideerd.
 
 - **v10.12 — Echte foto's batch 2 (+7 skills → 11 totaal).** Via de Pexels-route toegevoegd: **learning** (6550408 boeken op bureau), **focus** (37831090 student in zonlicht), **journaling** (5797899 open notitieboek+mok), **social** (9287491 lachende vrienden), **superiority** (30769221 bergtop bij zonsopgang), **coloring** (532231 kleurpotloden flatlay), **dancing** (6453620 dansende vrouw studio). Truc bevestigd: brede concrete onderwerp-zoekopdrachten leveren meerdere losse Pexels-foto's tegelijk; abstracte termen (meditation, plank) geven vooral betaalde sites die NIET gebruikt worden. Gevoelige skills (no_porn/weed_control/screen_time) houden bewust hun neutrale gradient-tegel. Resterende ~21 skills: deels nog te doen, deels blijven ze een nette gradient (gemengd resultaat is prima). `?v=` naar 10.12. Gevalideerd.
 

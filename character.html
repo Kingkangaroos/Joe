@@ -10,11 +10,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.12" defer></script>
-<script src="topbar.js?v=10.12" defer></script>
-<script src="xp.js?v=10.12" defer></script>
-<script src="quests.js?v=10.12" defer></script>
-<script src="ventures.js?v=10.12" defer></script>
+<script src="sync.js?v=10.13" defer></script>
+<script src="topbar.js?v=10.13" defer></script>
+<script src="xp.js?v=10.13" defer></script>
+<script src="quests.js?v=10.13" defer></script>
+<script src="ventures.js?v=10.13" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1622,6 +1622,12 @@ const SKILL_PHOTO_URL = {
   superiority: 'https://images.pexels.com/photos/30769221/pexels-photo-30769221.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
   coloring: 'https://images.pexels.com/photos/532231/pexels-photo-532231.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
   dancing: 'https://images.pexels.com/photos/6453620/pexels-photo-6453620.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  // v10.13: batch 3
+  dating: 'https://images.pexels.com/photos/17746292/pexels-photo-17746292.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  planning: 'https://images.pexels.com/photos/33136468/pexels-photo-33136468.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  puzzling: 'https://images.pexels.com/photos/30708396/pexels-photo-30708396.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  household: 'https://images.pexels.com/photos/3177257/pexels-photo-3177257.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  cold_shower: 'https://images.pexels.com/photos/688559/pexels-photo-688559.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
 };
 function skillPhotoUrl(key){
   if(SKILL_PHOTO_URL[key]) return SKILL_PHOTO_URL[key];
