@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.13)
+# GAMENFY — Master Document (v10.14)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -221,6 +221,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 
 ## 8. Version history
 
+- **v10.14 — Prioriteit #1: gratitude-woorden-bug gefixt.** `renderGratitude` toonde alleen woorden met `lastDate === vandaag`; een stale sync-pull van het aggregaat `rpg_gratitude_v1` (cloud t/m 15 juli) overschreef Joey's lokale toevoegingen van vandaag → `lastDate` sprong terug → woorden verdwenen. Fix: woorden van vandaag worden nu als lijst opgeslagen in `rpg_daily_v1:DATE.gratitudeWords` en de weergave rendert daaruit (met fallback naar het oude aggregaat). De dag-key heeft nog geen oude cloud-versie voor vandaag, dus overleeft de pull. Aggregaat blijft voor weekstats. `?v=` naar 10.14. Gevalideerd. **Volgende:** #2 wishlist, #3 agenda.
+
 - **v10.13 — Echte foto's batch 3 (+5 skills → 16 totaal).** Toegevoegd: **dating** (17746292 diner-date), **planning** (33136468 weekplanner-bureau), **puzzling** (30708396 puzzelstukjes), **household** (3177257 schoonmaakspullen), **cold_shower** (688559 blauwe waterval, CC0). Samen met de 14 bestaande tegels hebben nu 30 van de 46 skills een echt beeld. Miss deze ronde: content/marketing (alleen betaalde sites). Resterend op gradient: abstracte/gevoelige skills (meditation, gratitude, core, grounding, recovery, stretching, good_deed, whistling) + retry-baar (marketing, ai_tools, content, languages, teeth). `?v=` naar 10.13. Gevalideerd.
 
 - **v10.12 — Echte foto's batch 2 (+7 skills → 11 totaal).** Via de Pexels-route toegevoegd: **learning** (6550408 boeken op bureau), **focus** (37831090 student in zonlicht), **journaling** (5797899 open notitieboek+mok), **social** (9287491 lachende vrienden), **superiority** (30769221 bergtop bij zonsopgang), **coloring** (532231 kleurpotloden flatlay), **dancing** (6453620 dansende vrouw studio). Truc bevestigd: brede concrete onderwerp-zoekopdrachten leveren meerdere losse Pexels-foto's tegelijk; abstracte termen (meditation, plank) geven vooral betaalde sites die NIET gebruikt worden. Gevoelige skills (no_porn/weed_control/screen_time) houden bewust hun neutrale gradient-tegel. Resterende ~21 skills: deels nog te doen, deels blijven ze een nette gradient (gemengd resultaat is prima). `?v=` naar 10.12. Gevalideerd.
@@ -402,6 +404,13 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 9. 📶 **Fitbit hourly + slimmere Jarvis** — intraday; Joey's Supabase-taps, Claudia leidt stap-voor-stap.
 10. 🧰 **Websites Verkopen-venture** vragen/quests + hero-foto's; laatste skill-foto's; **Access my levels**-audit.
 11. 🎨 **Vormgeving-overhaul + scroll-animaties** — wacht op Joey's referenties (via naam van sites).
+
+### ✅ Bevestigd + laatste verfijningen (2026-07-28, GO)
+- Prioriteitsvolgorde 1–11 akkoord. Joey: **"nu gaan uitvoeren"**, top-down.
+- **#3 Agenda:** halfuur-blokken éN de optie om een **heel uur** te plannen moeten allebei blijven.
+- **#7 Seasons:** **1 focus-skill** (3 is te veel), **Claudia bedenkt de master-quest zelf** (NIET aan Jarvis geven). Voorbeeld: skill = dansen, aanname beginner → realistische maand-quest; daarnaast gewoon de daily missions.
+- **#8 Roadmaps:** kritisch naar **ALLE** skills kijken (vooral piano + knowledge, maar per skill echt doordenken). Moet **specifiek + meetbaar**: idealiter echte oefen-sommen / een mini-"examen" per level (“als je deze sommen kan, zit je op dit level”). LearnMath-voorbeeld (van ChatGPT): rekenen → breuken → procenten → algebra — maar mét concrete sommen, niet alleen de onderwerpen. Joey snapt dat 1 som ≠ hele stof; wil meetbare checkpoints.
+- **#9 Fitbit:** Joey wil de stappen NU om parallel uit te voeren.
 
 
 > De v9-lijn (v9.26 → v9.34) is afgerond en geconsolideerd: quest-claim/tier-gate-fix, realtime cross-device sync, cache-busting, why's + milestones + benefits voor alle skills, topical iconen, Fitbit-coach, stappen- én gewichtsfix (Apple Health geretireerd). v10 opent een nieuwe fase. Legenda per taak: 🟢 = Claudia kan dit zelfstandig bouwen · 🟡 = vereist Joey's ontwerp/beslissing · 🔵 = vereist Joey's Supabase-approval (edge function/cron/migratie) · 💳 = vereist Higgsfield-credits.

@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.13" defer></script>
-<script src="topbar.js?v=10.13" defer></script>
-<script src="xp.js?v=10.13" defer></script>
-<script src="quests.js?v=10.13" defer></script>
-<script src="ventures.js?v=10.13" defer></script>
-<script src="checkin.js?v=10.13" defer></script>
-<script src="push.js?v=10.13" defer></script>
+<script src="sync.js?v=10.14" defer></script>
+<script src="topbar.js?v=10.14" defer></script>
+<script src="xp.js?v=10.14" defer></script>
+<script src="quests.js?v=10.14" defer></script>
+<script src="ventures.js?v=10.14" defer></script>
+<script src="checkin.js?v=10.14" defer></script>
+<script src="push.js?v=10.14" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1428,25 +1428,35 @@ function gratDailyLoad(){ try{ return JSON.parse(localStorage.getItem('rpg_daily
 function gratDailySave(d){ try{ localStorage.setItem('rpg_daily_v1:'+todayStr(), JSON.stringify(d)); }catch(e){} }
 function renderGratitude(){
   const box=document.getElementById('gratTags'); if(!box) return;
-  const items=gratLoad(); const t=todayStr();
-  const words=Object.entries(items).filter(([,d])=>d.lastDate===t).sort((a,b)=>(b[1].count||1)-(a[1].count||1));
-  box.innerHTML=words.map(([w])=>'<span class="grat-tag">'+escapeHtml(w)+'</span>').join('');
+  const dd=gratDailyLoad();
+  let words = Array.isArray(dd.gratitudeWords) ? dd.gratitudeWords.slice() : [];
+  if(!words.length){
+    // backward-compat: afleiden uit het aggregaat voor vandaag
+    const items=gratLoad(); const t=todayStr();
+    words = Object.entries(items).filter(([,d])=>d.lastDate===t).map(([w])=>w);
+  }
+  box.innerHTML=words.map(w=>'<span class="grat-tag">'+escapeHtml(w)+'</span>').join('');
 }
 window.gratAdd=function(){
   const inp=document.getElementById('gratInput'); if(!inp) return;
   const word=(inp.value||'').trim(); if(!word) return;
   const key=word.toLowerCase();
+  // aggregaat (weekstats)
   const items=gratLoad();
   if(!items[key]) items[key]={ count:0, firstDate:todayStr(), lastDate:todayStr() };
   items[key].count++; items[key].lastDate=todayStr();
   gratSave(items);
-  inp.value='';
+  // v10.14: per-dag lijst is de bron voor weergave — overleeft een stale sync-pull
   const dd=gratDailyLoad();
+  dd.gratitudeWords = Array.isArray(dd.gratitudeWords) ? dd.gratitudeWords : [];
+  if(!dd.gratitudeWords.some(w=>String(w).toLowerCase()===key)) dd.gratitudeWords.push(word);
   if(!dd.gratitudeXpGiven && typeof window.addXP==='function'){
     window.addXP('gratitude',10,'Gratitude ingevuld');
-    dd.gratitudeXpGiven=true; gratDailySave(dd);
-    showToast('Grateful · +10 XP');
+    dd.gratitudeXpGiven=true;
+    showToast('Grateful \u00b7 +10 XP');
   }
+  gratDailySave(dd);
+  inp.value='';
   renderGratitude();
 };
 document.addEventListener('DOMContentLoaded',()=>{
