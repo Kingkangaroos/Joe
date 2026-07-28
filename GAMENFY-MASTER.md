@@ -380,6 +380,29 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 - **Agenda (bijgewerkt):** halfuur-granulariteit is prima, MAAR: (a) twee losse halfuur-blokken in één uur moeten allebei makkelijk tikbaar zijn zonder per ongeluk het kruisje te raken (meer ruimte per halfuur); (b) **drag-to-move WEL gewenst** — niet om te plannen, maar om een bestaand blok makkelijk naar een ander/volgend uur te slepen als het in het verkeerde uur staat.
 - **Seasons: ook een handmatig tik-systeem** naast Jarvis — hij wil autonomie om skills + doel zelf te zetten (vertrouwt Jarvis niet blind). Jarvis-suggestie voor de master-quest = optioneel, niet verplicht.
 
+### 🔁 Verfijningen (2026-07-28, deel 4) — Jarvis-toon + prioriteiten
+
+**Jarvis motivatie-spec (Joey's woorden):**
+- Toon = **tough love + hype**. Accountability-over-geld ("you're losing money") landt NU nog niet (“als het me nog niet boeit kan het me niet motiveren”) — later wel.
+- Zinnen die landen: "get your ass to work", "you can do so much more with your life", "you have free time, so spend it well", "you wanna be the king, you gotta work", "if it was easy, everybody would do it", "are you proud of yourself?", "time is ticking".
+- Irriteert: kale taak-instructies zoals "define the product". Beter: taak in aspiratie wikkelen → "you wanna get rich? you better define the product."
+- **Bot over data = ja**, maar begripvol: als hij fietste/sportte maar geen 10k stappen haalde is dat prima — niet zeuren over een arbitrair getal; wel duwen bij echte luiheid (“ik heb die daily missions niet voor niets opgesteld”).
+- Joey wil **zelf zinnen/toon kunnen instellen** (settings). Niet altijd op dezelfde tijden.
+- **Free time → integreren in de agenda** (bij het kiezen/plannen van een uur), niet als los Main-blok dat hij toch negeert. Claudia bedenkt een creatieve manier.
+
+**Voorgestelde prioriteitsvolgorde (Claudia's plan — Joey bevestigt/herschikt, daarna "go"):**
+1. 🐛 **Gratitude-bug** — save-pad `rpg_gratitude_v1` fixen (persistentie/display). Klein, hoge irritatie.
+2. 🐛 **Wishlist bedrag-veld** — label/leesbaarheid van de add-flow. Klein.
+3. 🔧 **Agenda-usability** — twee 30-min blokken per uur allebei tikbaar (geen kruisje-ongeluk) + drag-to-move van bestaand blok. Middel.
+4. 🏠 **Core-skills-rij op Main** (nieuwste-XP-eerst, horizontaal scrollen) i.p.v. focus-skills. Middel.
+5. 🧹 **Main opschonen** — tap-to-schedule weg; free-time in de agenda-flow; next move/today's minutes/gratitude blijven.
+6. 🗣️ **Jarvis-toon overhaul** — tough-love+hype prompts + Joey's eigen zinnen instelbaar (edge function = Joey's Supabase-tap; settings-UI kan front-end).
+7. 🌟 **Seasons** — handmatige tik-picker (3 skills + tijdsbudget + duur) + optionele Jarvis master-quest.
+8. 📚 **Quest hoe-behaal-roadmaps** (wetenschappelijk onderbouwd) — groot; start met piano + knowledge/superiority.
+9. 📶 **Fitbit hourly + slimmere Jarvis** — intraday; Joey's Supabase-taps, Claudia leidt stap-voor-stap.
+10. 🧰 **Websites Verkopen-venture** vragen/quests + hero-foto's; laatste skill-foto's; **Access my levels**-audit.
+11. 🎨 **Vormgeving-overhaul + scroll-animaties** — wacht op Joey's referenties (via naam van sites).
+
 
 > De v9-lijn (v9.26 → v9.34) is afgerond en geconsolideerd: quest-claim/tier-gate-fix, realtime cross-device sync, cache-busting, why's + milestones + benefits voor alle skills, topical iconen, Fitbit-coach, stappen- én gewichtsfix (Apple Health geretireerd). v10 opent een nieuwe fase. Legenda per taak: 🟢 = Claudia kan dit zelfstandig bouwen · 🟡 = vereist Joey's ontwerp/beslissing · 🔵 = vereist Joey's Supabase-approval (edge function/cron/migratie) · 💳 = vereist Higgsfield-credits.
 
