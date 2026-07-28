@@ -367,6 +367,13 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 - **Seasons:** wil hij het concept (maandelijkse focus + boss quest), 21→21 of kalendermaand? Of skippen.
 - **Prioriteit:** welke grote track eerst — later te bespreken.
 
+### 🔁 Verfijningen (2026-07-28, deel 2)
+- **Seasons: JA, wil hij.** Flow: hij geeft Jarvis (of Claudia) z'n 3 focus-skills + tijdsbudget/dag + duur (bijv. dansen/piano/tekenen, 2u/dag, 1 maand) → Jarvis stelt een **realistische master/boss-quest** op (bijv. stretchen → "halve split deze maand", later "volledige split"). Realistisch + haalbaar.
+- **Core-skills-rij → op MAIN (home), NIET Body.** Vervangt de huidige "focus skills"-sectie op Main. Nieuwste-XP-eerst, naar rechts scrollen, oneindig. Integreert de seasons-focus.
+- **Main-layout opschonen:** BEHOUDEN = Next move, Today's minutes, Gratitude. WEG = het "tap to schedule / plan je tijd"-blok helemaal. "Free time" = twijfel → mogelijk vervangen door een **reminder als hij op een uurtje klikt** i.p.v. verwijderen.
+- **Quest-roadmaps (#5): moeten op wetenschappelijk bewijs gebaseerd zijn.**
+- **🚨 BUG (prioriteit): gratitude-woorden verdwijnen.** Cloud heeft t/m 2026-07-15; vandaag ingevulde woorden persisteren niet. Save-pad van rpg_gratitude_v1 onderzoeken (reset was NIET de oorzaak).
+
 
 > De v9-lijn (v9.26 → v9.34) is afgerond en geconsolideerd: quest-claim/tier-gate-fix, realtime cross-device sync, cache-busting, why's + milestones + benefits voor alle skills, topical iconen, Fitbit-coach, stappen- én gewichtsfix (Apple Health geretireerd). v10 opent een nieuwe fase. Legenda per taak: 🟢 = Claudia kan dit zelfstandig bouwen · 🟡 = vereist Joey's ontwerp/beslissing · 🔵 = vereist Joey's Supabase-approval (edge function/cron/migratie) · 💳 = vereist Higgsfield-credits.
 
