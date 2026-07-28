@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.7" defer></script>
-<script src="topbar.js?v=10.7" defer></script>
-<script src="xp.js?v=10.7" defer></script>
-<script src="quests.js?v=10.7" defer></script>
-<script src="ventures.js?v=10.7" defer></script>
-<script src="checkin.js?v=10.7" defer></script>
-<script src="push.js?v=10.7" defer></script>
+<script src="sync.js?v=10.8" defer></script>
+<script src="topbar.js?v=10.8" defer></script>
+<script src="xp.js?v=10.8" defer></script>
+<script src="quests.js?v=10.8" defer></script>
+<script src="ventures.js?v=10.8" defer></script>
+<script src="checkin.js?v=10.8" defer></script>
+<script src="push.js?v=10.8" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1293,6 +1293,17 @@ function renderArc(pct) {
 }
 
 // ── Missions ─────────────────────────────────────────────────
+function activeMissionKeys(){
+  const defs=window.RPG_DEFAULT_SKILLS||{}; const out=[];
+  for(const k in defs){ const d=defs[k]; if(d&&d.isHabit&&d.active!==false) out.push(k); }
+  return out;
+}
+function dayCompletion(ds){
+  const keys=activeMissionKeys(); if(!keys.length) return 0;
+  let log={}; try{ log=JSON.parse(localStorage.getItem('rpg_habitlog_v1'))||{}; }catch(e){}
+  let done=0; keys.forEach(function(k){ if(log[k]&&log[k][ds]) done++; });
+  return done/keys.length;
+}
 function dayHasActivity(ds){
   try{ const st=JSON.parse(localStorage.getItem('rpg_streak_v1'))||{}; if(st.days&&st.days[ds]) return true; }catch(e){}
   try{ const l=JSON.parse(localStorage.getItem('rpg_habitlog_v1'))||{}; for(const k in l){ if(l[k]&&l[k][ds]) return true; } }catch(e){}
@@ -1305,12 +1316,15 @@ function renderWeekStrip(){
   for(let off=-6; off<=0; off++){
     const d=new Date(); d.setDate(d.getDate()+off);
     const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-    const active=dayHasActivity(ds);
+    const frac=dayCompletion(ds);
     const sel=(off===missionsDayOffset);
-    const dotColor=active?'var(--ember,#c8622a)':'var(--line,rgba(0,0,0,0.14))';
+    let dotStyle;
+    if(frac>0){ const deg=Math.max(20,Math.round(frac*360)); dotStyle='background:conic-gradient(var(--ember,#c8622a) '+deg+'deg, var(--line,rgba(0,0,0,0.12)) 0)'; }
+    else if(dayHasActivity(ds)){ dotStyle='background:var(--ember,#c8622a);opacity:0.45'; }
+    else { dotStyle='background:var(--line,rgba(0,0,0,0.12))'; }
     html+='<button onclick="setViewDay('+off+')" aria-label="'+ds+'" style="flex:1;background:none;border:none;padding:4px 0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px">'
       +'<span style="font-size:10px;font-weight:'+(sel?'800':'600')+';color:'+(sel?'var(--ink,#1a1a1a)':'var(--text-tertiary,#8a8a8a)')+'">'+letters[d.getDay()]+'</span>'
-      +'<span style="width:11px;height:11px;border-radius:50%;background:'+dotColor+(sel?';outline:2px solid var(--ink,#1a1a1a);outline-offset:2px':'')+'"></span>'
+      +'<span style="width:13px;height:13px;border-radius:50%;'+dotStyle+(sel?';outline:2px solid var(--ink,#1a1a1a);outline-offset:2px':'')+'"></span>'
       +'</button>';
   }
   el.innerHTML=html;

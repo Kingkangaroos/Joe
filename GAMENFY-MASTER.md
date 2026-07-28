@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.7)
+# GAMENFY — Master Document (v10.8)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.8 — Week-strip toont nu voltooiings-fractie (pie-vulling) i.p.v. binaire stip.** Elke dag-stip in de week-strip vult nu naar rato van hoeveel van je actieve daily missions je die dag deed (conic-gradient pie in ember; `dayCompletion` = afgevinkte habit-missions / totaal actieve habits, uit `rpg_habitlog_v1`). Dagen met alleen niet-habit-activiteit (bijv. workout-challenge) tonen een lichte ember-stip via `dayHasActivity`-fallback. Zo zie je in één oogopslag niet alleen óf maar hóe compleet elke dag was — echte consistentie-tracking. Read-only, additief. `?v=` naar 10.8. Gevalideerd (één definitie per functie).
 
 - **v10.7 — Week-strip op Main (7-daagse tracking) — lost Joey's "ik kan het nooit goed tracken" op.** Boven de missions-lijst nu een compacte strip van de laatste 7 dagen: per dag een letter + stip die oplicht (ember) als je die dag activiteit had (uit `rpg_streak_v1.days` of `rpg_habitlog_v1`). De huidige bekeken dag is gemarkeerd; **tik een dag → springt erheen** (benut de multi-day nav van v10.4, zodat je direct kunt bijvullen). Read-only + additief (kan niks breken), rendert mee in `renderMissions`. `?v=` naar 10.7. Gevalideerd.
 
