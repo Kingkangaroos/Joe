@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.17)
+# GAMENFY — Master Document (v10.18)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.18 — HOTFIX: dubbele `ladder`-declaratie in openSkillDetail.** v10.17 introduceerde `const ladder` terwijl die naam daar al bestond (de oude RPG_QUESTS-ladder) → syntax-fout die character.html brak. Mijn variabelen hernoemd naar `sladder`/`sladderHtml`. Gevalideerd (character.html parset schoon). `?v=` naar 10.18. Les (weer): grep bestaande namen binnen dezelfde functiescope vóór nieuwe `const`.
 
 - **v10.17 — Getierde ladder LIVE in de app voor Piano + Puzzling (blauwdruk ter review).** Nieuw `ladders.js` met `SKILL_LADDERS` (tier = level, info-tree per tier: meaning/why/doThis/examples/next + meetbare claim-check). Skill-detail toont voor deze 2 skills een **"Progression path"** i.p.v. de oude quests+unlock-path: elke tier uitklapbaar (tik = dieper) en **claimbaar vanaf de path** (sequentieel via tier-gates). Claimen brengt de skill naar dat level (`xpForLevel`), opgeslagen in `rpg_tier_claims_v1`. In-app tekst Engels. Piano = 11 tiers (middle C → mastery), Puzzling = 9 tiers (300 → 10k+ stukjes, tegenstrijdigheid opgelost). Andere skills houden voorlopig hun oude weergave. `?v=` naar 10.17. Gevalideerd. **Na Joey's feedback:** uitrollen over alle ~45 skills + fase 1 (Duolingo daily-mission-fix) + Fitbit v2.
 

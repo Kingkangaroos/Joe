@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.17" defer></script>
-<script src="topbar.js?v=10.17" defer></script>
-<script src="xp.js?v=10.17" defer></script>
-<script src="quests.js?v=10.17" defer></script>
-<script src="ladders.js?v=10.17" defer></script>
-<script src="ventures.js?v=10.17" defer></script>
+<script src="sync.js?v=10.18" defer></script>
+<script src="topbar.js?v=10.18" defer></script>
+<script src="xp.js?v=10.18" defer></script>
+<script src="quests.js?v=10.18" defer></script>
+<script src="ladders.js?v=10.18" defer></script>
+<script src="ventures.js?v=10.18" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1838,8 +1838,8 @@ function openSkillDetail(skillKey){
     </div>`;
   }).join('');
 
-  const ladder=(window.SKILL_LADDERS||{})[skillKey];
-  const ladderHtml=ladder?buildLadderHtml(skillKey, ladder):'';
+  const sladder=(window.SKILL_LADDERS||{})[skillKey];
+  const sladderHtml=sladder?buildLadderHtml(skillKey, sladder):'';
 
   const photoUrl=skillPhotoUrl(skillKey);
   const photoHtml=photoUrl?`<div class="sd-photo">
@@ -1868,7 +1868,7 @@ function openSkillDetail(skillKey){
       </div>
       ${whyHtml}
       ${tierLockHtml}
-      ${ladder ? ladderHtml : tierChecklistHtml}
+      ${sladder ? sladderHtml : tierChecklistHtml}
       ${msBtnHtml}
       ${nextStepHtml}
       <div class="sd-log-section">
@@ -1879,7 +1879,7 @@ function openSkillDetail(skillKey){
           <button class="sd-custom-btn" onclick="doSkillDetailLog('${skillKey}',parseInt(document.getElementById('sdCustomXp')?.value||0),'Custom XP')">+ Add</button>
         </div>
       </div>
-      ${ladder ? '' : (msLevels.length?`<div class="sd-unlock-title">Unlock Path</div>${msRows}`:'')}
+      ${sladder ? '' : (msLevels.length?`<div class="sd-unlock-title">Unlock Path</div>${msRows}`:'')}
       <button class="sd-close" onclick="resetSkill('${skillKey}')" style="background:none;color:#b04a5a;border:1px solid rgba(176,74,90,0.3);margin-bottom:8px">Reset this skill</button>
       <button class="sd-close" onclick="document.getElementById('sdOverlay')?.remove()">Close</button>
     </div>`;
