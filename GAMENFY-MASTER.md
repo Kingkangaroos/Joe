@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.15)
+# GAMENFY — Master Document (v10.16)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -221,6 +221,17 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 
 ## 8. Version history
 
+- **v10.16 — Fitbit hersteld + Grounding verwijderd + grote quest/daily-audit gestart.** **Fitbit:** Joey her-koppelde Google Health (token was verlopen sinds 23/7 → verklaart de doodse Body-tab). `fitbit-intraday`-probe draait nu: beschikbaar = HRV, SpO2, respiratory-rate, distance, active-minutes, ruwe steps (`p.steps.interval.civilStartTime` + `.count`) + 2000 HR-punten; NIET beschikbaar = skin-temperature (400). Volgende Fitbit-stap: v2 (juiste parsing + vitals + uur-cron + Jarvis readiness). **Grounding:** gedeactiveerd (`active:false`) + milestone verwijderd. `?v=` naar 10.16.
+
+### 🗺️ Grote quest/unlock/daily-audit (2026-07-29) — model ter bevestiging
+Joey's punten: (1) quests weer koppelen aan unlock paths (tier-gate-milestones per tier); (2) claimen direct vanuit de unlock path; (3) kritisch ALLE skills: logische progressie, moeilijkheid ↔ level, duidelijke tiers; (4) claim-systeem; (5) haalbaarheid; (6) veel meer uitleg per quest = een **informatieboom** (wat betekent 't / waarom / wat doe ik concreet / voorbeelden / hoe naar next). Voorbeelden van fouten: Puzzle lvl-10-quest (300 stukjes) geclaimd maar level 3, terwijl unlock path ~lvl5/100 stukjes zegt (inconsistent); Whistling kan al on-command maar level 7, lvl-15-milestone onlogisch; Coloring “Level 8 - Shade Curious” = onduidelijk. **Daily missions = Duolingo-model:** check = credit voor die dag (+1/level), gemiste dag = decay terug, uncheck = level omlaag; nu bleef 'ie na check→uncheck op level 2 (klopt niet). Grounding valt buiten de audit.
+
+**Claudia's voorgestelde model (Joey bevestigt vóór de grote build):**
+- **Één getierde ladder per skill** = quests + unlock-path samengevoegd. Elke tier: {level, titel, wat, waarom, hoe (concrete stappen), voorbeelden, XP} → **claimbaar vanaf de unlock path** als je 'm haalt; tier-gates houden de volgorde.
+- **Informatieboom:** tik een tier → dieper (betekenis → waarom → hoe → voorbeelden → next). Wetenschappelijk onderbouwd.
+- **Daily missions:** level = streak-krediet, puur afgeleid uit de dag-log (check/uncheck/miss altijd correct); vervangt de score+reconcile+decay-knoop die de bug gaf.
+- **Kernvraag aan Joey:** duwt het claimen van een tier je **level omhoog** (tier ÍS het level, RuneScape-stijl), of blijft level XP-gedreven en zijn tiers losse checkpoints? (Dit lost de Puzzle-tegenstrijdigheid op.)
+- **Fasering:** (1) daily-mission Duolingo-fix; (2) unified ladder-datamodel + skill-detail-UI (gekoppeld, claimbaar, uitklapbaar) met 3-4 skills als template; (3) alle ~45 skills kritisch herzien + diepe uitleg; (4) Fitbit v2 + Jarvis-readiness (parallel).
 - **v10.15 — Per-skill reset-knop + core gereset.** Elke skill-detail heeft nu onderaan een **"Reset this skill"**-knop (met bevestiging) die XP→0, geclaimde quests (`skill:level`) en bevestigde milestones (`skill_x`) van díe skill wist — Joey hoeft resets niet meer aan Claudia te vragen. Core is via de cloud teruggezet naar level 1 (Joey had 'm op level 11 gezet als test voor de gespierde body-visualisatie). `?v=` naar 10.15. Gevalideerd. **Volgende:** aparte `fitbit-intraday`-functie (breed: uur steps+HR + HRV/SpO2/breathing/skin-temp/distance → Jarvis readiness), Body-tab Google-Health-style grafieken, #2 wishlist, #3 agenda.
 
 - **v10.14 — Prioriteit #1: gratitude-woorden-bug gefixt.** `renderGratitude` toonde alleen woorden met `lastDate === vandaag`; een stale sync-pull van het aggregaat `rpg_gratitude_v1` (cloud t/m 15 juli) overschreef Joey's lokale toevoegingen van vandaag → `lastDate` sprong terug → woorden verdwenen. Fix: woorden van vandaag worden nu als lijst opgeslagen in `rpg_daily_v1:DATE.gratitudeWords` en de weergave rendert daaruit (met fallback naar het oude aggregaat). De dag-key heeft nog geen oude cloud-versie voor vandaag, dus overleeft de pull. Aggregaat blijft voor weekstats. `?v=` naar 10.14. Gevalideerd. **Volgende:** #2 wishlist, #3 agenda.

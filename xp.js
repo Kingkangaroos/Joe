@@ -298,7 +298,7 @@
     },
     grounding: {
       benefits:[{d:1,t:'acute calm (small studies)'},{d:7,t:'better sleep quality reported'},{d:30,t:'steadier cortisol rhythm in early research'}],
-      xp:0, parentSkill:'body', icon:'🌱', label:'Grounding', active:true, isHabit:true,
+      xp:0, parentSkill:'body', icon:'🌱', label:'Grounding', active:false, isHabit:true, // removed per Joey 2026-07-29
       why:'Early small studies link it to lower cortisol, less inflammation and better sleep. Evidence is young — but barefoot minutes outside also mean daylight, calm and zero cost.',
       habitDesc:'Bare feet on earth — grass, sand, soil. A few minutes counts. Daily reset.',
     },
@@ -1076,7 +1076,6 @@
     sleep:      { 10:'7+ hours most nights', 25:'Consistent sleep & wake times', 50:'Rarely need an alarm', 75:'Deep, restorative sleep is the norm', 100:'Sleep is dialed — a real recovery superpower' },
     nutrition:  { 10:'Mostly whole foods', 25:'Protein at every meal', 50:'Eating supports your goals automatically', 75:'Dialed intake without tracking', 100:'Nutrition runs on autopilot' },
     walking:    { 10:'Daily walks are a habit', 25:'8k+ steps most days', 50:'10k a natural baseline', 75:'Walking is your thinking time', 100:'Effortlessly active all day' },
-    grounding:  { 10:'A daily grounding moment', 25:'Calmer baseline', 50:'You reset yourself on demand', 75:'Grounded under pressure', 100:'Unshakeable presence' },
     teeth:      { 10:'Twice-daily brushing locked in', 25:'Flossing is automatic', 50:'Spotless check-ups', 75:'Healthiest mouth of your life', 100:'Dental routine on full autopilot' },
     household:  { 10:'Basics stay on top of', 25:'Home rarely gets messy', 50:'A calm, ordered space', 75:'Systems that run themselves', 100:'Effortlessly tidy home' },
     journaling: { 10:'Writing a few times a week', 25:'A daily reflection habit', 50:'Clearer thinking on paper', 75:'Years of self-knowledge banked', 100:'Journaling is how you process life' },
