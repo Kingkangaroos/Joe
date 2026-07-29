@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.24)
+# GAMENFY — Master Document (v10.25)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.25 — Uitrol batch 5: stretching, recovery, focus, journaling (volledige 1-100 ladders) + sleep, nutrition, walking, teeth, meditation, gratitude, good_deed (consistentie/streak-ladders).** De 4 non-habit skills kregen de standaard 9-tier ladder (levels 1/3/6/10/18/30/50/75/100), evidence-based, zelfde format als eerdere batches. De 7 echte habits (`isHabit:true`) kregen een NIEUW soort ladder: lage tier-levels (2/3/4/6/8/11/15/20/25) die corresponderen met realistische tijdlijnen op basis van de bestaande vlakke +15 XP/dagelijkse-check (xpForLevel-formule) — grofweg 1 week / 2 weken / 1 maand / 3 maanden / 6 maanden / 1 jaar / 2 jaar / 3-4 jaar / 5+ jaar. Dit is de "Duolingo daily-fix"-ladder: snelle vroege winst, daarna echte lange-termijn-consistentie-mijlpalen — zonder nieuwe engineering (hergebruikt 100% het bestaande tier=level/claim-systeem via `rpg_tier_claims_v1`; claimen blijft honor-system, net als alle andere skills). Alle 11 skills kregen ook 4 optionele quests. Bestaande oude `milestones{}`-objecten in xp.js blijven ongewijzigd staan (zelfde patroon als batch 1-4: oud + nieuw naast elkaar). Nu **34 van de ~44 skills** compleet. `?v=` naar 10.25 op alle 8 pagina's. Gevalideerd (node -c + keys/levels/velden-check op alle 11 nieuwe ladders). Nog te doen: household/whistling/social/dating/planning/coloring (lifestyle), no_porn/weed_control/screen_time/cold_shower (discipline), superiority (knowledge).
 
 - **v10.24 — Uitrol batch 4: saving, investing, budgeting, net_worth, gym, endurance.** Money-skills met gedrags-/relatieve mijlpalen (geen vaste bedragen), gym als consistentie+physique-ladder, endurance als cardio-progressie. Nu **23 van de ~44 skills** compleet. `?v=` naar 10.24. Gevalideerd. Nog: stretching/recovery/sleep/nutrition/walking/teeth, focus/journaling/meditation/gratitude/good_deed, household/whistling/social/dating/planning/coloring, no_porn/weed_control/screen_time/cold_shower, superiority.
 
