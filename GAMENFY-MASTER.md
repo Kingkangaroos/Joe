@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.21)
+# GAMENFY — Master Document (v10.22)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.22 — Uitrol batch 2: languages, cooking, calisthenics, core, strength, dancing.** Volledige getierde ladders + optionele quests toegevoegd (elk ~9 tiers, info-tree + claim-checks, evidence-based). Nu **11 van de ~44 skills** compleet (piano, puzzling, drawing, coding, tennis + deze 6). `?v=` naar 10.22. Gevalideerd. Rest volgt in batches; daarna Duolingo daily-fix + Fitbit v2.
 
 - **v10.21 — 2 ladder-fixes + uitrol batch 1 (Drawing/Coding/Tennis).** Fixes: (1) de oude "next step" onderaan wordt verborgen voor ladder-skills (de ladder heeft z'n eigen "Next" per tier); (2) `resetSkill` wist nu ook `rpg_tier_claims_v1` + `rpg_optional_quests_v1` van die skill, zodat de tiers echt unchecken bij een reset. **Uitrol gestart:** volledige getierde ladders + optionele quests toegevoegd voor **drawing, coding, tennis** (elk ~10 tiers, info-tree + claim-check). Piano/Puzzling waren de template. Resterende skills volgen in batches. `?v=` naar 10.21. Gevalideerd.
 
