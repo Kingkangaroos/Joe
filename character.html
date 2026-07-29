@@ -10,11 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.16" defer></script>
-<script src="topbar.js?v=10.16" defer></script>
-<script src="xp.js?v=10.16" defer></script>
-<script src="quests.js?v=10.16" defer></script>
-<script src="ventures.js?v=10.16" defer></script>
+<script src="sync.js?v=10.17" defer></script>
+<script src="topbar.js?v=10.17" defer></script>
+<script src="xp.js?v=10.17" defer></script>
+<script src="quests.js?v=10.17" defer></script>
+<script src="ladders.js?v=10.17" defer></script>
+<script src="ventures.js?v=10.17" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -551,6 +552,25 @@ textarea {
 .sd-custom-input{flex:1;background:var(--card);border:1px solid var(--line-strong);border-radius:10px;padding:11px 14px;color:var(--ink);font-family:var(--mono);font-size:16px;text-align:center;outline:none;-webkit-appearance:none}
 .sd-custom-btn{padding:11px 18px;border-radius:10px;background:rgba(46,139,95,0.08);border:1px solid var(--green);color:var(--green);font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap}
 .sd-unlock-title{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.ld-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.ld-tier{border:1px solid var(--line,rgba(0,0,0,0.08));border-radius:14px;overflow:hidden;background:var(--card,#fff)}
+.ld-tier.ld-next{border-color:rgba(0,0,0,0.22);box-shadow:0 1px 8px rgba(0,0,0,0.05)}
+.ld-tier.ld-locked{opacity:0.6}
+.ld-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
+.ld-status{font-size:15px;flex-shrink:0}
+.ld-lvl{font-size:11px;font-weight:800;color:var(--muted);min-width:44px}
+.ld-title{font-family:var(--font-display);font-weight:800;font-size:14px;flex:1;color:var(--ink,#1a1a1a)}
+.ld-chev{color:var(--muted);font-size:18px;transform:rotate(90deg)}
+.ld-body{padding:0 14px 14px;font-size:13px;line-height:1.5;color:var(--ink,#333)}
+.ld-meaning{margin:0 0 8px}
+.ld-sub{margin:8px 0;color:var(--ink,#444)}
+.ld-sub b{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;font-weight:800}
+.ld-sub ul{margin:2px 0 0;padding-left:18px}
+.ld-sub li{margin:2px 0}
+.ld-claimcheck{margin-top:10px;padding:8px 10px;background:var(--bg2,#F6F4EE);border-radius:8px;font-size:12px;color:var(--ink,#555);font-style:italic}
+.ld-claim-btn{margin-top:10px;width:100%;border:none;border-radius:12px;padding:11px;font-weight:800;font-size:13px;cursor:pointer;background:var(--ink,#1a1a1a);color:#fff}
+.ld-claim-btn:active{transform:scale(0.98)}
+.ld-claimed-tag{margin-top:8px;font-size:11px;font-weight:700;color:#3a9a6a}
 .sd-ms-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
 .sd-ms-row:last-child{border-bottom:none}
 .sd-ms-status{font-size:14px;flex-shrink:0;width:20px;text-align:center;margin-top:1px}
@@ -1653,6 +1673,55 @@ window.resetSkill=function(key){
   try{ if(window.renderCharStrip) renderCharStrip(); }catch(e){}
 };
 
+function tierClaims(){ try{ return JSON.parse(localStorage.getItem('rpg_tier_claims_v1'))||{}; }catch(e){ return {}; } }
+function buildLadderHtml(skillKey, ladder){
+  const claimed=(tierClaims()[skillKey])||0;
+  const nextTier=ladder.find(t=>t.level>claimed);
+  const rows=ladder.map(function(t){
+    const isClaimed=t.level<=claimed;
+    const isNext=!!(nextTier&&t.level===nextTier.level);
+    const id=skillKey+'_t'+t.level;
+    const status=isClaimed?'\u2705':isNext?'\u25B6':'\uD83D\uDD12';
+    const cls=isClaimed?'ld-done':isNext?'ld-next':'ld-locked';
+    const doList=(t.doThis||[]).map(function(x){return '<li>'+x+'</li>';}).join('');
+    const exList=(t.examples||[]).map(function(x){return '<li>'+x+'</li>';}).join('');
+    return '<div class="ld-tier '+cls+'">'
+      +'<div class="ld-head" onclick="toggleTierInfo(\''+id+'\')">'
+        +'<span class="ld-status">'+status+'</span>'
+        +'<span class="ld-lvl">Lv '+t.level+'</span>'
+        +'<span class="ld-title">'+t.title+'</span>'
+        +'<span class="ld-chev">\u203A</span>'
+      +'</div>'
+      +'<div class="ld-body" id="ldb_'+id+'" style="display:none">'
+        +'<p class="ld-meaning">'+(t.meaning||'')+'</p>'
+        +(t.why?'<div class="ld-sub"><b>Why</b> '+t.why+'</div>':'')
+        +(doList?'<div class="ld-sub"><b>Do this</b><ul>'+doList+'</ul></div>':'')
+        +(exList?'<div class="ld-sub"><b>Examples</b><ul>'+exList+'</ul></div>':'')
+        +(t.next?'<div class="ld-sub"><b>Next</b> '+t.next+'</div>':'')
+        +(t.claim?'<div class="ld-claimcheck">Claimable when '+t.claim+'</div>':'')
+        +(isNext?'<button class="ld-claim-btn" onclick="claimTier(\''+skillKey+'\','+t.level+')">Claim Level '+t.level+'</button>':'')
+        +(isClaimed?'<div class="ld-claimed-tag">Claimed \u2713</div>':'')
+      +'</div>'
+    +'</div>';
+  }).join('');
+  return '<div class="sd-unlock-title">Progression path</div><div class="ld-wrap">'+rows+'</div>';
+}
+window.toggleTierInfo=function(id){ const el=document.getElementById('ldb_'+id); if(el) el.style.display = el.style.display==='none'?'block':'none'; };
+window.claimTier=function(skillKey,lvl){
+  const ladder=(window.SKILL_LADDERS||{})[skillKey]||[];
+  const claims=tierClaims(); const claimed=claims[skillKey]||0;
+  const nextTier=ladder.find(t=>t.level>claimed);
+  if(!nextTier||nextTier.level!==lvl){ if(window.showToast) showToast('Claim the previous tier first'); return; }
+  claims[skillKey]=lvl; try{ localStorage.setItem('rpg_tier_claims_v1', JSON.stringify(claims)); }catch(e){}
+  // TIER = LEVEL: bring the skill to at least this level
+  try{ const ch=JSON.parse(localStorage.getItem('rpg_character_v1'))||{};
+    if(ch.skills&&ch.skills[skillKey]){ const need=window.xpForLevel?window.xpForLevel(lvl):0;
+      if((ch.skills[skillKey].xp||0)<need) ch.skills[skillKey].xp=need;
+      localStorage.setItem('rpg_character_v1', JSON.stringify(ch)); } }catch(e){}
+  if(window.showToast) showToast('Claimed Level '+lvl+'!');
+  openSkillDetail(skillKey);
+};
+
 function openSkillDetail(skillKey){
   const defaults=window.RPG_DEFAULT_SKILLS||{};
   const def=defaults[skillKey]||{};
@@ -1769,6 +1838,9 @@ function openSkillDetail(skillKey){
     </div>`;
   }).join('');
 
+  const ladder=(window.SKILL_LADDERS||{})[skillKey];
+  const ladderHtml=ladder?buildLadderHtml(skillKey, ladder):'';
+
   const photoUrl=skillPhotoUrl(skillKey);
   const photoHtml=photoUrl?`<div class="sd-photo">
       <img class="sd-photo-img" src="${photoUrl}" alt="" onerror="this.closest('.sd-photo').style.display='none'">
@@ -1796,7 +1868,7 @@ function openSkillDetail(skillKey){
       </div>
       ${whyHtml}
       ${tierLockHtml}
-      ${tierChecklistHtml}
+      ${ladder ? ladderHtml : tierChecklistHtml}
       ${msBtnHtml}
       ${nextStepHtml}
       <div class="sd-log-section">
@@ -1807,7 +1879,7 @@ function openSkillDetail(skillKey){
           <button class="sd-custom-btn" onclick="doSkillDetailLog('${skillKey}',parseInt(document.getElementById('sdCustomXp')?.value||0),'Custom XP')">+ Add</button>
         </div>
       </div>
-      ${msLevels.length?`<div class="sd-unlock-title">Unlock Path</div>${msRows}`:''}
+      ${ladder ? '' : (msLevels.length?`<div class="sd-unlock-title">Unlock Path</div>${msRows}`:'')}
       <button class="sd-close" onclick="resetSkill('${skillKey}')" style="background:none;color:#b04a5a;border:1px solid rgba(176,74,90,0.3);margin-bottom:8px">Reset this skill</button>
       <button class="sd-close" onclick="document.getElementById('sdOverlay')?.remove()">Close</button>
     </div>`;

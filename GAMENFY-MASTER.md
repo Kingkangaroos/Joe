@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.16)
+# GAMENFY — Master Document (v10.17)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.17 — Getierde ladder LIVE in de app voor Piano + Puzzling (blauwdruk ter review).** Nieuw `ladders.js` met `SKILL_LADDERS` (tier = level, info-tree per tier: meaning/why/doThis/examples/next + meetbare claim-check). Skill-detail toont voor deze 2 skills een **"Progression path"** i.p.v. de oude quests+unlock-path: elke tier uitklapbaar (tik = dieper) en **claimbaar vanaf de path** (sequentieel via tier-gates). Claimen brengt de skill naar dat level (`xpForLevel`), opgeslagen in `rpg_tier_claims_v1`. In-app tekst Engels. Piano = 11 tiers (middle C → mastery), Puzzling = 9 tiers (300 → 10k+ stukjes, tegenstrijdigheid opgelost). Andere skills houden voorlopig hun oude weergave. `?v=` naar 10.17. Gevalideerd. **Na Joey's feedback:** uitrollen over alle ~45 skills + fase 1 (Duolingo daily-mission-fix) + Fitbit v2.
 
 - **v10.16 — Fitbit hersteld + Grounding verwijderd + grote quest/daily-audit gestart.** **Fitbit:** Joey her-koppelde Google Health (token was verlopen sinds 23/7 → verklaart de doodse Body-tab). `fitbit-intraday`-probe draait nu: beschikbaar = HRV, SpO2, respiratory-rate, distance, active-minutes, ruwe steps (`p.steps.interval.civilStartTime` + `.count`) + 2000 HR-punten; NIET beschikbaar = skin-temperature (400). Volgende Fitbit-stap: v2 (juiste parsing + vitals + uur-cron + Jarvis readiness). **Grounding:** gedeactiveerd (`active:false`) + milestone verwijderd. `?v=` naar 10.16.
 
