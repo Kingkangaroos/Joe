@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.27" defer></script>
-<script src="topbar.js?v=10.27" defer></script>
-<script src="xp.js?v=10.27" defer></script>
-<script src="quests.js?v=10.27" defer></script>
-<script src="ladders.js?v=10.27" defer></script>
-<script src="ventures.js?v=10.27" defer></script>
+<script src="sync.js?v=10.28" defer></script>
+<script src="topbar.js?v=10.28" defer></script>
+<script src="xp.js?v=10.28" defer></script>
+<script src="quests.js?v=10.28" defer></script>
+<script src="ladders.js?v=10.28" defer></script>
+<script src="ventures.js?v=10.28" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -2726,9 +2726,15 @@ function renderDaily(){
   function submitGratitudeTag(){
     const word=gi.value.trim();
     if(!word) return;
-    addGratitudeItem(word);
-    gi.value='';
     const sd=getSelectedDate();
+    addGratitudeItem(word, sd);
+    // v10.28: write into the shared, race-safe per-day store — this is the
+    // real fix. Before this, character.html's gratitude widget only ever
+    // updated the rpg_gratitude_v1 aggregate and never wrote a per-day word,
+    // so anything typed here never showed up via index.html's Main-page
+    // gratitude box, which read gratitudeWords first.
+    if(typeof window.addGratitudeWordFor==='function') window.addGratitudeWordFor(sd, word);
+    gi.value='';
     const dd=loadDaily(sd);
     if(!dd.gratitudeXpGiven&&typeof window.addXP==='function'){
       window.addXP('gratitude',10,'Gratitude ingevuld');
@@ -2747,11 +2753,18 @@ function renderGratitudeTags(daily){
   const container=document.getElementById('gratitudeTags');
   if(!container) return;
   const items=loadGratitudeItems();
-  // Collect today's entries: words added today
-  const today=todayKey();
-  const todayWords=Object.entries(items)
-    .filter(([,d])=>d.lastDate===today)
-    .sort((a,b)=>(b[1].count||1)-(a[1].count||1));
+  const sd=(typeof getSelectedDate==='function') ? getSelectedDate() : todayKey();
+  // v10.28: prefer the dedicated race-safe store (source of truth); fall
+  // back to the old aggregate-derived approach so history still displays.
+  let words = (typeof window.getGratitudeWordsFor==='function') ? window.getGratitudeWordsFor(sd) : [];
+  let todayWords;
+  if(words.length){
+    todayWords = words.map(w => [w, items[w.toLowerCase().trim()] || {count:1}]);
+  } else {
+    todayWords = Object.entries(items)
+      .filter(([,d])=>d.lastDate===sd)
+      .sort((a,b)=>(b[1].count||1)-(a[1].count||1));
+  }
   container.innerHTML='';
   todayWords.forEach(([word])=>{
     const t=document.createElement('span');
@@ -2760,7 +2773,7 @@ function renderGratitudeTags(daily){
     t.style.cursor='pointer';
     t.style.color='var(--green)';
     t.style.borderColor='rgba(46,139,95,0.35)';
-    t.addEventListener('click',()=>showGratitudeDetail(word,items[word]));
+    t.addEventListener('click',()=>showGratitudeDetail(word,items[word.toLowerCase().trim()]));
     container.appendChild(t);
   });
 }
@@ -3332,13 +3345,14 @@ const GRATITUDE_KEY = 'rpg_gratitude_v1';
 function loadGratitudeItems(){ try{ return JSON.parse(localStorage.getItem(GRATITUDE_KEY))||{}; } catch{ return {}; } }
 function saveGratitudeItems(obj){ try{ localStorage.setItem(GRATITUDE_KEY,JSON.stringify(obj)); } catch{} }
 
-function addGratitudeItem(word){
+function addGratitudeItem(word, dateStr){
   const items = loadGratitudeItems();
   const key = word.toLowerCase().trim();
   if(!key) return;
-  if(!items[key]) items[key]={ count:0, firstDate:todayKey(), lastDate:todayKey() };
+  const d = dateStr || todayKey();
+  if(!items[key]) items[key]={ count:0, firstDate:d, lastDate:d };
   items[key].count++;
-  items[key].lastDate = todayKey();
+  items[key].lastDate = d;
   saveGratitudeItems(items);
 }
 

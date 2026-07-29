@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.27" defer></script>
-<script src="topbar.js?v=10.27" defer></script>
-<script src="xp.js?v=10.27" defer></script>
-<script src="quests.js?v=10.27" defer></script>
-<script src="ventures.js?v=10.27" defer></script>
-<script src="checkin.js?v=10.27" defer></script>
-<script src="push.js?v=10.27" defer></script>
+<script src="sync.js?v=10.28" defer></script>
+<script src="topbar.js?v=10.28" defer></script>
+<script src="xp.js?v=10.28" defer></script>
+<script src="quests.js?v=10.28" defer></script>
+<script src="ventures.js?v=10.28" defer></script>
+<script src="checkin.js?v=10.28" defer></script>
+<script src="push.js?v=10.28" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1428,11 +1428,17 @@ function gratDailyLoad(){ try{ return JSON.parse(localStorage.getItem('rpg_daily
 function gratDailySave(d){ try{ localStorage.setItem('rpg_daily_v1:'+todayStr(), JSON.stringify(d)); }catch(e){} }
 function renderGratitude(){
   const box=document.getElementById('gratTags'); if(!box) return;
-  const dd=gratDailyLoad();
-  let words = Array.isArray(dd.gratitudeWords) ? dd.gratitudeWords.slice() : [];
+  const t=todayStr();
+  // v10.28: prefer the dedicated race-safe store; fall back to the old
+  // per-day field, then the aggregate, so nothing already stored is lost.
+  let words = (typeof window.getGratitudeWordsFor==='function') ? window.getGratitudeWordsFor(t) : [];
+  if(!words.length){
+    const dd=gratDailyLoad();
+    words = Array.isArray(dd.gratitudeWords) ? dd.gratitudeWords.slice() : [];
+  }
   if(!words.length){
     // backward-compat: afleiden uit het aggregaat voor vandaag
-    const items=gratLoad(); const t=todayStr();
+    const items=gratLoad();
     words = Object.entries(items).filter(([,d])=>d.lastDate===t).map(([w])=>w);
   }
   box.innerHTML=words.map(w=>'<span class="grat-tag">'+escapeHtml(w)+'</span>').join('');
@@ -1446,7 +1452,9 @@ window.gratAdd=function(){
   if(!items[key]) items[key]={ count:0, firstDate:todayStr(), lastDate:todayStr() };
   items[key].count++; items[key].lastDate=todayStr();
   gratSave(items);
-  // v10.14: per-dag lijst is de bron voor weergave — overleeft een stale sync-pull
+  // v10.28: dedicated store is now the source of truth (race-safe — see xp.js)
+  if(typeof window.addGratitudeWordFor==='function') window.addGratitudeWordFor(todayStr(), word);
+  // v10.14: per-dag lijst blijft ook geschreven voor backward-compat
   const dd=gratDailyLoad();
   dd.gratitudeWords = Array.isArray(dd.gratitudeWords) ? dd.gratitudeWords : [];
   if(!dd.gratitudeWords.some(w=>String(w).toLowerCase()===key)) dd.gratitudeWords.push(word);

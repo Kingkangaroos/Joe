@@ -821,6 +821,39 @@
     return habits;
   }
 
+  // v10.28: dedicated gratitude-words store — fixes "today's words don't
+  // persist" (Joey's #1 priority bug). Root cause found live in Supabase:
+  // rpg_daily_v1:2026-07-28 had gratitudeXpGiven=true but gratitudeWords=null.
+  // Two separate causes converged: (1) character.html's gratitude-add flow
+  // (submitGratitudeTag/addGratitudeItem) only ever wrote to the rpg_gratitude_v1
+  // aggregate — it never wrote into rpg_daily_v1:{date}.gratitudeWords at all,
+  // so anything added via the Skills-tab widget was invisible to index.html's
+  // Main-page render, which reads gratitudeWords first; (2) that per-day words
+  // array lived inside the same shared rpg_daily_v1:{date} blob that agenda,
+  // quests-done and workout_challenge ALSO read-modify-write independently —
+  // a crowded shared blob with no per-field merge (the exact class of gap
+  // already flagged in the roadmap as Track E1). Fix: gratitude words now get
+  // their own dedicated top-level key, keyed by date internally (same shape
+  // as rpg_habitlog_v1, which has never had this problem because nothing else
+  // touches it). Both index.html and character.html now read/write through
+  // this one source of truth; old fields are left in place and still read as
+  // a fallback, so nothing already stored is lost.
+  window.GRATITUDE_WORDS_KEY = 'rpg_gratitude_words_v1';
+  window.addGratitudeWordFor = function (dateStr, word) {
+    let store; try { store = JSON.parse(localStorage.getItem(window.GRATITUDE_WORDS_KEY)) || {}; } catch (e) { store = {}; }
+    store[dateStr] = Array.isArray(store[dateStr]) ? store[dateStr] : [];
+    const key = String(word).toLowerCase();
+    if (!store[dateStr].some(function (w) { return String(w).toLowerCase() === key; })) store[dateStr].push(word);
+    try { localStorage.setItem(window.GRATITUDE_WORDS_KEY, JSON.stringify(store)); } catch (e) {}
+    return store[dateStr];
+  };
+  window.getGratitudeWordsFor = function (dateStr) {
+    try {
+      const store = JSON.parse(localStorage.getItem(window.GRATITUDE_WORDS_KEY)) || {};
+      return Array.isArray(store[dateStr]) ? store[dateStr] : [];
+    } catch (e) { return []; }
+  };
+
   window.getHabits   = function () { return applyHabitDecay(reconcileHabitsFromLog(loadHabits())); };
   window.saveHabits  = saveHabits;
 
@@ -1175,7 +1208,7 @@
   // synced only [STORAGE_KEY, HABITS_KEY]; on pages without their own rpg config
   // (health, po-water) it overwrote the whole cloud row with those 2 keys and the
   // realtime echo deleted streak/daily/quests/ventures/gratitude everywhere.
-  window.RPG_SYNC_KEYS = ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1','rpg_gratitude_v1','rpg_jarvis_applied_v1','rpg_habit_reset_v1',
+  window.RPG_SYNC_KEYS = ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1','rpg_gratitude_v1','rpg_gratitude_words_v1','rpg_jarvis_applied_v1','rpg_habit_reset_v1',
     'rpg_routes_v1'];
   window.RPG_SYNC_PREFIXES = ['rpg_daily_v1:','rpg_agenda_v1:','rpg_todo_v1:'];
   function initRPGSync() {
