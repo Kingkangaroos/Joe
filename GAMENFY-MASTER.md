@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.20)
+# GAMENFY — Master Document (v10.21)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.21 — 2 ladder-fixes + uitrol batch 1 (Drawing/Coding/Tennis).** Fixes: (1) de oude "next step" onderaan wordt verborgen voor ladder-skills (de ladder heeft z'n eigen "Next" per tier); (2) `resetSkill` wist nu ook `rpg_tier_claims_v1` + `rpg_optional_quests_v1` van die skill, zodat de tiers echt unchecken bij een reset. **Uitrol gestart:** volledige getierde ladders + optionele quests toegevoegd voor **drawing, coding, tennis** (elk ~10 tiers, info-tree + claim-check). Piano/Puzzling waren de template. Resterende skills volgen in batches. `?v=` naar 10.21. Gevalideerd.
 
 - **v10.20 — Optionele quests verplaatst NAAR de tier.** Op Joey's wens: de optionele quests staan nu **binnen elke tier** (in de uitklap-body onder "Optional quests"), i.p.v. een los blok onderaan. Elke tier toont de optionele quests die in dat level-bereik vallen (tussen deze tier en de volgende). Afvinken werkt **in-place** (tier blijft open, checkmark + XP updaten zonder re-render). `?v=` naar 10.20. Gevalideerd. **Piano-template is nu compleet → wacht op Joey's go voor uitrol naar alle skills.**
 

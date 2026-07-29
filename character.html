@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.20" defer></script>
-<script src="topbar.js?v=10.20" defer></script>
-<script src="xp.js?v=10.20" defer></script>
-<script src="quests.js?v=10.20" defer></script>
-<script src="ladders.js?v=10.20" defer></script>
-<script src="ventures.js?v=10.20" defer></script>
+<script src="sync.js?v=10.21" defer></script>
+<script src="topbar.js?v=10.21" defer></script>
+<script src="xp.js?v=10.21" defer></script>
+<script src="quests.js?v=10.21" defer></script>
+<script src="ladders.js?v=10.21" defer></script>
+<script src="ventures.js?v=10.21" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1675,6 +1675,11 @@ window.resetSkill=function(key){
   try{ const m=JSON.parse(localStorage.getItem('rpg_milestones_v1'))||{}; let ch=false;
     for(const k of Object.keys(m)){ if(k.indexOf(key+'_')===0){ delete m[k]; ch=true; } }
     if(ch) localStorage.setItem('rpg_milestones_v1', JSON.stringify(m)); }catch(e){}
+  try{ const tc=JSON.parse(localStorage.getItem('rpg_tier_claims_v1'))||{};
+    if(key in tc){ delete tc[key]; localStorage.setItem('rpg_tier_claims_v1', JSON.stringify(tc)); } }catch(e){}
+  try{ const oq=JSON.parse(localStorage.getItem('rpg_optional_quests_v1'))||{}; let ch=false;
+    for(const k of Object.keys(oq)){ if(k.indexOf(key+':')===0){ delete oq[k]; ch=true; } }
+    if(ch) localStorage.setItem('rpg_optional_quests_v1', JSON.stringify(oq)); }catch(e){}
   document.getElementById('sdOverlay')?.remove();
   if(window.showToast) showToast(name+' reset to level 1');
   try{ if(window.renderSkills) renderSkills(); }catch(e){}
@@ -1919,7 +1924,7 @@ function openSkillDetail(skillKey){
       ${tierLockHtml}
       ${sladder ? sladderHtml : tierChecklistHtml}
       ${msBtnHtml}
-      ${nextStepHtml}
+      ${sladder ? '' : nextStepHtml}
       <div class="sd-log-section">
         <div class="sd-log-title">Log Activity</div>
         ${logBtns}
