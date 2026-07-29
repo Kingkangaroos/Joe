@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.22)
+# GAMENFY — Master Document (v10.23)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.23 — Uitrol batch 3: sales, marketing, ai_tools, content, learning, reading.** Volledige ladders + optionele quests. Nu **17 van de ~44 skills** compleet. `?v=` naar 10.23. Gevalideerd. Nog te doen: money (saving/investing/budgeting/net_worth), body-habits (sleep/nutrition/walking/teeth/gym/stretching/recovery/endurance), mind-habits (focus/journaling/meditation/gratitude/good_deed), lifestyle (household/whistling/social/dating/planning/coloring), discipline (no_porn/weed_control/screen_time/cold_shower), superiority. Daarna Duolingo daily-fix + Fitbit v2.
 
 - **v10.22 — Uitrol batch 2: languages, cooking, calisthenics, core, strength, dancing.** Volledige getierde ladders + optionele quests toegevoegd (elk ~9 tiers, info-tree + claim-checks, evidence-based). Nu **11 van de ~44 skills** compleet (piano, puzzling, drawing, coding, tennis + deze 6). `?v=` naar 10.22. Gevalideerd. Rest volgt in batches; daarna Duolingo daily-fix + Fitbit v2.
 
