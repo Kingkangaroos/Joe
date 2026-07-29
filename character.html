@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.26" defer></script>
-<script src="topbar.js?v=10.26" defer></script>
-<script src="xp.js?v=10.26" defer></script>
-<script src="quests.js?v=10.26" defer></script>
-<script src="ladders.js?v=10.26" defer></script>
-<script src="ventures.js?v=10.26" defer></script>
+<script src="sync.js?v=10.27" defer></script>
+<script src="topbar.js?v=10.27" defer></script>
+<script src="xp.js?v=10.27" defer></script>
+<script src="quests.js?v=10.27" defer></script>
+<script src="ladders.js?v=10.27" defer></script>
+<script src="ventures.js?v=10.27" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -2478,12 +2478,20 @@ function renderCharacter(){
         `<div class="habit-tile-bar"><div class="habit-tile-fill" style="width:${pct}%;background:${meta.color}"></div></div>`+
         (h.score>0?`<div style="font-size:8px;color:${meta.color};font-weight:700;font-family:var(--mono)">Level ${h.score}/10${h.score>=10?' 👑':''}</div>`:'');
       tile.addEventListener('click',()=>{
+        const hlogKey='rpg_habitlog_v1';
+        let hlog; try{ hlog=JSON.parse(localStorage.getItem(hlogKey))||{}; }catch(e){ hlog={}; }
+        hlog[h.key]=hlog[h.key]||{};
         if(checkedToday){
           if(typeof window.uncheckHabit==='function') window.uncheckHabit(h.key);
+          delete hlog[h.key][today];
+          if(typeof window.addXP==='function') window.addXP(h.key, -15, h.label+' habit unchecked');
         } else {
           if(typeof window.checkHabit==='function') window.checkHabit(h.key, h.label, h.icon);
+          hlog[h.key][today]=true;
           if(typeof window.addXP==='function') window.addXP(h.key, 15, h.label+' habit');
         }
+        try{ localStorage.setItem(hlogKey, JSON.stringify(hlog)); }catch(e){}
+        if(typeof window.recomputeHabitFromLog==='function') window.recomputeHabitFromLog(h.key);
         renderCharacter();
       });
       habGrid.appendChild(tile);

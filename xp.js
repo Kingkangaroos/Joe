@@ -824,6 +824,61 @@
   window.getHabits   = function () { return applyHabitDecay(reconcileHabitsFromLog(loadHabits())); };
   window.saveHabits  = saveHabits;
 
+  // v10.27: authoritative recompute — call this after ANY check/uncheck,
+  // today or backdated. It re-derives score/streak/lastChecked by REPLAYING
+  // the day-log (rpg_habitlog_v1) chronologically through the exact same
+  // leaky-bucket rules checkHabit()/applyHabitDecay() already use in real
+  // time (+1 per check capped at 10, -1 per missed day with a one-day grace
+  // — the miss only shows up the day AFTER, never the day of). Replaying
+  // instead of incrementing in place means an uncheck (even for a past day)
+  // always lands on exactly the state that would exist had that check never
+  // happened — fixing two real bugs Joey hit testing the backfill flow:
+  //   1. Unchecking a PAST day (index.html toggleMission) only ever reverted
+  //      the day-log + XP — uncheckHabit() was gated behind `isToday`, so
+  //      score/streak never moved for a backdated uncheck.
+  //   2. Unchecking TODAY after a multi-day streak nulled lastChecked
+  //      unconditionally, losing a real earlier streak instead of falling
+  //      back to it correctly.
+  // Verified against Joey's own test case: check Sat+Sun, miss Mon (score
+  // stays put ON Monday, only drops -1 the day after on Tue), check Tue
+  // again -> bounces back up +1. No cliff on longer gaps, always -1/day.
+  window.recomputeHabitFromLog = function (habitId) {
+    const habits = loadHabits();
+    let log; try { log = JSON.parse(localStorage.getItem('rpg_habitlog_v1')) || {}; } catch (e) { log = {}; }
+    const entries = log[habitId] || {};
+    const checkedDates = Object.keys(entries).filter(function (d) { return entries[d]; }).sort();
+    const prev = habits[habitId] || {};
+
+    function daysBetween(a, b) { return Math.floor((new Date(b) - new Date(a)) / 86400000); }
+    function dayAfter(d) {
+      const p = d.split('-').map(Number); const dt = new Date(p[0], p[1] - 1, p[2] + 1);
+      return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+    }
+
+    let score = 0, streak = 0, lastChecked = null;
+    for (const d of checkedDates) {
+      if (lastChecked !== null) {
+        const gapMissed = Math.max(0, daysBetween(lastChecked, d) - 1);
+        score = Math.max(0, score - gapMissed);
+        streak = (d === dayAfter(lastChecked)) ? streak + 1 : 1;
+      } else {
+        streak = 1;
+      }
+      score = Math.min(10, score + 1);
+      lastChecked = d;
+    }
+    const today = todayStr();
+    if (lastChecked !== null) {
+      const finalMissed = Math.max(0, daysBetween(lastChecked, today) - 1);
+      score = Math.max(0, score - finalMissed);
+    }
+
+    const h = { label: prev.label, icon: prev.icon, score: score, streak: streak, lastChecked: lastChecked, decayedThrough: today };
+    habits[habitId] = h;
+    saveHabits(habits);
+    return h;
+  };
+
   window.checkHabit = function (habitId, label, icon) {
     const habits  = loadHabits();
     const today   = todayStr();

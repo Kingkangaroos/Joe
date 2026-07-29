@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.26)
+# GAMENFY — Master Document (v10.27)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -66,6 +66,7 @@
 
 ### Confirmed prioriteitsvolgorde (Joey's "GO", 2026-07-28 — top-down uitvoeren)
 1. 🔴 **Gratitude-bug** — woorden persisteren niet. `rpg_gratitude_v1` save-pad opnieuw checken (staat wel in de sync-scope, root cause nog niet bevestigd gefixt).
+1b. ✅ **Habit score/streak-bug (gevonden + gefixt v10.27)** — backdated uncheck in Missions liet het level/de score op de habit-tile hangen; ook character.html's habit-tile-uncheck reverte de XP niet. Beide gefixt met één `recomputeHabitFromLog`-bron in xp.js; geverifieerd tegen jouw eigen testcase.
 2. 🔴 **Wishlist bedrag-veld** — label/leesbaarheid van de add-flow onduidelijk.
 3. 🔴 **Agenda-usability** — twee 30-min blokken per uur allebei makkelijk tikbaar (geen kruisje-ongelukken) + drag-to-move van een bestaand blok naar een ander uur. Halfuur-blokken ÉN de optie om een heel uur te plannen moeten allebei blijven.
 4. 🔴 **Core-skills-rij op MAIN** (niet Body) — horizontaal scrollbare rij van alle skills met XP, nieuwste eerst, oneindig scrollen — vervangt de huidige focus-skills-sectie. Integreert de seasons-focus.
@@ -253,6 +254,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.27 — Habit score/streak recompute bug fixed (Joey found it live-testing the backfill flow).** Root cause: `toggleMission` in index.html only called `uncheckHabit()` when `isToday` — unchecking a BACKDATED day reverted the XP and the day-log, but never touched `habits[key].score/streak/lastChecked`, so the "Level X/10" on the habit tile stayed stuck. Fix: new `window.recomputeHabitFromLog(habitId)` in xp.js replays the full day-log (`rpg_habitlog_v1`) chronologically through the exact same leaky-bucket rules already in use (+1 per check capped at 10, -1 per missed day with a one-day grace — a miss only shows up the day AFTER, never the day of, and it's always linear, never a cliff) — so any edit, check or uncheck, today or backdated, in any order, always lands on the state that would truly exist. Wired into both `toggleMission` (index.html) and the Skills-tab habit tile (character.html) — the latter had its own separate check/uncheck path that never wrote to the day-log at all and never reverted XP on uncheck (found while fixing the reported bug; fixed the same way, now both screens share one source of truth). Verified against Joey's own worked example: check Sat+Sun, miss Monday (score holds steady on Monday itself), Tuesday shows -1, checking Tuesday again bounces back +1 — exact match. `?v=` naar 10.27. Gevalideerd: full replay simulation in Node against the real xp.js (not a copy) plus a full 9-page inline-script + xp.js/ladders.js/sync.js/topbar.js syntax pass, all clean.
 
 - **v10.26 — Uitrol batch 6 (FINALE): whistling, social, dating, planning, coloring (volledige 1-100 ladders) + household, screen_time, cold_shower, no_porn, weed_control (consistentie/streak-ladders, zelfde 2/3/4/6/8/11/15/20/25-curve als batch 5) + superiority/Path to Superiority (7 fases, levels 14/28/42/56/70/84/100, met concrete studie-acties en meetbare zelf-checks per fase i.p.v. alleen onderwerpen — Joey's expliciete pijnpunt).** no_porn en weed_control zijn private/PIN-skills die via de daily-missions-flow XP krijgen (+45/+40 per dag) i.p.v. het isHabit-pad — zelfde streak-curve toegepast voor consistentie door de hele app. **Alle 45 actieve skills hebben nu een volledige tiered ladder + optionele quests — de skill-ladder-uitrol (gestart v10.17) is compleet.** `?v=` naar 10.26 op alle 8 pagina's. Gevalideerd (node -c + volledige keys/levels/velden-check: 45/45 skills gedekt, geen gaten, geen duplicaten). Openstaande punt #8 in de roadmap (quest hoe-behaal-roadmaps, wetenschappelijk + meetbaar) is met deze uitrol grotendeels mee opgelost voor alle skills; Path to Superiority kreeg de diepte die Joey er expliciet bij miste. Volgende focus: de v10-roadmap-tracks (zie sectie 📋 OPEN ACTION ITEMS bovenaan dit document).
 
