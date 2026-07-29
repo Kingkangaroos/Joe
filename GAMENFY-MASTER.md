@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.19)
+# GAMENFY — Master Document (v10.20)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -220,6 +220,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.20 — Optionele quests verplaatst NAAR de tier.** Op Joey's wens: de optionele quests staan nu **binnen elke tier** (in de uitklap-body onder "Optional quests"), i.p.v. een los blok onderaan. Elke tier toont de optionele quests die in dat level-bereik vallen (tussen deze tier en de volgende). Afvinken werkt **in-place** (tier blijft open, checkmark + XP updaten zonder re-render). `?v=` naar 10.20. Gevalideerd. **Piano-template is nu compleet → wacht op Joey's go voor uitrol naar alle skills.**
 
 - **v10.19 — Piano-tweaks: kleinere stappen op hoge levels + optionele-quests-blok.** Op Joey's feedback: (1) 5 extra tussen-tiers toegevoegd aan Piano (17 Song Repertoire, 24 Two-Hand Independence, 36 Phrasing & Half-Pedal, 55 Advanced Intermediate, 85 Concert Piece) → nu 16 tiers met kleinere stappen ook hogerop. (2) Nieuw **"Optional quests · this stretch"**-blok in de skill-detail: toont de optionele quests (bijv. "Learn: Für Elise", "Learn: Clair de Lune") die tussen je huidige level en de volgende tier vallen; afvinkbaar voor XP (`rpg_optional_quests_v1`). Alleen Piano heeft nu OPTIONAL_QUESTS; zelfde structuur volgt bij de uitrol. `?v=` naar 10.19. Gevalideerd. **Wacht op Joey's go voor uitrol naar alle ~45 skills** (+ Duolingo daily-fix + Fitbit v2).
 

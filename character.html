@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.19" defer></script>
-<script src="topbar.js?v=10.19" defer></script>
-<script src="xp.js?v=10.19" defer></script>
-<script src="quests.js?v=10.19" defer></script>
-<script src="ladders.js?v=10.19" defer></script>
-<script src="ventures.js?v=10.19" defer></script>
+<script src="sync.js?v=10.20" defer></script>
+<script src="topbar.js?v=10.20" defer></script>
+<script src="xp.js?v=10.20" defer></script>
+<script src="quests.js?v=10.20" defer></script>
+<script src="ladders.js?v=10.20" defer></script>
+<script src="ventures.js?v=10.20" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1686,7 +1686,9 @@ function tierClaims(){ try{ return JSON.parse(localStorage.getItem('rpg_tier_cla
 function buildLadderHtml(skillKey, ladder){
   const claimed=(tierClaims()[skillKey])||0;
   const nextTier=ladder.find(t=>t.level>claimed);
-  const rows=ladder.map(function(t){
+  const opts=(window.OPTIONAL_QUESTS||{})[skillKey]||[];
+  const optDone=optionalDone();
+  const rows=ladder.map(function(t, i){
     const isClaimed=t.level<=claimed;
     const isNext=!!(nextTier&&t.level===nextTier.level);
     const id=skillKey+'_t'+t.level;
@@ -1694,6 +1696,16 @@ function buildLadderHtml(skillKey, ladder){
     const cls=isClaimed?'ld-done':isNext?'ld-next':'ld-locked';
     const doList=(t.doThis||[]).map(function(x){return '<li>'+x+'</li>';}).join('');
     const exList=(t.examples||[]).map(function(x){return '<li>'+x+'</li>';}).join('');
+    const nextLvl=ladder[i+1]?ladder[i+1].level:9999;
+    const tierOpts=opts.filter(function(q){ return q.lvl>=t.level && q.lvl<nextLvl; });
+    const optHtml=tierOpts.length?('<div class="ld-sub"><b>Optional quests</b>'+tierOpts.map(function(q){
+        const key=skillKey+':'+q.lvl; const isDone=!!optDone[key];
+        return '<div class="oq-row '+(isDone?'oq-done':'')+'" onclick="event.stopPropagation();toggleOptionalQuest(\''+skillKey+'\','+q.lvl+','+q.xp+',this)">'
+          +'<span class="oq-check">'+(isDone?'\u2705':'\u25CB')+'</span>'
+          +'<div class="oq-txt"><div class="oq-title">'+q.title+'</div><div class="oq-desc">'+q.desc+'</div></div>'
+          +'<span class="oq-xp">+'+q.xp+'</span>'
+        +'</div>';
+      }).join('')+'</div>'):'';
     return '<div class="ld-tier '+cls+'">'
       +'<div class="ld-head" onclick="toggleTierInfo(\''+id+'\')">'
         +'<span class="ld-status">'+status+'</span>'
@@ -1706,9 +1718,10 @@ function buildLadderHtml(skillKey, ladder){
         +(t.why?'<div class="ld-sub"><b>Why</b> '+t.why+'</div>':'')
         +(doList?'<div class="ld-sub"><b>Do this</b><ul>'+doList+'</ul></div>':'')
         +(exList?'<div class="ld-sub"><b>Examples</b><ul>'+exList+'</ul></div>':'')
+        +optHtml
         +(t.next?'<div class="ld-sub"><b>Next</b> '+t.next+'</div>':'')
         +(t.claim?'<div class="ld-claimcheck">Claimable when '+t.claim+'</div>':'')
-        +(isNext?'<button class="ld-claim-btn" onclick="claimTier(\''+skillKey+'\','+t.level+')">Claim Level '+t.level+'</button>':'')
+        +(isNext?'<button class="ld-claim-btn" onclick="event.stopPropagation();claimTier(\''+skillKey+'\','+t.level+')">Claim Level '+t.level+'</button>':'')
         +(isClaimed?'<div class="ld-claimed-tag">Claimed \u2713</div>':'')
       +'</div>'
     +'</div>';
@@ -1749,12 +1762,13 @@ function buildOptionalHtml(skillKey, curLvl){
   }).join('');
   return '<div class="sd-unlock-title" style="margin-top:6px">Optional quests \u00b7 this stretch</div><div class="oq-wrap">'+rows+'</div>';
 }
-window.toggleOptionalQuest=function(skillKey,lvl,xp){
+window.toggleOptionalQuest=function(skillKey,lvl,xp,el){
   const done=optionalDone(); const key=skillKey+':'+lvl; const was=!!done[key];
   if(was){ delete done[key]; if(window.addXP) window.addXP(skillKey,-xp,'Optional quest undone'); }
   else { done[key]=true; if(window.addXP) window.addXP(skillKey,xp,'Optional: done'); if(window.showToast) showToast('+'+xp+' XP'); }
   try{ localStorage.setItem('rpg_optional_quests_v1', JSON.stringify(done)); }catch(e){}
-  openSkillDetail(skillKey);
+  const row=(el&&el.closest)?el.closest('.oq-row'):null;
+  if(row){ row.classList.toggle('oq-done', !was); const chk=row.querySelector('.oq-check'); if(chk) chk.textContent=!was?'\u2705':'\u25CB'; }
 };
 
 function openSkillDetail(skillKey){
@@ -1874,7 +1888,7 @@ function openSkillDetail(skillKey){
   }).join('');
 
   const sladder=(window.SKILL_LADDERS||{})[skillKey];
-  const sladderHtml=sladder?(buildLadderHtml(skillKey, sladder)+buildOptionalHtml(skillKey, level)):'';
+  const sladderHtml=sladder?buildLadderHtml(skillKey, sladder):'';
 
   const photoUrl=skillPhotoUrl(skillKey);
   const photoHtml=photoUrl?`<div class="sd-photo">
