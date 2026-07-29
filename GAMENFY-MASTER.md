@@ -60,6 +60,39 @@
 
 ---
 
+## 📋 OPEN ACTION ITEMS — live, lees dit EERST elke sessie
+
+**Regel voor Claudia:** zodra Joey iets zegt — instructie, wens, klacht, idee, ongeacht hoe klein of tussen andere dingen door — komt het HIER te staan, in dezelfde sessie, ongeacht of het meteen gebouwd wordt. Niets gaat verloren, niets hoeft dubbel verteld te worden. Status: 🔴 open · 🟡 wacht op Joey's beslissing · 🔵 wacht op Joey's Supabase-tap/approval · 🚧 in progress · ✅ done (verwijderen zodra echt bevestigd afgerond, niet eerder).
+
+### Confirmed prioriteitsvolgorde (Joey's "GO", 2026-07-28 — top-down uitvoeren)
+1. 🔴 **Gratitude-bug** — woorden persisteren niet. `rpg_gratitude_v1` save-pad opnieuw checken (staat wel in de sync-scope, root cause nog niet bevestigd gefixt).
+2. 🔴 **Wishlist bedrag-veld** — label/leesbaarheid van de add-flow onduidelijk.
+3. 🔴 **Agenda-usability** — twee 30-min blokken per uur allebei makkelijk tikbaar (geen kruisje-ongelukken) + drag-to-move van een bestaand blok naar een ander uur. Halfuur-blokken ÉN de optie om een heel uur te plannen moeten allebei blijven.
+4. 🔴 **Core-skills-rij op MAIN** (niet Body) — horizontaal scrollbare rij van alle skills met XP, nieuwste eerst, oneindig scrollen — vervangt de huidige focus-skills-sectie. Integreert de seasons-focus.
+5. 🔴 **Main opschonen** — "tap to schedule"-blok weg; free-time wordt onderdeel van de agenda-flow (tik op een uur → zie wat er te doen is + voeg zelf een taak toe die persisteert); Next move / Today's minutes / Gratitude blijven staan.
+6. 🔴 **Jarvis-toon overhaul** — tough-love + hype, Joey's eigen zinnen ("get your ass to work", "you wanna be the king, you gotta work", "time is ticking", enz.), zelf instelbaar in settings, niet altijd op dezelfde tijden. Bot over data maar begripvol (cardio/tennis zonder 10k stappen = prima).
+7. 🔴 **Seasons** — handmatige tik-picker: 1 focus-skill (niet 3) + tijdsbudget/dag + duur; Claudia bedenkt de master-quest zelf (niet Jarvis, wel optioneel als suggestie); naast de gewone daily missions.
+8. 🔴 **Quest hoe-behaal-roadmaps** — ALLE skills kritisch herzien, wetenschappelijk onderbouwd, specifiek + meetbaar (mini-examens/oefensommen per level, niet alleen onderwerpen — bijv. rekenen niet "leer breuken" maar echte som-checkpoints). Start met piano + Path to Superiority/knowledge.
+9. 🔴 **Fitbit hourly + slimmere Jarvis** — intraday uur-buckets (steps+HR) via een aparte edge function `fitbit-intraday` (bestaande `fitbit-sync` blijft ongemoeid). Plus veel meer Google Health-data: HRV, resting HR, SpO2, breathing rate, skin-temp-variatie, distance, current HR + week/maand-trends. Jarvis gebruikt dit voor een readiness-achtige blik op het Body-system.
+10. 🔴 **Websites Verkopen-venture** — vragen/quests toevoegen + hero-foto's. Plus laatste skill-foto's (marketing/ai_tools/content/languages/teeth). Plus **"Access my levels"** kritisch auditen (nog niet gedaan).
+11. 🟡 **Vormgeving-overhaul + scroll-animaties** — wacht op Joey's referenties (namen van sites/apps, geen uploads).
+
+### Extra uit de Body/Fitbit-discussie (2026-07-28, deel 6)
+- 🔴 **Body-tab moet cardio/tennis/endurance beter reflecteren** — Joey traint nu vooral cardio + tennis + endurance (geen Hevy/zware sportschool meer); de tab voelt nu te gym/kracht-gericht en motiveert daardoor niet.
+- 🔴 **Body-grafieken à la Google Health** — dag/week/maand-toggle, uur-detail bij tik, scrubben met je vinger, pijltje terug naar vorige periode (nu vastgelopen in huidige week/maand).
+- ✅ **Per-skill reset-knop** — bestaat al (`resetSkill` + "Reset this skill"-knop in elke skill-detail sheet, geverifieerd in code 2026-07-29).
+- 🔴 **Core-skill terugzetten naar 0** — Joey zette 'm op level 11 als test voor de gespierde body-visualisatie; nog checken of dat al is gereset.
+
+### 🟡 Wacht op Joey's antwoord — beantwoord in één keer, deblokkeert meerdere tracks
+1. **Seasons:** automatisch starten op de 1e van de maand, of zelf kiezen? Wat is de beloning voor een afgeronde season/boss quest?
+2. **Habit-ladders:** wil je tier-gates op je dagelijkse gewoonten? → **deels beantwoord door v10.25**: sleep/nutrition/walking/teeth/meditation/gratitude/good_deed hebben nu een consistentie/streak-ladder (tier=level via bestaand claim-systeem, honor-system). Check of dit is wat je bedoelde of dat je iets anders voor ogen had.
+3. **Agenda:** eerst week-weergave of eerst drag-to-move? Dag→week: swipe of knop?
+4. **Core tracker (fluiten/dansen):** aparte "Core skills"-rij, of gewoon tussen de andere skills?
+5. **Push-beleid:** nudges als push versturen, of liever alleen in-app?
+6. **Prioriteit ná de skill-ladder-uitrol (huidige track):** welke hierboven eerst — Fitbit-hourly, Seasons, of Agenda?
+
+---
+
 ## 1. What Gamenfy is
 
 A gamified personal Life OS — version 0.1 of a future product. Skills, levels, habits, quests, ventures, streaks and a check-in loop turn real life into an RPG. Runs as a PWA (add-to-homescreen, iOS 16.4+ for push) and opens on **Main**. Design principle: *liever werkend dan mooi-maar-kapot.* The engagement engine (morning/evening push, streak, check-ins, focus timer) exists because the day-one problem was "ik maak lijstjes maar begin niet".
