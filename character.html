@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.37" defer></script>
-<script src="topbar.js?v=10.37" defer></script>
-<script src="xp.js?v=10.37" defer></script>
-<script src="quests.js?v=10.37" defer></script>
-<script src="ladders.js?v=10.37" defer></script>
-<script src="ventures.js?v=10.37" defer></script>
+<script src="sync.js?v=10.38" defer></script>
+<script src="topbar.js?v=10.38" defer></script>
+<script src="xp.js?v=10.38" defer></script>
+<script src="quests.js?v=10.38" defer></script>
+<script src="ladders.js?v=10.38" defer></script>
+<script src="ventures.js?v=10.38" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -3223,11 +3223,15 @@ let assessSkills=[], assessIdx=0, assessAnswers={};
 function buildAssessSkills(){
   const defaults=window.RPG_DEFAULT_SKILLS||{};
   const QUESTS=window.RPG_QUESTS||{};
-  // only non-habit skills that have a quest ladder, respecting privacy gate
-  return Object.keys(QUESTS).filter(k=>{
-    const def=defaults[k]; if(!def) return false;
+  const LADDERS=window.SKILL_LADDERS||{};
+  // v10.38: was Object.keys(QUESTS) only — silently skipped every skill that
+  // only has a SKILL_LADDERS entry (all 10 daily habits + no_porn/weed_control,
+  // 12 of 45 skills, everything shipped in the v10.25/26 ladder rollout).
+  // Now: any active, non-legacy skill with EITHER ladder system counts.
+  return Object.keys(defaults).filter(k=>{
+    const def=defaults[k]; if(!def || def.active===false) return false;
     if(def.private && !isPrivateUnlocked()) return false;
-    return true;
+    return !!(LADDERS[k] && LADDERS[k].length) || !!(QUESTS[k] && QUESTS[k].length);
   });
 }
 
@@ -3242,24 +3246,35 @@ window.startAssessment=function(){
 
 function closeAssessment(){ const ov=document.getElementById('assessOverlay'); if(ov) ov.remove(); }
 
+// v10.38: shared by renderAssessStep (options) and pickAssess (result-level
+// math) — prefer SKILL_LADDERS (richer claim text, covers all 45 skills
+// post-v10.26), fall back to legacy RPG_QUESTS for safety.
+function getAssessLadder(key){
+  const LADDERS=window.SKILL_LADDERS||{};
+  const QUESTS=window.RPG_QUESTS||{};
+  if(LADDERS[key] && LADDERS[key].length){
+    return LADDERS[key].slice().sort((a,b)=>a.level-b.level).map(t=>({lvl:t.level, label:t.title+' — '+t.claim}));
+  }
+  return (QUESTS[key]||[]).slice().sort((a,b)=>a.lvl-b.lvl).map(q=>({lvl:q.lvl, label:q.title+' — '+q.desc}));
+}
+
 function renderAssessStep(){
   const ov=document.getElementById('assessOverlay'); if(!ov) return;
   const defaults=window.RPG_DEFAULT_SKILLS||{};
-  const QUESTS=window.RPG_QUESTS||{};
   const total=assessSkills.length;
 
   if(assessIdx>=total){ renderAssessDone(); return; }
 
   const key=assessSkills[assessIdx];
   const def=defaults[key]||{};
-  const ladder=(QUESTS[key]||[]).slice().sort((a,b)=>a.lvl-b.lvl);
+  const ladder=getAssessLadder(key);
   const pMeta=(typeof PARENT_META!=='undefined')?(PARENT_META[def.parentSkill]||{}):{};
   const cur=assessAnswers[key];
 
-  // Build "highest you can do" options from quest milestones + a "nothing yet" + "mastered"
+  // Build "highest you can do" options from the ladder + a "nothing yet" entry
   const opts=[];
   opts.push({lvl:0, label:'Never tried / can\u2019t do this yet'});
-  ladder.forEach(q=>opts.push({lvl:q.lvl, label:q.title+' — '+q.desc}));
+  ladder.forEach(o=>opts.push(o));
 
   const pct=Math.round((assessIdx/total)*100);
   ov.innerHTML=
@@ -3290,13 +3305,12 @@ function renderAssessStep(){
 window.pickAssess=function(lvl){
   const key=assessSkills[assessIdx];
   // map "highest milestone" to a level a bit above that milestone (you've cleared it, so you're past it)
-  const QUESTS=window.RPG_QUESTS||{};
-  const ladder=(QUESTS[key]||[]).slice().sort((a,b)=>a.lvl-b.lvl);
+  const ladder=getAssessLadder(key);
   let resultLevel;
   if(lvl===0){ resultLevel=1; }
   else {
     // find the next milestone above the chosen one; place level midway toward it
-    const next=ladder.find(q=>q.lvl>lvl);
+    const next=ladder.find(o=>o.lvl>lvl);
     resultLevel = next ? Math.round((lvl+next.lvl)/2) : Math.min(100, lvl+5);
   }
   assessAnswers[key]={lvl, resultLevel};
