@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.30" defer></script>
-<script src="topbar.js?v=10.30" defer></script>
-<script src="xp.js?v=10.30" defer></script>
-<script src="quests.js?v=10.30" defer></script>
-<script src="ventures.js?v=10.30" defer></script>
-<script src="checkin.js?v=10.30" defer></script>
-<script src="push.js?v=10.30" defer></script>
+<script src="sync.js?v=10.31" defer></script>
+<script src="topbar.js?v=10.31" defer></script>
+<script src="xp.js?v=10.31" defer></script>
+<script src="quests.js?v=10.31" defer></script>
+<script src="ventures.js?v=10.31" defer></script>
+<script src="checkin.js?v=10.31" defer></script>
+<script src="push.js?v=10.31" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -432,7 +432,36 @@ body {
 }
 .grat-sub { font-size: 10.5px; color: var(--faint); margin-top: 8px; }
 
-/* ── Focus skills ───────────────────────────────── */
+/* ── Skills row (v10.31) — replaces Focus Skills grid on Main ───── */
+.skills-row {
+  display: flex; gap: 10px; overflow-x: auto; overflow-y: hidden;
+  margin-bottom: 20px; padding-bottom: 4px; -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+.skills-row::-webkit-scrollbar { display: none; }
+.skill-chip {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 14px; padding: 12px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  flex: 0 0 auto; width: 108px; scroll-snap-align: start;
+}
+.skill-chip-top { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.skill-chip-icon { font-size: 15px; line-height: 1; }
+.skill-chip-lvl {
+  background: var(--ink); color: var(--gold);
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 12px; font-variant-numeric: tabular-nums;
+  padding: 2px 6px; border-radius: 6px; margin-left: auto;
+}
+.skill-chip-name {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 12px; color: var(--ink); line-height: 1.2;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 7px;
+}
+.skill-chip-bar-track { height: 3px; background: var(--line); border-radius: 2px; }
+.skill-chip-bar-fill { height: 3px; background: var(--ember); border-radius: 2px; }
+
+/* ── Focus skills (legacy — kept, no longer rendered into on Main) ── */
 .focus-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1193,10 +1222,10 @@ body {
     <div class="grat-sub">First word of the day · +10 XP Gratitude</div>
   </div>
 
-  <!-- Focus Skills -->
-  <div class="sec-head">Focus Skills</div>
-  <div class="focus-grid" id="focusGrid">
-    <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px;grid-column:1/-1">Loading skills…</div>
+  <!-- Your Skills (v10.31 — was Focus Skills; now all skills, most recently active first, horizontal scroll) -->
+  <div class="sec-head">Your Skills</div>
+  <div class="skills-row" id="focusGrid">
+    <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">Loading skills…</div>
   </div>
 
   <!-- Core Tracker -->
@@ -1775,6 +1804,14 @@ function getConfirmedMs(skillKey) {
   try { return JSON.parse(localStorage.getItem('rpg_milestones_v1')) || {}; } catch(e) { return {}; }
 }
 
+// v10.31: "Your Skills" row — was a curated 6-skill Focus grid, now shows
+// every active non-habit skill, most-recently-active first (derived from
+// xpLog, which is already newest-first — first occurrence per skill while
+// scanning it front-to-back gives an exact recency order, day-string
+// granularity aside). Skills never yet logged sort to the end by level/XP.
+// Tapping a chip opens that skill's full detail on the Skills tab
+// (character.html already supports #skills / #ventures deep-links; #skill=
+// is the same pattern, extended there to open the specific skill).
 function renderFocusGrid() {
   const container = document.getElementById('focusGrid');
   if (!container) return;
@@ -1783,80 +1820,49 @@ function renderFocusGrid() {
   const char = window.getCharacter();
   const skills = char.skills || {};
   const defaults = window.RPG_DEFAULT_SKILLS || {};
-  const parents = window.RPG_PARENT_SKILLS || {};
-  const domainMap = window.RPG_DOMAIN_MAP || {};
+  const xpLog = char.xpLog || [];
 
-  // focus skills list
-  let focusKeys = [];
-  try { focusKeys = JSON.parse(localStorage.getItem('rpg_focus_skills_v1')) || []; } catch(e) {}
+  const active = Object.entries(defaults)
+    .filter(([k,d]) => !d.isHabit && !d.private && d.active !== false)
+    .map(([k]) => k);
 
-  if (!focusKeys.length) {
-    // top 6 by XP, non-habit, active
-    const active = Object.entries(defaults)
-      .filter(([k,d]) => !d.isHabit && !d.private && d.active !== false)
-      .map(([k,d]) => ({ key:k, xp: (skills[k]||{}).xp||0 }))
-      .sort((a,b)=>b.xp-a.xp)
-      .slice(0, 6);
-    focusKeys = active.map(x=>x.key);
-  }
-
-  if (!focusKeys.length) {
-    container.innerHTML = '<div style="padding:16px;color:var(--muted);font-size:13px;grid-column:1/-1">Set focus skills in Settings.</div>';
+  if (!active.length) {
+    container.innerHTML = '<div style="padding:16px;color:var(--muted);font-size:13px">No skills yet.</div>';
     return;
   }
 
-  container.innerHTML = focusKeys.map(key => {
+  // most-recent-activity index per skill (lower = more recent); unseen -> Infinity
+  const recency = {};
+  for (let i = xpLog.length - 1; i >= 0; i--) {
+    const s = xpLog[i].skill;
+    if (s) recency[s] = i; // later loop iterations (earlier in array = more recent) overwrite, leaving the lowest index
+  }
+  const order = active.slice().sort((a, b) => {
+    const ra = recency[a] != null ? recency[a] : Infinity;
+    const rb = recency[b] != null ? recency[b] : Infinity;
+    if (ra !== rb) return ra - rb;
+    return ((skills[b]||{}).xp||0) - ((skills[a]||{}).xp||0);
+  });
+
+  container.innerHTML = order.map(key => {
     const def = defaults[key] || {};
     const s = skills[key] || {};
     const xp = s.xp || 0;
     const rawLevel = window.xpToLevel(xp);
     const tl = window.tierLockInfo ? window.tierLockInfo(key, rawLevel) : { level: rawLevel, locked: false };
     const level = tl.level;
-    const rawPs = def.parentSkill || '';
-    const ps = domainMap[rawPs] || rawPs;
-    const parentDef = parents[ps] || {};
-    const parentLabel = parentDef.label || ps;
-    const nextMs = getNextMilestone(def, level);
-    const nextMsText = nextMs ? `Lvl ${nextMs} — ${def.milestones[nextMs]}` : 'Max level reached';
     const nextXp = window.xpForLevel ? window.xpForLevel(level+1) : null;
     const thisXp = window.xpForLevel ? window.xpForLevel(level) : 0;
     const barPct = nextXp && nextXp !== Infinity
       ? Math.max(0, Math.min(100, Math.round(((xp - thisXp) / (nextXp - thisXp)) * 100)))
       : 100;
-    const isOpen = openFocusKey === key;
-
-    // Build log buttons
-    const logBtns = (def.quickLog || []).map(q =>
-      `<button class="focus-log-btn" onclick="focusLog('${key}',${q.xp},'${(q.label||'').replace(/'/g,"\\'")}',event)">
-        ${q.label}<span class="xp-tag">+${q.xp} XP</span>
-       </button>`
-    ).join('');
-
-    // Build unlock ladder: last confirmed + next 3
-    const confirmed = getConfirmedMs(key);
-    const msLevels = def.milestones ? Object.keys(def.milestones).map(Number).sort((a,b)=>a-b) : [];
-    const doneMs = msLevels.filter(l => l <= level);
-    const lastDone = doneMs[doneMs.length-1];
-    const upcomingMs = msLevels.filter(l => l > level).slice(0,3);
-    const msRows = [
-      ...(lastDone != null ? [`<div class="focus-ms-row"><span class="focus-ms-status">✅</span><span class="focus-ms-text done">Lvl ${lastDone} — ${def.milestones[lastDone]}</span></div>`] : []),
-      ...upcomingMs.map((l,i) => `<div class="focus-ms-row"><span class="focus-ms-status">${i===0?'→':'·'}</span><span class="focus-ms-text${i===0?' next':''}">${i===0?'Next: ':''}Lvl ${l} — ${def.milestones[l]}</span></div>`)
-    ].join('');
-
-    return `<div class="focus-card${isOpen?' open':''}" id="fc-${key}" onclick="toggleFocusCard('${key}',event)">
-      <div class="focus-card-top">
-        <div class="focus-lvl-badge">${level}</div>
-        <div>
-          <div class="focus-name">${def.label || key}</div>
-          <div class="focus-domain">${parentLabel}</div>
-        </div>
+    return `<div class="skill-chip" onclick="location.href='character.html#skill=${key}'">
+      <div class="skill-chip-top">
+        <span class="skill-chip-icon">${def.icon||'⭐'}</span>
+        <span class="skill-chip-lvl">${level}</span>
       </div>
-      <div class="focus-next">Next unlock · <strong>${nextMsText}</strong></div>
-      <div class="focus-bar-track"><div class="focus-bar-fill" style="width:${barPct}%"></div></div>
-      <div class="focus-expand">
-        ${logBtns ? `<div class="focus-log-btns">${logBtns}</div>` : ''}
-        ${msRows ? `<div class="focus-unlock-title">Unlock Path</div>${msRows}` : ''}
-      </div>
+      <div class="skill-chip-name">${def.label || key}</div>
+      <div class="skill-chip-bar-track"><div class="skill-chip-bar-fill" style="width:${barPct}%"></div></div>
     </div>`;
   }).join('');
 }

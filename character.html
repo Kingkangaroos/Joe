@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.30" defer></script>
-<script src="topbar.js?v=10.30" defer></script>
-<script src="xp.js?v=10.30" defer></script>
-<script src="quests.js?v=10.30" defer></script>
-<script src="ladders.js?v=10.30" defer></script>
-<script src="ventures.js?v=10.30" defer></script>
+<script src="sync.js?v=10.31" defer></script>
+<script src="topbar.js?v=10.31" defer></script>
+<script src="xp.js?v=10.31" defer></script>
+<script src="quests.js?v=10.31" defer></script>
+<script src="ladders.js?v=10.31" defer></script>
+<script src="ventures.js?v=10.31" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -4162,9 +4162,16 @@ window.openBodySkill=function(key){
 document.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{
     // Deep-link: character.html#skills opens Skills directly (from bottom nav)
+    // v10.31: #skill=<key> opens that skill's detail directly — used by the
+    // new "Your Skills" row on Main (index.html), which links each chip here.
     const hash = (window.location.hash || '').replace('#','');
     if (hash === 'skills') showTab('skills');
     else if (hash === 'ventures') { showTab('skills'); setSkillsView('ventures'); }
+    else if (hash.indexOf('skill=') === 0) {
+      showTab('skills');
+      const key = hash.slice('skill='.length);
+      setTimeout(() => { if (key && typeof openSkillDetail === 'function') openSkillDetail(key); }, 0);
+    }
     else { renderBody(); loadHealthMetrics(); }
     installLevelUpToasts();
     renderCharacter();
@@ -4182,6 +4189,11 @@ document.addEventListener('DOMContentLoaded',()=>{
 window.addEventListener('hashchange',()=>{
   const hash=(window.location.hash||'').replace('#','');
   if(hash==='skills') showTab('skills');
+  else if(hash.indexOf('skill=')===0){
+    showTab('skills');
+    const key=hash.slice('skill='.length);
+    if(key && typeof openSkillDetail==='function') openSkillDetail(key);
+  }
 });
 
 window.addEventListener('storage',()=>{
