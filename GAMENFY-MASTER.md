@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.41)
+# GAMENFY — Master Document (v10.42)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -82,7 +82,7 @@
 ### Nieuwe ideeën (2026-07-30)
 
 ### Feedback van live testen (2026-07-30, avond)
-- 🔴 **"Your Skills" rij te klein/karig** — Joey wil dat de chips net zo groot/informatief zijn als de sectie eronder (Core Tracker): icoon + naam + level + wat duidelijk het volgende is, niet zo'n klein blokje. Moet nog gebouwd.
+- ✅ **"Your Skills" rij vergroot (gedaan v10.42)** — chips nu 172px breed, groot goud level-getal (matcht Core Tracker), nieuwe "volgende stap"-regel uit SKILL_LADDERS.
 - 🔴 **Agenda: tweede blok toevoegen aan een uur dat al één blok heeft, voelt niet soepel** — Joey verwachtte dat het vakje "iets groter werd" om een tweede halfuurtje toe te voegen; nu lukt het hem niet goed (mogelijk gewoon lastig te vinden waar te tikken als het bestaande blok al veel ruimte inneemt). Long-press-to-move werkt wel bevestigd goed. Nader onderzoek nodig — geen quick-fix geraden zonder zeker te zijn van de exacte oorzaak.
 - 🟡 **Season-start-bevestiging kan directer/zichtbaarder** — nu moest Joey naar Main navigeren om zeker te weten dat het gestart was. Kleine UX-polish, niet urgent.
 - ✅ **Jarvis-toon nu ook in de push-notificaties** (v10.41) — zie changelog. Inclusief een kritieke Gemini-bug gevonden en gefixt.
@@ -269,6 +269,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.42 — "Your Skills" chips vergroot, matcht nu Core Tracker's dichtheid.** Joey's feedback: de rij voelde te karig vergeleken met de sectie eronder. Chips van 108px naar 172px breed, groter icoon (22px), level nu een groot goud getal (zelfde stijl als Core Tracker) i.p.v. een klein badge, en een nieuwe "volgende stap"-regel die de eerstvolgende onbeklaimde SKILL_LADDERS-tier toont (title, bijv. "Lvl 6 — Deep Squat") — rijker dan Core Tracker's eigen oude milestones-tekst, want gebruikt de nieuwere ladder-content. `?v=` naar 10.42 (10.41 was backend-docs-only). Gevalideerd: volledige 9-pagina syntax- + CSS-brace-pass.
 
 - **v10.41 — Jarvis-toon nu ook in de push-notificaties (was alleen de chat) + kritieke Gemini-bug gevonden en gefixt.** Joey was duidelijk: hij chat weinig met Jarvis, het gaat hem om de tone in de notifications. Bleek dat de push-functie (`send-daily-push`) zijn EIGEN, aparte, toon-neutrale prompt had — de v10.34-toon-overhaul raakte alleen de chat-functie. Gefixt: `buildTone()` gedupliceerd (zelfde patroon als de al-bestaande duplicatie van getRow/putRow/todayAms tussen edge functions) en toegepast op zowel de ochtend- als een NIEUWE avond-brief (de avond-push had daarvoor HELEMAAL geen AI, altijd statische tekst). **Tijdens het live-testen een kritieke bug gevonden**: `thinkingConfig:{thinkingBudget:0}` — het bestaande, gedocumenteerde patroon voor gestructureerde Gemini-output — geeft nu een 400 INVALID_ARGUMENT bij het huidige `gemini-flash-latest` (resolvet naar `gemini-3.6-flash`), vermoedelijk een model-update sinds dit patroon werd vastgelegd. Dit betekent de ochtend-brief mogelijk al langer stilzwijgend faalde en terugviel op statische tekst zonder dat iemand het merkte. Gefixt: `thinkingConfig` verwijderd (bevestigd met een directe test-call dat `responseSchema` alleen prima werkt), `maxOutputTokens` opgehoogd naar 800 omdat denk-tokens nu wel meetellen. **Kon de volledige scheduled flow niet end-to-end testen** (de jitter-gate blokkeert buiten het tijdvenster, en de klok kan ik niet vooruitzetten) — wel de exacte Gemini-aanroep zelf apart geverifieerd. Vanavond gaat 'm vanzelf afvuren binnen het venster; kan achteraf gecheckt worden via `push_debug`/`jarvis_memory` als er twijfel is.
 

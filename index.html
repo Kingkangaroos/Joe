@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.40" defer></script>
-<script src="topbar.js?v=10.40" defer></script>
-<script src="xp.js?v=10.40" defer></script>
-<script src="quests.js?v=10.40" defer></script>
-<script src="ventures.js?v=10.40" defer></script>
-<script src="checkin.js?v=10.40" defer></script>
-<script src="push.js?v=10.40" defer></script>
+<script src="sync.js?v=10.42" defer></script>
+<script src="topbar.js?v=10.42" defer></script>
+<script src="xp.js?v=10.42" defer></script>
+<script src="quests.js?v=10.42" defer></script>
+<script src="ventures.js?v=10.42" defer></script>
+<script src="checkin.js?v=10.42" defer></script>
+<script src="push.js?v=10.42" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -432,7 +432,7 @@ body {
 }
 .grat-sub { font-size: 10.5px; color: var(--faint); margin-top: 8px; }
 
-/* ── Skills row (v10.31) — replaces Focus Skills grid on Main ───── */
+/* ── Skills row (v10.31, resized v10.42 — bigger + richer, matches Core Tracker's density) ── */
 .skills-row {
   display: flex; gap: 10px; overflow-x: auto; overflow-y: hidden;
   margin-bottom: 20px; padding-bottom: 4px; -webkit-overflow-scrolling: touch;
@@ -441,22 +441,26 @@ body {
 .skills-row::-webkit-scrollbar { display: none; }
 .skill-chip {
   background: var(--card); border: 1px solid var(--line);
-  border-radius: 14px; padding: 12px; cursor: pointer;
+  border-radius: 14px; padding: 14px; cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  flex: 0 0 auto; width: 108px; scroll-snap-align: start;
+  flex: 0 0 auto; width: 172px; scroll-snap-align: start;
 }
-.skill-chip-top { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-.skill-chip-icon { font-size: 15px; line-height: 1; }
+.skill-chip-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.skill-chip-icon { font-size: 22px; line-height: 1; }
 .skill-chip-lvl {
-  background: var(--ink); color: var(--gold);
   font-family: var(--font-display); font-weight: 800;
-  font-size: 12px; font-variant-numeric: tabular-nums;
-  padding: 2px 6px; border-radius: 6px; margin-left: auto;
+  font-size: 22px; color: var(--gold); font-variant-numeric: tabular-nums;
+  margin-left: auto;
 }
 .skill-chip-name {
   font-family: var(--font-display); font-weight: 700;
-  font-size: 12px; color: var(--ink); line-height: 1.2;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 7px;
+  font-size: 13px; color: var(--ink); line-height: 1.2;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 4px;
+}
+.skill-chip-next {
+  font-size: 10px; color: var(--muted); line-height: 1.35; margin-bottom: 8px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  min-height: 27px;
 }
 .skill-chip-bar-track { height: 3px; background: var(--line); border-radius: 2px; }
 .skill-chip-bar-fill { height: 3px; background: var(--ember); border-radius: 2px; }
@@ -1901,12 +1905,18 @@ function renderFocusGrid() {
     const barPct = nextXp && nextXp !== Infinity
       ? Math.max(0, Math.min(100, Math.round(((xp - thisXp) / (nextXp - thisXp)) * 100)))
       : 100;
+    // v10.42: "what's next" from the skill's own SKILL_LADDERS — richer and
+    // more current than the old milestones map Core Tracker still uses.
+    const ladder = (window.SKILL_LADDERS || {})[key] || [];
+    const nextTier = ladder.find(t => t.level > level);
+    const nextText = nextTier ? 'Lvl ' + nextTier.level + ' — ' + nextTier.title : 'Max tier reached';
     return `<div class="skill-chip" onclick="location.href='character.html#skill=${key}'">
       <div class="skill-chip-top">
         <span class="skill-chip-icon">${def.icon||'⭐'}</span>
         <span class="skill-chip-lvl">${level}</span>
       </div>
       <div class="skill-chip-name">${def.label || key}</div>
+      <div class="skill-chip-next">${nextText}</div>
       <div class="skill-chip-bar-track"><div class="skill-chip-bar-fill" style="width:${barPct}%"></div></div>
     </div>`;
   }).join('');
