@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.29)
+# GAMENFY — Master Document (v10.30)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -68,7 +68,7 @@
 1. ✅ **Gratitude-bug (root cause gevonden + gefixt v10.28)** — live in Supabase gevonden: twee losse gratitude-add-implementaties (Main + Skills-tab) waarvan er één nooit een per-dag woord wegschreef. Beide schrijven nu naar één gedeelde, race-veilige store. **Niet 100% zeker dat dit de enige oorzaak was** — hou in de gaten of woorden na v10.28 blijven staan; zo niet, dan is de volgende stap het bredere per-veld-merge-vraagstuk in sync.js (zie Track E1), wat jouw directe betrokkenheid verdient.
 1b. ✅ **Habit score/streak-bug (gevonden + gefixt v10.27)** — backdated uncheck in Missions liet het level/de score op de habit-tile hangen; ook character.html's habit-tile-uncheck reverte de XP niet. Beide gefixt met één `recomputeHabitFromLog`-bron in xp.js; geverifieerd tegen jouw eigen testcase.
 2. ✅ **Wishlist bedrag-veld (gefixt v10.29)** — bleek geen label-probleem maar een echte bug: bij ongeldig bedrag focuste het verkeerde veld en er kwam geen foutmelding. Nu: juiste veld shaket + rode rand + duidelijke inline melding.
-3. 🔴 **Agenda-usability** — twee 30-min blokken per uur allebei makkelijk tikbaar (geen kruisje-ongelukken) + drag-to-move van een bestaand blok naar een ander uur. Halfuur-blokken ÉN de optie om een heel uur te plannen moeten allebei blijven.
+3. ✅ **Agenda-usability (gefixt v10.30)** — × was 18px (te klein, oorzaak van kruisje-ongelukken), nu 28px tikbaar + meer ruimte tussen gestapelde halfuur-blokken. Move-naar-ander-uur gebouwd als **long-press → picker** i.p.v. letterlijke touch-drag (bewuste keuze, veel lager risico zonder live testen, exact hetzelfde doel). Halfuur- én heel-uur-optie blijven allebei werken. Zeg het als je toch liever echte drag-and-drop wilt.
 4. 🔴 **Core-skills-rij op MAIN** (niet Body) — horizontaal scrollbare rij van alle skills met XP, nieuwste eerst, oneindig scrollen — vervangt de huidige focus-skills-sectie. Integreert de seasons-focus.
 5. 🔴 **Main opschonen** — "tap to schedule"-blok weg; free-time wordt onderdeel van de agenda-flow (tik op een uur → zie wat er te doen is + voeg zelf een taak toe die persisteert); Next move / Today's minutes / Gratitude blijven staan.
 6. 🔴 **Jarvis-toon overhaul** — tough-love + hype, Joey's eigen zinnen ("get your ass to work", "you wanna be the king, you gotta work", "time is ticking", enz.), zelf instelbaar in settings, niet altijd op dezelfde tijden. Bot over data maar begripvol (cardio/tennis zonder 10k stappen = prima).
@@ -87,7 +87,7 @@
 ### 🟡 Wacht op Joey's antwoord — beantwoord in één keer, deblokkeert meerdere tracks
 1. **Seasons:** automatisch starten op de 1e van de maand, of zelf kiezen? Wat is de beloning voor een afgeronde season/boss quest?
 2. **Habit-ladders:** wil je tier-gates op je dagelijkse gewoonten? → **beantwoord door v10.25+v10.26**: alle 10 echte habits/private-discipline-skills (sleep/nutrition/walking/teeth/meditation/gratitude/good_deed/household/screen_time/cold_shower/no_porn/weed_control) hebben nu een consistentie/streak-ladder (tier=level via bestaand claim-systeem, honor-system, curve 2/3/4/6/8/11/15/20/25). **Bevestig of dit is wat je bedoelde**, of dat je iets anders voor ogen had (bijv. een striktere unbroken-streak-check i.p.v. lifetime-total via XP).
-3. **Agenda:** eerst week-weergave of eerst drag-to-move? Dag→week: swipe of knop?
+3. **Agenda:** move-to-hour is nu gebouwd (v10.30, long-press-versie — zie boven). Nog open: eerst week-weergave bouwen, of dit als voldoende beschouwen voor nu? Dag→week: swipe of knop?
 4. **Core tracker (fluiten/dansen):** aparte "Core skills"-rij, of gewoon tussen de andere skills?
 5. **Push-beleid:** nudges als push versturen, of liever alleen in-app?
 6. **Prioriteit ná de skill-ladder-uitrol (huidige track):** welke hierboven eerst — Fitbit-hourly, Seasons, of Agenda?
@@ -254,6 +254,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.30 — Agenda-usability (priority #3): geen kruisje-ongelukken meer + move-to-different-hour.** De × (verwijderen) was maar 18×18px — ruim onder elke mobiele tap-target-richtlijn — en stond vlak naast/onder een tweede half-uur-blok in dezelfde uur-rij; vandaar de per-ongeluk-verwijderingen. Fix: × naar 28×28px tikbaar gebied (visueel vrijwel gelijk, via negatieve margin), en meer ruimte tussen gestapelde blokken (4px → 7px). **Move-to-hour**: in plaats van een echte touch-drag (die op een klein scherm zonder live testen een reëel risico is om subtiel stuk te gaan — vecht met de eigen verticale scroll van de agenda) een **long-press (480ms) → dezelfde picker-stijl als plannen, nu met :00/:30-toggle → tik het nieuwe uur**. Werkt identiek op elke device, kan nooit half blijven hangen midden-drag. Dit is een bewuste ontwerpkeuze i.p.v. letterlijk slepen — zeg het als je toch echt drag-and-drop wilt, dan bouw ik dat alsnog, maar dit haalt exact hetzelfde doel (een blok naar een ander uur verplaatsen) met veel minder risico. Halfuur-optie (:00/:30) bleef intact en zit nu ook in de move-picker. `?v=` naar 10.30. Gevalideerd: Node-simulatie van de move-logica (tussen uren, binnen hetzelfde uur van :00→:30, ongeldige index) + volledige 9-pagina syntax-pass + CSS-brace-check, alles schoon.
 
 - **v10.29 — Wishlist bedrag-veld gefixt (priority #2).** Bug gevonden in `doWishAdd`: bij een ongeldig/leeg bedrag focuste de code het NAAM-veld (dat al goed was ingevuld), niet het bedrag-veld zelf — en er verscheen geen enkele foutmelding, dus het leek alsof er niks gebeurde. Fix: het daadwerkelijk foute veld (naam óf bedrag) krijgt nu een duidelijke shake + rode rand + inline foutmelding onder de invoerrij. Placeholder ook iets opgeschoond (geen EN/NL-mix meer: "Cost, e.g. 89,95"). `euroNum()`-parsing zelf bleek al prima (comma/dot beide correct afgehandeld) — het was puur een feedback-bug. `?v=` naar 10.29. Gevalideerd: alle inline scripts op finance.html + volledige 9-pagina syntax-pass, schoon.
 

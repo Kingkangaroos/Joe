@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.29" defer></script>
-<script src="topbar.js?v=10.29" defer></script>
-<script src="xp.js?v=10.29" defer></script>
-<script src="quests.js?v=10.29" defer></script>
-<script src="ventures.js?v=10.29" defer></script>
-<script src="checkin.js?v=10.29" defer></script>
-<script src="push.js?v=10.29" defer></script>
+<script src="sync.js?v=10.30" defer></script>
+<script src="topbar.js?v=10.30" defer></script>
+<script src="xp.js?v=10.30" defer></script>
+<script src="quests.js?v=10.30" defer></script>
+<script src="ventures.js?v=10.30" defer></script>
+<script src="checkin.js?v=10.30" defer></script>
+<script src="push.js?v=10.30" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -704,7 +704,7 @@ body {
 }
 .agenda-hour-slot {
   flex: 1; padding: 5px 12px 5px 6px;
-  display: flex; flex-direction: column; gap: 4px;
+  display: flex; flex-direction: column; gap: 7px;
   cursor: pointer; min-width: 0;
 }
 .agenda-hour-slot:active { background: rgba(201,162,39,0.05); }
@@ -714,12 +714,13 @@ body {
   display: flex; align-items: center; gap: 7px;
   position: relative; line-height: 1.25;
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  touch-action: pan-y;
 }
 .agenda-block-icon { font-size: 13px; flex-shrink: 0; }
 .agenda-block-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .agenda-block-x {
   flex-shrink: 0; opacity: 0.7; font-size: 14px;
-  width: 18px; height: 18px; border-radius: 50%;
+  width: 28px; height: 28px; margin: -5px -4px -5px 0; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   background: rgba(255,255,255,0.2);
 }
@@ -2265,7 +2266,7 @@ function renderAgenda() {
       const color = it.type === 'mission' ? 'var(--green)' : it.type === 'skill' ? 'var(--ember)' : 'var(--ink-card)';
       const hint = it.hint ? ` <span class="agenda-block-hint">· ${it.hint}</span>` : '';
       const half = (it.time % 1) ? `<span class="agenda-block-half">:30</span>` : '';
-      return `<div class="agenda-block${it.done?' done':''}" style="background:${color}" onclick="toggleAgendaBlock('${key}',${h},${idx},event)">
+      return `<div class="agenda-block${it.done?' done':''}" style="background:${color}" data-hour="${h}" data-idx="${idx}" onclick="toggleAgendaBlock('${key}',${h},${idx},event)">
         ${half}<span class="agenda-block-icon">${it.icon||'•'}</span>
         <span class="agenda-block-text">${it.label}${hint}</span>
         <span class="agenda-block-x" onclick="removeAgendaBlock('${key}',${h},${idx},event)">×</span>
@@ -2331,6 +2332,104 @@ window.removeAgendaBlock = function(key, hour, idx, e) {
   saveAgenda(key, filtered);
   renderAgenda();
 };
+
+// ── Move a block to a different hour (v10.30) ───────────────────
+// Long-press-and-pick instead of drag-and-drop: a real touch-drag needs to
+// fight the agenda's own vertical scroll and is easy to get subtly wrong on
+// a phone without live testing. Long-press → a picker (same one used to
+// schedule) → tap the new slot is just as fast, works identically on every
+// device, and can't accidentally scroll the page or drop a block mid-drag.
+let _agLpTimer = null, _agLpStart = null, _agLpFired = false;
+function agendaWireLongPress() {
+  const body = document.getElementById('agendaBody');
+  if (!body || body._lpWired) return;
+  body._lpWired = true;
+  const start = (e) => {
+    const block = e.target.closest('.agenda-block');
+    if (!block || e.target.closest('.agenda-block-x')) return;
+    const pt = e.touches ? e.touches[0] : e;
+    _agLpStart = { x: pt.clientX, y: pt.clientY };
+    _agLpFired = false;
+    _agLpTimer = setTimeout(() => {
+      _agLpFired = true;
+      if (navigator.vibrate) try { navigator.vibrate(12); } catch(err) {}
+      const key = dateKey(dateForOffset(agendaOffset));
+      openMovePicker(key, parseInt(block.dataset.hour), parseInt(block.dataset.idx));
+    }, 480);
+  };
+  const move = (e) => {
+    if (!_agLpTimer || !_agLpStart) return;
+    const pt = e.touches ? e.touches[0] : e;
+    const dx = Math.abs(pt.clientX - _agLpStart.x), dy = Math.abs(pt.clientY - _agLpStart.y);
+    if (dx > 10 || dy > 10) { clearTimeout(_agLpTimer); _agLpTimer = null; } // scrolling, not a long-press
+  };
+  const end = () => { if (_agLpTimer) { clearTimeout(_agLpTimer); _agLpTimer = null; } };
+  body.addEventListener('touchstart', start, { passive: true });
+  body.addEventListener('touchmove', move, { passive: true });
+  body.addEventListener('touchend', end);
+  body.addEventListener('touchcancel', end);
+  body.addEventListener('mousedown', start);
+  body.addEventListener('mousemove', move);
+  body.addEventListener('mouseup', end);
+  body.addEventListener('mouseleave', end);
+  // suppress the toggle-done click that a long-press-move would otherwise also fire
+  body.addEventListener('click', (e) => {
+    if (_agLpFired) { e.stopPropagation(); e.preventDefault(); _agLpFired = false; }
+  }, true);
+}
+window._agMoveHalf = 0;
+window.agMoveSetHalf = function(v, e) {
+  if (e) e.stopPropagation();
+  window._agMoveHalf = v;
+  document.querySelectorAll('#agMoveHalf button').forEach((b,i) => b.classList.toggle('on', (i===0) === (v===0)));
+};
+function openMovePicker(key, hour, idx) {
+  const items = loadAgenda(key);
+  const matches = items.filter(it => Math.floor(it.time) === hour).sort((a,b) => a.time - b.time);
+  const target = matches[idx];
+  if (!target) return;
+  window._agMoveHalf = (target.time % 1) ? 0.5 : 0;
+  document.getElementById('tsBg')?.remove();
+  document.getElementById('agMoveBg')?.remove();
+  const bg = document.createElement('div');
+  bg.className = 'timepick-bg'; bg.id = 'agMoveBg';
+  let slots = '';
+  for (let h = AGENDA_START_HOUR; h <= AGENDA_END_HOUR; h++) {
+    const label = hourLabel(h);
+    const cur = (h === hour) ? ' style="border-color:var(--gold);color:var(--gold)"' : '';
+    slots += `<button class="timepick-slot" data-h="${h}"${cur}>${label}</button>`;
+  }
+  bg.innerHTML = `<div class="timepick">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <div class="timepick-title">Move "${escapeHtml(target.label)}"</div>
+      <div class="ts-half" id="agMoveHalf">
+        <button class="${window._agMoveHalf===0?'on':''}" onclick="agMoveSetHalf(0,event)">:00</button><button class="${window._agMoveHalf===0.5?'on':''}" onclick="agMoveSetHalf(0.5,event)">:30</button>
+      </div>
+    </div>
+    <div class="timepick-sub">Currently ${hourLabel(hour)}${(target.time % 1) ? ':30' : ''} — pick a new slot</div>
+    <div class="timepick-grid">${slots}</div>
+    <button class="timepick-cancel">Cancel</button>
+  </div>`;
+  bg.addEventListener('click', e => {
+    if (e.target === bg || e.target.classList.contains('timepick-cancel')) { bg.remove(); return; }
+    const slot = e.target.closest('.timepick-slot');
+    if (slot) {
+      moveAgendaBlockTo(key, hour, idx, parseInt(slot.dataset.h) + (window._agMoveHalf || 0));
+      bg.remove();
+    }
+  });
+  document.body.appendChild(bg);
+}
+function moveAgendaBlockTo(key, hour, idx, newTime) {
+  const items = loadAgenda(key);
+  const matches = items.filter(it => Math.floor(it.time) === hour).sort((a,b) => a.time - b.time);
+  const target = matches[idx];
+  if (!target) return;
+  target.time = newTime;
+  saveAgenda(key, items);
+  renderAgenda();
+  showToast('Moved to ' + hourLabel(Math.floor(newTime)) + ((newTime % 1) ? ':30' : ''));
+}
 
 // Planner tray: chips you can arm, then tap a slot (or use the time picker)
 function renderPlanTray() {
@@ -3171,6 +3270,7 @@ function boot() {
   renderCoreTracker();
   renderCharStrip();
   renderAgenda();
+  agendaWireLongPress();
   renderPlanTray();
   renderTodos();
 }
