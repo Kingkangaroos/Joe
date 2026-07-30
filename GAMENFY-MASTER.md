@@ -82,7 +82,7 @@
 - 🔴 **Body-tab moet cardio/tennis/endurance beter reflecteren** — Joey traint nu vooral cardio + tennis + endurance (geen Hevy/zware sportschool meer); de tab voelt nu te gym/kracht-gericht en motiveert daardoor niet.
 - 🔴 **Body-grafieken à la Google Health** — dag/week/maand-toggle, uur-detail bij tik, scrubben met je vinger, pijltje terug naar vorige periode (nu vastgelopen in huidige week/maand).
 - ✅ **Per-skill reset-knop** — bestaat al (`resetSkill` + "Reset this skill"-knop in elke skill-detail sheet, geverifieerd in code 2026-07-29).
-- 🔴 **Core-skill terugzetten naar 0** — Joey zette 'm op level 11 als test voor de gespierde body-visualisatie; nog checken of dat al is gereset.
+- ✅ **Core-skill terugzetten naar 0** — geverifieerd direct in Supabase (2026-07-30): `core` skill staat op 0 XP. Was al goed, geen actie nodig geweest.
 
 ### 🟡 Wacht op Joey's antwoord — beantwoord in één keer, deblokkeert meerdere tracks
 1. **Seasons:** automatisch starten op de 1e van de maand, of zelf kiezen? Wat is de beloning voor een afgeronde season/boss quest?
