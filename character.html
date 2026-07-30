@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.35" defer></script>
-<script src="topbar.js?v=10.35" defer></script>
-<script src="xp.js?v=10.35" defer></script>
-<script src="quests.js?v=10.35" defer></script>
-<script src="ladders.js?v=10.35" defer></script>
-<script src="ventures.js?v=10.35" defer></script>
+<script src="sync.js?v=10.37" defer></script>
+<script src="topbar.js?v=10.37" defer></script>
+<script src="xp.js?v=10.37" defer></script>
+<script src="quests.js?v=10.37" defer></script>
+<script src="ladders.js?v=10.37" defer></script>
+<script src="ventures.js?v=10.37" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -975,7 +975,13 @@ textarea {
   background:var(--card); border:1px solid var(--line); border-radius:16px;
   padding:14px 16px; margin-bottom:12px; cursor:pointer;
   -webkit-tap-highlight-color:transparent; transition:border-color 0.15s;
+  overflow:hidden;
 }
+.venture-hero-img {
+  width:calc(100% + 32px); height:110px; object-fit:cover; display:block;
+  margin:-14px -16px 10px; border-radius:0;
+}
+.venture-hero-img.detail { width:100%; height:150px; margin:0 0 16px; border-radius:14px; }
 .venture-card:active { border-color:var(--line-strong); }
 .venture-card-top { display:flex; align-items:baseline; justify-content:space-between; }
 .venture-name { font-family:var(--font-display); font-weight:700; font-size:16px; color:var(--ink); }
@@ -2906,6 +2912,7 @@ window.renderVenturesView = function(){
     const nx = window.Ventures.nextStep(v);
     const pct = p.total ? Math.round(p.done/p.total*100) : 0;
     return '<div class="venture-card" onclick="openVenture(\''+v.id+'\')">'+
+      (v.hero ? '<img class="venture-hero-img" src="'+v.hero+'" alt="" loading="lazy">' : '')+
       '<div class="venture-card-top"><div class="venture-name">'+v.name+'</div>'+
       '<div class="venture-count">'+p.done+'/'+p.total+' steps</div></div>'+
       '<div class="venture-tagline">'+v.tagline+'</div>'+
@@ -2924,6 +2931,7 @@ function ventureDetailHTML(v){
   const p = window.Ventures.progress(v);
   const nx = window.Ventures.nextStep(v);
   let html = '<button class="venture-back" onclick="closeVenture()">‹ All ventures</button>'+
+    (v.hero ? '<img class="venture-hero-img detail" src="'+v.hero+'" alt="" loading="lazy">' : '')+
     '<div class="venture-head"><div class="venture-name big">'+v.name+'</div>'+
     '<div class="venture-tagline">'+v.tagline+'</div>'+
     '<div class="venture-count">'+p.done+'/'+p.total+' steps done</div></div>';

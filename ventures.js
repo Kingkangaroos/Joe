@@ -17,6 +17,7 @@
         id: 'grip',
         name: 'Grip',
         tagline: 'Pain-relief squeeze ball — B2B via tattoo studios',
+        hero: 'https://images.pexels.com/photos/5446169/pexels-photo-5446169.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop',
         status: 'active',
         phases: [
           { id: 'p1', name: 'Validation', steps: [
@@ -52,6 +53,7 @@
         id: 'sell_websites',
         name: 'Websites Verkopen',
         tagline: 'Build & sell simple websites to local businesses',
+        hero: 'https://images.pexels.com/photos/890065/pexels-photo-890065.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop',
         status: 'active',
         phases: [
           { id: 'p1', name: 'Set up shop', steps: [
@@ -79,6 +81,7 @@
         id: 'gamenfy_public',
         name: 'Gamenfy Public',
         tagline: 'From personal dashboard to something others can use',
+        hero: 'https://images.pexels.com/photos/32665242/pexels-photo-32665242.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop',
         status: 'active',
         phases: [
           { id: 'p1', name: 'Proof of interest', steps: [
@@ -115,6 +118,14 @@
           data.ventures.push(JSON.parse(JSON.stringify(sv)));
           changed = true;
         }
+      });
+      // v10.37: additively backfill new top-level fields (e.g. hero photo)
+      // onto ventures the user already has, without touching anything they
+      // already earned/completed (phases/steps/status are never overwritten).
+      data.ventures.forEach(function (v) {
+        const sv = (SEED.ventures || []).find(function (s) { return s.id === v.id; });
+        if (!sv) return;
+        if (v.hero == null && sv.hero) { v.hero = sv.hero; changed = true; }
       });
       if (changed) save(data);
     } catch (e) {}
