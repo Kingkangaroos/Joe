@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.40)
+# GAMENFY — Master Document (v10.41)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -80,6 +80,15 @@
 11. 🟡 **Vormgeving-overhaul + scroll-animaties** — wacht op Joey's referenties (namen van sites/apps, geen uploads). **2026-07-30: Joey bevestigt dat hij hier zelf nog moeite in gaat steken** (referenties verzamelen) — blijft dus bij hem liggen, geen actie voor Claudia.
 
 ### Nieuwe ideeën (2026-07-30)
+
+### Feedback van live testen (2026-07-30, avond)
+- 🔴 **"Your Skills" rij te klein/karig** — Joey wil dat de chips net zo groot/informatief zijn als de sectie eronder (Core Tracker): icoon + naam + level + wat duidelijk het volgende is, niet zo'n klein blokje. Moet nog gebouwd.
+- 🔴 **Agenda: tweede blok toevoegen aan een uur dat al één blok heeft, voelt niet soepel** — Joey verwachtte dat het vakje "iets groter werd" om een tweede halfuurtje toe te voegen; nu lukt het hem niet goed (mogelijk gewoon lastig te vinden waar te tikken als het bestaande blok al veel ruimte inneemt). Long-press-to-move werkt wel bevestigd goed. Nader onderzoek nodig — geen quick-fix geraden zonder zeker te zijn van de exacte oorzaak.
+- 🟡 **Season-start-bevestiging kan directer/zichtbaarder** — nu moest Joey naar Main navigeren om zeker te weten dat het gestart was. Kleine UX-polish, niet urgent.
+- ✅ **Jarvis-toon nu ook in de push-notificaties** (v10.41) — zie changelog. Inclusief een kritieke Gemini-bug gevonden en gefixt.
+- 🔴 **Fitbit vitals nog niet zichtbaar** — Joey ziet nog steeds alleen oude data; de nieuwe velden (HRV/SpO2/breathing/distance) hebben nog geen scherm. Al eerder gepland, blijft open.
+- 🟡 **Nieuw idee: "wat zijn goede vervolgstappen"-advies na de assessment** — Joey heeft "Assess my levels" nu ingevuld en zou het waardevol vinden als de app op basis daarvan concrete next-steps voorstelt. Nog uit te werken.
+- ℹ️ Joey reflecteerde hardop over hoe hij de coding-skill moest inschatten (hij "laat Claudia alles coden" maar heeft wel de hele app zelf gestuurd/gebouwd) — geen actiepunt, puur een overweging tijdens het invullen.
 - ✅ **Budget bijhouden als daily task (gedaan v10.40)** — `budgeting` kreeg `isHabit:true`. Verschijnt nu automatisch in Daily Missions, bestaande quickLog + ladder blijven intact.
 - 🔵 **Multi-user / gedeelde toegang voor vrienden — LAAGSTE PRIORITEIT, als laatste oppakken.** Joey heeft vrienden verteld over de app, zij willen 'm ook gebruiken (max ~4 mensen verwacht). **2026-07-30: aanpak bevestigd — de lichte "workspace-prefix"-variant** (losse ID per device vóór elke sync-key, bijv. `joey:rpg` vs `vriend1:rpg`, geen echte auth/beveiliging nodig — past bij een groepje van max 4). Optie B (volwaardige Supabase Auth, track 7 hieronder) expliciet NIET gekozen voor nu. Architectuur-schets staat in de chat van 2026-07-30. Nog niet gebouwd — bewust achteraan de rij, pas oppakken als al het overige klaar is.
 
@@ -260,6 +269,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.41 — Jarvis-toon nu ook in de push-notificaties (was alleen de chat) + kritieke Gemini-bug gevonden en gefixt.** Joey was duidelijk: hij chat weinig met Jarvis, het gaat hem om de tone in de notifications. Bleek dat de push-functie (`send-daily-push`) zijn EIGEN, aparte, toon-neutrale prompt had — de v10.34-toon-overhaul raakte alleen de chat-functie. Gefixt: `buildTone()` gedupliceerd (zelfde patroon als de al-bestaande duplicatie van getRow/putRow/todayAms tussen edge functions) en toegepast op zowel de ochtend- als een NIEUWE avond-brief (de avond-push had daarvoor HELEMAAL geen AI, altijd statische tekst). **Tijdens het live-testen een kritieke bug gevonden**: `thinkingConfig:{thinkingBudget:0}` — het bestaande, gedocumenteerde patroon voor gestructureerde Gemini-output — geeft nu een 400 INVALID_ARGUMENT bij het huidige `gemini-flash-latest` (resolvet naar `gemini-3.6-flash`), vermoedelijk een model-update sinds dit patroon werd vastgelegd. Dit betekent de ochtend-brief mogelijk al langer stilzwijgend faalde en terugviel op statische tekst zonder dat iemand het merkte. Gefixt: `thinkingConfig` verwijderd (bevestigd met een directe test-call dat `responseSchema` alleen prima werkt), `maxOutputTokens` opgehoogd naar 800 omdat denk-tokens nu wel meetellen. **Kon de volledige scheduled flow niet end-to-end testen** (de jitter-gate blokkeert buiten het tijdvenster, en de klok kan ik niet vooruitzetten) — wel de exacte Gemini-aanroep zelf apart geverifieerd. Vanavond gaat 'm vanzelf afvuren binnen het venster; kan achteraf gecheckt worden via `push_debug`/`jarvis_memory` als er twijfel is.
 
 - **v10.40 — Budget bijhouden is nu een daily task.** Ontwerpkeuze: geen nieuwe skill, geen aparte finance.html-koppeling — gewoon `isHabit:true` op de bestaande `budgeting`-skill gezet. Die skill had al een gedrags-gebaseerde 1-100-ladder (Track Everything → Make a Budget → Stick to It → ... → Mastery) die inhoudelijk al om dagelijkse betrokkenheid vraagt, dus dit is een natuurlijke fit, geen kunstmatige toevoeging. Effect: `budgeting` verschijnt nu automatisch overal waar habits horen (Daily Missions op Main, de habit-tegels op Body) — dat loopt volledig via de bestaande `isHabit`-afgeleide filters (`Object.keys(defaults).filter(k=>defaults[k].isHabit...)`) die al overal in index.html/character.html staan, dus geen andere code hoefde aangepast. Bestaande quickLog-knoppen (Monthly budget updated, Expenses categorized, Subscriptions reviewed) en de bestaande ladder blijven gewoon intact — dit is puur additief. **Geverifieerd**: budgeting komt correct uit de habit-lijst-derivatie, quickLog staat er nog. `?v=` naar 10.40. Gevalideerd: volledige 9-pagina syntax-pass.
 
