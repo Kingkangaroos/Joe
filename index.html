@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.31" defer></script>
-<script src="topbar.js?v=10.31" defer></script>
-<script src="xp.js?v=10.31" defer></script>
-<script src="quests.js?v=10.31" defer></script>
-<script src="ventures.js?v=10.31" defer></script>
-<script src="checkin.js?v=10.31" defer></script>
-<script src="push.js?v=10.31" defer></script>
+<script src="sync.js?v=10.32" defer></script>
+<script src="topbar.js?v=10.32" defer></script>
+<script src="xp.js?v=10.32" defer></script>
+<script src="quests.js?v=10.32" defer></script>
+<script src="ventures.js?v=10.32" defer></script>
+<script src="checkin.js?v=10.32" defer></script>
+<script src="push.js?v=10.32" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1183,11 +1183,10 @@ body {
     <div class="agenda-body" id="agendaBody"></div>
   </div>
 
-  <!-- Planner tray: tap a chip then tap a time slot -->
-  <div class="plan-tray" id="planTray" style="display:none">
-    <div class="plan-tray-title">Tap to schedule · then pick a time</div>
-    <div class="plan-chips" id="planChips"></div>
-  </div>
+  <!-- v10.32: Planner tray removed — tapping any agenda hour already opens
+       the Time Sketcher (skill/mission picker + custom task input that
+       persists), so a separate "arm a chip, then tap a slot" step was
+       redundant. See openTimeSketcher() below. -->
 
   <!-- Personal To-Do list -->
   <div class="sec-head todo-head">
@@ -3277,7 +3276,6 @@ function boot() {
   renderCharStrip();
   renderAgenda();
   agendaWireLongPress();
-  renderPlanTray();
   renderTodos();
 }
 
