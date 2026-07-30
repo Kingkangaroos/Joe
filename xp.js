@@ -82,7 +82,7 @@
       },
     },
     budgeting: {
-      xp:0, parentSkill:'money', icon:'📋', label:'Budgeting', active:true,
+      xp:0, parentSkill:'money', icon:'📋', label:'Budgeting', active:true, isHabit:true,
       quickLog:[
         {label:'Monthly budget updated',    xp:25},
         {label:'Expenses categorized',      xp:15},
