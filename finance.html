@@ -7,9 +7,9 @@
 <title>Finances</title>
 <link rel="manifest" href="./manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.28" defer></script>
-<script src="topbar.js?v=10.28" defer></script>
-<script src="xp.js?v=10.28" defer></script>
+<script src="sync.js?v=10.29" defer></script>
+<script src="topbar.js?v=10.29" defer></script>
+<script src="xp.js?v=10.29" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -880,6 +880,20 @@ html, body { scrollbar-width: none; -ms-overflow-style: none; }
 .wish-input::-webkit-outer-spin-button,
 .wish-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .wish-input::placeholder { color: var(--text-tertiary); }
+.wish-input.wish-input-error {
+  animation: wishShake 0.4s ease;
+  box-shadow: inset 0 0 0 1px rgba(255,107,107,0.55);
+  border-radius: 8px;
+}
+@keyframes wishShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+.wish-add-error-msg {
+  width: 100%; font-size: 11px; color: #FF6B6B;
+  padding: 0 12px; margin-top: -2px;
+}
 .wish-input-name { flex: 2; min-width: 160px; }
 .wish-input-amt  { flex: 1; min-width: 80px; max-width: 110px; text-align: right; font-variant-numeric: tabular-nums; }
 .wish-input-ccy {
@@ -1686,9 +1700,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <div class="wish-add-eyebrow">+ ADD AN ITEM</div>
     <div class="wish-add-row">
       <input type="text"   id="wishName"   placeholder="Item name (e.g. New iPhone Pro Max)" class="wish-input wish-input-name">
-      <input type="text" inputmode="decimal" id="wishAmount" placeholder="Cost (€) — bijv. 89,95" class="wish-input wish-input-amt">
+      <input type="text" inputmode="decimal" id="wishAmount" placeholder="Cost, e.g. 89,95" class="wish-input wish-input-amt">
       <button class="wish-add-btn" id="wishAddBtn" onclick="window.__addWish && window.__addWish()">+ Add</button>
     </div>
+    <div class="wish-add-error-msg" id="wishAddError" style="display:none"></div>
   </div>
 
   <!-- Items list -->
@@ -2408,6 +2423,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       });
     });
   }
+  function wishFieldError(el, msg) {
+    const errEl = document.getElementById('wishAddError');
+    el.classList.remove('wish-input-error'); void el.offsetWidth; el.classList.add('wish-input-error');
+    el.focus();
+    if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
+    setTimeout(() => el.classList.remove('wish-input-error'), 450);
+  }
   function doWishAdd() {
     try {
       const nEl = document.getElementById('wishName');
@@ -2415,7 +2437,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       if (!nEl || !aEl) return;
       const n = (nEl.value || '').trim();
       const aRaw = euroNum(aEl.value);
-      if (!n || isNaN(aRaw)) { nEl.focus(); return; }
+      const errEl = document.getElementById('wishAddError');
+      if (!n) { wishFieldError(nEl, 'Give the item a name first.'); return; }
+      if (isNaN(aRaw)) { wishFieldError(aEl, 'Enter a cost, e.g. 89,95 — that field isn\u2019t a valid amount.'); return; }
+      if (errEl) errEl.style.display = 'none';
       const arr = storeGet('wishlist') || [];
       arr.push({
         name: n, amount: aRaw, ts: Date.now(),
