@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.34" defer></script>
-<script src="topbar.js?v=10.34" defer></script>
-<script src="xp.js?v=10.34" defer></script>
-<script src="quests.js?v=10.34" defer></script>
-<script src="ladders.js?v=10.34" defer></script>
-<script src="ventures.js?v=10.34" defer></script>
+<script src="sync.js?v=10.35" defer></script>
+<script src="topbar.js?v=10.35" defer></script>
+<script src="xp.js?v=10.35" defer></script>
+<script src="quests.js?v=10.35" defer></script>
+<script src="ladders.js?v=10.35" defer></script>
+<script src="ventures.js?v=10.35" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1657,6 +1657,9 @@ const SKILL_PHOTO_URL = {
   puzzling: 'https://images.pexels.com/photos/30708396/pexels-photo-30708396.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
   household: 'https://images.pexels.com/photos/3177257/pexels-photo-3177257.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
   cold_shower: 'https://images.pexels.com/photos/688559/pexels-photo-688559.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  // v10.35: batch 4 (verified against the actual Pexels photo page, not just a search snippet)
+  ai_tools: 'https://images.pexels.com/photos/8386437/pexels-photo-8386437.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
+  marketing: 'https://images.pexels.com/photos/7710077/pexels-photo-7710077.jpeg?auto=compress&cs=tinysrgb&w=800&h=534&fit=crop',
 };
 function skillPhotoUrl(key){
   if(SKILL_PHOTO_URL[key]) return SKILL_PHOTO_URL[key];
