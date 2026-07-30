@@ -912,6 +912,77 @@
     return h;
   };
 
+  // v10.39: Seasons. Joey's answers (2026-07-30): trigger is manual — tap a
+  // skill, start a season on it (not auto on the 1st of the month); reward
+  // is the goal itself, no separate reward system. Only 1 active season at
+  // a time ("1 focus-skill, not 3"). The "master quest" is picked
+  // algorithmically, not freshly authored per season: it's simply the
+  // skill's own next unclaimed SKILL_LADDERS tier — reuses all the ladder
+  // content already written, rather than inventing new copy per season.
+  window.SEASONS_KEY = 'rpg_seasons_v1';
+  function loadSeasons() {
+    try { const s = JSON.parse(localStorage.getItem(window.SEASONS_KEY)); return s && typeof s === 'object' ? s : { active: null, history: [] }; }
+    catch (e) { return { active: null, history: [] }; }
+  }
+  function saveSeasons(s) { try { localStorage.setItem(window.SEASONS_KEY, JSON.stringify(s)); } catch (e) {} }
+  function tierClaimsRead() { try { return JSON.parse(localStorage.getItem('rpg_tier_claims_v1')) || {}; } catch (e) { return {}; } }
+
+  // Returns the active season, or null — and quietly archives it (as
+  // incomplete, no penalty) if its end date has passed unclaimed.
+  window.getActiveSeason = function () {
+    const s = loadSeasons();
+    if (!s.active) return null;
+    if (todayStr() > s.active.endDate) {
+      s.history = s.history || [];
+      s.history.push(Object.assign({}, s.active, { endedAt: todayStr(), completed: false }));
+      s.active = null;
+      saveSeasons(s);
+      return null;
+    }
+    return s.active;
+  };
+
+  window.startSeason = function (skillKey, durationDays, dailyMinutes) {
+    const ladder = (window.SKILL_LADDERS || {})[skillKey] || [];
+    const claimed = tierClaimsRead()[skillKey] || 0;
+    const target = ladder.find(function (t) { return t.level > claimed; });
+    if (!target) return null; // already at the top of this skill's ladder
+    const start = todayStr();
+    const sp = start.split('-').map(Number);
+    const endD = new Date(sp[0], sp[1] - 1, sp[2] + durationDays);
+    const end = endD.getFullYear() + '-' + String(endD.getMonth() + 1).padStart(2, '0') + '-' + String(endD.getDate()).padStart(2, '0');
+    const season = {
+      skillKey: skillKey, startDate: start, endDate: end, durationDays: durationDays, dailyMinutes: dailyMinutes,
+      targetLevel: target.level, targetTitle: target.title, targetClaim: target.claim,
+    };
+    const s = loadSeasons();
+    s.active = season;
+    saveSeasons(s);
+    return season;
+  };
+
+  window.cancelSeason = function () {
+    const s = loadSeasons();
+    if (!s.active) return;
+    s.history = s.history || [];
+    s.history.push(Object.assign({}, s.active, { endedAt: todayStr(), completed: false, cancelled: true }));
+    s.active = null;
+    saveSeasons(s);
+  };
+
+  // Call after a tier claim. If it was this season's target (or higher),
+  // the season completes right there — the claim itself is the reward.
+  window.endSeasonIfComplete = function (skillKey, claimedLevel) {
+    const s = loadSeasons();
+    if (!s.active || s.active.skillKey !== skillKey) return false;
+    if (claimedLevel < s.active.targetLevel) return false;
+    s.history = s.history || [];
+    s.history.push(Object.assign({}, s.active, { endedAt: todayStr(), completed: true }));
+    s.active = null;
+    saveSeasons(s);
+    return true;
+  };
+
   window.checkHabit = function (habitId, label, icon) {
     const habits  = loadHabits();
     const today   = todayStr();
@@ -1208,7 +1279,7 @@
   // synced only [STORAGE_KEY, HABITS_KEY]; on pages without their own rpg config
   // (health, po-water) it overwrote the whole cloud row with those 2 keys and the
   // realtime echo deleted streak/daily/quests/ventures/gratitude everywhere.
-  window.RPG_SYNC_KEYS = ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1','rpg_gratitude_v1','rpg_gratitude_words_v1','rpg_jarvis_applied_v1','rpg_habit_reset_v1',
+  window.RPG_SYNC_KEYS = ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1','rpg_gratitude_v1','rpg_gratitude_words_v1','rpg_seasons_v1','rpg_jarvis_applied_v1','rpg_habit_reset_v1',
     'rpg_routes_v1'];
   window.RPG_SYNC_PREFIXES = ['rpg_daily_v1:','rpg_agenda_v1:','rpg_todo_v1:'];
   function initRPGSync() {

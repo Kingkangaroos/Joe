@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.38" defer></script>
-<script src="topbar.js?v=10.38" defer></script>
-<script src="xp.js?v=10.38" defer></script>
-<script src="quests.js?v=10.38" defer></script>
-<script src="ladders.js?v=10.38" defer></script>
-<script src="ventures.js?v=10.38" defer></script>
+<script src="sync.js?v=10.39" defer></script>
+<script src="topbar.js?v=10.39" defer></script>
+<script src="xp.js?v=10.39" defer></script>
+<script src="quests.js?v=10.39" defer></script>
+<script src="ladders.js?v=10.39" defer></script>
+<script src="ventures.js?v=10.39" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -549,6 +549,48 @@ textarea {
 .sd-ms-reach-btn{width:100%;padding:12px 16px;background:rgba(201,162,39,0.10);border:1px solid rgba(201,162,39,0.45);border-radius:12px;color:#8A6F16;font-weight:700;font-size:13px;cursor:pointer;margin-bottom:14px;transition:all 0.15s;text-align:left;display:flex;align-items:center;gap:10px}
 .sd-ms-reach-btn:active{transform:scale(0.98)}
 .sd-ms-reach-btn span{color:var(--muted) !important}
+/* ── Seasons (v10.39) ─────────────────────────────── */
+.season-start-btn{
+  width:100%;padding:12px 16px;background:var(--ink);border:none;border-radius:12px;
+  color:var(--gold);font-weight:700;font-size:13px;cursor:pointer;margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;
+}
+.season-start-btn:active{transform:scale(0.98)}
+.season-active-card{
+  background:var(--ink);border-radius:14px;padding:14px 16px;margin-bottom:14px;color:#fff;
+}
+.season-active-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.season-active-eyebrow{font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold)}
+.season-active-days{font-size:11px;font-weight:700;color:rgba(255,255,255,0.65)}
+.season-active-target{font-size:14px;font-weight:700;margin-bottom:3px}
+.season-active-claim{font-size:12px;color:rgba(255,255,255,0.7);line-height:1.4}
+.season-active-bar-track{height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin-top:10px;overflow:hidden}
+.season-active-bar-fill{height:100%;background:var(--gold);border-radius:2px}
+.season-cancel-link{font-size:11px;color:rgba(255,255,255,0.45);margin-top:8px;text-decoration:underline;cursor:pointer;display:inline-block}
+.season-picker-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;
+  display:flex;align-items:flex-end;justify-content:center;
+}
+.season-picker{
+  background:var(--bg,#F4F3EF);border-radius:20px 20px 0 0;padding:20px 18px 24px;
+  width:100%;max-width:480px;max-height:80vh;overflow-y:auto;
+}
+.season-picker-title{font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--ink);margin-bottom:4px}
+.season-picker-sub{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.4}
+.season-picker-label{font-size:11px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin:14px 0 8px}
+.season-picker-choices{display:flex;gap:8px;flex-wrap:wrap}
+.season-picker-choice{
+  padding:8px 14px;border:1px solid var(--line-strong);border-radius:10px;background:var(--card);
+  font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.season-picker-choice.sel{background:var(--ink);color:var(--gold);border-color:var(--ink)}
+.season-picker-start{
+  width:100%;padding:14px;background:var(--ink);color:var(--gold);border:none;border-radius:12px;
+  font-weight:700;font-size:14px;margin-top:20px;cursor:pointer;
+}
+.season-picker-cancel{
+  width:100%;padding:10px;background:none;border:none;color:var(--muted);font-size:13px;margin-top:8px;cursor:pointer;
+}
 .sd-custom-input{flex:1;background:var(--card);border:1px solid var(--line-strong);border-radius:10px;padding:11px 14px;color:var(--ink);font-family:var(--mono);font-size:16px;text-align:center;outline:none;-webkit-appearance:none}
 .sd-custom-btn{padding:11px 18px;border-radius:10px;background:rgba(46,139,95,0.08);border:1px solid var(--green);color:var(--green);font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap}
 .sd-unlock-title{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
@@ -1754,7 +1796,63 @@ window.claimTier=function(skillKey,lvl){
     if(ch.skills&&ch.skills[skillKey]){ const need=window.xpForLevel?window.xpForLevel(lvl):0;
       if((ch.skills[skillKey].xp||0)<need) ch.skills[skillKey].xp=need;
       localStorage.setItem('rpg_character_v1', JSON.stringify(ch)); } }catch(e){}
-  if(window.showToast) showToast('Claimed Level '+lvl+'!');
+  // v10.39: if this claim hits the active season's target, the season
+  // completes right here — the claim itself is the reward, nothing extra.
+  const seasonDone=window.endSeasonIfComplete?window.endSeasonIfComplete(skillKey,lvl):false;
+  if(window.showToast) showToast(seasonDone?'Season complete — Level '+lvl+'! 🌟':'Claimed Level '+lvl+'!');
+  openSkillDetail(skillKey);
+};
+
+// v10.39: Seasons picker — manual trigger (tap a skill), pick duration +
+// daily time budget, target tier is Claudia's pick (the skill's own next
+// unclaimed SKILL_LADDERS tier), no separate reward system.
+window._seasonPick={skillKey:null,days:28,minutes:20};
+window.openSeasonPicker=function(skillKey){
+  const ladder=(window.SKILL_LADDERS||{})[skillKey]||[];
+  const claims=tierClaims(); const claimed=claims[skillKey]||0;
+  const target=ladder.find(t=>t.level>claimed);
+  if(!target){ if(window.showToast) showToast('This skill is already at its top tier'); return; }
+  window._seasonPick={skillKey:skillKey,days:28,minutes:20};
+  document.getElementById('seasonPickerBg')?.remove();
+  const def=(window.RPG_DEFAULT_SKILLS||{})[skillKey]||{};
+  const bg=document.createElement('div');
+  bg.className='season-picker-bg'; bg.id='seasonPickerBg';
+  bg.innerHTML=`<div class="season-picker">
+    <div class="season-picker-title">🌟 Start a Season — ${def.label||skillKey}</div>
+    <div class="season-picker-sub">Target: Level ${target.level} — ${target.title}<br>${target.claim}</div>
+    <div class="season-picker-label">Duration</div>
+    <div class="season-picker-choices" id="seasonDaysChoices">
+      ${[14,28,42,56].map(d=>`<button class="season-picker-choice${d===28?' sel':''}" data-d="${d}" onclick="pickSeasonDays(${d},this)">${d===14?'2 weeks':d===28?'4 weeks':d===42?'6 weeks':'8 weeks'}</button>`).join('')}
+    </div>
+    <div class="season-picker-label">Daily time budget</div>
+    <div class="season-picker-choices" id="seasonMinChoices">
+      ${[15,20,30,45,60].map(m=>`<button class="season-picker-choice${m===20?' sel':''}" data-m="${m}" onclick="pickSeasonMinutes(${m},this)">${m} min</button>`).join('')}
+    </div>
+    <button class="season-picker-start" onclick="confirmStartSeason()">Start Season</button>
+    <button class="season-picker-cancel" onclick="document.getElementById('seasonPickerBg')?.remove()">Cancel</button>
+  </div>`;
+  bg.addEventListener('click',e=>{ if(e.target===bg) bg.remove(); });
+  document.body.appendChild(bg);
+};
+window.pickSeasonDays=function(d,el){
+  window._seasonPick.days=d;
+  document.querySelectorAll('#seasonDaysChoices .season-picker-choice').forEach(b=>b.classList.toggle('sel',b===el));
+};
+window.pickSeasonMinutes=function(m,el){
+  window._seasonPick.minutes=m;
+  document.querySelectorAll('#seasonMinChoices .season-picker-choice').forEach(b=>b.classList.toggle('sel',b===el));
+};
+window.confirmStartSeason=function(){
+  const p=window._seasonPick;
+  const season=window.startSeason?window.startSeason(p.skillKey,p.days,p.minutes):null;
+  document.getElementById('seasonPickerBg')?.remove();
+  if(!season){ if(window.showToast) showToast('Could not start season'); return; }
+  if(window.showToast) showToast('Season started · '+p.days+' days 🌟');
+  openSkillDetail(p.skillKey);
+};
+window.doCancelSeason=function(skillKey){
+  if(!confirm('Cancel this season? You can start a new one any time.')) return;
+  if(window.cancelSeason) window.cancelSeason();
   openSkillDetail(skillKey);
 };
 function optionalDone(){ try{ return JSON.parse(localStorage.getItem('rpg_optional_quests_v1'))||{}; }catch(e){ return {}; } }
@@ -1904,6 +2002,34 @@ function openSkillDetail(skillKey){
   const sladder=(window.SKILL_LADDERS||{})[skillKey];
   const sladderHtml=sladder?buildLadderHtml(skillKey, sladder):'';
 
+  // v10.39: Seasons — show progress if this skill IS the active season,
+  // a start button if no season is active anywhere, or nothing if a season
+  // is active on a different skill (only one runs at a time, by design).
+  let seasonHtml='';
+  if(!def.private && sladder && sladder.length){
+    const activeSeason=window.getActiveSeason?window.getActiveSeason():null;
+    if(activeSeason && activeSeason.skillKey===skillKey){
+      const today=new Date(); const end=new Date(activeSeason.endDate+'T12:00:00');
+      const start=new Date(activeSeason.startDate+'T12:00:00');
+      const totalDays=Math.max(1,Math.round((end-start)/86400000));
+      const daysLeft=Math.max(0,Math.ceil((end-today)/86400000));
+      const daysDone=Math.max(0,totalDays-daysLeft);
+      const seasonPct=Math.min(100,Math.round((daysDone/totalDays)*100));
+      seasonHtml=`<div class="season-active-card">
+        <div class="season-active-top">
+          <div class="season-active-eyebrow">🌟 Season in progress</div>
+          <div class="season-active-days">${daysLeft} day${daysLeft===1?'':'s'} left</div>
+        </div>
+        <div class="season-active-target">Target: Level ${activeSeason.targetLevel} — ${activeSeason.targetTitle}</div>
+        <div class="season-active-claim">${activeSeason.targetClaim}</div>
+        <div class="season-active-bar-track"><div class="season-active-bar-fill" style="width:${seasonPct}%"></div></div>
+        <span class="season-cancel-link" onclick="doCancelSeason('${skillKey}')">Cancel season</span>
+      </div>`;
+    } else if(!activeSeason){
+      seasonHtml=`<button class="season-start-btn" onclick="openSeasonPicker('${skillKey}')"><span>🌟</span> Start a Season on this skill</button>`;
+    }
+  }
+
   const photoUrl=skillPhotoUrl(skillKey);
   const photoHtml=photoUrl?`<div class="sd-photo">
       <img class="sd-photo-img" src="${photoUrl}" alt="" onerror="this.closest('.sd-photo').style.display='none'">
@@ -1931,6 +2057,7 @@ function openSkillDetail(skillKey){
       </div>
       ${whyHtml}
       ${tierLockHtml}
+      ${seasonHtml}
       ${sladder ? sladderHtml : tierChecklistHtml}
       ${msBtnHtml}
       ${sladder ? '' : nextStepHtml}
