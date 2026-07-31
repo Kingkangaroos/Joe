@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.44" defer></script>
-<script src="topbar.js?v=10.44" defer></script>
-<script src="xp.js?v=10.44" defer></script>
-<script src="quests.js?v=10.44" defer></script>
-<script src="ventures.js?v=10.44" defer></script>
-<script src="checkin.js?v=10.44" defer></script>
-<script src="push.js?v=10.44" defer></script>
+<script src="sync.js?v=10.45" defer></script>
+<script src="topbar.js?v=10.45" defer></script>
+<script src="xp.js?v=10.45" defer></script>
+<script src="quests.js?v=10.45" defer></script>
+<script src="ventures.js?v=10.45" defer></script>
+<script src="checkin.js?v=10.45" defer></script>
+<script src="push.js?v=10.45" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -775,6 +775,12 @@ body {
 }
 .agenda-block.done { opacity: 0.55; }
 .agenda-block.done .agenda-block-text { text-decoration: line-through; }
+.agenda-add-more {
+  font-size: 11px; font-weight: 700; color: var(--muted);
+  padding: 7px 10px; border: 1px dashed var(--line-strong); border-radius: 9px;
+  text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.agenda-add-more:active { background: rgba(201,162,39,0.08); }
 .agenda-empty-hint {
   padding: 20px 16px; text-align: center;
   font-size: 12px; color: var(--faint);
@@ -2360,9 +2366,17 @@ function renderAgenda() {
       </div>`;
     }).join('');
     const label = (h===12) ? '12 PM' : h>12 ? (h-12)+' PM' : h+' AM';
+    // v10.45: an hour has room for 2 half-hour items (:00 and :30). Once one
+    // exists, its own onclick stopPropagation()s, so the slot's own onSlotTap
+    // never fires again — there was no way left to add a second item. This
+    // small "+" is always present while there's room, regardless of how full
+    // the row looks, and calls the same add-flow directly.
+    const addMore = slotItems.length === 1
+      ? `<div class="agenda-add-more" onclick="event.stopPropagation();onSlotTap('${key}',${h})">+ Add</div>`
+      : '';
     html += `<div class="agenda-hour">
       <div class="agenda-hour-label">${label}</div>
-      <div class="agenda-hour-slot" onclick="onSlotTap('${key}',${h})">${blocks}</div>
+      <div class="agenda-hour-slot" onclick="onSlotTap('${key}',${h})">${blocks}${addMore}</div>
     </div>`;
   }
   body.innerHTML = html;
@@ -2694,13 +2708,20 @@ function openTimeSketcher(key, hour) {
   const bg = document.createElement('div');
   bg.className = 'ts-bg'; bg.id = 'tsBg';
   const d = new Date(key + 'T12:00:00');
+  // v10.45: default to whichever half of this hour is still free, instead of
+  // always :00 — avoids silently double-booking :00 when adding a second
+  // item to an hour that already has one at :00.
+  const existingHere = loadAgenda(key).filter(it => Math.floor(it.time) === hour);
+  const zeroTaken = existingHere.some(it => (it.time % 1) === 0);
+  const halfTaken = existingHere.some(it => (it.time % 1) !== 0);
+  window._tsHalf = (zeroTaken && !halfTaken) ? 0.5 : 0;
   bg.innerHTML = `<div class="ts-sheet">
     <div class="ts-handle"></div>
     <div class="ts-head">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
         <div class="ts-title">Sketch ${hourLabel(hour)}</div>
         <div class="ts-half" id="tsHalf">
-          <button class="on" onclick="tsSetHalf(0,event)">:00</button><button onclick="tsSetHalf(0.5,event)">:30</button>
+          <button class="${window._tsHalf===0?'on':''}" onclick="tsSetHalf(0,event)">:00</button><button class="${window._tsHalf===0.5?'on':''}" onclick="tsSetHalf(0.5,event)">:30</button>
         </div>
       </div>
       <div class="ts-sub">${d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})} · pick a skill — or type your own task</div>
