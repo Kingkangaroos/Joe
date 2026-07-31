@@ -5,6 +5,69 @@
 
 ---
 
+## 🎯 Joey's 100-Year Life Plan — de diepste "waarom" achter Gamenfy
+
+> Gedeeld door Joey op 2026-07-31, tijdens een wandeling, als antwoord op de vraag hoe "prioriteit"
+> voor het vervolgstappen-advies (na de skill-assessment) bepaald moet worden. Zijn antwoord:
+> **"Welke [skills] echt helpen tot het behalen van m'n doelen"** — dit plan ís die doelen.
+> Ooit met een andere AI opgesteld/verfijnd. Dit is de bron van waarheid voor prioritering,
+> niet iets om te herschrijven — bij twijfel over wat "belangrijk" is voor Joey, kijk hier.
+
+Structuur: per levensfase (leeftijd), alle 5 categorieën samen — geen aparte volgorde per categorie, maar een complete life-snapshot per leeftijd. Categorieën: ❤️ Liefde · 💰 Geld · 🕊️ Vrijheid · 😊 Blijheid · 🌎 Exploration.
+
+### 27 jaar — binnen 1 jaar (het meest directe, meest bruikbare voor prioritering nú)
+- ❤️ **Liefde**: gezonde relatie waarin hij volledig zichzelf kan zijn; partner met wie hij veel lacht/plezier maakt/sterke verbinding voelt; actief seksleven (persoonlijk doel ±100×/jaar).
+- 💰 **Geld**: €25.000–€50.000 liquide vermogen, volledig zelf verdiend, geen financiële hulp van ouders; actief vermogen opbouwen via investeringen/ondernemerschap/assets.
+- 🕊️ **Vrijheid**: minimaal 3 maanden/jaar vanuit het buitenland kunnen leven/werken; inkomen niet volledig locatie-afhankelijk.
+- 😊 **Blijheid**: comfortabel met wie hij is; trots op zijn leven en dagelijkse keuzes; goede balans werken/groeien/ontspannen/plezier.
+- 🌎 **Exploration**: blijven nieuwe ervaringen aangaan; minder vanuit angst, meer vanuit nieuwsgierigheid leven; nieuwe plekken/ideeën/mogelijkheden ontdekken.
+
+### 31 jaar — over 5 jaar
+- ❤️ Samenwonen met de vrouw waarmee hij kinderen wil; sterke relatiebasis; plezier/intimiteit/avontuur blijven behouden.
+- 💰 Minimaal €250.000 nettovermogen, €25.000+ liquide; vermogen groeit via assets/bedrijven/investeringen.
+- 🕊️ Meerdere maanden/jaar reizen; mogelijk meerdere verblijfplekken wereldwijd; niet gebonden aan één locatie.
+- 😊 Stabiel leven, weinig financiële stress; genieten van relatie en wat samen opgebouwd is; op de goede weg voelen.
+- 🌎 Reizen/nieuwe ervaringen normaal onderdeel van het leven; culturen/landen/ideeën blijven ontdekken.
+
+### 36 jaar — over 10 jaar
+- ❤️ Kinderen (of bezig een gezin te starten); betrokken vader; sterke relatie met partner.
+- 💰 Richting €750.000 vermogen; inkomen steeds meer uit assets/ondernemerschap; werken omdat hij wil, niet moet.
+- 🕊️ Veel controle over eigen agenda; tijd voor gezin; reizen combineren met gezinsleven.
+- 😊 Geluk uit het gezin; trots op vader/partner die hij is; nog ruimte voor eigen ontwikkeling.
+- 🌎 De wereld ontdekken samen met het gezin; nieuwe hobby's/ervaringen blijven zoeken.
+
+### 51 jaar — over 25 jaar
+- ❤️ Langdurige liefdevolle relatie; kinderen grotendeels zelfstandig; nog steeds plezier/aantrekkingskracht/verbinding.
+- 💰 Minimaal €5 miljoen nettovermogen; vermogen werkt grotendeels voor hem.
+- 🕊️ Bepaalt grotendeels zelf hoe zijn dagen eruitzien; veel tijd voor reizen/hobby's/familie.
+- 😊 Trots op gezin en levenskeuzes; gezond, energiek, nieuwsgierig.
+- 🌎 Weer veel reizen; verdiepen in hobby's (duiken, natuur, cultuur, etc.).
+
+### 76 jaar — over 50 jaar
+- ❤️ Genieten van relatie en familie; sterke banden met kinderen én kleinkinderen.
+- 💰 Minimaal €100 miljoen vermogen; ondersteunt familie en toekomstige generaties.
+- 🕊️ Volledig financieel vrij; reizen wanneer hij wil; zelfstandig en actief blijven.
+- 😊 Gezond, fit, actief voor zijn leeftijd; hobby's, vrienden, verhalen.
+- 🌎 Blijven reizen en ontdekken; nieuwsgierig naar de wereld blijven.
+
+### 126 jaar — over 100 jaar
+- ❤️ Terugkijken op een leven vol liefde en sterke relaties; familie draagt zijn waarden voort.
+- 💰 Billionaire family legacy; vermogen én kennis doorgegeven.
+- 🕊️ Zo lang mogelijk zelfstandigheid behouden; leven geleid volgens eigen keuzes.
+- 😊 Terugkijken zonder grote spijt; dankbaarheid; maximaal genoten van zijn tijd.
+- 🌎 De wereld en het leven zo diep mogelijk onderzocht; nieuwsgierigheid altijd behouden.
+
+### Hoe dit te gebruiken voor skill-prioritering
+Grove mapping Gamenfy-skills → levensplan-categorieën (te verfijnen bij het bouwen van de vervolgstappen-feature):
+- 💰 **Geld** → saving, investing, budgeting, net_worth, sales, marketing, ai_tools, coding, content, Websites Verkopen-venture
+- 🕊️ **Vrijheid** → coding, ai_tools, sales, marketing, content (locatie-onafhankelijk inkomen), Websites Verkopen + Gamenfy Public-ventures specifiek
+- ❤️ **Liefde** → dating, social
+- 😊 **Blijheid** → gratitude, meditation, journaling, recovery, sleep, nutrition, superiority
+- 🌎 **Exploration** → languages, learning, social, dating, nieuwe-ervaring-skills (dancing/whistling/etc. als "durf iets nieuws")
+Skills die weinig direct raken aan dit plan (bijv. sommige lifestyle/discipline-skills) blijven gewoon meetellen voor total level, maar wegen minder mee in "wat is nu prioriteit."
+
+---
+
 ## 0. KERN VAN WAARHEID — geverifieerd uit de code (v9.26 · 2026-07-19)
 
 > Deze sectie is **afgeleid uit de repo-code van deze sessie**, niet uit eerdere samenvattingen.
