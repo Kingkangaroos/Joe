@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.47" defer></script>
-<script src="topbar.js?v=10.47" defer></script>
-<script src="xp.js?v=10.47" defer></script>
-<script src="quests.js?v=10.47" defer></script>
-<script src="ladders.js?v=10.47" defer></script>
-<script src="ventures.js?v=10.47" defer></script>
+<script src="sync.js?v=10.48" defer></script>
+<script src="topbar.js?v=10.48" defer></script>
+<script src="xp.js?v=10.48" defer></script>
+<script src="quests.js?v=10.48" defer></script>
+<script src="ladders.js?v=10.48" defer></script>
+<script src="ventures.js?v=10.48" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1928,22 +1928,21 @@ function renderPriorityFocus(){
     <div class="pf-bar-track"><div class="pf-bar-fill" style="width:${p.pct}%"></div></div>`;
 }
 
-// v10.43: punchy hype tagline, deterministic per season (duplicated from
-// index.html — same small-helper-duplication pattern as elsewhere in the app).
-const SEASON_TAGLINES = [
-  "Let's go — time to move.",
-  "Lock in. This one's yours to take.",
-  "Show up today. Let the level follow.",
-  "This is your era. Own it.",
-  "No excuses — just reps.",
-  "Full send. Let's make it count.",
-  "One goal. One grind. Let's go.",
-  "Time to turn this into a habit that sticks.",
-];
+// v10.48: was a separate hardcoded list — now pulls from the SAME
+// jarvis_phrases tone setting (Settings > Jarvis tone), duplicated from
+// index.html per the established small-helper-duplication pattern.
+function seasonTaglinePool() {
+  let prefs = {}; try { prefs = JSON.parse(localStorage.getItem('rpg_prefs_v1')) || {}; } catch (e) {}
+  if (prefs.jarvis_tough_love === false) return ["Let's go — time to move.", "Show up today. Let the level follow.", "One goal. One grind."];
+  const custom = Array.isArray(prefs.jarvis_phrases) ? prefs.jarvis_phrases.filter(s => typeof s === 'string' && s.trim()) : [];
+  if (custom.length) return custom;
+  return ["Get your ass to work.", "You wanna be the king? Then you gotta put in the work.", "Time is ticking, Joey."];
+}
 function seasonTagline(skillKey, startDate) {
+  const pool = seasonTaglinePool();
   let h = 0; const s = skillKey + ':' + startDate;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  return SEASON_TAGLINES[Math.abs(h) % SEASON_TAGLINES.length];
+  return pool[Math.abs(h) % pool.length];
 }
 
 function openSkillDetail(skillKey){

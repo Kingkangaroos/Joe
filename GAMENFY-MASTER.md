@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.47)
+# GAMENFY — Master Document (v10.48)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -148,7 +148,7 @@ Skills die weinig direct raken aan dit plan (bijv. sommige lifestyle/discipline-
 
 ### Feedback van live testen, ronde 2 (2026-07-31)
 - 🔴 **Wishlist add-flow nog steeds onduidelijk visueel** — "één grijs vlak", Joey kan het veld nu vinden omdat hij weet waar het zit, maar het is niet zichtbaar/onderscheidend genoeg. CSS-probleem, geen functioneel probleem (v10.29 loste de foutmelding-bug al op, dit is puur zichtbaarheid).
-- 🔴 **Season-tagline-toon matcht niet wat Joey vroeg** — hij ziet nu "Show up today. Let the level follow." maar dat is niet de vibe die hij aangaf (zijn voorbeeld was expliciet ruiger/grover: "It's dancing season, bitch!"). Claudia koos bewust een getemperde versie — Joey wijst dit nu expliciet af, wil de écht gevraagde toon.
+- ✅ **Season-tagline-toon gefixt (v10.48)** — bleek een losse hardcoded lijst i.p.v. de al-ingestelde Jarvis-toon te gebruiken. Nu gekoppeld aan `jarvis_phrases`, standaard al veel dichter bij zijn oorspronkelijke voorbeeld.
 - 🔴 **Health-metrics: dagbasis i.p.v. weekbasis prioriteren** — Joey wil overal liever de waarde van vandaag zien dan 7-daagse gemiddeldes; "alles op dagbasis is veel interessanter dan op zevendaagse basis."
 - 🔴 **Workout Challenge stelt te moeilijke oefeningen voor (pike push-ups)** — Joey wil vooral simpele, snelle dagelijkse challenges (bijv. wat push-ups, wat abs-oefeningen) als aparte daily mission, gecalibreerd op zijn huidige niveau. Sluit aan bij oude open actiepunt "workout challenge daily variant definitions to be completed" — bevestigt dat dit inderdaad nooit is afgemaakt.
 - ✅ **BUG gevonden en gefixt (v10.47): "Your Skills" toonde "Max tier reached" voor élke skill** — `ladders.js` stond niet in index.html's script-tags, dus `SKILL_LADDERS` was daar altijd `undefined`. Stond er al sinds v10.31 zonder dat het werd opgemerkt.
@@ -345,6 +345,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.48 — Season-tagline-toon gefixt: gebruikt nu dezelfde jarvis_phrases-instelling als de rest van de app.** Joey's terechte klacht: de vorige taglines ("Show up today. Let the level follow.") matchten niet de toon die hij had aangegeven — bleek een losse, ongerelateerde hardcoded lijst te zijn, los van de Jarvis-toon-instelling (v10.34) die hij al had ingesteld. Gefixt: leest nu `rpg_prefs_v1.jarvis_phrases` (Settings → Jarvis tone) — zijn eigen aangepaste zinnen als die er zijn, anders dezelfde 3 standaardzinnen als Jarvis zelf gebruikt ("Get your ass to work.", "You wanna be the king? Then you gotta put in the work.", "Time is ticking, Joey.") — dus standaard al veel dichter bij wat hij oorspronkelijk vroeg. Zet hij tough-love uit in Settings, dan valt de Season-tagline ook terug op een rustiger set. Eén bron van waarheid voor de hele-app-toon i.p.v. een losse kopie. `?v=` naar 10.48. Gevalideerd: alle drie de scenario's getest (standaard/eigen zinnen/uitgezet), elk gaf het juiste resultaat.
 
 - **v10.47 — CRITICAL FIX: "Your Skills" toonde "Max tier reached" voor ELKE skill op Main, niet alleen tennis.** Root cause: `ladders.js` (het bestand met `window.SKILL_LADDERS`) stond helemaal niet in index.html's script-tags — alleen in character.html. Op Main was `window.SKILL_LADDERS` dus altijd `undefined`, waardoor de "volgende tier"-berekening voor élke skill terugviel op een lege array en dus altijd "Max tier reached" toonde, ongeacht het echte level. Dit stond er al sinds v10.31 (de eerste "Your Skills"-rij) zonder dat het werd opgemerkt, omdat mijn eigen Node-simulaties `ladders.js` altijd expliciet meeladen — een blinde vlek in hoe ik valideer (logica-simulaties vangen dit soort ontbrekende-script-tag-fouten niet). Gefixt: `ladders.js` toegevoegd aan index.html, exact dezelfde positie als in character.html. Ook gecontroleerd of dit ergens anders óók mis kon zijn: alleen character.html en index.html gebruiken `SKILL_LADDERS`, en staan nu allebei goed. `?v=` naar 10.47. Gevalideerd: volledige 9-pagina syntax-pass; bevestigd dat precies 1 `ladders.js`-tag nu in index.html staat.
 
