@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.45" defer></script>
-<script src="topbar.js?v=10.45" defer></script>
-<script src="xp.js?v=10.45" defer></script>
-<script src="quests.js?v=10.45" defer></script>
-<script src="ladders.js?v=10.45" defer></script>
-<script src="ventures.js?v=10.45" defer></script>
+<script src="sync.js?v=10.46" defer></script>
+<script src="topbar.js?v=10.46" defer></script>
+<script src="xp.js?v=10.46" defer></script>
+<script src="quests.js?v=10.46" defer></script>
+<script src="ladders.js?v=10.46" defer></script>
+<script src="ventures.js?v=10.46" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -568,6 +568,19 @@ textarea {
 .season-active-target{font-size:11px;color:var(--gold);font-weight:700;margin-bottom:8px}
 .season-active-bar-track{height:5px;background:rgba(255,255,255,0.15);border-radius:3px;margin-top:0;overflow:hidden}
 .season-active-bar-fill{height:100%;background:var(--gold);border-radius:3px}
+/* ── Priority Focus (v10.46) — "which skill actually helps hit your goals" ── */
+.priority-focus-card{
+  background:var(--card);border:1px solid var(--line-strong);border-radius:14px;
+  padding:14px 16px;margin-bottom:14px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.pf-eyebrow{font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.pf-skill-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.pf-icon{font-size:20px}
+.pf-name{font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink)}
+.pf-pct{margin-left:auto;font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--ember)}
+.pf-action{font-size:12px;color:var(--muted);line-height:1.4;margin-bottom:10px}
+.pf-bar-track{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.pf-bar-fill{height:100%;background:var(--ember);border-radius:2px}
 .season-cancel-link{font-size:11px;color:rgba(255,255,255,0.45);margin-top:8px;text-decoration:underline;cursor:pointer;display:inline-block}
 .season-picker-bg{
   position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;
@@ -1385,6 +1398,9 @@ textarea {
 
   <!-- SKILLS VIEW -->
   <div id="skillsView">
+    <div id="priorityFocusWrap" style="display:none">
+      <div class="priority-focus-card" id="priorityFocusCard"></div>
+    </div>
     <button class="assess-btn" onclick="startAssessment()"><span>🎯 Assess my levels</span></button>
     <div class="total-level-banner">
       <div>
@@ -1885,6 +1901,32 @@ window.toggleOptionalQuest=function(skillKey,lvl,xp,el){
   const row=(el&&el.closest)?el.closest('.oq-row'):null;
   if(row){ row.classList.toggle('oq-done', !was); const chk=row.querySelector('.oq-check'); if(chk) chk.textContent=!was?'\u2705':'\u25CB'; }
 };
+
+// v10.46: Priority Focus — "which skill actually helps hit your goals",
+// per Joey's own life plan (see the top of GAMENFY-MASTER.md). Reads
+// window.getLifeGoalPriority() from xp.js (single source of truth, shared
+// with any future use on Main). Tap opens the skill's own detail.
+function renderPriorityFocus(){
+  const wrap=document.getElementById('priorityFocusWrap');
+  const el=document.getElementById('priorityFocusCard');
+  if(!wrap||!el) return;
+  const p=window.getLifeGoalPriority?window.getLifeGoalPriority():null;
+  if(!p){ wrap.style.display='none'; return; }
+  wrap.style.display='';
+  const catLabels=window.LIFE_GOAL_LABELS||{};
+  const cats=(p.categories||[]).map(c=>(catLabels[c]||{}).icon+' '+(catLabels[c]||{}).label).join(' · ');
+  const action=(p.nextTier.doThis&&p.nextTier.doThis[0])?p.nextTier.doThis[0]:p.nextTier.title;
+  el.setAttribute('onclick',"openSkillDetail('"+p.key+"')");
+  el.innerHTML=`
+    <div class="pf-eyebrow">🎯 Priority Focus \u00b7 ${cats}</div>
+    <div class="pf-skill-row">
+      <span class="pf-icon">${p.def.icon||'⭐'}</span>
+      <span class="pf-name">${p.def.label||p.key}</span>
+      <span class="pf-pct">${p.pct}%</span>
+    </div>
+    <div class="pf-action">Next: Lvl ${p.nextTier.level} \u2014 ${p.nextTier.title}. ${action}</div>
+    <div class="pf-bar-track"><div class="pf-bar-fill" style="width:${p.pct}%"></div></div>`;
+}
 
 // v10.43: punchy hype tagline, deterministic per season (duplicated from
 // index.html — same small-helper-duplication pattern as elsewhere in the app).
@@ -2556,6 +2598,8 @@ function renderCharacter(){
   const char     = loadChar();
   const skills   = char.skills||{};
   const defaults = window.RPG_DEFAULT_SKILLS||{};
+
+  try{ renderPriorityFocus(); }catch(e){}
 
   // Character Level = totaal XP van non-habit skills, capped op 100
   let totalXpAll=0;

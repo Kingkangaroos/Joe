@@ -983,6 +983,57 @@
     return true;
   };
 
+  // v10.46: Priority Focus — "which skill actually helps hit my goals".
+  // Joey's answer to how priority should work: not lowest-level, not
+  // most-stale, but tied to his actual 100-year life plan (see the
+  // dedicated section at the top of GAMENFY-MASTER.md). Conservative
+  // mapping — only skills with a clear, explicit tie to a named goal are
+  // included, so the signal stays meaningful rather than diluted across
+  // all 45 skills. Ventures (sell_websites/gamenfy_public) already have
+  // their own "Next Move" card on Main, so this stays skill-focused for v1.
+  window.LIFE_GOAL_MAP = {
+    saving: ['money'], investing: ['money'], budgeting: ['money'], net_worth: ['money'],
+    sales: ['money','freedom'], marketing: ['money','freedom'], ai_tools: ['money','freedom'],
+    coding: ['money','freedom'], content: ['money','freedom'],
+    dating: ['love'], social: ['love','exploration'],
+    gratitude: ['happiness'], meditation: ['happiness'], journaling: ['happiness'],
+    recovery: ['happiness'], sleep: ['happiness'], nutrition: ['happiness'], focus: ['happiness'],
+    superiority: ['happiness','exploration'],
+    languages: ['exploration'], learning: ['exploration'], reading: ['exploration'],
+  };
+  window.LIFE_GOAL_LABELS = {
+    money: { icon: '💰', label: 'Money' }, freedom: { icon: '🕊️', label: 'Freedom' },
+    love: { icon: '❤️', label: 'Love' }, happiness: { icon: '😊', label: 'Happiness' },
+    exploration: { icon: '🌎', label: 'Exploration' },
+  };
+  // Picks the mapped skill closest to its next unclaimed SKILL_LADDERS tier
+  // (a real, close breakthrough) — not the lowest level, which would just
+  // point at whatever's most neglected regardless of how far off it is.
+  window.getLifeGoalPriority = function () {
+    const char = window.getCharacter ? window.getCharacter() : null;
+    if (!char) return null;
+    const skills = char.skills || {};
+    const defaults = window.RPG_DEFAULT_SKILLS || {};
+    const ladders = window.SKILL_LADDERS || {};
+    let claims = {}; try { claims = JSON.parse(localStorage.getItem('rpg_tier_claims_v1')) || {}; } catch (e) {}
+    let best = null;
+    for (const key of Object.keys(window.LIFE_GOAL_MAP)) {
+      const def = defaults[key]; if (!def || def.active === false) continue;
+      const ladder = ladders[key]; if (!ladder || !ladder.length) continue;
+      const claimed = claims[key] || 0;
+      const nextTier = ladder.find(function (t) { return t.level > claimed; });
+      if (!nextTier) continue; // already at the top of this skill's ladder
+      const xp = (skills[key] || {}).xp || 0;
+      const fromXp = window.xpForLevel ? window.xpForLevel(Math.max(1, claimed)) : 0;
+      const toXp = window.xpForLevel ? window.xpForLevel(nextTier.level) : 1;
+      const pct = toXp > fromXp ? Math.max(0, Math.min(100, Math.round(((xp - fromXp) / (toXp - fromXp)) * 100))) : 0;
+      if (!best || pct > best.pct) {
+        best = { key: key, def: def, nextTier: nextTier, pct: pct, categories: window.LIFE_GOAL_MAP[key] };
+      }
+    }
+    return best;
+  };
+
   window.checkHabit = function (habitId, label, icon) {
     const habits  = loadHabits();
     const today   = todayStr();
