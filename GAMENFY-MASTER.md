@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.42)
+# GAMENFY — Master Document (v10.43)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -82,9 +82,11 @@
 ### Nieuwe ideeën (2026-07-30)
 
 ### Feedback van live testen (2026-07-30, avond)
+- ℹ️ **Websites Verkopen — architectuurvraag beantwoord (2026-07-30)**: Joey wil 4 voorbeeld-websites bouwen als portfolio/template voor potentiële klanten. Vraag was of dat een eigen Supabase-project nodig heeft of in de Gamenfy-repo kan. Antwoord gegeven in de chat: apart houden van de Gamenfy-repo (andere doelgroep/doel), Supabase alleen nodig als een site zelf een backend nodig heeft (contactformulier-opslag e.d.) — voor simpele marketing-sites is geen backend nodig. Aanbeveling: los repo (of één template-repo om te forken per klant), Vercel voor hosting (zelfde platform als nu), en als er toch een backend nodig is: een NIEUW, apart Supabase-project, niet in Gamenfy's project. Nog geen actie ondernomen, puur advies.
 - ✅ **"Your Skills" rij vergroot (gedaan v10.42)** — chips nu 172px breed, groot goud level-getal (matcht Core Tracker), nieuwe "volgende stap"-regel uit SKILL_LADDERS.
 - 🔴 **Agenda: tweede blok toevoegen aan een uur dat al één blok heeft, voelt niet soepel** — Joey verwachtte dat het vakje "iets groter werd" om een tweede halfuurtje toe te voegen; nu lukt het hem niet goed (mogelijk gewoon lastig te vinden waar te tikken als het bestaande blok al veel ruimte inneemt). Long-press-to-move werkt wel bevestigd goed. Nader onderzoek nodig — geen quick-fix geraden zonder zeker te zijn van de exacte oorzaak.
-- 🟡 **Season-start-bevestiging kan directer/zichtbaarder** — nu moest Joey naar Main navigeren om zeker te weten dat het gestart was. Kleine UX-polish, niet urgent.
+- ✅ **Season flink opgeleukt (gedaan v10.43)** — banner staat nu direct onder de Daily Quote (bovenaan i.p.v. helemaal onderaan), groter, gradient + schaduw, pakkende kop ("It's {Skill} Season!") + wisselende hype-tagline. Zelfde stijl in het skill-detail en de start-toast.
+- ✅ **Workout challenge-bug gevonden en gefixt (v10.43)** — `boot()` riep `renderWorkoutChallenge()` nooit aan; de kaart bestond wel maar bleef leeg bij elke verse paginalaad. Dat was precies waarom Joey 'm miste als daily mission.
 - ✅ **Jarvis-toon nu ook in de push-notificaties** (v10.41) — zie changelog. Inclusief een kritieke Gemini-bug gevonden en gefixt.
 - 🔴 **Fitbit vitals nog niet zichtbaar** — Joey ziet nog steeds alleen oude data; de nieuwe velden (HRV/SpO2/breathing/distance) hebben nog geen scherm. Al eerder gepland, blijft open.
 - 🟡 **Nieuw idee: "wat zijn goede vervolgstappen"-advies na de assessment** — Joey heeft "Assess my levels" nu ingevuld en zou het waardevol vinden als de app op basis daarvan concrete next-steps voorstelt. Nog uit te werken.
@@ -269,6 +271,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.43 — workout-challenge-bug gevonden + gefixt, Season flink opgeleukt.** **Echte bug gevonden**: `boot()` (de hoofd-laadfunctie van Main) riep `renderWorkoutChallenge()` nergens aan — de kaart bestond wel in de HTML maar bleef leeg bij elke verse paginalaad, en werd alleen gevuld als bijeffect van andere acties. Dit verklaart precies waarom Joey 'm miste. Gefixt: toegevoegd aan `boot()`. **Season, op Joey's verzoek "leuker" gemaakt**: banner verplaatst van helemaal onderaan (na Gratitude) naar direct onder de Daily Quote — het eerste wat je ziet. Groter, met een gradient-achtergrond en schaduw, een pakkende kop ("🕺 It's Dancing Season!") en een energieke, wisselende tagline (8 varianten, deterministisch geseed op skill+startdatum — blijft dus stabiel voor de duur van één season, maar verschilt tussen seasons). Zelfde stijl ook toegepast in het skill-detail zelf en op de start-bevestiging (toast noemt nu de skill met naam i.p.v. alleen "Season started"). `?v=` naar 10.43. Gevalideerd: volledige 9-pagina syntax-pass + tagline-seeding getest (varieert per season, stabiel binnen één season).
 
 - **v10.42 — "Your Skills" chips vergroot, matcht nu Core Tracker's dichtheid.** Joey's feedback: de rij voelde te karig vergeleken met de sectie eronder. Chips van 108px naar 172px breed, groter icoon (22px), level nu een groot goud getal (zelfde stijl als Core Tracker) i.p.v. een klein badge, en een nieuwe "volgende stap"-regel die de eerstvolgende onbeklaimde SKILL_LADDERS-tier toont (title, bijv. "Lvl 6 — Deep Squat") — rijker dan Core Tracker's eigen oude milestones-tekst, want gebruikt de nieuwere ladder-content. `?v=` naar 10.42 (10.41 was backend-docs-only). Gevalideerd: volledige 9-pagina syntax- + CSS-brace-pass.
 

@@ -10,13 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.42" defer></script>
-<script src="topbar.js?v=10.42" defer></script>
-<script src="xp.js?v=10.42" defer></script>
-<script src="quests.js?v=10.42" defer></script>
-<script src="ventures.js?v=10.42" defer></script>
-<script src="checkin.js?v=10.42" defer></script>
-<script src="push.js?v=10.42" defer></script>
+<script src="sync.js?v=10.43" defer></script>
+<script src="topbar.js?v=10.43" defer></script>
+<script src="xp.js?v=10.43" defer></script>
+<script src="quests.js?v=10.43" defer></script>
+<script src="ventures.js?v=10.43" defer></script>
+<script src="checkin.js?v=10.43" defer></script>
+<script src="push.js?v=10.43" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -465,17 +465,21 @@ body {
 .skill-chip-bar-track { height: 3px; background: var(--line); border-radius: 2px; }
 .skill-chip-bar-fill { height: 3px; background: var(--ember); border-radius: 2px; }
 
-/* ── Season banner (v10.39) — Main page, read-only, tap to open the skill ── */
+/* ── Season banner (v10.39, punched up v10.43) — Main page, tap to open the skill ── */
 .season-banner {
-  background: var(--ink); border-radius: 16px; padding: 14px 16px; margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--ink) 0%, #2a2a24 100%);
+  border-radius: 18px; padding: 18px 20px; margin-bottom: 20px;
   color: #fff; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
-.season-banner-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-.season-banner-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); }
-.season-banner-days { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.65); }
-.season-banner-target { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
-.season-banner-bar-track { height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
-.season-banner-bar-fill { height: 100%; background: var(--gold); border-radius: 2px; }
+.season-banner-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.season-banner-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
+.season-banner-days { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.55); }
+.season-banner-headline { font-family: var(--font-display); font-size: 21px; font-weight: 800; line-height: 1.15; margin-bottom: 4px; }
+.season-banner-tagline { font-size: 13px; color: rgba(255,255,255,0.75); margin-bottom: 12px; line-height: 1.35; }
+.season-banner-target { font-size: 11px; color: var(--gold); font-weight: 700; margin-bottom: 8px; }
+.season-banner-bar-track { height: 5px; background: rgba(255,255,255,0.15); border-radius: 3px; overflow: hidden; }
+.season-banner-bar-fill { height: 100%; background: var(--gold); border-radius: 3px; }
 
 /* ── Focus skills (legacy — kept, no longer rendered into on Main) ── */
 .focus-grid {
@@ -1119,6 +1123,11 @@ body {
     <div class="quote-author" id="quoteAuthor"></div>
   </div>
 
+  <!-- Season (v10.39, moved up + made bigger/punchier v10.43) — only shown while one is active -->
+  <div id="seasonBannerWrap" style="display:none">
+    <div class="season-banner" id="seasonBanner"></div>
+  </div>
+
   <!-- Day Arc -->
   <div class="sec-head">Day Score</div>
   <div class="day-arc-card" id="dayArcCard">
@@ -1235,11 +1244,6 @@ body {
     </div>
     <div class="grat-tags" id="gratTags"></div>
     <div class="grat-sub">First word of the day · +10 XP Gratitude</div>
-  </div>
-
-  <!-- Season (v10.39) — only shown while one is active -->
-  <div id="seasonBannerWrap" style="display:none">
-    <div class="season-banner" id="seasonBanner"></div>
   </div>
 
   <!-- Your Skills (v10.31 — was Focus Skills; now all skills, most recently active first, horizontal scroll) -->
@@ -1824,6 +1828,25 @@ function getConfirmedMs(skillKey) {
   try { return JSON.parse(localStorage.getItem('rpg_milestones_v1')) || {}; } catch(e) { return {}; }
 }
 
+// v10.43: punchy hype copy — headline + a tagline picked deterministically
+// per season (same skill of a different season can land on a different
+// line, but it won't flicker between renders of the SAME season).
+const SEASON_TAGLINES = [
+  "Let's go — time to move.",
+  "Lock in. This one's yours to take.",
+  "Show up today. Let the level follow.",
+  "This is your era. Own it.",
+  "No excuses — just reps.",
+  "Full send. Let's make it count.",
+  "One goal. One grind. Let's go.",
+  "Time to turn this into a habit that sticks.",
+];
+function seasonTagline(skillKey, startDate) {
+  let h = 0; const s = skillKey + ':' + startDate;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return SEASON_TAGLINES[Math.abs(h) % SEASON_TAGLINES.length];
+}
+
 // v10.39: Season banner — read-only summary on Main, reads the same
 // rpg_seasons_v1 xp.js manages for character.html. Tapping it deep-links to
 // the skill's detail (character.html#skill=), where the real season UI lives.
@@ -1843,13 +1866,16 @@ function renderSeasonBanner() {
   const daysLeft = Math.max(0, Math.ceil((end - today) / 86400000));
   const daysDone = Math.max(0, totalDays - daysLeft);
   const pct = Math.min(100, Math.round((daysDone / totalDays) * 100));
+  const tagline = seasonTagline(season.skillKey, season.startDate);
   el.setAttribute('onclick', "location.href='character.html#skill=" + season.skillKey + "'");
   el.innerHTML = `
     <div class="season-banner-top">
-      <span class="season-banner-eyebrow">🌟 ${def.label || season.skillKey} Season</span>
+      <span class="season-banner-eyebrow">🌟 Active Season</span>
       <span class="season-banner-days">${daysLeft} day${daysLeft===1?'':'s'} left</span>
     </div>
-    <div class="season-banner-target">Target: Level ${season.targetLevel} — ${season.targetTitle}</div>
+    <div class="season-banner-headline">${def.icon || '⭐'} It's ${def.label || season.skillKey} Season!</div>
+    <div class="season-banner-tagline">${tagline}</div>
+    <div class="season-banner-target">TARGET · Level ${season.targetLevel} — ${season.targetTitle}</div>
     <div class="season-banner-bar-track"><div class="season-banner-bar-fill" style="width:${pct}%"></div></div>`;
 }
 
@@ -3328,6 +3354,7 @@ function boot() {
   renderNextMove();
   renderMissions();
   renderSeasonBanner();
+  try{renderWorkoutChallenge();}catch(e){}
   renderFocusGrid();
   renderCoreTracker();
   renderCharStrip();

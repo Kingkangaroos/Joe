@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.42" defer></script>
-<script src="topbar.js?v=10.42" defer></script>
-<script src="xp.js?v=10.42" defer></script>
-<script src="quests.js?v=10.42" defer></script>
-<script src="ladders.js?v=10.42" defer></script>
-<script src="ventures.js?v=10.42" defer></script>
+<script src="sync.js?v=10.43" defer></script>
+<script src="topbar.js?v=10.43" defer></script>
+<script src="xp.js?v=10.43" defer></script>
+<script src="quests.js?v=10.43" defer></script>
+<script src="ladders.js?v=10.43" defer></script>
+<script src="ventures.js?v=10.43" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -557,15 +557,17 @@ textarea {
 }
 .season-start-btn:active{transform:scale(0.98)}
 .season-active-card{
-  background:var(--ink);border-radius:14px;padding:14px 16px;margin-bottom:14px;color:#fff;
+  background:linear-gradient(135deg, var(--ink) 0%, #2a2a24 100%);border-radius:14px;padding:16px 18px;margin-bottom:14px;color:#fff;
+  box-shadow:0 4px 20px rgba(0,0,0,0.15);
 }
-.season-active-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.season-active-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .season-active-eyebrow{font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold)}
-.season-active-days{font-size:11px;font-weight:700;color:rgba(255,255,255,0.65)}
-.season-active-target{font-size:14px;font-weight:700;margin-bottom:3px}
-.season-active-claim{font-size:12px;color:rgba(255,255,255,0.7);line-height:1.4}
-.season-active-bar-track{height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin-top:10px;overflow:hidden}
-.season-active-bar-fill{height:100%;background:var(--gold);border-radius:2px}
+.season-active-days{font-size:11px;font-weight:700;color:rgba(255,255,255,0.55)}
+.season-active-headline{font-family:var(--font-display);font-size:19px;font-weight:800;line-height:1.15;margin-bottom:4px}
+.season-active-tagline{font-size:12px;color:rgba(255,255,255,0.75);margin-bottom:10px;line-height:1.35}
+.season-active-target{font-size:11px;color:var(--gold);font-weight:700;margin-bottom:8px}
+.season-active-bar-track{height:5px;background:rgba(255,255,255,0.15);border-radius:3px;margin-top:0;overflow:hidden}
+.season-active-bar-fill{height:100%;background:var(--gold);border-radius:3px}
 .season-cancel-link{font-size:11px;color:rgba(255,255,255,0.45);margin-top:8px;text-decoration:underline;cursor:pointer;display:inline-block}
 .season-picker-bg{
   position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;
@@ -1847,7 +1849,8 @@ window.confirmStartSeason=function(){
   const season=window.startSeason?window.startSeason(p.skillKey,p.days,p.minutes):null;
   document.getElementById('seasonPickerBg')?.remove();
   if(!season){ if(window.showToast) showToast('Could not start season'); return; }
-  if(window.showToast) showToast('Season started · '+p.days+' days 🌟');
+  const def=(window.RPG_DEFAULT_SKILLS||{})[p.skillKey]||{};
+  if(window.showToast) showToast('🌟 It\u2019s '+(def.label||p.skillKey)+' Season! Let\u2019s go.');
   openSkillDetail(p.skillKey);
 };
 window.doCancelSeason=function(skillKey){
@@ -1882,6 +1885,24 @@ window.toggleOptionalQuest=function(skillKey,lvl,xp,el){
   const row=(el&&el.closest)?el.closest('.oq-row'):null;
   if(row){ row.classList.toggle('oq-done', !was); const chk=row.querySelector('.oq-check'); if(chk) chk.textContent=!was?'\u2705':'\u25CB'; }
 };
+
+// v10.43: punchy hype tagline, deterministic per season (duplicated from
+// index.html — same small-helper-duplication pattern as elsewhere in the app).
+const SEASON_TAGLINES = [
+  "Let's go — time to move.",
+  "Lock in. This one's yours to take.",
+  "Show up today. Let the level follow.",
+  "This is your era. Own it.",
+  "No excuses — just reps.",
+  "Full send. Let's make it count.",
+  "One goal. One grind. Let's go.",
+  "Time to turn this into a habit that sticks.",
+];
+function seasonTagline(skillKey, startDate) {
+  let h = 0; const s = skillKey + ':' + startDate;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return SEASON_TAGLINES[Math.abs(h) % SEASON_TAGLINES.length];
+}
 
 function openSkillDetail(skillKey){
   const defaults=window.RPG_DEFAULT_SKILLS||{};
@@ -2015,13 +2036,15 @@ function openSkillDetail(skillKey){
       const daysLeft=Math.max(0,Math.ceil((end-today)/86400000));
       const daysDone=Math.max(0,totalDays-daysLeft);
       const seasonPct=Math.min(100,Math.round((daysDone/totalDays)*100));
+      const tagline=seasonTagline(skillKey, activeSeason.startDate);
       seasonHtml=`<div class="season-active-card">
         <div class="season-active-top">
-          <div class="season-active-eyebrow">🌟 Season in progress</div>
+          <div class="season-active-eyebrow">🌟 Active Season</div>
           <div class="season-active-days">${daysLeft} day${daysLeft===1?'':'s'} left</div>
         </div>
-        <div class="season-active-target">Target: Level ${activeSeason.targetLevel} — ${activeSeason.targetTitle}</div>
-        <div class="season-active-claim">${activeSeason.targetClaim}</div>
+        <div class="season-active-headline">${def.icon||'⭐'} It's ${def.label||skillKey} Season!</div>
+        <div class="season-active-tagline">${tagline}</div>
+        <div class="season-active-target">TARGET · Level ${activeSeason.targetLevel} — ${activeSeason.targetTitle}</div>
         <div class="season-active-bar-track"><div class="season-active-bar-fill" style="width:${seasonPct}%"></div></div>
         <span class="season-cancel-link" onclick="doCancelSeason('${skillKey}')">Cancel season</span>
       </div>`;
