@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.43)
+# GAMENFY — Master Document (v10.44)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -88,7 +88,7 @@
 - ✅ **Season flink opgeleukt (gedaan v10.43)** — banner staat nu direct onder de Daily Quote (bovenaan i.p.v. helemaal onderaan), groter, gradient + schaduw, pakkende kop ("It's {Skill} Season!") + wisselende hype-tagline. Zelfde stijl in het skill-detail en de start-toast.
 - ✅ **Workout challenge-bug gevonden en gefixt (v10.43)** — `boot()` riep `renderWorkoutChallenge()` nooit aan; de kaart bestond wel maar bleef leeg bij elke verse paginalaad. Dat was precies waarom Joey 'm miste als daily mission.
 - ✅ **Jarvis-toon nu ook in de push-notificaties** (v10.41) — zie changelog. Inclusief een kritieke Gemini-bug gevonden en gefixt.
-- 🔴 **Fitbit vitals nog niet zichtbaar** — Joey ziet nog steeds alleen oude data; de nieuwe velden (HRV/SpO2/breathing/distance) hebben nog geen scherm. Al eerder gepland, blijft open.
+- ✅ **Fitbit vitals nu zichtbaar (v10.44)** — HRV/breathing/SpO2/distance als 4 nieuwe kaarten in het bestaande Body-tab metric-systeem (character.html), zelfde tap-voor-detail/grafiek-patroon als Steps/Sleep/RHR.
 - 🟡 **Nieuw idee: "wat zijn goede vervolgstappen"-advies na de assessment** — Joey heeft "Assess my levels" nu ingevuld en zou het waardevol vinden als de app op basis daarvan concrete next-steps voorstelt. Nog uit te werken.
 - ℹ️ Joey reflecteerde hardop over hoe hij de coding-skill moest inschatten (hij "laat Claudia alles coden" maar heeft wel de hele app zelf gestuurd/gebouwd) — geen actiepunt, puur een overweging tijdens het invullen.
 - ✅ **Budget bijhouden als daily task (gedaan v10.40)** — `budgeting` kreeg `isHabit:true`. Verschijnt nu automatisch in Daily Missions, bestaande quickLog + ladder blijven intact.
@@ -271,6 +271,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.44 — Fitbit vitals eindelijk zichtbaar (HRV, breathing rate, SpO2, distance).** De data stond al sinds v10.33 in Supabase, maar er was nergens een scherm voor. Bleek het bestaande "Google Health-stijl" metric-kaartensysteem in character.html (Body-tab: Steps/Sleep/RHR/Energy/Volume/Weight, elk met een 14-daagse mini-grafiek + een detail-sheet met langere trends) simpelweg nog niet uitgebreid met de nieuwe velden — `hmFetchAll()` haalde ze niet eens op. Nu 4 nieuwe kaarten toegevoegd, zelfde patroon: HRV (ms), Breathing Rate (/min), SpO2 (%, met een subtekst die eerlijk vermeldt dat de pols-sensor ruisgevoelig kan zijn — geen medisch feit), Distance (km, met decimaal-precisie i.p.v. afgerond naar hele kilometers). Alles deelt dezelfde tap-voor-detail/grafiek-infrastructuur die er al was, geen nieuwe UI-patronen nodig. `?v=` naar 10.44. Gevalideerd: Node-simulatie van de data-extractie + formattering tegen realistische Fitbit-data (inclusief het bekende lage SpO2-voorbeeld en decimale afstand), plus volledige 9-pagina syntax-pass.
 
 - **v10.43 — workout-challenge-bug gevonden + gefixt, Season flink opgeleukt.** **Echte bug gevonden**: `boot()` (de hoofd-laadfunctie van Main) riep `renderWorkoutChallenge()` nergens aan — de kaart bestond wel in de HTML maar bleef leeg bij elke verse paginalaad, en werd alleen gevuld als bijeffect van andere acties. Dit verklaart precies waarom Joey 'm miste. Gefixt: toegevoegd aan `boot()`. **Season, op Joey's verzoek "leuker" gemaakt**: banner verplaatst van helemaal onderaan (na Gratitude) naar direct onder de Daily Quote — het eerste wat je ziet. Groter, met een gradient-achtergrond en schaduw, een pakkende kop ("🕺 It's Dancing Season!") en een energieke, wisselende tagline (8 varianten, deterministisch geseed op skill+startdatum — blijft dus stabiel voor de duur van één season, maar verschilt tussen seasons). Zelfde stijl ook toegepast in het skill-detail zelf en op de start-bevestiging (toast noemt nu de skill met naam i.p.v. alleen "Season started"). `?v=` naar 10.43. Gevalideerd: volledige 9-pagina syntax-pass + tagline-seeding getest (varieert per season, stabiel binnen één season).
 

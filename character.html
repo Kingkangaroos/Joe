@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.43" defer></script>
-<script src="topbar.js?v=10.43" defer></script>
-<script src="xp.js?v=10.43" defer></script>
-<script src="quests.js?v=10.43" defer></script>
-<script src="ladders.js?v=10.43" defer></script>
-<script src="ventures.js?v=10.43" defer></script>
+<script src="sync.js?v=10.44" defer></script>
+<script src="topbar.js?v=10.44" defer></script>
+<script src="xp.js?v=10.44" defer></script>
+<script src="quests.js?v=10.44" defer></script>
+<script src="ladders.js?v=10.44" defer></script>
+<script src="ventures.js?v=10.44" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -4100,13 +4100,17 @@ async function hmFetchAll(){
       const fb = (rows2[0]||{}).data || {};
       for(const [k,v] of Object.entries(fb)){
         if(!/^\d{4}-\d{2}-\d{2}$/.test(k) || !v || typeof v!=='object') continue;
-        const cur = out.byDate[k] || { steps:0, energy:0, weight:0, sleep:0, rhr:0 };
+        const cur = out.byDate[k] || { steps:0, energy:0, weight:0, sleep:0, rhr:0, hrv:0, breathing:0, spo2:0, distance:0 };
         out.byDate[k] = {
           steps:  v.steps!=null ? Math.round(Number(v.steps)) : cur.steps,
           energy: cur.energy,
           weight: v.weightKg!=null ? Number(v.weightKg) : cur.weight,
           sleep:  v.sleepMinutes!=null ? Math.round(Number(v.sleepMinutes)) : cur.sleep,
           rhr:    v.restingHR!=null ? Math.round(Number(v.restingHR)) : cur.rhr,
+          hrv:      v.hrvMs!=null ? Number(v.hrvMs) : cur.hrv,
+          breathing:v.breathingRate!=null ? Number(v.breathingRate) : cur.breathing,
+          spo2:     v.spo2Pct!=null ? Number(v.spo2Pct) : cur.spo2,
+          distance: v.distanceKm!=null ? Number(v.distanceKm) : cur.distance,
         };
         if(!out.lastHealthDate || k>out.lastHealthDate) out.lastHealthDate=k;
       }
@@ -4160,12 +4164,22 @@ function hmMetricDefs(d){
   const latest = (getter)=>{ for(let i=0;i<45;i++){ const v=getter(hmDateStr(-i)); if(v) return {val:v,date:hmDateStr(-i)}; } return null; };
   g.sleep = date=>(d.byDate[date]||{}).sleep;
   g.rhr   = date=>(d.byDate[date]||{}).rhr;
+  g.hrv       = date=>(d.byDate[date]||{}).hrv;
+  g.breathing = date=>(d.byDate[date]||{}).breathing;
+  g.spo2      = date=>(d.byDate[date]||{}).spo2;
+  g.distance  = date=>(d.byDate[date]||{}).distance;
   const anySleep = hmSeries(30,g.sleep).some(p=>p.val), anyRhr = hmSeries(30,g.rhr).some(p=>p.val);
+  const anyHrv = hmSeries(30,g.hrv).some(p=>p.val), anyBreathing = hmSeries(30,g.breathing).some(p=>p.val);
+  const anySpo2 = hmSeries(30,g.spo2).some(p=>p.val), anyDistance = hmSeries(30,g.distance).some(p=>p.val);
   const air = { sub:'Waiting for Fitbit Air' };
   return [
     { id:'steps',  label:'Steps',           unit:'',    color:HM_COLORS.steps,  getter:g.steps,  today:g.steps(hmDateStr(0))||0,  sub:'7-day avg '+avg7(g.steps).toLocaleString() },
     { id:'sleep',  label:'Sleep',           unit:'min', color:'#8E7CFF',        getter:g.sleep,  today:(latest(g.sleep)||{val:0}).val, sub:anySleep?('7-day avg '+avg7(g.sleep)+' min'):air.sub },
     { id:'rhr',    label:'Resting HR',      unit:'bpm', color:'#E4604E',        getter:g.rhr,    today:(latest(g.rhr)||{val:0}).val,   sub:anyRhr?('7-day avg '+avg7(g.rhr)+' bpm'):air.sub },
+    { id:'hrv',       label:'HRV',              unit:'ms',  color:'#2E8B5F', getter:g.hrv,       today:(latest(g.hrv)||{val:0}).val,       sub:anyHrv?('7-day avg '+avg7(g.hrv)+' ms'):air.sub },
+    { id:'breathing', label:'Breathing Rate',   unit:'/min',color:'#3E7CD4', getter:g.breathing, today:(latest(g.breathing)||{val:0}).val, sub:anyBreathing?('7-day avg '+avg7(g.breathing)+'/min'):air.sub },
+    { id:'spo2',      label:'SpO2 (estimate)',  unit:'%',   color:'#C9527A', getter:g.spo2,      today:(latest(g.spo2)||{val:0}).val,      sub:anySpo2?('7-day avg '+avg7(g.spo2)+'% \u00b7 wrist sensor, can be noisy'):air.sub },
+    { id:'distance',  label:'Distance',         unit:'km',  color:'#B8863B', getter:g.distance,  today:(latest(g.distance)||{val:0}).val,  sub:anyDistance?('7-day avg '+(avg7(g.distance)||0)+' km'):air.sub },
     { id:'energy', label:'Active Energy',   unit:'kcal',color:HM_COLORS.energy, getter:g.energy, today:g.energy(hmDateStr(0))||0, sub:'7-day avg '+avg7(g.energy) },
     { id:'volume', label:'Training Volume', unit:'kg',  color:HM_COLORS.volume, getter:g.volume, today:(latest(g.volume)||{val:0}).val, sub:(latest(g.volume)?('last '+(latest(g.volume).date===hmDateStr(0)?'today':latest(g.volume).date.slice(5))):'no workouts yet') },
     { id:'weight', label:'Weight',          unit:'kg',  color:HM_COLORS.weight, getter:g.weight, today:(latest(g.weight)||{val:0}).val, sub:(latest(g.weight)?('logged '+latest(g.weight).date.slice(5)):'no weight data') }
@@ -4211,6 +4225,7 @@ function hmGoalFor(id){
 function hmFmtVal(id, v){
   if (v == null) return '—';
   if (id === 'sleep') { const h = Math.floor(v/60), mm = Math.round(v%60); return h + 'h ' + String(mm).padStart(2,'0') + 'm'; }
+  if (id === 'distance') { return (Math.round(v*10)/10).toLocaleString(); }
   return Math.round(v).toLocaleString();
 }
 function hmRenderSheetBody(m, id){
