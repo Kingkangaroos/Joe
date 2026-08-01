@@ -10,14 +10,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.50" defer></script>
-<script src="topbar.js?v=10.50" defer></script>
-<script src="xp.js?v=10.50" defer></script>
-<script src="quests.js?v=10.50" defer></script>
-<script src="ladders.js?v=10.50" defer></script>
-<script src="ventures.js?v=10.50" defer></script>
-<script src="checkin.js?v=10.50" defer></script>
-<script src="push.js?v=10.50" defer></script>
+<script src="sync.js?v=10.51" defer></script>
+<script src="topbar.js?v=10.51" defer></script>
+<script src="xp.js?v=10.51" defer></script>
+<script src="quests.js?v=10.51" defer></script>
+<script src="ladders.js?v=10.51" defer></script>
+<script src="ventures.js?v=10.51" defer></script>
+<script src="checkin.js?v=10.51" defer></script>
+<script src="push.js?v=10.51" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -2050,15 +2050,26 @@ window.coreLog = function(key, xp, label) {
 };
 
 // ── Daily Workout Challenge (v10.5) — rotating bodyweight challenge, Push/Pull/Core (no squats/deadlifts) ──
+// v10.51: rebalanced — Joey's explicit ask was "a few push-ups or some ab
+// work", quick and simple, not a calisthenics-skill test. The old pool had
+// pike push-ups (15 reps — a genuinely advanced shoulder-strength move he
+// flagged he can't do yet), 8 pull-ups and 12 hanging leg raises (both need
+// a bar + real grip/hang strength), and 20 dips — all too advanced for a
+// daily "just show up" challenge. Kept push-ups/plank/dips but at more
+// approachable targets, dropped anything needing a pull-up bar entirely,
+// added simple no-equipment ab/core variants. No squats — Joey's training
+// split explicitly excludes them.
 const WORKOUT_CHALLENGES = [
-  { name:'Push-ups',           target:'30 reps',    skill:'calisthenics', xp:20, icon:'\uD83D\uDCAA' },
-  { name:'Plank hold',         target:'2 minutes',  skill:'core',         xp:20, icon:'\uD83E\uDDF1' },
-  { name:'Pull-ups',           target:'8 reps',     skill:'calisthenics', xp:25, icon:'\uD83C\uDD99' },
-  { name:'Hollow rock',        target:'45 seconds', skill:'core',         xp:20, icon:'\uD83C\uDF19' },
-  { name:'Pike push-ups',      target:'15 reps',    skill:'calisthenics', xp:20, icon:'\uD83D\uDD3A' },
-  { name:'Dips',               target:'20 reps',    skill:'calisthenics', xp:20, icon:'\u2B07\uFE0F' },
-  { name:'Hanging leg raises', target:'12 reps',    skill:'core',         xp:25, icon:'\uD83E\uDDB5' },
-  { name:'Hollow hold',        target:'60 seconds', skill:'core',         xp:20, icon:'\u23F3' },
+  { name:'Push-ups',        target:'15 reps',      skill:'calisthenics', xp:20, icon:'\uD83D\uDCAA' },
+  { name:'Plank hold',      target:'60 seconds',   skill:'core',         xp:20, icon:'\uD83E\uDDF1' },
+  { name:'Sit-ups',         target:'20 reps',      skill:'core',         xp:20, icon:'\uD83C\uDFAF' },
+  { name:'Glute bridges',   target:'15 reps',      skill:'core',         xp:15, icon:'\uD83C\uDF09' },
+  { name:'Mountain climbers', target:'30 reps',    skill:'calisthenics', xp:15, icon:'\u26F0\uFE0F' },
+  { name:'Superman hold',   target:'30 seconds',   skill:'core',         xp:15, icon:'\uD83E\uDDB8' },
+  { name:'Russian twists',  target:'20 reps',      skill:'core',         xp:15, icon:'\uD83D\uDD04' },
+  { name:'Incline push-ups',target:'15 reps',      skill:'calisthenics', xp:15, icon:'\uD83D\uDCD0' },
+  { name:'Dead bug',        target:'10 reps/side', skill:'core',         xp:15, icon:'\uD83D\uDC1B' },
+  { name:'Dips',            target:'10 reps',      skill:'calisthenics', xp:20, icon:'\u2B07\uFE0F' },
 ];
 function todaysWorkoutChallenge(){
   const d=new Date(); const start=new Date(d.getFullYear(),0,0);
