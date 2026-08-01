@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.48" defer></script>
-<script src="topbar.js?v=10.48" defer></script>
-<script src="xp.js?v=10.48" defer></script>
-<script src="quests.js?v=10.48" defer></script>
-<script src="ladders.js?v=10.48" defer></script>
-<script src="ventures.js?v=10.48" defer></script>
+<script src="sync.js?v=10.49" defer></script>
+<script src="topbar.js?v=10.49" defer></script>
+<script src="xp.js?v=10.49" defer></script>
+<script src="quests.js?v=10.49" defer></script>
+<script src="ladders.js?v=10.49" defer></script>
+<script src="ventures.js?v=10.49" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -2064,6 +2064,13 @@ function openSkillDetail(skillKey){
   const sladder=(window.SKILL_LADDERS||{})[skillKey];
   const sladderHtml=sladder?buildLadderHtml(skillKey, sladder):'';
 
+  // v10.49: Recipes — a link to the new recipe/nutrition-calculator page,
+  // shown only on the cooking skill (Joey's own request, tied specifically
+  // to this skill).
+  const recipesHtml = (skillKey==='cooking')
+    ? '<button class="season-start-btn" onclick="location.href=\'recipes.html\'"><span>🍳</span> My Recipes &amp; Nutrition Calculator</button>'
+    : '';
+
   // v10.39: Seasons — show progress if this skill IS the active season,
   // a start button if no season is active anywhere, or nothing if a season
   // is active on a different skill (only one runs at a time, by design).
@@ -2121,6 +2128,7 @@ function openSkillDetail(skillKey){
       </div>
       ${whyHtml}
       ${tierLockHtml}
+      ${recipesHtml}
       ${seasonHtml}
       ${sladder ? sladderHtml : tierChecklistHtml}
       ${msBtnHtml}

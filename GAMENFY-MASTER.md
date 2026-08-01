@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.48)
+# GAMENFY — Master Document (v10.49)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -143,6 +143,7 @@ Skills die weinig direct raken aan dit plan (bijv. sommige lifestyle/discipline-
 11. 🟡 **Vormgeving-overhaul + scroll-animaties** — wacht op Joey's referenties (namen van sites/apps, geen uploads). **2026-07-30: Joey bevestigt dat hij hier zelf nog moeite in gaat steken** (referenties verzamelen) — blijft dus bij hem liggen, geen actie voor Claudia.
 
 ### Nieuwe ideeën (2026-07-30)
+- ✅ **Recipes + Nutrition Calculator (gebouwd v10.49)** — nieuwe pagina, gekoppeld aan cooking-skill, ingebouwde ~45-ingrediënten-database (geen live API, dus betrouwbaar/offline). **Mogelijke v2**: live opzoeken via Open Food Facts (gratis, officieel, geen key nodig) voor merkproducten/verpakte items die niet in de ingebouwde lijst staan — nog niet gebouwd, bewust simpel gehouden voor v1.
 
 ### Feedback van live testen (2026-07-30, avond)
 
@@ -345,6 +346,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.49 — NIEUW: Recipes + Nutrition Calculator, gekoppeld aan de cooking-skill.** Joey's verzoek: recepten kunnen toevoegen met ingrediënten (gewogen in gram) en de echte voedingswaarde uitrekenen — zijn concrete probleem was zijn standaard meal-prep-gerecht wegen maar niet weten wat erin zit. **Eerst uitgezocht of YAZIO of Google Health hier een kant-en-klare oplossing voor bieden — bevestigd van niet**: YAZIO heeft geen officiële publieke API (alleen reverse-engineered versies die zijn echte account-wachtwoord nodig hebben — niet iets om op te bouwen, en dit bevestigt Joey's eigen eerdere onderzoek). Google Health API is voor het loggen van activiteit/gezondheidsmetrics, niet voor het opzoeken van voedingswaarden van rauwe ingrediënten. **Gebouwd**: een nieuwe pagina `recipes.html` (Daylight-stijl, consistent met de rest van de app) met een ingebouwde database van ~45 veelgebruikte ingrediënten (kcal/eiwit/koolhydraten/vet per 100g) — bewust GEEN live externe API-afhankelijkheid, dus werkt altijd, ook offline, geen risico op falen/rate-limits. Recept toevoegen: naam + ingrediënten met gram + aantal porties/bakjes; fuzzy-matching op ingrediënt-naam (bijv. "chicken" vindt "chicken breast"); niet-herkende ingrediënten worden duidelijk gemarkeerd i.p.v. stilzwijgend genegeerd. Berekent totaal + per portie. Link naar de pagina toegevoegd in het cooking-skill-detail (alleen daar, zoals Joey vroeg). Data in `rpg_recipes_v1`, toegevoegd aan de sync-scope. **Geverifieerd met een simulatie** van een realistisch meal-prep-gerecht (kip/rijst/broccoli/olijfolie + één onbekend ingrediënt): fuzzy-matching werkte correct, het onbekende ingrediënt werd correct uitgesloten en gemarkeerd, en de uitkomst (682 kcal / 56g eiwit per portie bij 4 bakjes) is realistisch. `?v=` naar 10.49. Gevalideerd: volledige 10-pagina syntax- + CSS-brace-pass (inclusief de nieuwe pagina).
 
 - **v10.48 — Season-tagline-toon gefixt: gebruikt nu dezelfde jarvis_phrases-instelling als de rest van de app.** Joey's terechte klacht: de vorige taglines ("Show up today. Let the level follow.") matchten niet de toon die hij had aangegeven — bleek een losse, ongerelateerde hardcoded lijst te zijn, los van de Jarvis-toon-instelling (v10.34) die hij al had ingesteld. Gefixt: leest nu `rpg_prefs_v1.jarvis_phrases` (Settings → Jarvis tone) — zijn eigen aangepaste zinnen als die er zijn, anders dezelfde 3 standaardzinnen als Jarvis zelf gebruikt ("Get your ass to work.", "You wanna be the king? Then you gotta put in the work.", "Time is ticking, Joey.") — dus standaard al veel dichter bij wat hij oorspronkelijk vroeg. Zet hij tough-love uit in Settings, dan valt de Season-tagline ook terug op een rustiger set. Eén bron van waarheid voor de hele-app-toon i.p.v. een losse kopie. `?v=` naar 10.48. Gevalideerd: alle drie de scenario's getest (standaard/eigen zinnen/uitgezet), elk gaf het juiste resultaat.
 

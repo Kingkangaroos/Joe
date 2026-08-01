@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#F4F3EF">
+<title>Recipes — Gamenfy</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="sync.js?v=10.49" defer></script>
+<script src="topbar.js?v=10.49" defer></script>
+<script src="xp.js?v=10.49" defer></script>
+<style>
+:root {
+  --bg: #F4F3EF; --card: #FFFFFF; --ink: #15140F; --ink-card: #181712;
+  --muted: #6F6C63; --faint: #A6A399; --line: #E8E6DF; --line-strong: #DBD8CF;
+  --ember: #D4633E; --ember-deep: #B14E2E; --gold: #C9A227; --green: #2E8B5F;
+  --font-display: 'Schibsted Grotesk', -apple-system, sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { background: var(--bg); color: var(--ink); font-family: var(--font-body); min-height: 100%; }
+body { padding-bottom: 90px; }
+.wrap { max-width: 560px; margin: 0 auto; padding: 16px 16px 24px; }
+.page-head { margin: 8px 0 18px; }
+.page-title { font-family: var(--font-display); font-weight: 800; font-size: 26px; }
+.page-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.sec-head { font-family: var(--font-display); font-weight: 700; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin: 22px 0 10px; }
+
+.recipe-card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+  padding: 14px 16px; margin-bottom: 10px; cursor: pointer;
+}
+.recipe-card:active { border-color: var(--line-strong); }
+.recipe-name { font-family: var(--font-display); font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.recipe-macros { display: flex; gap: 14px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+.recipe-macros b { color: var(--ink); font-weight: 700; }
+.empty-state {
+  text-align: center; padding: 36px 20px; color: var(--muted); font-size: 13px;
+  border: 1px dashed var(--line-strong); border-radius: 14px;
+}
+
+.new-recipe-btn {
+  width: 100%; padding: 13px 16px; background: var(--ink); color: var(--gold);
+  border: none; border-radius: 12px; font-weight: 700; font-size: 14px;
+  cursor: pointer; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.new-recipe-btn:active { transform: scale(0.98); }
+
+.rc-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 400;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.rc-sheet {
+  background: var(--bg); border-radius: 20px 20px 0 0; padding: 18px 16px 26px;
+  width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto;
+}
+.rc-handle { width: 36px; height: 4px; background: var(--line-strong); border-radius: 2px; margin: 0 auto 14px; }
+.rc-title-input {
+  width: 100%; font-family: var(--font-display); font-weight: 700; font-size: 18px;
+  border: none; border-bottom: 1px solid var(--line-strong); padding: 6px 2px 10px; margin-bottom: 14px;
+  background: transparent; color: var(--ink);
+}
+.rc-title-input:focus { outline: none; border-bottom-color: var(--ember); }
+.rc-servings-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.rc-servings-row label { font-size: 12px; color: var(--muted); font-weight: 600; }
+.rc-servings-row input {
+  width: 60px; padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: 8px;
+  font-size: 14px; text-align: center; background: var(--card); color: var(--ink);
+}
+
+.ing-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.ing-name-wrap { position: relative; flex: 1; min-width: 0; }
+.ing-name-input {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 10px;
+  font-size: 13px; background: var(--card); color: var(--ink);
+}
+.ing-name-input:focus { outline: none; border-color: var(--ember); }
+.ing-grams-input {
+  width: 68px; padding: 10px 8px; border: 1px solid var(--line-strong); border-radius: 10px;
+  font-size: 13px; text-align: right; background: var(--card); color: var(--ink);
+}
+.ing-grams-input:focus { outline: none; border-color: var(--ember); }
+.ing-unit { font-size: 12px; color: var(--muted); width: 16px; }
+.ing-remove {
+  width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%; border: none;
+  background: var(--line); color: var(--muted); font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.ing-suggest {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 10;
+  background: var(--card); border: 1px solid var(--line-strong); border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1); max-height: 180px; overflow-y: auto;
+}
+.ing-suggest-item { padding: 9px 12px; font-size: 13px; cursor: pointer; border-bottom: 1px solid var(--line); }
+.ing-suggest-item:last-child { border-bottom: none; }
+.ing-suggest-item:active { background: var(--bg); }
+.ing-suggest-item span { color: var(--muted); font-size: 11px; }
+.ing-unknown-note { font-size: 11px; color: var(--ember); margin: -4px 0 8px 2px; }
+
+.add-ing-btn {
+  width: 100%; padding: 10px; background: none; border: 1px dashed var(--line-strong);
+  border-radius: 10px; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; margin: 4px 0 18px;
+}
+
+.totals-card { background: var(--ink); color: #fff; border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+.totals-title { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+.totals-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 10px; }
+.totals-num { font-family: var(--font-display); font-weight: 800; font-size: 18px; }
+.totals-lbl { font-size: 10px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.04em; }
+.totals-per-serving { font-size: 12px; color: rgba(255,255,255,0.7); border-top: 1px solid rgba(255,255,255,0.15); padding-top: 10px; }
+
+.rc-actions { display: flex; gap: 8px; }
+.rc-save-btn { flex: 1; padding: 13px; background: var(--ink); color: var(--gold); border: none; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; }
+.rc-delete-btn { padding: 13px 16px; background: none; border: 1px solid var(--line-strong); border-radius: 12px; color: var(--ember); font-weight: 600; font-size: 13px; cursor: pointer; }
+.rc-cancel-btn { width: 100%; padding: 10px; background: none; border: none; color: var(--muted); font-size: 13px; margin-top: 8px; cursor: pointer; }
+
+.note-box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 12px; color: var(--muted); line-height: 1.5; margin-top: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="page-head">
+    <div class="page-title">🍳 Recipes</div>
+    <div class="page-sub">Add ingredients by weight, get real nutrition totals — for your cooking skill.</div>
+  </div>
+
+  <button class="new-recipe-btn" onclick="openRecipeEditor(null)">+ New recipe</button>
+
+  <div class="sec-head">My Recipes</div>
+  <div id="recipeList"></div>
+
+  <div class="note-box" id="noteBox"></div>
+</div>
+
+<script>
+// =============================================================
+// Recipes + Nutrition Calculator (v10.49)
+// Joey: wants to add recipes tied to his cooking skill, and calculate
+// real nutrition for his standard meal-prep dish (weighs ingredients,
+// but has no idea what's actually in it). Checked: no official YAZIO
+// API exists (confirmed — only unofficial/reverse-engineered ones
+// needing real login credentials, not something to build on). Google
+// Health API doesn't have an ingredient-nutrition lookup either (it's
+// for logging activity/health metrics, not looking up raw ingredients).
+// v1 here: a solid, reliable BUILT-IN database (~45 common ingredients,
+// per-100g macros) rather than a live external API dependency — no
+// network risk, works offline, good enough for real meal-prep math.
+// Storage: rpg_recipes_v1 (synced, added to RPG_SYNC_KEYS in xp.js).
+// =============================================================
+
+const INGREDIENT_DB = {
+  'chicken breast':        { kcal:165, protein:31,  carbs:0,    fat:3.6  },
+  'chicken thigh':         { kcal:209, protein:26,  carbs:0,    fat:10.9 },
+  'ground beef 85/15':     { kcal:215, protein:17.2,carbs:0,    fat:15   },
+  'salmon':                { kcal:208, protein:20,  carbs:0,    fat:13   },
+  'eggs':                  { kcal:155, protein:13,  carbs:1.1,  fat:11   },
+  'tofu':                  { kcal:144, protein:15.5,carbs:3,    fat:8.7  },
+  'tuna canned in water':  { kcal:116, protein:26,  carbs:0,    fat:0.8  },
+  'shrimp':                { kcal:99,  protein:24,  carbs:0.2,  fat:0.3  },
+  'greek yogurt 0%':       { kcal:59,  protein:10,  carbs:3.6,  fat:0.4  },
+  'cottage cheese low-fat':{ kcal:98,  protein:11,  carbs:3.4,  fat:4.3  },
+  'white rice raw':        { kcal:365, protein:7.1, carbs:80,   fat:0.7  },
+  'brown rice raw':        { kcal:370, protein:7.9, carbs:77,   fat:2.9  },
+  'pasta dry':             { kcal:371, protein:13,  carbs:75,   fat:1.5  },
+  'oats dry':              { kcal:389, protein:16.9,carbs:66,   fat:6.9  },
+  'potato':                { kcal:77,  protein:2,   carbs:17,   fat:0.1  },
+  'sweet potato':          { kcal:86,  protein:1.6, carbs:20,   fat:0.1  },
+  'bread whole wheat':     { kcal:247, protein:13,  carbs:41,   fat:3.4  },
+  'quinoa dry':            { kcal:368, protein:14,  carbs:64,   fat:6    },
+  'olive oil':             { kcal:884, protein:0,   carbs:0,    fat:100  },
+  'butter':                { kcal:717, protein:0.9, carbs:0.1,  fat:81   },
+  'avocado':               { kcal:160, protein:2,   carbs:8.5,  fat:14.7 },
+  'peanut butter':         { kcal:588, protein:25,  carbs:20,   fat:50   },
+  'almonds':               { kcal:579, protein:21,  carbs:22,   fat:50   },
+  'broccoli':              { kcal:34,  protein:2.8, carbs:7,    fat:0.4  },
+  'spinach':               { kcal:23,  protein:2.9, carbs:3.6,  fat:0.4  },
+  'tomato':                { kcal:18,  protein:0.9, carbs:3.9,  fat:0.2  },
+  'cucumber':              { kcal:15,  protein:0.7, carbs:3.6,  fat:0.1  },
+  'bell pepper':           { kcal:31,  protein:1,   carbs:6,    fat:0.3  },
+  'carrot':                { kcal:41,  protein:0.9, carbs:10,   fat:0.2  },
+  'onion':                 { kcal:40,  protein:1.1, carbs:9.3,  fat:0.1  },
+  'zucchini':              { kcal:17,  protein:1.2, carbs:3.1,  fat:0.3  },
+  'mushroom':              { kcal:22,  protein:3.1, carbs:3.3,  fat:0.3  },
+  'lettuce':               { kcal:15,  protein:1.4, carbs:2.9,  fat:0.2  },
+  'garlic':                { kcal:149, protein:6.4, carbs:33,   fat:0.5  },
+  'banana':                { kcal:89,  protein:1.1, carbs:23,   fat:0.3  },
+  'apple':                 { kcal:52,  protein:0.3, carbs:14,   fat:0.2  },
+  'blueberries':           { kcal:57,  protein:0.7, carbs:14,   fat:0.3  },
+  'milk whole':            { kcal:61,  protein:3.2, carbs:4.8,  fat:3.3  },
+  'cheddar cheese':        { kcal:403, protein:25,  carbs:1.3,  fat:33   },
+  'mozzarella':            { kcal:280, protein:28,  carbs:3.1,  fat:17   },
+  'black beans cooked':    { kcal:132, protein:8.9, carbs:24,   fat:0.5  },
+  'chickpeas cooked':      { kcal:164, protein:8.9, carbs:27,   fat:2.6  },
+  'lentils cooked':        { kcal:116, protein:9,   carbs:20,   fat:0.4  },
+  'walnuts':               { kcal:654, protein:15,  carbs:14,   fat:65   },
+  'chia seeds':            { kcal:486, protein:17,  carbs:42,   fat:31   },
+  'soy sauce':             { kcal:53,  protein:8,   carbs:4.9,  fat:0.6  },
+  'honey':                 { kcal:304, protein:0.3, carbs:82,   fat:0    },
+};
+
+const RKEY = 'rpg_recipes_v1';
+function loadRecipes(){ try{ return JSON.parse(localStorage.getItem(RKEY))||[]; }catch(e){ return []; } }
+function saveRecipes(arr){ try{ localStorage.setItem(RKEY, JSON.stringify(arr)); }catch(e){} }
+
+function findIngredient(name){
+  const key = (name||'').trim().toLowerCase();
+  if(!key) return null;
+  if(INGREDIENT_DB[key]) return Object.assign({name:key}, INGREDIENT_DB[key]);
+  const hit = Object.keys(INGREDIENT_DB).find(k => k.includes(key) || key.includes(k));
+  return hit ? Object.assign({name:hit}, INGREDIENT_DB[hit]) : null;
+}
+
+function calcTotals(ingredients){
+  const t = { kcal:0, protein:0, carbs:0, fat:0, unknownCount:0 };
+  (ingredients||[]).forEach(ing => {
+    const grams = Number(ing.grams)||0;
+    const match = findIngredient(ing.name);
+    if(!match){ if((ing.name||'').trim()) t.unknownCount++; return; }
+    const f = grams/100;
+    t.kcal += match.kcal*f; t.protein += match.protein*f; t.carbs += match.carbs*f; t.fat += match.fat*f;
+  });
+  return t;
+}
+
+function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+
+function renderRecipeList(){
+  const list = document.getElementById('recipeList');
+  const recipes = loadRecipes();
+  if(!recipes.length){
+    list.innerHTML = '<div class="empty-state">No recipes yet. Add your standard meal-prep dish to see its real macros.</div>';
+    return;
+  }
+  list.innerHTML = recipes.map((r,idx) => {
+    const t = calcTotals(r.ingredients);
+    const perServing = r.servings>0 ? t.kcal/r.servings : t.kcal;
+    return '<div class="recipe-card" onclick="openRecipeEditor('+idx+')">'+
+      '<div class="recipe-name">'+escapeHtml(r.name)+'</div>'+
+      '<div class="recipe-macros">'+
+        '<span><b>'+Math.round(t.kcal)+'</b> kcal total</span>'+
+        '<span><b>'+Math.round(perServing)+'</b> kcal/serving ('+(r.servings||1)+'x)</span>'+
+        '<span><b>'+Math.round(t.protein)+'g</b> protein</span>'+
+      '</div></div>';
+  }).join('');
+}
+
+let editingIdx = null;
+let editingIngredients = [];
+
+window.openRecipeEditor = function(idx){
+  editingIdx = idx;
+  const recipes = loadRecipes();
+  const r = (idx!=null) ? recipes[idx] : { name:'', servings:1, ingredients:[{name:'',grams:''}] };
+  editingIngredients = JSON.parse(JSON.stringify(r.ingredients && r.ingredients.length ? r.ingredients : [{name:'',grams:''}]));
+
+  const old = document.getElementById('rcBg'); if(old) old.remove();
+  const bg = document.createElement('div');
+  bg.className = 'rc-bg'; bg.id = 'rcBg';
+  bg.innerHTML = '<div class="rc-sheet">'+
+    '<div class="rc-handle"></div>'+
+    '<input class="rc-title-input" id="rcName" placeholder="Recipe name" value="'+escapeHtml(r.name)+'">'+
+    '<div class="rc-servings-row">'+
+      '<label>Servings / containers</label>'+
+      '<input type="number" id="rcServings" min="1" value="'+(r.servings||1)+'" oninput="renderRcTotals()">'+
+    '</div>'+
+    '<div class="sec-head" style="margin-top:0">Ingredients (grams, weighed)</div>'+
+    '<div id="rcIngredients"></div>'+
+    '<button class="add-ing-btn" onclick="addIngredientRow()">+ Add ingredient</button>'+
+    '<div class="totals-card" id="rcTotalsCard"></div>'+
+    '<div class="rc-actions">'+
+      '<button class="rc-save-btn" onclick="saveRecipeFromEditor()">Save recipe</button>'+
+      (idx!=null ? '<button class="rc-delete-btn" onclick="deleteRecipeFromEditor()">Delete</button>' : '')+
+    '</div>'+
+    '<button class="rc-cancel-btn" onclick="document.getElementById(\'rcBg\').remove()">Cancel</button>'+
+  '</div>';
+  bg.addEventListener('click', function(e){ if(e.target===bg) bg.remove(); });
+  document.body.appendChild(bg);
+  renderIngredientRows();
+  renderRcTotals();
+};
+
+function renderIngredientRows(){
+  const wrap = document.getElementById('rcIngredients');
+  if(!wrap) return;
+  wrap.innerHTML = editingIngredients.map(function(ing,i){
+    const match = findIngredient(ing.name);
+    const unknown = ing.name && !match;
+    let row = '<div class="ing-row">'+
+      '<div class="ing-name-wrap">'+
+        '<input class="ing-name-input" placeholder="e.g. chicken breast" value="'+escapeHtml(ing.name)+'" '+
+          'oninput="updateIngredient('+i+',\'name\',this.value)" onfocus="showSuggest('+i+',this.value)" '+
+          'onblur="setTimeout(function(){hideSuggest('+i+');},150)">'+
+        '<div class="ing-suggest" id="ingSuggest'+i+'" style="display:none"></div>'+
+      '</div>'+
+      '<input class="ing-grams-input" type="number" placeholder="0" value="'+(ing.grams||'')+'" '+
+        'oninput="updateIngredient('+i+',\'grams\',this.value)">'+
+      '<span class="ing-unit">g</span>'+
+      '<button class="ing-remove" onclick="removeIngredientRow('+i+')">\u00d7</button>'+
+    '</div>';
+    if(unknown) row += '<div class="ing-unknown-note">Not in the built-in list \u2014 won\u2019t count toward totals. Try a simpler name (e.g. "rice" instead of "jasmine rice").</div>';
+    return row;
+  }).join('');
+}
+
+window.showSuggest = function(i, val){
+  const el = document.getElementById('ingSuggest'+i);
+  if(!el) return;
+  const q = (val||'').trim().toLowerCase();
+  const matches = Object.keys(INGREDIENT_DB).filter(function(k){ return !q || k.indexOf(q)!==-1; }).slice(0,8);
+  if(!matches.length){ el.style.display='none'; return; }
+  el.innerHTML = matches.map(function(k){
+    const d = INGREDIENT_DB[k];
+    return '<div class="ing-suggest-item" onmousedown="pickSuggest('+i+',\''+k.replace(/'/g,"\\'")+'\')">'+k+' <span>'+d.kcal+' kcal/100g</span></div>';
+  }).join('');
+  el.style.display = 'block';
+};
+window.hideSuggest = function(i){ const el=document.getElementById('ingSuggest'+i); if(el) el.style.display='none'; };
+window.pickSuggest = function(i, name){
+  editingIngredients[i].name = name;
+  renderIngredientRows();
+  renderRcTotals();
+};
+window.updateIngredient = function(i, field, val){
+  editingIngredients[i][field] = val;
+  renderRcTotals();
+};
+window.addIngredientRow = function(){
+  editingIngredients.push({name:'',grams:''});
+  renderIngredientRows();
+};
+window.removeIngredientRow = function(i){
+  editingIngredients.splice(i,1);
+  if(!editingIngredients.length) editingIngredients.push({name:'',grams:''});
+  renderIngredientRows();
+  renderRcTotals();
+};
+
+window.renderRcTotals = function(){
+  const card = document.getElementById('rcTotalsCard');
+  if(!card) return;
+  const sEl = document.getElementById('rcServings');
+  const servings = Math.max(1, Number(sEl && sEl.value)||1);
+  const t = calcTotals(editingIngredients);
+  card.innerHTML =
+    '<div class="totals-title">Total nutrition'+(t.unknownCount ? ' (partial \u2014 '+t.unknownCount+' ingredient(s) not recognized)' : '')+'</div>'+
+    '<div class="totals-grid">'+
+      '<div><div class="totals-num">'+Math.round(t.kcal)+'</div><div class="totals-lbl">kcal</div></div>'+
+      '<div><div class="totals-num">'+Math.round(t.protein)+'g</div><div class="totals-lbl">protein</div></div>'+
+      '<div><div class="totals-num">'+Math.round(t.carbs)+'g</div><div class="totals-lbl">carbs</div></div>'+
+      '<div><div class="totals-num">'+Math.round(t.fat)+'g</div><div class="totals-lbl">fat</div></div>'+
+    '</div>'+
+    '<div class="totals-per-serving">Per serving ('+servings+'x): '+Math.round(t.kcal/servings)+' kcal \u00b7 '+Math.round(t.protein/servings)+'g protein \u00b7 '+Math.round(t.carbs/servings)+'g carbs \u00b7 '+Math.round(t.fat/servings)+'g fat</div>';
+};
+
+window.saveRecipeFromEditor = function(){
+  const nameEl = document.getElementById('rcName');
+  const name = (nameEl && nameEl.value || '').trim();
+  if(!name){ alert('Give the recipe a name first.'); return; }
+  const sEl = document.getElementById('rcServings');
+  const servings = Math.max(1, Number(sEl && sEl.value)||1);
+  const cleanIngredients = editingIngredients.filter(function(ing){ return (ing.name||'').trim() && Number(ing.grams)>0; });
+  const recipes = loadRecipes();
+  const recipe = { name:name, servings:servings, ingredients:cleanIngredients, updatedAt:new Date().toISOString() };
+  if(editingIdx!=null) recipes[editingIdx] = recipe; else recipes.push(recipe);
+  saveRecipes(recipes);
+  const bg = document.getElementById('rcBg'); if(bg) bg.remove();
+  renderRecipeList();
+};
+window.deleteRecipeFromEditor = function(){
+  if(editingIdx==null) return;
+  if(!confirm('Delete this recipe?')) return;
+  const recipes = loadRecipes();
+  recipes.splice(editingIdx,1);
+  saveRecipes(recipes);
+  const bg = document.getElementById('rcBg'); if(bg) bg.remove();
+  renderRecipeList();
+};
+
+document.getElementById('noteBox').textContent =
+  "Nutrition comes from a built-in reference table (~45 common ingredients, per 100g) \u2014 no external food API needed, so it always works offline. If an ingredient isn't recognized, try the closest simple match (e.g. \"rice\" instead of a specific brand).";
+
+renderRecipeList();
+
+if(typeof initCloudSync==='function' && window.supabase){
+  initCloudSync({ appKey:'rpg', syncedKeys: window.RPG_SYNC_KEYS, syncedPrefixes: window.RPG_SYNC_PREFIXES, onApplied: renderRecipeList });
+}
+</script>
+</body>
+</html>
