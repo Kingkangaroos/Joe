@@ -7,9 +7,9 @@
 <title>Finances</title>
 <link rel="manifest" href="./manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.49" defer></script>
-<script src="topbar.js?v=10.49" defer></script>
-<script src="xp.js?v=10.49" defer></script>
+<script src="sync.js?v=10.50" defer></script>
+<script src="topbar.js?v=10.50" defer></script>
+<script src="xp.js?v=10.50" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -853,10 +853,6 @@ html, body { scrollbar-width: none; -ms-overflow-style: none; }
 }
 
 /* Add card */
-.wish-add-card {
-  background: rgba(255,255,255,0.025) !important;
-  border: 1px solid rgba(255,255,255,0.05) !important;
-}
 .wish-add-eyebrow {
   font-size: 10px; letter-spacing: 0.18em; font-weight: 800;
   text-transform: uppercase; color: var(--text-tertiary);
@@ -864,18 +860,23 @@ html, body { scrollbar-width: none; -ms-overflow-style: none; }
   margin-bottom: 10px;
 }
 .wish-add-row {
-  display: flex; gap: 6px; align-items: stretch;
+  display: flex; gap: 8px; align-items: stretch;
   flex-wrap: wrap;
-  padding: 4px;
-  background: rgba(0, 0, 0, 0.30);
-  border-radius: 12px;
 }
 .wish-input {
-  background: transparent; border: none; outline: none;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 10px;
+  outline: none;
   color: var(--text-primary);
   font-family: inherit; font-size: 14px;
-  padding: 9px 12px;
+  padding: 11px 12px;
   -moz-appearance: textfield;
+  transition: border-color 0.15s, background 0.15s;
+}
+.wish-input:focus {
+  border-color: rgba(224,118,88,0.55);
+  background: rgba(255,255,255,0.08);
 }
 .wish-input::-webkit-outer-spin-button,
 .wish-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
