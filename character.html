@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.53" defer></script>
-<script src="topbar.js?v=10.53" defer></script>
-<script src="xp.js?v=10.53" defer></script>
-<script src="quests.js?v=10.53" defer></script>
-<script src="ladders.js?v=10.53" defer></script>
-<script src="ventures.js?v=10.53" defer></script>
+<script src="sync.js?v=10.54" defer></script>
+<script src="topbar.js?v=10.54" defer></script>
+<script src="xp.js?v=10.54" defer></script>
+<script src="quests.js?v=10.54" defer></script>
+<script src="ladders.js?v=10.54" defer></script>
+<script src="ventures.js?v=10.54" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -4334,11 +4334,17 @@ function hmRenderSheetBody(m, id){
     ? 'High of ' + hmFmtVal(id, hi) + (m.unit ? ' ' + m.unit : '') + ' · avg ' + hmFmtVal(id, avg) + (goal ? ' · goal ' + (id==='sleep'?'8h':goal.v.toLocaleString()) : '')
     : 'No data in this period yet';
 
+  // v10.54: Joey wants today's actual value front and center, not just
+  // period averages — the sheet previously never showed "today" at all,
+  // only a range + average over the selected window. Today's value stays
+  // visible no matter which period tab (W/M/3M) is selected.
+  const todayVal = m.getter(hmDateStr(0));
   return '<div class="hm-sheet-val">' + rangeTxt + (m.unit && vals.length ? '<span class="hm-unit">' + m.unit + '</span>' : '') + '</div>' +
     '<div class="hm-sheet-sub">' + subTxt + '</div>' +
     '<svg class="hm-line-chart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' + refs + paths + '</svg>' +
     '<div class="hm-axis"><span>' + xl + '</span><span>' + xr + '</span></div>' +
     '<div class="hm-stats">' +
+      '<div class="hm-stat"><div class="hm-stat-val">' + hmFmtVal(id, todayVal || null) + '</div><div class="hm-stat-lbl">Today</div></div>' +
       '<div class="hm-stat"><div class="hm-stat-val">' + hmFmtVal(id, avg || null) + '</div><div class="hm-stat-lbl">Average</div></div>' +
       '<div class="hm-stat"><div class="hm-stat-val">' + hmFmtVal(id, hi || null) + '</div><div class="hm-stat-lbl">' + (id==='rhr'?'Highest':'Best') + '</div></div>' +
       '<div class="hm-stat"><div class="hm-stat-val">' + logged.length + '/' + days + '</div><div class="hm-stat-lbl">Days</div></div>' +

@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.53)
+# GAMENFY — Master Document (v10.54)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -151,7 +151,7 @@ Skills die weinig direct raken aan dit plan (bijv. sommige lifestyle/discipline-
 ### Feedback van live testen, ronde 2 (2026-07-31)
 - ✅ **Wishlist add-flow visueel gefixt (v10.50)** — root cause: beide velden deelden één transparante grijze achtergrond (geen grens ertussen) + de kaart zelf overschreef de normale zichtbare kaart-stijl met een bijna-onzichtbare tint. Beide gefixt.
 - ✅ **Season-tagline-toon gefixt (v10.48)** — bleek een losse hardcoded lijst i.p.v. de al-ingestelde Jarvis-toon te gebruiken. Nu gekoppeld aan `jarvis_phrases`, standaard al veel dichter bij zijn oorspronkelijke voorbeeld.
-- 🔴 **Health-metrics: dagbasis i.p.v. weekbasis prioriteren** — Joey wil overal liever de waarde van vandaag zien dan 7-daagse gemiddeldes; "alles op dagbasis is veel interessanter dan op zevendaagse basis."
+- ✅ **Health-metrics: "Today" toegevoegd (v10.54)** — de detail-sheet toonde nooit vandaag's waarde, alleen periode-bereik/gemiddelde. Nu een altijd-zichtbare "Today"-stat, ongeacht welke periode-tab actief is.
 - ✅ **Workout Challenge herbalanceerd (v10.51)** — pike push-ups/pull-ups/hanging leg raises (bar-afhankelijk of te gevorderd) vervangen door 10 simpele, snelle varianten (push-ups, sit-ups, plank, glute bridges, etc.), geen squats.
 - ✅ **BUG gevonden en gefixt (v10.47): "Your Skills" toonde "Max tier reached" voor élke skill** — `ladders.js` stond niet in index.html's script-tags, dus `SKILL_LADDERS` was daar altijd `undefined`. Stond er al sinds v10.31 zonder dat het werd opgemerkt.
 - ✅ **Priority Focus habit-gap gefixt (v10.53)** — kiest nu voorrang voor een nog-actionable kandidaat i.p.v. een al-vandaag-afgevinkte habit te blijven tonen. Getest tegen exact Joey's scenario (gratitude → coding na afvinken).
@@ -347,6 +347,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.54 — Health-detail toont nu "Today" — was er nooit.** Joey's feedback: hij wil overal liever de waarde van vandaag zien dan weekgemiddeldes. Bleek dat de metric-detail-sheet (tik op een Body-vitals-kaart) helemaal NOOIT vandaag's waarde toonde — alleen een bereik (laag–hoog) en gemiddelde over de gekozen periode (Week/Maand/3 Maanden). De kaart-samenvatting zelf toonde altijd al "vandaag" prominent als groot getal, maar zodra je erop tikte voor meer detail verdween dat helemaal. Gefixt: "Today" toegevoegd als vierde, altijd-zichtbare stat in de detail-sheet, ongeacht welke periode-tab actief is — niks weggehaald (Average/Best/Days blijven staan), gewoon toegevoegd. `?v=` naar 10.54. Gevalideerd: volledige 10-pagina syntax-pass.
 
 - **v10.53 — Priority Focus habit-gap gefixt.** Joey's testfeedback: gratitude als top-prioriteit gekozen, hij checkte 'm af, maar de kaart bleef daarna hetzelfde langetermijndoel tonen — geen idee wat hij dan nog moest doen, want de daadwerkelijke actie (de dagelijkse check) was al voltooid. Gefixt: `getLifeGoalPriority()` geeft nu voorrang aan een kandidaat die vandaag nog daadwerkelijk iets te doen heeft; een habit die vandaag al is afgevinkt wordt alleen als allerlaatste redmiddel gekozen (als werkelijk niks anders meer actionable is), en dan met een eerlijke "vandaag al gedaan ✓"-melding i.p.v. hetzelfde oude doel te herhalen. **Geverifieerd met een simulatie** van precies Joey's scenario: vóór het afvinken koos het systeem gratitude (50% naar de volgende tier); ná het afvinken viel het correct terug op coding (de eerstvolgende echt-actionable kandidaat) — exact het gedrag dat hij verwachtte. `?v=` naar 10.53. Gevalideerd: volledige 10-pagina syntax-pass + het scenario zelf getest.
 
