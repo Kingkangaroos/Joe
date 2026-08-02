@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.52" defer></script>
-<script src="topbar.js?v=10.52" defer></script>
-<script src="xp.js?v=10.52" defer></script>
-<script src="quests.js?v=10.52" defer></script>
-<script src="ladders.js?v=10.52" defer></script>
-<script src="ventures.js?v=10.52" defer></script>
+<script src="sync.js?v=10.53" defer></script>
+<script src="topbar.js?v=10.53" defer></script>
+<script src="xp.js?v=10.53" defer></script>
+<script src="quests.js?v=10.53" defer></script>
+<script src="ladders.js?v=10.53" defer></script>
+<script src="ventures.js?v=10.53" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1917,14 +1917,21 @@ function renderPriorityFocus(){
   const cats=(p.categories||[]).map(c=>(catLabels[c]||{}).icon+' '+(catLabels[c]||{}).label).join(' · ');
   const action=(p.nextTier.doThis&&p.nextTier.doThis[0])?p.nextTier.doThis[0]:p.nextTier.title;
   el.setAttribute('onclick',"openSkillDetail('"+p.key+"')");
+  // v10.53: doneToday only happens when every other mapped skill is either
+  // maxed out or also a done-today habit — an honest "nothing left to do
+  // right now" message instead of repeating the same long-term tier goal
+  // as if the day's actual action hadn't already happened.
+  const actionLine = p.doneToday
+    ? `Today's ${p.def.label||p.key} is done \u2713 \u2014 next tier (Lvl ${p.nextTier.level}) needs more consistent days like this one.`
+    : `Next: Lvl ${p.nextTier.level} \u2014 ${p.nextTier.title}. ${action}`;
   el.innerHTML=`
     <div class="pf-eyebrow">🎯 Priority Focus \u00b7 ${cats}</div>
     <div class="pf-skill-row">
       <span class="pf-icon">${p.def.icon||'⭐'}</span>
       <span class="pf-name">${p.def.label||p.key}</span>
-      <span class="pf-pct">${p.pct}%</span>
+      <span class="pf-pct">${p.doneToday ? '✓' : p.pct+'%'}</span>
     </div>
-    <div class="pf-action">Next: Lvl ${p.nextTier.level} \u2014 ${p.nextTier.title}. ${action}</div>
+    <div class="pf-action">${actionLine}</div>
     <div class="pf-bar-track"><div class="pf-bar-fill" style="width:${p.pct}%"></div></div>`;
 }
 

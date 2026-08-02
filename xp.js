@@ -1016,7 +1016,16 @@
     const defaults = window.RPG_DEFAULT_SKILLS || {};
     const ladders = window.SKILL_LADDERS || {};
     let claims = {}; try { claims = JSON.parse(localStorage.getItem('rpg_tier_claims_v1')) || {}; } catch (e) {}
-    let best = null;
+    let habitlog = {}; try { habitlog = JSON.parse(localStorage.getItem('rpg_habitlog_v1')) || {}; } catch (e) {}
+    const today = todayStr();
+    // v10.53: a habit-type priority pick (e.g. gratitude) whose daily check
+    // is ALREADY done today has nothing left to actually do right now — the
+    // card was showing the same long-term tier goal regardless, giving no
+    // sense of "what's next" once the one real action (today's check) was
+    // already taken. Now: prefer a candidate that's still actionable today;
+    // only fall back to a done-today habit if literally nothing else qualifies.
+    let bestActionable = null;
+    let bestAny = null;
     for (const key of Object.keys(window.LIFE_GOAL_MAP)) {
       const def = defaults[key]; if (!def || def.active === false) continue;
       const ladder = ladders[key]; if (!ladder || !ladder.length) continue;
@@ -1027,10 +1036,12 @@
       const fromXp = window.xpForLevel ? window.xpForLevel(Math.max(1, claimed)) : 0;
       const toXp = window.xpForLevel ? window.xpForLevel(nextTier.level) : 1;
       const pct = toXp > fromXp ? Math.max(0, Math.min(100, Math.round(((xp - fromXp) / (toXp - fromXp)) * 100))) : 0;
-      if (!best || pct > best.pct) {
-        best = { key: key, def: def, nextTier: nextTier, pct: pct, categories: window.LIFE_GOAL_MAP[key] };
-      }
+      const doneToday = !!(def.isHabit && habitlog[key] && habitlog[key][today]);
+      const candidate = { key: key, def: def, nextTier: nextTier, pct: pct, categories: window.LIFE_GOAL_MAP[key], doneToday: doneToday };
+      if (!bestAny || pct > bestAny.pct) bestAny = candidate;
+      if (!doneToday && (!bestActionable || pct > bestActionable.pct)) bestActionable = candidate;
     }
+    let best = bestActionable || bestAny;
     return best;
   };
 
