@@ -2,11 +2,42 @@
 // Shared cloud-sync helper. Each page calls initCloudSync({...}).
 // Replace the two placeholders with your Supabase project URL +
 // publishable key (same ones you used in topbar.js/gym.html).
+//
+// v10.55 — light multi-user workspace support (Joey's decision: max ~4
+// people, no real auth, just data isolation by prefixing the Supabase
+// ROW KEY — not every localStorage key, which would mean touching read/
+// write code across the whole app). A device-local, NEVER-synced
+// localStorage value (gamenfy_workspace_id) decides the prefix:
+//   - unset/empty  -> cloudKey === appKey, EXACTLY as before. This is
+//     Joey's own existing path and is completely unchanged — no
+//     workspace id means no behavior change whatsoever.
+//   - set (e.g. "alex") -> cloudKey becomes "alex:rpg", "alex:finance",
+//     etc. — an entirely separate Supabase row per app key, so a
+//     friend's data can never collide with or overwrite Joey's.
+// localStorage key NAMES on each device stay exactly as they are; only
+// which Supabase row they sync to changes. Set via settings.html.
 // =============================================================
 (function () {
   'use strict';
   const SUPABASE_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
+  const WORKSPACE_STORAGE_KEY = 'gamenfy_workspace_id';
+
+  function getWorkspaceId() {
+    try {
+      const v = (window.localStorage.getItem(WORKSPACE_STORAGE_KEY) || '').trim();
+      return v || null;
+    } catch (e) { return null; }
+  }
+  window.getGamenfyWorkspaceId = getWorkspaceId;
+  window.setGamenfyWorkspaceId = function (id) {
+    try {
+      const v = (id || '').trim();
+      if (v) window.localStorage.setItem(WORKSPACE_STORAGE_KEY, v);
+      else window.localStorage.removeItem(WORKSPACE_STORAGE_KEY);
+      return true;
+    } catch (e) { return false; }
+  };
 
   // v9.23: one live sync instance per appKey. Duplicate inits (e.g. a page's own
   // config next to the xp.js fallback) previously raced each other; the instance
@@ -24,6 +55,13 @@
     window.__cloudSyncRegistry[appKey] = true;
     if (!SUPABASE_URL || !SUPABASE_KEY) return;
     if (SUPABASE_URL.indexOf('PASTE-') === 0 || SUPABASE_KEY.indexOf('PASTE-') === 0) return;
+
+    // v10.55: the ONLY thing that changes for multi-user — which Supabase row
+    // this appKey's data lives in. Everything below still says "appKey" for
+    // the local registry/matches() logic (those are about local storage keys,
+    // untouched); only the Supabase reads/writes use cloudKey.
+    const workspaceId = getWorkspaceId();
+    const cloudKey = workspaceId ? (workspaceId + ':' + appKey) : appKey;
 
     let supa = null, pushTimer = null, suppressSync = false, lastSyncedJson = null, ready = false;
 
@@ -95,7 +133,7 @@
       if (json === lastSyncedJson) return;
       try {
         const { error } = await supa.from('app_state').upsert(
-          { key: appKey, data: state, updated_at: new Date().toISOString() },
+          { key: cloudKey, data: state, updated_at: new Date().toISOString() },
           { onConflict: 'key' }
         );
         if (!error) lastSyncedJson = json;
@@ -116,7 +154,7 @@
             'Content-Type': 'application/json',
             'Prefer': 'resolution=merge-duplicates',
           },
-          body: JSON.stringify({ key: appKey, data: state, updated_at: new Date().toISOString() }),
+          body: JSON.stringify({ key: cloudKey, data: state, updated_at: new Date().toISOString() }),
           keepalive: true,
         }).catch(() => {});
         lastSyncedJson = json;
@@ -125,7 +163,7 @@
     (async function init() {
       supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       try {
-        const { data, error } = await supa.from('app_state').select('data').eq('key', appKey).maybeSingle();
+        const { data, error } = await supa.from('app_state').select('data').eq('key', cloudKey).maybeSingle();
         if (!error && data && data.data && Object.keys(data.data).length > 0) {
           lastSyncedJson = JSON.stringify(data.data);
           applyRemote(data.data, false); // initial load: never delete local-only items
@@ -141,9 +179,9 @@
           ready = true; // nothing anywhere yet
         }
       } catch (e) { ready = true; /* pull failed: allow later user-driven pushes, but the stale on-load writes already fired their (suppressed) push and are dropped */ }
-      supa.channel('app_state_' + appKey)
+      supa.channel('app_state_' + cloudKey)
         .on('postgres_changes', {
-          event: '*', schema: 'public', table: 'app_state', filter: 'key=eq.' + appKey,
+          event: '*', schema: 'public', table: 'app_state', filter: 'key=eq.' + cloudKey,
         }, (payload) => {
           if (!payload.new || !payload.new.data) return;
           const incoming = JSON.stringify(payload.new.data);
