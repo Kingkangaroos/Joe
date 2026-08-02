@@ -7,9 +7,9 @@
 <title>Finances</title>
 <link rel="manifest" href="./manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.51" defer></script>
-<script src="topbar.js?v=10.51" defer></script>
-<script src="xp.js?v=10.51" defer></script>
+<script src="sync.js?v=10.52" defer></script>
+<script src="topbar.js?v=10.52" defer></script>
+<script src="xp.js?v=10.52" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -957,6 +957,35 @@ html, body { scrollbar-width: none; -ms-overflow-style: none; }
   line-height: 1.5; max-width: 320px; margin: 0 auto;
 }
 
+/* ===== Portfolio (v10.52) ===== */
+.pf-row {
+  background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px;
+  padding: 12px 14px; margin-bottom: 8px;
+}
+.pf-row-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.pf-symbol { font-weight: 700; font-size: 14px; color: var(--text-primary); }
+.pf-type-tag {
+  font-size: 9px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-tertiary); background: rgba(255,255,255,0.06);
+  padding: 2px 6px; border-radius: 5px; margin-left: 6px;
+}
+.pf-pnl { font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums; }
+.pf-pnl.pos { color: #6BE3A4; }
+.pf-pnl.neg { color: #FF6B6B; }
+.pf-row-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; display: flex; gap: 10px; flex-wrap: wrap; }
+.pf-row-notes { font-size: 11px; color: var(--text-tertiary); margin-top: 6px; font-style: italic; }
+.pf-row-actions { display: flex; gap: 6px; margin-top: 10px; }
+.pf-row-actions button {
+  flex: 1; padding: 7px; font-size: 11px; font-weight: 700; border-radius: 8px; cursor: pointer;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-secondary);
+}
+.pf-row-actions button.close-btn { color: #FF6B6B; }
+.pf-price-input {
+  width: 70px; padding: 5px 6px; font-size: 11px; text-align: right;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 6px;
+  color: var(--text-primary); font-family: inherit;
+}
+
 /* ===== Wishlist rows ===== */
 .wish-row {
   background: rgba(255,255,255,0.025);
@@ -1720,6 +1749,72 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   </div>
 </div>
 
+<!-- ===== PORTFOLIO (v10.52) ===== -->
+<div class="section" data-section="portfolio" hidden>
+  <div class="section-title">
+    <span class="section-title-text">PORTFOLIO</span>
+  </div>
+
+  <div class="card wish-hero">
+    <div class="wish-hero-top">
+      <div>
+        <div class="wish-hero-eyebrow">OPEN POSITIONS VALUE</div>
+        <div class="wish-hero-num" id="pfTotalValue">€0</div>
+      </div>
+      <div class="wish-hero-pct-wrap">
+        <div class="wish-hero-pct-label">UNREALIZED P&amp;L</div>
+        <div class="wish-hero-pct-num" id="pfTotalPnl">—</div>
+      </div>
+    </div>
+    <div class="wish-hero-foot" id="pfRealizedFoot">Realized P&L from closed positions: €0</div>
+  </div>
+
+  <div class="card wish-add-card">
+    <div class="wish-add-eyebrow">+ ADD A POSITION</div>
+    <div class="wish-add-row" style="margin-bottom:8px">
+      <input type="text" id="pfSymbol" placeholder="Symbol (e.g. BTC, AAPL, VWCE)" class="wish-input" style="flex:2;min-width:140px">
+      <select id="pfType" class="wish-input" style="flex:1;min-width:100px">
+        <option value="crypto">Crypto</option>
+        <option value="stock">Stock</option>
+        <option value="etf">ETF / Tracker</option>
+        <option value="option">Option</option>
+      </select>
+    </div>
+    <div class="wish-add-row" style="margin-bottom:8px">
+      <input type="text" inputmode="decimal" id="pfQty" placeholder="Quantity" class="wish-input" style="flex:1">
+      <input type="text" inputmode="decimal" id="pfEntry" placeholder="Entry price €" class="wish-input" style="flex:1">
+    </div>
+    <div class="wish-add-row" style="margin-bottom:8px">
+      <input type="text" id="pfNotes" placeholder="Plan / reasoning (optional)" class="wish-input" style="flex:1">
+    </div>
+    <div class="wish-add-row">
+      <button class="wish-add-btn" style="flex:1" onclick="window.__addPosition && window.__addPosition()">+ Add position</button>
+    </div>
+    <div class="wish-add-error-msg" id="pfAddError" style="display:none"></div>
+  </div>
+
+  <div class="wish-section-h">
+    <span class="wish-section-label">OPEN POSITIONS</span>
+    <button class="wish-add-btn" style="padding:6px 12px;font-size:11px" onclick="window.__refreshCryptoPrices && window.__refreshCryptoPrices()">↻ Refresh crypto prices</button>
+  </div>
+  <div id="pfOpenList"></div>
+  <div class="wish-empty-card" id="pfOpenEmpty">
+    <div class="wish-empty-icon">📈</div>
+    <div class="wish-empty-title">No open positions yet</div>
+    <div class="wish-empty-sub">Add a stock, crypto, ETF or option position above to start tracking it.</div>
+  </div>
+
+  <div class="wish-section-h" style="margin-top:22px">
+    <span class="wish-section-label">CLOSED POSITIONS</span>
+    <span class="wish-section-count" id="pfClosedCount">0</span>
+  </div>
+  <div id="pfClosedList"></div>
+
+  <div class="wish-empty-sub" style="margin-top:14px;padding:0 4px">
+    Crypto prices refresh live via CoinGecko (free, no account needed). Stocks, ETFs and options need their current price updated manually — there's no reliable free live-price source for those without a broker API, so this keeps things honest rather than showing stale or fake numbers.
+  </div>
+</div>
+
 </div>
 
 <!-- ===== BOTTOM TAB BAR ===== -->
@@ -1736,6 +1831,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   <button class="bot-tab" data-tab="wish">
     <span class="bot-tab-icon">🎯</span>
     <span class="bot-tab-label">Wishlist</span>
+  </button>
+
+  <button class="bot-tab" data-tab="portfolio">
+    <span class="bot-tab-icon">📈</span>
+    <span class="bot-tab-label">Portfolio</span>
   </button>
 </nav>
 
@@ -1783,7 +1883,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   tabs.forEach(b => b.addEventListener('click', () => setActiveTab(b.dataset.tab)));
   const savedTab = storeGet(TAB_KEY);
-  setActiveTab(savedTab && ['net','subs','wish'].includes(savedTab) ? savedTab : 'net');
+  setActiveTab(savedTab && ['net','subs','wish','portfolio'].includes(savedTab) ? savedTab : 'net');
 
   // ============================================================
   // NET WORTH (copied from the main dashboard, verbatim logic)
@@ -2458,6 +2558,209 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   if (_wishName)   _wishName.addEventListener('keydown', (e) => { if (e.key === 'Enter') doWishAdd(); });
   if (_wishAmount) _wishAmount.addEventListener('keydown', (e) => { if (e.key === 'Enter') doWishAdd(); });
   renderWishlist();
+
+  // ============================================================
+  // PORTFOLIO (v10.52) — Joey: wants real positions tracked across
+  // crypto/stocks/ETFs/options, with a plan/notes field per position and
+  // clear insight into what's been closed/sold. Storage: nw:portfolio
+  // (already covered by the existing syncedPrefixes:['nw:'] rule below,
+  // no sync config changes needed).
+  //
+  // Live pricing: crypto refreshes for real via CoinGecko (free, no key,
+  // CORS-friendly — a genuinely reliable public API). Stocks/ETFs/options
+  // don't have an equivalent free, reliable, key-free live source, so
+  // those stay manually-updated rather than faking "live" data that isn't.
+  // ============================================================
+  const PF_KEY = 'nw:portfolio';
+  function pfLoad() { return storeGet(PF_KEY) || []; }
+  function pfSave(arr) { storeSet(PF_KEY, arr); }
+
+  const COINGECKO_IDS = {
+    BTC:'bitcoin', ETH:'ethereum', SOL:'solana', ADA:'cardano', XRP:'ripple',
+    DOGE:'dogecoin', DOT:'polkadot', MATIC:'matic-network', LTC:'litecoin',
+    LINK:'chainlink', AVAX:'avalanche-2', BNB:'binancecoin', USDT:'tether',
+    USDC:'usd-coin', SHIB:'shiba-inu', TRX:'tron', ATOM:'cosmos', XLM:'stellar',
+  };
+
+  function pfPnl(pos) {
+    const qty = Number(pos.qty) || 0;
+    const entry = Number(pos.entryPrice) || 0;
+    const current = Number(pos.currentPrice != null ? pos.currentPrice : pos.entryPrice) || 0;
+    const value = qty * current;
+    const cost = qty * entry;
+    const pnl = value - cost;
+    const pnlPct = cost !== 0 ? (pnl / cost) * 100 : 0;
+    return { value, cost, pnl, pnlPct };
+  }
+
+  function pfFmtPct(p) { return (p >= 0 ? '+' : '') + p.toFixed(1) + '%'; }
+
+  function renderPortfolio() {
+    const positions = pfLoad();
+    const open = positions.filter(p => !p.closed);
+    const closed = positions.filter(p => p.closed);
+
+    let totalValue = 0, totalCost = 0;
+    open.forEach(p => { const { value, cost } = pfPnl(p); totalValue += value; totalCost += cost; });
+    const totalPnl = totalValue - totalCost;
+    const totalPnlPct = totalCost !== 0 ? (totalPnl / totalCost) * 100 : 0;
+
+    const valEl = document.getElementById('pfTotalValue');
+    const pnlEl = document.getElementById('pfTotalPnl');
+    if (valEl) valEl.textContent = fmtMoney(totalValue);
+    if (pnlEl) {
+      pnlEl.textContent = fmtMoney(totalPnl) + ' (' + pfFmtPct(totalPnlPct) + ')';
+      pnlEl.style.color = totalPnl >= 0 ? '#6BE3A4' : '#FF6B6B';
+    }
+    let realized = 0;
+    closed.forEach(p => { realized += Number(p.realizedPnl) || 0; });
+    const realFoot = document.getElementById('pfRealizedFoot');
+    if (realFoot) realFoot.textContent = 'Realized P&L from closed positions: ' + fmtMoney(realized);
+
+    const openList = document.getElementById('pfOpenList');
+    const openEmpty = document.getElementById('pfOpenEmpty');
+    if (openList) {
+      if (!open.length) {
+        openList.innerHTML = '';
+        if (openEmpty) openEmpty.style.display = '';
+      } else {
+        if (openEmpty) openEmpty.style.display = 'none';
+        openList.innerHTML = open.map(p => {
+          const { value, pnl, pnlPct } = pfPnl(p);
+          const idx = positions.indexOf(p);
+          const cls = pnl >= 0 ? 'pos' : 'neg';
+          const priceField = p.type === 'crypto'
+            ? '<span>Current: ' + fmtMoney(Number(p.currentPrice) || Number(p.entryPrice) || 0) + '</span>'
+            : '<span>Current: <input class="pf-price-input" type="text" inputmode="decimal" value="' + (p.currentPrice != null ? p.currentPrice : p.entryPrice) + '" onchange="window.__updatePfPrice(' + idx + ',this.value)"></span>';
+          return '<div class="pf-row">' +
+            '<div class="pf-row-top">' +
+              '<div><span class="pf-symbol">' + escapeHtmlPf(p.symbol) + '</span><span class="pf-type-tag">' + p.type + '</span></div>' +
+              '<div class="pf-pnl ' + cls + '">' + fmtMoney(pnl) + ' (' + pfFmtPct(pnlPct) + ')</div>' +
+            '</div>' +
+            '<div class="pf-row-sub">' +
+              '<span>Qty: ' + p.qty + '</span>' +
+              '<span>Entry: ' + fmtMoney(Number(p.entryPrice) || 0) + '</span>' +
+              priceField +
+              '<span>Value: ' + fmtMoney(value) + '</span>' +
+            '</div>' +
+            (p.notes ? '<div class="pf-row-notes">' + escapeHtmlPf(p.notes) + '</div>' : '') +
+            '<div class="pf-row-actions">' +
+              '<button class="close-btn" onclick="window.__closePosition(' + idx + ')">Close / mark sold</button>' +
+              '<button onclick="window.__deletePosition(' + idx + ')">Delete</button>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+    }
+
+    const closedList = document.getElementById('pfClosedList');
+    const closedCount = document.getElementById('pfClosedCount');
+    if (closedCount) closedCount.textContent = closed.length + (closed.length === 1 ? ' position' : ' positions');
+    if (closedList) {
+      closedList.innerHTML = closed.slice().reverse().map(p => {
+        const realizedPnl = Number(p.realizedPnl) || 0;
+        const cls = realizedPnl >= 0 ? 'pos' : 'neg';
+        return '<div class="pf-row" style="opacity:0.75">' +
+          '<div class="pf-row-top">' +
+            '<div><span class="pf-symbol">' + escapeHtmlPf(p.symbol) + '</span><span class="pf-type-tag">' + p.type + '</span></div>' +
+            '<div class="pf-pnl ' + cls + '">' + fmtMoney(realizedPnl) + '</div>' +
+          '</div>' +
+          '<div class="pf-row-sub"><span>Qty: ' + p.qty + '</span><span>Entry: ' + fmtMoney(Number(p.entryPrice) || 0) + '</span><span>Closed at: ' + fmtMoney(Number(p.closePrice) || 0) + '</span></div>' +
+          (p.notes ? '<div class="pf-row-notes">' + escapeHtmlPf(p.notes) + '</div>' : '') +
+        '</div>';
+      }).join('');
+    }
+  }
+  function escapeHtmlPf(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+  window.__addPosition = function () {
+    const symEl = document.getElementById('pfSymbol');
+    const typeEl = document.getElementById('pfType');
+    const qtyEl = document.getElementById('pfQty');
+    const entryEl = document.getElementById('pfEntry');
+    const notesEl = document.getElementById('pfNotes');
+    const errEl = document.getElementById('pfAddError');
+    if (!symEl || !qtyEl || !entryEl) return;
+    const symbol = (symEl.value || '').trim().toUpperCase();
+    const qty = euroNum(qtyEl.value);
+    const entryPrice = euroNum(entryEl.value);
+    if (!symbol) { if (errEl) { errEl.textContent = 'Give the position a symbol first.'; errEl.style.display = ''; } symEl.focus(); return; }
+    if (isNaN(qty) || qty <= 0) { if (errEl) { errEl.textContent = 'Enter a valid quantity.'; errEl.style.display = ''; } qtyEl.focus(); return; }
+    if (isNaN(entryPrice) || entryPrice <= 0) { if (errEl) { errEl.textContent = 'Enter a valid entry price.'; errEl.style.display = ''; } entryEl.focus(); return; }
+    if (errEl) errEl.style.display = 'none';
+    const positions = pfLoad();
+    positions.push({
+      symbol: symbol, type: typeEl ? typeEl.value : 'stock', qty: qty, entryPrice: entryPrice,
+      currentPrice: entryPrice, notes: (notesEl && notesEl.value || '').trim(),
+      entryDate: new Date().toISOString(), closed: false,
+    });
+    pfSave(positions);
+    symEl.value = ''; qtyEl.value = ''; entryEl.value = ''; if (notesEl) notesEl.value = '';
+    renderPortfolio();
+  };
+
+  window.__updatePfPrice = function (idx, val) {
+    const positions = pfLoad();
+    const p = positions[idx]; if (!p) return;
+    const price = euroNum(val);
+    if (!isNaN(price) && price >= 0) { p.currentPrice = price; pfSave(positions); renderPortfolio(); }
+  };
+
+  window.__closePosition = function (idx) {
+    const positions = pfLoad();
+    const p = positions[idx]; if (!p) return;
+    const closePriceStr = prompt('Close price for ' + p.symbol + ' (per unit):', p.currentPrice != null ? p.currentPrice : p.entryPrice);
+    if (closePriceStr == null) return;
+    const closePrice = euroNum(closePriceStr);
+    if (isNaN(closePrice)) { alert('Enter a valid price.'); return; }
+    p.closed = true;
+    p.closePrice = closePrice;
+    p.closeDate = new Date().toISOString();
+    p.realizedPnl = (closePrice - Number(p.entryPrice || 0)) * Number(p.qty || 0);
+    pfSave(positions);
+    renderPortfolio();
+  };
+
+  window.__deletePosition = function (idx) {
+    if (!confirm('Delete this position? This cannot be undone.')) return;
+    const positions = pfLoad();
+    positions.splice(idx, 1);
+    pfSave(positions);
+    renderPortfolio();
+  };
+
+  window.__refreshCryptoPrices = async function () {
+    const positions = pfLoad();
+    const cryptoPositions = positions.filter(p => !p.closed && p.type === 'crypto');
+    if (!cryptoPositions.length) { alert('No open crypto positions to refresh.'); return; }
+    const ids = Array.from(new Set(cryptoPositions.map(p => COINGECKO_IDS[p.symbol]).filter(Boolean)));
+    if (!ids.length) { alert('None of your crypto symbols are recognized (tried: ' + cryptoPositions.map(p=>p.symbol).join(', ') + '). Update the current price manually for now.'); return; }
+    try {
+      const resp = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=' + ids.join(',') + '&vs_currencies=eur');
+      if (!resp.ok) throw new Error('CoinGecko request failed: ' + resp.status);
+      const data = await resp.json();
+      let updated = 0;
+      cryptoPositions.forEach(p => {
+        const cgId = COINGECKO_IDS[p.symbol];
+        if (cgId && data[cgId] && data[cgId].eur != null) { p.currentPrice = data[cgId].eur; updated++; }
+      });
+      pfSave(positions);
+      renderPortfolio();
+      showFinanceToast(updated + ' crypto price' + (updated===1?'':'s') + ' updated.');
+    } catch (e) {
+      console.error('crypto price refresh failed', e);
+      alert('Could not fetch live crypto prices right now (network issue). Try again in a moment, or update prices manually.');
+    }
+  };
+  function showFinanceToast(msg) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:#15140F;color:#fff;padding:9px 16px;border-radius:20px;font-size:12px;font-weight:600;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,0.25)';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2200);
+  }
+
+  renderPortfolio();
 
   // ============================================================
   // ADD-BUTTON BULLETPROOFING — three independent paths:
