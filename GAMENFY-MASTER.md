@@ -148,7 +148,14 @@ Skills die weinig direct raken aan dit plan (bijv. sommige lifestyle/discipline-
 
 ### Feedback van live testen (2026-07-30, avond)
 
-### Feedback van live testen, ronde 2 (2026-07-31)
+### Zelf-geïnitieerde sync-audit (2026-08-03)
+Joey: "ga verder, zoek zelf iets als er niks is." Systematische audit van alle 4 sync-scopes in de app (rpg/po-coach/health/finance): elke localStorage-key-variabele in de hele codebase opgespoord (niet alleen letterlijke strings) en tegen de bijbehorende sync-lijst gelegd.
+- ✅ **v10.56**: `rpg_tier_claims_v1` + `rpg_optional_quests_v1` ontbraken — bevestigd als een echt, actief gat in Joey's live data (direct in Supabase gecheckt). Gefixt.
+- ✅ **v10.57**: `hevy_xp:` + `ah_xp_given:` XP-dedupe-guards ontbraken — risico op dubbele XP bij gebruik op meerdere apparaten. Gefixt.
+- Overige gevonden "ontbrekende" keys allemaal individueel gecontroleerd en bevestigd **terecht lokaal**: `rpg_last_decay_check` (dag-guard, idempotent), `rpg_daily_habit_backfill_v1` (eenmalige idempotente migratie), `rpg_focus_session_v1` (actieve-sessie-state, hoort niet te syncen), `rpg_private_unlocked` (PIN-ontgrendeling per apparaat, bewust — anders ontgrendelt één apparaat alle anderen), `rpg_notif_v1` (browser-notificatie-permissie, kan sowieso niet cross-device), `hevy_api_key`/`hevy_total_volume` (bekende vaste waarde / herberekenbare cache).
+- Alle 4 sync-scopes (rpg/po-coach/health/finance) stuk voor stuk doorlopen: po-coach, health en finance bleken compleet, geen verdere gaten.
+- Ook opnieuw gecontroleerd op ontbrekende script-tags (zoals de eerdere ladders.js-bug) — kwam schoon terug, geen andere instanties gevonden.
+
 - ✅ **Wishlist add-flow visueel gefixt (v10.50)** — root cause: beide velden deelden één transparante grijze achtergrond (geen grens ertussen) + de kaart zelf overschreef de normale zichtbare kaart-stijl met een bijna-onzichtbare tint. Beide gefixt.
 - ✅ **Season-tagline-toon gefixt (v10.48)** — bleek een losse hardcoded lijst i.p.v. de al-ingestelde Jarvis-toon te gebruiken. Nu gekoppeld aan `jarvis_phrases`, standaard al veel dichter bij zijn oorspronkelijke voorbeeld.
 - ✅ **Health-metrics: "Today" toegevoegd (v10.54)** — de detail-sheet toonde nooit vandaag's waarde, alleen periode-bereik/gemiddelde. Nu een altijd-zichtbare "Today"-stat, ongeacht welke periode-tab actief is.
