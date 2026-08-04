@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.59" defer></script>
-<script src="topbar.js?v=10.59" defer></script>
-<script src="xp.js?v=10.59" defer></script>
-<script src="quests.js?v=10.59" defer></script>
-<script src="ladders.js?v=10.59" defer></script>
-<script src="ventures.js?v=10.59" defer></script>
+<script src="sync.js?v=10.60" defer></script>
+<script src="topbar.js?v=10.60" defer></script>
+<script src="xp.js?v=10.60" defer></script>
+<script src="quests.js?v=10.60" defer></script>
+<script src="ladders.js?v=10.60" defer></script>
+<script src="ventures.js?v=10.60" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -2358,12 +2358,19 @@ function renderRSCompactGrid() {
 }
 
 function renderBodySystem() {
-  // 'stretching' is the key for Mobility in xp.js
+  // v10.60: was Strength/Calisthenics/Mobility/Endurance/Recovery — an old
+  // open item flagged this weeks ago: Joey moved away from heavy gym/Hevy
+  // toward mostly cardio + tennis + endurance, but this top-of-tab summary
+  // still led with the two skills he'd stepped back from, and never showed
+  // tennis at all — so it stopped reflecting what he actually does, and he
+  // stopped looking at it. Tennis and Endurance now lead; Core (his actual
+  // current lift focus per his push/pull/core split) replaces Strength;
+  // Calisthenics dropped from this summary (still a full skill elsewhere).
   const BODY_SKILLS = [
-    { key:'strength',    label:'Strength',    icon:'💪' },
-    { key:'calisthenics',label:'Calisthenics',icon:'🤸' },
-    { key:'stretching',  label:'Mobility',    icon:'🧘' },
+    { key:'tennis',      label:'Tennis',      icon:'🎾' },
     { key:'endurance',   label:'Endurance',   icon:'🏃' },
+    { key:'core',        label:'Core',        icon:'🔥' },
+    { key:'stretching',  label:'Mobility',    icon:'🧘' },
     { key:'recovery',    label:'Recovery',    icon:'❤️' },
   ];
 
@@ -3816,7 +3823,19 @@ const MUSCLE_SKILL_MAP = {
   forearms:  'calisthenics',
   neck:      'mobility',
 };
-const BODY_SKILL_ORDER = ['gym','strength','calisthenics','core','mobility','endurance','recovery','tennis'];
+// v10.60: was ['gym','strength','calisthenics','core','mobility','endurance','recovery','tennis']
+// — tennis (Joey's actual primary current activity) was dead last, gym
+// (which he's explicitly stepped back from) led. Reordered to match what
+// he's actually doing: tennis + endurance lead, core next (his current
+// push/pull/core lift focus), mobility/recovery stay generally relevant,
+// calisthenics/strength/gym trail — still there, just not first-impression.
+// ALSO fixed a real bug found while touching this: the old array used
+// 'mobility' as the key, but that skill's actual key in RPG_DEFAULT_SKILLS
+// is 'stretching' (renderBodySystem's own comment even says so) — 'mobility'
+// matches nothing, so defaults[k] was always undefined and .filter(k=>
+// defaults[k]) silently dropped it. Mobility has never once appeared in
+// this grid. Now uses the real key.
+const BODY_SKILL_ORDER = ['tennis','endurance','core','stretching','recovery','calisthenics','strength','gym'];
 let bodyDayOffset = 0;
 
 function bodyDateForOffset(off){ const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+off); return d; }
