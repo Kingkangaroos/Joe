@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.58" defer></script>
-<script src="topbar.js?v=10.58" defer></script>
-<script src="xp.js?v=10.58" defer></script>
-<script src="quests.js?v=10.58" defer></script>
-<script src="ladders.js?v=10.58" defer></script>
-<script src="ventures.js?v=10.58" defer></script>
+<script src="sync.js?v=10.59" defer></script>
+<script src="topbar.js?v=10.59" defer></script>
+<script src="xp.js?v=10.59" defer></script>
+<script src="quests.js?v=10.59" defer></script>
+<script src="ladders.js?v=10.59" defer></script>
+<script src="ventures.js?v=10.59" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1096,6 +1096,15 @@ textarea {
 }
 @keyframes ciUpH { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
 .hm-sheet-kicker { font-size:10px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.hm-sheet-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.hm-sheet-nav button {
+  width:30px; height:30px; border-radius:50%; border:1px solid var(--line-strong);
+  background:var(--card); color:var(--ink); font-size:15px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+}
+.hm-sheet-nav button:disabled { opacity:0.3; cursor:default; }
+.hm-sheet-nav button:active:not(:disabled) { background:var(--line); }
+.hm-sheet-nav-label { font-size:11px; font-weight:700; color:var(--muted); font-family:ui-monospace,monospace; }
 .hm-sheet-val { font-family:var(--font-display); font-weight:800; font-size:34px; color:var(--ink); line-height:1; font-variant-numeric:tabular-nums; }
 .hm-sheet-sub { font-size:12px; color:var(--muted); margin-top:4px; }
 .hm-sheet-chart { margin:20px 0 6px; display:flex; align-items:flex-end; gap:3px; height:120px; }
@@ -4202,9 +4211,10 @@ async function hmFetchAll(){
   return out;
 }
 
-function hmSeries(days, getter){
+function hmSeries(days, getter, endOffset){
+  endOffset = endOffset || 0;
   const arr=[];
-  for(let i=days-1;i>=0;i--){ const d=hmDateStr(-i); arr.push({ date:d, val:getter(d)||0 }); }
+  for(let i=days-1;i>=0;i--){ const d=hmDateStr(-i-endOffset); arr.push({ date:d, val:getter(d)||0 }); }
   return arr;
 }
 
@@ -4269,6 +4279,11 @@ async function loadHealthMetrics(){
 
 // v9.18: Google Health-stijl metric detail (gekloond layout, Daylight-skin)
 let hmSheetPeriod = 7;
+// v10.59: was permanently stuck showing "now back to today" — Joey flagged
+// this weeks ago (steps only ever showed this week, month view couldn't go
+// back further) and it never got picked up. Lets the sheet's window end
+// somewhere in the past instead of always at today.
+let hmSheetEndOffset = 0;
 function hmSmoothPath(pts, W, H, pad){
   // Catmull-Rom → cubic bezier voor een vloeiende Google Health-achtige lijn
   if (pts.length < 2) return '';
@@ -4294,7 +4309,7 @@ function hmFmtVal(id, v){
 }
 function hmRenderSheetBody(m, id){
   const days = hmSheetPeriod;
-  const series = hmSeries(days, m.getter);
+  const series = hmSeries(days, m.getter, hmSheetEndOffset);
   const logged = series.filter(p => p.val);
   const vals = logged.map(p => p.val);
   const lo = vals.length ? Math.min(...vals) : 0;
@@ -4345,7 +4360,17 @@ function hmRenderSheetBody(m, id){
   // only a range + average over the selected window. Today's value stays
   // visible no matter which period tab (W/M/3M) is selected.
   const todayVal = m.getter(hmDateStr(0));
-  return '<div class="hm-sheet-val">' + rangeTxt + (m.unit && vals.length ? '<span class="hm-unit">' + m.unit + '</span>' : '') + '</div>' +
+  // v10.59: prev/next navigation through history — was permanently stuck on
+  // "this week"/"this month" with no way back. Next is disabled once you're
+  // back at the current (offset 0) window, since going "forward" from today
+  // doesn't mean anything.
+  const nextDisabled = hmSheetEndOffset <= 0;
+  return '<div class="hm-sheet-nav">' +
+      '<button onclick="hmNavPeriod(\''+id+'\',1)">‹</button>' +
+      '<span class="hm-sheet-nav-label">'+xl+' – '+xr+'</span>' +
+      '<button onclick="hmNavPeriod(\''+id+'\',-1)"'+(nextDisabled?' disabled':'')+'>›</button>' +
+    '</div>' +
+    '<div class="hm-sheet-val">' + rangeTxt + (m.unit && vals.length ? '<span class="hm-unit">' + m.unit + '</span>' : '') + '</div>' +
     '<div class="hm-sheet-sub">' + subTxt + '</div>' +
     '<svg class="hm-line-chart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' + refs + paths + '</svg>' +
     '<div class="hm-axis"><span>' + xl + '</span><span>' + xr + '</span></div>' +
@@ -4359,7 +4384,18 @@ function hmRenderSheetBody(m, id){
 window.hmSetPeriod = function(id, days, e){
   if (e) e.stopPropagation();
   hmSheetPeriod = days;
+  hmSheetEndOffset = 0; // v10.59: switching W/M/3M resets back to the current window
   document.querySelectorAll('.hm-tabs button').forEach(b => b.classList.toggle('on', Number(b.dataset.d) === days));
+  const body = document.getElementById('hmSheetBody');
+  if (body) hmFetchAll().then(d => {
+    const m = hmMetricDefs(d).find(x => x.id === id);
+    if (m) body.innerHTML = hmRenderSheetBody(m, id);
+  });
+};
+// v10.59: prev/next through history. dir=1 goes back (older), dir=-1 goes
+// forward (newer, toward today) — mirrors Google Health's own arrow direction.
+window.hmNavPeriod = function(id, dir){
+  hmSheetEndOffset = Math.max(0, hmSheetEndOffset + dir * hmSheetPeriod);
   const body = document.getElementById('hmSheetBody');
   if (body) hmFetchAll().then(d => {
     const m = hmMetricDefs(d).find(x => x.id === id);
@@ -4371,6 +4407,7 @@ window.openHmSheet = async function(id){
   const m = hmMetricDefs(d).find(x=>x.id===id);
   if(!m) return;
   hmSheetPeriod = 7;
+  hmSheetEndOffset = 0; // v10.59: always start a fresh sheet at the current window
   const overlay=document.createElement('div');
   overlay.className='hm-overlay';
   overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });

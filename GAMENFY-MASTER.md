@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.58)
+# GAMENFY — Master Document (v10.59)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -181,7 +181,7 @@ Joey: "ga verder, zoek zelf iets als er niks is." Systematische audit van alle 4
 
 ### Extra uit de Body/Fitbit-discussie (2026-07-28, deel 6)
 - 🔴 **Body-tab moet cardio/tennis/endurance beter reflecteren** — Joey traint nu vooral cardio + tennis + endurance (geen Hevy/zware sportschool meer); de tab voelt nu te gym/kracht-gericht en motiveert daardoor niet.
-- 🔴 **Body-grafieken à la Google Health** — dag/week/maand-toggle, uur-detail bij tik, scrubben met je vinger, pijltje terug naar vorige periode (nu vastgelopen in huidige week/maand).
+- 🚧 **Body-grafieken à la Google Health (deel 1, v10.59)** — terug/vooruit-navigatie door de tijd nu gebouwd en werkend (was al weken blijven liggen). **Nog open**: vinger-scrubben voor exacte waarden op een punt, en uur-detail bij tikken (blijft geblokkeerd door de nooit-opgeloste Fitbit-intraday-kwestie).
 - ✅ **Per-skill reset-knop** — bestaat al (`resetSkill` + "Reset this skill"-knop in elke skill-detail sheet, geverifieerd in code 2026-07-29).
 - ✅ **Core-skill terugzetten naar 0** — geverifieerd direct in Supabase (2026-07-30): `core` skill staat op 0 XP. Was al goed, geen actie nodig geweest.
 
@@ -356,6 +356,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.59 — Health-grafieken kunnen nu terug in de tijd navigeren.** Een oud, nooit-opgepakt punt uit de Body/Fitbit-discussie van weken terug: de detail-sheet zat altijd vast op "deze week"/"deze maand", geen manier om verder terug te kijken. Gefixt: `hmSeries()` accepteert nu een `endOffset`-parameter (bestaande aanroepen ongewijzigd, default 0 = huidig gedrag), en de sheet heeft nu pijltjes-navigatie: ‹ gaat een volledige periode terug, › een periode vooruit (uitgeschakeld zodra je weer bij vandaag bent — vooruit-in-de-toekomst betekent niks). Wisselen van periode (Week/Maand/3M) of een nieuw metric-sheet openen zet de navigatie netjes terug naar "nu". **Geverifieerd met een simulatie**: meerdere keren terug/vooruit klikken gaf steeds de juiste offset, correct geklemd op 0 zodra je "vandaag" weer bereikt, getest op zowel de week- als maand-periodelengte. **Nog niet gedaan** (uit dezelfde oude wensenlijst): vinger-scrubben over de grafiek voor exacte waarden op een punt, en uur-detail bij tikken — dat laatste blijft geblokkeerd door de nooit-opgeloste Fitbit-intraday-uur-bucket-kwestie (zie eerdere changelog-entries), dus bewust niet nagebouwd zonder echte data erachter. `?v=` naar 10.59. Gevalideerd: volledige 10-pagina syntax-pass + de navigatie-wiskunde apart getest.
 
 - **v10.58 — Security-audit van deze sessie's nieuwe features: één echte XSS-kwetsbaarheid gevonden en gefixt.** Systematisch elke plek gecontroleerd waar gebruikersinvoer in `innerHTML` terechtkomt, in Recipes/Portfolio/Season/Priority Focus. Recipes en Portfolio bleken al overal correct te escapen (`escapeHtml`/`escapeHtmlPf`); `p.type` in Portfolio was technisch veilig (komt alleen uit een vaste dropdown) maar toch consequent ge-escaped voor defense-in-depth. **Echte vondst**: de Season-tagline (`${tagline}`) werd in zowel index.html als character.html zonder escaping in de HTML gezet — en die tagline kan Joey's eigen vrij-te-typen Jarvis-zinnen bevatten (Settings → Jarvis tone). Zou iemand ooit HTML/script in een eigen zin typen, dan zou dat uitgevoerd worden zodra die zin als tagline gekozen wordt. Gefixt: index.html gebruikte al een `escapeHtml`-functie (hergebruikt); character.html had er nog geen enkele — nieuwe kleine helper toegevoegd, zelfde patroon als de al-bestaande kleine-helper-duplicatie in de app. Ook gecontroleerd of jarvis.html's chatweergave hetzelfde risico had: bleek al overal `.textContent` te gebruiken (nooit `.innerHTML`) — dus van nature al veilig, geen wijziging nodig. `?v=` naar 10.58. Gevalideerd: volledige 10-pagina syntax-pass.
 
