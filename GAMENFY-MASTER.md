@@ -147,6 +147,8 @@ Skills die weinig direct raken aan dit plan (bijv. sommige lifestyle/discipline-
 - ✅ **Recipes + Nutrition Calculator (gebouwd v10.49)** — nieuwe pagina, gekoppeld aan cooking-skill, ingebouwde ~45-ingrediënten-database (geen live API, dus betrouwbaar/offline). **v2-idee onderzocht en bewust NIET gebouwd (2026-08-02)**: Open Food Facts leek een goede aanvulling voor merkproducten, maar bleek bij nader onderzoek geen vrije-tekst-zoekfunctie meer te bieden in de huidige, aanbevolen v2/v3-API — alleen gestructureerd filteren op exacte tags (categorie/merk/nutri-score), niet "typ een naam, vind een match." Het enige dat wél tekst-zoeken ondersteunt is de oude v1-endpoint, die Open Food Facts zelf expliciet afraadt voor nieuwe integraties. Bouwen op iets dat de bron zelf afraadt zou het "werkt altijd betrouwbaar"-principe van de huidige Recipes-pagina ondermijnen — dus bewust niet gedaan. De ingebouwde database blijft de aanpak, eventueel later uit te breiden met meer ingrediënten als Joey specifieke dingen mist.
 
 ### Feedback van live testen (2026-07-30, avond)
+- ✅ **v10.56-fix bevestigd werkend in de praktijk (2026-08-04)**: live gecheckt, `rpg_tier_claims_v1` staat nu echt in Joey's cloud-data (`{"core":3,"piano":6,"cooking":3}`, net bijgewerkt). De fix doet wat 'ie moet doen.
+
 
 ### Zelf-geïnitieerde sync-audit (2026-08-03)
 Joey: "ga verder, zoek zelf iets als er niks is." Systematische audit van alle 4 sync-scopes in de app (rpg/po-coach/health/finance): elke localStorage-key-variabele in de hele codebase opgespoord (niet alleen letterlijke strings) en tegen de bijbehorende sync-lijst gelegd.
