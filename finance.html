@@ -7,9 +7,9 @@
 <title>Finances</title>
 <link rel="manifest" href="./manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.57" defer></script>
-<script src="topbar.js?v=10.57" defer></script>
-<script src="xp.js?v=10.57" defer></script>
+<script src="sync.js?v=10.58" defer></script>
+<script src="topbar.js?v=10.58" defer></script>
+<script src="xp.js?v=10.58" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -2634,7 +2634,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
             : '<span>Current: <input class="pf-price-input" type="text" inputmode="decimal" value="' + (p.currentPrice != null ? p.currentPrice : p.entryPrice) + '" onchange="window.__updatePfPrice(' + idx + ',this.value)"></span>';
           return '<div class="pf-row">' +
             '<div class="pf-row-top">' +
-              '<div><span class="pf-symbol">' + escapeHtmlPf(p.symbol) + '</span><span class="pf-type-tag">' + p.type + '</span></div>' +
+              '<div><span class="pf-symbol">' + escapeHtmlPf(p.symbol) + '</span><span class="pf-type-tag">' + escapeHtmlPf(p.type) + '</span></div>' +
               '<div class="pf-pnl ' + cls + '">' + fmtMoney(pnl) + ' (' + pfFmtPct(pnlPct) + ')</div>' +
             '</div>' +
             '<div class="pf-row-sub">' +
@@ -2662,7 +2662,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         const cls = realizedPnl >= 0 ? 'pos' : 'neg';
         return '<div class="pf-row" style="opacity:0.75">' +
           '<div class="pf-row-top">' +
-            '<div><span class="pf-symbol">' + escapeHtmlPf(p.symbol) + '</span><span class="pf-type-tag">' + p.type + '</span></div>' +
+            '<div><span class="pf-symbol">' + escapeHtmlPf(p.symbol) + '</span><span class="pf-type-tag">' + escapeHtmlPf(p.type) + '</span></div>' +
             '<div class="pf-pnl ' + cls + '">' + fmtMoney(realizedPnl) + '</div>' +
           '</div>' +
           '<div class="pf-row-sub"><span>Qty: ' + p.qty + '</span><span>Entry: ' + fmtMoney(Number(p.entryPrice) || 0) + '</span><span>Closed at: ' + fmtMoney(Number(p.closePrice) || 0) + '</span></div>' +

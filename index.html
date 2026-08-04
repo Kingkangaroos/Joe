@@ -10,14 +10,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.57" defer></script>
-<script src="topbar.js?v=10.57" defer></script>
-<script src="xp.js?v=10.57" defer></script>
-<script src="quests.js?v=10.57" defer></script>
-<script src="ladders.js?v=10.57" defer></script>
-<script src="ventures.js?v=10.57" defer></script>
-<script src="checkin.js?v=10.57" defer></script>
-<script src="push.js?v=10.57" defer></script>
+<script src="sync.js?v=10.58" defer></script>
+<script src="topbar.js?v=10.58" defer></script>
+<script src="xp.js?v=10.58" defer></script>
+<script src="quests.js?v=10.58" defer></script>
+<script src="ladders.js?v=10.58" defer></script>
+<script src="ventures.js?v=10.58" defer></script>
+<script src="checkin.js?v=10.58" defer></script>
+<script src="push.js?v=10.58" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1881,7 +1881,7 @@ function renderSeasonBanner() {
       <span class="season-banner-days">${daysLeft} day${daysLeft===1?'':'s'} left</span>
     </div>
     <div class="season-banner-headline">${def.icon || '⭐'} It's ${def.label || season.skillKey} Season!</div>
-    <div class="season-banner-tagline">${tagline}</div>
+    <div class="season-banner-tagline">${escapeHtml(tagline)}</div>
     <div class="season-banner-target">TARGET · Level ${season.targetLevel} — ${season.targetTitle}</div>
     <div class="season-banner-bar-track"><div class="season-banner-bar-fill" style="width:${pct}%"></div></div>`;
 }

@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.57" defer></script>
-<script src="topbar.js?v=10.57" defer></script>
-<script src="xp.js?v=10.57" defer></script>
-<script src="quests.js?v=10.57" defer></script>
-<script src="ladders.js?v=10.57" defer></script>
-<script src="ventures.js?v=10.57" defer></script>
+<script src="sync.js?v=10.58" defer></script>
+<script src="topbar.js?v=10.58" defer></script>
+<script src="xp.js?v=10.58" defer></script>
+<script src="quests.js?v=10.58" defer></script>
+<script src="ladders.js?v=10.58" defer></script>
+<script src="ventures.js?v=10.58" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1938,6 +1938,12 @@ function renderPriorityFocus(){
 // v10.48: was a separate hardcoded list — now pulls from the SAME
 // jarvis_phrases tone setting (Settings > Jarvis tone), duplicated from
 // index.html per the established small-helper-duplication pattern.
+// v10.58: character.html had no HTML-escape helper at all. Needed because
+// seasonTaglinePool() below can surface Joey's own free-text custom Jarvis
+// phrases (Settings > Jarvis tone) — those must never go into innerHTML
+// unescaped.
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
 function seasonTaglinePool() {
   let prefs = {}; try { prefs = JSON.parse(localStorage.getItem('rpg_prefs_v1')) || {}; } catch (e) {}
   if (prefs.jarvis_tough_love === false) return ["Let's go — time to move.", "Show up today. Let the level follow.", "One goal. One grind."];
@@ -2098,7 +2104,7 @@ function openSkillDetail(skillKey){
           <div class="season-active-days">${daysLeft} day${daysLeft===1?'':'s'} left</div>
         </div>
         <div class="season-active-headline">${def.icon||'⭐'} It's ${def.label||skillKey} Season!</div>
-        <div class="season-active-tagline">${tagline}</div>
+        <div class="season-active-tagline">${escapeHtml(tagline)}</div>
         <div class="season-active-target">TARGET · Level ${activeSeason.targetLevel} — ${activeSeason.targetTitle}</div>
         <div class="season-active-bar-track"><div class="season-active-bar-fill" style="width:${seasonPct}%"></div></div>
         <span class="season-cancel-link" onclick="doCancelSeason('${skillKey}')">Cancel season</span>
