@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.60" defer></script>
-<script src="topbar.js?v=10.60" defer></script>
-<script src="xp.js?v=10.60" defer></script>
-<script src="quests.js?v=10.60" defer></script>
-<script src="ladders.js?v=10.60" defer></script>
-<script src="ventures.js?v=10.60" defer></script>
+<script src="sync.js?v=10.61" defer></script>
+<script src="topbar.js?v=10.61" defer></script>
+<script src="xp.js?v=10.61" defer></script>
+<script src="quests.js?v=10.61" defer></script>
+<script src="ladders.js?v=10.61" defer></script>
+<script src="ventures.js?v=10.61" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -581,6 +581,47 @@ textarea {
 .pf-action{font-size:12px;color:var(--muted);line-height:1.4;margin-bottom:10px}
 .pf-bar-track{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
 .pf-bar-fill{height:100%;background:var(--ember);border-radius:2px}
+
+/* ── Goals (v10.61) ─────────────────────────────────── */
+.new-recipe-btn-goals {
+  width:100%;padding:13px 16px;background:var(--ink);color:var(--gold);
+  border:none;border-radius:12px;font-weight:700;font-size:14px;
+  cursor:pointer;margin-bottom:14px;-webkit-tap-highlight-color:transparent;
+}
+.new-recipe-btn-goals:active{transform:scale(0.98)}
+.goal-card{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:14px 16px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.goal-card:active{border-color:var(--line-strong)}
+.goal-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px}
+.goal-title{font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink)}
+.goal-days{font-size:11px;font-weight:800;padding:3px 8px;border-radius:8px;white-space:nowrap}
+.goal-days.ok{color:var(--green);background:rgba(46,139,95,0.1)}
+.goal-days.soon{color:var(--ember);background:rgba(212,99,62,0.1)}
+.goal-days.overdue{color:#B14E2E;background:rgba(177,78,46,0.12)}
+.goal-bar-track{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin:8px 0 6px}
+.goal-bar-fill{height:100%;background:var(--ember);border-radius:3px}
+.goal-pct-row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px}
+.goal-links{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.goal-link-chip{font-size:10px;background:var(--line);color:var(--muted);padding:2px 7px;border-radius:6px}
+.goal-log-item{font-size:11px;color:var(--muted);padding:4px 0;border-top:1px solid var(--line)}
+.goal-log-item b{color:var(--ink)}
+.goal-log-empty{font-size:12px;color:var(--faint);text-align:center;padding:10px 0}
+
+.ge-sheet{background:var(--bg);border-radius:20px 20px 0 0;padding:18px 16px 26px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto}
+.ge-title-input{width:100%;font-family:var(--font-display);font-weight:700;font-size:18px;border:none;border-bottom:1px solid var(--line-strong);padding:6px 2px 10px;margin-bottom:14px;background:transparent;color:var(--ink)}
+.ge-title-input:focus{outline:none;border-bottom-color:var(--ember)}
+.ge-textarea{width:100%;padding:10px 12px;border:1px solid var(--line-strong);border-radius:10px;font-size:13px;background:var(--card);color:var(--ink);font-family:inherit;resize:vertical;margin-bottom:14px}
+.ge-textarea:focus{outline:none;border-color:var(--ember)}
+.ge-date-input{width:100%;padding:10px 12px;border:1px solid var(--line-strong);border-radius:10px;font-size:14px;background:var(--card);color:var(--ink);font-family:inherit;margin-bottom:14px}
+.ge-skill-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;max-height:160px;overflow-y:auto;padding:2px}
+.ge-skill-chip{font-size:11px;padding:6px 10px;border-radius:8px;border:1px solid var(--line-strong);background:var(--card);color:var(--muted);cursor:pointer}
+.ge-skill-chip.sel{background:var(--ink);color:var(--gold);border-color:var(--ink)}
+.ge-pct-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.ge-pct-row input[type=range]{flex:1}
+.ge-pct-val{font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--ink);width:44px;text-align:right}
+
 .season-cancel-link{font-size:11px;color:rgba(255,255,255,0.45);margin-top:8px;text-decoration:underline;cursor:pointer;display:inline-block}
 .season-picker-bg{
   position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;
@@ -1401,7 +1442,7 @@ textarea {
 <div class="char-screen" id="tab-skills">
   <div class="skills-toolbar">
     <button class="skills-tab-btn active" id="skillsViewBtn" onclick="setSkillsView('skills')">⚔️ Skills</button>
-    <button class="skills-tab-btn" id="questsViewBtn" onclick="setSkillsView('quests')" style="display:none">📜 Quests</button>
+    <button class="skills-tab-btn" id="goalsViewBtn" onclick="setSkillsView('goals')">🎯 Goals</button>
     <button class="skills-tab-btn" id="venturesViewBtn" onclick="setSkillsView('ventures')">💼 Ventures</button>
   </div>
 
@@ -1425,10 +1466,19 @@ textarea {
   <div id="rsGridContainer"></div>
   </div>
 
-  <!-- QUESTS VIEW -->
-  <div id="questsView" style="display:none">
-    <div class="quest-skillpick" id="questSkillPick"></div>
-    <div id="questLadderContainer"></div>
+  <!-- GOALS VIEW (v10.61) -->
+  <div id="goalsView" style="display:none">
+    <button class="new-recipe-btn-goals" onclick="openGoalEditor(null)">+ New goal</button>
+    <div id="goalsList"></div>
+    <div class="wish-empty-card" id="goalsEmpty" style="display:none">
+      <div class="wish-empty-icon">🎯</div>
+      <div class="wish-empty-title">No goals yet</div>
+      <div class="wish-empty-sub">Set a goal with a deadline — link it to skills, and every bit of related progress gets logged here automatically, so it never quietly slips away.</div>
+    </div>
+    <div id="goalsPastSection" style="display:none">
+      <div class="sec-head" style="margin-top:22px">Past goals</div>
+      <div id="goalsPastList"></div>
+    </div>
   </div>
 
   <!-- VENTURES VIEW -->
@@ -1915,6 +1965,166 @@ window.toggleOptionalQuest=function(skillKey,lvl,xp,el){
 // per Joey's own life plan (see the top of GAMENFY-MASTER.md). Reads
 // window.getLifeGoalPriority() from xp.js (single source of truth, shared
 // with any future use on Main). Tap opens the skill's own detail.
+// =============================================================
+// Goals (v10.61) — Joey's own idea: he sets deadlines/goals often but
+// forgets them and drifts to a new goal instead of following through.
+// Different from Seasons (single-skill, tier-based) — this is broader,
+// can span multiple skills, with a real calendar deadline and a manual
+// progress %. The "activity log" is NOT a new tracking system — it's a
+// filtered view of char.xpLog (already populated by every XP award across
+// the whole app), matched against the goal's linked skills. Safer than
+// hooking into addXP itself (a core, heavily-used function): this only
+// READS existing data, never touches the XP-award path.
+// Note: xpLog caps at 200 entries app-wide, so a goal running for many
+// months on a very active account could miss its earliest related entries
+// once they roll off — acceptable v1 tradeoff for not touching addXP.
+// =============================================================
+const GOALS_KEY = 'rpg_goals_v1';
+function loadGoals(){ try{ return JSON.parse(localStorage.getItem(GOALS_KEY))||[]; }catch(e){ return []; } }
+function saveGoals(arr){ try{ localStorage.setItem(GOALS_KEY, JSON.stringify(arr)); }catch(e){} }
+
+function daysUntil(dateStr){
+  // v10.61: was comparing exact now() to target 23:59:59 — a fractional-day
+  // gap that meant Math.ceil() could never land exactly on 0, so "due today"
+  // would never actually show even ON the deadline day. Fixed to compare
+  // calendar dates directly, same approach Seasons already uses successfully.
+  const [ty, tm, td] = dateStr.split('-').map(Number);
+  const target = new Date(ty, tm-1, td);
+  const [ny, nm, nd] = todayKey().split('-').map(Number);
+  const now = new Date(ny, nm-1, nd);
+  return Math.round((target-now)/86400000);
+}
+function goalActivityLog(goal){
+  if(!goal.linkedSkills || !goal.linkedSkills.length) return [];
+  const char = loadChar();
+  const log = (char.xpLog||[]).filter(e =>
+    goal.linkedSkills.includes(e.skill) && e.date >= goal.createdDate && !e.private
+  );
+  return log.slice(0, 20); // xpLog is already newest-first
+}
+
+function escapeHtmlG(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+
+function renderGoalsView(){
+  const goals = loadGoals();
+  const defaults = window.RPG_DEFAULT_SKILLS||{};
+  // active = not archived, not yet 100%, and not more than 3 days overdue
+  // (a small grace period before a missed deadline quietly drops off).
+  // Reaching 100% is Joey's own deliberate "I did this" signal, so it moves
+  // to Past immediately regardless of the deadline date.
+  const activeList = goals.filter(g => !g.archived && (g.pct||0) < 100 && daysUntil(g.deadline) >= -3);
+  const pastList = goals.filter(g => g.archived || (g.pct||0) >= 100 || daysUntil(g.deadline) < -3);
+
+  const listEl = document.getElementById('goalsList');
+  const emptyEl = document.getElementById('goalsEmpty');
+  if(!activeList.length){
+    listEl.innerHTML=''; emptyEl.style.display='';
+  } else {
+    emptyEl.style.display='none';
+    listEl.innerHTML = activeList.map(g => {
+      const idx = goals.indexOf(g);
+      const dLeft = daysUntil(g.deadline);
+      const dCls = dLeft < 0 ? 'overdue' : dLeft <= 7 ? 'soon' : 'ok';
+      const dTxt = dLeft < 0 ? Math.abs(dLeft)+'d overdue' : dLeft===0 ? 'due today' : dLeft+'d left';
+      const links = (g.linkedSkills||[]).map(k => (defaults[k]||{}).icon+' '+(defaults[k]||{}).label).filter(Boolean);
+      const log = goalActivityLog(g);
+      const logHtml = log.length
+        ? log.slice(0,3).map(e => '<div class="goal-log-item"><b>'+e.date.slice(5)+'</b> · '+escapeHtmlG(e.reason||((defaults[e.skill]||{}).label||e.skill))+' <span style="color:var(--ember)">+'+e.amount+'xp</span></div>').join('')
+        : '<div class="goal-log-empty">No linked activity logged yet</div>';
+      return '<div class="goal-card" onclick="openGoalEditor('+idx+')">'+
+        '<div class="goal-card-top"><div class="goal-title">'+escapeHtmlG(g.title)+'</div><div class="goal-days '+dCls+'">'+dTxt+'</div></div>'+
+        '<div class="goal-pct-row"><span>Progress</span><span>'+(g.pct||0)+'%</span></div>'+
+        '<div class="goal-bar-track"><div class="goal-bar-fill" style="width:'+(g.pct||0)+'%"></div></div>'+
+        (links.length ? '<div class="goal-links">'+links.map(l=>'<span class="goal-link-chip">'+l+'</span>').join('')+'</div>' : '')+
+        logHtml+
+      '</div>';
+    }).join('');
+  }
+
+  const pastSection = document.getElementById('goalsPastSection');
+  const pastListEl = document.getElementById('goalsPastList');
+  if(!pastList.length){ pastSection.style.display='none'; }
+  else {
+    pastSection.style.display='';
+    pastListEl.innerHTML = pastList.map(g => {
+      const idx = goals.indexOf(g);
+      return '<div class="goal-card" style="opacity:0.7" onclick="openGoalEditor('+idx+')">'+
+        '<div class="goal-card-top"><div class="goal-title">'+escapeHtmlG(g.title)+'</div><div class="goal-days '+(g.pct>=100?'ok':'overdue')+'">'+(g.pct>=100?'reached':'ended')+'</div></div>'+
+        '<div class="goal-pct-row"><span>Final progress</span><span>'+(g.pct||0)+'%</span></div>'+
+      '</div>';
+    }).join('');
+  }
+}
+
+let editingGoalIdx = null, editingGoalSkills = [];
+window.openGoalEditor = function(idx){
+  editingGoalIdx = idx;
+  const goals = loadGoals();
+  const g = (idx!=null) ? goals[idx] : { title:'', why:'', deadline:'', linkedSkills:[], pct:0, createdDate:todayKey() };
+  editingGoalSkills = (g.linkedSkills||[]).slice();
+
+  const old = document.getElementById('geBg'); if(old) old.remove();
+  const bg = document.createElement('div');
+  bg.className = 'rc-bg'; bg.id = 'geBg';
+  const defaults = window.RPG_DEFAULT_SKILLS||{};
+  const skillKeys = Object.keys(defaults).filter(k => defaults[k].active!==false && !defaults[k].private);
+  bg.innerHTML = '<div class="ge-sheet">'+
+    '<div class="rc-handle"></div>'+
+    '<input class="ge-title-input" id="geTitle" placeholder="What\u2019s the goal?" value="'+escapeHtmlG(g.title)+'">'+
+    '<div class="sec-head" style="margin-top:0">Why does this matter</div>'+
+    '<textarea class="ge-textarea" id="geWhy" rows="2" placeholder="Optional \u2014 your own reminder of why">'+escapeHtmlG(g.why)+'</textarea>'+
+    '<div class="sec-head">Deadline</div>'+
+    '<input class="ge-date-input" id="geDeadline" type="date" value="'+(g.deadline||'')+'">'+
+    '<div class="sec-head">Link skills (activity here logs automatically)</div>'+
+    '<div class="ge-skill-grid" id="geSkillGrid">'+
+      skillKeys.map(k => '<div class="ge-skill-chip'+(editingGoalSkills.includes(k)?' sel':'')+'" data-k="'+k+'" onclick="toggleGoalSkill(\''+k+'\')">'+defaults[k].icon+' '+defaults[k].label+'</div>').join('')+
+    '</div>'+
+    '<div class="sec-head">Your own progress estimate</div>'+
+    '<div class="ge-pct-row"><input type="range" id="gePct" min="0" max="100" value="'+(g.pct||0)+'" oninput="document.getElementById(\'gePctVal\').textContent=this.value+\'%\'"><span class="ge-pct-val" id="gePctVal">'+(g.pct||0)+'%</span></div>'+
+    '<div class="rc-actions">'+
+      '<button class="rc-save-btn" onclick="saveGoalFromEditor()">Save goal</button>'+
+      (idx!=null ? '<button class="rc-delete-btn" onclick="deleteGoalFromEditor()">Delete</button>' : '')+
+    '</div>'+
+    '<button class="rc-cancel-btn" onclick="document.getElementById(\'geBg\').remove()">Cancel</button>'+
+  '</div>';
+  bg.addEventListener('click', e => { if(e.target===bg) bg.remove(); });
+  document.body.appendChild(bg);
+};
+window.toggleGoalSkill = function(k){
+  const i = editingGoalSkills.indexOf(k);
+  if(i===-1) editingGoalSkills.push(k); else editingGoalSkills.splice(i,1);
+  const chip = document.querySelector('.ge-skill-chip[data-k="'+k+'"]');
+  if(chip) chip.classList.toggle('sel');
+};
+window.saveGoalFromEditor = function(){
+  const titleEl = document.getElementById('geTitle');
+  const title = (titleEl.value||'').trim();
+  if(!title){ alert('Give the goal a title first.'); titleEl.focus(); return; }
+  const deadline = document.getElementById('geDeadline').value;
+  if(!deadline){ alert('Pick a deadline.'); return; }
+  const why = document.getElementById('geWhy').value.trim();
+  const pct = Number(document.getElementById('gePct').value)||0;
+  const goals = loadGoals();
+  const goal = {
+    title, why, deadline, pct, linkedSkills: editingGoalSkills.slice(),
+    createdDate: (editingGoalIdx!=null ? goals[editingGoalIdx].createdDate : todayKey()),
+    archived: false,
+  };
+  if(editingGoalIdx!=null) goals[editingGoalIdx] = goal; else goals.push(goal);
+  saveGoals(goals);
+  document.getElementById('geBg').remove();
+  renderGoalsView();
+};
+window.deleteGoalFromEditor = function(){
+  if(editingGoalIdx==null) return;
+  if(!confirm('Delete this goal? This cannot be undone.')) return;
+  const goals = loadGoals();
+  goals.splice(editingGoalIdx,1);
+  saveGoals(goals);
+  document.getElementById('geBg').remove();
+  renderGoalsView();
+};
+
 function renderPriorityFocus(){
   const wrap=document.getElementById('priorityFocusWrap');
   const el=document.getElementById('priorityFocusCard');
@@ -3108,14 +3318,14 @@ let activeQuestSkill = null;
 window.setSkillsView = function(view){
   skillsView = view;
   document.getElementById('skillsView').style.display = view==='skills'?'':'none';
-  document.getElementById('questsView').style.display = view==='quests'?'':'none';
+  document.getElementById('goalsView').style.display = view==='goals'?'':'none';
   document.getElementById('venturesView').style.display = view==='ventures'?'':'none';
   document.getElementById('skillsViewBtn').classList.toggle('active', view==='skills');
-  document.getElementById('questsViewBtn').classList.toggle('active', view==='quests');
+  document.getElementById('goalsViewBtn').classList.toggle('active', view==='goals');
   document.getElementById('venturesViewBtn').classList.toggle('active', view==='ventures');
   if(view==='skills') renderRSGrid();
   else if(view==='ventures') renderVenturesView();
-  else renderQuestView();
+  else if(view==='goals') renderGoalsView();
 };
 
 function renderSkillTree(){
