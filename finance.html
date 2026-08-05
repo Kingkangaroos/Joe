@@ -7,9 +7,9 @@
 <title>Finances</title>
 <link rel="manifest" href="./manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.61" defer></script>
-<script src="topbar.js?v=10.61" defer></script>
-<script src="xp.js?v=10.61" defer></script>
+<script src="sync.js?v=10.62" defer></script>
+<script src="topbar.js?v=10.62" defer></script>
+<script src="xp.js?v=10.62" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -2311,7 +2311,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       checkBtn.style.cssText = `width:32px;height:32px;border-radius:50%;border:2px solid ${isPaidThisMonth?'#6BE3A4':'rgba(255,255,255,0.2)'};background:${isPaidThisMonth?'rgba(107,227,164,0.15)':'transparent'};color:${isPaidThisMonth?'#6BE3A4':'rgba(255,255,255,0.3)'};font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;-webkit-tap-highlight-color:transparent`;
       checkBtn.innerHTML = isPaidThisMonth ? '✓' : '';
       checkBtn.title = isPaidThisMonth ? 'Markeer als onbetaald' : 'Markeer als betaald';
-      checkBtn.addEventListener('click', () => {
+      checkBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const pd = storeGet('vk_paid_v1') || {};
         const months = pd[it.id] || [];
         const mIdx = months.indexOf(curMonth);
@@ -2332,12 +2333,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       const delBtn = document.createElement('button');
       delBtn.style.cssText = 'background:transparent;border:1px solid rgba(255,255,255,0.10);color:var(--text-tertiary);cursor:pointer;font-size:12px;padding:3px 7px;border-radius:5px;font-family:inherit;line-height:1;flex-shrink:0';
       delBtn.textContent = '×';
-      delBtn.addEventListener('click', () => {
+      delBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const its = storeGet('subs') || [];
         its.splice(idx, 1);
         storeSet('subs', its);
         renderSubs();
       });
+
+      // v10.62: tap the row itself (not the check/delete buttons, which stop
+      // propagation above) to edit the amount or billing day — Joey asked
+      // for this after having to ask Claudia to fix a subscription's price
+      // by hand. Reuses window.__editSub, defined further down.
+      row.style.cursor = 'pointer';
+      row.addEventListener('click', () => window.__editSub(it.id));
 
       row.appendChild(left);
       row.appendChild(cost);
@@ -2404,6 +2413,27 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     }
     return parseFloat(s);
   }
+
+  // v10.62: edit an existing subscription's amount and/or billing day.
+  // Simple sequential prompts rather than a new custom sheet — matches the
+  // pattern already used for Portfolio's "close position" flow, and this is
+  // a quick utility action, not a rich multi-field form.
+  window.__editSub = function(id){
+    const its = storeGet('subs') || [];
+    const i = its.findIndex(x => x.id === id);
+    if (i < 0) return;
+    const it = its[i];
+    const amountStr = prompt('Bedrag voor "' + it.name + '" (\u20ac):', it.amount);
+    if (amountStr == null) return; // cancelled entirely, nothing changes
+    const amount = euroNum(amountStr);
+    if (isNaN(amount) || amount <= 0) { alert('Ongeldig bedrag \u2014 niks gewijzigd.'); return; }
+    const dayStr = prompt('Dag van de maand voor afschrijving (1\u201331, leeg = onbekend):', it.dayOfMonth || '');
+    // cancelling here still saves the amount above \u2014 only the day stays as it was
+    const day = (dayStr == null) ? it.dayOfMonth : (dayStr.trim() ? Math.max(1, Math.min(31, parseInt(dayStr, 10) || it.dayOfMonth)) : null);
+    its[i] = Object.assign({}, it, { amount, dayOfMonth: day });
+    storeSet('subs', its);
+    renderSubs();
+  };
 
   function doSubAdd() {
     const nEl=document.getElementById('subName'), aEl=document.getElementById('subAmount');
