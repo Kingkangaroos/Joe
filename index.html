@@ -10,14 +10,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.62" defer></script>
-<script src="topbar.js?v=10.62" defer></script>
-<script src="xp.js?v=10.62" defer></script>
-<script src="quests.js?v=10.62" defer></script>
-<script src="ladders.js?v=10.62" defer></script>
-<script src="ventures.js?v=10.62" defer></script>
-<script src="checkin.js?v=10.62" defer></script>
-<script src="push.js?v=10.62" defer></script>
+<script src="sync.js?v=11.0" defer></script>
+<script src="topbar.js?v=11.0" defer></script>
+<script src="xp.js?v=11.0" defer></script>
+<script src="quests.js?v=11.0" defer></script>
+<script src="ladders.js?v=11.0" defer></script>
+<script src="ventures.js?v=11.0" defer></script>
+<script src="checkin.js?v=11.0" defer></script>
+<script src="push.js?v=11.0" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -92,6 +92,105 @@ body {
 .char-chevron { color: var(--faint); font-size: 14px; }
 
 /* ── Greeting ─────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   v11 — World Hero + Skill Pulse (test branch, per Joey's brief:
+   translate the Panton/Kargo/Forest inspiration into something that
+   respects daily-use — fast, ambient motion, not scroll-jacking).
+   ══════════════════════════════════════════════════════════════ */
+.world-hero {
+  border-radius: 22px; padding: 20px 18px 16px; margin-bottom: 20px;
+  position: relative; overflow: hidden;
+  transition: background 2s ease;
+}
+.world-hero[data-time="dawn"]  { background: linear-gradient(155deg, #FBEEE0 0%, #F4F3EF 65%); }
+.world-hero[data-time="day"]   { background: linear-gradient(155deg, #EFF5F0 0%, #F4F3EF 65%); }
+.world-hero[data-time="dusk"]  { background: linear-gradient(155deg, #F6E7D9 0%, #F4F3EF 65%); }
+.world-hero[data-time="night"] { background: linear-gradient(155deg, #E8E9F1 0%, #F4F3EF 65%); }
+.world-hero-orb {
+  position: absolute; width: 220px; height: 220px; border-radius: 50%;
+  top: -110px; right: -60px; opacity: 0.35; filter: blur(2px);
+  background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+  animation: orbDrift 14s ease-in-out infinite;
+}
+@keyframes orbDrift {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(-14px, 10px) scale(1.06); }
+}
+.world-hero .greeting { margin-bottom: 14px; position: relative; z-index: 1; }
+
+/* — Skill Pulse strip — */
+.skill-pulse-strip {
+  display: flex; gap: 16px; overflow-x: auto; padding: 2px 2px 4px;
+  -webkit-overflow-scrolling: touch; position: relative; z-index: 1;
+}
+.skill-pulse-strip::-webkit-scrollbar { display: none; }
+.skill-pulse-item {
+  flex: 0 0 auto; width: 66px; display: flex; flex-direction: column;
+  align-items: center; gap: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.skill-pulse-scene {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: rgba(255,255,255,0.72); border: 1px solid rgba(21,20,15,0.06);
+  display: flex; align-items: center; justify-content: center; position: relative;
+  box-shadow: 0 2px 8px rgba(21,20,15,0.04);
+}
+.skill-pulse-label {
+  font-size: 10px; font-weight: 700; color: var(--muted); text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 66px;
+}
+.skill-pulse-lvl { font-size: 9px; color: var(--faint); font-weight: 700; }
+
+/* Ripple — finger whistling: rings pulse outward, faster/more rings at higher level */
+.pulse-ripple { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.pulse-ripple-icon { font-size: 16px; z-index: 1; }
+.pulse-ripple-ring {
+  position: absolute; inset: 6px; border-radius: 50%; border: 1.5px solid var(--ember);
+  animation: rippleOut var(--dur, 2.6s) ease-out infinite; opacity: 0;
+}
+.pulse-ripple-ring.r2 { animation-delay: calc(var(--dur, 2.6s) * 0.5); }
+@keyframes rippleOut { 0% { transform: scale(0.55); opacity: 0.65; } 100% { transform: scale(1.7); opacity: 0; } }
+
+/* Bounce — tennis: ball arcs back and forth */
+.pulse-bounce { width: 100%; height: 100%; position: relative; }
+.pulse-bounce-ball {
+  position: absolute; top: 50%; left: 50%; width: 9px; height: 9px; margin: -4.5px;
+  border-radius: 50%; background: var(--ember);
+  animation: tennisArc var(--dur, 1.8s) ease-in-out infinite;
+}
+@keyframes tennisArc {
+  0%, 100% { transform: translate(-13px, 7px); }
+  50% { transform: translate(13px, -9px); }
+}
+
+/* Keys — piano: small bars press in a rolling sequence */
+.pulse-keys { display: flex; gap: 2.5px; align-items: flex-end; height: 26px; }
+.pulse-key { width: 5px; height: 100%; background: var(--ink); border-radius: 1.5px; animation: keyPress var(--dur, 2s) ease-in-out infinite; }
+.pulse-key:nth-child(2) { animation-delay: calc(var(--dur, 2s) * 0.14); }
+.pulse-key:nth-child(3) { animation-delay: calc(var(--dur, 2s) * 0.28); }
+.pulse-key:nth-child(4) { animation-delay: calc(var(--dur, 2s) * 0.42); }
+@keyframes keyPress { 0%, 78%, 100% { transform: scaleY(1); } 88% { transform: scaleY(0.5); } }
+
+/* Glow — gratitude: warm pulse radiating outward */
+.pulse-glow { width: 28px; height: 28px; border-radius: 50%; background: radial-gradient(circle, var(--gold) 0%, transparent 72%); animation: glowPulse var(--dur, 2.8s) ease-in-out infinite; }
+@keyframes glowPulse { 0%, 100% { transform: scale(0.82); opacity: 0.55; } 50% { transform: scale(1.2); opacity: 1; } }
+
+/* Type — coding: a line extends and resets like a typed statement */
+.pulse-type { width: 30px; height: 3px; background: rgba(21,20,15,0.12); border-radius: 2px; overflow: hidden; }
+.pulse-type-fill { height: 100%; width: 0; background: var(--ink); animation: typeLine var(--dur, 2.2s) steps(8) infinite; }
+@keyframes typeLine { 0% { width: 0; } 45% { width: 100%; } 60% { width: 100%; } 100% { width: 0; } }
+
+/* Generic fallback — soft breathing pulse, still level-aware */
+.pulse-generic { width: 22px; height: 22px; border-radius: 50%; background: var(--ember); opacity: 0.65; animation: breathePulse var(--dur, 2.6s) ease-in-out infinite; }
+@keyframes breathePulse { 0%, 100% { transform: scale(0.78); opacity: 0.45; } 50% { transform: scale(1.12); opacity: 0.85; } }
+
+/* — Scroll reveal for existing sections below the hero — */
+.v11-reveal { opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.v11-reveal.in { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .v11-reveal { opacity: 1; transform: none; transition: none; }
+  .world-hero-orb, .pulse-ripple-ring, .pulse-bounce-ball, .pulse-key, .pulse-glow, .pulse-type-fill, .pulse-generic { animation: none !important; }
+}
+
 .greeting {
   margin-bottom: 20px;
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -1103,25 +1202,31 @@ body {
     </div>
   </a>
 
-  <!-- Greeting -->
-  <div class="greeting">
-    <div style="display:flex;align-items:center;gap:10px">
-      <button class="day-nav-btn" id="dayNavBack" onclick="setViewDay(missionsDayOffset-1)">‹</button>
-      <div>
-        <div class="greeting-time" id="greetingText">Good morning, Joey</div>
-        <div class="greeting-date" id="greetingDate"></div>
+  <!-- v11: World Hero — wraps the existing greeting, adds a time-of-day
+       ambient background + the Skill Pulse strip (the signature element:
+       small ambient scenes per top skill, motion intensity tied to level). -->
+  <div class="world-hero" id="worldHero" data-time="day">
+    <div class="world-hero-orb"></div>
+    <div class="greeting">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="day-nav-btn" id="dayNavBack" onclick="setViewDay(missionsDayOffset-1)">‹</button>
+        <div>
+          <div class="greeting-time" id="greetingText">Good morning, Joey</div>
+          <div class="greeting-date" id="greetingDate"></div>
+        </div>
+        <button class="day-nav-btn" id="dayNavFwd" onclick="setViewDay(missionsDayOffset+1)" style="display:none">›</button>
       </div>
-      <button class="day-nav-btn" id="dayNavFwd" onclick="setViewDay(missionsDayOffset+1)" style="display:none">›</button>
+      <div style="display:flex;align-items:center;gap:8px">
+      <button class="streak-pill jarvis-pill" onclick="location.href='jarvis.html'" title="Jarvis">
+        <svg class="streak-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 13c1.2 1.4 2.5 2 4 2s2.8-.6 4-2"/><circle cx="9" cy="10" r="0.5" fill="currentColor"/><circle cx="15" cy="10" r="0.5" fill="currentColor"/></svg>
+      </button>
+      <button class="streak-pill" id="streakPill" onclick="openCheckin()" style="display:none">
+        <svg class="streak-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-1.5 4-1.5 6.5A3.5 3.5 0 0012 13a3.5 3.5 0 003.5-3.5C15.5 7 14 6 12 3z"/><path d="M8.5 13.5C7 15 6.5 16.5 6.5 18a5.5 5.5 0 0011 0c0-1.5-.5-3-2-4.5"/></svg>
+        <span id="streakPillNum">0</span>
+      </button>
+      </div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px">
-    <button class="streak-pill jarvis-pill" onclick="location.href='jarvis.html'" title="Jarvis">
-      <svg class="streak-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 13c1.2 1.4 2.5 2 4 2s2.8-.6 4-2"/><circle cx="9" cy="10" r="0.5" fill="currentColor"/><circle cx="15" cy="10" r="0.5" fill="currentColor"/></svg>
-    </button>
-    <button class="streak-pill" id="streakPill" onclick="openCheckin()" style="display:none">
-      <svg class="streak-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-1.5 4-1.5 6.5A3.5 3.5 0 0012 13a3.5 3.5 0 003.5-3.5C15.5 7 14 6 12 3z"/><path d="M8.5 13.5C7 15 6.5 16.5 6.5 18a5.5 5.5 0 0011 0c0-1.5-.5-3-2-4.5"/></svg>
-      <span id="streakPillNum">0</span>
-    </button>
-    </div>
+    <div class="skill-pulse-strip" id="skillPulseStrip"></div>
   </div>
 
   <!-- Daily Quote -->
@@ -1304,6 +1409,73 @@ function renderGreeting() {
   const gd = document.getElementById('greetingDate');
   if (gt) gt.textContent = greeting() + ', Joey';
   if (gd) gd.textContent = fmtDate();
+}
+
+// ── v11: World Hero — time-of-day ambient background ──────────
+function renderWorldHero() {
+  const hero = document.getElementById('worldHero');
+  if (!hero) return;
+  const h = new Date().getHours();
+  const t = (h < 7 || h >= 21) ? 'night' : (h < 10) ? 'dawn' : (h < 18) ? 'day' : 'dusk';
+  hero.setAttribute('data-time', t);
+}
+
+// ── v11: Skill Pulse — the signature element. A handful of skills get a
+// bespoke ambient scene (finger whistling → ripple, tennis → bounce, piano
+// → keys, gratitude → glow, coding → typed line); everything else gets a
+// generic breathing pulse. Every scene's animation speed is driven by the
+// skill's own level, so a higher level genuinely reads as "more alive" —
+// this is Joey's own "Forest app" reference, translated into something
+// built from plain CSS, no illustration assets needed.
+const SKILL_PULSE_SCENES = {
+  whistling: 'ripple', tennis: 'bounce', piano: 'keys',
+  gratitude: 'glow', coding: 'type',
+};
+function pulseSceneHtml(kind, dur) {
+  if (kind === 'ripple') return `<div class="pulse-ripple" style="--dur:${dur}s"><span class="pulse-ripple-icon">🎵</span><span class="pulse-ripple-ring"></span><span class="pulse-ripple-ring r2"></span></div>`;
+  if (kind === 'bounce') return `<div class="pulse-bounce" style="--dur:${dur}s"><div class="pulse-bounce-ball"></div></div>`;
+  if (kind === 'keys')   return `<div class="pulse-keys" style="--dur:${dur}s"><div class="pulse-key"></div><div class="pulse-key"></div><div class="pulse-key"></div><div class="pulse-key"></div></div>`;
+  if (kind === 'glow')   return `<div class="pulse-glow" style="--dur:${dur}s"></div>`;
+  if (kind === 'type')   return `<div class="pulse-type" style="--dur:${dur}s"><div class="pulse-type-fill"></div></div>`;
+  return `<div class="pulse-generic" style="--dur:${dur}s"></div>`;
+}
+function renderSkillPulse() {
+  const strip = document.getElementById('skillPulseStrip');
+  if (!strip || !window.getCharacter || !window.xpToLevel) return;
+  const char = window.getCharacter();
+  const skills = char.skills || {};
+  const defaults = window.RPG_DEFAULT_SKILLS || {};
+  const ranked = Object.keys(skills)
+    .map(k => ({ key: k, def: defaults[k], xp: (skills[k] || {}).xp || 0 }))
+    .filter(s => s.def && s.def.active !== false && !s.def.private)
+    .map(s => ({ ...s, level: window.xpToLevel(s.xp) }))
+    .sort((a, b) => b.level - a.level)
+    .slice(0, 8);
+  if (!ranked.length) { strip.innerHTML = ''; return; }
+  strip.innerHTML = ranked.map(s => {
+    const intensity = Math.min(1, s.level / 100);
+    const dur = (2.6 - intensity * 1.6).toFixed(2); // faster/more alive at higher level
+    const kind = SKILL_PULSE_SCENES[s.key] || 'generic';
+    return `<div class="skill-pulse-item" onclick="location.href='character.html#skill=${s.key}'">
+      <div class="skill-pulse-scene">${pulseSceneHtml(kind, dur)}</div>
+      <div class="skill-pulse-label">${s.def.label || s.key}</div>
+      <div class="skill-pulse-lvl">Lvl ${s.level}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── v11: lightweight scroll-reveal for existing sections below the hero.
+// Deliberately NOT scroll-jacking/pinning (Panton/Kargo's approach) — this
+// is an app opened many times a day, so motion stays fast and subtle:
+// sections fade+rise in once as they first enter view, nothing more.
+function setupV11ScrollReveal() {
+  const targets = document.querySelectorAll('.sec-head, .day-arc-card, .checkin-card, .weekly-card');
+  if (!targets.length || !('IntersectionObserver' in window)) return;
+  targets.forEach(el => el.classList.add('v11-reveal'));
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  targets.forEach(el => io.observe(el));
 }
 
 // ── Character strip ──────────────────────────────────────────
@@ -3378,6 +3550,8 @@ function boot() {
   installLevelUpToasts();
   if (focusLoad()) openFocusOverlay();
   renderGreeting();
+  try{renderWorldHero();}catch(e){}
+  try{renderSkillPulse();}catch(e){}
   renderQuote();
   renderArc(0);
   renderStreakPill();
@@ -3394,6 +3568,7 @@ function boot() {
   renderAgenda();
   agendaWireLongPress();
   renderTodos();
+  try{setupV11ScrollReveal();}catch(e){}
 }
 
 // Wait for xp.js to initialise
