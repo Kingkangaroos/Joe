@@ -7,9 +7,9 @@
 <title>Finances</title>
 <link rel="manifest" href="./manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.62" defer></script>
-<script src="topbar.js?v=10.62" defer></script>
-<script src="xp.js?v=10.62" defer></script>
+<script src="sync.js?v=10.64" defer></script>
+<script src="topbar.js?v=10.64" defer></script>
+<script src="xp.js?v=10.64" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -986,6 +986,28 @@ html, body { scrollbar-width: none; -ms-overflow-style: none; }
   color: var(--text-primary); font-family: inherit;
 }
 
+/* ===== Debts (v10.64) ===== */
+.dt-row {
+  background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px;
+  padding: 12px 14px; margin-bottom: 8px;
+}
+.dt-row-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.dt-name { font-weight: 700; font-size: 14px; color: var(--text-primary); }
+.dt-type-tag {
+  font-size: 9px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-tertiary); background: rgba(255,255,255,0.06);
+  padding: 2px 6px; border-radius: 5px; margin-left: 6px;
+}
+.dt-balance { font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; color: #FF8A6B; }
+.dt-row-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; display: flex; gap: 10px; flex-wrap: wrap; }
+.dt-row-actions { display: flex; gap: 6px; margin-top: 10px; }
+.dt-row-actions button {
+  flex: 1; padding: 7px; font-size: 11px; font-weight: 700; border-radius: 8px; cursor: pointer;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-secondary);
+}
+.dt-row-actions button.payoff-btn { color: #6BE3A4; }
+.dt-row-actions button.delete-btn { color: #FF6B6B; flex: 0 0 auto; padding: 7px 12px; }
+
 /* ===== Wishlist rows ===== */
 .wish-row {
   background: rgba(255,255,255,0.025);
@@ -1817,6 +1839,62 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 </div>
 
+<!-- ===== DEBTS (v10.64) ===== -->
+<div class="section" data-section="debts" hidden>
+  <div class="section-title">
+    <span class="section-title-text">DEBTS</span>
+  </div>
+
+  <div class="card wish-hero">
+    <div class="wish-hero-top">
+      <div>
+        <div class="wish-hero-eyebrow">TOTAL OWED</div>
+        <div class="wish-hero-num" id="dtTotalOwed">€0</div>
+      </div>
+    </div>
+    <div class="wish-hero-foot" id="dtCountFoot">0 debts tracked</div>
+  </div>
+
+  <div class="card wish-add-card">
+    <div class="wish-add-eyebrow">+ ADD A DEBT</div>
+    <div class="wish-add-row" style="margin-bottom:8px">
+      <input type="text" id="dtName" placeholder="Name (e.g. ING credit card, loan from Mark)" class="wish-input" style="flex:1">
+    </div>
+    <div class="wish-add-row" style="margin-bottom:8px">
+      <select id="dtType" class="wish-input" style="flex:1">
+        <option value="credit_card">Credit card</option>
+        <option value="loan">Loan</option>
+        <option value="other">Other / IOU</option>
+      </select>
+    </div>
+    <div class="wish-add-row" style="margin-bottom:8px">
+      <input type="text" inputmode="decimal" id="dtBalance" placeholder="Current balance €" class="wish-input" style="flex:1">
+      <input type="text" inputmode="decimal" id="dtRate" placeholder="Interest rate % (optional)" class="wish-input" style="flex:1">
+    </div>
+    <div class="wish-add-row" style="margin-bottom:8px">
+      <input type="text" inputmode="decimal" id="dtMonthly" placeholder="Monthly repayment € (optional)" class="wish-input" style="flex:1">
+    </div>
+    <div class="wish-add-row">
+      <button class="wish-add-btn" style="flex:1" onclick="window.__addDebt && window.__addDebt()">+ Add debt</button>
+    </div>
+    <div class="wish-add-error-msg" id="dtAddError" style="display:none"></div>
+  </div>
+
+  <div class="wish-section-h">
+    <span class="wish-section-label">TRACKED DEBTS</span>
+  </div>
+  <div id="dtList"></div>
+  <div class="wish-empty-card" id="dtEmpty">
+    <div class="wish-empty-icon">📉</div>
+    <div class="wish-empty-title">No debts tracked yet</div>
+    <div class="wish-empty-sub">Add a credit card, loan or IOU above. Log charges and payments as they happen, so the balance always reflects reality.</div>
+  </div>
+
+  <div class="wish-empty-sub" style="margin-top:14px;padding:0 4px">
+    Interest rate and monthly repayment are informational — nothing here is auto-calculated compound interest, since that can silently drift from what your actual statement says. Update the rate yourself if it changes; that's more honest than a number that quietly gets it wrong.
+  </div>
+</div>
+
 <!-- ===== BOTTOM TAB BAR ===== -->
 <nav class="bottom-tabs" id="bottomTabs" aria-label="Sections">
   <button class="bot-tab active" data-tab="net">
@@ -1836,6 +1914,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   <button class="bot-tab" data-tab="portfolio">
     <span class="bot-tab-icon">📈</span>
     <span class="bot-tab-label">Portfolio</span>
+  </button>
+
+  <button class="bot-tab" data-tab="debts">
+    <span class="bot-tab-icon">📉</span>
+    <span class="bot-tab-label">Debts</span>
   </button>
 </nav>
 
@@ -1883,7 +1966,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   tabs.forEach(b => b.addEventListener('click', () => setActiveTab(b.dataset.tab)));
   const savedTab = storeGet(TAB_KEY);
-  setActiveTab(savedTab && ['net','subs','wish','portfolio'].includes(savedTab) ? savedTab : 'net');
+  setActiveTab(savedTab && ['net','subs','wish','portfolio','debts'].includes(savedTab) ? savedTab : 'net');
 
   // ============================================================
   // NET WORTH (copied from the main dashboard, verbatim logic)
@@ -2791,6 +2874,123 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   renderPortfolio();
+
+  // ============================================================
+  // DEBTS (v10.64) — Joey: wants a debt overview with an interest rate he
+  // can update (rates change, don't try to auto-compound and silently
+  // drift from the real statement) and a monthly repayment figure, plus
+  // the ability to log new charges (e.g. a credit card) and payments as
+  // they happen. Storage: nw:debts, covered by the existing
+  // syncedPrefixes:['nw:'] rule — no sync config change needed.
+  // ============================================================
+  const DT_KEY = 'nw:debts';
+  function dtLoad() { return storeGet(DT_KEY) || []; }
+  function dtSave(arr) { storeSet(DT_KEY, arr); }
+  const DT_TYPE_LABEL = { credit_card: 'credit card', loan: 'loan', other: 'other' };
+
+  function renderDebts() {
+    const debts = dtLoad();
+    const total = debts.reduce((sum, d) => sum + (Number(d.balance) || 0), 0);
+    const totalEl = document.getElementById('dtTotalOwed');
+    const countEl = document.getElementById('dtCountFoot');
+    if (totalEl) totalEl.textContent = fmtMoney(total);
+    if (countEl) countEl.textContent = debts.length + (debts.length === 1 ? ' debt tracked' : ' debts tracked');
+
+    const list = document.getElementById('dtList');
+    const empty = document.getElementById('dtEmpty');
+    if (!list) return;
+    if (!debts.length) {
+      list.innerHTML = '';
+      if (empty) empty.style.display = '';
+      return;
+    }
+    if (empty) empty.style.display = 'none';
+    list.innerHTML = debts.map((d, idx) => {
+      const sub = [];
+      if (d.interestRate != null && d.interestRate !== '') sub.push(d.interestRate + '% interest');
+      if (d.monthlyPayment) sub.push(fmtMoney(Number(d.monthlyPayment)) + '/mo target');
+      return '<div class="dt-row">' +
+        '<div class="dt-row-top">' +
+          '<div><span class="dt-name">' + escapeHtmlDt(d.name) + '</span><span class="dt-type-tag">' + (DT_TYPE_LABEL[d.type] || d.type) + '</span></div>' +
+          '<div class="dt-balance">' + fmtMoney(Number(d.balance) || 0) + '</div>' +
+        '</div>' +
+        (sub.length ? '<div class="dt-row-sub"><span>' + sub.join('</span><span>') + '</span></div>' : '') +
+        '<div class="dt-row-actions">' +
+          '<button onclick="window.__addDebtCharge(' + idx + ')">+ Add charge</button>' +
+          '<button class="payoff-btn" onclick="window.__addDebtPayment(' + idx + ')">\u2212 Log payment</button>' +
+          '<button class="delete-btn" onclick="window.__deleteDebt(' + idx + ')">\u00d7</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+  function escapeHtmlDt(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+  window.__addDebt = function () {
+    const nameEl = document.getElementById('dtName');
+    const typeEl = document.getElementById('dtType');
+    const balEl = document.getElementById('dtBalance');
+    const rateEl = document.getElementById('dtRate');
+    const monthlyEl = document.getElementById('dtMonthly');
+    const errEl = document.getElementById('dtAddError');
+    if (!nameEl || !balEl) return;
+    const name = (nameEl.value || '').trim();
+    const balance = euroNum(balEl.value);
+    if (!name) { if (errEl) { errEl.textContent = 'Give the debt a name first.'; errEl.style.display = ''; } nameEl.focus(); return; }
+    if (isNaN(balance) || balance < 0) { if (errEl) { errEl.textContent = 'Enter a valid balance.'; errEl.style.display = ''; } balEl.focus(); return; }
+    const rateRaw = (rateEl.value || '').trim();
+    const rate = rateRaw ? euroNum(rateRaw) : null;
+    const monthlyRaw = (monthlyEl.value || '').trim();
+    const monthly = monthlyRaw ? euroNum(monthlyRaw) : null;
+    if (errEl) errEl.style.display = 'none';
+    const debts = dtLoad();
+    debts.push({
+      name, type: typeEl ? typeEl.value : 'other', balance,
+      interestRate: (rate != null && !isNaN(rate)) ? rate : null,
+      monthlyPayment: (monthly != null && !isNaN(monthly)) ? monthly : null,
+      createdDate: new Date().toISOString(),
+    });
+    dtSave(debts);
+    nameEl.value = ''; balEl.value = ''; rateEl.value = ''; monthlyEl.value = '';
+    renderDebts();
+  };
+
+  window.__addDebtCharge = function (idx) {
+    const debts = dtLoad();
+    const d = debts[idx]; if (!d) return;
+    const amtStr = prompt('Nieuwe uitgave op "' + d.name + '" (\u20ac):', '');
+    if (amtStr == null) return;
+    const amt = euroNum(amtStr);
+    if (isNaN(amt) || amt <= 0) { alert('Ongeldig bedrag \u2014 niks gewijzigd.'); return; }
+    d.balance = (Number(d.balance) || 0) + amt;
+    dtSave(debts);
+    renderDebts();
+  };
+
+  window.__addDebtPayment = function (idx) {
+    const debts = dtLoad();
+    const d = debts[idx]; if (!d) return;
+    const amtStr = prompt('Aflossing op "' + d.name + '" (\u20ac):', d.monthlyPayment || '');
+    if (amtStr == null) return;
+    const amt = euroNum(amtStr);
+    if (isNaN(amt) || amt <= 0) { alert('Ongeldig bedrag \u2014 niks gewijzigd.'); return; }
+    d.balance = Math.max(0, (Number(d.balance) || 0) - amt);
+    dtSave(debts);
+    if (d.balance === 0 && confirm('"' + d.name + '" staat nu op \u20ac0 \u2014 helemaal afbetaald! Verwijderen uit de lijst?')) {
+      debts.splice(idx, 1);
+      dtSave(debts);
+    }
+    renderDebts();
+  };
+
+  window.__deleteDebt = function (idx) {
+    if (!confirm('Deze schuld verwijderen? Dit kan niet ongedaan gemaakt worden.')) return;
+    const debts = dtLoad();
+    debts.splice(idx, 1);
+    dtSave(debts);
+    renderDebts();
+  };
+
+  renderDebts();
 
   // ============================================================
   // ADD-BUTTON BULLETPROOFING — three independent paths:
