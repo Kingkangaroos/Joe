@@ -79,6 +79,11 @@ body {
 }
 .rt-row:active { transform:scale(0.99); }
 .rt-row.done { opacity:0.55; }
+/* v10.67: Joey — "nu is het een beetje vaag, dan moet ik het toch weer
+   opzoeken". Each route now links straight to its location on a map, so he
+   can see where a walk actually is without leaving the app to search. */
+.rt-map { display:inline-block; margin-top:4px; font-size:11px; color:var(--ember,#D4633E); text-decoration:none; font-weight:600; }
+.rt-map:active { opacity:0.6; }
 .rt-num {
   flex-shrink:0; width:32px; height:32px; border-radius:9px;
   display:flex; align-items:center; justify-content:center;
@@ -127,8 +132,8 @@ body {
 
 <div class="rt-toast" id="rtToast"></div>
 
-<script src="xp.js?v=10.66"></script>
-<script src="topbar.js?v=10.66"></script>
+<script src="xp.js?v=10.67"></script>
+<script src="topbar.js?v=10.67"></script>
 <script>
 // ═══ ANWB routes — volledige index uit het boekje (nr, naam, provincie, km) ═══
 const ROUTES = [
@@ -204,6 +209,8 @@ function rtRender(){
       <div class="rt-body">
         <div class="rt-name">${name}</div>
         <div class="rt-km">${km} km${isDone ? ' · ✓ ' + s.done[num] : ''}${isPicked ? ' · 🎲 next up' : ''}</div>
+        <a class="rt-map" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + ' ' + p)}"
+           target="_blank" rel="noopener" onclick="event.stopPropagation()">📍 Waar is dit?</a>
       </div>
       <div class="rt-check">✓</div>
     </div>`;

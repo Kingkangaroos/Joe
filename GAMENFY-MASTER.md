@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.66)
+# GAMENFY — Master Document (v10.67)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -356,6 +356,12 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.67 — de laatste 3 openstaande punten van Joey's lijst afgemaakt (hij moest hier terecht om vragen).** Joey: "kijk nog een keer kritisch of je echt alles meeneemt, want ik word een beetje gek van het herhalende." Terecht — de to-do-lijst er weer bij gepakt en de drie resterende punten alsnog gedaan.
+  - **Wishlist verwijderde het VERKEERDE item — echte bug, bewezen.** De lijst rendert gesorteerd op bedrag (hoog→laag), maar de verwijderknop gebruikte die zichtbare positie om te splicen in de ONgesorteerde opslag. Zodra twee wensen verschillende bedragen hadden, verdween er dus een ander item dan je aantikte. Joey's twee testwensen waren toevallig allebei €20, waardoor het soms wél goed leek te gaan — dat verklaart het onvoorspelbare gedrag dat hij beschreef. Gefixt door de oorspronkelijke opslag-index door de sortering heen mee te dragen, plus een guard tegen ongeldige indexen. **Simulatie bewees het**: oude code verwijderde bij alle drie de posities het verkeerde item, nieuwe code steeds het juiste.
+  - **Debts-indeling** — "Track debts mag groter, Add debt mag kleiner, of dat je erop klikt en het uitvouwt." Het toevoegformulier klapt nu dicht achter zijn eigen kop en opent op een tik; het kopje TRACKED DEBTS is groter en prominenter.
+  - **ANWB-routes: locatie per route.** Joey: "nu is het een beetje vaag, dan moet ik het toch weer opzoeken." Elke route heeft nu een "📍 Waar is dit?"-link die de route direct op de kaart opent (naam + provincie), zonder de app te verlaten voor een zoekopdracht. **Let op**: Joey's oorspronkelijke woorden waren "die foto erbij van dat boek" — dat is mogelijk ook een foto uit/van het boekje. De kaartlink lost het concrete probleem op ("ik moet het steeds opzoeken"); als hij echt de boekfoto bedoelde, moet dat nog apart nagevraagd worden.
+  `?v=` naar 10.67. Gevalideerd: volledige 9-pagina + 8-script syntax-pass.
 
 - **v10.66 — Health-kaarten eindelijk op dagbasis (Joey's herhaalde verzoek, eerder gemist).** Joey had dit meerdere keren gevraagd — "alles op dagbasis is veel interessanter dan op zevendaagse basis" — en in v10.54 was alleen een "Today"-waarde aan het detailscherm toegevoegd; de kaarten zelf toonden nog steeds allemaal een 7-daags gemiddelde als ondertitel, wat niets zegt over hoe vandaag ging. Alle 8 vitals-kaarten (stappen, slaap, rusthartslag, HRV, ademhaling, SpO2, afstand, actieve energie) vergelijken nu **vandaag met gisteren** (bijv. "↑ 1.380 vs yesterday", "Same as yesterday", "First day with data"), met nette terugval naar de bestaande wacht-tekst als er nog geen data is. Het detailscherm houdt bewust wél zijn periode-gemiddelde: daar kies je zelf een venster (week/maand/3M) en navigeer je door de historie, dus daar hoort een gemiddelde thuis. Geverifieerd met een simulatie op alle uitkomsten: stijging, daling, gelijk, en geen data. `?v=` naar 10.66. Gevalideerd: volledige 9-pagina syntax-pass, en bevestigd dat er nul "7-day avg"-teksten meer over zijn.
 

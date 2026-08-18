@@ -7,9 +7,9 @@
 <title>Finances</title>
 <link rel="manifest" href="./manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.66" defer></script>
-<script src="topbar.js?v=10.66" defer></script>
-<script src="xp.js?v=10.66" defer></script>
+<script src="sync.js?v=10.67" defer></script>
+<script src="topbar.js?v=10.67" defer></script>
+<script src="xp.js?v=10.67" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -987,6 +987,13 @@ html, body { scrollbar-width: none; -ms-overflow-style: none; }
 }
 
 /* ===== Debts (v10.64) ===== */
+.dt-add-toggle { display:flex; align-items:center; justify-content:space-between; cursor:pointer; margin-bottom:0; -webkit-tap-highlight-color:transparent; }
+.dt-add-chevron { transition: transform 0.2s ease; font-size:14px; }
+.dt-add-collapsed .dt-add-body { display:none; }
+.dt-add-collapsed .dt-add-chevron { transform: rotate(0deg); }
+.dt-add-card-open .dt-add-chevron, .card:not(.dt-add-collapsed) .dt-add-chevron { transform: rotate(90deg); }
+.dt-add-collapsed .dt-add-toggle { margin-bottom:0; }
+.dt-tracked-label { font-size:15px !important; letter-spacing:0.06em; color:var(--text-primary) !important; }
 .dt-row {
   background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px;
   padding: 12px 14px; margin-bottom: 8px;
@@ -1855,8 +1862,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <div class="wish-hero-foot" id="dtCountFoot">0 debts tracked</div>
   </div>
 
-  <div class="card wish-add-card">
-    <div class="wish-add-eyebrow">+ ADD A DEBT</div>
+  <!-- v10.67: Joey wanted the debt LIST to be the prominent thing and the add
+       form tucked away ("Track debts mag groter, Add debt mag kleiner, of dat
+       je erop klikt en het uitvouwt"). The form now collapses behind its own
+       header and opens on tap. -->
+  <div class="card wish-add-card dt-add-collapsed" id="dtAddCard">
+    <div class="wish-add-eyebrow dt-add-toggle" onclick="window.__toggleDebtForm()">
+      <span>+ ADD A DEBT</span><span class="dt-add-chevron">›</span>
+    </div>
+    <div class="dt-add-body">
     <div class="wish-add-row" style="margin-bottom:8px">
       <input type="text" id="dtName" placeholder="Name (e.g. ING credit card, loan from Mark)" class="wish-input" style="flex:1">
     </div>
@@ -1878,10 +1892,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       <button class="wish-add-btn" style="flex:1" onclick="window.__addDebt && window.__addDebt()">+ Add debt</button>
     </div>
     <div class="wish-add-error-msg" id="dtAddError" style="display:none"></div>
+    </div>
   </div>
 
   <div class="wish-section-h">
-    <span class="wish-section-label">TRACKED DEBTS</span>
+    <span class="wish-section-label dt-tracked-label">TRACKED DEBTS</span>
   </div>
   <div id="dtList"></div>
   <div class="wish-empty-card" id="dtEmpty">
@@ -2602,7 +2617,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     if (wishEmpty) wishEmpty.classList.add('hidden');
 
     // Sort largest first so the biggest dreams sit at the top
-    items.slice().sort((a, b) => (b.amount || 0) - (a.amount || 0)).forEach((it) => {
+    // v10.67 FIX: the list renders SORTED BY AMOUNT, but the delete button used
+    // that rendered position to splice the UNSORTED stored array — so as soon as
+    // two wishes had different amounts, deleting one removed a different item
+    // than the one tapped. (Joey hit this: "vorige ging alles in één keer weg".)
+    // Carry each item's ORIGINAL storage index through the sort and delete by that.
+    items.map((it, origIdx) => ({ it, origIdx }))
+         .sort((a, b) => ((b.it.amount || 0) - (a.it.amount || 0)))
+         .forEach(({ it, origIdx }) => {
       const idx = items.indexOf(it);
       const cost = Number(it.amount) || 0;
       const pct = grand > 0 ? (cost / grand) * 100 : null;
@@ -2622,7 +2644,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         +   '<div class="wish-row-amt">' + fmtMoney(cost) + '</div>'
         +   '<div class="wish-row-pct ' + cls + '">' + pctText + ' of NW</div>'
         + '</div>'
-        + '<button class="wish-row-x" data-i="' + idx + '" aria-label="Remove">×</button>'
+        + '<button class="wish-row-x" data-i="' + origIdx + '" aria-label="Remove">×</button>'
         + '</div>'
         + '<div class="wish-row-bar"><div class="wish-row-bar-fill ' + cls + '" style="width:' + fillPct + '%"></div></div>';
       wishList.appendChild(row);
@@ -2631,6 +2653,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       b.addEventListener('click', () => {
         const i = parseInt(b.dataset.i, 10);
         const arr = storeGet('wishlist') || [];
+        // guard: never let a bad index silently remove the wrong (or first) item
+        if (!Number.isInteger(i) || i < 0 || i >= arr.length) { renderWishlist(); return; }
         arr.splice(i, 1);
         storeSet('wishlist', arr);
         renderWishlist();
@@ -2998,6 +3022,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       dtSave(debts);
     }
     renderDebts();
+  };
+
+  window.__toggleDebtForm = function () {
+    const card = document.getElementById('dtAddCard');
+    if (card) card.classList.toggle('dt-add-collapsed');
   };
 
   window.__deleteDebt = function (idx) {
