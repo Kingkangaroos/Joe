@@ -142,6 +142,20 @@ Skills die weinig direct raken aan dit plan (bijv. sommige lifestyle/discipline-
 10b. ✅ **Websites Verkopen-venture, restant — afgehandeld.** Hero-foto's staan (v10.37). De 11 resterende skill-foto's: **2026-07-31, Joey's besluit — hij zoekt ze zelf later** (mijn web-search bleek traag/onnauwkeurig). Geen actiepunt meer voor Claudia; laat ze intussen gewoon als icoon (bestaande nette fallback).
 11. 🟡 **Vormgeving-overhaul + scroll-animaties** — wacht op Joey's referenties (namen van sites/apps, geen uploads). **2026-07-30: Joey bevestigt dat hij hier zelf nog moeite in gaat steken** (referenties verzamelen) — blijft dus bij hem liggen, geen actie voor Claudia.
 
+### Nieuw idee — "Lab" / files-sectie in de app (2026-08-18, Joey hardop denkend)
+Joey wil voorbeeldwebsites voor zijn ventures samen met Claudia kunnen bouwen, maar ze **binnen Gamenfy** kunnen terugvinden — niet in een apart project ("daar heb ik geen zin in, dat doe ik later wel als ik het echt ga uitrollen"). Zijn woorden: "een soort vakje waar ik op kan klikken, met verschillende websites of versievarianten, alsof het mijn files zijn, zodat ik daar de veranderingen in kan zien."
+- Zelfde plek zou ook de **to-do-lijst** kunnen huisvesten die nu buiten de app in losse documenten leeft.
+- Joey's suggestie voor de plek: onder de coding- of AI tools-skill ("ik heb daar volgens mij twee skills voor, mag je zelf een ding van maken").
+- Sluit aan bij de bredere ventures-vraag: "wat is allemaal mogelijk, wat zouden mensen willen."
+- **Nog niet gebouwd** — Joey wil hier later op terugkomen. Openstaande ontwerpvraag: is dit een lijst met links naar losse gedeployde previews, of moet de app de varianten echt kunnen tonen/vergelijken?
+
+### Feedback op de v11 poppetjes-test (2026-08-18)
+- Joey vindt de bewegende cartoon-poppetjes een goede start ("leuk wat je hebt gedaan"), maar nog niet per se de definitieve vorm.
+- **Concreet gevraagd en getest**: alle 45 tegelijk laten bewegen, met categorie-knoppen erboven — tik op een categorie en die poppetjes "rennen naar voren" mét hun naam eronder, terwijl de rest naar de achtergrond zakt en daar blijft rondbewegen. Prototype gebouwd als widget.
+- Joey accepteert bewust dat "alles tegelijk" een mierenhoop is — dat is juist de reden voor de categorie-filter.
+- **Later**: daily missions zouden in datzelfde scherm mogen meelopen.
+- **Later**: per-skill accessoires (zweetbandje, kokmuts, beret) om poppetjes onderling onderscheidbaar te maken — Joey: "misschien wel een beetje moeite doen om ze wat individueler te maken", maar eerst dit testen.
+
 ### Nieuwe ideeën (2026-07-30)
 - ✅ **Portfolio-tab (gebouwd v10.52)** — stocks/crypto/ETFs/opties, live crypto-prijzen via CoinGecko, gesloten-posities-log voor gerealiseerd P&L. Het "plan van tevoren"-idee is geïnterpreteerd als een notities-veld per positie — als Joey iets structurelers voor ogen had (bijv. een apart pre-trade-checklist-formulier), graag laten weten.
 - ✅ **Recipes + Nutrition Calculator (gebouwd v10.49)** — nieuwe pagina, gekoppeld aan cooking-skill, ingebouwde ~45-ingrediënten-database (geen live API, dus betrouwbaar/offline). **v2-idee onderzocht en bewust NIET gebouwd (2026-08-02)**: Open Food Facts leek een goede aanvulling voor merkproducten, maar bleek bij nader onderzoek geen vrije-tekst-zoekfunctie meer te bieden in de huidige, aanbevolen v2/v3-API — alleen gestructureerd filteren op exacte tags (categorie/merk/nutri-score), niet "typ een naam, vind een match." Het enige dat wél tekst-zoeken ondersteunt is de oude v1-endpoint, die Open Food Facts zelf expliciet afraadt voor nieuwe integraties. Bouwen op iets dat de bron zelf afraadt zou het "werkt altijd betrouwbaar"-principe van de huidige Recipes-pagina ondermijnen — dus bewust niet gedaan. De ingebouwde database blijft de aanpak, eventueel later uit te breiden met meer ingrediënten als Joey specifieke dingen mist.
