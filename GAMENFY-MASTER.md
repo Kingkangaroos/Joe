@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.67)
+# GAMENFY — Master Document (v10.68)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -356,6 +356,14 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.68 — boekfoto bij ANWB-routes + volledige eindcontrole van Joey's hele bugronde.** Joey bevestigde dat hij écht een foto van het boek wilde (niet alleen een kaartlink).
+  - **Boek geïdentificeerd**: het ANWB *Wandelrouteboek Nederland* (100 routes, spiraalgebonden, ISBN 9789018019587) — matcht exact met de 100 routes en de routenamen in `ROUTES`.
+  - **Bewuste keuze: Joey's EIGEN foto, geen webshop-plaatje.** Een gehotlinkte productfoto van bol/ANWB rot weg (URL's veranderen, hotlinken wordt geblokkeerd) én het is niet zijn exemplaar. Nu een fotoslot in de hero: tikken → foto kiezen/maken → automatisch verkleind naar max 400px en als JPEG (kwaliteit 0.72) opgeslagen.
+  - **Sync-veiligheid expliciet geverifieerd**: de sleutel `rt_book_photo` valt buiten élke sync-scope (RPG_SYNC_KEYS/PREFIXES, nw:, stack:) — een afbeelding in de gedeelde cloud-blob zou alle echte routedata in omvang overtreffen. Getest: foto blijft lokaal, `rpg_routes_v1` (de voortgang) synct gewoon door. Nette foutafhandeling als een foto alsnog te groot is voor localStorage.
+  - **Eindcontrole**: alle 10 punten uit Joey's oorspronkelijke bericht één voor één in de code geverifieerd aanwezig (missie-clobber, streak-reset, Your Skills-formaat, health dagbasis, level-bewuste challenge, crypto-namen, wishlist-index, debts-inklap, routekaartlink, boekfoto). Nul "7-day avg"-teksten over.
+  - **Nog open, buiten Claudia's bereik**: Fitbit-herkoppeling (Joey doet dit zelf) en de v11-vormgeving (Joey is bezig met Claude Design).
+  `?v=` naar 10.68. Gevalideerd: volledige 9-pagina + 8-script syntax-pass.
 
 - **v10.67 — de laatste 3 openstaande punten van Joey's lijst afgemaakt (hij moest hier terecht om vragen).** Joey: "kijk nog een keer kritisch of je echt alles meeneemt, want ik word een beetje gek van het herhalende." Terecht — de to-do-lijst er weer bij gepakt en de drie resterende punten alsnog gedaan.
   - **Wishlist verwijderde het VERKEERDE item — echte bug, bewezen.** De lijst rendert gesorteerd op bedrag (hoog→laag), maar de verwijderknop gebruikte die zichtbare positie om te splicen in de ONgesorteerde opslag. Zodra twee wensen verschillende bedragen hadden, verdween er dus een ander item dan je aantikte. Joey's twee testwensen waren toevallig allebei €20, waardoor het soms wél goed leek te gaan — dat verklaart het onvoorspelbare gedrag dat hij beschreef. Gefixt door de oorspronkelijke opslag-index door de sortering heen mee te dragen, plus een guard tegen ongeldige indexen. **Simulatie bewees het**: oude code verwijderde bij alle drie de posities het verkeerde item, nieuwe code steeds het juiste.

@@ -79,6 +79,13 @@ body {
 }
 .rt-row:active { transform:scale(0.99); }
 .rt-row.done { opacity:0.55; }
+.rt-book { width:96px; height:128px; border-radius:10px; overflow:hidden; margin:0 auto 14px;
+  background:rgba(255,255,255,0.06); border:1px dashed rgba(255,255,255,0.28);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.rt-book img { width:100%; height:100%; object-fit:cover; display:block; }
+.rt-book-empty { display:flex; flex-direction:column; align-items:center; gap:4px; font-size:22px; opacity:0.75; }
+.rt-book-empty span { font-size:9px; font-weight:700; letter-spacing:0.04em; }
+.rt-book.has-photo { border-style:solid; border-color:rgba(255,255,255,0.18); }
 /* v10.67: Joey — "nu is het een beetje vaag, dan moet ik het toch weer
    opzoeken". Each route now links straight to its location on a map, so he
    can see where a walk actually is without leaving the app to search. */
@@ -116,7 +123,17 @@ body {
 <body>
 
 <div class="rt-hero">
-  <div class="rt-kicker">Side Quest · ANWB Wandelgids</div>
+  <!-- v10.68: Joey wanted a photo of the book here so the page is tied to the
+       physical copy on his shelf. Deliberately HIS OWN photo rather than a
+       hotlinked shop image: retailer image URLs rot and get hotlink-blocked,
+       and this way it's his actual book. Stored device-locally and downscaled,
+       so it never bloats the cloud sync payload. -->
+  <div class="rt-book" id="rtBook" onclick="rtPickBookPhoto()">
+    <img id="rtBookImg" alt="" style="display:none">
+    <div class="rt-book-empty" id="rtBookEmpty">📖<span>Foto toevoegen</span></div>
+  </div>
+  <input type="file" accept="image/*" id="rtBookInput" style="display:none" onchange="rtBookPhotoChosen(this)">
+  <div class="rt-kicker">Side Quest · ANWB Wandelrouteboek Nederland</div>
   <div class="rt-title">🥾 Walk the whole book</div>
   <div class="rt-big"><span class="rt-big-num" id="rtCount">0</span><span class="rt-big-sub">/ 100 routes</span></div>
   <div class="rt-bar"><div class="rt-bar-fill" id="rtBar" style="width:0%"></div></div>
@@ -132,8 +149,8 @@ body {
 
 <div class="rt-toast" id="rtToast"></div>
 
-<script src="xp.js?v=10.67"></script>
-<script src="topbar.js?v=10.67"></script>
+<script src="xp.js?v=10.68"></script>
+<script src="topbar.js?v=10.68"></script>
 <script>
 // ═══ ANWB routes — volledige index uit het boekje (nr, naam, provincie, km) ═══
 const ROUTES = [
@@ -218,6 +235,54 @@ function rtRender(){
   list.innerHTML = html;
 }
 
+// ── Book photo (v10.68) ─────────────────────────────────────
+// Device-local on purpose: the key name is outside every sync scope, so a
+// photo never travels into the shared cloud blob (an image would dwarf all
+// the actual route data). Downscaled before storing to keep localStorage sane.
+const RT_BOOK_KEY = 'rt_book_photo';
+function rtRenderBookPhoto(){
+  const wrap = document.getElementById('rtBook');
+  const img  = document.getElementById('rtBookImg');
+  const empty= document.getElementById('rtBookEmpty');
+  if(!wrap||!img||!empty) return;
+  let src = null; try { src = localStorage.getItem(RT_BOOK_KEY); } catch(e){}
+  if(src){ img.src = src; img.style.display='block'; empty.style.display='none'; wrap.classList.add('has-photo'); }
+  else { img.style.display='none'; empty.style.display='flex'; wrap.classList.remove('has-photo'); }
+}
+window.rtPickBookPhoto = function(){
+  let has=null; try{ has = localStorage.getItem(RT_BOOK_KEY); }catch(e){}
+  if(has && !confirm('Foto vervangen?')) return;
+  const inp = document.getElementById('rtBookInput');
+  if(inp){ inp.value=''; inp.click(); }
+};
+window.rtBookPhotoChosen = function(input){
+  const file = input && input.files && input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const im = new Image();
+    im.onload = () => {
+      // downscale to max 400px on the long edge — plenty for a 96px thumbnail
+      const max = 400;
+      const scale = Math.min(1, max / Math.max(im.width, im.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(im.width*scale); c.height = Math.round(im.height*scale);
+      c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+      try {
+        localStorage.setItem(RT_BOOK_KEY, c.toDataURL('image/jpeg', 0.72));
+        rtRenderBookPhoto();
+        rtToast('Foto opgeslagen');
+      } catch(err) {
+        alert('Foto is te groot om op te slaan — probeer een kleinere foto.');
+      }
+    };
+    im.onerror = () => alert('Kon deze afbeelding niet lezen.');
+    im.src = e.target.result;
+  };
+  reader.onerror = () => alert('Kon het bestand niet lezen.');
+  reader.readAsDataURL(file);
+};
+
 window.rrRoll = function(){
   const s = rtLoad();
   const remaining = ROUTES.filter(r => !s.done[r[0]] && r[0] !== s.current);
@@ -257,6 +322,7 @@ window.rtToggle = function(num){
 };
 
 rtRender();
+try{ rtRenderBookPhoto(); }catch(e){}
 </script>
 </body>
 </html>
