@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.65)
+# GAMENFY — Master Document (v10.66)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -356,6 +356,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.66 — Health-kaarten eindelijk op dagbasis (Joey's herhaalde verzoek, eerder gemist).** Joey had dit meerdere keren gevraagd — "alles op dagbasis is veel interessanter dan op zevendaagse basis" — en in v10.54 was alleen een "Today"-waarde aan het detailscherm toegevoegd; de kaarten zelf toonden nog steeds allemaal een 7-daags gemiddelde als ondertitel, wat niets zegt over hoe vandaag ging. Alle 8 vitals-kaarten (stappen, slaap, rusthartslag, HRV, ademhaling, SpO2, afstand, actieve energie) vergelijken nu **vandaag met gisteren** (bijv. "↑ 1.380 vs yesterday", "Same as yesterday", "First day with data"), met nette terugval naar de bestaande wacht-tekst als er nog geen data is. Het detailscherm houdt bewust wél zijn periode-gemiddelde: daar kies je zelf een venster (week/maand/3M) en navigeer je door de historie, dus daar hoort een gemiddelde thuis. Geverifieerd met een simulatie op alle uitkomsten: stijging, daling, gelijk, en geen data. `?v=` naar 10.66. Gevalideerd: volledige 9-pagina syntax-pass, en bevestigd dat er nul "7-day avg"-teksten meer over zijn.
 
 - **v10.65 — Joey's bug-ronde: twee kritieke bugs gereproduceerd en gefixt, plus 3 kleinere.** Joey was terecht gefrustreerd: "het moet gewoon echt werken, anders word ik er gedemotiveerd van."
   - **KRITIEK — afgevinkte missies verdwenen.** Root cause gevonden: een vinkje dat gezet werd VOORDAT de initiële cloud-pull klaar was, ging stilzwijgend verloren. `schedulePush()` vuurde wel, maar `pushNow()` stopt direct zolang `!ready`, en daarna overschreef `applyRemote()` het vinkje met de oudere cloud-waarde. Op een trage verbinding: app openen, meteen een paar missies aantikken, en ze later onaangevinkt terugzien. Gefixt door lokale schrijfacties tijdens het pull-venster te onthouden en na de pull terug te zetten (lokaal is per definitie nieuwer). **Bug eerst gereproduceerd in een simulatie** (zonder fix: vinkje weg; met fix: vinkje blijft) — niet op goed geluk gerepareerd.
