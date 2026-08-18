@@ -10,14 +10,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.64" defer></script>
-<script src="topbar.js?v=10.64" defer></script>
-<script src="xp.js?v=10.64" defer></script>
-<script src="quests.js?v=10.64" defer></script>
-<script src="ladders.js?v=10.64" defer></script>
-<script src="ventures.js?v=10.64" defer></script>
-<script src="checkin.js?v=10.64" defer></script>
-<script src="push.js?v=10.64" defer></script>
+<script src="sync.js?v=10.65" defer></script>
+<script src="topbar.js?v=10.65" defer></script>
+<script src="xp.js?v=10.65" defer></script>
+<script src="quests.js?v=10.65" defer></script>
+<script src="ladders.js?v=10.65" defer></script>
+<script src="ventures.js?v=10.65" defer></script>
+<script src="checkin.js?v=10.65" defer></script>
+<script src="push.js?v=10.65" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1253,10 +1253,20 @@ body {
     <div class="grat-sub">First word of the day · +10 XP Gratitude</div>
   </div>
 
-  <!-- Your Skills (v10.31 — was Focus Skills; now all skills, most recently active first, horizontal scroll) -->
-  <div class="sec-head">Your Skills</div>
-  <div class="skills-row" id="focusGrid">
-    <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">Loading skills…</div>
+  <!-- Your Skills (v10.65 — now presented exactly like the Core Tracker card
+       below: same wrapper, same 2-column grid, same per-skill layout. Joey
+       asked for this repeatedly; the previous horizontal chip row was the
+       wrong shape entirely.) -->
+  <div class="core-card">
+    <div class="core-head">
+      <div>
+        <div class="core-head-label">Your Skills</div>
+        <div class="core-head-sub">Most recently practised first</div>
+      </div>
+    </div>
+    <div class="core-skills" id="focusGrid">
+      <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">Loading skills…</div>
+    </div>
   </div>
 
   <!-- Core Tracker -->
@@ -1938,19 +1948,20 @@ function renderFocusGrid() {
     const barPct = nextXp && nextXp !== Infinity
       ? Math.max(0, Math.min(100, Math.round(((xp - thisXp) / (nextXp - thisXp)) * 100)))
       : 100;
-    // v10.42: "what's next" from the skill's own SKILL_LADDERS — richer and
-    // more current than the old milestones map Core Tracker still uses.
-    const ladder = (window.SKILL_LADDERS || {})[key] || [];
-    const nextTier = ladder.find(t => t.level > level);
-    const nextText = nextTier ? 'Lvl ' + nextTier.level + ' — ' + nextTier.title : 'Max tier reached';
-    return `<div class="skill-chip" onclick="location.href='character.html#skill=${key}'">
-      <div class="skill-chip-top">
-        <span class="skill-chip-icon">${def.icon||'⭐'}</span>
-        <span class="skill-chip-lvl">${level}</span>
-      </div>
-      <div class="skill-chip-name">${def.label || key}</div>
-      <div class="skill-chip-next">${nextText}</div>
-      <div class="skill-chip-bar-track"><div class="skill-chip-bar-fill" style="width:${barPct}%"></div></div>
+    // v10.65: Joey asked repeatedly for this row to be presented EXACTLY like
+    // the Core Tracker below it (the "Finger Whistling · 7 · Lvl 15 — First
+    // Sound" format). Now reuses the same .core-skill markup/classes and the
+    // same getNextMilestone() source, so the two sections are visually
+    // identical by construction and can't drift apart again. Only the
+    // ordering differs: most recently practised first.
+    const nextMs = getNextMilestone(def, level);
+    const nextText = nextMs ? 'Lvl ' + nextMs + ' — ' + def.milestones[nextMs] : 'Keep going';
+    return `<div class="core-skill" onclick="location.href='character.html#skill=${key}'">
+      <div class="core-skill-icon">${def.icon||'⭐'}</div>
+      <div class="core-skill-name">${def.label || key}</div>
+      <div class="core-skill-level">${level}</div>
+      <div class="core-skill-next">${nextText}</div>
+      <div class="core-bar-track"><div class="core-bar-fill" style="width:${barPct}%"></div></div>
     </div>`;
   }).join('');
 }
@@ -2064,17 +2075,54 @@ const WORKOUT_CHALLENGES = [
   { name:'Plank hold',      target:'60 seconds',   skill:'core',         xp:20, icon:'\uD83E\uDDF1' },
   { name:'Sit-ups',         target:'20 reps',      skill:'core',         xp:20, icon:'\uD83C\uDFAF' },
   { name:'Glute bridges',   target:'15 reps',      skill:'core',         xp:15, icon:'\uD83C\uDF09' },
-  { name:'Mountain climbers', target:'30 reps',    skill:'calisthenics', xp:15, icon:'\u26F0\uFE0F' },
+  { name:'Mountain climbers', target:'30 reps',    skill:'calisthenics', xp:15, icon:'\u26F0\uFE0F', minBand:2 },
   { name:'Superman hold',   target:'30 seconds',   skill:'core',         xp:15, icon:'\uD83E\uDDB8' },
   { name:'Russian twists',  target:'20 reps',      skill:'core',         xp:15, icon:'\uD83D\uDD04' },
   { name:'Incline push-ups',target:'15 reps',      skill:'calisthenics', xp:15, icon:'\uD83D\uDCD0' },
   { name:'Dead bug',        target:'10 reps/side', skill:'core',         xp:15, icon:'\uD83D\uDC1B' },
-  { name:'Dips',            target:'10 reps',      skill:'calisthenics', xp:20, icon:'\u2B07\uFE0F' },
+  { name:'Dips',            target:'10 reps',      skill:'calisthenics', xp:20, icon:'\u2B07\uFE0F', minBand:3 },
 ];
+// v10.65: Joey: "ik weet niet waar dat op gebaseerd is, het zijn soms hele
+// moeilijke dingen waarvan ik denk: ik ben nog helemaal niet op dat level."
+// He was right — the pick rotated purely on day-of-year and never looked at
+// his actual level, so an easier pool (v10.51) still couldn't stop it from
+// serving something out of reach. Now the TARGET scales with his real
+// calisthenics/core level, and only moves are offered whose entry level he
+// has actually reached. Same deterministic day rotation, so it still changes
+// daily and can't be re-rolled by reloading.
+const WC_SCALE = { 1:0.6, 2:0.8, 3:1.0, 4:1.25, 5:1.5 };
+function wcBandFor(level){
+  if (level < 5)  return 1;
+  if (level < 15) return 2;
+  if (level < 30) return 3;
+  if (level < 50) return 4;
+  return 5;
+}
+function wcScaleTarget(target, factor){
+  // scales the leading number in e.g. "15 reps" / "60 seconds" / "10 reps/side"
+  return String(target).replace(/^(\d+)/, (m, n) => {
+    const scaled = Math.max(3, Math.round((Number(n) * factor) / 5) * 5);
+    return String(scaled);
+  });
+}
 function todaysWorkoutChallenge(){
   const d=new Date(); const start=new Date(d.getFullYear(),0,0);
   const doy=Math.floor((d-start)/86400000);
-  return WORKOUT_CHALLENGES[((doy % WORKOUT_CHALLENGES.length)+WORKOUT_CHALLENGES.length)%WORKOUT_CHALLENGES.length];
+  let lvl = 1;
+  try {
+    if (window.getCharacter && window.xpToLevel) {
+      const sk = (window.getCharacter().skills) || {};
+      const cal = window.xpToLevel((sk.calisthenics||{}).xp || 0);
+      const core = window.xpToLevel((sk.core||{}).xp || 0);
+      lvl = Math.max(cal, core);
+    }
+  } catch(e){}
+  const band = wcBandFor(lvl);
+  const eligible = WORKOUT_CHALLENGES.filter(c => (c.minBand || 1) <= band);
+  const pool = eligible.length ? eligible : WORKOUT_CHALLENGES;
+  const base = pool[((doy % pool.length)+pool.length)%pool.length];
+  const factor = WC_SCALE[band] || 1;
+  return Object.assign({}, base, { target: wcScaleTarget(base.target, factor), level: lvl });
 }
 function workoutChallengeDone(dateStr){
   try{ const dd=JSON.parse(localStorage.getItem('rpg_daily_v1:'+dateStr))||{}; return !!dd.workout_challenge; }catch(e){ return false; }

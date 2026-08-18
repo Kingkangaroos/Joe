@@ -7,9 +7,9 @@
 <title>Finances</title>
 <link rel="manifest" href="./manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.64" defer></script>
-<script src="topbar.js?v=10.64" defer></script>
-<script src="xp.js?v=10.64" defer></script>
+<script src="sync.js?v=10.65" defer></script>
+<script src="topbar.js?v=10.65" defer></script>
+<script src="xp.js?v=10.65" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -2688,6 +2688,24 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   function pfLoad() { return storeGet(PF_KEY) || []; }
   function pfSave(arr) { storeSet(PF_KEY, arr); }
 
+  // v10.65: Joey entered a crypto position and the refresh silently did
+  // nothing. Cause: the lookup below is an exact match on the uppercased
+  // symbol, so typing the full name ("Bitcoin" -> "BITCOIN") matched nothing
+  // and was quietly dropped by .filter(Boolean) — no error, no feedback.
+  // cgResolve() now accepts full names and common variants too.
+  const COINGECKO_ALIASES = {
+    BITCOIN:'BTC', ETHEREUM:'ETH', SOLANA:'SOL', CARDANO:'ADA', RIPPLE:'XRP', XRPLEDGER:'XRP',
+    DOGECOIN:'DOGE', POLKADOT:'DOT', POLYGON:'MATIC', LITECOIN:'LTC', CHAINLINK:'LINK',
+    AVALANCHE:'AVAX', BINANCECOIN:'BNB', BNBCHAIN:'BNB', TETHER:'USDT', USDCOIN:'USDC',
+    SHIBAINU:'SHIB', TRON:'TRX', COSMOS:'ATOM', STELLAR:'XLM',
+  };
+  function cgResolve(symbol) {
+    const raw = String(symbol || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (COINGECKO_IDS[raw]) return COINGECKO_IDS[raw];
+    const alias = COINGECKO_ALIASES[raw];
+    return alias ? COINGECKO_IDS[alias] : null;
+  }
+
   const COINGECKO_IDS = {
     BTC:'bitcoin', ETH:'ethereum', SOL:'solana', ADA:'cardano', XRP:'ripple',
     DOGE:'dogecoin', DOT:'polkadot', MATIC:'matic-network', LTC:'litecoin',
@@ -2846,7 +2864,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     const positions = pfLoad();
     const cryptoPositions = positions.filter(p => !p.closed && p.type === 'crypto');
     if (!cryptoPositions.length) { alert('No open crypto positions to refresh.'); return; }
-    const ids = Array.from(new Set(cryptoPositions.map(p => COINGECKO_IDS[p.symbol]).filter(Boolean)));
+    const ids = Array.from(new Set(cryptoPositions.map(p => cgResolve(p.symbol)).filter(Boolean)));
     if (!ids.length) { alert('None of your crypto symbols are recognized (tried: ' + cryptoPositions.map(p=>p.symbol).join(', ') + '). Update the current price manually for now.'); return; }
     try {
       const resp = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=' + ids.join(',') + '&vs_currencies=eur');
@@ -2854,7 +2872,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       const data = await resp.json();
       let updated = 0;
       cryptoPositions.forEach(p => {
-        const cgId = COINGECKO_IDS[p.symbol];
+        const cgId = cgResolve(p.symbol);
         if (cgId && data[cgId] && data[cgId].eur != null) { p.currentPrice = data[cgId].eur; updated++; }
       });
       pfSave(positions);

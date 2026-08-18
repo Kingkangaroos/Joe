@@ -64,6 +64,8 @@
     const cloudKey = workspaceId ? (workspaceId + ':' + appKey) : appKey;
 
     let supa = null, pushTimer = null, suppressSync = false, lastSyncedJson = null, ready = false;
+    // v10.65: local writes captured during the initial-pull window (see setItem).
+    const pendingLocalWrites = new Map();
 
     function matches(k) {
       if (!k) return false;
@@ -94,7 +96,18 @@
     const origRemove = localStorage.removeItem.bind(localStorage);
     localStorage.setItem = function (k, v) {
       origSet(k, v);
-      try { if (!suppressSync && matches(k)) schedulePush(); } catch (e) {}
+      try {
+        if (!suppressSync && matches(k)) {
+          // v10.65 FIX: a write made BEFORE the initial cloud pull finished was
+          // silently lost — schedulePush() fired but pushNow() early-returns
+          // while !ready, and then applyRemote() overwrote it with the older
+          // cloud value. On a slow connection Joey could open the app, tap a
+          // few missions immediately, and watch them come back unchecked later.
+          // Recording them here lets init replay them once the pull lands.
+          if (!ready) pendingLocalWrites.set(k, v);
+          schedulePush();
+        }
+      } catch (e) {}
     };
     localStorage.removeItem = function (k) {
       origRemove(k);
@@ -167,11 +180,25 @@
         if (!error && data && data.data && Object.keys(data.data).length > 0) {
           lastSyncedJson = JSON.stringify(data.data);
           applyRemote(data.data, false); // initial load: never delete local-only items
+          // v10.65: anything the user changed while the pull was in flight was
+          // just overwritten by the older cloud value — put it back, then push.
+          // Local wins here because it is strictly newer than what we fetched.
+          let replayed = false;
+          if (pendingLocalWrites.size) {
+            suppressSync = true;
+            try {
+              for (const [k, v] of pendingLocalWrites) {
+                if (localStorage.getItem(k) !== v) { try { origSet(k, v); replayed = true; } catch (e) {} }
+              }
+            } finally { suppressSync = false; }
+            pendingLocalWrites.clear();
+            if (replayed && typeof onApplied === 'function') { try { onApplied(); } catch (e) {} }
+          }
           ready = true; // v10.1: pull complete — pushes are now safe (this is the stale-load-clobber fix)
           // If we have local items the cloud doesn't know about, push the merged state.
           let hasLocalOnly = false;
           for (const k of listAllKeys()) { if (!(k in data.data)) { hasLocalOnly = true; break; } }
-          if (hasLocalOnly) schedulePush();
+          if (hasLocalOnly || replayed) schedulePush();
         } else if (Object.keys(collect()).length > 0) {
           ready = true; // no cloud row yet but we have local data — safe to seed the cloud
           schedulePush();

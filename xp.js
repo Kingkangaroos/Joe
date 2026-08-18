@@ -782,6 +782,13 @@
       const newMissed = totalMissed - already;
       if (newMissed > 0) {
         h.score = Math.max(0, (h.score||0) - newMissed);
+        // v10.65 FIX: decay lowered `score` but never touched `streak`, so a
+        // habit could sit at score 0 with a frozen streak from weeks ago
+        // (Joey saw "level 0 · 🔥2d" on gratitude while its last check was
+        // 16 days earlier). A streak with missed days isn't a streak — the
+        // two numbers must never contradict each other, since the level IS
+        // the progress signal here.
+        h.streak = 0;
         h.decayedThrough = today;
         changed = true;
       }
