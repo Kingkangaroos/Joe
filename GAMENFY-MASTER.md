@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.76)
+# GAMENFY — Master Document (v10.77)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -397,6 +397,14 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.77 — de karakters krijgen een leven: echte gesprekken, ruzies, en twee werelden om uit te kiezen.** Joey vroeg om "een grote sessie" met zoveel mogelijk moeite en twee alternatieven.
+  - **Ze zeggen nu daadwerkelijk iets.** Joey: "ik ben op zich ook wel benieuwd wat ze dan zeggen." Tekstballonnetjes met echte inhoud: 8 categorie-pools plus 12 skill-specifieke stemmen (whistling roept "Fwiiiit!", coding zucht "O… een puntkomma", sleep mompelt "Nog vijf minuten", dating "Ze appte terug!"). **Bewust met de hand geschreven in plaats van AI-gegenereerd**: direct, consistent, werkt offline, en 45 karakters met een eigen geschreven stem verslaan 45 generieke AI-zinnen.
+  - **De duivel praat ook** — en past zich aan: op laag level fluistert hij "Kom op, één keertje" en "Niemand ziet het"; eenmaal verslagen zegt de engel alleen nog "…".
+  - **Ruzies tussen rivalen.** 10 vaste conflictparen met hun eigen woordenwisseling: Sleep vs Coding ("Het is 2 uur 's nachts" / "Nog één bug!"), No Porn vs Dating, Saving vs Dating ("Dat is veel te duur" / "Het is het waard!"), Gym vs Cooking ("Lege calorieën" / "Maar wel lékker"), Focus vs Social. Bij ruzie schudden ze, verschijnt er een bliksemflits en worden de ballonnen rood. Geverifieerd dat alle 10 paren naar bestaande skills verwijzen en dat de omgekeerde opzoeking werkt.
+  - **Ze praten ook in zichzelf** als ze stilstaan — dat maakt het verschil tussen poppetjes die rondlopen en poppetjes die leven.
+  - **Twee werelden om uit te kiezen** (Joey's verzoek om alternatieven): **"Het Park"** — warm daglicht, zachte heuvels, bomen, een bankje, bloemetjes, in het Daylight-palet; en **"De Arena"** — donker podium met oplopende terrassen en spotlights, koeler en game-achtiger, een knipoog naar het RuneScape-overzicht dat hij noemde. Wisselen met één tik; namen kleuren mee zodat ze in de donkere wereld leesbaar blijven.
+  `?v=` naar 10.77. Gevalideerd: volledige 10-pagina syntax-pass, dialoogdekking voor alle 8 categorieën, en alle rivaliteiten gecontroleerd op bestaande skills.
 
 - **v10.76 — poppetjes op basis van Joey's échte referenties + zijn duivel/engel-idee gebouwd.** Joey stuurde referenties (OpenArt fruit-personages, een aardbei, een boze knoflook, Majin Buu, een 2D-cartoon zwembadscene).
   - **Wat de referenties gemeen hadden, en wat ik fout had**: grote glánzende ogen met wit oogwit + iris + lichtpunt (ik had effen stipoogjes), **dikke wenkbrauwen**, **open lachmond met tandjes**, **blosjes** (die had ik er in v10.74 juist uitgesloopt — dat was verkeerd), **wantjes als handen** en **laarsjes**. Alles alsnog toegepast.

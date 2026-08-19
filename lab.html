@@ -10,10 +10,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.76" defer></script>
-<script src="topbar.js?v=10.76" defer></script>
-<script src="xp.js?v=10.76" defer></script>
-<script src="ladders.js?v=10.76" defer></script>
+<script src="sync.js?v=10.77" defer></script>
+<script src="topbar.js?v=10.77" defer></script>
+<script src="xp.js?v=10.77" defer></script>
+<script src="ladders.js?v=10.77" defer></script>
 <style>
 :root{
   --bg:#F4F3EF; --card:#FFFFFF; --ink:#15140F; --muted:#6F6C63; --faint:#A6A399;
@@ -76,6 +76,28 @@ body{padding-bottom:90px}
 .ch.front .nm,.ch.front .lv{opacity:1}
 .ch.sel{outline:2px solid var(--ember);outline-offset:2px;border-radius:10px}
 
+.wbar{display:flex;gap:6px;margin-bottom:8px}
+.wbtn{flex:1;font-size:12px;font-weight:700;padding:8px;border-radius:12px;
+  border:1px solid var(--line-strong);background:var(--card);color:var(--muted);
+  cursor:pointer;font-family:var(--font-display)}
+.wbtn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.bg{position:absolute;inset:0;pointer-events:none}
+.bg svg{width:100%;height:100%;display:block}
+
+/* speech bubbles with actual content */
+.bub{position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%) scale(.6);
+  background:#fff;border:2px solid #2A2A26;border-radius:10px;padding:3px 7px;
+  font-size:9px;font-weight:600;color:#2A2A26;white-space:nowrap;line-height:1.2;
+  opacity:0;transition:opacity .2s ease,transform .25s cubic-bezier(.34,1.4,.5,1);
+  z-index:200;max-width:130px;overflow:hidden;text-overflow:ellipsis}
+.bub.show{opacity:1;transform:translateX(-50%) scale(1)}
+.bub.angry{border-color:#C0392B;color:#C0392B;background:#FFF4F2}
+.ch.arguing .body-inner{animation:shake .18s linear infinite}
+@keyframes shake{0%,100%{transform:translateX(-1.5px) rotate(-3deg)}50%{transform:translateX(1.5px) rotate(3deg)}}
+.spark{position:absolute;bottom:100%;left:50%;margin-left:-4px;font-size:11px;opacity:0;
+  transition:opacity .2s;z-index:201}
+.ch.arguing .spark{opacity:1}
+
 /* detail panel */
 .det{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:12px;display:none}
 .det.show{display:block}
@@ -95,8 +117,9 @@ body{padding-bottom:90px}
   <div class="page-sub">Experimenten en werk-in-uitvoering. Nog niet af — dat is het punt.</div>
 
   <div class="sec-head">Skill characters (v11 test)</div>
+  <div class="wbar" id="wbar"></div>
   <div class="cbar" id="cbar"></div>
-  <div class="scene" id="scene"></div>
+  <div class="scene" id="scene"><div class="bg" id="bg"></div></div>
   <div class="det" id="det"></div>
 
   <div class="note">
@@ -353,6 +376,124 @@ body{padding-bottom:90px}
       +'<div class="chat">\u00b7\u00b7\u00b7</div></div>';
   }
 
+  // ── Two worlds, so Joey can judge which one the characters belong in ──
+  // A "Het Park": warm daylight, soft hills, trees, a path. Sits in the
+  //    Daylight palette, feels calm and lived-in.
+  // B "De Arena": a staged platform with tiers and spotlights. Cooler,
+  //    more game-like, nods to the RuneScape overview he mentioned liking.
+  var WORLDS = {
+    park: {label:'Het Park', floorTop:0.34, svg:function(){ return ''
+      +'<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">'
+      +'<stop offset="0%" stop-color="#EAF2EC"/><stop offset="100%" stop-color="#F7F4EA"/></linearGradient></defs>'
+      +'<rect width="340" height="400" fill="url(#sky)"/>'
+      +'<circle cx="278" cy="52" r="26" fill="#F2D98C" opacity=".55"/>'
+      +'<ellipse cx="70" cy="150" rx="90" ry="26" fill="#E4EBDD"/>'
+      +'<ellipse cx="270" cy="162" rx="86" ry="24" fill="#E4EBDD"/>'
+      +'<rect y="176" width="340" height="224" fill="#EDEFE2"/>'
+      +'<path d="M0 250 q90 -22 170 0 q80 22 170 0 v150 H0Z" fill="#E5E9D6"/>'
+      +'<path d="M120 400 q34 -110 50 -150 q16 40 50 150Z" fill="#F2F0E4" opacity=".9"/>'
+      +'<g stroke="#2A2A26" stroke-width="2.6"><path d="M46 214v-26"/><path d="M300 226v-28"/></g>'
+      +'<ellipse cx="46" cy="178" rx="26" ry="21" fill="#7FB08A" stroke="#2A2A26" stroke-width="2.6"/>'
+      +'<ellipse cx="300" cy="190" rx="23" ry="19" fill="#6FA37C" stroke="#2A2A26" stroke-width="2.6"/>'
+      +'<g fill="#2A2A26"><rect x="132" y="196" width="52" height="4" rx="2"/>'
+      +'<rect x="136" y="200" width="3.5" height="11"/><rect x="177" y="200" width="3.5" height="11"/></g>'
+      +'<g fill="#C9527A" opacity=".65"><circle cx="88" cy="316" r="3.4"/><circle cx="240" cy="342" r="3"/>'
+      +'<circle cx="196" cy="286" r="2.6"/><circle cx="52" cy="368" r="3"/></g>'
+      +'<g fill="#C9A227" opacity=".5"><circle cx="150" cy="330" r="2.6"/><circle cx="290" cy="300" r="2.4"/></g>';}},
+    arena: {label:'De Arena', floorTop:0.30, svg:function(){ return ''
+      +'<rect width="340" height="400" fill="#20201C"/>'
+      +'<g opacity=".16"><path d="M60 0 L140 400 L20 400Z" fill="#F2D98C"/>'
+      +'<path d="M280 0 L320 400 L200 400Z" fill="#8FC4D9"/></g>'
+      +'<ellipse cx="170" cy="392" rx="168" ry="46" fill="#2C2C26"/>'
+      +'<ellipse cx="170" cy="330" rx="150" ry="40" fill="#33332B" stroke="#45443A" stroke-width="2"/>'
+      +'<ellipse cx="170" cy="252" rx="118" ry="32" fill="#3B3A31" stroke="#4E4D41" stroke-width="2"/>'
+      +'<ellipse cx="170" cy="182" rx="82" ry="24" fill="#434237" stroke="#57564A" stroke-width="2"/>'
+      +'<ellipse cx="170" cy="124" rx="46" ry="15" fill="#4B4A3E" stroke="#5F5E50" stroke-width="2"/>'
+      +'<g fill="#C9A227" opacity=".75"><circle cx="52" cy="60" r="4"/><circle cx="288" cy="72" r="4"/>'
+      +'<circle cx="170" cy="40" r="4.6"/></g>'
+      +'<g stroke="#C9A227" stroke-width="1.4" opacity=".3">'
+      +'<path d="M52 64 L110 400"/><path d="M288 76 L240 400"/><path d="M170 45 L170 400"/></g>';}}
+  };
+  // ── What they actually say ──────────────────────────────────
+  // Joey: "ik ben op zich ook wel benieuwd wat ze dan zeggen." Authored per
+  // skill/category rather than generated: instant, consistent, works offline,
+  // and 45 characters with a hand-written voice beat 45 generic AI lines.
+  var LINES_CAT = {
+    body:['Nog één setje.','Voel je dat?','Warm gedraaid.','Ik ga door.','Even stretchen.'],
+    money:['Rente doet z\u2019n werk.','Niet uitgeven he.','Ik zag een dip.','Saai maar slim.'],
+    mind:['Even stil nu.','Ik las iets goeds.','Hoofd leeg.','Nog een hoofdstuk.'],
+    business:['Ik heb een idee.','Dit is schaalbaar.','Even pitchen?','Volgende klant.'],
+    creative:['Kijk wat ik maakte.','Meer kleur.','Nog niet af.','Ik hoor iets moois.'],
+    lifestyle:['Zin in vanavond?','Wie kookt er?','Kom op, meedoen!','Even bijkletsen.'],
+    discipline:['Niet vandaag.','Ik hou vol.','Weer een dag.','Blijf staan.'],
+    knowledge:['Wist je dat...','Bonjour!','Iets nieuws geleerd.','Nog even oefenen.']
+  };
+  var LINES_SKILL = {
+    whistling:['Fwiiiit!','Hoor je dat?','Nog hoger!'],
+    tennis:['Game point.','Mooie backhand.','Nog een setje?'],
+    sleep:['Zzzz...','Nog vijf minuten.','Ben ik wakker?'],
+    coding:['Het werkt niet.','O\u2026 een puntkomma.','Ship it.'],
+    cooking:['Proef eens.','Meer zout.','Het staat op!'],
+    dancing:['Dit is mijn nummer!','Voel dat ritme.','Kom op!'],
+    gym:['Nog drie reps.','Zwaar is licht.','Push.'],
+    piano:['Bijna zuiver.','Nog een keer.','Luister.'],
+    saving:['Dat is duur.','Ik spaar door.','Niet nodig toch?'],
+    dating:['Ze appte terug!','Zenuwachtig.','Hoe zie ik eruit?'],
+    meditation:['Adem in\u2026','Rustig maar.','Stil van binnen.'],
+    languages:['Comment \u00e7a va?','Nog wat woordjes.','Bonjour!']
+  };
+  var LINES_BAD = {
+    devilHigh:['Kom op, \u00e9\u00e9n keertje.','Niemand ziet het.','Je hebt het verdiend.','Toe nou.'],
+    devilLow:['\u2026','Rustig zo.','Ik ben er nog wel.'],
+    weedHigh:['Chill toch even.','Eentje maar.','Ontspan nou.'],
+    weedLow:['\u2026'],
+    screenHigh:['Nog even scrollen.','Eén filmpje.','Je hebt tijd zat.'],
+    screenLow:['\u2026']
+  };
+  // Rivals argue instead of chatting. Each pair has its own exchange.
+  var RIVALS = {
+    'sleep|coding':['Het is 2 uur \u2019s nachts.','Nog \u00e9\u00e9n bug!'],
+    'sleep|endurance':['Ga liggen.','Ik ga rennen.'],
+    'no_porn|dating':['Kom mee dan.','Ga weg jij.'],
+    'screen_time|reading':['Nog even scrollen.','Leg dat ding weg.'],
+    'weed_control|meditation':['Chill toch.','Dat is niet hetzelfde.'],
+    'saving|dating':['Dat is veel te duur.','Het is het waard!'],
+    'gym|cooking':['Lege calorie\u00ebn.','Maar wel l\u00e9kker.'],
+    'focus|social':['Ik werk nu.','Vijf minuutjes!'],
+    'no_porn|screen_time':['Jij bent net zo erg.','Zeg jij.'],
+    'budgeting|content':['Waar gaat dat geld heen?','Dat heet investeren.']
+  };
+  function rivalPair(a,b){
+    return RIVALS[a.key+'|'+b.key] || (RIVALS[b.key+'|'+a.key] ? RIVALS[b.key+'|'+a.key].slice().reverse() : null);
+  }
+  function lineFor(a){
+    if(a.bad>0){
+      var t = a.key==='no_porn' ? 'devil' : a.key==='weed_control' ? 'weed' : 'screen';
+      var pool = LINES_BAD[t + (a.bad>0.5 ? 'High' : 'Low')] || ['\u2026'];
+      return pool[Math.floor(Math.random()*pool.length)];
+    }
+    var pool = LINES_SKILL[a.key] || LINES_CAT[a.cat] || ['Hoi.'];
+    return pool[Math.floor(Math.random()*pool.length)];
+  }
+  function say(a, text, angry){
+    var b = a.el.querySelector('.bub');
+    if(!b){ b=document.createElement('div'); b.className='bub'; a.el.appendChild(b); }
+    b.textContent = text;
+    b.className = 'bub show' + (angry ? ' angry' : '');
+    clearTimeout(a._bt);
+    a._bt = setTimeout(function(){ b.className = 'bub' + (angry?' angry':''); }, 2600);
+  }
+
+  var world = 'park';
+  function paintWorld(){
+    var el = document.getElementById('bg');
+    if(!el) return;
+    el.innerHTML = '<svg viewBox="0 0 340 400" preserveAspectRatio="none" aria-hidden="true">'
+      + WORLDS[world].svg() + '</svg>';
+    scene.style.background = (world==='arena') ? '#20201C' : 'var(--card)';
+    document.querySelectorAll('.ch .nm').forEach(function(n){ n.style.color = world==='arena' ? '#F2F0E6' : ''; });
+  }
+
   var scene=document.getElementById('scene'), cbar=document.getElementById('cbar'),
       det=document.getElementById('det'), agents=[], current='all', W=340, H=400;
 
@@ -408,7 +549,7 @@ body{padding-bottom:90px}
     var inFront = current!=='all';
     for(var i=0;i<agents.length;i++){
       var a=agents[i];
-      if(a.state==='talk'){ a.timer--; if(a.timer<=0){ a.el.classList.remove('talking'); pickNewGoal(a);} }
+      if(a.state==='talk'){ a.timer--; if(a.timer<=0){ a.el.classList.remove('talking'); a.el.classList.remove('arguing'); pickNewGoal(a);} }
       else { a.timer--; if(a.timer<=0) pickNewGoal(a); }
 
       if(a.state==='walk'){
@@ -432,22 +573,42 @@ body{padding-bottom:90px}
       var bw=a.el.querySelector('.body-wrap');
       if(bw) bw.classList.toggle('flip', a.vx<-0.02);
     }
-    // occasional meetings — cheap: only check every 20th frame
+    // meetings: rivals argue, everyone else chats. Checked every 20th frame
+    // so 45 characters stay cheap on a phone.
     if(frame%20===0){
       for(var m=0;m<agents.length;m++){
-        var p=agents[m]; if(p.state!=='walk'||p.social<0.3) continue;
+        var p1=agents[m]; if(p1.state!=='walk') continue;
         for(var n=m+1;n<agents.length;n++){
-          var q=agents[n]; if(q.state!=='walk'||q.social<0.3) continue;
-          var dx=p.x-q.x, dy=p.y-q.y;
-          if(dx*dx+dy*dy < 900 && Math.random()<(p.social+q.social)/2*0.5){
-            p.state=q.state='talk'; p.vx=p.vy=q.vx=q.vy=0;
-            p.timer=q.timer=70+Math.random()*90;
-            p.el.classList.add('talking'); q.el.classList.add('talking');
-            p.el.classList.remove('walking'); q.el.classList.remove('walking');
+          var q=agents[n]; if(q.state!=='walk') continue;
+          var dx=p1.x-q.x, dy=p1.y-q.y;
+          if(dx*dx+dy*dy > 1100) continue;
+          var riv = rivalPair(p1,q);
+          if(riv){
+            p1.state=q.state='talk'; p1.vx=p1.vy=q.vx=q.vy=0;
+            p1.timer=q.timer=110+Math.random()*70;
+            p1.el.classList.add('arguing'); q.el.classList.add('arguing');
+            p1.el.classList.remove('walking'); q.el.classList.remove('walking');
+            ensureSpark(p1); ensureSpark(q);
+            say(p1, riv[0], true);
+            setTimeout((function(qq,txt){ return function(){ say(qq, txt, true); };})(q, riv[1]), 700);
+            break;
+          }
+          if(p1.social<0.3||q.social<0.3) continue;
+          if(Math.random() < (p1.social+q.social)/2*0.5){
+            p1.state=q.state='talk'; p1.vx=p1.vy=q.vx=q.vy=0;
+            p1.timer=q.timer=95+Math.random()*80;
+            p1.el.classList.remove('walking'); q.el.classList.remove('walking');
+            say(p1, lineFor(p1), false);
+            setTimeout((function(qq){ return function(){ say(qq, lineFor(qq), false); };})(q), 800);
             break;
           }
         }
       }
+    }
+    // idle characters mutter to themselves now and then — gives them a life
+    if(frame%140===0){
+      var pick = agents[Math.floor(Math.random()*agents.length)];
+      if(pick && pick.state==='idle' && Math.random()<0.6) say(pick, lineFor(pick), pick.bad>0.5);
     }
     requestAnimationFrame(tick);
   }
@@ -477,9 +638,25 @@ body{padding-bottom:90px}
     cbar.appendChild(b);
   });
 
+  function ensureSpark(a){
+    if(a.el.querySelector('.spark')) return;
+    var sp=document.createElement('div'); sp.className='spark'; sp.textContent='\u26A1';
+    a.el.appendChild(sp);
+  }
+
+  Object.keys(WORLDS).forEach(function(w){
+    var b=document.createElement('button');
+    b.className='wbtn'+(w==='park'?' on':''); b.textContent=WORLDS[w].label;
+    b.onclick=function(){
+      document.querySelectorAll('.wbtn').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); world=w; paintWorld();
+    };
+    document.getElementById('wbar').appendChild(b);
+  });
+
   function start(){
     if(!window.RPG_DEFAULT_SKILLS||!window.xpToLevel){ setTimeout(start,80); return; }
-    reflow(); build(); reflow();
+    reflow(); build(); reflow(); paintWorld();
     window.addEventListener('resize', reflow);
     requestAnimationFrame(tick);
   }
