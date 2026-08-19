@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.70)
+# GAMENFY — Master Document (v10.71)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -370,6 +370,13 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.71 — elk poppetje z'n eigen attribuut: 45 unieke skill-props.** Joey: "vind t te generiek, gebruik echt je tools om ze uniek te maken voor hun eigen skills."
+  - **Canva bewust NIET gebruikt, met reden.** 45 keer een plaatje laten genereren levert 45 licht verschillende tekenstijlen op — dan is het geen familie meer maar 45 losse poppetjes. Bovendien worden het rasterbestanden die gehost moeten worden en op 38px vaag worden. Consistentie is hier belangrijker dan generatie-magie.
+  - **Wel gedaan**: hetzelfde lijfje (ze blijven één familie) met per skill een eigen, met de hand getekend SVG-attribuut in dezelfde 100×100-ruimte. Kokmuts voor koken, zweetbandje + racket voor tennis, halter voor gym, beret voor Frans, kroon voor superiority, diploma-hoed voor leren, laptop voor coding, antenne-robotje voor AI tools, muntje met €-teken voor sparen, stijgende grafiek voor beleggen, nachtmuts met zzz voor slaap, doorgestreepte telefoon voor schermtijd, schild voor no porn, waterdruppels voor koud douchen, bezem voor huishouden, en zo verder voor alle 45.
+  - Scherp op elk formaat, animeert gewoon mee met het lopen, en geen externe bestanden nodig.
+  - **Geverifieerd**: alle 45 actieve skills hebben een eigen prop (0 ontbrekend, 0 spooksleutels door typo's, 0 met scheve tags). Whistling kreeg er alsnog een klein extra symbooltje bij omdat die onder level 20 nog geen geluidsringen toont en anders kaal zou zijn.
+  `?v=` naar 10.71. Gevalideerd: volledige 10-pagina syntax-pass.
 
 - **v10.70 — Reset-bug gefixt (met bewijs uit Joey's echte data) + poppetjes lopen nu echt rond.**
   - **BUG: "reset naar level 1, maar in mijn skills staat hij nog op 7".** Root cause: `resetSkill()` riep na afloop `renderSkills()`, `renderBodySkills()` en `renderCharStrip()` aan — **geen van drieën bestaat in character.html**. Alle drie in try/catch, dus de fout werd geruisloos ingeslikt en het scherm bleef het oude level tonen tot een handmatige herlaad. **Bewezen met Joey's live data**: whistling staat in de cloud op `xp:0`, geen tier-claims, geen quests — de reset had dus wél correct gewerkt, alleen de weergave liep achter. Gefixt naar de functies die er wél zijn (`renderCharacter`, `renderRSGrid`, `renderBodySystem`, `renderPriorityFocus`), nu met `typeof`-checks zodat een ontbrekende functie niet opnieuw stilzwijgend faalt.
