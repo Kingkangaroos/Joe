@@ -10,10 +10,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.74" defer></script>
-<script src="topbar.js?v=10.74" defer></script>
-<script src="xp.js?v=10.74" defer></script>
-<script src="ladders.js?v=10.74" defer></script>
+<script src="sync.js?v=10.75" defer></script>
+<script src="topbar.js?v=10.75" defer></script>
+<script src="xp.js?v=10.75" defer></script>
+<script src="ladders.js?v=10.75" defer></script>
 <style>
 :root{
   --bg:#F4F3EF; --card:#FFFFFF; --ink:#15140F; --muted:#6F6C63; --faint:#A6A399;
@@ -60,8 +60,8 @@ body{padding-bottom:90px}
 .walking .leg.l{animation:step .42s linear infinite}
 .walking .leg.r{animation:step .42s linear .21s infinite}
 .walking .body-inner{animation:trudge .42s ease-in-out infinite}
-@keyframes step{0%{transform:rotate(22deg)}50%{transform:rotate(-22deg)}100%{transform:rotate(22deg)}}
-@keyframes trudge{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes step{0%{transform:rotate(34deg)}50%{transform:rotate(-34deg)}100%{transform:rotate(34deg)}}
+@keyframes trudge{0%,100%{transform:translateY(0) scale(1,1)}25%{transform:translateY(-4px) scale(.94,1.08)}55%{transform:translateY(0) scale(1.07,.93)}}
 .idle .body-inner{animation:breathe var(--d,2.6s) ease-in-out infinite}
 @keyframes breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.05,.95)}}
 .chat{position:absolute;top:-14px;left:50%;margin-left:-9px;width:18px;height:13px;
@@ -225,39 +225,92 @@ body{padding-bottom:90px}
       +' C'+(50-sh.wB)+' '+sh.bot+' '+(50+sh.wB)+' '+sh.bot+' '+(50+sh.wB)+' '+(sh.bot-10)
       +' C'+(50+sh.wB)+' '+mid+' '+(50+sh.wT)+' '+sh.top+' 50 '+sh.top+'Z';
   }
+  // Expression per skill — a cartoon lives or dies on its face, and everyone
+  // having the same polite smile was the flattest thing about the last version.
+  var EXPR = {
+    sleep:'sleepy', recovery:'sleepy', meditation:'chill', gratitude:'chill',
+    stretching:'chill', no_porn:'determined', weed_control:'determined',
+    screen_time:'determined', cold_shower:'shocked',
+    gym:'determined', strength:'determined', calisthenics:'determined',
+    core:'determined', endurance:'determined', tennis:'determined', walking:'happy',
+    dancing:'excited', social:'excited', dating:'excited', content:'excited',
+    whistling:'excited', sales:'excited', marketing:'excited', cooking:'happy',
+    coding:'focused', ai_tools:'focused', focus:'focused', reading:'focused',
+    learning:'focused', journaling:'focused', puzzling:'focused', planning:'focused',
+    languages:'happy', superiority:'smug', net_worth:'smug', investing:'smug'
+  };
+  function face(kind, ey, ex, key){
+    var E='#2A2A26', o='';
+    if(kind==='sleepy'){
+      o += '<path d="M'+(50-ex-6)+' '+ey+' q6 6 12 0" stroke="'+E+'" stroke-width="3" fill="none" stroke-linecap="round"/>'
+         + '<path d="M'+(50+ex-6)+' '+ey+' q6 6 12 0" stroke="'+E+'" stroke-width="3" fill="none" stroke-linecap="round"/>'
+         + '<ellipse cx="50" cy="'+(ey+13)+'" rx="3.4" ry="2.6" fill="'+E+'"/>';
+    } else if(kind==='chill'){
+      o += '<path d="M'+(50-ex-6)+' '+(ey+3)+' q6 -7 12 0" stroke="'+E+'" stroke-width="3" fill="none" stroke-linecap="round"/>'
+         + '<path d="M'+(50+ex-6)+' '+(ey+3)+' q6 -7 12 0" stroke="'+E+'" stroke-width="3" fill="none" stroke-linecap="round"/>'
+         + '<path d="M45 '+(ey+12)+' q5 5 10 0" stroke="'+E+'" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
+    } else {
+      var r = (kind==='excited'||kind==='shocked') ? 7 : 6;
+      o += '<circle cx="'+(50-ex)+'" cy="'+ey+'" r="'+r+'" fill="'+E+'"/>'
+         + '<circle cx="'+(50+ex)+'" cy="'+ey+'" r="'+r+'" fill="'+E+'"/>'
+         + '<circle cx="'+(50-ex+2.2)+'" cy="'+(ey-2.2)+'" r="2.2" fill="#fff"/>'
+         + '<circle cx="'+(50+ex+2.2)+'" cy="'+(ey-2.2)+'" r="2.2" fill="#fff"/>';
+      if(kind==='determined'){
+        o += '<path d="M'+(50-ex-7)+' '+(ey-10)+' l11 4" stroke="'+E+'" stroke-width="3" stroke-linecap="round"/>'
+           + '<path d="M'+(50+ex+7)+' '+(ey-10)+' l-11 4" stroke="'+E+'" stroke-width="3" stroke-linecap="round"/>'
+           + '<path d="M45 '+(ey+13)+' h10" stroke="'+E+'" stroke-width="2.8" stroke-linecap="round"/>';
+      } else if(kind==='excited'){
+        o += '<path d="M'+(50-ex-7)+' '+(ey-11)+' q6 -4 12 -1" stroke="'+E+'" stroke-width="2.8" fill="none" stroke-linecap="round"/>'
+           + '<path d="M'+(50+ex+7)+' '+(ey-11)+' q-6 -4 -12 -1" stroke="'+E+'" stroke-width="2.8" fill="none" stroke-linecap="round"/>'
+           + '<path d="M43 '+(ey+9)+' q7 11 14 0 z" fill="'+E+'"/>';
+      } else if(kind==='shocked'){
+        o += '<ellipse cx="50" cy="'+(ey+13)+'" rx="4" ry="5" fill="'+E+'"/>';
+      } else if(kind==='smug'){
+        o += '<path d="M'+(50-ex-7)+' '+(ey-10)+' q6 -3 12 0" stroke="'+E+'" stroke-width="2.8" fill="none" stroke-linecap="round"/>'
+           + '<path d="M44 '+(ey+11)+' q7 6 12 -2" stroke="'+E+'" stroke-width="2.8" fill="none" stroke-linecap="round"/>';
+      } else if(kind==='focused'){
+        o += '<path d="M'+(50-ex-7)+' '+(ey-10)+' h12" stroke="'+E+'" stroke-width="2.8" stroke-linecap="round"/>'
+           + '<path d="M'+(50+ex+7)+' '+(ey-10)+' h-12" stroke="'+E+'" stroke-width="2.8" stroke-linecap="round"/>'
+           + '<path d="M46 '+(ey+12)+' h8" stroke="'+E+'" stroke-width="2.6" stroke-linecap="round"/>';
+      } else {
+        o += '<path d="M43 '+(ey+9)+' q7 10 14 0" stroke="'+E+'" stroke-width="2.8" fill="none" stroke-linecap="round"/>';
+      }
+    }
+    if(key==='whistling') o = o.replace(/<path d="M43[^/]+\/>|<ellipse cx="50" cy="\d+(\.\d+)?" rx="[\d.]+" ry="[\d.]+" fill="#2A2A26"\/>/,'')
+      + '<ellipse cx="50" cy="'+(ey+12)+'" rx="3.2" ry="3.8" fill="'+E+'"/>';
+    return o;
+  }
   function charHtml(col, lv, key, cat){
-    var f = tint(col, 0.42 + Math.min(1, lv/70)*0.58);
-    var dark = tint(col, 0.7 + Math.min(1, lv/70)*0.3);
-    var sh = shape(cat), ey = sh.ey, ex = 8;
-    var body = '<path d="'+bean(sh)+'" fill="'+f+'"/>';
+    var f = tint(col, 0.5 + Math.min(1, lv/70)*0.5);
+    var dark = tint(col, 0.75 + Math.min(1, lv/70)*0.25);
+    var LINE = '#2A2A26';
+    var sh = shape(cat), ey = sh.ey, ex = 10;
+    var kind = EXPR[key] || 'happy';
+    // bold outline — this is what makes it read as a cartoon and not an icon
+    var body = '<path d="'+bean(sh)+'" fill="'+f+'" stroke="'+LINE+'" stroke-width="3.4" stroke-linejoin="round"/>';
     if (sh.tilt) body = '<g transform="rotate('+sh.tilt+' 50 '+((sh.top+sh.bot)/2)+')">'+body+'</g>';
-    var sprout = lv>25 ? '<path d="M48 '+sh.top+' C45 '+(sh.top-10)+' 49 '+(sh.top-13)+' 52 '+(sh.top-8)+' C52 '+(sh.top-3)+' 50 '+sh.top+' 48 '+sh.top+'Z" fill="'+dark+'"/>' : '';
-    // thin stick arms with tiny round hands
-    var ax = sh.wB - 2, ay = ey + 16;
-    var arms = '<path d="M'+(50-ax)+' '+ay+' q-9 3 -12 10" stroke="'+dark+'" stroke-width="2.6" fill="none" stroke-linecap="round"/>'
-             + '<path d="M'+(50+ax)+' '+ay+' q9 3 12 10" stroke="'+dark+'" stroke-width="2.6" fill="none" stroke-linecap="round"/>'
-             + '<circle cx="'+(50-ax-12)+'" cy="'+(ay+10)+'" r="3.2" fill="'+dark+'"/>'
-             + '<circle cx="'+(50+ax+12)+'" cy="'+(ay+10)+'" r="3.2" fill="'+dark+'"/>';
-    // simple dot eyes + a tiny mouth. no blush, no belly — that's the DWTD look
-    var eyes = '<circle cx="'+(50-ex)+'" cy="'+ey+'" r="4.2" fill="#2A2A26"/>'
-             + '<circle cx="'+(50+ex)+'" cy="'+ey+'" r="4.2" fill="#2A2A26"/>'
-             + '<circle cx="'+(50-ex+1.5)+'" cy="'+(ey-1.5)+'" r="1.3" fill="#fff"/>'
-             + '<circle cx="'+(50+ex+1.5)+'" cy="'+(ey-1.5)+'" r="1.3" fill="#fff"/>';
-    var mouth = (key==='whistling')
-      ? '<ellipse cx="50" cy="'+(ey+11)+'" rx="3" ry="3.6" fill="#2A2A26"/>'
-      : '<path d="M46 '+(ey+10)+' q4 4 8 0" stroke="#2A2A26" stroke-width="2.2" fill="none" stroke-linecap="round"/>';
+    var sprout = lv>25 ? '<path d="M48 '+sh.top+' C44 '+(sh.top-11)+' 49 '+(sh.top-15)+' 53 '+(sh.top-9)+' C53 '+(sh.top-3)+' 50 '+sh.top+' 48 '+sh.top+'Z" fill="'+dark+'" stroke="'+LINE+'" stroke-width="2.4" stroke-linejoin="round"/>' : '';
+    // arm pose varies with the mood — no more identical scarecrows
+    var ax = sh.wB - 2, ay = ey + 15, up = (kind==='excited'), fold = (kind==='determined'||kind==='focused');
+    var lArm = up ? 'M'+(50-ax)+' '+ay+' q-11 -8 -13 -18' : fold ? 'M'+(50-ax)+' '+ay+' q-10 4 -6 12' : 'M'+(50-ax)+' '+ay+' q-10 4 -12 12';
+    var rArm = 'M'+(50+ax)+' '+ay+' q10 4 12 12';
+    var lHand = up ? [50-ax-13, ay-19] : fold ? [50-ax-6, ay+13] : [50-ax-12, ay+13];
+    var arms = '<path d="'+lArm+'" stroke="'+LINE+'" stroke-width="3.6" fill="none" stroke-linecap="round"/>'
+             + '<path d="'+rArm+'" stroke="'+LINE+'" stroke-width="3.6" fill="none" stroke-linecap="round"/>'
+             + '<circle cx="'+lHand[0]+'" cy="'+lHand[1]+'" r="4" fill="'+f+'" stroke="'+LINE+'" stroke-width="2.6"/>'
+             + '<circle cx="'+(50+ax+12)+'" cy="'+(ay+13)+'" r="4" fill="'+f+'" stroke="'+LINE+'" stroke-width="2.6"/>';
     var rings = (key==='whistling' && lv>20)
-      ? '<circle cx="50" cy="'+(ey+11)+'" r="10" fill="none" stroke="'+f+'" stroke-width="2" class="ring"/>'
-        +'<circle cx="50" cy="'+(ey+11)+'" r="10" fill="none" stroke="'+f+'" stroke-width="2" class="ring2"/>' : '';
+      ? '<circle cx="50" cy="'+(ey+12)+'" r="11" fill="none" stroke="'+LINE+'" stroke-width="2.2" class="ring"/>'
+        +'<circle cx="50" cy="'+(ey+12)+'" r="11" fill="none" stroke="'+LINE+'" stroke-width="2.2" class="ring2"/>' : '';
     var prop = propSvg(key, f, dark);
     if (prop) prop = HATS[key]
-      ? '<g transform="translate(-6,'+(sh.top-22)+') scale(1.12)">'+prop+'</g>'
-      : '<g transform="translate(2,'+(ey-38)+') scale(.88)">'+prop+'</g>';
-    var svg = '<svg viewBox="0 0 100 100" width="40" height="40" aria-hidden="true">'
-      + sprout + arms + body + eyes + mouth + rings + prop + '</svg>';
+      ? '<g transform="translate(-6,'+(sh.top-24)+') scale(1.15)">'+prop+'</g>'
+      : '<g transform="translate(3,'+(ey-36)+') scale(.9)">'+prop+'</g>';
+    var svg = '<svg viewBox="-6 -6 112 112" width="42" height="42" aria-hidden="true">'
+      + sprout + arms + body + face(kind, ey, ex, key) + rings + prop + '</svg>';
     return '<div class="body-wrap"><div class="body-inner">'+svg+'</div>'
-      +'<div class="legs"><div class="leg l" style="background:'+dark+'"></div>'
-      +'<div class="leg r" style="background:'+dark+'"></div></div>'
+      +'<div class="legs"><div class="leg l" style="background:'+LINE+'"></div>'
+      +'<div class="leg r" style="background:'+LINE+'"></div></div>'
       +'<div class="chat">\u00b7\u00b7\u00b7</div></div>';
   }
 

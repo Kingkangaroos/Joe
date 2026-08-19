@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.74)
+# GAMENFY — Master Document (v10.75)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -370,6 +370,16 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.75 — echte cartoon-behandeling: omlijning, grote ogen, 8 gezichtsuitdrukkingen, wisselende houdingen.** Joey bleef "meer cartoon" zeggen na drie iteraties; tijd om te benoemen wát er structureel ontbrak in plaats van door te tweaken.
+  - **De hoofdoorzaak: geen omlijning.** Vlakke vormen zonder contour lezen als icoontje/logo, niet als cartoon. Alle poppetjes hebben nu een stevige donkere contour (3.4px) om lijf, armen en handjes. Dit is verreweg het grootste verschil.
+  - **Ogen fors groter** (r4.2 → r6–7) en verder uit elkaar. Cartoons leven van overdreven ogen.
+  - **8 gezichtsuitdrukkingen** in plaats van één beleefde glimlach voor iedereen: `determined` (gefronste wenkbrauwen, strakke mond — gym/kracht/discipline), `excited` (opgetrokken wenkbrauwen, open lachmond — dansen/sociaal/sales), `focused` (rechte wenkbrauwen, streepmond — coding/lezen/plannen), `sleepy` (dichte hangende oogjes — slaap/recovery), `chill` (dichte lachoogjes — meditatie/dankbaarheid), `smug` (opgetrokken wenkbrauw, scheve grijns — superiority/beleggen), `shocked` (open O-mond — koud douchen), en `happy` als standaard. Wenkbrauwen zijn toegevoegd: dat is het meest expressieve element en ontbrak volledig.
+  - **Armhoudingen variëren mee met de stemming**: `excited` steekt één arm omhoog, `determined`/`focused` houden de armen ingetrokken, de rest laat ze hangen. Voorheen stond iedereen als dezelfde vogelverschrikker.
+  - **Squash & stretch in de loopanimatie** (het fundament van cartoon-beweging): het lijf plat-en-rekt nu tijdens het stappen, en de beenzwaai is opgevoerd van 22° naar 34°.
+  - ViewBox verruimd naar -6..106 zodat de dikkere contour en de opgestoken arm niet worden afgeknipt.
+  - Geverifieerd: 36 skills met een expliciete uitdrukking, 9 vallen bewust terug op `happy`, 0 typo's, en alle 8 uitdrukkingen worden daadwerkelijk getekend in `face()`.
+  `?v=` naar 10.75. Gevalideerd: volledige 10-pagina syntax-pass.
 
 - **v10.74 — poppetjes in Dumb Ways to Die-stijl.** Joey: "nog cartoonisher, kijk naar de characters van Dumb Ways to Die."
   - **Belangrijk inzicht: DWTD is SIMPELER, niet gedetailleerder.** De vorige versie (chibi met los hoofd, oogwit+pupil+lichtpunt, blosjes, buikje) ging de verkeerde kant op — meer detail in plaats van meer karakter. De charme van DWTD zit juist in hoe wéinig er staat.
