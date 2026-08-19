@@ -10,10 +10,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.73" defer></script>
-<script src="topbar.js?v=10.73" defer></script>
-<script src="xp.js?v=10.73" defer></script>
-<script src="ladders.js?v=10.73" defer></script>
+<script src="sync.js?v=10.74" defer></script>
+<script src="topbar.js?v=10.74" defer></script>
+<script src="xp.js?v=10.74" defer></script>
+<script src="ladders.js?v=10.74" defer></script>
 <style>
 :root{
   --bg:#F4F3EF; --card:#FFFFFF; --ink:#15140F; --muted:#6F6C63; --faint:#A6A399;
@@ -52,9 +52,11 @@ body{padding-bottom:90px}
   transition:opacity .4s ease;will-change:transform}
 .body-wrap{position:relative;display:inline-block;transform-origin:50% 90%}
 .body-wrap.flip{transform:scaleX(-1)}
-.legs{position:absolute;left:50%;bottom:-1px;width:22px;margin-left:-11px;height:9px}
-.leg{position:absolute;top:0;width:7px;height:9px;border-radius:0 0 4px 4px;transform-origin:50% 0}
-.leg.l{left:0}.leg.r{right:0}
+.legs{position:absolute;left:50%;bottom:0;width:16px;margin-left:-8px;height:11px}
+.leg{position:absolute;top:0;width:2.6px;height:11px;border-radius:2px;transform-origin:50% 0}
+.leg::after{content:'';position:absolute;bottom:-1px;left:-2px;width:7px;height:3px;
+  border-radius:3px;background:inherit}
+.leg.l{left:2px}.leg.r{right:2px}
 .walking .leg.l{animation:step .42s linear infinite}
 .walking .leg.r{animation:step .42s linear .21s infinite}
 .walking .body-inner{animation:trudge .42s ease-in-out infinite}
@@ -200,56 +202,59 @@ body{padding-bottom:90px}
   // placement now the characters are chibi (big head, small torso)
   var HATS = {cooking:1, languages:1, learning:1, superiority:1, sleep:1, recovery:1,
               calisthenics:1, meditation:1, good_deed:1, tennis:1};
-  // per-category silhouette — head shape and torso width differ so a category
-  // is recognisable from its outline alone, not just its colour
+  // Dumb Ways to Die proportions: ONE bean-shaped body (no separate head),
+  // flat solid colour, dot eyes, and thin stick limbs. The charm is in how
+  // little there is — earlier versions were over-detailed.
   function shape(cat){
     switch(cat){
-      case 'money':      return {hw:30,hh:26,hy:33,tw:19,r:0};
-      case 'mind':       return {hw:24,hh:29,hy:31,tw:14,r:0};
-      case 'business':   return {hw:26,hh:25,hy:33,tw:18,r:12};
-      case 'body':       return {hw:26,hh:26,hy:33,tw:21,r:0};
-      case 'creative':   return {hw:28,hh:25,hy:33,tw:16,r:0,tilt:-6};
-      case 'lifestyle':  return {hw:29,hh:26,hy:34,tw:17,r:0};
-      case 'discipline': return {hw:24,hh:24,hy:35,tw:17,r:4};
-      case 'knowledge':  return {hw:25,hh:30,hy:31,tw:15,r:0};
-      default:           return {hw:27,hh:26,hy:33,tw:17,r:0};
+      case 'money':      return {top:20,bot:86,wT:21,wB:29,ey:40};
+      case 'mind':       return {top:12,bot:86,wT:15,wB:20,ey:34};
+      case 'business':   return {top:16,bot:86,wT:23,wB:24,ey:36};
+      case 'body':       return {top:16,bot:86,wT:19,wB:26,ey:36};
+      case 'creative':   return {top:15,bot:86,wT:17,wB:25,ey:35,tilt:-7};
+      case 'lifestyle':  return {top:19,bot:86,wT:23,wB:29,ey:39};
+      case 'discipline': return {top:24,bot:86,wT:20,wB:25,ey:43};
+      case 'knowledge':  return {top:11,bot:86,wT:23,wB:19,ey:33};
+      default:           return {top:17,bot:86,wT:20,wB:25,ey:37};
     }
   }
+  function bean(sh){
+    var mid=(sh.top+sh.bot)/2;
+    return 'M50 '+sh.top
+      +' C'+(50-sh.wT)+' '+sh.top+' '+(50-sh.wB)+' '+mid+' '+(50-sh.wB)+' '+(sh.bot-10)
+      +' C'+(50-sh.wB)+' '+sh.bot+' '+(50+sh.wB)+' '+sh.bot+' '+(50+sh.wB)+' '+(sh.bot-10)
+      +' C'+(50+sh.wB)+' '+mid+' '+(50+sh.wT)+' '+sh.top+' 50 '+sh.top+'Z';
+  }
   function charHtml(col, lv, key, cat){
-    var f = tint(col, 0.34 + Math.min(1, lv/70)*0.66);
-    var dark = tint(col, 0.6 + Math.min(1, lv/70)*0.4);
-    var sh = shape(cat);
-    var cy = sh.hy, ex = 9.5, ey = cy + 2;
-    var head = sh.r
-      ? '<rect x="'+(50-sh.hw)+'" y="'+(cy-sh.hh)+'" width="'+(sh.hw*2)+'" height="'+(sh.hh*2)+'" rx="'+sh.r+'" fill="'+f+'"/>'
-      : '<ellipse cx="50" cy="'+cy+'" rx="'+sh.hw+'" ry="'+sh.hh+'" fill="'+f+'"/>';
-    if (sh.tilt) head = '<g transform="rotate('+sh.tilt+' 50 '+cy+')">'+head+'</g>';
-    var sprout = lv>25 ? '<path d="M47 '+(cy-sh.hh)+' C44 '+(cy-sh.hh-9)+' 48 '+(cy-sh.hh-12)+' 51 '+(cy-sh.hh-7)+' C51 '+(cy-sh.hh-2)+' 49 '+(cy-sh.hh)+' 47 '+(cy-sh.hh)+'Z" fill="'+dark+'"/>' : '';
-    var torso = '<path d="M'+(50-sh.tw)+' 86 C'+(50-sh.tw)+' '+(cy+sh.hh-4)+' '+(50+sh.tw)+' '+(cy+sh.hh-4)+' '+(50+sh.tw)+' 86 Z" fill="'+f+'"/>';
-    var belly = '<path d="M'+(50-sh.tw+4)+' 86 C'+(50-sh.tw+4)+' '+(cy+sh.hh+4)+' '+(50+sh.tw-4)+' '+(cy+sh.hh+4)+' '+(50+sh.tw-4)+' 86 Z" fill="#FBF9F2" opacity=".75"/>';
-    var arms = '<ellipse cx="'+(50-sh.tw-3)+'" cy="76" rx="6" ry="4.5" fill="'+f+'"/>'
-             + '<ellipse cx="'+(50+sh.tw+3)+'" cy="76" rx="6" ry="4.5" fill="'+f+'"/>';
-    // big cartoon eyes with pupils and a highlight
-    var eyes = '<ellipse cx="'+(50-ex)+'" cy="'+ey+'" rx="7" ry="8" fill="#fff"/>'
-             + '<ellipse cx="'+(50+ex)+'" cy="'+ey+'" rx="7" ry="8" fill="#fff"/>'
-             + '<circle cx="'+(50-ex+1)+'" cy="'+(ey+1)+'" r="3.6" fill="#2A2A26"/>'
-             + '<circle cx="'+(50+ex+1)+'" cy="'+(ey+1)+'" r="3.6" fill="#2A2A26"/>'
-             + '<circle cx="'+(50-ex+2.4)+'" cy="'+(ey-1)+'" r="1.4" fill="#fff"/>'
-             + '<circle cx="'+(50+ex+2.4)+'" cy="'+(ey-1)+'" r="1.4" fill="#fff"/>';
-    var blush = '<circle cx="'+(50-sh.hw+5)+'" cy="'+(ey+9)+'" r="4.4" fill="#E58BA0" opacity=".45"/>'
-              + '<circle cx="'+(50+sh.hw-5)+'" cy="'+(ey+9)+'" r="4.4" fill="#E58BA0" opacity=".45"/>';
+    var f = tint(col, 0.42 + Math.min(1, lv/70)*0.58);
+    var dark = tint(col, 0.7 + Math.min(1, lv/70)*0.3);
+    var sh = shape(cat), ey = sh.ey, ex = 8;
+    var body = '<path d="'+bean(sh)+'" fill="'+f+'"/>';
+    if (sh.tilt) body = '<g transform="rotate('+sh.tilt+' 50 '+((sh.top+sh.bot)/2)+')">'+body+'</g>';
+    var sprout = lv>25 ? '<path d="M48 '+sh.top+' C45 '+(sh.top-10)+' 49 '+(sh.top-13)+' 52 '+(sh.top-8)+' C52 '+(sh.top-3)+' 50 '+sh.top+' 48 '+sh.top+'Z" fill="'+dark+'"/>' : '';
+    // thin stick arms with tiny round hands
+    var ax = sh.wB - 2, ay = ey + 16;
+    var arms = '<path d="M'+(50-ax)+' '+ay+' q-9 3 -12 10" stroke="'+dark+'" stroke-width="2.6" fill="none" stroke-linecap="round"/>'
+             + '<path d="M'+(50+ax)+' '+ay+' q9 3 12 10" stroke="'+dark+'" stroke-width="2.6" fill="none" stroke-linecap="round"/>'
+             + '<circle cx="'+(50-ax-12)+'" cy="'+(ay+10)+'" r="3.2" fill="'+dark+'"/>'
+             + '<circle cx="'+(50+ax+12)+'" cy="'+(ay+10)+'" r="3.2" fill="'+dark+'"/>';
+    // simple dot eyes + a tiny mouth. no blush, no belly — that's the DWTD look
+    var eyes = '<circle cx="'+(50-ex)+'" cy="'+ey+'" r="4.2" fill="#2A2A26"/>'
+             + '<circle cx="'+(50+ex)+'" cy="'+ey+'" r="4.2" fill="#2A2A26"/>'
+             + '<circle cx="'+(50-ex+1.5)+'" cy="'+(ey-1.5)+'" r="1.3" fill="#fff"/>'
+             + '<circle cx="'+(50+ex+1.5)+'" cy="'+(ey-1.5)+'" r="1.3" fill="#fff"/>';
     var mouth = (key==='whistling')
-      ? '<ellipse cx="50" cy="'+(ey+12)+'" rx="3.6" ry="4.4" fill="#2A2A26"/>'
-      : '<path d="M44 '+(ey+10)+' Q50 '+(ey+17)+' 56 '+(ey+10)+' Z" fill="#2A2A26"/>';
+      ? '<ellipse cx="50" cy="'+(ey+11)+'" rx="3" ry="3.6" fill="#2A2A26"/>'
+      : '<path d="M46 '+(ey+10)+' q4 4 8 0" stroke="#2A2A26" stroke-width="2.2" fill="none" stroke-linecap="round"/>';
     var rings = (key==='whistling' && lv>20)
-      ? '<circle cx="50" cy="'+(ey+12)+'" r="11" fill="none" stroke="'+f+'" stroke-width="2" class="ring"/>'
-        +'<circle cx="50" cy="'+(ey+12)+'" r="11" fill="none" stroke="'+f+'" stroke-width="2" class="ring2"/>' : '';
+      ? '<circle cx="50" cy="'+(ey+11)+'" r="10" fill="none" stroke="'+f+'" stroke-width="2" class="ring"/>'
+        +'<circle cx="50" cy="'+(ey+11)+'" r="10" fill="none" stroke="'+f+'" stroke-width="2" class="ring2"/>' : '';
     var prop = propSvg(key, f, dark);
     if (prop) prop = HATS[key]
-      ? '<g transform="translate(-7,-11) scale(1.14)">'+prop+'</g>'
-      : '<g transform="translate(1,20) scale(.95)">'+prop+'</g>';
+      ? '<g transform="translate(-6,'+(sh.top-22)+') scale(1.12)">'+prop+'</g>'
+      : '<g transform="translate(2,'+(ey-38)+') scale(.88)">'+prop+'</g>';
     var svg = '<svg viewBox="0 0 100 100" width="40" height="40" aria-hidden="true">'
-      + sprout + torso + belly + arms + head + eyes + blush + mouth + rings + prop + '</svg>';
+      + sprout + arms + body + eyes + mouth + rings + prop + '</svg>';
     return '<div class="body-wrap"><div class="body-inner">'+svg+'</div>'
       +'<div class="legs"><div class="leg l" style="background:'+dark+'"></div>'
       +'<div class="leg r" style="background:'+dark+'"></div></div>'

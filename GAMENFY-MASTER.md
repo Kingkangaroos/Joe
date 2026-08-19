@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.73)
+# GAMENFY — Master Document (v10.74)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -370,6 +370,13 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.74 — poppetjes in Dumb Ways to Die-stijl.** Joey: "nog cartoonisher, kijk naar de characters van Dumb Ways to Die."
+  - **Belangrijk inzicht: DWTD is SIMPELER, niet gedetailleerder.** De vorige versie (chibi met los hoofd, oogwit+pupil+lichtpunt, blosjes, buikje) ging de verkeerde kant op — meer detail in plaats van meer karakter. De charme van DWTD zit juist in hoe wéinig er staat.
+  - **Nu**: één **bonenvormig lijf** zonder los hoofd, **platte effen kleur** (buikje en blosjes weg), **stipoogjes** met één klein lichtpuntje, een minimaal mondje, en vooral **dunne stok-armpjes en -beentjes** met piepkleine handjes en voetjes. Dat laatste is het meest kenmerkende van DWTD en ontbrak volledig.
+  - Per categorie blijft de silhouet-variatie: Geld breed en laag, Geest lang en smal, Kennis topzwaar (breed boven, smal onder), Discipline gedrongen, Creatief scheef. Alle 8 geverifieerd verschillend, plus een geometriecheck dat de oogjes binnen het lijf vallen en niets buiten het kader valt.
+  - Props opnieuw uitgelijnd op de nieuwe verhoudingen, per categorie meebewegend met de hoogte van het lijf (hoofddeksels volgen `top`, handattributen volgen de ooghoogte).
+  `?v=` naar 10.74. Gevalideerd: volledige 10-pagina syntax-pass + geometriecontrole per categorie.
 
 - **v10.73 — poppetjes echt cartoonig (chibi) + eigen silhouet per categorie.** Joey: "love it maar meer cartoonish, kijk ook ff heygen oid, en per categorie misschien wel iets meer uniek."
   - **HeyGen gecontroleerd en eerlijk afgevallen**: HyperFrames is puur een video-tool (projecten componeren en naar MP4 renderen). Er zit geen beeld- of karaktergeneratie in. Niet geschikt voor dit doel — dat gemeld in plaats van er iets omheen te verzinnen.
