@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.69)
+# GAMENFY — Master Document (v10.70)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -370,6 +370,13 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.70 — Reset-bug gefixt (met bewijs uit Joey's echte data) + poppetjes lopen nu echt rond.**
+  - **BUG: "reset naar level 1, maar in mijn skills staat hij nog op 7".** Root cause: `resetSkill()` riep na afloop `renderSkills()`, `renderBodySkills()` en `renderCharStrip()` aan — **geen van drieën bestaat in character.html**. Alle drie in try/catch, dus de fout werd geruisloos ingeslikt en het scherm bleef het oude level tonen tot een handmatige herlaad. **Bewezen met Joey's live data**: whistling staat in de cloud op `xp:0`, geen tier-claims, geen quests — de reset had dus wél correct gewerkt, alleen de weergave liep achter. Gefixt naar de functies die er wél zijn (`renderCharacter`, `renderRSGrid`, `renderBodySystem`, `renderPriorityFocus`), nu met `typeof`-checks zodat een ontbrekende functie niet opnieuw stilzwijgend faalt.
+  - **Belangrijke bevinding over "level 7 met een lege progression path"** (nog niet aangepast, bewust): er draaien twee parallelle systemen naast elkaar. Het getoonde level komt uit XP (`xpToLevel`) en wordt gegate door het OUDE systeem (`RPG_QUESTS` + `rpg_quests_done_v1`, 33 skills), terwijl de progression path die Joey ziet uit het NIEUWE systeem komt (`SKILL_LADDERS` + `rpg_tier_claims_v1`, 45 skills). Die twee weten niets van elkaar, dus ze kunnen elkaar tegenspreken. 12 skills (sleep, nutrition, walking, teeth, household, meditation, gratitude, good_deed, no_porn, weed_control, screen_time, cold_shower) zitten alleen in het nieuwe systeem en worden dus **nooit** gegate. Dit unificeren zou Joey's zichtbare levels flink verlagen — te ingrijpend om eenzijdig te doen, moet eerst met hem besproken.
+  - **Poppetjes: van deinen naar echt rondlopen.** Joey's kritiek klopte ("het zijn allemaal hetzelfde poppetje, ik wil dat ze echt rondlopen, zoals Wii/Dumb Ways to Die"). Nu: elk poppetje heeft **benen die afwisselend stappen**, loopt vrij over het plein, draait mee met de looprichting, en pauzeert uit zichzelf. Elk van de 45 heeft een eigen **temperament** (tempo, hoe vaak het stilstaat, hoe sociaal het is): endurance rent bijna constant, sleep staat 85% van de tijd stil, social loopt veel en maakt vaak een praatje. Poppetjes die elkaar tegenkomen **stoppen en kletsen** (tekstballonnetje) als ze allebei sociaal genoeg zijn. Draait op één rAF-lus met `translate3d`, en de ontmoetingscheck loopt maar elke 20e frame — bewust zuinig voor de telefoon.
+  - Geverifieerd: alle 45 skills hebben een temperament (0 ontbrekend, 0 spooksleutels), alle waardes binnen bereik.
+  `?v=` naar 10.70. Gevalideerd: volledige 10-pagina + 8-script syntax-pass.
 
 - **v10.69 — NIEUW: `lab.html`, de Lab-pagina, met de bewegende skill-characters op Joey's echte data.** Joey kon de widget-prototypes niet zien op zijn telefoon ("ik zit nu op mn tel en kan t niet zien... enkel op mn laptop in de chat"), dus dit is bewust een **echte pagina in de app** in plaats van nog een chat-prototype. Meteen ook de eerste invulling van zijn Lab/files-idee.
   - **Bewuste keuze: op `main`, niet op de v11-branch.** Het is een volledig nieuwe pagina die geen bestaande pagina aanraakt, dus het risico is nul — en zo hoeft Joey geen aparte preview-URL te onthouden (dat leverde eerder al verwarring op over welke versie hij gebruikte).

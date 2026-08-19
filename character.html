@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.69" defer></script>
-<script src="topbar.js?v=10.69" defer></script>
-<script src="xp.js?v=10.69" defer></script>
-<script src="quests.js?v=10.69" defer></script>
-<script src="ladders.js?v=10.69" defer></script>
-<script src="ventures.js?v=10.69" defer></script>
+<script src="sync.js?v=10.70" defer></script>
+<script src="topbar.js?v=10.70" defer></script>
+<script src="xp.js?v=10.70" defer></script>
+<script src="quests.js?v=10.70" defer></script>
+<script src="ladders.js?v=10.70" defer></script>
+<script src="ventures.js?v=10.70" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1810,9 +1810,15 @@ window.resetSkill=function(key){
     if(ch) localStorage.setItem('rpg_optional_quests_v1', JSON.stringify(oq)); }catch(e){}
   document.getElementById('sdOverlay')?.remove();
   if(window.showToast) showToast(name+' reset to level 1');
-  try{ if(window.renderSkills) renderSkills(); }catch(e){}
-  try{ if(window.renderBodySkills) renderBodySkills(); }catch(e){}
-  try{ if(window.renderCharStrip) renderCharStrip(); }catch(e){}
+  // v10.70 FIX: this used to call renderSkills / renderBodySkills /
+  // renderCharStrip — none of which exist in this file. Wrapped in try/catch,
+  // so the failure was swallowed silently and the screen kept showing the OLD
+  // level until a manual reload. Exactly what Joey saw: "reset naar level 1,
+  // maar in mijn skills staat hij nog steeds op 7."
+  try{ if(typeof renderCharacter==='function') renderCharacter(); }catch(e){}
+  try{ if(typeof renderRSGrid==='function') renderRSGrid(); }catch(e){}
+  try{ if(typeof renderBodySystem==='function') renderBodySystem(); }catch(e){}
+  try{ if(typeof renderPriorityFocus==='function') renderPriorityFocus(); }catch(e){}
 };
 
 function tierClaims(){ try{ return JSON.parse(localStorage.getItem('rpg_tier_claims_v1'))||{}; }catch(e){ return {}; } }
