@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.78)
+# GAMENFY — Master Document (v10.79)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -397,6 +397,13 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.79 — naamlabels weg, attributen fors groter en duidelijker.** Joey: "ook meer individueel dus een tennisbal voor tennis, en de teksten mogen weg, het maakt het onoverzichtelijk."
+  - **De twee wensen hangen samen**: als elk poppetje herkenbaar is aan zijn attribuut, is een naamlabel overbodig. 45 labels tegelijk was pure ruis. Labels volledig verwijderd; tikken op een poppetje opent nog steeds het detailpaneel met naam, level en volgende tier, dus er gaat geen informatie verloren.
+  - **Attributen ~35% groter** en beter geplaatst, want ze dragen de herkenning nu alleen. Zeven kernattributen opnieuw getekend: **tennis kreeg een echt racket mét een felgele tennisbal** (Joey's expliciete voorbeeld), gym een stevige halter, sparen een grote euromunt met rand, lezen een open boek met tekstregels, koken een hoge klassieke koksmuts, piano bredere toetsen met zwarte boventoetsen, coding een laptop met scherm én toetsenbord.
+  - **Gekwebbel gekalmeerd**: met 45 poppetjes tegelijk werden de tekstballonnen zelf ook rommelig. Kans op een gesprek bij ontmoeting van 50% naar 28%, en zelfgepraat van elke ~2,3s naar elke ~4,3s. De gesprekken blijven (Joey vond dat juist een leuke toevoeging), maar ze onderbreken het beeld niet meer.
+  - **Opruiming**: er bleken door een eerdere bewerking dubbele CSS-regels voor de labels te bestaan. Alle dode regels verwijderd, geverifieerd dat er nul verwijzingen over zijn.
+  `?v=` naar 10.79. Gevalideerd: volledige 10-pagina syntax- + CSS-pass.
 
 - **v10.78 — Het Park mooier + poppetjes dichter bij Joey's referenties.** Joey koos Het Park en vroeg om "veel meer zoals mn referentie de poppetjes".
   - **Kernverschil benoemd**: Joey's referenties (de OpenArt-vruchten, de aardbei) zijn **gerenderd met licht** — glans, schaduw, volume. De mijne waren platte vlakken. Dat is waarom ze als stickers aanvoelden en die van hem als personages.
