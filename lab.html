@@ -10,10 +10,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.77" defer></script>
-<script src="topbar.js?v=10.77" defer></script>
-<script src="xp.js?v=10.77" defer></script>
-<script src="ladders.js?v=10.77" defer></script>
+<script src="sync.js?v=10.78" defer></script>
+<script src="topbar.js?v=10.78" defer></script>
+<script src="xp.js?v=10.78" defer></script>
+<script src="ladders.js?v=10.78" defer></script>
 <style>
 :root{
   --bg:#F4F3EF; --card:#FFFFFF; --ink:#15140F; --muted:#6F6C63; --faint:#A6A399;
@@ -54,8 +54,8 @@ body{padding-bottom:90px}
 .body-wrap.flip{transform:scaleX(-1)}
 .legs{position:absolute;left:50%;bottom:0;width:16px;margin-left:-8px;height:11px}
 .leg{position:absolute;top:0;width:2.6px;height:11px;border-radius:2px;transform-origin:50% 0}
-.leg::after{content:'';position:absolute;bottom:-2px;left:-3px;width:9px;height:5px;
-  border-radius:4px 4px 3px 3px;background:inherit;border:1.5px solid #2A2A26;box-sizing:border-box}
+.leg::after{content:'';position:absolute;bottom:-3px;left:-3.6px;width:10px;height:6px;
+  border-radius:5px 5px 3px 3px;background:var(--boot,#4A4A42);border:1.6px solid #2A2A26;box-sizing:border-box}
 .leg.l{left:2px}.leg.r{right:2px}
 .walking .leg.l{animation:step .42s linear infinite}
 .walking .leg.r{animation:step .42s linear .21s infinite}
@@ -131,10 +131,12 @@ body{padding-bottom:90px}
 
 <script>
 (function(){
+  // vivid palette — the references are saturated and glossy; the muted
+  // Daylight tones made the characters look washed out against the park
   var CATS = [
-    ['all','Alles','#15140F'], ['body','Lichaam','#2E8B5F'], ['money','Geld','#C9A227'],
-    ['mind','Geest','#5B7DB1'], ['business','Business','#3A3A34'], ['creative','Creatief','#D4633E'],
-    ['lifestyle','Lifestyle','#C9527A'], ['discipline','Discipline','#8A8578'], ['knowledge','Kennis','#3E8E8E']
+    ['all','Alles','#15140F'], ['body','Lichaam','#3FB87C'], ['money','Geld','#F0BC33'],
+    ['mind','Geest','#6B96E0'], ['business','Business','#59564C'], ['creative','Creatief','#F4753F'],
+    ['lifestyle','Lifestyle','#EC6D95'], ['discipline','Discipline','#A79F8E'], ['knowledge','Kennis','#45B0AE']
   ];
   // Per-skill temperament. Drives how it wanders: pace, how often it stops,
   // how sociable it is. This is what makes them feel individual rather than
@@ -155,7 +157,8 @@ body{padding-bottom:90px}
   };
   function tint(h,a){
     var r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);
-    r=Math.round(r+(244-r)*(1-a)); g=Math.round(g+(243-g)*(1-a)); b=Math.round(b+(239-b)*(1-a));
+    var w=(1-a)*0.62; // less washout so low levels still read as colour, not beige
+    r=Math.round(r+(244-r)*w); g=Math.round(g+(243-g)*w); b=Math.round(b+(239-b)*w);
     return 'rgb('+r+','+g+','+b+')';
   }
   // Per-skill props. Same body for every character (they're a family), but each
@@ -231,7 +234,7 @@ body{padding-bottom:90px}
   function shape(cat){
     switch(cat){
       case 'money':      return {top:20,bot:86,wT:21,wB:29,ey:40};
-      case 'mind':       return {top:12,bot:86,wT:15,wB:20,ey:34};
+      case 'mind':       return {top:12,bot:86,wT:18,wB:23,ey:36}; // widened so the bigger eyes still fit
       case 'business':   return {top:16,bot:86,wT:23,wB:24,ey:36};
       case 'body':       return {top:16,bot:86,wT:19,wB:26,ey:36};
       case 'creative':   return {top:15,bot:86,wT:17,wB:25,ey:35,tilt:-7};
@@ -278,11 +281,11 @@ body{padding-bottom:90px}
          + '<path d="M'+(50+ex-7)+' '+(ey+3)+' q7 -8 14 0" stroke="'+E+'" stroke-width="3.2" fill="none" stroke-linecap="round"/>';
     } else {
       // big glossy eyes: white sclera + iris + highlight (the reference look)
-      var rw = (kind==='excited'||kind==='shocked') ? 9 : 8;
+      var rw = (kind==='excited'||kind==='shocked') ? 10.5 : 9.5;
       o += '<ellipse cx="'+(50-ex)+'" cy="'+ey+'" rx="'+rw+'" ry="'+(rw+1)+'" fill="'+W+'" stroke="'+E+'" stroke-width="2"/>'
          + '<ellipse cx="'+(50+ex)+'" cy="'+ey+'" rx="'+rw+'" ry="'+(rw+1)+'" fill="'+W+'" stroke="'+E+'" stroke-width="2"/>'
-         + '<circle cx="'+(50-ex+1.5)+'" cy="'+(ey+1)+'" r="4.2" fill="'+iris+'"/>'
-         + '<circle cx="'+(50+ex+1.5)+'" cy="'+(ey+1)+'" r="4.2" fill="'+iris+'"/>'
+         + '<circle cx="'+(50-ex+1.6)+'" cy="'+(ey+1.4)+'" r="5.2" fill="'+iris+'"/>'
+         + '<circle cx="'+(50+ex+1.6)+'" cy="'+(ey+1.4)+'" r="5.2" fill="'+iris+'"/>'
          + '<circle cx="'+(50-ex+3)+'" cy="'+(ey-2)+'" r="1.8" fill="'+W+'"/>'
          + '<circle cx="'+(50+ex+3)+'" cy="'+(ey-2)+'" r="1.8" fill="'+W+'"/>';
     }
@@ -331,10 +334,15 @@ body{padding-bottom:90px}
     var f = b>0 ? (b>0.5 ? tint('#C0392B', 0.45+b*0.55) : tint('#EDE9DF', 0.85))
                 : tint(col, 0.5 + Math.min(1, lv/70)*0.5);
     var dark = b>0 ? (b>0.5 ? '#8E2820' : '#BDB8A8') : tint(col, 0.75 + Math.min(1, lv/70)*0.25);
-    var sh = shape(cat), ey = sh.ey, ex = 10;
+    var sh = shape(cat), ey = sh.ey, ex = 11;
     var kind = b>0.5 ? 'determined' : (b>0 ? 'chill' : (EXPR[key] || 'happy'));
-    var body = '<path d="'+bean(sh)+'" fill="'+f+'" stroke="'+LINE+'" stroke-width="3.4" stroke-linejoin="round"/>';
-    if (sh.tilt) body = '<g transform="rotate('+sh.tilt+' 50 '+((sh.top+sh.bot)/2)+')">'+body+'</g>';
+    // body + a gloss highlight and a soft shade — the single thing that made
+    // the reference characters look rendered instead of like flat stickers
+    var midY = (sh.top+sh.bot)/2;
+    var body = '<path d="'+bean(sh)+'" fill="'+f+'" stroke="'+LINE+'" stroke-width="3.4" stroke-linejoin="round"/>'
+      + '<ellipse cx="'+(50-sh.wT*0.42)+'" cy="'+(sh.top+(midY-sh.top)*0.45)+'" rx="'+(sh.wT*0.42)+'" ry="'+((midY-sh.top)*0.34)+'" fill="#fff" opacity=".3" transform="rotate(-18 '+(50-sh.wT*0.42)+' '+(sh.top+(midY-sh.top)*0.45)+')"/>'
+      + '<path d="M'+(50+sh.wB*0.34)+' '+(sh.bot-6)+' q'+(sh.wB*0.5)+' -'+((sh.bot-midY)*0.7)+' '+(sh.wB*0.62)+' -'+((sh.bot-midY)*1.5)+' q4 '+((sh.bot-midY)*1.2)+' -'+(sh.wB*0.5)+' '+((sh.bot-midY)*1.4)+'Z" fill="#000" opacity=".07"/>';
+    if (sh.tilt) body = '<g transform="rotate('+sh.tilt+' 50 '+midY+')">'+body+'</g>';
 
     var extra = '';
     if (b>0.5){ // horns + fire: the vice is winning
@@ -370,8 +378,10 @@ body{padding-bottom:90px}
       : '<g transform="translate(3,'+(ey-36)+') scale(.9)">'+prop+'</g>';
     var svg = '<svg viewBox="-8 -10 116 116" width="44" height="44" aria-hidden="true">'
       + extra + arms + body + face(kind, ey, ex, key, b) + rings + prop + '</svg>';
+    var bootCol = b>0.5 ? '#8E2820' : (b>0 ? '#C9BFA6' : dark);
     return '<div class="body-wrap"><div class="body-inner">'+svg+'</div>'
-      +'<div class="legs"><div class="leg l" style="background:'+LINE+'"></div>'
+      +'<div class="legs" style="--boot:'+bootCol+'">'
+      +'<div class="leg l" style="background:'+LINE+'"></div>'
       +'<div class="leg r" style="background:'+LINE+'"></div></div>'
       +'<div class="chat">\u00b7\u00b7\u00b7</div></div>';
   }
@@ -383,23 +393,69 @@ body{padding-bottom:90px}
   //    more game-like, nods to the RuneScape overview he mentioned liking.
   var WORLDS = {
     park: {label:'Het Park', floorTop:0.34, svg:function(){ return ''
-      +'<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">'
-      +'<stop offset="0%" stop-color="#EAF2EC"/><stop offset="100%" stop-color="#F7F4EA"/></linearGradient></defs>'
+      +'<defs>'
+      +'<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">'
+      +'<stop offset="0%" stop-color="#CFE6F2"/><stop offset="55%" stop-color="#E9F1EA"/>'
+      +'<stop offset="100%" stop-color="#F7F3E6"/></linearGradient>'
+      +'<radialGradient id="sunGlow"><stop offset="0%" stop-color="#FCE9A8" stop-opacity=".95"/>'
+      +'<stop offset="100%" stop-color="#FCE9A8" stop-opacity="0"/></radialGradient>'
+      +'<linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">'
+      +'<stop offset="0%" stop-color="#BFD9A8"/><stop offset="100%" stop-color="#9FC78C"/></linearGradient>'
+      +'<linearGradient id="pond" x1="0" y1="0" x2="0" y2="1">'
+      +'<stop offset="0%" stop-color="#A9D6E8"/><stop offset="100%" stop-color="#7FBFD8"/></linearGradient>'
+      +'</defs>'
       +'<rect width="340" height="400" fill="url(#sky)"/>'
-      +'<circle cx="278" cy="52" r="26" fill="#F2D98C" opacity=".55"/>'
-      +'<ellipse cx="70" cy="150" rx="90" ry="26" fill="#E4EBDD"/>'
-      +'<ellipse cx="270" cy="162" rx="86" ry="24" fill="#E4EBDD"/>'
-      +'<rect y="176" width="340" height="224" fill="#EDEFE2"/>'
-      +'<path d="M0 250 q90 -22 170 0 q80 22 170 0 v150 H0Z" fill="#E5E9D6"/>'
-      +'<path d="M120 400 q34 -110 50 -150 q16 40 50 150Z" fill="#F2F0E4" opacity=".9"/>'
-      +'<g stroke="#2A2A26" stroke-width="2.6"><path d="M46 214v-26"/><path d="M300 226v-28"/></g>'
-      +'<ellipse cx="46" cy="178" rx="26" ry="21" fill="#7FB08A" stroke="#2A2A26" stroke-width="2.6"/>'
-      +'<ellipse cx="300" cy="190" rx="23" ry="19" fill="#6FA37C" stroke="#2A2A26" stroke-width="2.6"/>'
-      +'<g fill="#2A2A26"><rect x="132" y="196" width="52" height="4" rx="2"/>'
-      +'<rect x="136" y="200" width="3.5" height="11"/><rect x="177" y="200" width="3.5" height="11"/></g>'
-      +'<g fill="#C9527A" opacity=".65"><circle cx="88" cy="316" r="3.4"/><circle cx="240" cy="342" r="3"/>'
-      +'<circle cx="196" cy="286" r="2.6"/><circle cx="52" cy="368" r="3"/></g>'
-      +'<g fill="#C9A227" opacity=".5"><circle cx="150" cy="330" r="2.6"/><circle cx="290" cy="300" r="2.4"/></g>';}},
+      +'<circle cx="282" cy="46" r="62" fill="url(#sunGlow)"/>'
+      +'<circle cx="282" cy="46" r="19" fill="#F7D96B"/>'
+      // clouds
+      +'<g fill="#FFFFFF" opacity=".9">'
+      +'<ellipse cx="62" cy="44" rx="26" ry="13"/><ellipse cx="82" cy="38" rx="19" ry="15"/><ellipse cx="44" cy="40" rx="15" ry="10"/>'
+      +'<ellipse cx="196" cy="30" rx="20" ry="10"/><ellipse cx="212" cy="26" rx="14" ry="11"/>'
+      +'</g>'
+      // layered hills
+      +'<path d="M0 168 q60 -40 122 -12 q70 32 128 -6 q48 -28 90 -4 V400 H0Z" fill="#CBE0B6"/>'
+      +'<path d="M0 206 q78 -34 150 -6 q76 30 190 -8 V400 H0Z" fill="#B8D5A2"/>'
+      +'<rect y="232" width="340" height="168" fill="url(#grass)"/>'
+      // winding path
+      +'<path d="M150 400 q-16 -62 22 -102 q34 -36 12 -68" stroke="#EFE6CE" stroke-width="34" fill="none" stroke-linecap="round"/>'
+      +'<path d="M150 400 q-16 -62 22 -102 q34 -36 12 -68" stroke="#F7F1DF" stroke-width="26" fill="none" stroke-linecap="round"/>'
+      // pond
+      +'<ellipse cx="60" cy="332" rx="52" ry="24" fill="url(#pond)" stroke="#2A2A26" stroke-width="2.4"/>'
+      +'<ellipse cx="46" cy="324" rx="18" ry="6" fill="#FFFFFF" opacity=".45"/>'
+      // big tree left
+      +'<rect x="34" y="196" width="9" height="42" rx="3" fill="#8A6A46" stroke="#2A2A26" stroke-width="2.4"/>'
+      +'<circle cx="38" cy="182" r="26" fill="#6FAE72" stroke="#2A2A26" stroke-width="2.6"/>'
+      +'<circle cx="20" cy="192" r="17" fill="#5F9E63" stroke="#2A2A26" stroke-width="2.4"/>'
+      +'<circle cx="56" cy="192" r="18" fill="#7FBC80" stroke="#2A2A26" stroke-width="2.4"/>'
+      +'<circle cx="31" cy="172" r="9" fill="#FFFFFF" opacity=".22"/>'
+      // tree right
+      +'<rect x="292" y="210" width="8" height="36" rx="3" fill="#8A6A46" stroke="#2A2A26" stroke-width="2.4"/>'
+      +'<circle cx="296" cy="198" r="22" fill="#66A66C" stroke="#2A2A26" stroke-width="2.6"/>'
+      +'<circle cx="312" cy="206" r="14" fill="#78B67C" stroke="#2A2A26" stroke-width="2.4"/>'
+      +'<circle cx="290" cy="190" r="7" fill="#FFFFFF" opacity=".22"/>'
+      // bushes
+      +'<g stroke="#2A2A26" stroke-width="2.2">'
+      +'<circle cx="212" cy="248" r="13" fill="#7CB782"/><circle cx="226" cy="252" r="10" fill="#6BA872"/>'
+      +'<circle cx="120" cy="256" r="11" fill="#7CB782"/>'
+      +'</g>'
+      // bench
+      +'<g><rect x="196" y="286" width="56" height="5" rx="2.5" fill="#B98B52" stroke="#2A2A26" stroke-width="2.2"/>'
+      +'<rect x="196" y="272" width="56" height="5" rx="2.5" fill="#C99A5E" stroke="#2A2A26" stroke-width="2.2"/>'
+      +'<rect x="202" y="291" width="4" height="14" fill="#2A2A26"/><rect x="242" y="291" width="4" height="14" fill="#2A2A26"/></g>'
+      // flowers
+      +'<g><circle cx="96" cy="372" r="4" fill="#E2618C" stroke="#2A2A26" stroke-width="1.6"/>'
+      +'<circle cx="96" cy="372" r="1.4" fill="#F7D96B"/>'
+      +'<circle cx="264" cy="352" r="4" fill="#F0A03C" stroke="#2A2A26" stroke-width="1.6"/>'
+      +'<circle cx="264" cy="352" r="1.4" fill="#FFF3C4"/>'
+      +'<circle cx="184" cy="378" r="3.6" fill="#C77BD6" stroke="#2A2A26" stroke-width="1.6"/>'
+      +'<circle cx="40" cy="386" r="3.6" fill="#E2618C" stroke="#2A2A26" stroke-width="1.6"/>'
+      +'<circle cx="308" cy="316" r="3.4" fill="#F0A03C" stroke="#2A2A26" stroke-width="1.6"/></g>'
+      // grass tufts
+      +''
+      +'<g stroke="#86B673" stroke-width="2.2" stroke-linecap="round">'
+      +'<path d="M136 340 v-7 M140 340 v-10 M144 340 v-7"/>'
+      +'<path d="M286 372 v-7 M290 372 v-10 M294 372 v-7"/>'
+      +'<path d="M14 300 v-6 M18 300 v-9"/></g>';}},
     arena: {label:'De Arena', floorTop:0.30, svg:function(){ return ''
       +'<rect width="340" height="400" fill="#20201C"/>'
       +'<g opacity=".16"><path d="M60 0 L140 400 L20 400Z" fill="#F2D98C"/>'

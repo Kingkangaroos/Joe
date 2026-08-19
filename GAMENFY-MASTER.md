@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.77)
+# GAMENFY — Master Document (v10.78)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -397,6 +397,13 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.78 — Het Park mooier + poppetjes dichter bij Joey's referenties.** Joey koos Het Park en vroeg om "veel meer zoals mn referentie de poppetjes".
+  - **Kernverschil benoemd**: Joey's referenties (de OpenArt-vruchten, de aardbei) zijn **gerenderd met licht** — glans, schaduw, volume. De mijne waren platte vlakken. Dat is waarom ze als stickers aanvoelden en die van hem als personages.
+  - **Poppetjes**: glans-highlight linksboven op het lijf, zachte schaduw rechtsonder, **fellere kleuren** (het gedempte Daylight-palet liet ze verbleken tegen het groene park), **grotere ogen** met bredere iris, en **gekleurde laarsjes** in plaats van donkere stompjes. Duivel krijgt donkerrode laarzen, engel lichte.
+  - **Bug voorkomen door te meten**: de vergrote ogen pasten niet meer binnen het smalle "Geest"-lijfje — dat zou lelijk over de rand hebben gestoken. Silhouet verbreed en daarna alle 8 categorieën doorgemeten (oogrand versus lijfbreedte op ooghoogte); nu passen ze allemaal.
+  - **Het Park opnieuw getekend met diepte**: kleurverloop in de lucht, zon met gloed, wolken, drie lagen heuvels in oplopend groen, een gras-verloop, een slingerend pad, een vijver met lichtreflectie, twee bomen met gelaagde bladerkronen en highlight, struiken, een houten bankje, bloemen met hartjes en grasplukjes. Van vlakke vormen naar een plek waar je poppetjes daadwerkelijk in wonen.
+  `?v=` naar 10.78. Gevalideerd: volledige 10-pagina syntax-pass + pasvorm-controle van de ogen per categorie.
 
 - **v10.77 — de karakters krijgen een leven: echte gesprekken, ruzies, en twee werelden om uit te kiezen.** Joey vroeg om "een grote sessie" met zoveel mogelijk moeite en twee alternatieven.
   - **Ze zeggen nu daadwerkelijk iets.** Joey: "ik ben op zich ook wel benieuwd wat ze dan zeggen." Tekstballonnetjes met echte inhoud: 8 categorie-pools plus 12 skill-specifieke stemmen (whistling roept "Fwiiiit!", coding zucht "O… een puntkomma", sleep mompelt "Nog vijf minuten", dating "Ze appte terug!"). **Bewust met de hand geschreven in plaats van AI-gegenereerd**: direct, consistent, werkt offline, en 45 karakters met een eigen geschreven stem verslaan 45 generieke AI-zinnen.
