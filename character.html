@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.71" defer></script>
-<script src="topbar.js?v=10.71" defer></script>
-<script src="xp.js?v=10.71" defer></script>
-<script src="quests.js?v=10.71" defer></script>
-<script src="ladders.js?v=10.71" defer></script>
-<script src="ventures.js?v=10.71" defer></script>
+<script src="sync.js?v=10.72" defer></script>
+<script src="topbar.js?v=10.72" defer></script>
+<script src="xp.js?v=10.72" defer></script>
+<script src="quests.js?v=10.72" defer></script>
+<script src="ladders.js?v=10.72" defer></script>
+<script src="ventures.js?v=10.72" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -921,10 +921,12 @@ textarea {
   display:flex; gap:8px; margin-bottom:14px;
 }
 .skills-tab-btn {
-  flex:1; padding:11px; border-radius:12px; border:1px solid var(--line);
+  /* v10.72: was 3 tabs, now 4 (Lab added) — padding and size tightened so
+     they still fit side by side on a phone without wrapping. */
+  flex:1; min-width:0; padding:11px 4px; border-radius:12px; border:1px solid var(--line);
   background:var(--card); font-family:var(--font-display); font-weight:700;
-  font-size:13px; color:var(--muted); cursor:pointer; -webkit-tap-highlight-color:transparent;
-  transition:all 0.15s;
+  font-size:12px; color:var(--muted); cursor:pointer; -webkit-tap-highlight-color:transparent;
+  transition:all 0.15s; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .skills-tab-btn.active { background:var(--ink); color:#F4F3EF; border-color:var(--ink); }
 
@@ -1444,6 +1446,7 @@ textarea {
     <button class="skills-tab-btn active" id="skillsViewBtn" onclick="setSkillsView('skills')">⚔️ Skills</button>
     <button class="skills-tab-btn" id="goalsViewBtn" onclick="setSkillsView('goals')">🎯 Goals</button>
     <button class="skills-tab-btn" id="venturesViewBtn" onclick="setSkillsView('ventures')">💼 Ventures</button>
+    <button class="skills-tab-btn" id="labViewBtn" onclick="location.href='lab.html'">🧪 Lab</button>
   </div>
 
   <!-- SKILLS VIEW -->

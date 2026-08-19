@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.71)
+# GAMENFY — Master Document (v10.72)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -370,6 +370,13 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.72 — Lab als vierde tab naast Skills / Goals / Ventures.** Joey's verzoek: "ik zat te denken om dat lab te plaatsen waar nu ook de goals and ventures staat."
+  - Vierde knop toegevoegd aan de skills-toolbar. **Bewust een navigatie naar `lab.html`** in plaats van het Lab als vierde view ín character.html te bouwen: dat bestand is inmiddels groot en complex (skills, goals, ventures, body, health-metrics, seasons, priority focus), en het Lab is juist de plek voor experimenten die mogen breken. Los houden betekent dat een mislukt experiment nooit de echte skill-pagina kan meeslepen.
+  - **Layout-detail**: de tab-knoppen stonden op `flex:1` met 13px tekst en 11px padding — bij een vierde knop zou dat op een telefoon gaan afbreken. Padding en tekstgrootte iets teruggebracht plus `nowrap`/ellipsis, zodat alle vier naast elkaar blijven passen.
+  - Terug-link toegevoegd bovenaan het Lab, zodat je er niet in vast komt te zitten (het Lab heeft geen tab-balk).
+  - De bestaande ingang via de coding- en AI tools-skill blijft ook gewoon werken.
+  `?v=` naar 10.72. Gevalideerd: volledige 10-pagina syntax- + CSS-pass.
 
 - **v10.71 — elk poppetje z'n eigen attribuut: 45 unieke skill-props.** Joey: "vind t te generiek, gebruik echt je tools om ze uniek te maken voor hun eigen skills."
   - **Canva bewust NIET gebruikt, met reden.** 45 keer een plaatje laten genereren levert 45 licht verschillende tekenstijlen op — dan is het geen familie meer maar 45 losse poppetjes. Bovendien worden het rasterbestanden die gehost moeten worden en op 38px vaag worden. Consistentie is hier belangrijker dan generatie-magie.
