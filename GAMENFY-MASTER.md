@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.72)
+# GAMENFY — Master Document (v10.73)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -370,6 +370,13 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.73 — poppetjes echt cartoonig (chibi) + eigen silhouet per categorie.** Joey: "love it maar meer cartoonish, kijk ook ff heygen oid, en per categorie misschien wel iets meer uniek."
+  - **HeyGen gecontroleerd en eerlijk afgevallen**: HyperFrames is puur een video-tool (projecten componeren en naar MP4 renderen). Er zit geen beeld- of karaktergeneratie in. Niet geschikt voor dit doel — dat gemeld in plaats van er iets omheen te verzinnen.
+  - **Van blob naar chibi**: was één ovaal lijf met streepjes-oogjes. Nu een **groot hoofd op een klein lijfje** met echte cartoon-ogen (wit oogwit, donkere pupil, wit lichtpuntje), **blosjes**, en een open lachmondje. Dat is het verschil tussen "een vorm" en "een personage".
+  - **Per categorie een eigen silhouet**, herkenbaar aan de omtrek alleen al: Geld breed en rond, Geest smal met hoog ovaal hoofd, Business vierkant hoofd met ronde hoeken, Lichaam stevige schouders, Creatief scheef gekanteld hoofd, Lifestyle breed en bonkig, Discipline compact en gedrongen, Kennis lang hoofd met hoog voorhoofd. Geverifieerd dat alle 8 verschillend zijn (0 duplicaten).
+  - **Props meeverhuisd**: de 45 attributen waren getekend voor het oude lijf. In plaats van ze allemaal te hertekenen zijn ze opgesplitst in hoofddeksels (kokmuts, beret, kroon, nachtmuts, halo, zweetband) en handattributen, elk met hun eigen transform — hoofddeksels omhoog en iets groter voor het grotere hoofd, handattributen omlaag naar het kleinere lijf.
+  `?v=` naar 10.73. Gevalideerd: volledige 10-pagina syntax-pass + silhouet-controle.
 
 - **v10.72 — Lab als vierde tab naast Skills / Goals / Ventures.** Joey's verzoek: "ik zat te denken om dat lab te plaatsen waar nu ook de goals and ventures staat."
   - Vierde knop toegevoegd aan de skills-toolbar. **Bewust een navigatie naar `lab.html`** in plaats van het Lab als vierde view ín character.html te bouwen: dat bestand is inmiddels groot en complex (skills, goals, ventures, body, health-metrics, seasons, priority focus), en het Lab is juist de plek voor experimenten die mogen breken. Los houden betekent dat een mislukt experiment nooit de echte skill-pagina kan meeslepen.

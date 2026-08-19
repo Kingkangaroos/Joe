@@ -10,10 +10,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.72" defer></script>
-<script src="topbar.js?v=10.72" defer></script>
-<script src="xp.js?v=10.72" defer></script>
-<script src="ladders.js?v=10.72" defer></script>
+<script src="sync.js?v=10.73" defer></script>
+<script src="topbar.js?v=10.73" defer></script>
+<script src="xp.js?v=10.73" defer></script>
+<script src="ladders.js?v=10.73" defer></script>
 <style>
 :root{
   --bg:#F4F3EF; --card:#FFFFFF; --ink:#15140F; --muted:#6F6C63; --faint:#A6A399;
@@ -196,24 +196,60 @@ body{padding-bottom:90px}
     return I[key] || '';
   }
 
-  function charHtml(col, lv, key){
-    var f = tint(col, 0.32 + Math.min(1, lv/70)*0.68);
-    var dark = tint(col, 0.55 + Math.min(1, lv/70)*0.45);
-    var s1 = lv>25 ? '<path d="M46 16 C44 8 47 4 50 7 C50 11 48 15 46 16Z" fill="'+f+'"/>' : '';
-    var s2 = lv>55 ? '<path d="M54 16 C56 8 53 4 50 7 C50 11 52 15 54 16Z" fill="'+f+'"/>' : '';
+  // props that sit ON the head vs. beside the body — they need different
+  // placement now the characters are chibi (big head, small torso)
+  var HATS = {cooking:1, languages:1, learning:1, superiority:1, sleep:1, recovery:1,
+              calisthenics:1, meditation:1, good_deed:1, tennis:1};
+  // per-category silhouette — head shape and torso width differ so a category
+  // is recognisable from its outline alone, not just its colour
+  function shape(cat){
+    switch(cat){
+      case 'money':      return {hw:30,hh:26,hy:33,tw:19,r:0};
+      case 'mind':       return {hw:24,hh:29,hy:31,tw:14,r:0};
+      case 'business':   return {hw:26,hh:25,hy:33,tw:18,r:12};
+      case 'body':       return {hw:26,hh:26,hy:33,tw:21,r:0};
+      case 'creative':   return {hw:28,hh:25,hy:33,tw:16,r:0,tilt:-6};
+      case 'lifestyle':  return {hw:29,hh:26,hy:34,tw:17,r:0};
+      case 'discipline': return {hw:24,hh:24,hy:35,tw:17,r:4};
+      case 'knowledge':  return {hw:25,hh:30,hy:31,tw:15,r:0};
+      default:           return {hw:27,hh:26,hy:33,tw:17,r:0};
+    }
+  }
+  function charHtml(col, lv, key, cat){
+    var f = tint(col, 0.34 + Math.min(1, lv/70)*0.66);
+    var dark = tint(col, 0.6 + Math.min(1, lv/70)*0.4);
+    var sh = shape(cat);
+    var cy = sh.hy, ex = 9.5, ey = cy + 2;
+    var head = sh.r
+      ? '<rect x="'+(50-sh.hw)+'" y="'+(cy-sh.hh)+'" width="'+(sh.hw*2)+'" height="'+(sh.hh*2)+'" rx="'+sh.r+'" fill="'+f+'"/>'
+      : '<ellipse cx="50" cy="'+cy+'" rx="'+sh.hw+'" ry="'+sh.hh+'" fill="'+f+'"/>';
+    if (sh.tilt) head = '<g transform="rotate('+sh.tilt+' 50 '+cy+')">'+head+'</g>';
+    var sprout = lv>25 ? '<path d="M47 '+(cy-sh.hh)+' C44 '+(cy-sh.hh-9)+' 48 '+(cy-sh.hh-12)+' 51 '+(cy-sh.hh-7)+' C51 '+(cy-sh.hh-2)+' 49 '+(cy-sh.hh)+' 47 '+(cy-sh.hh)+'Z" fill="'+dark+'"/>' : '';
+    var torso = '<path d="M'+(50-sh.tw)+' 86 C'+(50-sh.tw)+' '+(cy+sh.hh-4)+' '+(50+sh.tw)+' '+(cy+sh.hh-4)+' '+(50+sh.tw)+' 86 Z" fill="'+f+'"/>';
+    var belly = '<path d="M'+(50-sh.tw+4)+' 86 C'+(50-sh.tw+4)+' '+(cy+sh.hh+4)+' '+(50+sh.tw-4)+' '+(cy+sh.hh+4)+' '+(50+sh.tw-4)+' 86 Z" fill="#FBF9F2" opacity=".75"/>';
+    var arms = '<ellipse cx="'+(50-sh.tw-3)+'" cy="76" rx="6" ry="4.5" fill="'+f+'"/>'
+             + '<ellipse cx="'+(50+sh.tw+3)+'" cy="76" rx="6" ry="4.5" fill="'+f+'"/>';
+    // big cartoon eyes with pupils and a highlight
+    var eyes = '<ellipse cx="'+(50-ex)+'" cy="'+ey+'" rx="7" ry="8" fill="#fff"/>'
+             + '<ellipse cx="'+(50+ex)+'" cy="'+ey+'" rx="7" ry="8" fill="#fff"/>'
+             + '<circle cx="'+(50-ex+1)+'" cy="'+(ey+1)+'" r="3.6" fill="#2A2A26"/>'
+             + '<circle cx="'+(50+ex+1)+'" cy="'+(ey+1)+'" r="3.6" fill="#2A2A26"/>'
+             + '<circle cx="'+(50-ex+2.4)+'" cy="'+(ey-1)+'" r="1.4" fill="#fff"/>'
+             + '<circle cx="'+(50+ex+2.4)+'" cy="'+(ey-1)+'" r="1.4" fill="#fff"/>';
+    var blush = '<circle cx="'+(50-sh.hw+5)+'" cy="'+(ey+9)+'" r="4.4" fill="#E58BA0" opacity=".45"/>'
+              + '<circle cx="'+(50+sh.hw-5)+'" cy="'+(ey+9)+'" r="4.4" fill="#E58BA0" opacity=".45"/>';
     var mouth = (key==='whistling')
-      ? '<ellipse cx="50" cy="63" rx="3.6" ry="4.4" fill="#3A3A34"/>'
-      : '<path d="M45 63 Q50 66 55 63" stroke="#3A3A34" stroke-width="2.4" fill="none" stroke-linecap="round"/>';
+      ? '<ellipse cx="50" cy="'+(ey+12)+'" rx="3.6" ry="4.4" fill="#2A2A26"/>'
+      : '<path d="M44 '+(ey+10)+' Q50 '+(ey+17)+' 56 '+(ey+10)+' Z" fill="#2A2A26"/>';
     var rings = (key==='whistling' && lv>20)
-      ? '<circle cx="50" cy="63" r="11" fill="none" stroke="'+f+'" stroke-width="2" class="ring"/>'
-        +'<circle cx="50" cy="63" r="11" fill="none" stroke="'+f+'" stroke-width="2" class="ring2"/>' : '';
-    var svg = '<svg viewBox="0 0 100 100" width="38" height="38" aria-hidden="true">'+s1+s2
-      +'<path d="M50 14 C29 14 16 32 16 54 C16 76 31 90 50 90 C69 90 84 76 84 54 C84 32 71 14 50 14Z" fill="'+f+'"/>'
-      +'<path d="M18 56 C24 49 30 57 37 51 C44 45 50 55 57 50 C64 45 78 51 82 56 C82 77 68 90 50 90 C32 90 18 77 18 56Z" fill="#FBF9F2" opacity=".8"/>'
-      +'<ellipse cx="11" cy="58" rx="7" ry="5" fill="'+f+'"/><ellipse cx="89" cy="58" rx="7" ry="5" fill="'+f+'"/>'
-      +'<path d="M36 50 Q40 46 44 50" stroke="#3A3A34" stroke-width="3" fill="none" stroke-linecap="round"/>'
-      +'<path d="M56 50 Q60 46 64 50" stroke="#3A3A34" stroke-width="3" fill="none" stroke-linecap="round"/>'
-      +mouth+rings+propSvg(key, f, dark)+'</svg>';
+      ? '<circle cx="50" cy="'+(ey+12)+'" r="11" fill="none" stroke="'+f+'" stroke-width="2" class="ring"/>'
+        +'<circle cx="50" cy="'+(ey+12)+'" r="11" fill="none" stroke="'+f+'" stroke-width="2" class="ring2"/>' : '';
+    var prop = propSvg(key, f, dark);
+    if (prop) prop = HATS[key]
+      ? '<g transform="translate(-7,-11) scale(1.14)">'+prop+'</g>'
+      : '<g transform="translate(1,20) scale(.95)">'+prop+'</g>';
+    var svg = '<svg viewBox="0 0 100 100" width="40" height="40" aria-hidden="true">'
+      + sprout + torso + belly + arms + head + eyes + blush + mouth + rings + prop + '</svg>';
     return '<div class="body-wrap"><div class="body-inner">'+svg+'</div>'
       +'<div class="legs"><div class="leg l" style="background:'+dark+'"></div>'
       +'<div class="leg r" style="background:'+dark+'"></div></div>'
@@ -235,7 +271,7 @@ body{padding-bottom:90px}
       var t=TEMPER[k]||[.7,.4,.3];
       var el=document.createElement('div');
       el.className='ch idle'; el.dataset.cat=cat; el.dataset.key=k;
-      el.innerHTML=charHtml(colorFor[cat]||'#8A8578', lv, k)
+      el.innerHTML=charHtml(colorFor[cat]||'#8A8578', lv, k, cat)
         +'<div class="nm">'+(d.private?'\u2022\u2022\u2022':(d.label||k))+'</div>'
         +'<div class="lv">lvl '+lv+'</div>';
       el.style.setProperty('--d',(2.9-Math.min(1,lv/80)*1.4).toFixed(2)+'s');
