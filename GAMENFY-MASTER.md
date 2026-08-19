@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.68)
+# GAMENFY — Master Document (v10.69)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -370,6 +370,15 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.69 — NIEUW: `lab.html`, de Lab-pagina, met de bewegende skill-characters op Joey's echte data.** Joey kon de widget-prototypes niet zien op zijn telefoon ("ik zit nu op mn tel en kan t niet zien... enkel op mn laptop in de chat"), dus dit is bewust een **echte pagina in de app** in plaats van nog een chat-prototype. Meteen ook de eerste invulling van zijn Lab/files-idee.
+  - **Bewuste keuze: op `main`, niet op de v11-branch.** Het is een volledig nieuwe pagina die geen bestaande pagina aanraakt, dus het risico is nul — en zo hoeft Joey geen aparte preview-URL te onthouden (dat leverde eerder al verwarring op over welke versie hij gebruikte).
+  - **Alle 45 poppetjes bewegen tegelijk**, elk met een **eigen bewegingssoort** in plaats van hetzelfde deinen: tillen (gym/strength/core/calisthenics), rennen (endurance/stappen/tennis), zwaaien (dansen/sociaal/dating), zweven (meditatie/dankbaarheid/discipline-skills), slapen (slaap/recovery), knikken (lezen/leren/plannen), muntdraai (geld-skills), tikken (coding/AI/creatief), rillen (koud douchen), poetsen (tanden/huishouden/koken), praten (sales/marketing), en fluiten met geluidsringen (whistling). Dit lost Claudia's eigen kritiek op dat het "hetzelfde poppetje in acht kleuren" was.
+  - **Categorie-filter zoals Joey beschreef**: tik een categorie → die poppetjes komen naar voren (groter, mét naam en level), de rest zakt naar de achtergrond op 26% en blijft daar bewegen. Tik een poppetje → detailpaneel met level, volgende tier uit SKILL_LADDERS, en een link naar de echte skill.
+  - **Draait op Joey's echte levels** (leest `getCharacter()` + `xpToLevel`), niet op verzonnen data. Privé-skills tonen "•••" in plaats van hun naam.
+  - **Geverifieerd met een simulatie**: alle 45 actieve skills hebben een eigen beweging toegewezen (0 onafgedekt, 0 spooksleutels door typo's), en de 8 categorie-knoppen matchen exact de `parentSkill`-waarden in `RPG_DEFAULT_SKILLS`.
+  - Toegang via de coding- én AI tools-skill ("🧪 Open the Lab"), precies waar Joey het wilde hebben. `prefers-reduced-motion` zet alle animatie netjes uit.
+  `?v=` naar 10.69. Gevalideerd: volledige 10-pagina + 8-script syntax-pass.
 
 - **v10.68 — boekfoto bij ANWB-routes + volledige eindcontrole van Joey's hele bugronde.** Joey bevestigde dat hij écht een foto van het boek wilde (niet alleen een kaartlink).
   - **Boek geïdentificeerd**: het ANWB *Wandelrouteboek Nederland* (100 routes, spiraalgebonden, ISBN 9789018019587) — matcht exact met de 100 routes en de routenamen in `ROUTES`.
