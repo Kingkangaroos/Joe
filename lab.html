@@ -10,10 +10,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.75" defer></script>
-<script src="topbar.js?v=10.75" defer></script>
-<script src="xp.js?v=10.75" defer></script>
-<script src="ladders.js?v=10.75" defer></script>
+<script src="sync.js?v=10.76" defer></script>
+<script src="topbar.js?v=10.76" defer></script>
+<script src="xp.js?v=10.76" defer></script>
+<script src="ladders.js?v=10.76" defer></script>
 <style>
 :root{
   --bg:#F4F3EF; --card:#FFFFFF; --ink:#15140F; --muted:#6F6C63; --faint:#A6A399;
@@ -54,8 +54,8 @@ body{padding-bottom:90px}
 .body-wrap.flip{transform:scaleX(-1)}
 .legs{position:absolute;left:50%;bottom:0;width:16px;margin-left:-8px;height:11px}
 .leg{position:absolute;top:0;width:2.6px;height:11px;border-radius:2px;transform-origin:50% 0}
-.leg::after{content:'';position:absolute;bottom:-1px;left:-2px;width:7px;height:3px;
-  border-radius:3px;background:inherit}
+.leg::after{content:'';position:absolute;bottom:-2px;left:-3px;width:9px;height:5px;
+  border-radius:4px 4px 3px 3px;background:inherit;border:1.5px solid #2A2A26;box-sizing:border-box}
 .leg.l{left:2px}.leg.r{right:2px}
 .walking .leg.l{animation:step .42s linear infinite}
 .walking .leg.r{animation:step .42s linear .21s infinite}
@@ -225,12 +225,9 @@ body{padding-bottom:90px}
       +' C'+(50-sh.wB)+' '+sh.bot+' '+(50+sh.wB)+' '+sh.bot+' '+(50+sh.wB)+' '+(sh.bot-10)
       +' C'+(50+sh.wB)+' '+mid+' '+(50+sh.wT)+' '+sh.top+' 50 '+sh.top+'Z';
   }
-  // Expression per skill — a cartoon lives or dies on its face, and everyone
-  // having the same polite smile was the flattest thing about the last version.
+  // Expression per skill — a cartoon lives or dies on its face.
   var EXPR = {
-    sleep:'sleepy', recovery:'sleepy', meditation:'chill', gratitude:'chill',
-    stretching:'chill', no_porn:'determined', weed_control:'determined',
-    screen_time:'determined', cold_shower:'shocked',
+    sleep:'sleepy', recovery:'sleepy', meditation:'chill', gratitude:'chill', stretching:'chill',
     gym:'determined', strength:'determined', calisthenics:'determined',
     core:'determined', endurance:'determined', tennis:'determined', walking:'happy',
     dancing:'excited', social:'excited', dating:'excited', content:'excited',
@@ -239,75 +236,117 @@ body{padding-bottom:90px}
     learning:'focused', journaling:'focused', puzzling:'focused', planning:'focused',
     languages:'happy', superiority:'smug', net_worth:'smug', investing:'smug'
   };
-  function face(kind, ey, ex, key){
-    var E='#2A2A26', o='';
+  // Bad habits invert: LOW level = the vice is winning, so the character is
+  // loud, red, horned and on fire. HIGH level = it's beaten, so it shrinks
+  // into a calm little angel. Joey's own idea, and the best one in the set.
+  var BAD = { no_porn:'devil', weed_control:'weed', screen_time:'screen' };
+  // floors at 0.05 for bad habits so a fully beaten vice STAYS an angel forever
+  // instead of reverting to a generic character once level passes 12
+  function badness(key, lv){ return BAD[key] ? Math.max(0.05, Math.min(1, 1 - lv/12)) : 0; }
+
+  function face(kind, ey, ex, key, b){
+    var E='#2A2A26', W='#fff', o='';
+    var iris = b>0.5 ? '#C0392B' : '#3A3A34';
     if(kind==='sleepy'){
-      o += '<path d="M'+(50-ex-6)+' '+ey+' q6 6 12 0" stroke="'+E+'" stroke-width="3" fill="none" stroke-linecap="round"/>'
-         + '<path d="M'+(50+ex-6)+' '+ey+' q6 6 12 0" stroke="'+E+'" stroke-width="3" fill="none" stroke-linecap="round"/>'
-         + '<ellipse cx="50" cy="'+(ey+13)+'" rx="3.4" ry="2.6" fill="'+E+'"/>';
+      o += '<path d="M'+(50-ex-7)+' '+ey+' q7 7 14 0" stroke="'+E+'" stroke-width="3.2" fill="none" stroke-linecap="round"/>'
+         + '<path d="M'+(50+ex-7)+' '+ey+' q7 7 14 0" stroke="'+E+'" stroke-width="3.2" fill="none" stroke-linecap="round"/>';
     } else if(kind==='chill'){
-      o += '<path d="M'+(50-ex-6)+' '+(ey+3)+' q6 -7 12 0" stroke="'+E+'" stroke-width="3" fill="none" stroke-linecap="round"/>'
-         + '<path d="M'+(50+ex-6)+' '+(ey+3)+' q6 -7 12 0" stroke="'+E+'" stroke-width="3" fill="none" stroke-linecap="round"/>'
-         + '<path d="M45 '+(ey+12)+' q5 5 10 0" stroke="'+E+'" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
+      o += '<path d="M'+(50-ex-7)+' '+(ey+3)+' q7 -8 14 0" stroke="'+E+'" stroke-width="3.2" fill="none" stroke-linecap="round"/>'
+         + '<path d="M'+(50+ex-7)+' '+(ey+3)+' q7 -8 14 0" stroke="'+E+'" stroke-width="3.2" fill="none" stroke-linecap="round"/>';
     } else {
-      var r = (kind==='excited'||kind==='shocked') ? 7 : 6;
-      o += '<circle cx="'+(50-ex)+'" cy="'+ey+'" r="'+r+'" fill="'+E+'"/>'
-         + '<circle cx="'+(50+ex)+'" cy="'+ey+'" r="'+r+'" fill="'+E+'"/>'
-         + '<circle cx="'+(50-ex+2.2)+'" cy="'+(ey-2.2)+'" r="2.2" fill="#fff"/>'
-         + '<circle cx="'+(50+ex+2.2)+'" cy="'+(ey-2.2)+'" r="2.2" fill="#fff"/>';
-      if(kind==='determined'){
-        o += '<path d="M'+(50-ex-7)+' '+(ey-10)+' l11 4" stroke="'+E+'" stroke-width="3" stroke-linecap="round"/>'
-           + '<path d="M'+(50+ex+7)+' '+(ey-10)+' l-11 4" stroke="'+E+'" stroke-width="3" stroke-linecap="round"/>'
-           + '<path d="M45 '+(ey+13)+' h10" stroke="'+E+'" stroke-width="2.8" stroke-linecap="round"/>';
-      } else if(kind==='excited'){
-        o += '<path d="M'+(50-ex-7)+' '+(ey-11)+' q6 -4 12 -1" stroke="'+E+'" stroke-width="2.8" fill="none" stroke-linecap="round"/>'
-           + '<path d="M'+(50+ex+7)+' '+(ey-11)+' q-6 -4 -12 -1" stroke="'+E+'" stroke-width="2.8" fill="none" stroke-linecap="round"/>'
-           + '<path d="M43 '+(ey+9)+' q7 11 14 0 z" fill="'+E+'"/>';
-      } else if(kind==='shocked'){
-        o += '<ellipse cx="50" cy="'+(ey+13)+'" rx="4" ry="5" fill="'+E+'"/>';
-      } else if(kind==='smug'){
-        o += '<path d="M'+(50-ex-7)+' '+(ey-10)+' q6 -3 12 0" stroke="'+E+'" stroke-width="2.8" fill="none" stroke-linecap="round"/>'
-           + '<path d="M44 '+(ey+11)+' q7 6 12 -2" stroke="'+E+'" stroke-width="2.8" fill="none" stroke-linecap="round"/>';
-      } else if(kind==='focused'){
-        o += '<path d="M'+(50-ex-7)+' '+(ey-10)+' h12" stroke="'+E+'" stroke-width="2.8" stroke-linecap="round"/>'
-           + '<path d="M'+(50+ex+7)+' '+(ey-10)+' h-12" stroke="'+E+'" stroke-width="2.8" stroke-linecap="round"/>'
-           + '<path d="M46 '+(ey+12)+' h8" stroke="'+E+'" stroke-width="2.6" stroke-linecap="round"/>';
-      } else {
-        o += '<path d="M43 '+(ey+9)+' q7 10 14 0" stroke="'+E+'" stroke-width="2.8" fill="none" stroke-linecap="round"/>';
-      }
+      // big glossy eyes: white sclera + iris + highlight (the reference look)
+      var rw = (kind==='excited'||kind==='shocked') ? 9 : 8;
+      o += '<ellipse cx="'+(50-ex)+'" cy="'+ey+'" rx="'+rw+'" ry="'+(rw+1)+'" fill="'+W+'" stroke="'+E+'" stroke-width="2"/>'
+         + '<ellipse cx="'+(50+ex)+'" cy="'+ey+'" rx="'+rw+'" ry="'+(rw+1)+'" fill="'+W+'" stroke="'+E+'" stroke-width="2"/>'
+         + '<circle cx="'+(50-ex+1.5)+'" cy="'+(ey+1)+'" r="4.2" fill="'+iris+'"/>'
+         + '<circle cx="'+(50+ex+1.5)+'" cy="'+(ey+1)+'" r="4.2" fill="'+iris+'"/>'
+         + '<circle cx="'+(50-ex+3)+'" cy="'+(ey-2)+'" r="1.8" fill="'+W+'"/>'
+         + '<circle cx="'+(50+ex+3)+'" cy="'+(ey-2)+'" r="1.8" fill="'+W+'"/>';
     }
-    if(key==='whistling') o = o.replace(/<path d="M43[^/]+\/>|<ellipse cx="50" cy="\d+(\.\d+)?" rx="[\d.]+" ry="[\d.]+" fill="#2A2A26"\/>/,'')
-      + '<ellipse cx="50" cy="'+(ey+12)+'" rx="3.2" ry="3.8" fill="'+E+'"/>';
+    // thick expressive eyebrows — the single most expressive element
+    var by = ey - (kind==='sleepy'||kind==='chill' ? 8 : 13);
+    if(kind==='determined'||b>0.5){
+      o += '<path d="M'+(50-ex-8)+' '+(by-2)+' l13 5" stroke="'+E+'" stroke-width="3.4" stroke-linecap="round"/>'
+         + '<path d="M'+(50+ex+8)+' '+(by-2)+' l-13 5" stroke="'+E+'" stroke-width="3.4" stroke-linecap="round"/>';
+    } else if(kind==='excited'||kind==='shocked'){
+      o += '<path d="M'+(50-ex-8)+' '+(by+2)+' q7 -6 14 -2" stroke="'+E+'" stroke-width="3.2" fill="none" stroke-linecap="round"/>'
+         + '<path d="M'+(50+ex+8)+' '+(by+2)+' q-7 -6 -14 -2" stroke="'+E+'" stroke-width="3.2" fill="none" stroke-linecap="round"/>';
+    } else if(kind==='smug'){
+      o += '<path d="M'+(50-ex-8)+' '+(by+1)+' q7 -5 14 -1" stroke="'+E+'" stroke-width="3.2" fill="none" stroke-linecap="round"/>'
+         + '<path d="M'+(50+ex+8)+' '+(by+3)+' l-13 -1" stroke="'+E+'" stroke-width="3.2" stroke-linecap="round"/>';
+    } else {
+      o += '<path d="M'+(50-ex-8)+' '+by+' q7 -4 14 0" stroke="'+E+'" stroke-width="3.2" fill="none" stroke-linecap="round"/>'
+         + '<path d="M'+(50+ex+8)+' '+by+' q-7 -4 -14 0" stroke="'+E+'" stroke-width="3.2" fill="none" stroke-linecap="round"/>';
+    }
+    // blush — the references all have it, removing it was a mistake
+    o += '<ellipse cx="'+(50-ex-9)+'" cy="'+(ey+9)+'" rx="5" ry="3.4" fill="#E8798F" opacity=".5"/>'
+       + '<ellipse cx="'+(50+ex+9)+'" cy="'+(ey+9)+'" rx="5" ry="3.4" fill="#E8798F" opacity=".5"/>';
+    // open mouth with a tooth line
+    var my = ey + 13;
+    if(key==='whistling'){
+      o += '<ellipse cx="50" cy="'+my+'" rx="3.4" ry="4.2" fill="'+E+'"/>';
+    } else if(kind==='excited'||b>0.5){
+      o += '<path d="M42 '+(my-3)+' q8 13 16 0 z" fill="'+E+'"/>'
+         + '<path d="M43.5 '+(my-2.4)+' h13" stroke="'+W+'" stroke-width="2.6" stroke-linecap="round"/>';
+    } else if(kind==='sleepy'){
+      o += '<ellipse cx="50" cy="'+my+'" rx="3.2" ry="2.4" fill="'+E+'"/>';
+    } else if(kind==='determined'||kind==='focused'){
+      o += '<path d="M45 '+my+' h10" stroke="'+E+'" stroke-width="3" stroke-linecap="round"/>';
+    } else if(kind==='smug'){
+      o += '<path d="M44 '+(my-1)+' q7 6 12 -3" stroke="'+E+'" stroke-width="3" fill="none" stroke-linecap="round"/>';
+    } else {
+      o += '<path d="M43 '+(my-4)+' q7 11 14 0 z" fill="'+E+'"/>'
+         + '<path d="M44.5 '+(my-3.4)+' h11" stroke="'+W+'" stroke-width="2.4" stroke-linecap="round"/>';
+    }
     return o;
   }
+
   function charHtml(col, lv, key, cat){
-    var f = tint(col, 0.5 + Math.min(1, lv/70)*0.5);
-    var dark = tint(col, 0.75 + Math.min(1, lv/70)*0.25);
+    var b = badness(key, lv);
     var LINE = '#2A2A26';
+    // bad habits go red-hot when losing, pale and serene when beaten
+    var f = b>0 ? (b>0.5 ? tint('#C0392B', 0.45+b*0.55) : tint('#EDE9DF', 0.85))
+                : tint(col, 0.5 + Math.min(1, lv/70)*0.5);
+    var dark = b>0 ? (b>0.5 ? '#8E2820' : '#BDB8A8') : tint(col, 0.75 + Math.min(1, lv/70)*0.25);
     var sh = shape(cat), ey = sh.ey, ex = 10;
-    var kind = EXPR[key] || 'happy';
-    // bold outline — this is what makes it read as a cartoon and not an icon
+    var kind = b>0.5 ? 'determined' : (b>0 ? 'chill' : (EXPR[key] || 'happy'));
     var body = '<path d="'+bean(sh)+'" fill="'+f+'" stroke="'+LINE+'" stroke-width="3.4" stroke-linejoin="round"/>';
     if (sh.tilt) body = '<g transform="rotate('+sh.tilt+' 50 '+((sh.top+sh.bot)/2)+')">'+body+'</g>';
-    var sprout = lv>25 ? '<path d="M48 '+sh.top+' C44 '+(sh.top-11)+' 49 '+(sh.top-15)+' 53 '+(sh.top-9)+' C53 '+(sh.top-3)+' 50 '+sh.top+' 48 '+sh.top+'Z" fill="'+dark+'" stroke="'+LINE+'" stroke-width="2.4" stroke-linejoin="round"/>' : '';
-    // arm pose varies with the mood — no more identical scarecrows
-    var ax = sh.wB - 2, ay = ey + 15, up = (kind==='excited'), fold = (kind==='determined'||kind==='focused');
-    var lArm = up ? 'M'+(50-ax)+' '+ay+' q-11 -8 -13 -18' : fold ? 'M'+(50-ax)+' '+ay+' q-10 4 -6 12' : 'M'+(50-ax)+' '+ay+' q-10 4 -12 12';
-    var rArm = 'M'+(50+ax)+' '+ay+' q10 4 12 12';
-    var lHand = up ? [50-ax-13, ay-19] : fold ? [50-ax-6, ay+13] : [50-ax-12, ay+13];
-    var arms = '<path d="'+lArm+'" stroke="'+LINE+'" stroke-width="3.6" fill="none" stroke-linecap="round"/>'
-             + '<path d="'+rArm+'" stroke="'+LINE+'" stroke-width="3.6" fill="none" stroke-linecap="round"/>'
-             + '<circle cx="'+lHand[0]+'" cy="'+lHand[1]+'" r="4" fill="'+f+'" stroke="'+LINE+'" stroke-width="2.6"/>'
-             + '<circle cx="'+(50+ax+12)+'" cy="'+(ay+13)+'" r="4" fill="'+f+'" stroke="'+LINE+'" stroke-width="2.6"/>';
+
+    var extra = '';
+    if (b>0.5){ // horns + fire: the vice is winning
+      extra += '<path d="M'+(50-sh.wT-1)+' '+(sh.top+7)+' l-4 -14 l10 7Z" fill="'+dark+'" stroke="'+LINE+'" stroke-width="2.4" stroke-linejoin="round"/>'
+             + '<path d="M'+(50+sh.wT+1)+' '+(sh.top+7)+' l4 -14 l-10 7Z" fill="'+dark+'" stroke="'+LINE+'" stroke-width="2.4" stroke-linejoin="round"/>'
+             + '<path d="M62 '+(ey+16)+' q10 -3 15 4 q-8 5 -15 -4Z" fill="#F0932B" stroke="'+LINE+'" stroke-width="2"/>';
+    } else if (b>0){ // beaten: a small halo
+      extra += '<ellipse cx="50" cy="'+(sh.top-9)+'" rx="14" ry="4" fill="none" stroke="#E3C34A" stroke-width="3"/>';
+    } else if (lv>25){
+      extra += '<path d="M48 '+sh.top+' C44 '+(sh.top-11)+' 49 '+(sh.top-15)+' 53 '+(sh.top-9)+' C53 '+(sh.top-3)+' 50 '+sh.top+' 48 '+sh.top+'Z" fill="'+dark+'" stroke="'+LINE+'" stroke-width="2.4" stroke-linejoin="round"/>';
+    }
+
+    // stick arms ending in mitten hands (reference look)
+    var ax = sh.wB - 2, ay = ey + 15;
+    var up = (kind==='excited'||b>0.5), fold = (kind==='determined'&&b<=0.5)||kind==='focused';
+    var lArm = up ? 'M'+(50-ax)+' '+ay+' q-11 -9 -13 -19' : fold ? 'M'+(50-ax)+' '+ay+' q-10 4 -6 12' : 'M'+(50-ax)+' '+ay+' q-10 4 -12 12';
+    var lH = up ? [50-ax-13, ay-20] : fold ? [50-ax-6, ay+13] : [50-ax-12, ay+13];
+    var arms = '<path d="'+lArm+'" stroke="'+LINE+'" stroke-width="3.4" fill="none" stroke-linecap="round"/>'
+             + '<path d="M'+(50+ax)+' '+ay+' q10 4 12 12" stroke="'+LINE+'" stroke-width="3.4" fill="none" stroke-linecap="round"/>'
+             + '<ellipse cx="'+lH[0]+'" cy="'+lH[1]+'" rx="5" ry="4.4" fill="'+f+'" stroke="'+LINE+'" stroke-width="2.6"/>'
+             + '<ellipse cx="'+(50+ax+12)+'" cy="'+(ay+13)+'" rx="5" ry="4.4" fill="'+f+'" stroke="'+LINE+'" stroke-width="2.6"/>';
     var rings = (key==='whistling' && lv>20)
-      ? '<circle cx="50" cy="'+(ey+12)+'" r="11" fill="none" stroke="'+LINE+'" stroke-width="2.2" class="ring"/>'
-        +'<circle cx="50" cy="'+(ey+12)+'" r="11" fill="none" stroke="'+LINE+'" stroke-width="2.2" class="ring2"/>' : '';
-    var prop = propSvg(key, f, dark);
-    if (prop) prop = HATS[key]
+      ? '<circle cx="50" cy="'+(ey+13)+'" r="12" fill="none" stroke="'+LINE+'" stroke-width="2.2" class="ring"/>'
+        +'<circle cx="50" cy="'+(ey+13)+'" r="12" fill="none" stroke="'+LINE+'" stroke-width="2.2" class="ring2"/>' : '';
+    var prop = (b>0 && key!=='weed_control') ? '' : propSvg(key, f, dark);
+    if (key==='weed_control'){ // fresh and loud, or dried up in a corner
+      prop = b>0.5
+        ? '<path d="M50 30 q-13 3 -13 14 q13 0 13 -14Z M50 30 q13 3 13 14 q-13 0 -13 -14Z" fill="#2E8B5F" stroke="'+LINE+'" stroke-width="2.2" stroke-linejoin="round"/>'
+        : '<path d="M50 38 q-9 3 -8 9 q8 -1 8 -9Z" fill="#8A6A3A" stroke="'+LINE+'" stroke-width="2" transform="rotate(28 50 42)"/>';
+    }
+    if (prop && !BAD[key]) prop = HATS[key]
       ? '<g transform="translate(-6,'+(sh.top-24)+') scale(1.15)">'+prop+'</g>'
       : '<g transform="translate(3,'+(ey-36)+') scale(.9)">'+prop+'</g>';
-    var svg = '<svg viewBox="-6 -6 112 112" width="42" height="42" aria-hidden="true">'
-      + sprout + arms + body + face(kind, ey, ex, key) + rings + prop + '</svg>';
+    var svg = '<svg viewBox="-8 -10 116 116" width="44" height="44" aria-hidden="true">'
+      + extra + arms + body + face(kind, ey, ex, key, b) + rings + prop + '</svg>';
     return '<div class="body-wrap"><div class="body-inner">'+svg+'</div>'
       +'<div class="legs"><div class="leg l" style="background:'+LINE+'"></div>'
       +'<div class="leg r" style="background:'+LINE+'"></div></div>'
@@ -333,8 +372,11 @@ body{padding-bottom:90px}
         +'<div class="nm">'+(d.private?'\u2022\u2022\u2022':(d.label||k))+'</div>'
         +'<div class="lv">lvl '+lv+'</div>';
       el.style.setProperty('--d',(2.9-Math.min(1,lv/80)*1.4).toFixed(2)+'s');
-      var a={el:el,key:k,def:d,lv:lv,cat:cat,priv:!!d.private,
-             pace:t[0],rest:t[1],social:t[2],
+      var bd = badness(k, lv);
+      var a={el:el,key:k,def:d,lv:lv,cat:cat,priv:!!d.private,bad:bd,
+             pace:t[0]*(bd>0.5?1.9:(bd>0?0.35:1)),
+             rest:bd>0.5?0.03:(bd>0?0.8:t[1]),
+             social:bd>0.5?0.95:(bd>0?0.05:t[2]),
              x:Math.random()*W, y:60+Math.random()*(H-110),
              vx:0, vy:0, state:'idle', timer:Math.random()*120, anchor:null};
       el.onclick=function(){ showDetail(a); };
@@ -379,7 +421,10 @@ body{padding-bottom:90px}
       } else {
         a.el.classList.remove('walking'); a.el.classList.add('idle');
       }
-      var sc = inFront ? (a.cat===current?1.3:0.62) : 1;
+      // a bad habit that's winning is bigger and more in-your-face; once beaten
+      // it shrinks away — the behaviour has to match the visual, not just the art
+      var badScale = a.bad>0.5 ? 1 + (a.bad-0.5)*0.7 : (a.bad>0 ? 0.78 : 1);
+      var sc = (inFront ? (a.cat===current?1.3:0.62) : 1) * badScale;
       var op = inFront ? (a.cat===current?1:0.26) : 1;
       a.el.style.transform='translate3d('+a.x+'px,'+a.y+'px,0) scale('+sc+')';
       a.el.style.opacity=op;

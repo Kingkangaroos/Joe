@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.75)
+# GAMENFY — Master Document (v10.76)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -141,6 +141,33 @@ Skills die weinig direct raken aan dit plan (bijv. sommige lifestyle/discipline-
 10. ✅ **"Assess my levels" gevonden en gefixt (v10.38)** — bestond wél degelijk, "Access" was een verhoring van "Assess" en mijn eerdere zoekopdrachten misten het echte woord (mijn fout, gecorrigeerd). Kritisch bekeken zoals gevraagd: **echt gat gevonden en gefixt** — de assessment las alleen uit de oude 33-skill quest-ladder, sloeg alle 10 habits + no_porn/weed_control (12 skills) stilzwijgend over. Dekt nu alle 45 skills, met de rijkere v10.25/26-ladder-teksten.
 10b. ✅ **Websites Verkopen-venture, restant — afgehandeld.** Hero-foto's staan (v10.37). De 11 resterende skill-foto's: **2026-07-31, Joey's besluit — hij zoekt ze zelf later** (mijn web-search bleek traag/onnauwkeurig). Geen actiepunt meer voor Claudia; laat ze intussen gewoon als icoon (bestaande nette fallback).
 11. 🟡 **Vormgeving-overhaul + scroll-animaties** — wacht op Joey's referenties (namen van sites/apps, geen uploads). **2026-07-30: Joey bevestigt dat hij hier zelf nog moeite in gaat steken** (referenties verzamelen) — blijft dus bij hem liggen, geen actie voor Claudia.
+
+### Lab-characters — Joey's volledige visie (2026-08-19, letterlijk vastgelegd op zijn verzoek)
+
+Joey: "schrijf dan wel gewoon heel duidelijk op wat ik wil, hoe ik het wil." Dit is de complete richting; onderdelen worden stapsgewijs gebouwd.
+
+**1. Omgekeerde progressie voor slechte gewoontes — Joey's eigen idee, en het sterkste van de set.**
+Bij normale skills geldt: hoger level = groter, heftiger, levendiger. Bij *bad habits* moet het precies andersom:
+- **no_porn op level 0** → een **duivel**: luid, opvallend, vuurspuwend, agressief. Hoe slechter je ervoor staat, hoe nadrukkelijker hij aanwezig is.
+- **no_porn op hoog level** → verandert in een **engel**: rustig, klein, sereen.
+- **weed_control op level 0** → een **fel, sappig wietblaadje**, luid aanwezig.
+- **weed_control op level 10 (meerdere dagen volgehouden)** → een **verdroogd blaadje dat ergens in een hoekje ligt**.
+Kern van het idee: bij deze skills is *stilte en onopvallendheid* de beloning, niet grootsheid.
+
+**2. Elk karakter een eigen vibe, maar wel herkenbaar als zijn skill.**
+Joey: "misschien dat tennis een tennisbal heeft, maar dat hij nog wel tennis is." Dus: eigen persoonlijkheid en attributen, zonder dat je nog kunt zien welke skill het is.
+
+**3. Karakters moeten een eigen leventje leiden.**
+- Nu lopen ze rond en praten ze met elkaar — dat vindt Joey "een hele leuke toevoeging".
+- Wil erbij: **ruzie maken**, elkaar opzoeken/mijden, echt eigen gedrag ("dat ze echt een beetje hun eigen brein hebben").
+- Joey is nieuwsgierig **wát ze zeggen** — er moet inhoud in de gesprekken zitten, passend bij de skill.
+
+**4. Het mag extra zijn.**
+Joey: "ik wil het eigenlijk een beetje pushen to the limits, het is voor mij ook een test van hoe ver ik iets kan produceren wat echt beweegt." Terughoudendheid is hier dus níet gewenst.
+
+**5. Nog te ontvangen**: Joey stuurt later visuele referenties na (had op het moment van schrijven mogelijk te weinig credits om afbeeldingen te uploaden).
+
+**6. FYI van Joey**: hij gaat volgende maand weer "HitSuite" gebruiken zodra zijn salaris binnen is — vermoedelijk Higgsfield (eerder afgeschreven wegens 0 credits). Bij de eerstvolgende beeld-gerelateerde vraag even navragen of dat inmiddels weer beschikbaar is.
 
 ### Nieuw idee — "Lab" / files-sectie in de app (2026-08-18, Joey hardop denkend)
 Joey wil voorbeeldwebsites voor zijn ventures samen met Claudia kunnen bouwen, maar ze **binnen Gamenfy** kunnen terugvinden — niet in een apart project ("daar heb ik geen zin in, dat doe ik later wel als ik het echt ga uitrollen"). Zijn woorden: "een soort vakje waar ik op kan klikken, met verschillende websites of versievarianten, alsof het mijn files zijn, zodat ik daar de veranderingen in kan zien."
@@ -370,6 +397,14 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.76 — poppetjes op basis van Joey's échte referenties + zijn duivel/engel-idee gebouwd.** Joey stuurde referenties (OpenArt fruit-personages, een aardbei, een boze knoflook, Majin Buu, een 2D-cartoon zwembadscene).
+  - **Wat de referenties gemeen hadden, en wat ik fout had**: grote glánzende ogen met wit oogwit + iris + lichtpunt (ik had effen stipoogjes), **dikke wenkbrauwen**, **open lachmond met tandjes**, **blosjes** (die had ik er in v10.74 juist uitgesloopt — dat was verkeerd), **wantjes als handen** en **laarsjes**. Alles alsnog toegepast.
+  - **Duivel→engel-inversie gebouwd** (Joey's eigen idee): bij `no_porn`, `weed_control` en `screen_time` is de progressie omgekeerd. Op laag level "wint" de verslaving: rood, **hoorns**, vuurpuf, boze wenkbrauwen, **1,35× groter**, **1,9× sneller** en zeer sociaal (hij dringt zich op). Naarmate het level stijgt kantelt het: bleek, **halo**, kalm gezicht, **0,78× kleiner**, 0,35× traag en vrijwel asociaal — hij trekt zich terug in een hoekje. `weed_control` heeft een eigen visual: fel sappig blaadje bij laag level, klein verdroogd bruin blaadje bij hoog level, precies zoals Joey beschreef.
+  - **Gedrag volgt het beeld, niet alleen de tekening** — een winnende verslaving beweegt ook echt sneller, groter en drukker over het scherm.
+  - **Bug gevonden in eigen werk tijdens het testen**: vanaf level 12 werd `badness` exact 0, waardoor een volledig verslagen verslaving terugviel naar een gewoon poppetje en zijn engel-vorm verloor. Ondergrens op 0.05 gezet zodat de engel permanent blijft.
+  - Nog te bouwen uit Joey's visie: ruzies tussen karakters, inhoudelijke gesprekken (wát ze zeggen), en een eigen "brein" per karakter. Staat vastgelegd in de visie-sectie hierboven.
+  `?v=` naar 10.76. Gevalideerd: volledige 10-pagina syntax-pass + progressietest over alle levels.
 
 - **v10.75 — echte cartoon-behandeling: omlijning, grote ogen, 8 gezichtsuitdrukkingen, wisselende houdingen.** Joey bleef "meer cartoon" zeggen na drie iteraties; tijd om te benoemen wát er structureel ontbrak in plaats van door te tweaken.
   - **De hoofdoorzaak: geen omlijning.** Vlakke vormen zonder contour lezen als icoontje/logo, niet als cartoon. Alle poppetjes hebben nu een stevige donkere contour (3.4px) om lijf, armen en handjes. Dit is verreweg het grootste verschil.
