@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.84)
+# GAMENFY — Master Document (v10.85)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -400,6 +400,16 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.85 — dagdoelen worden automatisch afgevinkt zodra de Fitbit-data binnen is.** Joey's verzoek: "ik wil dat de daily goals zoals stappen en slaap automatisch worden afgevinkt wanneer die data binnengekomen is."
+  - **Twee gewoontes gekoppeld**: `walking` bij 10.000 stappen (de eigen stappendoelstelling van de app) en `sleep` bij 7 uur. **Bewust 7 uur en niet de 8 uur van de grafiek**: de slaap-ladder omschrijft de gewoonte zelf als "7+ uur op de meeste nachten", en met 8 uur zou het bij Joey's werkelijke slaapcijfers (rond 6,5–7 uur) vrijwel nooit afgaan — een functie die nooit vuurt is geen functie.
+  - **Het vecht nooit met Joey.** Er wordt per gewoonte-plus-datum vastgelegd dát er al automatisch is afgevinkt. Vinkt hij daarna handmatig iets úit, dan zet de volgende paginalaad het níet terug. Was het al afgevinkt vóór de data binnenkwam, dan blijft het met rust gelaten en wordt er geen dubbele XP toegekend.
+  - Doet precies wat een handmatige afvink doet (habitlog, `checkHabit`, `recomputeHabitFromLog`, +15 XP, streak-dag) zodat er geen twee soorten "afgevinkt" ontstaan.
+  - Draait ná de eerste paint zodat de pagina niet vertraagt, en slaat het netwerkverzoek volledig over als er vandaag al niets meer te doen valt.
+  - **Bug voorkomen door te controleren in plaats van aan te nemen**: de functie gebruikte eerst `SB_URL`/`SB_KEY`, maar die bestaan in xp.js alleen binnen een ander afgeschermd blok en waren onbereikbaar — eigen constanten toegevoegd. En `rpg_autohabit_v1` is aan de sync-scope toegevoegd, anders zou een tweede apparaat alles opnieuw afvinken.
+  - **Geverifieerd met een simulatie** over zes scenario's: eerste laadbeurt, herladen dezelfde dag, handmatig uitvinken gevolgd door herladen (zet het níet terug), een verse dag waarop beide doelen gehaald zijn, een gewoonte die al handmatig stond, en de situatie zonder Fitbit-data.
+  - **Let op**: bij Joey vuurt dit pas zodra hij zijn Fitbit-koppeling herstelt (staat stil sinds 4 augustus). Hij pakt dat zelf op; hierbij de afgesproken herinnering.
+  `?v=` naar 10.85. Gevalideerd: 14-bestands + 8-script controle.
 
 - **v10.84 — eerdere fixes geverifieerd in Joey's echte data + waarschuwing bij stilstaande gezondheidsdata.**
   - **Verificatie van v10.65 (verdwijnende missies): bevestigd werkend.** In Joey's live cloud-data staan household, walking, good_deed en meditation nu op **19 augustus** afgevinkt. Vóór de fix was de laatste registratie 1 augustus — de afvinkgegevens bleven letterlijk hangen. De race-conditie-fix (lokale schrijfacties tijdens het initiële ophalen bewaren en terugzetten) doet dus wat hij moet doen, geverifieerd op echte data en niet alleen op een simulatie.

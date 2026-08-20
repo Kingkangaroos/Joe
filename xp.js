@@ -1052,6 +1052,76 @@
     return best;
   };
 
+  // ── Auto-check habits from health data (v10.85) ────────────────
+  // Joey: "ik wil dat de daily goals zoals stappen en slaap automatisch
+  // worden afgevinkt wanneer die data binnengekomen is."
+  //
+  // Two design decisions worth knowing:
+  //  1. It records that it has ALREADY auto-applied for a given habit+date in
+  //     rpg_autohabit_v1. So if Joey unchecks something afterwards, the next
+  //     page load will NOT tick it again — the app never fights him over it.
+  //  2. Thresholds mirror what the habit itself claims to be, not a stretch
+  //     goal: 10.000 steps (the app's own steps goal) and 7 hours of sleep
+  //     (the sleep ladder's own wording is "7+ hours on most nights"; the 8h
+  //     figure on the chart is an aspiration and would almost never fire).
+  const AUTO_HABITS = {
+    walking: { field: 'steps',        min: 10000, label: '10k stappen' },
+    sleep:   { field: 'sleepMinutes', min: 420,   label: '7 uur slaap' },
+  };
+  const AUTO_KEY = 'rpg_autohabit_v1';
+  // own constants: the ones further down live inside a separate IIFE and are
+  // not reachable from here (checked, rather than assumed)
+  const AH_SB_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co';
+  const AH_SB_KEY = 'sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
+  function autoLoad(){ try { return JSON.parse(localStorage.getItem(AUTO_KEY)) || {}; } catch (e) { return {}; } }
+  function autoSave(o){ try { localStorage.setItem(AUTO_KEY, JSON.stringify(o)); } catch (e) {} }
+
+  window.autoCheckHealthHabits = async function (onChange) {
+    if (window.__autoHabitRan) return 0;      // once per page load
+    window.__autoHabitRan = true;
+    const today = todayStr();
+    const applied = autoLoad();
+    // nothing left to do today? don't even hit the network
+    const pending = Object.keys(AUTO_HABITS).filter(function (k) { return !applied[k + ':' + today]; });
+    if (!pending.length) return 0;
+    let day = null;
+    try {
+      const r = await fetch(AH_SB_URL + '/rest/v1/app_state?key=eq.health_fitbit&select=data',
+        { headers: { apikey: AH_SB_KEY, Authorization: 'Bearer ' + AH_SB_KEY } });
+      if (!r.ok) return 0;
+      const rows = await r.json();
+      day = rows.length && rows[0].data ? rows[0].data[today] : null;
+    } catch (e) { return 0; }
+    if (!day) return 0;                       // no data for today yet — fine, try again next load
+    const defaults = window.RPG_DEFAULT_SKILLS || {};
+    let done = 0;
+    for (const key of pending) {
+      const cfg = AUTO_HABITS[key];
+      const val = Number(day[cfg.field]);
+      if (!val || val < cfg.min) continue;
+      const def = defaults[key] || {};
+      // respect a habit that's already ticked (manually or otherwise)
+      let log = {}; try { log = JSON.parse(localStorage.getItem('rpg_habitlog_v1')) || {}; } catch (e) {}
+      const already = !!(log[key] && log[key][today]);
+      applied[key + ':' + today] = true;      // mark regardless, so we never re-apply
+      if (already) continue;
+      log[key] = log[key] || {}; log[key][today] = true;
+      try { localStorage.setItem('rpg_habitlog_v1', JSON.stringify(log)); } catch (e) {}
+      try { window.checkHabit(key, def.label, def.icon); } catch (e) {}
+      try { if (window.recomputeHabitFromLog) window.recomputeHabitFromLog(key); } catch (e) {}
+      try { if (window.addXP) window.addXP(key, 15, 'Auto: ' + cfg.label + ' gehaald'); } catch (e) {}
+      try {
+        const st = JSON.parse(localStorage.getItem('rpg_streak_v1')) || { days: {} };
+        st.days = st.days || {}; st.days[today] = true;
+        localStorage.setItem('rpg_streak_v1', JSON.stringify(st));
+      } catch (e) {}
+      done++;
+    }
+    autoSave(applied);
+    if (done && typeof onChange === 'function') { try { onChange(done); } catch (e) {} }
+    return done;
+  };
+
   window.checkHabit = function (habitId, label, icon) {
     const habits  = loadHabits();
     const today   = todayStr();
@@ -1348,7 +1418,7 @@
   // synced only [STORAGE_KEY, HABITS_KEY]; on pages without their own rpg config
   // (health, po-water) it overwrote the whole cloud row with those 2 keys and the
   // realtime echo deleted streak/daily/quests/ventures/gratitude everywhere.
-  window.RPG_SYNC_KEYS = ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1','rpg_gratitude_v1','rpg_gratitude_words_v1','rpg_seasons_v1','rpg_recipes_v1','rpg_jarvis_applied_v1','rpg_habit_reset_v1','rpg_tier_claims_v1','rpg_optional_quests_v1','rpg_goals_v1',
+  window.RPG_SYNC_KEYS = ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1','rpg_gratitude_v1','rpg_gratitude_words_v1','rpg_seasons_v1','rpg_recipes_v1','rpg_jarvis_applied_v1','rpg_habit_reset_v1','rpg_tier_claims_v1','rpg_optional_quests_v1','rpg_goals_v1','rpg_autohabit_v1',
     'rpg_routes_v1'];
   window.RPG_SYNC_PREFIXES = ['rpg_daily_v1:','rpg_agenda_v1:','rpg_todo_v1:','hevy_xp:','ah_xp_given:'];
   function initRPGSync() {
