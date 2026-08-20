@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Studio Kracht — Personal training in Amsterdam</title>
 <meta name="description" content="Personal training in Amsterdam-Oost. Gratis kennismaking, persoonlijk schema, kleine groepen. Plan direct je intake in.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23C8F04A'/><text x='16' y='23' font-size='19' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='white'>K</text></svg>">
+<link rel="canonical" href="https://joe-king-joey-s-projects.vercel.app/site-pt.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Studio Kracht">
+<meta property="og:description" content="Personal training in Amsterdam-Oost. Gratis kennismaking, persoonlijk schema.">
+<meta property="og:url" content="https://joe-king-joey-s-projects.vercel.app/site-pt.html">
+<meta property="og:locale" content="nl_NL">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#12110F">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&display=swap" rel="stylesheet">
@@ -116,6 +125,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .skip:focus{left:0}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"HealthAndBeautyBusiness","name":"Studio Kracht","telephone":"+31201234567","priceRange":"$$","url":"https://joe-king-joey-s-projects.vercel.app/site-pt.html","address":{"@type":"PostalAddress","streetAddress":"Javastraat 214","postalCode":"1095 CM","addressLocality":"Amsterdam","addressRegion":"Noord-Holland","addressCountry":"NL"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"124"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"06:30","closes":"21:00"}]}</script>
 </head>
 <body>
 <a class="skip" href="#main">Naar de inhoud</a>
@@ -139,7 +149,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
   </div>
   <div class="shot">
-    <svg viewBox="0 0 300 400" aria-label="Voorbeeldafbeelding studio">
+    <svg viewBox="0 0 300 400" role="img" aria-label="Voorbeeldafbeelding studio">
       <rect width="300" height="400" fill="#201E1A"/>
       <rect y="300" width="300" height="100" fill="#2A2723"/>
       <circle cx="150" cy="128" r="44" fill="#3A362E"/>
@@ -180,7 +190,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 <section class="trainer"><div class="wrap">
   <div class="avatar">
-    <svg viewBox="0 0 200 200" aria-label="Voorbeeldportret trainer">
+    <svg viewBox="0 0 200 200" role="img" aria-label="Voorbeeldportret trainer">
       <rect width="200" height="200" fill="#242219"/>
       <circle cx="100" cy="78" r="36" fill="#3E3A31"/>
       <path d="M40 200 q0-60 60-60 q60 0 60 60Z" fill="#3E3A31"/>
@@ -217,8 +227,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <p class="sec-sub">30 minuten kennismaken, doelen bespreken en een proefsessie. Geen account, geen betaalgegevens, geen verplichting.</p>
   </div>
   <form onsubmit="event.preventDefault();this.innerHTML='&lt;h3 style=&quot;font-size:22px;margin-bottom:8px&quot;&gt;Tot snel!&lt;/h3&gt;&lt;p style=&quot;color:#B5B1A6&quot;&gt;Je krijgt binnen een paar uur een bevestiging.&lt;/p&gt;'">
-    <label for="n">Naam</label><input id="n" required>
-    <label for="e">E-mail of telefoon</label><input id="e" required>
+    <label for="n">Naam</label><input id="n" name="naam" autocomplete="name" required>
+    <label for="e">E-mail of telefoon</label><input id="e" name="contact" autocomplete="email" required>
     <fieldset class="slotset">
       <legend>Wanneer schikt het?</legend>
       <div class="slots">
@@ -230,7 +240,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
     </fieldset>
     <label for="d">Wat wil je bereiken?</label>
-    <select id="d"><option>Sterker worden</option><option>Afvallen</option>
+    <select id="d" name="doel"><option>Sterker worden</option><option>Afvallen</option>
       <option>Klachten verminderen</option><option>Weer op gang komen</option></select>
     <button class="btn btn-p" style="width:100%;border:0;cursor:pointer" type="submit">Plan mijn intake</button>
     <p class="form-note">We nemen alleen contact op over deze afspraak.</p>

@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.82)
+# GAMENFY — Master Document (v10.83)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -400,6 +400,15 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.83 — vijfde auditronde, nu op praktijkgebruik: vier nieuwe categorieën gaten gevonden en gedicht.** In plaats van de vorige controles te herhalen, gekeken naar hoe deze sites in het echt worden gebruikt — gedeeld via WhatsApp, gevonden via Google, ingevuld op een telefoon.
+  - **Lokale SEO ontbrak volledig.** Het rapport leunt zwaar op het Google Bedrijfsprofiel en NAP-consistentie (+50% kans overwogen te worden), maar er stond geen enkele gestructureerde data in. Nu **JSON-LD LocalBusiness** op alle drie met het juiste schematype per branche (`HomeAndConstructionBusiness`, `HealthAndBeautyBusiness`, `DrivingSchool`), inclusief adres, telefoon, openingstijden en beoordelingscijfer — precies de velden waar Google op vertrouwt. Plus een canonical-URL. Gratis, en het is het verschil tussen wél en niet als lokaal bedrijf herkend worden.
+  - **Link-previews ontbraken.** Joey gaat deze links naar prospects sturen; zonder Open Graph-tags is dat een blanco blokje in WhatsApp of LinkedIn. Titel, omschrijving, URL, locale en twitter-card toegevoegd — en een **favicon als inline SVG data-URI**, dus zonder extra netwerkverzoek (de <2-3s-eis blijft daarmee intact).
+  - **De formulieren zouden bij echt gebruik géén data doorsturen.** Geen enkel veld had een `name`-attribuut — technisch werkt de demo, maar aangesloten op een echte backend zou er niets binnenkomen. Alle velden hebben nu een `name`, plus `autocomplete` (naam/telefoon/e-mail) en `inputmode="numeric"` op telefoonvelden, zodat invullen op een telefoon merkbaar sneller gaat. Formulierwrijving is in het rapport een expliciet conversie-onderwerp.
+  - **SVG's met `aria-label` misten `role="img"`**, waardoor schermlezers het label niet aankondigen. Op alle vier de afbeeldingen gecorrigeerd.
+  - **Twee meldingen bleken opnieuw vals alarm van het auditscript zelf**: `inputmode` stond er wél (het script keek alleen naar attributen ná `type="tel"`), en de keuzerondjes voor tijdslots hebben terecht geen `autocomplete`. Beide handmatig geverifieerd voor ze werden afgeschreven.
+  - **Extra controle toegevoegd**: de JSON-LD-blokken worden nu als JSON geparseerd in de validatie — ongeldige structured data wordt door Google stilzwijgend genegeerd, dus een typefout zou onopgemerkt blijven.
+  `?v=` naar 10.83. Gevalideerd: 14-bestands JS-, CSS-, div-balans- én JSON-LD-parsecontrole.
 
 - **v10.82 — vier kritische auditrondes over de voorbeeldwebsites; vijf echte fouten gevonden en gefixt.** Joey vroeg expliciet om vier keer kritisch terugkijken in plaats van door te bouwen.
   - **Ronde 1 (contrast + toegankelijkheid, geautomatiseerd)**: alle contrastwaarden berekend tegen WCAG. Bodytekst 15,7–18,6:1, accenten 4,6–14,4:1 — allemaal geslaagd. Maar vier echte gebreken gevonden: (1) **de verzendknoppen vielen terug op het browser-standaardlettertype** op alle drie de sites, omdat `.btn` wel `font-weight`/`font-size` zette maar geen `font-family` — `<button>` erft dat niet. (2) Geen zichtbare toetsenbord-focus. (3) Geen skip-link. (4) Op de PT-site waren de tijdslots **klikbare `<span>`-elementen — met een toetsenbord onbruikbaar**, een echte toegankelijkheidsfout.

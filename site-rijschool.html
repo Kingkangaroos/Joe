@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rijschool Vooruit — Rijles in Rotterdam</title>
 <meta name="description" content="Rijschool in Rotterdam met 78% slagingspercentage in één keer. Proefles €29, vaste instructeur, duidelijke pakketprijzen.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231B5FC1'/><text x='16' y='23' font-size='19' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='white'>V</text></svg>">
+<link rel="canonical" href="https://joe-king-joey-s-projects.vercel.app/site-rijschool.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Rijschool Vooruit">
+<meta property="og:description" content="Rijschool in Rotterdam met 78% slagingspercentage in een keer. Proefles 29 euro.">
+<meta property="og:url" content="https://joe-king-joey-s-projects.vercel.app/site-rijschool.html">
+<meta property="og:locale" content="nl_NL">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#1B5FC1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" rel="stylesheet">
@@ -113,6 +122,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
 .skip:focus{left:0}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DrivingSchool","name":"Rijschool Vooruit","telephone":"+31101234567","priceRange":"$$","url":"https://joe-king-joey-s-projects.vercel.app/site-rijschool.html","address":{"@type":"PostalAddress","streetAddress":"Beukelsdijk 42","postalCode":"3021 AH","addressLocality":"Rotterdam","addressRegion":"Zuid-Holland","addressCountry":"NL"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","reviewCount":"203"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"08:00","closes":"20:00"}]}</script>
 </head>
 <body>
 <a class="skip" href="#main">Naar de inhoud</a>
@@ -137,7 +147,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
     </div>
   </div>
   <div class="shot">
-    <svg viewBox="0 0 400 300" aria-label="Voorbeeldafbeelding lesauto">
+    <svg viewBox="0 0 400 300" role="img" aria-label="Voorbeeldafbeelding lesauto">
       <rect width="400" height="300" fill="#DCE8F6"/>
       <rect y="210" width="400" height="90" fill="#C3D4E8"/>
       <rect y="238" width="400" height="6" fill="#fff" opacity=".8"/>
@@ -212,13 +222,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
     <p class="sec-sub">60 minuten rijden voor €29, zonder verplichting daarna. Je hoeft geen account aan te maken en betaalt pas in de auto.</p>
   </div>
   <form onsubmit="event.preventDefault();this.innerHTML='&lt;h3 style=&quot;font-size:22px;margin-bottom:8px&quot;&gt;Aanvraag ontvangen&lt;/h3&gt;&lt;p style=&quot;color:#4A5568&quot;&gt;We bellen je vandaag nog om een moment af te spreken.&lt;/p&gt;'">
-    <label for="n">Naam</label><input id="n" required>
-    <label for="t">Telefoon</label><input id="t" type="tel" required>
+    <label for="n">Naam</label><input id="n" name="naam" autocomplete="name" required>
+    <label for="t">Telefoon</label><input id="t" name="telefoon" autocomplete="tel" inputmode="numeric" type="tel" required>
     <label for="w">Waar wil je opgehaald worden?</label>
-    <select id="w"><option>Rotterdam Centrum</option><option>Rotterdam Noord</option>
+    <select id="w" name="ophaallocatie"><option>Rotterdam Centrum</option><option>Rotterdam Noord</option>
       <option>Rotterdam Zuid</option><option>Capelle aan den IJssel</option><option>Schiedam</option></select>
     <label for="v">Heb je al lessen gehad?</label>
-    <select id="v"><option>Nee, dit wordt mijn eerste keer</option><option>Ja, een paar lessen</option>
+    <select id="v" name="ervaring"><option>Nee, dit wordt mijn eerste keer</option><option>Ja, een paar lessen</option>
       <option>Ja, ik was al bijna examenklaar</option></select>
     <button class="btn btn-p" style="width:100%;border:0;cursor:pointer" type="submit">Boek mijn proefles</button>
     <p class="form-note">Je betaalt pas in de auto. Annuleren kan kosteloos tot 24 uur vooraf.</p>

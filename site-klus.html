@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Van der Meer Klussen — Klusbedrijf in Utrecht</title>
 <meta name="description" content="Klusbedrijf in Utrecht en omstreken. Vaste prijs vooraf, binnen 24 uur reactie. Vraag vrijblijvend een offerte aan.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23C2521C'/><text x='16' y='23' font-size='19' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='white'>V</text></svg>">
+<link rel="canonical" href="https://joe-king-joey-s-projects.vercel.app/site-klus.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Van der Meer Klussen">
+<meta property="og:description" content="Klusbedrijf in Utrecht en omstreken. Vaste prijs vooraf, binnen 24 uur reactie.">
+<meta property="og:url" content="https://joe-king-joey-s-projects.vercel.app/site-klus.html">
+<meta property="og:locale" content="nl_NL">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#C2521C">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
@@ -114,6 +123,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .skip:focus{left:0}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"HomeAndConstructionBusiness","name":"Van der Meer Klussen","telephone":"+31612345678","priceRange":"$$","url":"https://joe-king-joey-s-projects.vercel.app/site-klus.html","address":{"@type":"PostalAddress","streetAddress":"Amsterdamsestraatweg 128","postalCode":"3551 CG","addressLocality":"Utrecht","addressRegion":"Utrecht","addressCountry":"NL"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"87"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"07:00","closes":"19:00"}]}</script>
 </head>
 <body>
 <a class="skip" href="#main">Naar de inhoud</a>
@@ -144,7 +154,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
   </div>
   <div class="shot">
-    <svg viewBox="0 0 400 300" aria-label="Voorbeeldafbeelding werkplaats">
+    <svg viewBox="0 0 400 300" role="img" aria-label="Voorbeeldafbeelding werkplaats">
       <rect width="400" height="300" fill="#E7E1D6"/>
       <rect y="196" width="400" height="104" fill="#D9D1C2"/>
       <rect x="42" y="96" width="118" height="100" rx="4" fill="#C6BCA8"/>
@@ -207,12 +217,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
   </div>
   <form onsubmit="event.preventDefault();this.innerHTML='&lt;h3 style=&quot;font-size:22px;margin-bottom:8px&quot;&gt;Aanvraag verstuurd&lt;/h3&gt;&lt;p style=&quot;color:#3A424E&quot;&gt;U hoort binnen één werkdag van ons.&lt;/p&gt;'">
-    <label for="n">Naam</label><input id="n" required>
-    <label for="t">Telefoon</label><input id="t" type="tel" required>
+    <label for="n">Naam</label><input id="n" name="naam" autocomplete="name" required>
+    <label for="t">Telefoon</label><input id="t" name="telefoon" autocomplete="tel" inputmode="numeric" type="tel" required>
     <label for="s">Wat voor klus?</label>
-    <select id="s"><option>Loodgieterswerk</option><option>Badkamer of toilet</option>
+    <select id="s" name="soort_klus"><option>Loodgieterswerk</option><option>Badkamer of toilet</option>
       <option>Kozijnen of deuren</option><option>Anders / weet ik nog niet</option></select>
-    <label for="o">Korte omschrijving</label><textarea id="o" rows="3"></textarea>
+    <label for="o">Korte omschrijving</label><textarea id="o" name="omschrijving" rows="3"></textarea>
     <button class="btn btn-p" style="width:100%;border:0;cursor:pointer" type="submit">Verstuur aanvraag</button>
     <p class="form-note">We bellen alleen over deze aanvraag. Geen nieuwsbrief.</p>
   </form>
