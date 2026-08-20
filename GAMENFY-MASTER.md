@@ -142,6 +142,18 @@ Skills die weinig direct raken aan dit plan (bijv. sommige lifestyle/discipline-
 10b. ✅ **Websites Verkopen-venture, restant — afgehandeld.** Hero-foto's staan (v10.37). De 11 resterende skill-foto's: **2026-07-31, Joey's besluit — hij zoekt ze zelf later** (mijn web-search bleek traag/onnauwkeurig). Geen actiepunt meer voor Claudia; laat ze intussen gewoon als icoon (bestaande nette fallback).
 11. 🟡 **Vormgeving-overhaul + scroll-animaties** — wacht op Joey's referenties (namen van sites/apps, geen uploads). **2026-07-30: Joey bevestigt dat hij hier zelf nog moeite in gaat steken** (referenties verzamelen) — blijft dus bij hem liggen, geen actie voor Claudia.
 
+### 🔴 OPEN — Lab-poppetjes terugdraaien (2026-08-19, NIET bouwen tot Joey het zegt)
+
+**Claudia heeft "de teksten" verkeerd begrepen.** Joey bedoelde de **gesprekken/tekstballonnen**, niet de naamlabels. In v10.79 is precies het omgekeerde gedaan: naamlabels verwijderd, gesprekken alleen wat rustiger gezet.
+
+**Wat Joey wil (te doen bij hervatten):**
+1. **Tekstballonnen/gesprekken volledig weg** — dát maakte het onoverzichtelijk.
+2. **Terug naar de vorige versie**, wat waarschijnlijk betekent: **naamlabels weer terug** onder de poppetjes (die waren er in v10.78 nog wel). Dit punt eerst even bij Joey bevestigen voor er iets wordt gebouwd — "ik vond de vorige versie beter" kan ook slaan op het geheel van v10.78.
+
+**Wat wél mag blijven** (staat los van deze fout): de grotere attributen inclusief de tennisbal (v10.79) — daar was Joey expliciet om gevraagd.
+
+**Joey's instructie**: "zet t maar ff op je to do lijst dus niet bouwen, wil ff credits sparen." Dus **niet uitvoeren** tot hij groen licht geeft.
+
 ### Lab-characters — Joey's volledige visie (2026-08-19, letterlijk vastgelegd op zijn verzoek)
 
 Joey: "schrijf dan wel gewoon heel duidelijk op wat ik wil, hoe ik het wil." Dit is de complete richting; onderdelen worden stapsgewijs gebouwd.
