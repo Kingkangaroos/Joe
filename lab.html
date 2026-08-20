@@ -10,10 +10,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.79" defer></script>
-<script src="topbar.js?v=10.79" defer></script>
-<script src="xp.js?v=10.79" defer></script>
-<script src="ladders.js?v=10.79" defer></script>
+<script src="sync.js?v=10.80" defer></script>
+<script src="topbar.js?v=10.80" defer></script>
+<script src="xp.js?v=10.80" defer></script>
+<script src="ladders.js?v=10.80" defer></script>
 <style>
 :root{
   --bg:#F4F3EF; --card:#FFFFFF; --ink:#15140F; --muted:#6F6C63; --faint:#A6A399;
@@ -42,6 +42,9 @@ body{padding-bottom:90px}
   border-radius:18px;overflow:hidden}
 .ch{position:absolute;width:46px;margin-left:-23px;text-align:center;cursor:pointer;
   transition:transform .55s cubic-bezier(.34,1.25,.5,1),opacity .4s ease;will-change:transform}
+.ch .nm{font-size:9px;color:var(--ink);line-height:1.15;margin-top:1px;opacity:0;transition:opacity .3s}
+.ch .lv{font-size:8px;color:var(--faint);line-height:1.15;opacity:0;transition:opacity .3s}
+.ch.front .nm,.ch.front .lv{opacity:1}
 .ch.sel{outline:2px solid var(--ember);outline-offset:2px;border-radius:10px}
 
 /* walking plaza — characters have legs and actually move around */
@@ -68,6 +71,9 @@ body{padding-bottom:90px}
 .ring{animation:a-ring 1.5s ease-out infinite;transform-origin:center}
 .ring2{animation:a-ring 1.5s ease-out .75s infinite;transform-origin:center}
 @keyframes a-ring{0%{transform:scale(.35);opacity:.7}100%{transform:scale(1.5);opacity:0}}
+.ch .nm{font-size:9px;color:var(--ink);line-height:1.15;margin-top:1px;opacity:0;transition:opacity .3s}
+.ch .lv{font-size:8px;color:var(--faint);line-height:1.15;opacity:0;transition:opacity .3s}
+.ch.front .nm,.ch.front .lv{opacity:1}
 .ch.sel{outline:2px solid var(--ember);outline-offset:2px;border-radius:10px}
 
 .wbar{display:flex;gap:6px;margin-bottom:8px}
@@ -79,7 +85,7 @@ body{padding-bottom:90px}
 .bg svg{width:100%;height:100%;display:block}
 
 /* speech bubbles with actual content */
-.bub{position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%) scale(.6);
+.bub{display:none;position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%) scale(.6);
   background:#fff;border:2px solid #2A2A26;border-radius:10px;padding:3px 7px;
   font-size:9px;font-weight:600;color:#2A2A26;white-space:nowrap;line-height:1.2;
   opacity:0;transition:opacity .2s ease,transform .25s cubic-bezier(.34,1.4,.5,1);
@@ -162,9 +168,9 @@ body{padding-bottom:90px}
   function propSvg(key, f, dark){
     var I = {
       // ── Body ──
-      gym:'<rect x="76" y="50" width="26" height="6" rx="3" fill="#59564C" stroke="#2A2A26" stroke-width="2"/><rect x="72" y="42" width="9" height="22" rx="3" fill="#3A3A34" stroke="#2A2A26" stroke-width="2"/><rect x="98" y="42" width="9" height="22" rx="3" fill="#3A3A34" stroke="#2A2A26" stroke-width="2"/>',
+      gym:'<rect x="80" y="52" width="20" height="4" rx="2" fill="#3A3A34"/><rect x="78" y="47" width="5" height="14" rx="2" fill="#3A3A34"/><rect x="96" y="47" width="5" height="14" rx="2" fill="#3A3A34"/>',
       strength:'<rect x="72" y="52" width="30" height="3.5" rx="1.7" fill="#3A3A34"/><circle cx="74" cy="54" r="6" fill="#3A3A34"/><circle cx="100" cy="54" r="6" fill="#3A3A34"/>',
-      tennis:'<rect x="26" y="26" width="48" height="7" rx="3.5" fill="#F4753F" stroke="#2A2A26" stroke-width="2"/><ellipse cx="90" cy="42" rx="11" ry="14" fill="#FFF8E6" stroke="#2A2A26" stroke-width="2.6"/><path d="M83 34 v16 M90 30 v24 M97 34 v16" stroke="#2A2A26" stroke-width="1.2"/><rect x="87" y="55" width="5" height="14" rx="2" fill="#8A6A46" stroke="#2A2A26" stroke-width="2"/><circle cx="70" cy="66" r="9" fill="#DDE84A" stroke="#2A2A26" stroke-width="2.4"/><path d="M62 62 q8 4 16 0" stroke="#2A2A26" stroke-width="1.6" fill="none"/>',
+      tennis:'<rect x="28" y="28" width="44" height="6" rx="3" fill="#D4633E"/><ellipse cx="92" cy="46" rx="7" ry="9" fill="none" stroke="#3A3A34" stroke-width="2.5"/><rect x="90" y="55" width="3" height="10" fill="#3A3A34"/>',
       calisthenics:'<rect x="20" y="20" width="60" height="4" rx="2" fill="#8A8578"/><rect x="30" y="24" width="3" height="10" fill="#8A8578"/><rect x="67" y="24" width="3" height="10" fill="#8A8578"/>',
       core:'<path d="M34 66 h32 M34 73 h32" stroke="'+dark+'" stroke-width="2.4" stroke-linecap="round"/>',
       stretching:'<path d="M86 66 Q100 58 96 44" stroke="'+dark+'" stroke-width="4" fill="none" stroke-linecap="round"/>',
@@ -175,12 +181,12 @@ body{padding-bottom:90px}
       nutrition:'<circle cx="90" cy="56" r="9" fill="#D4633E"/><rect x="89" y="45" width="2.5" height="6" fill="#2E8B5F"/>',
       teeth:'<rect x="84" y="40" width="4" height="20" rx="2" fill="#5B7DB1"/><rect x="80" y="34" width="12" height="7" rx="2" fill="#fff" stroke="#8A8578" stroke-width="1.5"/>',
       // ── Money ──
-      saving:'<circle cx="90" cy="52" r="14" fill="#F0BC33" stroke="#2A2A26" stroke-width="2.6"/><circle cx="90" cy="52" r="9" fill="none" stroke="#2A2A26" stroke-width="1.4" opacity=".5"/><text x="90" y="58" text-anchor="middle" font-size="15" font-weight="700" fill="#2A2A26">\u20ac</text>',
+      saving:'<circle cx="90" cy="54" r="10" fill="#C9A227"/><text x="90" y="59" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">\u20ac</text>',
       investing:'<path d="M76 62 L84 52 L90 58 L100 42" stroke="#2E8B5F" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M100 42 l-7 1 l4 5Z" fill="#2E8B5F"/>',
       budgeting:'<rect x="80" y="42" width="18" height="24" rx="2" fill="#fff" stroke="#3A3A34" stroke-width="2"/><path d="M84 50h10M84 56h10M84 61h6" stroke="#8A8578" stroke-width="1.8" stroke-linecap="round"/>',
       net_worth:'<rect x="78" y="60" width="22" height="5" rx="2" fill="#C9A227"/><rect x="81" y="53" width="16" height="5" rx="2" fill="#C9A227"/><rect x="84" y="46" width="10" height="5" rx="2" fill="#C9A227"/>',
       // ── Mind ──
-      reading:'<path d="M70 44 h19 v24 h-19Z M91 44 h19 v24 h-19Z" fill="#FFFDF5" stroke="#2A2A26" stroke-width="2.6"/><path d="M90 44v24" stroke="#2A2A26" stroke-width="2.6"/><path d="M74 52h11M74 58h11M95 52h11M95 58h11" stroke="#A9A396" stroke-width="1.6"/>',
+      reading:'<path d="M74 48 h14 v18 h-14Z M90 48 h14 v18 h-14Z" fill="#fff" stroke="#3A3A34" stroke-width="2"/><path d="M89 48v18" stroke="#3A3A34" stroke-width="2"/>',
       focus:'<circle cx="90" cy="52" r="9" fill="none" stroke="#3A3A34" stroke-width="2.5"/><circle cx="90" cy="52" r="3" fill="#D4633E"/>',
       journaling:'<rect x="86" y="38" width="4" height="22" rx="1.5" fill="#5B7DB1" transform="rotate(24 88 49)"/><path d="M95 62 l3 6 l-6 -1Z" fill="#3A3A34"/>',
       meditation:'<ellipse cx="50" cy="10" rx="17" ry="4" fill="none" stroke="#C9A227" stroke-width="2.5"/>',
@@ -190,16 +196,16 @@ body{padding-bottom:90px}
       sales:'<path d="M46 50 l4 5 l4 -5 l-2 16 l-4 0Z" fill="#5B7DB1"/>',
       marketing:'<path d="M78 48 l18 -8 v26 l-18 -8Z" fill="#D4633E"/><rect x="72" y="50" width="7" height="10" rx="2" fill="#3A3A34"/>',
       ai_tools:'<rect x="80" y="44" width="18" height="16" rx="3" fill="#3A3A34"/><circle cx="86" cy="52" r="2.4" fill="#4FC3D9"/><circle cx="93" cy="52" r="2.4" fill="#4FC3D9"/><path d="M89 44v-7" stroke="#3A3A34" stroke-width="2"/><circle cx="89" cy="35" r="2.6" fill="#4FC3D9"/>',
-      coding:'<rect x="72" y="42" width="32" height="21" rx="3" fill="#3A3A34" stroke="#2A2A26" stroke-width="2.4"/><rect x="68" y="63" width="40" height="5" rx="2.5" fill="#59564C" stroke="#2A2A26" stroke-width="2.2"/><path d="M80 56 l-4 -4 l4 -4 M96 48 l4 4 l-4 4" stroke="#5FD4E8" stroke-width="2.4" fill="none" stroke-linecap="round"/>',
+      coding:'<rect x="76" y="46" width="24" height="16" rx="2" fill="#3A3A34"/><path d="M82 54 l-3 -3 l3 -3 M94 48 l3 3 l-3 3" stroke="#4FC3D9" stroke-width="2" fill="none" stroke-linecap="round"/>',
       // ── Creative ──
       coloring:'<rect x="86" y="38" width="7" height="20" rx="2" fill="#D4633E" transform="rotate(20 89 48)"/><path d="M95 60 l4 6 l-7 -1Z" fill="#C9A227"/>',
       drawing:'<rect x="86" y="38" width="5" height="20" rx="1.5" fill="#C9A227" transform="rotate(22 88 48)"/><path d="M94 61 l3 6 l-6 -1Z" fill="#3A3A34"/>',
-      piano:'<rect x="72" y="46" width="32" height="17" rx="3" fill="#FFFDF7" stroke="#2A2A26" stroke-width="2.6"/><rect x="78" y="46" width="4.5" height="10" fill="#2A2A26"/><rect x="87" y="46" width="4.5" height="10" fill="#2A2A26"/><rect x="96" y="46" width="4.5" height="10" fill="#2A2A26"/>',
+      piano:'<rect x="76" y="50" width="24" height="12" rx="2" fill="#fff" stroke="#3A3A34" stroke-width="1.8"/><rect x="81" y="50" width="3" height="7" fill="#3A3A34"/><rect x="88" y="50" width="3" height="7" fill="#3A3A34"/><rect x="95" y="50" width="3" height="7" fill="#3A3A34"/>',
       content:'<rect x="76" y="46" width="22" height="16" rx="3" fill="#3A3A34"/><circle cx="87" cy="54" r="5" fill="none" stroke="#fff" stroke-width="2"/><rect x="80" y="42" width="8" height="4" rx="1.5" fill="#3A3A34"/>',
       // ── Lifestyle ──
       whistling:'<path d="M78 52 q8 -3 8 -10" stroke="#8A8578" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="86" cy="40" r="3" fill="#8A8578"/>',
       dancing:'<path d="M84 40 l4 -9 M92 44 l9 -5" stroke="#C9527A" stroke-width="3" stroke-linecap="round"/><circle cx="98" cy="28" r="3.5" fill="#C9A227"/>',
-      cooking:'<path d="M26 24 q-2 -20 14 -20 q4 -8 12 -6 q10 -4 14 6 q14 2 12 20 q0 5 -5 5 h-42 q-5 0 -5 -5Z" fill="#FFFDF7" stroke="#2A2A26" stroke-width="2.6" stroke-linejoin="round"/><rect x="28" y="28" width="44" height="8" rx="3" fill="#FFFDF7" stroke="#2A2A26" stroke-width="2.4"/>',
+      cooking:'<path d="M30 26 q0 -14 20 -14 q20 0 20 14 q0 4 -4 4 h-32 q-4 0 -4 -4Z" fill="#fff" stroke="#8A8578" stroke-width="1.6"/><rect x="32" y="28" width="36" height="6" rx="2" fill="#fff" stroke="#8A8578" stroke-width="1.6"/>',
       puzzling:'<path d="M78 46 h10 a4 4 0 0 1 0 8 h-10Z" fill="#5B7DB1"/><rect x="78" y="54" width="14" height="10" rx="2" fill="#5B7DB1"/>',
       social:'<rect x="76" y="38" width="22" height="15" rx="5" fill="#fff" stroke="#3A3A34" stroke-width="1.8"/><path d="M84 53 l-2 6 l7 -6Z" fill="#fff" stroke="#3A3A34" stroke-width="1.8"/>',
       dating:'<path d="M88 42 c4 -7 14 -3 10 5 c-2 5 -10 10 -10 10 s-8 -5 -10 -10 c-4 -8 6 -12 10 -5Z" fill="#C9527A"/>',
@@ -368,8 +374,8 @@ body{padding-bottom:90px}
         : '<path d="M50 38 q-9 3 -8 9 q8 -1 8 -9Z" fill="#8A6A3A" stroke="'+LINE+'" stroke-width="2" transform="rotate(28 50 42)"/>';
     }
     if (prop && !BAD[key]) prop = HATS[key]
-      ? '<g transform="translate(-9,'+(sh.top-30)+') scale(1.32)">'+prop+'</g>'
-      : '<g transform="translate(6,'+(ey-30)+') scale(1.22)">'+prop+'</g>';
+      ? '<g transform="translate(-6,'+(sh.top-24)+') scale(1.15)">'+prop+'</g>'
+      : '<g transform="translate(3,'+(ey-36)+') scale(.9)">'+prop+'</g>';
     var svg = '<svg viewBox="-8 -10 116 116" width="44" height="44" aria-hidden="true">'
       + extra + arms + body + face(kind, ey, ex, key, b) + rings + prop + '</svg>';
     var bootCol = b>0.5 ? '#8E2820' : (b>0 ? '#C9BFA6' : dark);
@@ -525,14 +531,12 @@ body{padding-bottom:90px}
     var pool = LINES_SKILL[a.key] || LINES_CAT[a.cat] || ['Hoi.'];
     return pool[Math.floor(Math.random()*pool.length)];
   }
-  function say(a, text, angry){
-    var b = a.el.querySelector('.bub');
-    if(!b){ b=document.createElement('div'); b.className='bub'; a.el.appendChild(b); }
-    b.textContent = text;
-    b.className = 'bub show' + (angry ? ' angry' : '');
-    clearTimeout(a._bt);
-    a._bt = setTimeout(function(){ b.className = 'bub' + (angry?' angry':''); }, 2600);
-  }
+  // v10.80: speech bubbles removed. Joey: "de teksten mogen weg, het maakt
+  // het onoverzichtelijk" — he meant the CONVERSATIONS, not the name labels
+  // (Claudia had that backwards in v10.79). Kept as a no-op so every call
+  // site stays valid and the dialogue pools survive for if he ever wants
+  // them back; only the on-screen bubble is gone.
+  function say(a, text, angry){ /* intentionally silent */ }
 
   var world = 'park';
   function paintWorld(){
@@ -541,6 +545,7 @@ body{padding-bottom:90px}
     el.innerHTML = '<svg viewBox="0 0 340 400" preserveAspectRatio="none" aria-hidden="true">'
       + WORLDS[world].svg() + '</svg>';
     scene.style.background = (world==='arena') ? '#20201C' : 'var(--card)';
+    document.querySelectorAll('.ch .nm').forEach(function(n){ n.style.color = world==='arena' ? '#F2F0E6' : ''; });
   }
 
   var scene=document.getElementById('scene'), cbar=document.getElementById('cbar'),
@@ -558,11 +563,9 @@ body{padding-bottom:90px}
       var t=TEMPER[k]||[.7,.4,.3];
       var el=document.createElement('div');
       el.className='ch idle'; el.dataset.cat=cat; el.dataset.key=k;
-      // v10.79: name/level labels removed — Joey: "de teksten mogen weg, het
-      // maakt het onoverzichtelijk". With a clear prop per skill the label is
-      // redundant, and 45 of them at once was pure noise. Tapping still opens
-      // the detail panel with the full name and level.
-      el.innerHTML=charHtml(colorFor[cat]||'#8A8578', lv, k, cat);
+      el.innerHTML=charHtml(colorFor[cat]||'#8A8578', lv, k, cat)
+        +'<div class="nm">'+(d.private?'\u2022\u2022\u2022':(d.label||k))+'</div>'
+        +'<div class="lv">lvl '+lv+'</div>';
       el.style.setProperty('--d',(2.9-Math.min(1,lv/80)*1.4).toFixed(2)+'s');
       var bd = badness(k, lv);
       var a={el:el,key:k,def:d,lv:lv,cat:cat,priv:!!d.private,bad:bd,

@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.79)
+# GAMENFY — Master Document (v10.80)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -142,17 +142,8 @@ Skills die weinig direct raken aan dit plan (bijv. sommige lifestyle/discipline-
 10b. ✅ **Websites Verkopen-venture, restant — afgehandeld.** Hero-foto's staan (v10.37). De 11 resterende skill-foto's: **2026-07-31, Joey's besluit — hij zoekt ze zelf later** (mijn web-search bleek traag/onnauwkeurig). Geen actiepunt meer voor Claudia; laat ze intussen gewoon als icoon (bestaande nette fallback).
 11. 🟡 **Vormgeving-overhaul + scroll-animaties** — wacht op Joey's referenties (namen van sites/apps, geen uploads). **2026-07-30: Joey bevestigt dat hij hier zelf nog moeite in gaat steken** (referenties verzamelen) — blijft dus bij hem liggen, geen actie voor Claudia.
 
-### 🔴 OPEN — Lab-poppetjes terugdraaien (2026-08-19, NIET bouwen tot Joey het zegt)
-
-**Claudia heeft "de teksten" verkeerd begrepen.** Joey bedoelde de **gesprekken/tekstballonnen**, niet de naamlabels. In v10.79 is precies het omgekeerde gedaan: naamlabels verwijderd, gesprekken alleen wat rustiger gezet.
-
-**Wat Joey wil (te doen bij hervatten):**
-1. **Tekstballonnen/gesprekken volledig weg** — dát maakte het onoverzichtelijk.
-2. **Terug naar de vorige versie**, wat waarschijnlijk betekent: **naamlabels weer terug** onder de poppetjes (die waren er in v10.78 nog wel). Dit punt eerst even bij Joey bevestigen voor er iets wordt gebouwd — "ik vond de vorige versie beter" kan ook slaan op het geheel van v10.78.
-
-**Wat wél mag blijven** (staat los van deze fout): de grotere attributen inclusief de tennisbal (v10.79) — daar was Joey expliciet om gevraagd.
-
-**Joey's instructie**: "zet t maar ff op je to do lijst dus niet bouwen, wil ff credits sparen." Dus **niet uitvoeren** tot hij groen licht geeft.
+### ✅ AFGEHANDELD — Lab-poppetjes teruggedraaid (v10.80)
+Claudia had "de teksten" verkeerd begrepen: Joey bedoelde de **gesprekken/tekstballonnen**, niet de naamlabels. In v10.79 was precies het omgekeerde gedaan. Joey daarna: "gewoon helemaal terug naar die andere versie qua poppetjes." Opgelost in v10.80 — zie changelog.
 
 ### Lab-characters — Joey's volledige visie (2026-08-19, letterlijk vastgelegd op zijn verzoek)
 
@@ -409,6 +400,13 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.80 — Lab teruggedraaid naar v10.78 + gesprekken eruit.** Claudia had "de teksten mogen weg" gelezen als de naamlabels, terwijl Joey de **tekstballonnen** bedoelde. In v10.79 was dus precies het omgekeerde gebeurd: labels weg, gesprekken alleen wat rustiger. Joey: "gewoon helemaal terug naar die andere versie qua poppetjes."
+  - `lab.html` volledig teruggezet naar de v10.78-versie via git (niet met de hand nagebouwd — dat garandeert dat het exact is wat hij goedkeurde, inclusief de naamlabels, het mooiere park en de glanzende poppetjes).
+  - **Tekstballonnen verwijderd**: `say()` is een bewuste no-op geworden en de ballon staat op `display:none`. De dialoog-pools en rivaliteiten blijven in de code staan, dus als Joey ze ooit terug wil is dat één regel — maar er verschijnt nu niets meer op het scherm.
+  - **Ontmoetingen blijven wél bestaan**: poppetjes lopen nog steeds naar elkaar toe, stoppen, en rivalen schudden nog steeds van boosheid met een bliksemflits. Alleen zonder woorden. Dat houdt het leven in de scène zonder de rommel.
+  - **Bewust NIET behouden**: de grotere attributen en de tennisbal uit v10.79. Joey zei expliciet "helemaal terug", dus dat is gevolgd in plaats van selectief te bewaren wat Claudia zelf mooier vond. De tennisbal-wens staat genoteerd voor als hij er alsnog om vraagt.
+  `?v=` naar 10.80. Gevalideerd: volledige 10-pagina syntax- + CSS-pass; bevestigd dat labels terug zijn en ballonnen weg.
 
 - **v10.79 — naamlabels weg, attributen fors groter en duidelijker.** Joey: "ook meer individueel dus een tennisbal voor tennis, en de teksten mogen weg, het maakt het onoverzichtelijk."
   - **De twee wensen hangen samen**: als elk poppetje herkenbaar is aan zijn attribuut, is een naamlabel overbodig. 45 labels tegelijk was pure ruis. Labels volledig verwijderd; tikken op een poppetje opent nog steeds het detailpaneel met naam, level en volgende tier, dus er gaat geen informatie verloren.
