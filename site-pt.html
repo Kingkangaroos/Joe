@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio Kracht — Personal training in Amsterdam</title>
+<meta name="description" content="Personal training in Amsterdam-Oost. Gratis kennismaking, persoonlijk schema, kleine groepen. Plan direct je intake in.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&display=swap" rel="stylesheet">
+<style>
+/* Same research-backed rules as the other examples: no parallax, transform/
+   opacity animation only (100-300ms, ease-out), WCAG 4.5:1 body contrast,
+   no glassmorphism base, static hero, prefers-reduced-motion honoured. */
+:root{
+  --bg:#12110F; --bg-2:#1B1A17; --line:#2E2C27; --paper:#FFFDF8;
+  --lime:#C8F04A;              /* on dark: very high contrast, used for accents/UI */
+  --dim:#B5B1A6;               /* 7.1:1 on --bg — passes for body text */
+  --h:'Archivo',system-ui,sans-serif; --b:system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--b);background:var(--bg);color:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--h);font-weight:800;line-height:1.03;letter-spacing:-.02em}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+a{color:inherit}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(18,17,15,.97);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;gap:14px}
+.logo{font-family:var(--h);font-weight:800;font-size:20px;letter-spacing:-.02em}
+.logo em{font-style:normal;color:var(--lime)}
+.nav-cta{background:var(--lime);color:#12110F;text-decoration:none;font-weight:800;font-size:14px;
+  padding:11px 18px;border-radius:999px;transition:transform .15s ease-out,opacity .15s ease-out}
+.nav-cta:hover{transform:translateY(-1px);opacity:.9}
+
+.hero{padding:70px 0 60px;border-bottom:1px solid var(--line)}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.tag{display:inline-block;border:1px solid var(--lime);color:var(--lime);border-radius:999px;
+  padding:6px 14px;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:18px}
+h1{font-size:clamp(42px,7vw,70px);margin-bottom:18px}
+h1 em{font-style:normal;color:var(--lime)}
+.lede{font-size:17.5px;color:var(--dim);max-width:42ch;margin-bottom:28px}
+.btn{display:inline-block;text-decoration:none;font-weight:800;padding:16px 26px;border-radius:999px;font-size:15.5px;
+  transition:transform .15s ease-out,opacity .15s ease-out}
+.btn:hover{transform:translateY(-2px)}
+.btn-p{background:var(--lime);color:#12110F}
+.btn-s{border:2px solid var(--line);color:var(--paper);margin-left:10px}
+.stats{display:flex;gap:30px;margin-top:32px;flex-wrap:wrap}
+.stats b{display:block;font-family:var(--h);font-size:32px;color:var(--lime);line-height:1}
+.stats span{font-size:13px;color:var(--dim)}
+.shot{aspect-ratio:3/4;border-radius:14px;overflow:hidden;border:1px solid var(--line);position:relative;background:#201E1A}
+.shot svg{width:100%;height:100%;display:block}
+.shot-note{position:absolute;left:12px;bottom:12px;background:rgba(200,240,74,.92);color:#12110F;
+  font-size:11px;font-weight:700;padding:5px 9px;border-radius:4px}
+
+section{padding:66px 0}
+.sec-h{font-size:clamp(28px,4.4vw,40px);margin-bottom:10px}
+.sec-sub{color:var(--dim);margin-bottom:34px;max-width:56ch}
+
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.plan{background:var(--bg-2);border:1px solid var(--line);border-radius:14px;padding:26px;display:flex;flex-direction:column}
+.plan.best{border-color:var(--lime)}
+.plan .badge{align-self:flex-start;background:var(--lime);color:#12110F;font-size:11px;font-weight:800;
+  padding:4px 10px;border-radius:999px;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em}
+.plan h3{font-size:22px;margin-bottom:6px}
+.price{font-family:var(--h);font-size:36px;margin:8px 0 4px}
+.price small{font-size:14px;color:var(--dim);font-weight:600}
+.plan ul{list-style:none;margin:16px 0 22px;font-size:14.5px;color:var(--dim)}
+.plan li{padding:6px 0 6px 22px;position:relative}
+.plan li:before{content:'✓';position:absolute;left:0;color:var(--lime);font-weight:800}
+.plan .btn{margin-top:auto;text-align:center}
+
+.trainer{background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.trainer .wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:38px;align-items:center}
+.avatar{aspect-ratio:1;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#242219;position:relative}
+.avatar svg{width:100%;height:100%;display:block}
+
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.rev{background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:22px}
+.stars{color:var(--lime);letter-spacing:2px;margin-bottom:10px}
+.rev p{font-size:14.5px;color:var(--dim);margin-bottom:12px}
+.rev cite{font-style:normal;font-size:13px;color:#8C887E}
+.gbadge{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:999px;
+  padding:9px 17px;font-size:13.5px;font-weight:700;margin-top:26px;color:var(--dim)}
+
+.book .wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+form{background:var(--bg-2);border:1px solid var(--line);border-radius:14px;padding:26px}
+label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}
+input,select{width:100%;padding:13px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:15px;
+  margin-bottom:15px;background:#151412;color:var(--paper)}
+input:focus,select:focus{outline:2px solid var(--lime);outline-offset:1px}
+.slots{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 18px}
+.slot{background:#151412;border:1px solid var(--line);border-radius:8px;padding:9px 14px;font-size:13.5px;
+  cursor:pointer;transition:transform .15s ease-out}
+.slot:hover{transform:translateY(-1px);border-color:var(--lime)}
+.slot.on{background:var(--lime);color:#12110F;border-color:var(--lime);font-weight:800}
+.form-note{font-size:12.5px;color:#8C887E;margin-top:4px}
+
+footer{border-top:1px solid var(--line);padding:38px 0;font-size:13.5px;color:var(--dim)}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+footer b{color:var(--paper);display:block;font-family:var(--h);font-size:17px;margin-bottom:6px}
+
+@media(max-width:880px){
+  .hero .wrap,.trainer .wrap,.book .wrap{grid-template-columns:1fr}
+  .plans,.rgrid{grid-template-columns:1fr}
+  .shot{order:-1;aspect-ratio:4/3}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <div class="logo">STUDIO <em>KRACHT</em></div>
+  <a class="nav-cta" href="#intake">Gratis intake</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div>
+    <span class="tag">Personal training · Amsterdam-Oost</span>
+    <h1>Sterker worden<br>zonder <em>gedoe</em>.</h1>
+    <p class="lede">Eén op één training met een schema dat past bij jouw week — niet andersom. Eerste kennismaking is gratis en vrijblijvend.</p>
+    <a class="btn btn-p" href="#intake">Plan je gratis intake</a>
+    <a class="btn btn-s" href="#pakketten">Bekijk pakketten</a>
+    <div class="stats">
+      <div><b>4,9</b><span>uit 124 reviews</span></div>
+      <div><b>250+</b><span>mensen begeleid</span></div>
+      <div><b>8 jr</b><span>ervaring</span></div>
+    </div>
+  </div>
+  <div class="shot">
+    <svg viewBox="0 0 300 400" aria-label="Voorbeeldafbeelding studio">
+      <rect width="300" height="400" fill="#201E1A"/>
+      <rect y="300" width="300" height="100" fill="#2A2723"/>
+      <circle cx="150" cy="128" r="44" fill="#3A362E"/>
+      <rect x="118" y="176" width="64" height="118" rx="26" fill="#3A362E"/>
+      <rect x="52" y="196" width="196" height="9" rx="4.5" fill="#C8F04A" opacity=".9"/>
+      <circle cx="52" cy="200" r="21" fill="#4A463C"/><circle cx="248" cy="200" r="21" fill="#4A463C"/>
+      <rect x="70" y="322" width="160" height="8" rx="4" fill="#3A362E"/>
+    </svg>
+    <span class="shot-note">Eigen studiofoto van de klant</span>
+  </div>
+</div></header>
+
+<section id="pakketten"><div class="wrap">
+  <h2 class="sec-h">Pakketten</h2>
+  <p class="sec-sub">Geen jaarcontract. Maandelijks opzegbaar, altijd.</p>
+  <div class="plans">
+    <div class="plan">
+      <h3>Losse sessies</h3>
+      <div class="price">€65<small>/sessie</small></div>
+      <ul><li>60 minuten één op één</li><li>Persoonlijk schema</li><li>Flexibel inplannen</li></ul>
+      <a class="btn btn-s" href="#intake" style="margin-left:0">Kies dit</a>
+    </div>
+    <div class="plan best">
+      <span class="badge">Meest gekozen</span>
+      <h3>Duo per week</h3>
+      <div class="price">€49<small>/sessie</small></div>
+      <ul><li>2× per week trainen</li><li>Voedingsadvies inbegrepen</li><li>App-contact tussendoor</li><li>Maandelijks opzegbaar</li></ul>
+      <a class="btn btn-p" href="#intake" style="margin-left:0">Kies dit</a>
+    </div>
+    <div class="plan">
+      <h3>Kleine groep</h3>
+      <div class="price">€29<small>/sessie</small></div>
+      <ul><li>Max. 4 personen</li><li>Vaste tijden per week</li><li>Voordeligste optie</li></ul>
+      <a class="btn btn-s" href="#intake" style="margin-left:0">Kies dit</a>
+    </div>
+  </div>
+</div></section>
+
+<section class="trainer"><div class="wrap">
+  <div class="avatar">
+    <svg viewBox="0 0 200 200" aria-label="Voorbeeldportret trainer">
+      <rect width="200" height="200" fill="#242219"/>
+      <circle cx="100" cy="78" r="36" fill="#3E3A31"/>
+      <path d="M40 200 q0-60 60-60 q60 0 60 60Z" fill="#3E3A31"/>
+      <rect x="86" y="118" width="28" height="16" fill="#C8F04A" opacity=".8"/>
+    </svg>
+  </div>
+  <div>
+    <h2 class="sec-h">Hoi, ik ben Sam</h2>
+    <p class="sec-sub">Ik train mensen die het al vaak geprobeerd hebben en steeds afhaakten. Meestal ligt dat niet aan discipline, maar aan een schema dat nooit paste. Dus beginnen we bij jouw week — werk, gezin, energie — en bouwen we daaromheen. Geen dieetregels die je toch niet volhoudt.</p>
+    <a class="btn btn-p" href="#intake">Plan een kennismaking</a>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2 class="sec-h">Ervaringen</h2>
+  <p class="sec-sub">Automatisch opgehaald uit het Google Bedrijfsprofiel.</p>
+  <div class="rgrid">
+    <div class="rev"><div class="stars">★★★★★</div>
+      <p>"Eindelijk iemand die niet begint over calorieën tellen. Na vier maanden train ik nog steeds, dat is nieuw voor mij."</p>
+      <cite>— Lisa V.</cite></div>
+    <div class="rev"><div class="stars">★★★★★</div>
+      <p>"Sam past het schema aan als ik een drukke week heb. Daardoor sla ik niet meer over."</p>
+      <cite>— Daan K.</cite></div>
+    <div class="rev"><div class="stars">★★★★★</div>
+      <p>"Rugklachten weg na acht weken. Had ik veel eerder moeten doen."</p>
+      <cite>— Fatima E.</cite></div>
+  </div>
+  <span class="gbadge">★ 4,9 gemiddeld · 124 Google-reviews</span>
+</div></section>
+
+<section class="book" id="intake"><div class="wrap">
+  <div>
+    <h2 class="sec-h">Gratis intake</h2>
+    <p class="sec-sub">30 minuten kennismaken, doelen bespreken en een proefsessie. Geen account, geen betaalgegevens, geen verplichting.</p>
+  </div>
+  <form onsubmit="event.preventDefault();this.innerHTML='&lt;h3 style=&quot;font-size:22px;margin-bottom:8px&quot;&gt;Tot snel!&lt;/h3&gt;&lt;p style=&quot;color:#B5B1A6&quot;&gt;Je krijgt binnen een paar uur een bevestiging.&lt;/p&gt;'">
+    <label for="n">Naam</label><input id="n" required>
+    <label for="e">E-mail of telefoon</label><input id="e" required>
+    <label>Wanneer schikt het?</label>
+    <div class="slots">
+      <span class="slot" onclick="pick(this)">ma ochtend</span>
+      <span class="slot on" onclick="pick(this)">di avond</span>
+      <span class="slot" onclick="pick(this)">wo ochtend</span>
+      <span class="slot" onclick="pick(this)">do avond</span>
+      <span class="slot" onclick="pick(this)">za ochtend</span>
+    </div>
+    <label for="d">Wat wil je bereiken?</label>
+    <select id="d"><option>Sterker worden</option><option>Afvallen</option>
+      <option>Klachten verminderen</option><option>Weer op gang komen</option></select>
+    <button class="btn btn-p" style="width:100%;border:0;cursor:pointer" type="submit">Plan mijn intake</button>
+    <p class="form-note">We nemen alleen contact op over deze afspraak.</p>
+  </form>
+</div></section>
+
+<footer><div class="wrap">
+  <div><b>Studio Kracht</b>Javastraat 214<br>1095 CM Amsterdam<br>020 123 45 67</div>
+  <div><b>Trainingstijden</b>ma–vr 06:30–21:00<br>za 08:00–14:00<br>zo gesloten</div>
+  <div><b>Overig</b>KvK 87654321<br>Gecertificeerd CIOS &amp; EHBO</div>
+</div></footer>
+
+<script>
+function pick(el){
+  el.parentNode.querySelectorAll('.slot').forEach(function(s){s.classList.remove('on')});
+  el.classList.add('on');
+}
+</script>
+</body>
+</html>

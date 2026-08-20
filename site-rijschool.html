@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rijschool Vooruit — Rijles in Rotterdam</title>
+<meta name="description" content="Rijschool in Rotterdam met 78% slagingspercentage in één keer. Proefles €29, vaste instructeur, duidelijke pakketprijzen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* Same research-backed constraints as the other two examples (ch. 7B). */
+:root{
+  --ink:#16233A; --ink-2:#4A5568; --paper:#fff; --sky:#EEF4FB; --line:#D7E2F0;
+  --blue:#1B5FC1;              /* 6.4:1 on white — safe for body text */
+  --sun:#FFC53D;
+  --h:'Nunito',system-ui,sans-serif; --b:system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--b);color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--h);font-weight:800;line-height:1.12;letter-spacing:-.015em}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+a{color:inherit}
+
+nav{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;gap:14px}
+.logo{font-family:var(--h);font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px}
+.logo .dot{width:26px;height:26px;border-radius:8px;background:var(--blue);color:#fff;display:flex;
+  align-items:center;justify-content:center;font-size:14px}
+.nav-cta{background:var(--blue);color:#fff;text-decoration:none;font-weight:800;font-size:14px;
+  padding:11px 18px;border-radius:10px;transition:transform .15s ease-out,opacity .15s ease-out}
+.nav-cta:hover{transform:translateY(-1px);opacity:.93}
+
+.hero{background:var(--sky);border-bottom:1px solid var(--line);padding:58px 0 54px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);
+  border-radius:999px;padding:7px 15px;font-size:13px;font-weight:700;margin-bottom:16px}
+.pill b{color:var(--blue)}
+h1{font-size:clamp(36px,5.6vw,56px);margin-bottom:14px}
+.lede{font-size:17px;color:var(--ink-2);max-width:44ch;margin-bottom:24px}
+.btn{display:inline-block;text-decoration:none;font-weight:800;padding:15px 24px;border-radius:12px;font-size:15.5px;
+  transition:transform .15s ease-out,opacity .15s ease-out}
+.btn:hover{transform:translateY(-2px)}
+.btn-p{background:var(--blue);color:#fff}
+.btn-s{background:#fff;color:var(--ink);border:2px solid var(--line);margin-left:10px}
+.hstats{display:flex;gap:26px;margin-top:28px;flex-wrap:wrap}
+.hstats b{display:block;font-family:var(--h);font-size:28px;color:var(--blue);line-height:1}
+.hstats span{font-size:13px;color:var(--ink-2)}
+.shot{aspect-ratio:4/3;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#DCE8F6;position:relative}
+.shot svg{width:100%;height:100%;display:block}
+.shot-note{position:absolute;left:12px;bottom:12px;background:rgba(22,35,58,.86);color:#fff;
+  font-size:11px;padding:5px 9px;border-radius:5px}
+
+section{padding:62px 0}
+.sec-h{font-size:clamp(26px,4vw,36px);margin-bottom:10px}
+.sec-sub{color:var(--ink-2);margin-bottom:32px;max-width:56ch}
+
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.step{background:var(--sky);border-radius:14px;padding:20px}
+.step .no{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;
+  display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:12px}
+.step h3{font-size:17px;margin-bottom:5px}
+.step p{font-size:14px;color:var(--ink-2)}
+
+.pk{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pack{border:2px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column}
+.pack.best{border-color:var(--blue);position:relative}
+.pack .badge{position:absolute;top:-11px;left:24px;background:var(--sun);color:var(--ink);font-size:11.5px;
+  font-weight:800;padding:4px 11px;border-radius:999px}
+.pack h3{font-size:20px;margin-bottom:4px}
+.price{font-family:var(--h);font-size:34px;margin:8px 0 2px;color:var(--blue)}
+.price small{font-size:13.5px;color:var(--ink-2);font-weight:700}
+.pack ul{list-style:none;margin:14px 0 20px;font-size:14.5px;color:var(--ink-2)}
+.pack li{padding:5px 0 5px 22px;position:relative}
+.pack li:before{content:'✓';position:absolute;left:0;color:var(--blue);font-weight:800}
+.pack .btn{margin-top:auto;text-align:center}
+
+.reviews{background:var(--sky)}
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.rev{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px}
+.stars{color:var(--sun);letter-spacing:2px;margin-bottom:9px}
+.rev p{font-size:14.5px;color:var(--ink-2);margin-bottom:12px}
+.rev cite{font-style:normal;font-size:13px;color:#6B7688}
+.gbadge{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);
+  border-radius:999px;padding:9px 17px;font-size:13.5px;font-weight:700;margin-top:24px}
+
+.book .wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+form{background:var(--sky);border-radius:16px;padding:26px}
+label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}
+input,select{width:100%;padding:13px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:15px;
+  margin-bottom:15px;background:#fff;color:var(--ink)}
+input:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px}
+.form-note{font-size:12.5px;color:var(--ink-2);margin-top:4px}
+
+footer{background:var(--ink);color:#9FB0C7;padding:38px 0;font-size:13.5px}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+footer b{color:#fff;display:block;font-family:var(--h);font-size:17px;margin-bottom:6px}
+footer a{color:#9FB0C7}
+
+@media(max-width:880px){
+  .hero .wrap,.book .wrap{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .pk,.rgrid{grid-template-columns:1fr}
+  .shot{order:-1}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <div class="logo"><span class="dot">▲</span> Rijschool Vooruit</div>
+  <a class="nav-cta" href="#proefles">Proefles €29</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div>
+    <span class="pill">🎉 <b>78%</b> slaagt in één keer</span>
+    <h1>Je rijbewijs halen zonder stress.</h1>
+    <p class="lede">Vaste instructeur, duidelijke pakketprijzen en lesplekken door heel Rotterdam. Begin met een proefles van 60 minuten voor €29.</p>
+    <a class="btn btn-p" href="#proefles">Boek een proefles</a>
+    <a class="btn btn-s" href="#pakketten">Bekijk prijzen</a>
+    <div class="hstats">
+      <div><b>78%</b><span>in één keer geslaagd</span></div>
+      <div><b>4,8</b><span>uit 203 reviews</span></div>
+      <div><b>6</b><span>vaste instructeurs</span></div>
+    </div>
+  </div>
+  <div class="shot">
+    <svg viewBox="0 0 400 300" aria-label="Voorbeeldafbeelding lesauto">
+      <rect width="400" height="300" fill="#DCE8F6"/>
+      <rect y="210" width="400" height="90" fill="#C3D4E8"/>
+      <rect y="238" width="400" height="6" fill="#fff" opacity=".8"/>
+      <path d="M70 210 v-42 q0-16 18-16 h34 l22-30 h96 l22 30 h34 q18 0 18 16 v42Z" fill="#1B5FC1"/>
+      <path d="M132 152 l16-22 h84 l16 22Z" fill="#DCE8F6"/>
+      <circle cx="118" cy="212" r="24" fill="#243447"/><circle cx="118" cy="212" r="10" fill="#8FA6C0"/>
+      <circle cx="292" cy="212" r="24" fill="#243447"/><circle cx="292" cy="212" r="10" fill="#8FA6C0"/>
+      <rect x="176" y="118" width="48" height="18" rx="4" fill="#FFC53D"/>
+      <text x="200" y="132" text-anchor="middle" font-size="13" font-weight="700" fill="#16233A">LES</text>
+    </svg>
+    <span class="shot-note">Eigen foto van de lesauto</span>
+  </div>
+</div></header>
+
+<section><div class="wrap">
+  <h2 class="sec-h">Zo gaat het bij ons</h2>
+  <p class="sec-sub">Geen verrassingen. Je weet vooraf wat je krijgt en wat het kost.</p>
+  <div class="steps">
+    <div class="step"><div class="no">1</div><h3>Proefles</h3><p>60 minuten rijden voor €29. Daarna weet je waar je staat.</p></div>
+    <div class="step"><div class="no">2</div><h3>Persoonlijk plan</h3><p>We schatten samen in hoeveel lessen je nodig hebt.</p></div>
+    <div class="step"><div class="no">3</div><h3>Vaste instructeur</h3><p>Altijd dezelfde persoon, altijd dezelfde auto.</p></div>
+    <div class="step"><div class="no">4</div><h3>Examen</h3><p>We regelen de aanvraag en oefenen de route vooraf.</p></div>
+  </div>
+</div></section>
+
+<section id="pakketten"><div class="wrap">
+  <h2 class="sec-h">Pakketten</h2>
+  <p class="sec-sub">Alle prijzen inclusief btw. Niet gebruikte lessen krijg je terug.</p>
+  <div class="pk">
+    <div class="pack">
+      <h3>Losse lessen</h3>
+      <div class="price">€52<small>/les</small></div>
+      <ul><li>60 minuten per les</li><li>Zelf inplannen</li><li>Geen pakketverplichting</li></ul>
+      <a class="btn btn-s" href="#proefles" style="margin-left:0">Kies dit</a>
+    </div>
+    <div class="pack best">
+      <span class="badge">Meest gekozen</span>
+      <h3>Startpakket 20</h3>
+      <div class="price">€945<small>/20 lessen</small></div>
+      <ul><li>20 lessen van 60 min</li><li>Examenaanvraag inbegrepen</li><li>Theorie-oefenpakket gratis</li><li>Vaste instructeur</li></ul>
+      <a class="btn btn-p" href="#proefles" style="margin-left:0">Kies dit</a>
+    </div>
+    <div class="pack">
+      <h3>Spoedopleiding</h3>
+      <div class="price">€1.895<small>/compleet</small></div>
+      <ul><li>In 3 weken rijbewijs</li><li>Examen binnen 4 weken</li><li>Inclusief theorie-cursus</li></ul>
+      <a class="btn btn-s" href="#proefles" style="margin-left:0">Kies dit</a>
+    </div>
+  </div>
+</div></section>
+
+<section class="reviews"><div class="wrap">
+  <h2 class="sec-h">Wat leerlingen zeggen</h2>
+  <p class="sec-sub">Rechtstreeks uit het Google Bedrijfsprofiel.</p>
+  <div class="rgrid">
+    <div class="rev"><div class="stars">★★★★★</div>
+      <p>"In één keer geslaagd. Mijn instructeur bleef rustig terwijl ik dat totaal niet was."</p>
+      <cite>— Yasmine, 18</cite></div>
+    <div class="rev"><div class="stars">★★★★★</div>
+      <p>"Duidelijk wat het kostte, geen extra rekeningen achteraf. Dat was bij mijn vorige rijschool anders."</p>
+      <cite>— Tom, 24</cite></div>
+    <div class="rev"><div class="stars">★★★★★</div>
+      <p>"Ik was heel angstig achter het stuur. Ze hebben daar echt de tijd voor genomen."</p>
+      <cite>— Ingrid, 41</cite></div>
+  </div>
+  <span class="gbadge">★ 4,8 gemiddeld · 203 Google-reviews</span>
+</div></section>
+
+<section class="book" id="proefles"><div class="wrap">
+  <div>
+    <h2 class="sec-h">Proefles boeken</h2>
+    <p class="sec-sub">60 minuten rijden voor €29, zonder verplichting daarna. Je hoeft geen account aan te maken en betaalt pas in de auto.</p>
+  </div>
+  <form onsubmit="event.preventDefault();this.innerHTML='&lt;h3 style=&quot;font-size:22px;margin-bottom:8px&quot;&gt;Aanvraag ontvangen&lt;/h3&gt;&lt;p style=&quot;color:#4A5568&quot;&gt;We bellen je vandaag nog om een moment af te spreken.&lt;/p&gt;'">
+    <label for="n">Naam</label><input id="n" required>
+    <label for="t">Telefoon</label><input id="t" type="tel" required>
+    <label for="w">Waar wil je opgehaald worden?</label>
+    <select id="w"><option>Rotterdam Centrum</option><option>Rotterdam Noord</option>
+      <option>Rotterdam Zuid</option><option>Capelle aan den IJssel</option><option>Schiedam</option></select>
+    <label for="v">Heb je al lessen gehad?</label>
+    <select id="v"><option>Nee, dit wordt mijn eerste keer</option><option>Ja, een paar lessen</option>
+      <option>Ja, ik was al bijna examenklaar</option></select>
+    <button class="btn btn-p" style="width:100%;border:0;cursor:pointer" type="submit">Boek mijn proefles</button>
+    <p class="form-note">Je betaalt pas in de auto. Annuleren kan kosteloos tot 24 uur vooraf.</p>
+  </form>
+</div></section>
+
+<footer><div class="wrap">
+  <div><b>Rijschool Vooruit</b>Beukelsdijk 42<br>3021 AH Rotterdam<br><a href="tel:+31101234567">010 123 45 67</a></div>
+  <div><b>Bereikbaar</b>ma–vr 08:00–20:00<br>za 09:00–15:00</div>
+  <div><b>Overig</b>KvK 23456789<br>CBR-erkend · WRM-gecertificeerd</div>
+</div></footer>
+
+</body>
+</html>

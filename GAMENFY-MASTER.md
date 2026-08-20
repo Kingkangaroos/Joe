@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.80)
+# GAMENFY — Master Document (v10.81)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -400,6 +400,15 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.81 — NIEUW: drie voorbeeldwebsites in het Lab, gebouwd op het onderzoeksrapport.** Joey leverde het Deep Research-rapport over het AI-websitebedrijf en vroeg om drie voorbeeldsites in het Lab, los van de poppetjes.
+  - **Niches gekozen op basis van het rapport, niet op gevoel**: klusbedrijf (aanbevolen startniche, 51/80), personal trainer (hoogst scorend, 55/80, aangewezen uitbreiding) en rijschool (51/80). Nagelstylistes — Joey's oorspronkelijke idee — scoorde 15e van 22 en is dus bewust níet gebouwd.
+  - **De vier bewezen basisfeatures uit hoofdstuk 6 zitten in alle drie**: snel ladend (geen framework, één lettertype per site), aanvragen/boeken zónder account, reviews prominent in beeld, en NAP-gegevens consistent en klikbaar op elke pagina.
+  - **Hoofdstuk 7B letterlijk gevolgd in wat er NIET in zit**: geen parallax (expliciet afgeraden — prestatiekosten + duizeligheidsrisico), geen glassmorphism als basisstijl (contrast), geen video-hero (laadtijd/databundel), animaties uitsluitend op transform/opacity met 150ms ease-out (nooit top/left), en `prefers-reduced-motion` in alle drie.
+  - **WCAG-contrast handmatig gecontroleerd per accentkleur**: de klus-oranje is verdonkerd naar #C2521C (4,9:1 op wit) omdat het felle #E2622A niet slaagt voor bodytekst; die felle variant wordt alleen nog voor grote tekst/UI gebruikt. Rijschool-blauw #1B5FC1 (6,4:1), PT gebruikt lichte tekst op donker.
+  - Elke site is een **echt werkend bestand** dat Joey kan openen en aan klanten kan laten zien, geen mockup-plaatje. Hero-afbeeldingen zijn getekende placeholders met een zichtbaar label — het rapport stelt expliciet dat echte foto's bij visuele niches niet door AI te vervangen zijn.
+  - Overzichtspagina `sites.html` legt per site uit wáárom die niche gekozen is, en welke ontwerpregels bewust wel/niet zijn toegepast. Bereikbaar vanuit het Lab, los van de poppetjes zoals gevraagd.
+  `?v=` naar 10.81. Gevalideerd: 14-bestands syntax-, CSS- en HTML-structuurpass.
 
 - **v10.80 — Lab teruggedraaid naar v10.78 + gesprekken eruit.** Claudia had "de teksten mogen weg" gelezen als de naamlabels, terwijl Joey de **tekstballonnen** bedoelde. In v10.79 was dus precies het omgekeerde gebeurd: labels weg, gesprekken alleen wat rustiger. Joey: "gewoon helemaal terug naar die andere versie qua poppetjes."
   - `lab.html` volledig teruggezet naar de v10.78-versie via git (niet met de hand nagebouwd — dat garandeert dat het exact is wat hij goedkeurde, inclusief de naamlabels, het mooiere park en de glanzende poppetjes).

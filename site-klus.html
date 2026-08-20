@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Van der Meer Klussen — Klusbedrijf in Utrecht</title>
+<meta name="description" content="Klusbedrijf in Utrecht en omstreken. Vaste prijs vooraf, binnen 24 uur reactie. Vraag vrijblijvend een offerte aan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* Design rules from the research (ch. 7B):
+   - no parallax (NN/g: performance + vestibular risk)
+   - animation on transform/opacity only, 100-300ms, ease-out
+   - no glassmorphism as base style (contrast)
+   - WCAG 4.5:1 body text / 3:1 UI
+   - prefers-reduced-motion honoured                                    */
+:root{
+  --ink:#14181F; --ink-2:#3A424E; --line:#DDD8CF; --paper:#fff; --sand:#F5F2EC;
+  --orange:#C2521C;            /* 4.9:1 on white — passes for body text */
+  --orange-bright:#E2622A;     /* large text / UI only */
+  --h:'Barlow Condensed',system-ui,sans-serif;
+  --b:system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--b);color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--h);line-height:1.02;text-transform:uppercase;letter-spacing:-.01em}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+a{color:inherit}
+
+/* ── top bar with NAP always visible (ch.6: NAP consistency) ── */
+.top{background:var(--ink);color:#fff;font-size:13.5px}
+.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:9px 20px;flex-wrap:wrap}
+.top a{text-decoration:none;font-weight:600}
+.top .tel{color:#FFC9AC}
+nav{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;gap:16px}
+.logo{font-family:var(--h);font-size:25px;font-weight:700}
+.logo span{color:var(--orange)}
+.nav-cta{background:var(--ink);color:#fff;text-decoration:none;font-weight:700;font-size:14px;
+  padding:11px 18px;border-radius:6px;transition:transform .15s ease-out,opacity .15s ease-out}
+.nav-cta:hover{transform:translateY(-1px);opacity:.92}
+
+/* ── hero: static, no video, no parallax ── */
+.hero{background:var(--sand);border-bottom:1px solid var(--line);padding:60px 0 56px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
+.eyebrow{font-weight:700;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:14px}
+h1{font-size:clamp(40px,6.4vw,64px);margin-bottom:16px}
+.lede{font-size:17.5px;color:var(--ink-2);max-width:44ch;margin-bottom:26px}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;text-decoration:none;font-weight:700;padding:15px 24px;border-radius:6px;font-size:15.5px;
+  transition:transform .15s ease-out,opacity .15s ease-out}
+.btn:hover{transform:translateY(-2px)}
+.btn-p{background:var(--orange);color:#fff}
+.btn-s{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+.trust{display:flex;gap:22px;margin-top:26px;flex-wrap:wrap;font-size:13.5px;color:var(--ink-2)}
+.trust b{display:block;font-family:var(--h);font-size:27px;color:var(--ink);line-height:1}
+/* hero visual — placeholder for the client's own optimised photo (ch.7B:
+   a real static photo is the safe default; video only as premium option) */
+.shot{aspect-ratio:4/3;border-radius:10px;border:1px solid var(--line);overflow:hidden;background:#E7E1D6;position:relative}
+.shot svg{width:100%;height:100%;display:block}
+.shot-note{position:absolute;left:12px;bottom:12px;background:rgba(20,24,31,.86);color:#fff;
+  font-size:11px;padding:5px 9px;border-radius:4px}
+
+section{padding:64px 0}
+.sec-h{font-size:clamp(28px,4vw,38px);margin-bottom:10px}
+.sec-sub{color:var(--ink-2);margin-bottom:34px;max-width:56ch}
+
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{border:1px solid var(--line);border-radius:9px;padding:24px;background:#fff}
+.card h3{font-size:21px;margin-bottom:8px}
+.card p{font-size:14.5px;color:var(--ink-2)}
+.card .ic{width:40px;height:40px;border-radius:8px;background:var(--sand);display:flex;align-items:center;
+  justify-content:center;margin-bottom:14px}
+
+/* ── reviews (ch.6: 75% checks reviews) ── */
+.reviews{background:var(--ink);color:#fff}
+.reviews .sec-h{color:#fff}
+.reviews .sec-sub{color:#B9C0CA}
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.rev{background:#1D232C;border:1px solid #2C333E;border-radius:9px;padding:22px}
+.stars{color:#FFB454;letter-spacing:2px;margin-bottom:10px;font-size:15px}
+.rev p{font-size:14.5px;color:#D9DEE5;margin-bottom:14px}
+.rev cite{font-style:normal;font-size:13px;color:#98A1AD}
+.gbadge{display:inline-flex;align-items:center;gap:9px;background:#fff;color:var(--ink);
+  border-radius:999px;padding:9px 17px;font-size:13.5px;font-weight:600;margin-top:26px}
+
+/* ── booking form: no account required (ch.6) ── */
+.book{background:var(--sand)}
+.book .wrap{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+form{background:#fff;border:1px solid var(--line);border-radius:10px;padding:26px}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+input,select,textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:6px;
+  font:inherit;font-size:15px;margin-bottom:15px;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--orange);outline-offset:1px;border-color:var(--orange)}
+.form-note{font-size:12.5px;color:var(--ink-2);margin-top:4px}
+.area{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13.5px}
+
+footer{background:var(--ink);color:#9FA8B4;padding:40px 0;font-size:13.5px}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+footer b{color:#fff;display:block;font-family:var(--h);font-size:19px;margin-bottom:6px}
+footer a{color:#9FA8B4}
+
+@media(max-width:860px){
+  .hero .wrap,.book .wrap{grid-template-columns:1fr}
+  .grid3,.rgrid{grid-template-columns:1fr}
+  .shot{order:-1}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap">
+  <span>Utrecht &amp; omstreken · ma–za 07:00–19:00</span>
+  <a class="tel" href="tel:+31612345678">📞 06 12 34 56 78</a>
+</div></div>
+
+<nav><div class="wrap">
+  <div class="logo">VAN DER MEER <span>KLUSSEN</span></div>
+  <a class="nav-cta" href="#offerte">Offerte aanvragen</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div>
+    <div class="eyebrow">Klusbedrijf in Utrecht</div>
+    <h1>Klus geklaard.<br>Vaste prijs vooraf.</h1>
+    <p class="lede">Van een lekkende kraan tot een complete badkamer. U weet vooraf wat het kost — geen verrassingen achteraf.</p>
+    <div class="btns">
+      <a class="btn btn-p" href="#offerte">Gratis offerte aanvragen</a>
+      <a class="btn btn-s" href="tel:+31612345678">Direct bellen</a>
+    </div>
+    <div class="trust">
+      <div><b>4,9</b>uit 87 reviews</div>
+      <div><b>&lt;24u</b>reactietijd</div>
+      <div><b>12 jr</b>ervaring</div>
+    </div>
+  </div>
+  <div class="shot">
+    <svg viewBox="0 0 400 300" aria-label="Voorbeeldafbeelding werkplaats">
+      <rect width="400" height="300" fill="#E7E1D6"/>
+      <rect y="196" width="400" height="104" fill="#D9D1C2"/>
+      <rect x="42" y="96" width="118" height="100" rx="4" fill="#C6BCA8"/>
+      <rect x="52" y="112" width="98" height="8" rx="4" fill="#B0A38C"/>
+      <rect x="52" y="130" width="72" height="8" rx="4" fill="#B0A38C"/>
+      <path d="M232 196 L262 108 L292 196Z" fill="#C2521C" opacity=".82"/>
+      <rect x="300" y="140" width="58" height="56" rx="4" fill="#8A7F6B"/>
+      <circle cx="329" cy="168" r="15" fill="#E7E1D6"/>
+      <rect x="196" y="60" width="8" height="136" rx="4" fill="#8A7F6B"/>
+      <rect x="170" y="52" width="60" height="14" rx="4" fill="#6E6555"/>
+    </svg>
+    <span class="shot-note">Vervangen door eigen foto van de klant</span>
+  </div>
+</div></header>
+
+<section><div class="wrap">
+  <h2 class="sec-h">Waar we voor komen</h2>
+  <p class="sec-sub">Geen algemeen verhaal — dit zijn de klussen die we wekelijks draaien.</p>
+  <div class="grid3">
+    <div class="card">
+      <div class="ic">🔧</div><h3>Loodgieterswerk</h3>
+      <p>Lekkages, kranen, afvoeren en radiatoren. Spoed mogelijk binnen 24 uur.</p>
+    </div>
+    <div class="card">
+      <div class="ic">🚿</div><h3>Badkamer &amp; toilet</h3>
+      <p>Complete renovatie of alleen het tegelwerk. Inclusief afvoer van oud materiaal.</p>
+    </div>
+    <div class="card">
+      <div class="ic">🪟</div><h3>Kozijnen &amp; deuren</h3>
+      <p>Plaatsen, afstellen en tochtvrij maken. Ook hang- en sluitwerk.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="reviews"><div class="wrap">
+  <h2 class="sec-h">Wat klanten zeggen</h2>
+  <p class="sec-sub">Reviews komen rechtstreeks uit het Google Bedrijfsprofiel en worden automatisch bijgewerkt.</p>
+  <div class="rgrid">
+    <div class="rev"><div class="stars">★★★★★</div>
+      <p>"Binnen een dag gereageerd en de volgende ochtend stond hij er. Prijs klopte precies met de offerte."</p>
+      <cite>— Marieke D., Utrecht</cite></div>
+    <div class="rev"><div class="stars">★★★★★</div>
+      <p>"Badkamer compleet gedaan in vier dagen. Netjes achtergelaten, geen gedoe."</p>
+      <cite>— Ahmed B., Nieuwegein</cite></div>
+    <div class="rev"><div class="stars">★★★★★</div>
+      <p>"Eerlijk advies gekregen dat een reparatie genoeg was in plaats van vervangen. Dat waardeer ik."</p>
+      <cite>— Peter V., Houten</cite></div>
+  </div>
+  <span class="gbadge">★ 4,9 gemiddeld · 87 Google-reviews</span>
+</div></section>
+
+<section class="book" id="offerte"><div class="wrap">
+  <div>
+    <h2 class="sec-h">Offerte aanvragen</h2>
+    <p class="sec-sub">Vul in wat er speelt — u krijgt binnen één werkdag een vaste prijs. Geen account nodig, geen verplichtingen.</p>
+    <p style="font-weight:700;margin-bottom:8px">Werkgebied</p>
+    <div class="area">
+      <span class="chip">Utrecht</span><span class="chip">Nieuwegein</span><span class="chip">Houten</span>
+      <span class="chip">Zeist</span><span class="chip">De Bilt</span><span class="chip">Maarssen</span>
+    </div>
+  </div>
+  <form onsubmit="event.preventDefault();this.innerHTML='&lt;h3 style=&quot;font-size:22px;margin-bottom:8px&quot;&gt;Aanvraag verstuurd&lt;/h3&gt;&lt;p style=&quot;color:#3A424E&quot;&gt;U hoort binnen één werkdag van ons.&lt;/p&gt;'">
+    <label for="n">Naam</label><input id="n" required>
+    <label for="t">Telefoon</label><input id="t" type="tel" required>
+    <label for="s">Wat voor klus?</label>
+    <select id="s"><option>Loodgieterswerk</option><option>Badkamer of toilet</option>
+      <option>Kozijnen of deuren</option><option>Anders / weet ik nog niet</option></select>
+    <label for="o">Korte omschrijving</label><textarea id="o" rows="3"></textarea>
+    <button class="btn btn-p" style="width:100%;border:0;cursor:pointer" type="submit">Verstuur aanvraag</button>
+    <p class="form-note">We bellen alleen over deze aanvraag. Geen nieuwsbrief.</p>
+  </form>
+</div></section>
+
+<footer><div class="wrap">
+  <div><b>Van der Meer Klussen</b>
+    Amsterdamsestraatweg 128<br>3551 CG Utrecht<br>
+    <a href="tel:+31612345678">06 12 34 56 78</a></div>
+  <div><b>Openingstijden</b>ma–vr 07:00–19:00<br>za 08:00–16:00<br>zo gesloten</div>
+  <div><b>Goed om te weten</b>KvK 12345678<br>Btw NL001234567B01<br>Verzekerd &amp; gecertificeerd</div>
+</div></footer>
+
+</body>
+</html>

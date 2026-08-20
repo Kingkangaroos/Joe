@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F3EF">
+<title>Voorbeeldwebsites — Lab</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F3EF; --card:#FFFFFF; --ink:#15140F; --muted:#6F6C63; --faint:#A6A399;
+  --line:#E8E6DF; --line-strong:#DBD8CF; --ember:#D4633E; --gold:#C9A227; --green:#2E8B5F;
+  --font-display:'Schibsted Grotesk',-apple-system,sans-serif;
+  --font-body:'Inter',-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--font-body);min-height:100%}
+body{padding-bottom:60px}
+.wrap{max-width:560px;margin:0 auto;padding:16px 14px 24px}
+.back{display:inline-block;font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:10px}
+.page-title{font-family:var(--font-display);font-weight:800;font-size:26px}
+.page-sub{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5}
+.sec-head{font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--muted);margin:24px 0 10px}
+
+.site{display:block;background:var(--card);border:1px solid var(--line);border-radius:16px;
+  overflow:hidden;margin-bottom:14px;text-decoration:none;color:inherit;
+  transition:transform .18s ease-out,border-color .18s ease-out}
+.site:active{transform:scale(.99);border-color:var(--line-strong)}
+.thumb{height:112px;position:relative}
+.thumb svg{width:100%;height:100%;display:block}
+.rank{position:absolute;top:10px;right:10px;background:rgba(21,20,15,.86);color:#fff;
+  font-size:10px;font-weight:700;padding:4px 9px;border-radius:999px}
+.site-body{padding:14px 16px 16px}
+.site-name{font-family:var(--font-display);font-weight:700;font-size:16px}
+.site-niche{font-size:12px;color:var(--ember);font-weight:700;margin-top:2px}
+.site-why{font-size:12.5px;color:var(--muted);line-height:1.5;margin-top:8px}
+.open{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:var(--ember)}
+
+.note{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;
+  font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:6px}
+.note b{color:var(--ink)}
+.note ul{margin:8px 0 0 16px}
+.note li{margin-bottom:5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="lab.html">‹ Terug naar Lab</a>
+  <div class="page-title">🌐 Voorbeeldwebsites</div>
+  <div class="page-sub">Drie werkende voorbeelden voor de Websites-venture. Gebouwd op de niches en ontwerpregels uit het onderzoeksrapport — niet op onderbuikgevoel.</div>
+
+  <div class="sec-head">De drie voorbeelden</div>
+
+  <a class="site" href="site-klus.html" target="_blank" rel="noopener">
+    <div class="thumb">
+      <svg viewBox="0 0 400 112" preserveAspectRatio="none" aria-hidden="true">
+        <rect width="400" height="112" fill="#F5F2EC"/>
+        <rect width="400" height="18" fill="#14181F"/>
+        <rect x="18" y="34" width="150" height="13" rx="3" fill="#14181F"/>
+        <rect x="18" y="54" width="110" height="8" rx="3" fill="#8D95A1"/>
+        <rect x="18" y="72" width="72" height="18" rx="4" fill="#C2521C"/>
+        <rect x="232" y="30" width="150" height="66" rx="6" fill="#E7E1D6"/>
+        <path d="M282 96 L306 44 L330 96Z" fill="#C2521C" opacity=".8"/>
+      </svg>
+      <span class="rank">Aanbevolen start</span>
+    </div>
+    <div class="site-body">
+      <div class="site-name">Van der Meer Klussen</div>
+      <div class="site-niche">Klusbedrijf · Utrecht</div>
+      <div class="site-why">Het rapport wijst klusbedrijven aan als beste startniche (51/80): concrete opdracht, hoge urgentie, geen portfolio-afhankelijkheid. Stevige, no-nonsense uitstraling met de telefoon altijd in beeld.</div>
+      <span class="open">Bekijk website →</span>
+    </div>
+  </a>
+
+  <a class="site" href="site-pt.html" target="_blank" rel="noopener">
+    <div class="thumb">
+      <svg viewBox="0 0 400 112" preserveAspectRatio="none" aria-hidden="true">
+        <rect width="400" height="112" fill="#12110F"/>
+        <rect x="18" y="30" width="164" height="14" rx="3" fill="#FFFDF8"/>
+        <rect x="18" y="52" width="120" height="8" rx="3" fill="#B5B1A6"/>
+        <rect x="18" y="70" width="84" height="20" rx="10" fill="#C8F04A"/>
+        <rect x="240" y="24" width="142" height="72" rx="8" fill="#201E1A"/>
+        <circle cx="311" cy="52" r="17" fill="#3A362E"/>
+        <rect x="296" y="72" width="30" height="20" rx="8" fill="#3A362E"/>
+        <rect x="258" y="60" width="106" height="5" rx="2.5" fill="#C8F04A"/>
+      </svg>
+      <span class="rank">Nr. 1 in ranking</span>
+    </div>
+    <div class="site-body">
+      <div class="site-name">Studio Kracht</div>
+      <div class="site-niche">Personal trainer · Amsterdam</div>
+      <div class="site-why">Hoogst scorende niche in het rapport (55/80) en de aangewezen uitbreiding na klusbedrijven. Donker en energiek, met de gratis intake als drempelverlager.</div>
+      <span class="open">Bekijk website →</span>
+    </div>
+  </a>
+
+  <a class="site" href="site-rijschool.html" target="_blank" rel="noopener">
+    <div class="thumb">
+      <svg viewBox="0 0 400 112" preserveAspectRatio="none" aria-hidden="true">
+        <rect width="400" height="112" fill="#EEF4FB"/>
+        <rect x="18" y="28" width="156" height="14" rx="3" fill="#16233A"/>
+        <rect x="18" y="50" width="118" height="8" rx="3" fill="#7C8BA1"/>
+        <rect x="18" y="68" width="80" height="19" rx="8" fill="#1B5FC1"/>
+        <rect x="234" y="26" width="150" height="70" rx="8" fill="#DCE8F6"/>
+        <path d="M254 84 v-22 q0-8 9-8 h16 l11-14 h44 l11 14 h16 q9 0 9 8 v22Z" fill="#1B5FC1"/>
+        <circle cx="278" cy="86" r="9" fill="#243447"/><circle cx="342" cy="86" r="9" fill="#243447"/>
+      </svg>
+      <span class="rank">Top-3 niche</span>
+    </div>
+    <div class="site-body">
+      <div class="site-name">Rijschool Vooruit</div>
+      <div class="site-niche">Rijschool · Rotterdam</div>
+      <div class="site-why">Ook 51/80 in het rapport. Rijscholen hebben een natuurlijke boekingsvraag en een hard verkoopargument: het slagingspercentage. Vriendelijk en geruststellend, gericht op een jong publiek.</div>
+      <span class="open">Bekijk website →</span>
+    </div>
+  </a>
+
+  <div class="sec-head">Wat er bewust in zit</div>
+  <div class="note">
+    <b>De vier bewezen basisfeatures uit hoofdstuk 6</b> zitten in alle drie:
+    <ul>
+      <li>Snel ladend — geen framework, geen zware media, één lettertype per site</li>
+      <li>Boeken/aanvragen zónder account (70% wil online boeken, 94% zou overstappen)</li>
+      <li>Reviews prominent in beeld (75% checkt reviews vóór contact)</li>
+      <li>Adres en telefoon consistent op elke pagina, klikbaar</li>
+    </ul>
+  </div>
+  <div class="note">
+    <b>En wat er bewust NIET in zit</b>, op advies van hoofdstuk 7B:
+    <ul>
+      <li>Geen parallax-scrolling — expliciet afgeraden vanwege prestatiekosten en duizeligheidsrisico</li>
+      <li>Geen glassmorphism als basisstijl — contrastprobleem</li>
+      <li>Geen video-hero — laadtijd- en databundelrisico; statische foto is de veilige keuze</li>
+      <li>Animaties alleen op transform en opacity, 150ms, ease-out — nooit top/left</li>
+      <li><code>prefers-reduced-motion</code> zet alle beweging netjes uit</li>
+    </ul>
+  </div>
+  <div class="note">
+    <b>Nog te doen per klant:</b> de hero-afbeeldingen zijn nu getekende placeholders. Het rapport is duidelijk dat echte eigen foto's bij visuele niches niet door AI te vervangen zijn — die komen van de klant zelf.
+  </div>
+</div>
+</body>
+</html>
