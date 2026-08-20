@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.83)
+# GAMENFY — Master Document (v10.84)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -400,6 +400,14 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.84 — eerdere fixes geverifieerd in Joey's echte data + waarschuwing bij stilstaande gezondheidsdata.**
+  - **Verificatie van v10.65 (verdwijnende missies): bevestigd werkend.** In Joey's live cloud-data staan household, walking, good_deed en meditation nu op **19 augustus** afgevinkt. Vóór de fix was de laatste registratie 1 augustus — de afvinkgegevens bleven letterlijk hangen. De race-conditie-fix (lokale schrijfacties tijdens het initiële ophalen bewaren en terugzetten) doet dus wat hij moet doen, geverifieerd op echte data en niet alleen op een simulatie.
+  - **Verificatie van v10.56 (tier-claims sync): bevestigd werkend**, `rpg_tier_claims_v1` staat nu in de cloud-rij.
+  - **Fitbit staat nog steeds stil sinds 4 augustus — inmiddels 16 dagen.** Joey pakt de herkoppeling zelf op, maar het echte probleem was dat de app dit **stilzwijgend** liet gebeuren: verouderde cijfers werden getoond alsof er niets aan de hand was. Dat is precies het soort storing waar je verkeerde conclusies uit trekt.
+  - **Nu een zichtbare waarschuwing** boven de gezondheidskaarten zodra de laatste meting ouder is dan 2 dagen: hoeveel dagen het stilstaat, dat de cijfers eronder dus verouderd zijn, en een directe herverbind-link. Drempel bewust op 2 dagen — dat verdraagt een normale sync-hapering maar vangt een echte storing. Aparte tekst als er nog nooit data is binnengekomen.
+  - Getest tegen Joey's exacte situatie (16 dagen → waarschuwing) plus vandaag/gisteren (geen waarschuwing), 2 dagen, een week, en nooit-gesynct.
+  `?v=` naar 10.84. Gevalideerd: 14-bestands JS-, CSS-, div- en JSON-LD-controle.
 
 - **v10.83 — vijfde auditronde, nu op praktijkgebruik: vier nieuwe categorieën gaten gevonden en gedicht.** In plaats van de vorige controles te herhalen, gekeken naar hoe deze sites in het echt worden gebruikt — gedeeld via WhatsApp, gevonden via Google, ingevuld op een telefoon.
   - **Lokale SEO ontbrak volledig.** Het rapport leunt zwaar op het Google Bedrijfsprofiel en NAP-consistentie (+50% kans overwogen te worden), maar er stond geen enkele gestructureerde data in. Nu **JSON-LD LocalBusiness** op alle drie met het juiste schematype per branche (`HomeAndConstructionBusiness`, `HealthAndBeautyBusiness`, `DrivingSchool`), inclusief adres, telefoon, openingstijden en beoordelingscijfer — precies de velden waar Google op vertrouwt. Plus een canonical-URL. Gratis, en het is het verschil tussen wél en niet als lokaal bedrijf herkend worden.
