@@ -39,7 +39,7 @@ nav .wrap{display:flex;justify-content:space-between;align-items:center;padding:
 h1{font-size:clamp(42px,7vw,70px);margin-bottom:18px}
 h1 em{font-style:normal;color:var(--lime)}
 .lede{font-size:17.5px;color:var(--dim);max-width:42ch;margin-bottom:28px}
-.btn{display:inline-block;text-decoration:none;font-weight:800;padding:16px 26px;border-radius:999px;font-size:15.5px;
+.btn{display:inline-block;text-decoration:none;font-family:inherit;font-weight:800;padding:16px 26px;border-radius:999px;font-size:15.5px;
   transition:transform .15s ease-out,opacity .15s ease-out}
 .btn:hover{transform:translateY(-2px)}
 .btn-p{background:var(--lime);color:#12110F}
@@ -88,39 +88,50 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}
 input,select{width:100%;padding:13px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:15px;
   margin-bottom:15px;background:#151412;color:var(--paper)}
 input:focus,select:focus{outline:2px solid var(--lime);outline-offset:1px}
+.slotset{border:0;padding:0;margin:0 0 4px}
+.slotset legend{font-size:13px;font-weight:800;margin-bottom:6px;padding:0}
 .slots{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 18px}
+.slots input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .slot{background:#151412;border:1px solid var(--line);border-radius:8px;padding:9px 14px;font-size:13.5px;
-  cursor:pointer;transition:transform .15s ease-out}
+  cursor:pointer;transition:transform .15s ease-out;display:inline-block;margin:0}
 .slot:hover{transform:translateY(-1px);border-color:var(--lime)}
-.slot.on{background:var(--lime);color:#12110F;border-color:var(--lime);font-weight:800}
+.slots input:checked + .slot{background:var(--lime);color:#12110F;border-color:var(--lime);font-weight:800}
+.slots input:focus-visible + .slot{outline:3px solid var(--lime);outline-offset:2px}
 .form-note{font-size:12.5px;color:#8C887E;margin-top:4px}
 
 footer{border-top:1px solid var(--line);padding:38px 0;font-size:13.5px;color:var(--dim)}
 footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
 footer b{color:var(--paper);display:block;font-family:var(--h);font-size:17px;margin-bottom:6px}
+footer a{color:var(--lime)}
 
 @media(max-width:880px){
   .hero .wrap,.trainer .wrap,.book .wrap{grid-template-columns:1fr}
   .plans,.rgrid{grid-template-columns:1fr}
   .shot{order:-1;aspect-ratio:4/3}
 }
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid currentColor;outline-offset:2px;border-radius:4px}
+.skip{position:absolute;left:-9999px;top:0;background:#fff;color:#000;padding:10px 16px;z-index:999;
+  font-weight:700;border-radius:0 0 6px 0}
+.skip:focus{left:0}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Naar de inhoud</a>
 
 <nav><div class="wrap">
   <div class="logo">STUDIO <em>KRACHT</em></div>
   <a class="nav-cta" href="#intake">Gratis intake</a>
 </div></nav>
 
-<header class="hero"><div class="wrap">
+<main id="main"><header class="hero"><div class="wrap">
   <div>
     <span class="tag">Personal training · Amsterdam-Oost</span>
     <h1>Sterker worden<br>zonder <em>gedoe</em>.</h1>
     <p class="lede">Eén op één training met een schema dat past bij jouw week — niet andersom. Eerste kennismaking is gratis en vrijblijvend.</p>
     <a class="btn btn-p" href="#intake">Plan je gratis intake</a>
-    <a class="btn btn-s" href="#pakketten">Bekijk pakketten</a>
+    <a class="btn btn-s" href="tel:+31201234567">Of bel direct</a>
     <div class="stats">
       <div><b>4,9</b><span>uit 124 reviews</span></div>
       <div><b>250+</b><span>mensen begeleid</span></div>
@@ -208,14 +219,16 @@ footer b{color:var(--paper);display:block;font-family:var(--h);font-size:17px;ma
   <form onsubmit="event.preventDefault();this.innerHTML='&lt;h3 style=&quot;font-size:22px;margin-bottom:8px&quot;&gt;Tot snel!&lt;/h3&gt;&lt;p style=&quot;color:#B5B1A6&quot;&gt;Je krijgt binnen een paar uur een bevestiging.&lt;/p&gt;'">
     <label for="n">Naam</label><input id="n" required>
     <label for="e">E-mail of telefoon</label><input id="e" required>
-    <label>Wanneer schikt het?</label>
-    <div class="slots">
-      <span class="slot" onclick="pick(this)">ma ochtend</span>
-      <span class="slot on" onclick="pick(this)">di avond</span>
-      <span class="slot" onclick="pick(this)">wo ochtend</span>
-      <span class="slot" onclick="pick(this)">do avond</span>
-      <span class="slot" onclick="pick(this)">za ochtend</span>
-    </div>
+    <fieldset class="slotset">
+      <legend>Wanneer schikt het?</legend>
+      <div class="slots">
+        <input type="radio" name="slot" id="s1"><label class="slot" for="s1">ma ochtend</label>
+        <input type="radio" name="slot" id="s2" checked><label class="slot" for="s2">di avond</label>
+        <input type="radio" name="slot" id="s3"><label class="slot" for="s3">wo ochtend</label>
+        <input type="radio" name="slot" id="s4"><label class="slot" for="s4">do avond</label>
+        <input type="radio" name="slot" id="s5"><label class="slot" for="s5">za ochtend</label>
+      </div>
+    </fieldset>
     <label for="d">Wat wil je bereiken?</label>
     <select id="d"><option>Sterker worden</option><option>Afvallen</option>
       <option>Klachten verminderen</option><option>Weer op gang komen</option></select>
@@ -225,16 +238,11 @@ footer b{color:var(--paper);display:block;font-family:var(--h);font-size:17px;ma
 </div></section>
 
 <footer><div class="wrap">
-  <div><b>Studio Kracht</b>Javastraat 214<br>1095 CM Amsterdam<br>020 123 45 67</div>
+  <div><b>Studio Kracht</b>Javastraat 214<br>1095 CM Amsterdam<br><a href="tel:+31201234567">020 123 45 67</a></div>
   <div><b>Trainingstijden</b>ma–vr 06:30–21:00<br>za 08:00–14:00<br>zo gesloten</div>
   <div><b>Overig</b>KvK 87654321<br>Gecertificeerd CIOS &amp; EHBO</div>
 </div></footer>
+</main>
 
-<script>
-function pick(el){
-  el.parentNode.querySelectorAll('.slot').forEach(function(s){s.classList.remove('on')});
-  el.classList.add('on');
-}
-</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.81)
+# GAMENFY — Master Document (v10.82)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -400,6 +400,14 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.82 — vier kritische auditrondes over de voorbeeldwebsites; vijf echte fouten gevonden en gefixt.** Joey vroeg expliciet om vier keer kritisch terugkijken in plaats van door te bouwen.
+  - **Ronde 1 (contrast + toegankelijkheid, geautomatiseerd)**: alle contrastwaarden berekend tegen WCAG. Bodytekst 15,7–18,6:1, accenten 4,6–14,4:1 — allemaal geslaagd. Maar vier echte gebreken gevonden: (1) **de verzendknoppen vielen terug op het browser-standaardlettertype** op alle drie de sites, omdat `.btn` wel `font-weight`/`font-size` zette maar geen `font-family` — `<button>` erft dat niet. (2) Geen zichtbare toetsenbord-focus. (3) Geen skip-link. (4) Op de PT-site waren de tijdslots **klikbare `<span>`-elementen — met een toetsenbord onbruikbaar**, een echte toegankelijkheidsfout.
+  - **Ronde 2 (herstel)**: `font-family:inherit` op knoppen; `:focus-visible`-outlines; skip-link + `<main>`-landmark op alle drie; tijdslots vervangen door **echte radio-inputs** met visueel verborgen bediening — toetsenbord-native, correct voor schermlezers, en de JS-helper kon weg.
+  - **Ronde 3 (snelheid + conversiechecklist)**: 12–14 KB per site, 3 externe verzoeken, preconnect en `display=swap` aanwezig — ruim binnen de <2–3s-eis. Animaties alleen op transform/opacity, nul parallax, nul verboden eigenschappen. **Echte vondst**: de PT-site had **nergens een klikbaar telefoonnummer** en de rijschool maar één, terwijl hoofdstuk 6 tap-to-call expliciet als basisfeature noemt. Beide aangevuld.
+  - **Fout in eigen werk gemaakt én hersteld**: een bewerking op de rijschool-site liep vast op een tekencodering-fout en beschadigde het bestand. Teruggezet via git en netjes opnieuw uitgevoerd — daarna geverifieerd dat alle toegankelijkheidsfixes er weer in zaten.
+  - **Ronde 4 (inhoud + validiteit)**: twee "bevindingen" bleken vals alarm van het auditscript zelf (`<head>` telde `<header>` mee; het woord "placeholder" stond in een CSS-commentaar). Wel een echte constatering: **de prijsladder uit hoofdstuk 5 stond nergens** — logisch, want de sites tonen de prijzen van de fictieve klant, niet die van Joey. Toegevoegd aan de overzichtspagina zodat hij zijn eigen tarieven bij de hand heeft tijdens een verkoopgesprek. Plus een eerlijke kanttekening genoteerd: alle drie volgen dezelfde bewezen paginavolgorde, wat conversie-technisch juist goed is maar betekent dat ze structureel op elkaar lijken.
+  `?v=` naar 10.82. Gevalideerd: 14-bestands syntax-, CSS-, HTML- en div-balanscontrole.
 
 - **v10.81 — NIEUW: drie voorbeeldwebsites in het Lab, gebouwd op het onderzoeksrapport.** Joey leverde het Deep Research-rapport over het AI-websitebedrijf en vroeg om drie voorbeeldsites in het Lab, los van de poppetjes.
   - **Niches gekozen op basis van het rapport, niet op gevoel**: klusbedrijf (aanbevolen startniche, 51/80), personal trainer (hoogst scorend, 55/80, aangewezen uitbreiding) en rijschool (51/80). Nagelstylistes — Joey's oorspronkelijke idee — scoorde 15e van 22 en is dus bewust níet gebouwd.

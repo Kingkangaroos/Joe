@@ -48,7 +48,7 @@ nav .wrap{display:flex;justify-content:space-between;align-items:center;padding:
 h1{font-size:clamp(40px,6.4vw,64px);margin-bottom:16px}
 .lede{font-size:17.5px;color:var(--ink-2);max-width:44ch;margin-bottom:26px}
 .btns{display:flex;gap:12px;flex-wrap:wrap}
-.btn{display:inline-block;text-decoration:none;font-weight:700;padding:15px 24px;border-radius:6px;font-size:15.5px;
+.btn{display:inline-block;text-decoration:none;font-family:inherit;font-weight:700;padding:15px 24px;border-radius:6px;font-size:15.5px;
   transition:transform .15s ease-out,opacity .15s ease-out}
 .btn:hover{transform:translateY(-2px)}
 .btn-p{background:var(--orange);color:#fff}
@@ -107,10 +107,16 @@ footer a{color:#9FA8B4}
   .grid3,.rgrid{grid-template-columns:1fr}
   .shot{order:-1}
 }
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid currentColor;outline-offset:2px;border-radius:4px}
+.skip{position:absolute;left:-9999px;top:0;background:#fff;color:#000;padding:10px 16px;z-index:999;
+  font-weight:700;border-radius:0 0 6px 0}
+.skip:focus{left:0}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Naar de inhoud</a>
 
 <div class="top"><div class="wrap">
   <span>Utrecht &amp; omstreken · ma–za 07:00–19:00</span>
@@ -122,7 +128,7 @@ footer a{color:#9FA8B4}
   <a class="nav-cta" href="#offerte">Offerte aanvragen</a>
 </div></nav>
 
-<header class="hero"><div class="wrap">
+<main id="main"><header class="hero"><div class="wrap">
   <div>
     <div class="eyebrow">Klusbedrijf in Utrecht</div>
     <h1>Klus geklaard.<br>Vaste prijs vooraf.</h1>
@@ -219,6 +225,7 @@ footer a{color:#9FA8B4}
   <div><b>Openingstijden</b>ma–vr 07:00–19:00<br>za 08:00–16:00<br>zo gesloten</div>
   <div><b>Goed om te weten</b>KvK 12345678<br>Btw NL001234567B01<br>Verzekerd &amp; gecertificeerd</div>
 </div></footer>
+</main>
 
 </body>
 </html>

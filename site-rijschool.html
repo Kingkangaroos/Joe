@@ -22,6 +22,9 @@ h1,h2,h3{font-family:var(--h);font-weight:800;line-height:1.12;letter-spacing:-.
 .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
 a{color:inherit}
 
+.topbar{background:var(--ink);color:#C8D6E8;font-size:13px}
+.topbar .wrap{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:8px 20px;flex-wrap:wrap}
+.topbar a{color:#FFD97A;text-decoration:none;font-weight:700}
 nav{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line)}
 nav .wrap{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;gap:14px}
 .logo{font-family:var(--h);font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px}
@@ -38,7 +41,7 @@ nav .wrap{display:flex;justify-content:space-between;align-items:center;padding:
 .pill b{color:var(--blue)}
 h1{font-size:clamp(36px,5.6vw,56px);margin-bottom:14px}
 .lede{font-size:17px;color:var(--ink-2);max-width:44ch;margin-bottom:24px}
-.btn{display:inline-block;text-decoration:none;font-weight:800;padding:15px 24px;border-radius:12px;font-size:15.5px;
+.btn{display:inline-block;text-decoration:none;font-family:inherit;font-weight:800;padding:15px 24px;border-radius:12px;font-size:15.5px;
   transition:transform .15s ease-out,opacity .15s ease-out}
 .btn:hover{transform:translateY(-2px)}
 .btn-p{background:var(--blue);color:#fff}
@@ -103,17 +106,24 @@ footer a{color:#9FB0C7}
   .pk,.rgrid{grid-template-columns:1fr}
   .shot{order:-1}
 }
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
+  outline:3px solid currentColor;outline-offset:2px;border-radius:4px}
+.skip{position:absolute;left:-9999px;top:0;background:#fff;color:#000;padding:10px 16px;z-index:999;
+  font-weight:700;border-radius:0 0 6px 0}
+.skip:focus{left:0}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Naar de inhoud</a>
 
+<div class="topbar"><div class="wrap"><span>Rotterdam &amp; omstreken &middot; ma&ndash;vr 08:00&ndash;20:00</span><a href="tel:+31101234567">Bel 010 123 45 67</a></div></div>
 <nav><div class="wrap">
   <div class="logo"><span class="dot">▲</span> Rijschool Vooruit</div>
   <a class="nav-cta" href="#proefles">Proefles €29</a>
 </div></nav>
 
-<header class="hero"><div class="wrap">
+<main id="main"><header class="hero"><div class="wrap">
   <div>
     <span class="pill">🎉 <b>78%</b> slaagt in één keer</span>
     <h1>Je rijbewijs halen zonder stress.</h1>
@@ -220,6 +230,7 @@ footer a{color:#9FB0C7}
   <div><b>Bereikbaar</b>ma–vr 08:00–20:00<br>za 09:00–15:00</div>
   <div><b>Overig</b>KvK 23456789<br>CBR-erkend · WRM-gecertificeerd</div>
 </div></footer>
+</main>
 
 </body>
 </html>
