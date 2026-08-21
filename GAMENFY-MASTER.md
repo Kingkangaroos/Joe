@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.85)
+# GAMENFY — Master Document (v10.86)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -400,6 +400,14 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.86 — Jarvis-push: stille storing gevonden die waarschijnlijk al weken liep.** Voortzetting van het verifiëren van eerdere fixes; deze keer de pushberichten, die na v10.41 nooit echt zijn nagelopen.
+  - **De pushtiming werkt** — `push_jitter_state` toont keurig ochtend 21-08 en avond 20-08, dus verzenden en de dubbel-verzendbeveiliging doen het.
+  - **Maar de AI-tekst faalde.** `push_debug` stond op een **503 van Gemini** ("high demand, usually temporary"). Er zat geen enkele retry in, dus Joey kreeg de generieke standaardtekst. En omdat de push tóch verstuurd werd én de dag als afgehandeld werd gemarkeerd, was er die dag geen tweede kans.
+  - **Ernstiger tweede probleem, gevonden door dieper te kijken in plaats van te stoppen bij de 503**: een echte testaanroep gaf `finishReason: MAX_TOKENS` met **765 denk-tokens tegen 20 antwoord-tokens** bij een budget van 800. Het model verbruikte vrijwel het hele budget aan intern nadenken en werd afgekapt midden in de JSON — `JSON.parse` faalde en de push viel stil terug op statische tekst. **Oorzaak ligt bij een eerdere eigen fix**: in v10.41 is `thinkingConfig:{thinkingBudget:0}` verwijderd omdat dat een 400 gaf, maar het budget bleef op 800 staan. Daarmee verdween de rem op het denken zonder dat de ruimte meegroeide. Dit verklaart waarom de Jarvis-toon in notificaties waarschijnlijk al veel langer zelden doorkwam.
+  - **Gefixt**: budget naar 3000 zodat denken én antwoord passen; `MAX_TOKENS` wordt nu expliciet herkend en gelogd zodat dit nooit meer stilzwijgend gebeurt; 3 pogingen met oplopende wachttijd bij tijdelijke fouten (niet bij een 400 — dat is een eigen fout en herhalen helpt dan niet); en bij aanhoudend falen binnen het tijdvenster wordt er **niets verstuurd en niets gemarkeerd**, zodat de cron het 10 minuten later opnieuw probeert. Liever een echte Jarvis-brief om 8:40 dan een generieke om 8:30.
+  - **Eerlijk over wat niet geverifieerd is**: de 3000-token-fix kon niet live bevestigd worden omdat Gemini tijdens het testen opnieuw 503 gaf. De diagnose staat wél vast (gemeten tokenaantallen en `finishReason`). Bij de eerstvolgende sessie even `push_debug` nakijken: bij succes staat daar nu `ok:true` mét de gebruikte denk- en antwoord-tokens.
+  Geen `?v=`-wijziging — dit is een edge function, geen frontend-bestand.
 
 - **v10.85 — dagdoelen worden automatisch afgevinkt zodra de Fitbit-data binnen is.** Joey's verzoek: "ik wil dat de daily goals zoals stappen en slaap automatisch worden afgevinkt wanneer die data binnengekomen is."
   - **Twee gewoontes gekoppeld**: `walking` bij 10.000 stappen (de eigen stappendoelstelling van de app) en `sleep` bij 7 uur. **Bewust 7 uur en niet de 8 uur van de grafiek**: de slaap-ladder omschrijft de gewoonte zelf als "7+ uur op de meeste nachten", en met 8 uur zou het bij Joey's werkelijke slaapcijfers (rond 6,5–7 uur) vrijwel nooit afgaan — een functie die nooit vuurt is geen functie.
