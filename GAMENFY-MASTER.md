@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.86)
+# GAMENFY — Master Document (v10.87)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -400,6 +400,14 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.87 — auto-afvink-bug gevonden en gefixt + 12 gemiste dagen alsnog toegekend.** Joey: "hrb je ook de daily missions gecheckt want ik zie dat niet en dus ook t level systeem werkt vgm niet."
+  - **Bevestigd in echte data**: `rpg_autohabit_v1` stond volledig leeg — de auto-afvink-functie (v10.85) had nog nooit iets toegepast, ook niet gisteren of vandaag terwijl je Fitbit alweer werkte.
+  - **Root cause gevonden**: de functie keek naar **vandaag**'s cumulatieve stappen/slaap — maar stappen lopen de hele dag op, dus op het moment dat je de app opent (meestal 's ochtends of ergens tussendoor) staat "vandaag" bijna nooit al op 10.000. Daardoor kon de functie een geslaagde dag praktisch nooit betrappen, zelfs als het doel later die dag wél gehaald werd. Bevestigd met een simulatie van precies dit scenario, en het verklaart 21 augustus perfect: 11.056 stappen die dag (ruim boven de 10k), maar nooit opgemerkt.
+  - **Gefixt**: kijkt nu naar **gisteren** — een dag die per definitie al afgerond en compleet is tegen de tijd dat de app opnieuw wordt geopend. Onderweg ook een eigen foutje gevonden en gecorrigeerd vóór het live ging: de code verwees naar een niet-bestaande functienaam (`checkHabitForDate`) voor het bijwerken van streak/lastChecked — hersteld naar de daadwerkelijk bestaande `checkHabitFor`.
+  - **12 gemiste dagen met terugwerkende kracht toegekend** (5–21 augustus, exact het bereik van de zonet teruggevulde Fitbit-data): 9 dagen stappen-doel gehaald (walking: XP 45→180, **level 1→2**), 3 dagen slaap-doel gehaald (sleep: XP 0→45). Dag-voor-dag doorgerekend in Python vóór het schrijven — inclusief correcte streak-opbouw (walking eindigt op streak 1 omdat 20 augustus niet kwalificeerde; sleep eindigt op streak 2 dankzij twee opeenvolgende goede nachten op 15-16 augustus). Alle 34 combinaties (17 dagen × 2 gewoontes) gemarkeerd als geëvalueerd, zodat er niets dubbel wordt toegepast.
+  - **Bewuste afbakening**: alleen 5–21 augustus met terugwerkende kracht verwerkt — dat is het bereik dat rechtstreeks met de zonet teruggevulde Fitbit-data te maken heeft. Oudere kwalificerende dagen (van vóór deze functie zelfs bestond, medio juli) zijn bewust niet aangepast — dat zou een veel grotere, ongevraagde herschrijving van je hele skill-geschiedenis zijn geweest.
+  `?v=` naar 10.87. Gevalideerd: 14-bestands JS/CSS/JSON-LD-controle, en de retroactieve berekening apart in Python gesimuleerd en tegen de live data geverifieerd vóór het schrijven.
 
 - **v10.86 — Jarvis-push: stille storing gevonden die waarschijnlijk al weken liep.** Voortzetting van het verifiëren van eerdere fixes; deze keer de pushberichten, die na v10.41 nooit echt zijn nagelopen.
   - **De pushtiming werkt** — `push_jitter_state` toont keurig ochtend 21-08 en avond 20-08, dus verzenden en de dubbel-verzendbeveiliging doen het.

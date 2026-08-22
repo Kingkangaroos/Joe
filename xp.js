@@ -1079,10 +1079,19 @@
   window.autoCheckHealthHabits = async function (onChange) {
     if (window.__autoHabitRan) return 0;      // once per page load
     window.__autoHabitRan = true;
-    const today = todayStr();
+    // v10.87 FIX: this checked TODAY's cumulative steps/sleep, but steps
+    // accumulate all day — at typical app-open times (morning, or anytime
+    // before bed) today's count is almost never at 10k yet, so this could
+    // basically never fire even on days the goal WAS eventually met.
+    // Joey: "ik zie dat niet en dus ook t level systeem werkt vgm niet" —
+    // confirmed against real data: rpg_autohabit_v1 was completely empty
+    // despite several qualifying days having passed. Fixed to check
+    // YESTERDAY, whose numbers are final by the time today starts.
+    const yd = new Date(Date.now()-86400000);
+    const target = yd.getFullYear()+'-'+String(yd.getMonth()+1).padStart(2,'0')+'-'+String(yd.getDate()).padStart(2,'0');
     const applied = autoLoad();
-    // nothing left to do today? don't even hit the network
-    const pending = Object.keys(AUTO_HABITS).filter(function (k) { return !applied[k + ':' + today]; });
+    // nothing left to do for yesterday? don't even hit the network
+    const pending = Object.keys(AUTO_HABITS).filter(function (k) { return !applied[k + ':' + target]; });
     if (!pending.length) return 0;
     let day = null;
     try {
@@ -1090,29 +1099,29 @@
         { headers: { apikey: AH_SB_KEY, Authorization: 'Bearer ' + AH_SB_KEY } });
       if (!r.ok) return 0;
       const rows = await r.json();
-      day = rows.length && rows[0].data ? rows[0].data[today] : null;
+      day = rows.length && rows[0].data ? rows[0].data[target] : null;
     } catch (e) { return 0; }
-    if (!day) return 0;                       // no data for today yet — fine, try again next load
+    if (!day) return 0;                       // no data for yesterday yet — try again next load
     const defaults = window.RPG_DEFAULT_SKILLS || {};
     let done = 0;
     for (const key of pending) {
       const cfg = AUTO_HABITS[key];
       const val = Number(day[cfg.field]);
+      applied[key + ':' + target] = true;     // mark evaluated either way — goal-not-met is a real answer too, not "try again"
       if (!val || val < cfg.min) continue;
       const def = defaults[key] || {};
       // respect a habit that's already ticked (manually or otherwise)
       let log = {}; try { log = JSON.parse(localStorage.getItem('rpg_habitlog_v1')) || {}; } catch (e) {}
-      const already = !!(log[key] && log[key][today]);
-      applied[key + ':' + today] = true;      // mark regardless, so we never re-apply
+      const already = !!(log[key] && log[key][target]);
       if (already) continue;
-      log[key] = log[key] || {}; log[key][today] = true;
+      log[key] = log[key] || {}; log[key][target] = true;
       try { localStorage.setItem('rpg_habitlog_v1', JSON.stringify(log)); } catch (e) {}
-      try { window.checkHabit(key, def.label, def.icon); } catch (e) {}
+      try { window.checkHabitFor(key, target, def.label, def.icon); } catch (e) {}
       try { if (window.recomputeHabitFromLog) window.recomputeHabitFromLog(key); } catch (e) {}
       try { if (window.addXP) window.addXP(key, 15, 'Auto: ' + cfg.label + ' gehaald'); } catch (e) {}
       try {
         const st = JSON.parse(localStorage.getItem('rpg_streak_v1')) || { days: {} };
-        st.days = st.days || {}; st.days[today] = true;
+        st.days = st.days || {}; st.days[target] = true;
         localStorage.setItem('rpg_streak_v1', JSON.stringify(st));
       } catch (e) {}
       done++;
