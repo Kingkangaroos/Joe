@@ -1079,52 +1079,68 @@
   window.autoCheckHealthHabits = async function (onChange) {
     if (window.__autoHabitRan) return 0;      // once per page load
     window.__autoHabitRan = true;
-    // v10.87 FIX: this checked TODAY's cumulative steps/sleep, but steps
-    // accumulate all day — at typical app-open times (morning, or anytime
-    // before bed) today's count is almost never at 10k yet, so this could
-    // basically never fire even on days the goal WAS eventually met.
-    // Joey: "ik zie dat niet en dus ook t level systeem werkt vgm niet" —
-    // confirmed against real data: rpg_autohabit_v1 was completely empty
-    // despite several qualifying days having passed. Fixed to check
-    // YESTERDAY, whose numbers are final by the time today starts.
+    // v10.88 FIX: v10.87 fixed the "checks today, but today is still
+    // accumulating" bug by switching to yesterday — but that introduced a
+    // new problem Joey immediately hit: "ik heb net 10k stappen gezet, het
+    // staat in de app maar mn daily mission is niet gecheckt." Checking only
+    // yesterday means today's win is never caught until tomorrow — no
+    // same-day satisfaction at all.
+    // Now checks BOTH:
+    //  - TODAY: re-evaluated on every load. Only marked "applied" (locked)
+    //    once the goal is actually met, so an early check that misses the
+    //    goal doesn't block a later same-day check from catching it once
+    //    he's crossed the threshold.
+    //  - YESTERDAY: evaluated once and marked applied regardless (its number
+    //    is final) — a safety net for days he doesn't reopen the app again
+    //    after crossing the threshold before midnight.
+    const today = todayStr();
     const yd = new Date(Date.now()-86400000);
-    const target = yd.getFullYear()+'-'+String(yd.getMonth()+1).padStart(2,'0')+'-'+String(yd.getDate()).padStart(2,'0');
+    const yesterday = yd.getFullYear()+'-'+String(yd.getMonth()+1).padStart(2,'0')+'-'+String(yd.getDate()).padStart(2,'0');
     const applied = autoLoad();
-    // nothing left to do for yesterday? don't even hit the network
-    const pending = Object.keys(AUTO_HABITS).filter(function (k) { return !applied[k + ':' + target]; });
-    if (!pending.length) return 0;
-    let day = null;
+    const targets = [today, yesterday].filter(function(t){
+      return Object.keys(AUTO_HABITS).some(function(k){ return !applied[k + ':' + t]; });
+    });
+    if (!targets.length) return 0;             // both days already fully settled
+    let byDate = null;
     try {
       const r = await fetch(AH_SB_URL + '/rest/v1/app_state?key=eq.health_fitbit&select=data',
         { headers: { apikey: AH_SB_KEY, Authorization: 'Bearer ' + AH_SB_KEY } });
       if (!r.ok) return 0;
       const rows = await r.json();
-      day = rows.length && rows[0].data ? rows[0].data[target] : null;
+      byDate = rows.length ? rows[0].data : null;
     } catch (e) { return 0; }
-    if (!day) return 0;                       // no data for yesterday yet — try again next load
+    if (!byDate) return 0;
     const defaults = window.RPG_DEFAULT_SKILLS || {};
     let done = 0;
-    for (const key of pending) {
-      const cfg = AUTO_HABITS[key];
-      const val = Number(day[cfg.field]);
-      applied[key + ':' + target] = true;     // mark evaluated either way — goal-not-met is a real answer too, not "try again"
-      if (!val || val < cfg.min) continue;
-      const def = defaults[key] || {};
-      // respect a habit that's already ticked (manually or otherwise)
-      let log = {}; try { log = JSON.parse(localStorage.getItem('rpg_habitlog_v1')) || {}; } catch (e) {}
-      const already = !!(log[key] && log[key][target]);
-      if (already) continue;
-      log[key] = log[key] || {}; log[key][target] = true;
-      try { localStorage.setItem('rpg_habitlog_v1', JSON.stringify(log)); } catch (e) {}
-      try { window.checkHabitFor(key, target, def.label, def.icon); } catch (e) {}
-      try { if (window.recomputeHabitFromLog) window.recomputeHabitFromLog(key); } catch (e) {}
-      try { if (window.addXP) window.addXP(key, 15, 'Auto: ' + cfg.label + ' gehaald'); } catch (e) {}
-      try {
-        const st = JSON.parse(localStorage.getItem('rpg_streak_v1')) || { days: {} };
-        st.days = st.days || {}; st.days[target] = true;
-        localStorage.setItem('rpg_streak_v1', JSON.stringify(st));
-      } catch (e) {}
-      done++;
+    for (const target of targets) {
+      const day = byDate[target];
+      const isToday = target === today;
+      for (const key of Object.keys(AUTO_HABITS)) {
+        if (applied[key + ':' + target]) continue;
+        const cfg = AUTO_HABITS[key];
+        const val = day ? Number(day[cfg.field]) : NaN;
+        const met = val && val >= cfg.min;
+        // today + not met yet: leave un-applied so a later load this same
+        // day can still catch it. yesterday (or today once met): settle it.
+        if (!met && isToday) continue;
+        applied[key + ':' + target] = true;
+        if (!met) continue; // yesterday, goal genuinely not met — settled, no XP
+        const def = defaults[key] || {};
+        let log = {}; try { log = JSON.parse(localStorage.getItem('rpg_habitlog_v1')) || {}; } catch (e) {}
+        const already = !!(log[key] && log[key][target]);
+        if (already) continue; // don't fight a manual check
+        log[key] = log[key] || {}; log[key][target] = true;
+        try { localStorage.setItem('rpg_habitlog_v1', JSON.stringify(log)); } catch (e) {}
+        try { window.checkHabitFor(key, target, def.label, def.icon); } catch (e) {}
+        try { if (window.recomputeHabitFromLog) window.recomputeHabitFromLog(key); } catch (e) {}
+        try { if (window.addXP) window.addXP(key, 15, 'Auto: ' + cfg.label + ' gehaald'); } catch (e) {}
+        try {
+          const st = JSON.parse(localStorage.getItem('rpg_streak_v1')) || { days: {} };
+          st.days = st.days || {}; st.days[target] = true;
+          localStorage.setItem('rpg_streak_v1', JSON.stringify(st));
+        } catch (e) {}
+        done++;
+      }
     }
     autoSave(applied);
     if (done && typeof onChange === 'function') { try { onChange(done); } catch (e) {} }

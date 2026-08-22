@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.87)
+# GAMENFY — Master Document (v10.88)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -400,6 +400,12 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.88 — auto-afvinken nu ook binnen dezelfde dag, niet pas de dag erna.** Joey, direct nadat v10.87 live ging: "ik heb net 10k stappen gezet, het staat in de app maar mn daily mission is niet gecheckt." Terecht — bevestigd met live data (13.831 stappen vandaag, ruim over de grens).
+  - **De vorige fix (v10.87) loste één probleem op maar introduceerde een nieuw**: door alleen nog "gisteren" te checken (om het "vandaag is nog niet klaar"-probleem te omzeilen), kon een resultaat van vandáág nooit meer dezelfde dag gezien worden — pas morgen, als vandaag "gisteren" wordt. Geen directe voldoening meer.
+  - **Nu allebei tegelijk**: **vandaag** wordt bij elke laadbeurt herbekeken en blijft "open" (niet vergrendeld) zolang het doel nog niet gehaald is — dus een vroege check die niks vindt, blokkeert een latere check die dag niet. Zodra het doel wél gehaald is, wordt het meteen afgevinkt. **Gisteren** blijft als vangnet: als je de app na het halen van je doel toevallig niet meer opent die dag, vangt de volgende ochtend het alsnog op.
+  - **Geverifieerd met 6 scenario's** in een simulatie: 1) exact Joey's live situatie (13.831 stappen, eerste laadbeurt) → meteen afgevinkt. 2) herladen dezelfde dag → geen dubbele toekenning. 3) vroege ochtend-check bij 340 stappen → blijft bewust open, niet vergrendeld. 4) latere laadbeurt diezelfde dag bij 13.831 → alsnog gevangen. 5) nooit meer geopend die dag → vangnet de volgende ochtend pakt het op. 6) al handmatig afgevinkt → auto-check vecht er niet tegenin, geen dubbele XP.
+  `?v=` naar 10.88. Gevalideerd: 14-bestands JS/CSS/JSON-LD-controle + de 6 scenario's apart gesimuleerd.
 
 - **v10.87 addendum — xpLog-gat gedicht.** Bij het narekenen van de streak-logica (checkin.js's `xpLogActiveDays()`) bleek dat de retroactieve XP wél in de skill-totalen stond, maar nergens in `char.xpLog` — dat zou een gat hebben gelaten in elke functie die het activiteiten-logboek per skill toont (bijv. Goals, als walking/sleep ooit aan een doel gekoppeld worden). 12 ontbrekende regels alsnog toegevoegd, duidelijk gemarkeerd als "Auto (retroactief)" zodat het transparant blijft. Logboek: 141→153 van de 200 max.
 
