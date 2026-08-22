@@ -401,6 +401,8 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 
 ## 8. Version history
 
+- **v10.87 addendum — xpLog-gat gedicht.** Bij het narekenen van de streak-logica (checkin.js's `xpLogActiveDays()`) bleek dat de retroactieve XP wél in de skill-totalen stond, maar nergens in `char.xpLog` — dat zou een gat hebben gelaten in elke functie die het activiteiten-logboek per skill toont (bijv. Goals, als walking/sleep ooit aan een doel gekoppeld worden). 12 ontbrekende regels alsnog toegevoegd, duidelijk gemarkeerd als "Auto (retroactief)" zodat het transparant blijft. Logboek: 141→153 van de 200 max.
+
 - **v10.87 — auto-afvink-bug gevonden en gefixt + 12 gemiste dagen alsnog toegekend.** Joey: "hrb je ook de daily missions gecheckt want ik zie dat niet en dus ook t level systeem werkt vgm niet."
   - **Bevestigd in echte data**: `rpg_autohabit_v1` stond volledig leeg — de auto-afvink-functie (v10.85) had nog nooit iets toegepast, ook niet gisteren of vandaag terwijl je Fitbit alweer werkte.
   - **Root cause gevonden**: de functie keek naar **vandaag**'s cumulatieve stappen/slaap — maar stappen lopen de hele dag op, dus op het moment dat je de app opent (meestal 's ochtends of ergens tussendoor) staat "vandaag" bijna nooit al op 10.000. Daardoor kon de functie een geslaagde dag praktisch nooit betrappen, zelfs als het doel later die dag wél gehaald werd. Bevestigd met een simulatie van precies dit scenario, en het verklaart 21 augustus perfect: 11.056 stappen die dag (ruim boven de 10k), maar nooit opgemerkt.
