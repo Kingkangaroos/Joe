@@ -10,10 +10,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.88" defer></script>
-<script src="topbar.js?v=10.88" defer></script>
-<script src="xp.js?v=10.88" defer></script>
-<script src="ladders.js?v=10.88" defer></script>
+<script src="sync.js?v=10.89" defer></script>
+<script src="topbar.js?v=10.89" defer></script>
+<script src="xp.js?v=10.89" defer></script>
+<script src="ladders.js?v=10.89" defer></script>
 <style>
 :root{
   --bg:#F4F3EF; --card:#FFFFFF; --ink:#15140F; --muted:#6F6C63; --faint:#A6A399;
@@ -277,7 +277,22 @@ body{padding-bottom:90px}
   var BAD = { no_porn:'devil', weed_control:'weed', screen_time:'screen' };
   // floors at 0.05 for bad habits so a fully beaten vice STAYS an angel forever
   // instead of reverting to a generic character once level passes 12
-  function badness(key, lv){ return BAD[key] ? Math.max(0.05, Math.min(1, 1 - lv/12)) : 0; }
+  // v10.89 CORRECTION: this was written assuming all three bad-habit skills
+  // are decay-tracked habits with a 0-10 score. Checked against the actual
+  // data: only screen_time is isHabit:true. no_porn and weed_control are
+  // just PRIVATE skills — regular ever-growing XP/level, no score, no decay.
+  // Using score/10 for those would have been wrong (dispLv there is an
+  // xpToLevel result, not 0-10) — badness needs to know which kind of
+  // number it was handed. screen_time genuinely gets more current/reactive
+  // behaviour (recent relapses show); no_porn/weed_control keep the original
+  // xpToLevel-based threshold, since there's no per-day signal to react to
+  // for those two without building real decay tracking for them separately.
+  const BAD_IS_HABIT = { screen_time: true };
+  function badness(key, dispLv){
+    if (!BAD[key]) return 0;
+    const divisor = BAD_IS_HABIT[key] ? 10 : 12;
+    return Math.max(0.05, Math.min(1, 1 - (dispLv||0)/divisor));
+  }
 
   function face(kind, ey, ex, key, b){
     var E='#2A2A26', W='#fff', o='';
@@ -568,15 +583,24 @@ body{padding-bottom:90px}
     Object.keys(defaults).forEach(function(k){
       var d=defaults[k]; if(!d||d.active===false) return;
       var cat=d.parentSkill||'other';
-      var lv=window.xpToLevel?window.xpToLevel((skills[k]||{}).xp||0):1;
+      // v10.89: dispLv is what gets shown as text (0-10 for habits, matching
+      // the habit-tile Joey already trusts, instead of the never-falling XP
+      // level). visLv drives the animation/tint formulas below, which were
+      // all written assuming a 1-100 range — scaling the habit score onto
+      // that same range keeps a maxed habit (10/10) looking just as alive
+      // as a maxed regular skill, instead of reading as barely-there.
+      var dispLv = window.getSkillLevel ? window.getSkillLevel(k, (skills[k]||{}).xp||0)
+                   : (window.xpToLevel?window.xpToLevel((skills[k]||{}).xp||0):1);
+      var visLv = d.isHabit ? dispLv*10 : dispLv;
+      var lv = visLv; // existing formulas below all read "lv" for visual intensity
       var t=TEMPER[k]||[.7,.4,.3];
       var el=document.createElement('div');
       el.className='ch idle'; el.dataset.cat=cat; el.dataset.key=k;
       el.innerHTML=charHtml(colorFor[cat]||'#8A8578', lv, k, cat)
         +'<div class="nm">'+(d.private?'\u2022\u2022\u2022':(d.label||k))+'</div>'
-        +'<div class="lv">lvl '+lv+'</div>';
+        +'<div class="lv">lvl '+dispLv+'</div>';
       el.style.setProperty('--d',(2.9-Math.min(1,lv/80)*1.4).toFixed(2)+'s');
-      var bd = badness(k, lv);
+      var bd = badness(k, dispLv);
       var a={el:el,key:k,def:d,lv:lv,cat:cat,priv:!!d.private,bad:bd,
              pace:t[0]*(bd>0.5?1.9:(bd>0?0.35:1)),
              rest:bd>0.5?0.03:(bd>0?0.8:t[1]),

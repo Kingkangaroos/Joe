@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.88)
+# GAMENFY — Master Document (v10.89)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -400,6 +400,16 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.89 — één level per gewoonte, overal.** De structurele fix waar Joey twee keer om vroeg en de mechaniek voor bevestigde (1 gratiedag, daarna zakt de score).
+  - **Nieuwe gedeelde bron**: `window.getSkillLevel(key, xp)` in xp.js — geeft voor gewoontes de 0-10 consistentie-score (decay-bewust), voor gewone skills gewoon `xpToLevel(xp)`. Elke plek in de app die een level toont, roept nu deze ene functie aan in plaats van zelf te kiezen.
+  - **Doorgevoerd op alle plekken waar het echt een probleem was**: Lab-poppetjes (met een aparte, geschaalde "visuele intensiteit" zodat een gemaxte gewoonte (10/10) er net zo levendig uitziet als een gemaxte skill (100/100) — anders zou-ie er altijd bijna dood bij hangen), Your Skills-rij, de privé-questkaart, Time Sketcher, Quick Log, en de grote skill-detailpagina (inclusief het bewust overslaan van de oude 1-100-questladder voor gewoontes, die anders altijd "op slot" zou tonen).
+  - **Bewust met rust gelaten**: alle plekken die al expliciet `!isHabit` filteren (de hoofdgrid, de anatomische body-scan, Body-tab) — die tonen sowieso nooit een gewoonte. En de level-up-toast, omdat die vóór/na binnen dezelfde functie-aanroep vergelijkt en door de gewoonte-score al eerder te hebben bijgewerkt de felicitatie juist zou kunnen missen.
+  - **Eén echte rekenfout gevangen tijdens het bouwen**: "Path to Superiority" middelt levels over een vaste skill-set per fase — en één fase bevat toevallig `meditation` (wél een gewoonte) naast `journaling`/`focus` (geen gewoontes). Zonder schaling zou een 0-10-score dat gemiddelde flink omlaag hebben getrokken. Gefixt door de gewoonte-score ×10 te schalen vóór het middelen, zodat de fase-voortgang niet kunstmatig kelderde.
+  - **Belangrijke zelf-correctie tijdens het testen**: de duivel/engel-badness voor slechte gewoontes ging er eerst ten onrechte van uit dat `no_porn` en `weed_control` beide gewoontes zijn met een 0-10-score. Bleek niet zo — die twee zijn alleen **privé**, met het gewone, nooit-dalende XP-level; alleen `screen_time` is daadwerkelijk een gewoonte. Gecorrigeerd: `screen_time` reageert nu echt op recent gedrag (relapse laat de duivel binnen dagen terugkomen), `no_porn`/`weed_control` gebruiken weer de oorspronkelijke, drempel-gebaseerde berekening — eerlijk gezegd blijft daar de "eenmaal genoeg opgebouwd, voor altijd engel"-beperking bestaan, want die twee hebben simpelweg geen dag-voor-dag vervalsysteem. Dat zou een aparte, grotere uitbreiding zijn.
+  - **"Masters"-vermelding**: kon geen letterlijke tekst "Masters" terugvinden in walking's tier-ladder (die begint met "First Week of Steps", "5k Most Days", "7-9k Zone"...). Blijft open — wacht op een screenshot van Joey om te bevestigen of dit hetzelfde probleem was of iets aparts.
+  - **Geverifieerd met een volledige integratietest** tegen realistische data (sleep/walking als gewoontes, tennis/piano/no_porn als gewone skills): elke plek komt nu overeen, gewone skills volledig onaangetast.
+  `?v=` naar 10.89. Gevalideerd: 14-bestands JS/CSS/JSON-LD-controle.
 
 - **v10.88 — auto-afvinken nu ook binnen dezelfde dag, niet pas de dag erna.** Joey, direct nadat v10.87 live ging: "ik heb net 10k stappen gezet, het staat in de app maar mn daily mission is niet gecheckt." Terecht — bevestigd met live data (13.831 stappen vandaag, ruim over de grens).
   - **De vorige fix (v10.87) loste één probleem op maar introduceerde een nieuw**: door alleen nog "gisteren" te checken (om het "vandaag is nog niet klaar"-probleem te omzeilen), kon een resultaat van vandáág nooit meer dezelfde dag gezien worden — pas morgen, als vandaag "gisteren" wordt. Geen directe voldoening meer.

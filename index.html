@@ -10,14 +10,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.88" defer></script>
-<script src="topbar.js?v=10.88" defer></script>
-<script src="xp.js?v=10.88" defer></script>
-<script src="quests.js?v=10.88" defer></script>
-<script src="ladders.js?v=10.88" defer></script>
-<script src="ventures.js?v=10.88" defer></script>
-<script src="checkin.js?v=10.88" defer></script>
-<script src="push.js?v=10.88" defer></script>
+<script src="sync.js?v=10.89" defer></script>
+<script src="topbar.js?v=10.89" defer></script>
+<script src="xp.js?v=10.89" defer></script>
+<script src="quests.js?v=10.89" defer></script>
+<script src="ladders.js?v=10.89" defer></script>
+<script src="ventures.js?v=10.89" defer></script>
+<script src="checkin.js?v=10.89" defer></script>
+<script src="push.js?v=10.89" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1465,7 +1465,7 @@ function renderMissions() {
       </div>`;
     }
     const sxp = ((window.getCharacter ? window.getCharacter() : {skills:{}}).skills[q.skill]||{}).xp || 0;
-    const slvl = window.xpToLevel ? window.xpToLevel(sxp) : 1;
+    const slvl = window.getSkillLevel ? window.getSkillLevel(q.skill, sxp) : (window.xpToLevel ? window.xpToLevel(sxp) : 1);
     const pdef = defaults[q.skill] || {};
     const pwhy = pdef.why ? (pdef.why.length > 110 ? pdef.why.slice(0, 110).replace(/\s+\S*$/,'') + '…' : pdef.why) : '';
     return `<div class="mq-card${isDone?' done':''}" onclick="openMissionDetail('${q.skill}',1,'${q.id}')">
@@ -1729,7 +1729,7 @@ window.openMissionDetail = function(key, isPrivate, privateId) {
   const st = missionStats(key, !!isPrivate, privateId);
   const habits = window.getHabits ? window.getHabits() : {};
   const lvlLine = isPrivate
-    ? 'LV ' + (window.xpToLevel ? window.xpToLevel(((window.getCharacter()||{skills:{}}).skills[key]||{}).xp||0) : 1) + ' · abstinence quest'
+    ? 'LV ' + (window.getSkillLevel ? window.getSkillLevel(key, ((window.getCharacter()||{skills:{}}).skills[key]||{}).xp||0) : 1) + ' · abstinence quest'
     : 'Habit score ' + ((habits[key]||{}).score||0) + '/10 · +15 XP per check';
   const benefits = Array.isArray(def.benefits) ? def.benefits.slice().sort((a,b)=>a.d-b.d) : [];
   const bHtml = benefits.map(b => `
@@ -1940,14 +1940,21 @@ function renderFocusGrid() {
     const def = defaults[key] || {};
     const s = skills[key] || {};
     const xp = s.xp || 0;
-    const rawLevel = window.xpToLevel(xp);
-    const tl = window.tierLockInfo ? window.tierLockInfo(key, rawLevel) : { level: rawLevel, locked: false };
+    const isHabit = !!def.isHabit;
+    // v10.89: for a habit skill, "level" is the 0-10 consistency score
+    // (getSkillLevel), never the ever-growing XP-level — confirmed with
+    // Joey across all 9 habits, this was the source of the "Level 3 vs
+    // Level 1 for the same skill" confusion.
+    const rawLevel = window.getSkillLevel ? window.getSkillLevel(key, xp) : window.xpToLevel(xp);
+    const tl = (!isHabit && window.tierLockInfo) ? window.tierLockInfo(key, rawLevel) : { level: rawLevel, locked: false };
     const level = tl.level;
     const nextXp = window.xpForLevel ? window.xpForLevel(level+1) : null;
     const thisXp = window.xpForLevel ? window.xpForLevel(level) : 0;
-    const barPct = nextXp && nextXp !== Infinity
-      ? Math.max(0, Math.min(100, Math.round(((xp - thisXp) / (nextXp - thisXp)) * 100)))
-      : 100;
+    const barPct = isHabit
+      ? Math.max(0, Math.min(100, level * 10))  // score is already 0-10 — direct percentage, XP thresholds don't apply here
+      : (nextXp && nextXp !== Infinity
+        ? Math.max(0, Math.min(100, Math.round(((xp - thisXp) / (nextXp - thisXp)) * 100)))
+        : 100);
     // v10.65: Joey asked repeatedly for this row to be presented EXACTLY like
     // the Core Tracker below it (the "Finger Whistling · 7 · Lvl 15 — First
     // Sound" format). Now reuses the same .core-skill markup/classes and the
@@ -1955,7 +1962,9 @@ function renderFocusGrid() {
     // identical by construction and can't drift apart again. Only the
     // ordering differs: most recently practised first.
     const nextMs = getNextMilestone(def, level);
-    const nextText = nextMs ? 'Lvl ' + nextMs + ' — ' + def.milestones[nextMs] : 'Keep going';
+    const nextText = isHabit
+      ? (level >= 10 ? 'Maxed — keep it up' : (level > 0 ? level + '/10 — stay consistent' : 'Check it today to start'))
+      : (nextMs ? 'Lvl ' + nextMs + ' — ' + def.milestones[nextMs] : 'Keep going');
     return `<div class="core-skill" onclick="location.href='character.html#skill=${key}'">
       <div class="core-skill-icon">${def.icon||'⭐'}</div>
       <div class="core-skill-name">${def.label || key}</div>
@@ -2680,8 +2689,9 @@ function hourLabel(h) { return (h===12) ? '12 PM' : h>12 ? (h-12)+' PM' : h+' AM
 function tsEffLevel(skillKey) {
   const char = window.getCharacter ? window.getCharacter() : { skills:{} };
   const xp = ((char.skills||{})[skillKey]||{}).xp || 0;
-  const raw = window.xpToLevel ? window.xpToLevel(xp) : 1;
-  const tl = window.tierLockInfo ? window.tierLockInfo(skillKey, raw) : { level: raw, locked: false };
+  const raw = window.getSkillLevel ? window.getSkillLevel(skillKey, xp) : (window.xpToLevel ? window.xpToLevel(xp) : 1);
+  const isHabit = !!((window.RPG_DEFAULT_SKILLS||{})[skillKey]||{}).isHabit;
+  const tl = (!isHabit && window.tierLockInfo) ? window.tierLockInfo(skillKey, raw) : { level: raw, locked: false };
   return tl;
 }
 

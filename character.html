@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.88" defer></script>
-<script src="topbar.js?v=10.88" defer></script>
-<script src="xp.js?v=10.88" defer></script>
-<script src="quests.js?v=10.88" defer></script>
-<script src="ladders.js?v=10.88" defer></script>
-<script src="ventures.js?v=10.88" defer></script>
+<script src="sync.js?v=10.89" defer></script>
+<script src="topbar.js?v=10.89" defer></script>
+<script src="xp.js?v=10.89" defer></script>
+<script src="quests.js?v=10.89" defer></script>
+<script src="ladders.js?v=10.89" defer></script>
+<script src="ventures.js?v=10.89" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1645,7 +1645,7 @@ function openQuickLog(skillKey, skillData){
   const char   = loadChar();
   const skill  = char.skills[skillKey]||skillData;
   const xp     = skill.xp||0;
-  const level  = xpToLevel(xp);
+  const level  = window.getSkillLevel ? window.getSkillLevel(skillKey, xp) : xpToLevel(xp);
   const meta   = PARENT_META[skill.parentSkill||skillData.parentSkill]||{color:'#6BE3A4'};
   const opts   = skill.quickLog||skillData.quickLog||[];
 
@@ -2199,18 +2199,21 @@ function openSkillDetail(skillKey){
   const char  =loadChar();
   const saved =(char.skills||{})[skillKey]||{};
   const xp    =saved.xp||0;
-  const rawLevel=xpToLevel(xp);
-  const tl    =window.tierLockInfo?window.tierLockInfo(skillKey,rawLevel):{level:rawLevel,locked:false};
+  const isHabit=!!def.isHabit;
+  // v10.89: for a habit, "level" is the 0-10 consistency score (getSkillLevel),
+  // never the ever-growing XP-level — confirmed with Joey across all 9 habits.
+  const rawLevel=window.getSkillLevel ? window.getSkillLevel(skillKey,xp) : xpToLevel(xp);
+  const tl    =(!isHabit && window.tierLockInfo)?window.tierLockInfo(skillKey,rawLevel):{level:rawLevel,locked:false};
   const level =tl.level;
   const meta  =PARENT_META[def.parentSkill||'body']||{color:'#6BE3A4'};
   const color =meta.color;
   const ms    =def.milestones||{};
   const conf  =getConfirmedMilestones();
 
-  const isMax   =level>=MAX_LEVEL;
-  const curBase =xpForLevel(level);
-  const nextBase=xpForLevel(level+1);
-  const pct     =isMax?100:Math.min(100,Math.round((xp-curBase)/(nextBase-curBase)*100));
+  const isMax   =isHabit ? level>=10 : level>=MAX_LEVEL;
+  const curBase =isHabit ? 0 : xpForLevel(level);
+  const nextBase=isHabit ? 10 : xpForLevel(level+1);
+  const pct     =isHabit ? Math.max(0,Math.min(100,level*10)) : (isMax?100:Math.min(100,Math.round((xp-curBase)/(nextBase-curBase)*100)));
 
   const msLevels =Object.keys(ms).map(Number).sort((a,b)=>a-b);
   const nextMs   =msLevels.find(l=>l>level);
@@ -2239,9 +2242,11 @@ function openSkillDetail(skillKey){
       <div><b>Tier locked at Level ${tl.gate}.</b> Complete the quest "${tl.quest.title}" to advance. Your XP keeps counting — nothing is lost.</div>
     </div>`:'';
 
-  // Next concrete step — from the quest ladder (the next quest above current level)
+  // Next concrete step — from the quest ladder (the next quest above current
+  // level). v10.89: skipped for habits — RPG_QUESTS entries assume a 1-100
+  // range, so against a 0-10 habit level they'd show as permanently locked.
   let nextStepHtml='';
-  const ladder=(window.RPG_QUESTS&&window.RPG_QUESTS[skillKey])?window.RPG_QUESTS[skillKey].slice().sort((a,b)=>a.lvl-b.lvl):[];
+  const ladder=(!isHabit && window.RPG_QUESTS&&window.RPG_QUESTS[skillKey])?window.RPG_QUESTS[skillKey].slice().sort((a,b)=>a.lvl-b.lvl):[];
   if(ladder.length){
     const done=window.getQuestsDone?window.getQuestsDone():{};
     const nextQuest=ladder.find(q=>q.lvl>level) || ladder.find(q=>!done[skillKey+':'+q.lvl]);
@@ -3270,6 +3275,11 @@ function renderPathToSuperiority(){
   container.innerHTML=PATH_PHASES.map((phase,i)=>{
     const levels=phase.skills.map(k=>{
       const xp=(skills[k]||defaults[k]||{}).xp||0;
+      // v10.89: this average mixes 'meditation' (a habit, 0-10 score) with
+      // regular 1-100 skills — scale the habit's score onto the same range
+      // so it doesn't drag the phase average down artificially.
+      const isHabit=!!(defaults[k]||{}).isHabit;
+      if(isHabit) return (window.getSkillLevel?window.getSkillLevel(k,xp):0)*10;
       return xpToLevel(xp);
     });
     const avg=levels.length?Math.round(levels.reduce((a,b)=>a+b,0)/levels.length):0;
@@ -4724,7 +4734,7 @@ window.openBodySkill=function(key){
   const defaults=window.RPG_DEFAULT_SKILLS||{};
   const def=defaults[key]||{};
   const char=window.getCharacter?window.getCharacter():{skills:{}};
-  const s=(char.skills||{})[key]||{}; const level=window.xpToLevel?window.xpToLevel(s.xp||0):0;
+  const s=(char.skills||{})[key]||{}; const level=window.getSkillLevel?window.getSkillLevel(key,s.xp||0):(window.xpToLevel?window.xpToLevel(s.xp||0):0);
   const overlay=document.createElement('div');
   overlay.setAttribute('data-overlay','1');
   overlay.style.cssText='position:fixed;inset:0;background:rgba(20,19,15,0.45);z-index:9000;display:flex;align-items:flex-end;justify-content:center';

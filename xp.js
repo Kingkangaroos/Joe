@@ -1307,6 +1307,24 @@
   window.xpToLevel          = xpToLevel;
   window.xpForLevel         = xpForLevel;
 
+  // ── v10.89: unified habit level ──────────────────────────────────────
+  // Joey, confirmed twice: for a daily HABIT skill, "level" should mean the
+  // 0-10 consistency score (up on check, down after 1 grace day of missing)
+  // — not the ever-growing XP total. Before this, the habit-tile already
+  // showed score as "Level X/10" while Your Skills, Core Tracker, the Lab
+  // characters and the tier system all showed the SEPARATE, never-falling
+  // XP-level for the exact same skill (e.g. Sleep: "Level 3" in one place,
+  // "Level 1" in another). Confirmed across all 9 habits, not a one-off.
+  // This is the single source of truth every display should call instead of
+  // xpToLevel(xp) directly, so the two numbers can't diverge again.
+  window.getSkillLevel = function (key, xp) {
+    const def = (window.RPG_DEFAULT_SKILLS || {})[key];
+    if (def && def.isHabit) {
+      try { return (window.getHabits()[key] || {}).score || 0; } catch (e) { return 0; }
+    }
+    return xpToLevel(xp);
+  };
+
   // ── Tier-lock (v7.4) ────────────────────────────────────────
   // XP always keeps accruing; only the effective level is capped.
   // To pass a gate (10/25/50/75) the gate quest — the highest quest
