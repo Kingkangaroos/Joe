@@ -220,6 +220,17 @@
     })();
     window.addEventListener('beforeunload', flushOnUnload);
     window.addEventListener('pagehide', flushOnUnload);
+    // v10.90: Joey checked a habit, then it was gone from the cloud — the
+    // data confirmed it: nothing for the dates he'd just checked reached
+    // Supabase at all. beforeunload/pagehide were already wired up, but on
+    // an installed iOS PWA specifically (not a regular Safari tab), those
+    // two events have documented cases where they don't fire reliably when
+    // the app is backgrounded or swiped away — which is exactly how someone
+    // closes an app right after checking something on a phone.
+    // visibilitychange (document.hidden becoming true) is the more robust
+    // signal recommended for standalone PWAs precisely for this scenario —
+    // added as a third safety net alongside the existing two, not instead.
+    document.addEventListener('visibilitychange', () => { if (document.hidden) flushOnUnload(); });
     window.addEventListener('storage', (e) => { if (e.key && matches(e.key)) schedulePush(); });
   };
 })();

@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.89)
+# GAMENFY — Master Document (v10.90)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -400,6 +400,13 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.90 — een check die écht verloren ging vóór 'ie kon syncen + herstel.** Joey: "had net good deed voor vandaag en gisteren afgevinkt, nu weer weg." Bevestigd in de cloud-data: geen spoor van 22 of 23 augustus in `rpg_habitlog_v1.good_deed` — geen weergavefout, de data zelf ontbrak.
+  - **Waarschijnlijke oorzaak**: de app leunde op `beforeunload` + `pagehide` om onopgeslagen wijzigingen alsnog te versturen vóór het sluiten. Op een **geïnstalleerde iOS-PWA** specifiek (niet een gewone Safari-tab) vuren die twee events soms niet betrouwbaar af als je de app wegveegt of naar een andere app schakelt — precies wat je op je telefoon zou doen vlak na het afvinken.
+  - **Gefixt**: `visibilitychange` toegevoegd als derde vangnet — vuurt af zodra `document.hidden` waar wordt, wat specifiek voor standalone-PWA's op iOS betrouwbaarder is dan de andere twee. Komt er bovenop, vervangt niks.
+  - **De twee verloren checks hersteld** met dezelfde zorgvuldige aanpak als bij wandelen/slaap eerder: dag-voor-dag doorgerekend (22 en 23 augustus zijn opeenvolgend → streak 2, score 2), en dat exact zo teruggezet — habitlog, score/streak, +30 XP, streak-dagen, en activiteitenlog-regels met een duidelijke "Herstel"-vermelding.
+  - **Eerlijk over de grens hiervan**: dit specifieke geval kon ik herstellen omdat Joey exact vertelde wat hij had gedaan en wanneer. Bij een volgend, onopgemerkt gevalletje data-verlies is dat niet vanzelfsprekend — de echte oplossing is dat het gewoon niet meer gebeurt, vandaar de `visibilitychange`-fix als hoofdzaak van deze versie.
+  `?v=` naar 10.90. Gevalideerd: 14-bestands JS/CSS/JSON-LD-controle + sync.js apart, en het herstel geverifieerd tegen de live data.
 
 - **v10.89 — één level per gewoonte, overal.** De structurele fix waar Joey twee keer om vroeg en de mechaniek voor bevestigde (1 gratiedag, daarna zakt de score).
   - **Nieuwe gedeelde bron**: `window.getSkillLevel(key, xp)` in xp.js — geeft voor gewoontes de 0-10 consistentie-score (decay-bewust), voor gewone skills gewoon `xpToLevel(xp)`. Elke plek in de app die een level toont, roept nu deze ene functie aan in plaats van zelf te kiezen.
