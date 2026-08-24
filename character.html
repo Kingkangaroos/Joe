@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.90" defer></script>
-<script src="topbar.js?v=10.90" defer></script>
-<script src="xp.js?v=10.90" defer></script>
-<script src="quests.js?v=10.90" defer></script>
-<script src="ladders.js?v=10.90" defer></script>
-<script src="ventures.js?v=10.90" defer></script>
+<script src="sync.js?v=10.91" defer></script>
+<script src="topbar.js?v=10.91" defer></script>
+<script src="xp.js?v=10.91" defer></script>
+<script src="quests.js?v=10.91" defer></script>
+<script src="ladders.js?v=10.91" defer></script>
+<script src="ventures.js?v=10.91" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1093,6 +1093,26 @@ textarea {
 .venture-next { font-size:12px; color:var(--ink); font-weight:600; margin-top:9px; }
 .venture-next.done { color:var(--green); }
 .venture-min { font-size:10px; font-family:var(--mono); font-weight:700; color:var(--muted); }
+/* v10.91: per-venture workspace + research reference */
+.venture-notes-card, .venture-research-card {
+  background:var(--card); border:1px solid var(--line); border-radius:14px;
+  padding:14px; margin-bottom:14px;
+}
+.venture-notes-label { font-family:var(--font-display); font-weight:700; font-size:13px; color:var(--ink); margin-bottom:8px; }
+.venture-notes-area {
+  width:100%; min-height:90px; border:1px solid var(--line); border-radius:10px;
+  padding:10px; font:inherit; font-size:13px; color:var(--ink); background:var(--bg);
+  resize:vertical; line-height:1.5;
+}
+.venture-notes-area:focus { outline:2px solid var(--ember); outline-offset:1px; border-color:var(--ember); }
+.venture-research-row { font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:8px; }
+.venture-research-row:last-of-type { margin-bottom:0; }
+.venture-research-row b { display:block; color:var(--ink); font-size:11px; font-weight:700;
+  text-transform:uppercase; letter-spacing:.03em; margin-bottom:2px; }
+.venture-research-link {
+  display:block; margin-top:12px; padding-top:12px; border-top:1px solid var(--line);
+  font-size:12px; font-weight:700; color:var(--ember); text-decoration:none;
+}
 .venture-back {
   background:none; border:none; padding:0 0 12px 0; font-size:13px; font-weight:700;
   color:var(--muted); cursor:pointer; font-family:var(--font-display);
@@ -3399,6 +3419,53 @@ window.renderVenturesView = function(){
 window.openVenture = function(id){ ventureOpen = id; renderVenturesView(); };
 window.closeVenture = function(){ ventureOpen = null; renderVenturesView(); };
 
+// v10.91: Joey asked for a working space attached to the venture itself —
+// "een soort lab in de venture zelf" — and for the research report to live
+// somewhere near the venture instead of only as a separate file. Two things:
+//  1. A free-text notes card, generic per venture (works for any venture,
+//     not just this one), so he can jot down prospects/ideas as he goes.
+//  2. A condensed research-summary card, specific to the Websites venture —
+//     the report is about THIS venture, so it doesn't belong on the others.
+const VENTURE_NOTES_KEY = 'rpg_venture_notes_v1';
+function loadVentureNotes(){ try{ return JSON.parse(localStorage.getItem(VENTURE_NOTES_KEY))||{}; }catch(e){ return {}; } }
+window.saveVentureNote = function(vid, text){
+  const notes = loadVentureNotes();
+  notes[vid] = text;
+  try{ localStorage.setItem(VENTURE_NOTES_KEY, JSON.stringify(notes)); }catch(e){}
+};
+
+// Condensed from the Deep Research report — only what's directly actionable
+// for THIS venture. Full document stays the source of truth; this is a
+// quick-reference so Joey doesn't have to leave the app to check a number.
+const WEBSITES_RESEARCH = {
+  niche: 'Klusbedrijven = aanbevolen start (51/80). Personal trainers = hoogst scorend (55/80), aangewezen uitbreiding.',
+  pricing: 'Starter €497–697 +€19–25/mnd · Standaard €897–1297 +€29–39/mnd · Premium €1997–2997 +€59–79/mnd. Founding-korting 25–30%, geen permanente bodemprijs.',
+  basics: '4 bewezen conversie-basics: laadsnelheid <2–3s · boeken zonder account · levende reviews-widget · Google Bedrijfsprofiel + NAP-consistentie.',
+  legal: 'Cold e-mail mag (AVG: gerechtvaardigd belang). Cold bellen krijgt strengere regels per 1-7-2026 — e-mail is de veiligere route.',
+  plan: '30-dagenplan: wk1 fundament/sjabloon · wk2 testcase op maat · wk3 eerste outreach · wk4 eerste klant + evalueren vóór opschalen.',
+};
+
+function ventureNotesHTML(v){
+  const notes = loadVentureNotes();
+  const val = escapeHtml(notes[v.id]||'');
+  let html = '<div class="venture-notes-card">'+
+    '<div class="venture-notes-label">📝 Werkruimte</div>'+
+    '<textarea class="venture-notes-area" placeholder="Prospects, ideeën, aantekeningen — alleen voor jou..." '+
+    'oninput="window.saveVentureNote(\''+v.id+'\',this.value)">'+val+'</textarea></div>';
+  if(v.id==='sell_websites'){
+    html += '<div class="venture-research-card">'+
+      '<div class="venture-notes-label">📊 Onderzoek — kernpunten</div>'+
+      '<div class="venture-research-row"><b>Niche</b>'+WEBSITES_RESEARCH.niche+'</div>'+
+      '<div class="venture-research-row"><b>Prijzen</b>'+WEBSITES_RESEARCH.pricing+'</div>'+
+      '<div class="venture-research-row"><b>Wat werkt</b>'+WEBSITES_RESEARCH.basics+'</div>'+
+      '<div class="venture-research-row"><b>Juridisch</b>'+WEBSITES_RESEARCH.legal+'</div>'+
+      '<div class="venture-research-row"><b>Plan</b>'+WEBSITES_RESEARCH.plan+'</div>'+
+      '<a class="venture-research-link" href="lab.html">Voorbeeldsites bekijken in het Lab →</a>'+
+      '</div>';
+  }
+  return html;
+}
+
 function ventureDetailHTML(v){
   const p = window.Ventures.progress(v);
   const nx = window.Ventures.nextStep(v);
@@ -3406,7 +3473,8 @@ function ventureDetailHTML(v){
     (v.hero ? '<img class="venture-hero-img detail" src="'+v.hero+'" alt="" loading="lazy">' : '')+
     '<div class="venture-head"><div class="venture-name big">'+v.name+'</div>'+
     '<div class="venture-tagline">'+v.tagline+'</div>'+
-    '<div class="venture-count">'+p.done+'/'+p.total+' steps done</div></div>';
+    '<div class="venture-count">'+p.done+'/'+p.total+' steps done</div></div>'+
+    ventureNotesHTML(v);
   (v.phases||[]).forEach(ph=>{
     html += '<div class="venture-phase">'+ph.name+'</div><div class="quest-ladder">';
     (ph.steps||[]).forEach(s=>{
