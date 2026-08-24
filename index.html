@@ -10,14 +10,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.91" defer></script>
-<script src="topbar.js?v=10.91" defer></script>
-<script src="xp.js?v=10.91" defer></script>
-<script src="quests.js?v=10.91" defer></script>
-<script src="ladders.js?v=10.91" defer></script>
-<script src="ventures.js?v=10.91" defer></script>
-<script src="checkin.js?v=10.91" defer></script>
-<script src="push.js?v=10.91" defer></script>
+<script src="sync.js?v=10.92" defer></script>
+<script src="topbar.js?v=10.92" defer></script>
+<script src="xp.js?v=10.92" defer></script>
+<script src="quests.js?v=10.92" defer></script>
+<script src="ladders.js?v=10.92" defer></script>
+<script src="ventures.js?v=10.92" defer></script>
+<script src="checkin.js?v=10.92" defer></script>
+<script src="push.js?v=10.92" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1841,9 +1841,9 @@ function getNextMilestone(def, currentLevel) {
   const levels = Object.keys(def.milestones).map(Number).sort((a,b)=>a-b);
   return levels.find(l => l > currentLevel) || null;
 }
-function getConfirmedMs(skillKey) {
-  try { return JSON.parse(localStorage.getItem('rpg_milestones_v1')) || {}; } catch(e) { return {}; }
-}
+// v10.92 review: getConfirmedMs(skillKey) removed here — confirmed 0 call
+// sites anywhere in the app. Superseded by getConfirmedMilestones() in
+// character.html (no-arg version, actively used in 2 places there).
 
 // v10.48: was a separate hardcoded list — Joey correctly called out that it
 // didn't match the tone he actually asked for. Fixed by pulling from the

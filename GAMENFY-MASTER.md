@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.91)
+# GAMENFY — Master Document (v10.92)
 
 > Single source of truth for the Gamenfy dashboard. Read this first in any new session.
 > Joey calls the assistant "Claudia". App UI is in English. Aesthetic: premium & light ("Daylight"), not dark/gamey.
@@ -400,6 +400,15 @@ Onderbouwing uit Joey's echte data: XP-events per week: wk23:22 → wk24:10 → 
 10. Apple Health-shortcut officieel pensioneren: Fitbit vervangt steps/energy; dode leespaden opruimen. (Herroept het juni-besluit "parkeren tot Apple Watch" — de Fitbit Air lost dit op.)
 
 ## 8. Version history
+
+- **v10.92 — volledige review vóór de overstap naar v11.** Joey wilde alles gecontroleerd zien voor hij overgaat op een nieuwe hoofdversie. Systematisch nagelopen:
+  1. **Volledige syntax/CSS/JSON-LD-controle over alle 23 bestanden tegelijk** — schoon.
+  2. **Versienummers gecontroleerd per bestand** (niet alleen samengevoegd, dat gaf eerst een misleidend resultaat door een sorteerfout in het controlescript zelf) — alle 10 kernbestanden consistent op dezelfde versie, de 4 losse voorbeeldsites terecht zonder versietag (geen gedeelde app-infrastructuur).
+  3. **Sync-scope gecontroleerd tegen elke daadwerkelijk geschreven localStorage-sleutel** — één uitzondering gevonden (`hevy_total_volume`), bevestigd terecht lokaal: een afgeleide cache die bij elke Hevy-beoordeling opnieuw wordt berekend, synchroniseren zou zinloos zijn.
+  4. **Dode code opgespoord** — twee functies bevestigd nergens meer aangeroepen en netjes verwijderd: `getConfirmedMs` (index.html, al vervangen door `getConfirmedMilestones` in character.html) en `buildOptionalHtml` (character.html, bewust vervangen in v10.20 toen optionele quests in elke tier zelf werden ingebed — bevestigd via git-geschiedenis, dus geen races met eigen recent werk). **Eigen fout onderweg gevangen en meteen gecorrigeerd**: de eerste verwijderpoging verving alleen de functienaam-regel, waardoor de oude functie-inhoud eronder losgekoppeld bleef hangen — direct opgemerkt bij validatie en netjes rechtgezet. De bijbehorende `optionalDone()` en `window.toggleOptionalQuest` blijven onaangeroerd, want die worden nog actief gebruikt door de nieuwere implementatie.
+  5. **Bewust NIET opgeruimd**: `toggleWeeklyQuest` en de rest van het oude Quests-tabblad-cluster (`renderQuestView`/`renderQuestLadder`, al eerder dit vastgesteld als dode code na de Goals-vervanging in v10.61) — dat is een groter, samenhangend dood blok; er één functie uithalen zou een verwarrende halve opschoning zijn.
+  6. **Live cloud-data gecontroleerd**: Fitbit synct tot en met vandaag, geen herkoppeling nodig, alle 9 gewoontes correct aanwezig.
+  `?v=` naar 10.92. Gevalideerd: 23-bestands controle, twee keer (voor én na de opschoning).
 
 - **v10.91 — werkruimte per venture + onderzoek zichtbaar bij de Websites-venture zelf.** Joey: "een soort lab in de venture zelf" + het rapport ergens bij de venture kunnen zien.
   - **Werkruimte-kaartje**, generiek voor élke venture (niet alleen Websites): een vrij tekstveld boven de fase-lijst waar Joey prospects, ideeën en aantekeningen kwijt kan. Notities blijven per venture gescheiden — schrijven bij Websites Verkopen raakt Grip of Gamenfy Public niet aan.
