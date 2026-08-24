@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v11.0)
+# GAMENFY — Master Document (v10.93)
 
 > Single source of truth voor de Gamenfy dashboard. Lees dit eerst, elke sessie.
 > Joey noemt de assistent "Claudia". App-UI is Engels. Aesthetic: premium & licht ("Daylight"), niet donker/gamey.
@@ -86,6 +86,20 @@ Het oude Quests-tabblad (`renderQuestView`/`renderQuestLadder`/`toggleWeeklyQues
 
 ---
 
+## 5b. Terug naar de basis — vergelijking met het originele Notion-plan (mei 2025)
+
+Op Joey's verzoek: zijn oorspronkelijke Gamenfy-visiedocument uit Notion opgezocht en tegen de huidige app gelegd.
+
+**Oorspronkelijke skill-lijst (Notion, mei 2025)**: reading, sporten/kracht, lopen/wandelen, pianospel, koken, trading, puzzelen, dankbaarheid. **Bijna alles is gebouwd** — reading, walking, piano, cooking, puzzling, gratitude bestaan allemaal. Twee originele ideeën zijn nooit opgepakt:
+- **"Trading" als losse skill** — er bestaat wel `investing`, maar actief traden (kopen/verkopen) is conceptueel iets anders en heeft geen eigen skill.
+- **"Cijfer of today"** — stond twee keer letterlijk genoemd in het originele plan, betekenis nooit verder uitgewerkt. Onduidelijk of dit nog relevant is — navragen bij Joey voor er iets mee gebeurt.
+
+**Wel al gebouwd, maar niet uit dit specifieke document** — een detail dat WEL in het plan stond en nog nergens in de app zit: **een "word web" voor dankbaarheid** — een groeiend woordenweb waar je items uit kan kiezen en dat meegroeit met elke nieuwe toevoeging. Nu is Gratitude een simpel tekstveld. Mogelijke kleine, leuke uitbreiding.
+
+**De lange-termijnvisie ("Toekomstvisie/Ideale Scenario")**: een openbaar platform waar skill-levels echt invloed hebben op verzekeringen, leningen, dating — alles (dit is al bekend en vastgelegd, komt hier bevestigd terug). **Nieuw detail dat niet eerder was vastgelegd**: bij een hoog level (het voorbeeld was level 60) zou je toegang krijgen tot iets exclusiefs in de echte wereld (in het voorbeeld: een speciale sportschool) — een gamified real-world-beloning gekoppeld aan level. Nog nergens gebouwd, puur visie.
+
+---
+
 ## 6. Ventures — status per 24-08-2026
 
 1. **Grip** — pain-relief squeeze ball, B2B via tattoo-studio's. 5 fases, 17 stappen. Niet actief opgepakt deze periode.
@@ -98,6 +112,12 @@ Het oude Quests-tabblad (`renderQuestView`/`renderQuestLadder`/`toggleWeeklyQues
 
 ### 🤖 Claude to-do (kan ik zelfstandig oppakken)
 *Niets actief in de wachtrij op dit moment.* Alles wat deze sessie is gevraagd is afgerond en live.
+
+### 📥 Als Joey "ga verder"/"go ahead" zegt zonder verdere context
+Vaste volgorde (vastgelegd 24-08-2026, ook als los skill-bestand in `.claude-skills/gamenfy-ga-verder.SKILL.md` — voeg dat zelf toe als Claude Skill als je wil dat dit automatisch gebeurt):
+1. **Eerst** Joey's Notion-pagina "🧠 Gamenfy — Ideeën & to-do voor Claudia" checken (sectie "📥 Nieuw") — dat heeft voorrang.
+2. **Dan pas** de 🧑 Joey to-do-lijst hieronder — check of er intussen antwoord kwam.
+3. **Alleen als beide leeg zijn**: een echte functionaliteitsreview tegen de live Supabase-data, niet alleen syntax.
 
 ### 🧑 Joey to-do (wacht op jou)
 - **Higgsfield-abonnement** — je zei woensdag. Gebruik bij voorkeur het aankooppad via de koppeling hier in de chat, niet de losse higgsfield.ai-website (andere prijzen, onduidelijk of ze dezelfde toegang geven).
@@ -114,3 +134,8 @@ Het oude Quests-tabblad (`renderQuestView`/`renderQuestLadder`/`toggleWeeklyQues
 - Kritisch blijven, premium én functioneel houden.
 - **Nieuw vanaf v11**: elke open-items-lijst maakt expliciet onderscheid tussen wat Claudia zelfstandig kan oppakken en wat op Joey's input wacht — zodat hij zijn eigen actiepunten niet kwijtraakt tussen de technische regels door.
 - Per-venture werkruimtes zijn Joey's eigen aantekenveld, in mensentaal, niet iets dat Claudia namens hem invult.
+
+---
+
+## Changelog sinds v11.0-baseline
+- **v10.93 (24-08-2026)**: werkruimte-notities kregen een Persoonlijk/Venture-toggle binnen hetzelfde blokje (bewaard apart, terugwaarts compatibel met de net-geschoten platte tekst). Notion-ideeën-inbox aangemaakt ("🧠 Gamenfy — Ideeën & to-do voor Claudia") + het "ga verder"-protocol vastgelegd (Notion-inbox → Joey-to-do-lijst → pas dan een volledige review), ook als los skill-bestand in `.claude-skills/`. Origineel Notion-plan (mei 2025) opgezocht en tegen de huidige app gelegd — zie §5b. **Eigen fout gevangen tijdens bouwen**: een str_replace dupliceerde per ongeluk de WEBSITES_RESEARCH-declaratie (JS zou gecrasht zijn), gevonden bij validatie vóór het live ging. **Tweede fout gevangen**: een escape-teken in een shell-commando at het woord "investing" uit de nieuwe research-sectie op, ook gevonden en gefixt vóór commit.

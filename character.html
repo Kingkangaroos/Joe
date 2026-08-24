@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.92" defer></script>
-<script src="topbar.js?v=10.92" defer></script>
-<script src="xp.js?v=10.92" defer></script>
-<script src="quests.js?v=10.92" defer></script>
-<script src="ladders.js?v=10.92" defer></script>
-<script src="ventures.js?v=10.92" defer></script>
+<script src="sync.js?v=10.93" defer></script>
+<script src="topbar.js?v=10.93" defer></script>
+<script src="xp.js?v=10.93" defer></script>
+<script src="quests.js?v=10.93" defer></script>
+<script src="ladders.js?v=10.93" defer></script>
+<script src="ventures.js?v=10.93" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1099,6 +1099,10 @@ textarea {
   padding:14px; margin-bottom:14px;
 }
 .venture-notes-label { font-family:var(--font-display); font-weight:700; font-size:13px; color:var(--ink); margin-bottom:8px; }
+.vn-tabs { display:flex; gap:6px; margin-bottom:9px; }
+.vn-tab { flex:1; font-size:12px; font-weight:700; padding:8px; border-radius:9px;
+  border:1px solid var(--line); background:var(--bg); color:var(--muted); cursor:pointer; font-family:inherit; }
+.vn-tab.on { background:var(--ink); color:#fff; border-color:var(--ink); }
 .venture-notes-area {
   width:100%; min-height:90px; border:1px solid var(--line); border-radius:10px;
   padding:10px; font:inherit; font-size:13px; color:var(--ink); background:var(--bg);
@@ -3421,6 +3425,40 @@ window.saveVentureNote = function(vid, text){
   try{ localStorage.setItem(VENTURE_NOTES_KEY, JSON.stringify(notes)); }catch(e){}
 };
 
+// v10.93: Joey, right after the plain notes field shipped: "ik wil daar een
+// soort onderscheid... persoonlijk en dan later venture." Gamenfy Public
+// specifically is currently personal-only for him (see §6 in the master
+// doc) — a single free-text field mixed those together. Now two tabs in the
+// SAME card: Personal / Venture, each stored and synced separately.
+// Backward-compat: notes[vid] may still be a plain string from the version
+// that shipped a moment ago — treated as existing "venture" content on
+// first read rather than silently discarded.
+function loadVentureNotePair(vid){
+  const notes = loadVentureNotes();
+  const raw = notes[vid];
+  if (raw && typeof raw === 'object') return { personal: raw.personal||'', venture: raw.venture||'' };
+  return { personal: '', venture: raw||'' }; // old plain-string shape
+}
+window.saveVentureNotePane = function(vid, pane, text){
+  const notes = loadVentureNotes();
+  const cur = loadVentureNotePair(vid);
+  cur[pane] = text;
+  notes[vid] = cur;
+  try{ localStorage.setItem(VENTURE_NOTES_KEY, JSON.stringify(notes)); }catch(e){}
+};
+window.switchVenturePane = function(vid, pane, btn){
+  const card = btn.closest('.venture-notes-card'); if(!card) return;
+  card.querySelectorAll('.vn-tab').forEach(function(t){ t.classList.remove('on'); });
+  btn.classList.add('on');
+  const pair = loadVentureNotePair(vid);
+  const area = card.querySelector('.venture-notes-area');
+  area.value = pair[pane];
+  area.dataset.pane = pane;
+  area.placeholder = pane==='personal'
+    ? 'Voor jezelf — gedachtes, twijfels, wat dit nu voor je betekent...'
+    : 'Business — prospects, ideeën, actiepunten...';
+};
+
 // Condensed from the Deep Research report — only what's directly actionable
 // for THIS venture. Full document stays the source of truth; this is a
 // quick-reference so Joey doesn't have to leave the app to check a number.
@@ -3433,12 +3471,16 @@ const WEBSITES_RESEARCH = {
 };
 
 function ventureNotesHTML(v){
-  const notes = loadVentureNotes();
-  const val = escapeHtml(notes[v.id]||'');
+  const pair = loadVentureNotePair(v.id);
+  const initialPane = pair.personal && !pair.venture ? 'personal' : 'venture'; // default to whichever has content, venture wins ties
+  const val = escapeHtml(pair[initialPane]);
   let html = '<div class="venture-notes-card">'+
-    '<div class="venture-notes-label">📝 Werkruimte</div>'+
-    '<textarea class="venture-notes-area" placeholder="Prospects, ideeën, aantekeningen — alleen voor jou..." '+
-    'oninput="window.saveVentureNote(\''+v.id+'\',this.value)">'+val+'</textarea></div>';
+    '<div class="vn-tabs">'+
+      '<button class="vn-tab'+(initialPane==='personal'?' on':'')+'" onclick="window.switchVenturePane(\''+v.id+'\',\'personal\',this)">🙂 Persoonlijk</button>'+
+      '<button class="vn-tab'+(initialPane==='venture'?' on':'')+'" onclick="window.switchVenturePane(\''+v.id+'\',\'venture\',this)">💼 Venture</button>'+
+    '</div>'+
+    '<textarea class="venture-notes-area" data-pane="'+initialPane+'" placeholder="'+(initialPane==='personal'?'Voor jezelf — gedachtes, twijfels, wat dit nu voor je betekent...':'Business — prospects, ideeën, actiepunten...')+'" '+
+    'oninput="window.saveVentureNotePane(\''+v.id+'\',this.dataset.pane,this.value)">'+val+'</textarea></div>';
   if(v.id==='sell_websites'){
     html += '<div class="venture-research-card">'+
       '<div class="venture-notes-label">📊 Onderzoek — kernpunten</div>'+
