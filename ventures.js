@@ -98,6 +98,26 @@
             { id: 's7', title: 'Scope locked',        detail: 'Decide the MVP scope and write it down as one build doc.', minutes: 60, xp: { coding: 60 }, boss: true },
           ]},
         ]
+      },
+      {
+        id: 'app_vormgeving',
+        name: 'Gamenfy Vormgeving',
+        tagline: 'Higgsfield en visuele verbetering van de app zelf — los van de business-ventures',
+        hero: 'https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop',
+        status: 'active',
+        phases: [
+          { id: 'p1', name: 'Richting kiezen', steps: [
+            { id: 's1', title: 'Lab-poppetjes: kies alternatief',  detail: 'Zie de werkruimte hieronder voor de 4 opties (A-D) en welk Higgsfield-model erbij hoort.', minutes: 15, xp: { ai_tools: 20 } },
+            { id: 's2', title: 'Het Park: kies alternatief',       detail: 'Statisch beeld, ambient video, dag/nacht-varianten, of outpaint van 1 foto.', minutes: 15, xp: { ai_tools: 20 } },
+            { id: 's3', title: 'Eigen avatar: wel of niet Soul trainen', detail: 'Uit je originele plan: de avatar die meegroeit met je level. Soul-training kost ~10 min en 5-20 foto\u2019s.', minutes: 15, xp: { ai_tools: 20 } },
+            { id: 's4', title: 'Skill-foto\u2019s: batch of per stuk',  detail: 'De ~19 resterende tegels: in 1 keer via Elements, of Pexels blijft de standaard en Higgsfield alleen bij echte gaten.', minutes: 15, xp: { ai_tools: 20 } },
+          ]},
+          { id: 'p2', name: 'Eerste uitvoering', steps: [
+            { id: 's5', title: 'Stijl vastleggen als Element',  detail: 'Eén referentiebeeld opslaan zodat latere generaties dezelfde look delen \u2014 voorkomt 45x een net-andere stijl.', minutes: 20, xp: { ai_tools: 30, coding: 10 } },
+            { id: 's6', title: 'Eerste test-generatie',         detail: 'Begin klein: het onderdeel met de minste credits/moeite uit stap s1-s4.', minutes: 30, xp: { ai_tools: 40 } },
+            { id: 's7', title: 'Doorzetten of bijsturen',       detail: 'Bekijk het resultaat naast de rest van de app. Past de stijl, of terug naar de tekentafel?', minutes: 15, xp: { ai_tools: 20 }, boss: true },
+          ]},
+        ]
       }
     ]
   };

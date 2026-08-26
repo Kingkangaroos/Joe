@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.93" defer></script>
-<script src="topbar.js?v=10.93" defer></script>
-<script src="xp.js?v=10.93" defer></script>
-<script src="quests.js?v=10.93" defer></script>
-<script src="ladders.js?v=10.93" defer></script>
-<script src="ventures.js?v=10.93" defer></script>
+<script src="sync.js?v=10.94" defer></script>
+<script src="topbar.js?v=10.94" defer></script>
+<script src="xp.js?v=10.94" defer></script>
+<script src="quests.js?v=10.94" defer></script>
+<script src="ladders.js?v=10.94" defer></script>
+<script src="ventures.js?v=10.94" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -3498,11 +3498,17 @@ function ventureNotesHTML(v){
 function ventureDetailHTML(v){
   const p = window.Ventures.progress(v);
   const nx = window.Ventures.nextStep(v);
+  // v10.94: this venture is explicitly about visual/creative experimentation
+  // — that space already exists (the Lab). Link to it instead of building a
+  // second, separate lab page, which would work against "alles op 1 plek".
+  const labLink = v.id==='app_vormgeving'
+    ? '<a class="venture-research-link" href="lab.html">Naar het Lab — poppetjes, achtergrond, voorbeeldsites →</a>' : '';
   let html = '<button class="venture-back" onclick="closeVenture()">‹ All ventures</button>'+
     (v.hero ? '<img class="venture-hero-img detail" src="'+v.hero+'" alt="" loading="lazy">' : '')+
     '<div class="venture-head"><div class="venture-name big">'+v.name+'</div>'+
     '<div class="venture-tagline">'+v.tagline+'</div>'+
     '<div class="venture-count">'+p.done+'/'+p.total+' steps done</div></div>'+
+    labLink+
     ventureNotesHTML(v);
   (v.phases||[]).forEach(ph=>{
     html += '<div class="venture-phase">'+ph.name+'</div><div class="quest-ladder">';

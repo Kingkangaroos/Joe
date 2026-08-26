@@ -100,7 +100,9 @@ Op Joey's verzoek: zijn oorspronkelijke Gamenfy-visiedocument uit Notion opgezoc
 
 ---
 
-## 6. Ventures — status per 24-08-2026
+## 6. Ventures — status per 24-08-2026 (4 ventures)
+
+**Nieuw: "Gamenfy Vormgeving"** — Joey: "ik mis het visuele aspect... zet gewoon ff alles op 1 plek, anders maak je maar een nieuwe venture." De vormgeving-alternatieven (Lab-poppetjes, Het Park, eigen avatar, skill-foto's) gingen abusievelijk in de Websites-venture terecht — dat klopte niet, want dat is algemene app-vormgeving, geen Websites-business. Nieuwe venture toegevoegd met 2 fases (Richting kiezen / Eerste uitvoering), gelinkt naar het bestaande Lab in plaats van een nieuwe pagina te bouwen — dat zou tegen "alles op 1 plek" ingaan. Inhoud herverdeeld: algemene vormgeving → Gamenfy Vormgeving, alleen website-hero's (specifiek voor die business) → Websites Verkopen.
 
 1. **Grip** — pain-relief squeeze ball, B2B via tattoo-studio's. 5 fases, 17 stappen. Niet actief opgepakt deze periode.
 2. **Gamenfy Public** — van persoonlijk dashboard naar iets bruikbaar voor anderen. 3 fases, 7 stappen. **Joey's huidige positie (24-08-2026, letterlijk vastgelegd)**: dit blijft voorlopig een persoonlijk motivatie-instrument, geen bedrijf. Hij weet nog niet hoe hij het zou productiseren gezien hoe gepersonaliseerd het is, en twijfelt of app-store/ads-marketing snel genoeg revenue zou opleveren. Geen actie hierop tenzij Joey het zelf weer oppakt.
