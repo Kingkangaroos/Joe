@@ -131,6 +131,16 @@ Vaste volgorde nu:
 
 ---
 
+## 5c. Erkende hiaat — dingen die niet robuust genoeg zijn vastgelegd
+
+Joey (26-08-2026): meldt dat hij eerder iets zei over "vier delen", de homepage, en scrolltechnieken — en het gevoel heeft dat dit soort dingen niet geregistreerd worden, waardoor hij het moet herhalen en het zelf ook vergeet.
+
+**Onderzocht, niet gevonden**: het volledige archief doorzocht op "scroll", "4 delen", "World Hero", "Skill Pulse", "Kargo Studio" — alleen een herhaald, algemeen punt "vormgeving-overhaal + scroll-animaties" (wacht al maanden op zijn referenties) en een losse, contextloze vermelding van de oude v11-branch "World Hero + Skill Pulse" zonder verdere uitwerking. **Dit specifieke idee (4 delen/homepage/scrolltechniek) is dus niet duurzaam vastgelegd** — een reële hiaat, geen ingebeelde.
+
+**Genomen besluit**: vanaf nu schrijft Claudia een nieuw, ook maar losjes genoemd concept DIRECT in dit document (of de relevante venture-werkruimte) op het moment dat het genoemd wordt, in plaats van te wachten op een groter "laten we alles ordenen"-moment. Voorkomt dat iets alleen in een sessie-samenvatting blijft hangen zonder in de echte, doorzoekbare documentatie te belanden.
+
+**Nog te doen**: navragen bij Joey wat het "vier delen/scrolltechniek"-idee precies inhield, en dan meteen vastleggen.
+
 ## 8. Werkafspraak
 
 - Claudia antwoordt in het Nederlands; de app blijft Engels.

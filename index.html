@@ -10,14 +10,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.95" defer></script>
-<script src="topbar.js?v=10.95" defer></script>
-<script src="xp.js?v=10.95" defer></script>
-<script src="quests.js?v=10.95" defer></script>
-<script src="ladders.js?v=10.95" defer></script>
-<script src="ventures.js?v=10.95" defer></script>
-<script src="checkin.js?v=10.95" defer></script>
-<script src="push.js?v=10.95" defer></script>
+<script src="sync.js?v=10.96" defer></script>
+<script src="topbar.js?v=10.96" defer></script>
+<script src="xp.js?v=10.96" defer></script>
+<script src="quests.js?v=10.96" defer></script>
+<script src="ladders.js?v=10.96" defer></script>
+<script src="ventures.js?v=10.96" defer></script>
+<script src="checkin.js?v=10.96" defer></script>
+<script src="push.js?v=10.96" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -2215,8 +2215,11 @@ function renderFitbitCoach(day){
   wrap.style.display='';
 }
 
-// ── Steps → Endurance XP (v9.26 — Fitbit-first, Apple Health fallback) ──
-// Het Apple Health-kanaal ligt stil sinds 2026-06-09; Fitbit Air (health_fitbit) is nu de bron.
+// ── Steps → Endurance XP (Fitbit is the sole source) ──
+// v10.96: Apple Health-shortcut officieel afgeschreven op Joey's bevestiging
+// ("die mag gewoon inderdaad opruimen want ik heb nu die Fitbit en ik ga het
+// gewoon op deze manier aanhouden"). Het kanaal lag al stil sinds 2026-06-09;
+// dit verwijdert de dode fallback-code, niet alleen de opmerking erover.
 // health_fitbit is één rij met per-datum keys {steps, activeMinutes, sleepMinutes, restingHR, weightKg}.
 (async function loadStepsXP() {
   const SB_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co';
@@ -2224,8 +2227,7 @@ function renderFitbitCoach(day){
   const today = todayStr();
   const XP_GUARD = 'ah_xp_given:' + today;
   const hdr = { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } };
-  let steps = 0, energy = 0, src = '', fitbitDay = null;
-  // 1) Fitbit Air — primaire bron
+  let steps = 0, src = '', fitbitDay = null;
   try {
     const r = await fetch(`${SB_URL}/rest/v1/app_state?key=eq.health_fitbit&select=data`, hdr);
     if (r.ok) {
@@ -2235,21 +2237,10 @@ function renderFitbitCoach(day){
       if (day && day.steps != null) { steps = parseInt(day.steps) || 0; src = 'Fitbit'; }
     }
   } catch(e) {}
-  // 2) Apple Health — fallback (legacy kanaal)
-  if (steps === 0 && energy === 0) {
-    try {
-      const res = await fetch(`${SB_URL}/rest/v1/app_state?key=eq.apple_health:${today}&select=data`, hdr);
-      const rows = await res.json();
-      const d = (rows && rows[0] && rows[0].data) || {};
-      steps  = parseInt(d['steps '] || d.steps || 0) || 0;
-      energy = parseInt(d['active_energy'] || d.energy || 0) || 0;
-      if (steps>0 || energy>0) src = 'Apple Health';
-    } catch(e) {}
-  }
-  if (!localStorage.getItem(XP_GUARD) && (steps>0 || energy>0) && window.addXP) {
-    const xp = Math.round(Math.min(steps/10000,1)*50 + Math.min(energy/600,1)*50);
+  if (!localStorage.getItem(XP_GUARD) && steps>0 && window.addXP) {
+    const xp = Math.round(Math.min(steps/10000,1)*50);
     if (xp > 0) {
-      window.addXP('endurance', xp, src + ' — steps' + (energy>0 ? ' + active energy' : ''));
+      window.addXP('endurance', xp, src + ' — steps');
       localStorage.setItem(XP_GUARD, '1');
     }
   }

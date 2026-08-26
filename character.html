@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.95" defer></script>
-<script src="topbar.js?v=10.95" defer></script>
-<script src="xp.js?v=10.95" defer></script>
-<script src="quests.js?v=10.95" defer></script>
-<script src="ladders.js?v=10.95" defer></script>
-<script src="ventures.js?v=10.95" defer></script>
+<script src="sync.js?v=10.96" defer></script>
+<script src="topbar.js?v=10.96" defer></script>
+<script src="xp.js?v=10.96" defer></script>
+<script src="quests.js?v=10.96" defer></script>
+<script src="ladders.js?v=10.96" defer></script>
+<script src="ventures.js?v=10.96" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -4434,8 +4434,8 @@ async function renderBodyComposition(){
   const fEl=document.getElementById('bodyCompFat');
   const mEl=document.getElementById('bodyCompMuscle');
   let weight='—', fat='—', muscle='—';
-  // v9.34: Fitbit (cloud health_fitbit) is the primary source for weight — the apple_health
-  // channel has been dead since 2026-06-09. Fat/muscle stay '—' (Fitbit Air has no body-fat sensor).
+  // Fitbit (cloud health_fitbit) is de enige bron voor gewicht. Fat/muscle
+  // blijven '—' (Fitbit Air heeft geen vetpercentage-sensor).
   try{
     const SB='https://ttxjsoahmtennnufgeqx.supabase.co', KEY='sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
     const r=await fetch(SB+'/rest/v1/app_state?key=eq.health_fitbit&select=data',{headers:{apikey:KEY,Authorization:'Bearer '+KEY}});
@@ -4445,18 +4445,10 @@ async function renderBodyComposition(){
       for(const dt of dates){ const kg=data[dt]&&data[dt].weightKg; if(kg!=null){ weight=Math.round(parseFloat(kg))+' kg'; break; } }
     }
   }catch(e){}
-  // Apple Health (legacy localStorage) — fallback for weight, plus fat/muscle if ever present again
-  try{
-    for(let i=0;i<localStorage.length;i++){
-      const key=localStorage.key(i);
-      if(key && key.startsWith('apple_health:')){
-        const d=JSON.parse(localStorage.getItem(key))||{};
-        if(weight==='—' && d.weight) weight=Math.round(parseFloat(d.weight))+' kg';
-        if(d.body_fat||d['body_fat']) fat=Math.round(parseFloat(d.body_fat||d['body_fat']))+'%';
-        if(d.muscle_mass) muscle=Math.round(parseFloat(d.muscle_mass))+' kg';
-      }
-    }
-  }catch(e){}
+  // v10.96: Apple Health-shortcut officieel afgeschreven — geen localStorage-
+  // fallback meer nodig. Fat/muscle blijven '—' (Fitbit Air heeft geen
+  // vetpercentage-sensor); dat was ook zo tóen de fallback nog bestond,
+  // aangezien dat kanaal al sinds 2026-06-09 stillag.
   if(wEl) wEl.textContent=weight;
   if(fEl) fEl.textContent=fat;
   if(mEl) mEl.textContent=muscle;
@@ -4507,28 +4499,10 @@ function hmDateStr(offset){
 async function hmFetchAll(){
   if(hmData) return hmData;
   const out = { byDate:{}, hevy:{}, lastHealthDate:null };
-  // Apple Health rows
-  try{
-    const r = await fetch(HM_SB_URL+'/rest/v1/app_state?key=like.apple_health:*&select=key,data&order=key.desc&limit=60',
-      { headers:{ apikey:HM_SB_KEY, Authorization:'Bearer '+HM_SB_KEY } });
-    if(r.ok){
-      const rows = await r.json();
-      for(const row of rows){
-        const date = String(row.key).slice('apple_health:'.length);
-        if(!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
-        const d = row.data||{};
-        out.byDate[date] = {
-          steps:  Math.round(Number(d['steps ']||d.steps||0))||0,
-          energy: Math.round(Number(d['active_energy']||d.energy||0))||0,
-          weight: Number(d.weight||0)||0,
-          sleep:  Math.round(Number(d.sleep_minutes||0))||0,
-          rhr:    Math.round(Number(d.resting_hr||0))||0
-        };
-        if(!out.lastHealthDate || date>out.lastHealthDate) out.lastHealthDate=date;
-      }
-    }
-  }catch(e){}
-  // Google Health / Fitbit Air rij (v9.17) — vult aan waar Apple Health stopte
+  // v10.96: Apple Health-shortcut officieel afgeschreven (Joey bevestigde:
+  // "die mag gewoon inderdaad opruimen want ik heb nu die Fitbit"). Fitbit
+  // is nu de enige bron — geen fallback-merge meer nodig, `cur` start
+  // gewoon op de standaardwaarden.
   try{
     const r2 = await fetch(HM_SB_URL+'/rest/v1/app_state?key=eq.health_fitbit&select=data',
       { headers:{ apikey:HM_SB_KEY, Authorization:'Bearer '+HM_SB_KEY } });
@@ -4537,7 +4511,7 @@ async function hmFetchAll(){
       const fb = (rows2[0]||{}).data || {};
       for(const [k,v] of Object.entries(fb)){
         if(!/^\d{4}-\d{2}-\d{2}$/.test(k) || !v || typeof v!=='object') continue;
-        const cur = out.byDate[k] || { steps:0, energy:0, weight:0, sleep:0, rhr:0, hrv:0, breathing:0, spo2:0, distance:0 };
+        const cur = { steps:0, energy:0, weight:0, sleep:0, rhr:0, hrv:0, breathing:0, spo2:0, distance:0 };
         out.byDate[k] = {
           steps:  v.steps!=null ? Math.round(Number(v.steps)) : cur.steps,
           energy: cur.energy,

@@ -159,6 +159,16 @@
       const json = JSON.stringify(state);
       if (json === lastSyncedJson) return;
       try {
+        // v10.96 FIX: this used to mark `lastSyncedJson = json` right after
+        // firing the request, before any confirmation it actually arrived.
+        // Joey checked every mission, closed the app as usual, and the check-
+        // offs were gone from the cloud — investigated and found the real
+        // cause: on close, the fetch can get cut off mid-flight (keepalive
+        // improves the odds but never guarantees delivery), yet the code had
+        // already told itself "done", so nothing ever retried it. Removed
+        // the optimistic mark here — see the periodic push below for why
+        // this handler is now a secondary safety net rather than the
+        // critical one.
         fetch(SUPABASE_URL + '/rest/v1/app_state?on_conflict=key', {
           method: 'POST',
           headers: {
@@ -170,7 +180,6 @@
           body: JSON.stringify({ key: cloudKey, data: state, updated_at: new Date().toISOString() }),
           keepalive: true,
         }).catch(() => {});
-        lastSyncedJson = json;
       } catch (e) {}
     }
     (async function init() {
@@ -220,6 +229,17 @@
     })();
     window.addEventListener('beforeunload', flushOnUnload);
     window.addEventListener('pagehide', flushOnUnload);
+    // v10.96: Joey's own proposed fix, after confirming the lifecycle-event
+    // approach (beforeunload/pagehide/visibilitychange) still lost real data
+    // on his device: "kunnen we misschien... dat zodra die app geopend is
+    // dat hij dan binnen onder de 30 seconden autosavet." This is now the
+    // PRIMARY defence rather than a backup — it does not depend on any
+    // close/backgrounding event firing correctly at all, which is the exact
+    // class of thing that kept failing. pushNow() already no-ops instantly
+    // (a JSON.stringify + string compare, no network call) when nothing has
+    // changed, so this is cheap to run often. 12s: frequent enough that the
+    // worst-case loss window is small, not so frequent it floods the network.
+    setInterval(function(){ if (ready) pushNow(); }, 12000);
     // v10.90: Joey checked a habit, then it was gone from the cloud — the
     // data confirmed it: nothing for the dates he'd just checked reached
     // Supabase at all. beforeunload/pagehide were already wired up, but on
