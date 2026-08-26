@@ -114,6 +114,7 @@
             { id: 's1', title: 'Lab-poppetjes: kies alternatief',  detail: '#2: je bezoekt het Lab regelmatig \u2014 hoogste zichtbaarheid van de vier. Zie de werkruimte voor de 4 opties (A-D) en welk model erbij hoort.', minutes: 15, xp: { ai_tools: 20 } },
             { id: 's2', title: 'Het Park: kies alternatief',       detail: '#3: ambient achtergrond, wordt gezien maar niet actief bekeken \u2014 minder impact dan de personages zelf.', minutes: 15, xp: { ai_tools: 20 } },
             { id: 's4', title: 'Skill-foto\u2019s: batch of per stuk',  detail: '#4, laagste prioriteit van de vier: minst frequent gezien (alleen in de Skills-grid), en Pexels dekt het meeste al gratis.', minutes: 15, xp: { ai_tools: 20 } },
+            { id: 's8', title: '4 vlakken-homepage: alsnog bouwen?', detail: 'Teruggevonden idee uit een eerder gesprek: Main als 4 kwadranten (Lichaam/Geld/Geest/Bouwen) met haarlijnen i.p.v. losse kaartjes — één samenhangend blok. Er bestaat al een mockup, nooit gebouwd.', minutes: 10, xp: { ai_tools: 10 } },
           ]},
           { id: 'p2', name: 'Eerste uitvoering', steps: [
             { id: 's5', title: 'Stijl vastleggen als Element',  detail: 'Eén referentiebeeld opslaan zodat latere generaties dezelfde look delen \u2014 voorkomt 45x een net-andere stijl.', minutes: 20, xp: { ai_tools: 30, coding: 10 } },

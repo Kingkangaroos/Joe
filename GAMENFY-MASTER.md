@@ -141,6 +141,19 @@ Joey (26-08-2026): meldt dat hij eerder iets zei over "vier delen", de homepage,
 
 **Nog te doen**: navragen bij Joey wat het "vier delen/scrolltechniek"-idee precies inhield, en dan meteen vastleggen.
 
+## 5d. Teruggevonden idee — "4 vlakken"-homepage (nooit gebouwd, wel ooit gemockt)
+
+Onderzocht n.a.v. Joey's zorg dat ideeën wegvallen. Bevestigd in het volledige transcript:
+
+**Wat WEL is uitgevoerd** (ter geruststelling — niet alles gaat verloren):
+- De "zen garden"/boom-mockup is bewust losgelaten en geëvolueerd tot het huidige Lab-raster — inclusief de per-skill-attributen (kokmuts, tennisbandje) die toen al als "de échte oplossing" werden genoemd.
+- "Voorbeeldwebsites in de app, alles op één plek" (uit hetzelfde gesprek) is gebouwd: de 3 voorbeeldsites + het Lab-overzicht.
+- De categorie-filter in het Lab (tik "Money" → geld-poppetjes naar voren, rest naar de achtergrond) is precies zo gebouwd als toen omschreven.
+
+**Wat NIET is uitgevoerd — een bevestigde hiaat**: een "4 vlakken"-startscherm. Idee: de hele Main-pagina als vier vaste kwadranten (Lichaam/Geld/Geest/Bouwen) die met haarlijnen in elkaar overlopen — geen losse kaartjes met marge, maar één samenhangend blok, tikken op een kwadrant opent dat domein. Er is ooit een visuele mockup van gemaakt, maar het is nooit als bouwbaar item vastgelegd en dus ook nooit gebouwd. Status: **open idee, wacht op Joey's beslissing of dit alsnog gebouwd moet worden**, eventueel als stap in Gamenfy Vormgeving.
+
+**Nog niet zeker gebouwd**: Joey noemde ook dat de daily missions zichtbaar zouden moeten zijn binnen de categorie-gefilterde Lab-weergave. Navragen of dat nog steeds gewenst is.
+
 ## 8. Werkafspraak
 
 - Claudia antwoordt in het Nederlands; de app blijft Engels.
