@@ -79,6 +79,21 @@ Huidig gebruiksdoel (Joey's eigen woorden, 24-08-2026): voornamelijk zelfmotivat
 
 Het bestaande v11-plaza met alle 45 cartoon-poppetjes blijft **ongewijzigd onder Park 2.0** staan als vergelijking en functionele fallback: per-categorie silhouet, devil/angel-inversie voor slechte gewoontes, categorie-filter, Het Park/De Arena. Niet verwijderen wanneer Park 2.0 verder wordt ontwikkeld. Link naar de 3 voorbeeldsites blijft eveneens staan.
 
+### Park 2.0 — evolutiecontract (verplicht vervolg, nog niet volledig gebouwd)
+
+Joey heeft op 26-08-2026 nogmaals expliciet bevestigd: **de companions moeten echte zichtbare evoluties doormaken**. Alleen groter worden, sneller bewegen, meer aura krijgen of een vollere tuin is niet voldoende. De huidige Park 2.0-versie is dus een werkende basis/proef, geen afgerond evolutiesysteem.
+
+Standaardplan, tenzij Joey dit later wijzigt:
+
+- **5 hoofdvormen per companion:** Starter (1-9), Leerling (10-24), Gevorderd (25-49), Expert (50-74), Meesterschap (75-100). Level 100 krijgt binnen Meesterschap nog een extra kroon-/prestige-effect.
+- **Gewoonte-companions** Good Deed en Budgeting gebruiken dezelfde vijf visuele stappen via score 0-2 / 3-4 / 5-6 / 7-8 / 9-10. Zij mogen terugvallen als de consistentiescore daalt; gewone XP-skills AI Tools, Tennis en Piano evolueren permanent omhoog.
+- Elke vorm moet dezelfde herkenbare basisidentiteit behouden, maar aantoonbaar groeien in **anatomie, houding, materiaal, gereedschap, omgeving en vaardigheid** — niet alleen een kleurfilter of accessoires.
+- Voorbeeld Tennis: onzekere balcontrole → stabiele houding → krachtige techniek → wedstrijdoutfit → level-100 centre-court/Wimbledon-waardige kampioen. Piano: eenvoudige oefenpiano → rijker instrument en zelfvertrouwen → concertvleugel/podiummeesterschap. AI: klein terminalmaatje → meer modules/rekenkracht → geavanceerde holografische architect. Good Deed: klein warm hart → grotere beschermende kracht en zichtbare invloed op andere parkbewoners. Budgeting: losse muntjes → geordend systeem → groeiende reserve/tuin → strategische financiële beheerder.
+- Productieomvang voor de eerste vijf: **25 consistente transparante master-assets** (5 karakters × 5 vormen), plus lichte webanimatie per vorm. De app laadt alleen de huidige en volgende vorm om mobiel snel te blijven.
+- De overgang krijgt een korte evolutieceremonie (licht, deeltjes, camerafocus en onthulling), wordt één keer afgespeeld bij het bereiken van een nieuwe drempel en daarna als ontgrendelde herinnering bewaard.
+- Echte complexe ledemaatanimatie vraagt later een rig/sprite- of 3D-pipeline; AI-video alleen is niet betrouwbaar genoeg voor consistente transparante loops. Eerste betrouwbare versie: consistente stilstaande vormen + hoogwaardige CSS/webanimatie. Daarna pas rigging of korte loop-animaties per character.
+- Alle nieuwe evolutie-assets blijven onder `img/lab/park2/<skill>/<stage>.*`; de gekozen drempels en assetherkomst blijven in de README vastgelegd zodat Claude en ChatGPT dezelfde bron volgen.
+
 **Finance** — Net Worth / Maandlasten / Wishlist / Portfolio / Debts.
 
 ---
@@ -168,5 +183,5 @@ Onderzocht n.a.v. Joey's zorg dat ideeën wegvallen. Bevestigd in het volledige 
 ---
 
 ## Changelog sinds v11.0-baseline
-- **v11.0 Park 2.0 (26-08-2026, ChatGPT/OpenAI)**: Joey koos karakterfamilie D. Vijf unieke, transparante 3D-assets gegenereerd en als levende companions bovenaan het Lab geplaatst. Echte data voedt level/score, schaal, mastery-aura en tuingroei. Toegevoegd: rondlopen, ademen/zweven, unieke AI/tennis/piano/hart/budget-effecten, tikreacties, detailpaneel, pauzeknop, responsive mobiele layout en reduced-motion-ondersteuning. Bewuste begrenzing: nog geen 4 losse afbeeldingen per evolutiefase en nog geen daily missions in de tuin; eerst Joey's reactie op deze live proef.
+- **v11.0 Park 2.0 (26-08-2026, ChatGPT/OpenAI)**: Joey koos karakterfamilie D. Vijf unieke, transparante 3D-assets gegenereerd en als levende companions bovenaan het Lab geplaatst. Echte data voedt level/score, schaal, mastery-aura en tuingroei. Toegevoegd: rondlopen, ademen/zweven, unieke AI/tennis/piano/hart/budget-effecten, tikreacties, detailpaneel, pauzeknop, responsive mobiele layout en reduced-motion-ondersteuning. Bewuste begrenzing: de 25 echte evolutie-assets en daily missions zijn nog niet gebouwd. Het verplichte evolutiecontract is na Joey's herinnering hierboven vastgelegd, zodat deze kernfunctie niet als “klaar” kan worden afgevinkt.
 - **v10.93 (24-08-2026)**: werkruimte-notities kregen een Persoonlijk/Venture-toggle binnen hetzelfde blokje (bewaard apart, terugwaarts compatibel met de net-geschoten platte tekst). Notion-ideeën-inbox aangemaakt ("🧠 Gamenfy — Ideeën & to-do voor Claudia") + het "ga verder"-protocol vastgelegd (Notion-inbox → Joey-to-do-lijst → pas dan een volledige review), ook als los skill-bestand in `.claude-skills/`. Origineel Notion-plan (mei 2025) opgezocht en tegen de huidige app gelegd — zie §5b. **Eigen fout gevangen tijdens bouwen**: een str_replace dupliceerde per ongeluk de WEBSITES_RESEARCH-declaratie (JS zou gecrasht zijn), gevonden bij validatie vóór het live ging. **Tweede fout gevangen**: een escape-teken in een shell-commando at het woord "investing" uit de nieuwe research-sectie op, ook gevonden en gefixt vóór commit.

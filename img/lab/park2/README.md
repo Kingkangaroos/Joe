@@ -20,3 +20,18 @@ Bestanden:
 - `budgeting.png` — calculator, geordende munten en groeispruit.
 
 De assets zijn transparante, tot maximaal 640 px verkleinde PNG's. De originele generaties blijven buiten de repository in de lokale Codex generated-images-map. Bewerk of vervang deze bestanden alleen als Joey een nieuwe karakterrichting kiest.
+
+## Verplicht vervolg: echte evoluties
+
+Deze vijf bestanden zijn alleen de huidige basisvormen. Joey heeft expliciet bevestigd dat visuele evolutie een kernfunctie is. De geplande structuur wordt:
+
+```text
+img/lab/park2/
+  ai_tools/starter.png ... mastery.png
+  tennis/starter.png ... mastery.png
+  piano/starter.png ... mastery.png
+  good_deed/starter.png ... mastery.png
+  budgeting/starter.png ... mastery.png
+```
+
+Dat zijn 25 consistente master-assets. Gewone skills gebruiken leveldrempels 1 / 10 / 25 / 50 / 75, met een extra prestige-effect op level 100. Habits gebruiken scorebanden 0-2 / 3-4 / 5-6 / 7-8 / 9-10 en mogen visueel terugvallen als de score daalt. Zie `GAMENFY-MASTER.md` voor het volledige evolutiecontract.
