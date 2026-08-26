@@ -2,6 +2,12 @@
 
 Last reviewed: 2026-08-26 by ChatGPT/OpenAI.
 
+## Completed immediate hardening
+
+On 2026-08-26, the unused `DELETE`, `TRUNCATE`, `REFERENCES` and `TRIGGER` table privileges were revoked from the `anon` and `authenticated` roles. The existing `SELECT`, `INSERT` and `UPDATE` privileges and policies were deliberately preserved so the current sync path keeps working. Verification confirmed all 15 state rows remained present and only the three required privileges remain for those roles.
+
+This is a limited reduction in exposure, not the final fix: anonymous reads and writes still need to be replaced by authenticated, owner-scoped access.
+
 ## Current risk
 
 Gamenfy grew from a personal prototype into a cloud-connected app while retaining anonymous, single-user sync assumptions. The repository is publicly readable and the central `public.app_state` table currently permits broad anonymous reads and writes. Some deployed Edge Functions do not require a Supabase JWT, and credentials have historically been placed directly in source.
