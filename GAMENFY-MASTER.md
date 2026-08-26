@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.93)
+# GAMENFY — Master Document (v11.0)
 
 > Single source of truth voor de Gamenfy dashboard. Lees dit eerst, elke sessie.
 > Joey noemt de assistent "Claudia". App-UI is Engels. Aesthetic: premium & licht ("Daylight"), niet donker/gamey.
@@ -41,7 +41,8 @@ Huidig gebruiksdoel (Joey's eigen woorden, 24-08-2026): voornamelijk zelfmotivat
 | `finance.html` | Net Worth / Maandlasten / Wishlist / Portfolio / **Debts** |
 | `health.html`, `po-water.html` | health & water trackers |
 | `settings.html` | focus-skills, PIN, quotes, Engine & nudges |
-| `lab.html` | Cartoon-poppetjes per skill (levend plaza) + link naar de 3 voorbeeldwebsites |
+| `lab.html` | **Park 2.0** met 5 premium skill-companions + het bewaarde v11-plaza met alle 45 skills + link naar de 3 voorbeeldwebsites |
+| `park2.css`, `park2.js` | Afgeschermde styling en interactie voor Park 2.0; leest echte levels/scores maar schrijft geen data |
 | `sites.html` + `site-klus.html`/`site-pt.html`/`site-rijschool.html` | 3 werkende voorbeeldwebsites voor de Websites-venture, losstaand van de app-infrastructuur (geen `?v=`-tag nodig) |
 | `xp.js` | skill-definities, XP/level-rekenkunde, gewoontes, `getSkillLevel` (unified), auto-check habits |
 | `ladders.js`, `quests.js`, `ventures.js` | tier-ladders, quest-content, venture-content |
@@ -74,7 +75,9 @@ Huidig gebruiksdoel (Joey's eigen woorden, 24-08-2026): voornamelijk zelfmotivat
 
 **Ventures** — 3 actief (zie §6), elk met een **werkruimte-notitieveld** (vrije tekst, per venture apart, gesynchroniseerd) en bij Websites Verkopen een onderzoek-samenvatting.
 
-**Lab** (`lab.html`) — 45 cartoon-poppetjes (DWTD-geïnspireerd: bonenlijf, dikke omlijning, grote ogen), per-categorie silhouet, devil/angel-inversie voor slechte gewoontes (reageert nu op recente score, niet lifetime-XP), Het Park als achtergrond. Bewust bewaard — Joey's eigen woorden: "dat zijn de ideeën die ik probeer uit te werken", een testomgeving voor AI-mogelijkheden die relevant zijn als hij ooit websites voor anderen bouwt. Link naar de 3 voorbeeldsites.
+**Lab** (`lab.html`) — bovenaan staat **Park 2.0 (optie D)**, op 26-08-2026 door ChatGPT/OpenAI gebouwd nadat Joey D als favoriete karakterrichting koos. De eerste vijf unieke companions zijn AI Tools, Tennis, Piano, Good Deed en Budgeting. Ze gebruiken Joey's echte level/0-10-score, lopen en pauzeren zelfstandig, hebben skill-specifieke idle-acties, reageren op tikken en tonen vier visuele groeifases (Ontwakend / In training / Gevorderd / Meesterschap). Het gemiddelde niveau bepaalt hoeveel begroeiing de tuin krijgt. De PNG-assets staan in `img/lab/park2/`; herkomst en ontwerpregels staan in de README daar.
+
+Het bestaande v11-plaza met alle 45 cartoon-poppetjes blijft **ongewijzigd onder Park 2.0** staan als vergelijking en functionele fallback: per-categorie silhouet, devil/angel-inversie voor slechte gewoontes, categorie-filter, Het Park/De Arena. Niet verwijderen wanneer Park 2.0 verder wordt ontwikkeld. Link naar de 3 voorbeeldsites blijft eveneens staan.
 
 **Finance** — Net Worth / Maandlasten / Wishlist / Portfolio / Debts.
 
@@ -165,4 +168,5 @@ Onderzocht n.a.v. Joey's zorg dat ideeën wegvallen. Bevestigd in het volledige 
 ---
 
 ## Changelog sinds v11.0-baseline
+- **v11.0 Park 2.0 (26-08-2026, ChatGPT/OpenAI)**: Joey koos karakterfamilie D. Vijf unieke, transparante 3D-assets gegenereerd en als levende companions bovenaan het Lab geplaatst. Echte data voedt level/score, schaal, mastery-aura en tuingroei. Toegevoegd: rondlopen, ademen/zweven, unieke AI/tennis/piano/hart/budget-effecten, tikreacties, detailpaneel, pauzeknop, responsive mobiele layout en reduced-motion-ondersteuning. Bewuste begrenzing: nog geen 4 losse afbeeldingen per evolutiefase en nog geen daily missions in de tuin; eerst Joey's reactie op deze live proef.
 - **v10.93 (24-08-2026)**: werkruimte-notities kregen een Persoonlijk/Venture-toggle binnen hetzelfde blokje (bewaard apart, terugwaarts compatibel met de net-geschoten platte tekst). Notion-ideeën-inbox aangemaakt ("🧠 Gamenfy — Ideeën & to-do voor Claudia") + het "ga verder"-protocol vastgelegd (Notion-inbox → Joey-to-do-lijst → pas dan een volledige review), ook als los skill-bestand in `.claude-skills/`. Origineel Notion-plan (mei 2025) opgezocht en tegen de huidige app gelegd — zie §5b. **Eigen fout gevangen tijdens bouwen**: een str_replace dupliceerde per ongeluk de WEBSITES_RESEARCH-declaratie (JS zou gecrasht zijn), gevonden bij validatie vóór het live ging. **Tweede fout gevangen**: een escape-teken in een shell-commando at het woord "investing" uit de nieuwe research-sectie op, ook gevonden en gefixt vóór commit.
