@@ -114,10 +114,10 @@ Op Joey's verzoek: zijn oorspronkelijke Gamenfy-visiedocument uit Notion opgezoc
 *Niets actief in de wachtrij op dit moment.* Alles wat deze sessie is gevraagd is afgerond en live.
 
 ### 📥 Als Joey "ga verder"/"go ahead" zegt zonder verdere context
-Vaste volgorde (vastgelegd 24-08-2026, ook als los skill-bestand in `.claude-skills/gamenfy-ga-verder.SKILL.md` — voeg dat zelf toe als Claude Skill als je wil dat dit automatisch gebeurt):
-1. **Eerst** Joey's Notion-pagina "🧠 Gamenfy — Ideeën & to-do voor Claudia" checken (sectie "📥 Nieuw") — dat heeft voorrang.
-2. **Dan pas** de 🧑 Joey to-do-lijst hieronder — check of er intussen antwoord kwam.
-3. **Alleen als beide leeg zijn**: een echte functionaliteitsreview tegen de live Supabase-data, niet alleen syntax.
+**Correctie 24-08-2026**: Joey wil NIET in Notion werken — dat was alleen bedoeld om eenmalig het originele plan op te halen (zie §5b), niet als doorlopende plek. Hij wil alles op één plek: in de app zelf. De Notion-ideeën-pagina die hier eerder stond is losgekoppeld van dit protocol.
+Vaste volgorde nu:
+1. **Eerst** de 🧑 Joey to-do-lijst hieronder — check of er intussen antwoord kwam.
+2. **Alleen als die leeg is**: een echte functionaliteitsreview tegen de live Supabase-data, niet alleen syntax.
 
 ### 🧑 Joey to-do (wacht op jou)
 - **Higgsfield-abonnement** — je zei woensdag. Gebruik bij voorkeur het aankooppad via de koppeling hier in de chat, niet de losse higgsfield.ai-website (andere prijzen, onduidelijk of ze dezelfde toegang geven).
