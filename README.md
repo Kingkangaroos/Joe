@@ -1,28 +1,37 @@
-# Personal Dashboard
+# Gamenfy
 
-A set of small, self-contained HTML apps that share a top bar.
+Gamenfy is Joey's personal, gamified Life OS: a PWA for skills, habits, missions, goals, ventures, health, finance, streaks and daily check-ins.
 
-## Deploy your own copy
+## Current architecture
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FRowanThistlebrooke%2FYTdashh1)
+- Plain HTML, CSS and JavaScript; no framework or build step.
+- Browser state in `localStorage`, mirrored to Supabase through `sync.js`.
+- Supabase Edge Functions power Jarvis, health imports and push notifications.
+- Vercel deploys `main` automatically to production.
+- The app UI is English; project documentation and collaboration notes are primarily Dutch.
 
-One click → Vercel signs you in, copies the repo to your GitHub, and deploys it. ~30 seconds to a live URL.
+The current functional and product source of truth is [`GAMENFY-MASTER.md`](GAMENFY-MASTER.md). Historical decisions through v10.92 are preserved in [`GAMENFY-HISTORY-ARCHIVE.md`](GAMENFY-HISTORY-ARCHIVE.md).
 
-## How to use
+## Important files
 
-Open any `.html` file directly in your browser — no build step, no install.
-
-| File | What it is |
+| File | Purpose |
 |---|---|
-| [index.html](index.html) | Goals tracker (Day Ring, Goal Ticker, To Do list) — the home page |
-| [health.html](health.html) | Supplement / daily stack tracker |
-| [po-water.html](po-water.html) | Water intake tracker |
-| [finance.html](finance.html) | Finances |
-| [gym.html](gym.html) | Progressive overload gym tracker |
-| [topbar.js](topbar.js) | Shared top bar — auto-injected into pages that `<script src="topbar.js">` |
+| `index.html` | Main dashboard: missions, agenda, check-ins and next moves |
+| `character.html` | Body, Skills, Goals and Ventures |
+| `lab.html` | Living skill-character Lab and example-sites entry point |
+| `finance.html` | Net worth, expenses, wishlist, portfolio and debts |
+| `health.html`, `po-water.html` | Health and water tracking |
+| `settings.html` | Focus skills, preferences and notification settings |
+| `xp.js` | Skills, XP, levels and habit consistency |
+| `sync.js` | Local/cloud state synchronization |
+| `ventures.js` | Venture definitions and progress |
+| `checkin.js` | Streaks and check-in flow |
+| `push.js`, `sw.js` | Web Push client and service worker |
 
-Each app stores its own state in browser `localStorage`. No accounts, no server.
+## Security status
 
-## Building from scratch
+The app began as a private single-user prototype and its current anonymous cloud-sync model is not suitable for public exposure. Do not add new personal data or integrations until the remediation plan in [`SECURITY.md`](SECURITY.md) is completed. Never commit new secrets or credentials.
 
-[BUILD_DASHBOARD.md](BUILD_DASHBOARD.md) is the prompt I gave Claude to generate `index.html` — paste it into Claude if you want to rebuild that page yourself.
+## AI collaboration
+
+Claude/Claudia and ChatGPT/OpenAI may both work on this repository. Follow [`AI-COLLABORATION.md`](AI-COLLABORATION.md) so changes remain attributable without restricting either assistant's access.

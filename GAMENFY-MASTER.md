@@ -1,4 +1,4 @@
-# GAMENFY — Master Document (v10.93)
+# GAMENFY — Master Document (current through v10.96)
 
 > Single source of truth voor de Gamenfy dashboard. Lees dit eerst, elke sessie.
 > Joey noemt de assistent "Claudia". App-UI is Engels. Aesthetic: premium & licht ("Daylight"), niet donker/gamey.
@@ -31,7 +31,7 @@ Huidig gebruiksdoel (Joey's eigen woorden, 24-08-2026): voornamelijk zelfmotivat
 - **Frontend:** platte HTML/CSS/JS, geen build-stap. Elke pagina een losstaand `.html`-bestand.
 - **Theme "Daylight":** `--bg #F4F3EF` · `--card #FFFFFF` · `--ink #15140F` · `--muted #6F6C63` · `--ember #D4633E` (accent) · `--gold #C9A227` · `--green #2E8B5F`. Fonts: Schibsted Grotesk (display), Inter (body), SF Mono (cijfers).
 - **Opslag:** `localStorage`, gespiegeld naar **Supabase** (`public.app_state`, JSONB) via `sync.js`. `localStorage.setItem` wordt globaal gepatcht — elke matchende schrijfactie triggert automatisch een sync-push, ook binnen hetzelfde tabblad.
-- **Repo:** `github.com/Kingkangaroos/Joe` (privé), Vercel auto-deploy op push naar main. Fresh GitHub-token elke sessie van Joey, nooit onthouden.
+- **Repo:** `github.com/Kingkangaroos/Joe` (**publiek per controle op 26-08-2026**), Vercel auto-deploy op push naar main. Publiek is geen gewenste securitygrens; zie `SECURITY.md`.
 - **Supabase project:** `ttxjsoahmtennnufgeqx`.
 
 | Bestand | Doel |
@@ -72,7 +72,7 @@ Huidig gebruiksdoel (Joey's eigen woorden, 24-08-2026): voornamelijk zelfmotivat
 
 **Goals** — losstaand van de oude Quests-structuur (die is dood, zie §5), eigen doelen met voortgang en activiteitenlog uit `xpLog`.
 
-**Ventures** — 3 actief (zie §6), elk met een **werkruimte-notitieveld** (vrije tekst, per venture apart, gesynchroniseerd) en bij Websites Verkopen een onderzoek-samenvatting.
+**Ventures** — 4 actief (zie §6), elk met een **werkruimte-notitieveld** (vrije tekst, per venture apart, gesynchroniseerd) en bij Websites Verkopen een onderzoek-samenvatting.
 
 **Lab** (`lab.html`) — 45 cartoon-poppetjes (DWTD-geïnspireerd: bonenlijf, dikke omlijning, grote ogen), per-categorie silhouet, devil/angel-inversie voor slechte gewoontes (reageert nu op recente score, niet lifetime-XP), Het Park als achtergrond. Bewust bewaard — Joey's eigen woorden: "dat zijn de ideeën die ik probeer uit te werken", een testomgeving voor AI-mogelijkheden die relevant zijn als hij ooit websites voor anderen bouwt. Link naar de 3 voorbeeldsites.
 
@@ -114,8 +114,10 @@ Op Joey's verzoek: zijn oorspronkelijke Gamenfy-visiedocument uit Notion opgezoc
 
 ## 7. Open items
 
-### 🤖 Claude to-do (kan ik zelfstandig oppakken)
-*Niets actief in de wachtrij op dit moment.* Alles wat deze sessie is gevraagd is afgerond en live.
+### 🤖 AI to-do (Claude of ChatGPT, met duidelijke attribution)
+- Securitymigratie voorbereiden en gefaseerd uitvoeren volgens `SECURITY.md`; niets live dichtzetten voordat de vervangende login/sync-route is getest.
+- Na Joey's keuze één eerstvolgende productrichting uitwerken: betrouwbaarheid, homepage/agenda, Living Characters/Higgsfield of Websites-venture.
+- Iedere wijziging labelen volgens `AI-COLLABORATION.md`, zodat Claude en ChatGPT elkaars werk herkennen.
 
 ### 📥 Als Joey "ga verder"/"go ahead" zegt zonder verdere context
 **Correctie 24-08-2026**: Joey wil NIET in Notion werken — dat was alleen bedoeld om eenmalig het originele plan op te halen (zie §5b), niet als doorlopende plek. Hij wil alles op één plek: in de app zelf. De Notion-ideeën-pagina die hier eerder stond is losgekoppeld van dit protocol.
@@ -124,10 +126,10 @@ Vaste volgorde nu:
 2. **Alleen als die leeg is**: een echte functionaliteitsreview tegen de live Supabase-data, niet alleen syntax.
 
 ### 🧑 Joey to-do (wacht op jou)
-- **Higgsfield-abonnement** — je zei woensdag. Gebruik bij voorkeur het aankooppad via de koppeling hier in de chat, niet de losse higgsfield.ai-website (andere prijzen, onduidelijk of ze dezelfde toegang geven).
-- **De `visibilitychange`-fix (v10.90) in de praktijk bevestigen** — check iets af, sluit de app zoals je normaal doet, en vraag me te controleren of het is aangekomen. Nog niet bevestigd te werken op jouw toestel.
+- **Higgsfield-richting kiezen** — abonnement is inmiddels aangeschaft; bepaal welk klein experiment als eerste bewijs moet leveren voordat er een batch wordt gegenereerd.
+- **Autosave in de praktijk blijven volgen** — v10.96 gebruikt een periodieke save als primaire verdediging; meld opnieuw als afvinkingen na normaal sluiten ontbreken.
 - **Websites-venture: welke branches/doelgroepen wil je specifiek bereiken?** — bepaalt of de huidige niche-aanname (klusbedrijven/PT) nog klopt of dat er een ander plan nodig is.
-- Apple Health-shortcut officieel afschrijven — grotendeels moot nu Fitbit werkt, jouw eigen taak als je het nog wil opruimen.
+- **Securitykeuze** — bepaal of Gamenfy uitsluitend persoonlijk blijft en welke loginvorm acceptabel is; dit bepaalt de veilige RLS-migratie.
 
 ---
 
@@ -156,13 +158,16 @@ Onderzocht n.a.v. Joey's zorg dat ideeën wegvallen. Bevestigd in het volledige 
 
 ## 8. Werkafspraak
 
-- Claudia antwoordt in het Nederlands; de app blijft Engels.
+- Assistenten antwoorden in het Nederlands; de app blijft Engels.
 - Bouw in fases, push per fase zodat Joey live kan testen.
 - Kritisch blijven, premium én functioneel houden.
 - **Nieuw vanaf v11**: elke open-items-lijst maakt expliciet onderscheid tussen wat Claudia zelfstandig kan oppakken en wat op Joey's input wacht — zodat hij zijn eigen actiepunten niet kwijtraakt tussen de technische regels door.
 - Per-venture werkruimtes zijn Joey's eigen aantekenveld, in mensentaal, niet iets dat Claudia namens hem invult.
+- Claude/Claudia en ChatGPT/OpenAI mogen naast elkaar blijven werken. Geen assistent verwijdert of overschrijft bewust de toegang of attributie van de ander; zie `AI-COLLABORATION.md`.
 
 ---
 
 ## Changelog sinds v11.0-baseline
+- **v10.96 (26-08-2026)**: periodieke autosave toegevoegd als primaire bescherming tegen verloren lokale wijzigingen; Apple Health-code opgeruimd en Fitbit/Google Health is de actieve gezondheidsroute.
+- **Contextcorrectie (26-08-2026, ChatGPT/OpenAI)**: actuele repo-/venture-/autosave-status gecorrigeerd; securityrisico en gezamenlijke AI-werkwijze apart vastgelegd zonder functionele productiecode of live toegangsregels te wijzigen.
 - **v10.93 (24-08-2026)**: werkruimte-notities kregen een Persoonlijk/Venture-toggle binnen hetzelfde blokje (bewaard apart, terugwaarts compatibel met de net-geschoten platte tekst). Notion-ideeën-inbox aangemaakt ("🧠 Gamenfy — Ideeën & to-do voor Claudia") + het "ga verder"-protocol vastgelegd (Notion-inbox → Joey-to-do-lijst → pas dan een volledige review), ook als los skill-bestand in `.claude-skills/`. Origineel Notion-plan (mei 2025) opgezocht en tegen de huidige app gelegd — zie §5b. **Eigen fout gevangen tijdens bouwen**: een str_replace dupliceerde per ongeluk de WEBSITES_RESEARCH-declaratie (JS zou gecrasht zijn), gevonden bij validatie vóór het live ging. **Tweede fout gevangen**: een escape-teken in een shell-commando at het woord "investing" uit de nieuwe research-sectie op, ook gevonden en gefixt vóór commit.
