@@ -106,11 +106,14 @@
         hero: 'https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop',
         status: 'active',
         phases: [
-          { id: 'p1', name: 'Richting kiezen', steps: [
-            { id: 's1', title: 'Lab-poppetjes: kies alternatief',  detail: 'Zie de werkruimte hieronder voor de 4 opties (A-D) en welk Higgsfield-model erbij hoort.', minutes: 15, xp: { ai_tools: 20 } },
-            { id: 's2', title: 'Het Park: kies alternatief',       detail: 'Statisch beeld, ambient video, dag/nacht-varianten, of outpaint van 1 foto.', minutes: 15, xp: { ai_tools: 20 } },
-            { id: 's3', title: 'Eigen avatar: wel of niet Soul trainen', detail: 'Uit je originele plan: de avatar die meegroeit met je level. Soul-training kost ~10 min en 5-20 foto\u2019s.', minutes: 15, xp: { ai_tools: 20 } },
-            { id: 's4', title: 'Skill-foto\u2019s: batch of per stuk',  detail: 'De ~19 resterende tegels: in 1 keer via Elements, of Pexels blijft de standaard en Higgsfield alleen bij echte gaten.', minutes: 15, xp: { ai_tools: 20 } },
+          { id: 'p0', name: 'Eerst dit — buiten deze venture', steps: [
+            { id: 's0', title: 'Websites-hero (Websites Verkopen)', detail: 'Enige stuk met een directe lijn naar je 1-jaarsdoel van \u20ac25-50k zelf verdiend \u2014 raakt outreach \u2192 klanten \u2192 omzet. Doe dit vo\u00f3r onderstaande, puur-motivatie stappen.', minutes: 20, xp: { ai_tools: 20 } },
+          ]},
+          { id: 'p1', name: 'Richting kiezen — geordend op waarde voor jou', steps: [
+            { id: 's3', title: 'Eigen avatar: wel of niet Soul trainen', detail: '#1 van de motivatie-stappen: rechtstreeks uit je originele visie, en jezelf zien groeien met je level is de sterkste intrinsieke motivator van de vier.', minutes: 15, xp: { ai_tools: 20 } },
+            { id: 's1', title: 'Lab-poppetjes: kies alternatief',  detail: '#2: je bezoekt het Lab regelmatig \u2014 hoogste zichtbaarheid van de vier. Zie de werkruimte voor de 4 opties (A-D) en welk model erbij hoort.', minutes: 15, xp: { ai_tools: 20 } },
+            { id: 's2', title: 'Het Park: kies alternatief',       detail: '#3: ambient achtergrond, wordt gezien maar niet actief bekeken \u2014 minder impact dan de personages zelf.', minutes: 15, xp: { ai_tools: 20 } },
+            { id: 's4', title: 'Skill-foto\u2019s: batch of per stuk',  detail: '#4, laagste prioriteit van de vier: minst frequent gezien (alleen in de Skills-grid), en Pexels dekt het meeste al gratis.', minutes: 15, xp: { ai_tools: 20 } },
           ]},
           { id: 'p2', name: 'Eerste uitvoering', steps: [
             { id: 's5', title: 'Stijl vastleggen als Element',  detail: 'Eén referentiebeeld opslaan zodat latere generaties dezelfde look delen \u2014 voorkomt 45x een net-andere stijl.', minutes: 20, xp: { ai_tools: 30, coding: 10 } },

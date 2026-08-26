@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.94" defer></script>
-<script src="topbar.js?v=10.94" defer></script>
-<script src="xp.js?v=10.94" defer></script>
-<script src="quests.js?v=10.94" defer></script>
-<script src="ladders.js?v=10.94" defer></script>
-<script src="ventures.js?v=10.94" defer></script>
+<script src="sync.js?v=10.95" defer></script>
+<script src="topbar.js?v=10.95" defer></script>
+<script src="xp.js?v=10.95" defer></script>
+<script src="quests.js?v=10.95" defer></script>
+<script src="ladders.js?v=10.95" defer></script>
+<script src="ventures.js?v=10.95" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1106,9 +1106,9 @@ textarea {
 .venture-notes-area {
   width:100%; min-height:90px; border:1px solid var(--line); border-radius:10px;
   padding:10px; font:inherit; font-size:13px; color:var(--ink); background:var(--bg);
-  resize:vertical; line-height:1.5;
+  resize:vertical; line-height:1.5; transition:min-height .2s ease-out;
 }
-.venture-notes-area:focus { outline:2px solid var(--ember); outline-offset:1px; border-color:var(--ember); }
+.venture-notes-area:focus { outline:2px solid var(--ember); outline-offset:1px; border-color:var(--ember); min-height:220px; }
 .venture-research-row { font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:8px; }
 .venture-research-row:last-of-type { margin-bottom:0; }
 .venture-research-row b { display:block; color:var(--ink); font-size:11px; font-weight:700;
