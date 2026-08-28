@@ -345,6 +345,29 @@
       ],
       milestones:{ 20:'2 hours/day deep work', 50:'4 hours/day deep work', 100:'6+ hours/day — Cal Newport level' },
     },
+    chess: {
+      xp:0, parentSkill:'mind', icon:'♟️', label:'Chess', active:true,
+      quickLog:[
+        {label:'Tactics practice (15 min)',       xp:15},
+        {label:'Rapid/classical game played',     xp:25},
+        {label:'Own game reviewed',               xp:20},
+        {label:'Lesson or study (30 min)',        xp:25},
+        {label:'OTB club/tournament game',        xp:50},
+      ],
+      milestones:{
+        1:  'Board Ready — set up the board and explain every piece',
+        3:  'Rules Locked — legal moves, check, mate, castling and promotion',
+        6:  'First Finishes — reliably solve mate-in-one positions',
+        10: 'Tactical Eye — spot forks, pins, skewers and hanging pieces',
+        18: 'Opening Discipline — develop, fight for the centre and castle',
+        30: 'Endgame Foundation — mate with king + queen and play basic pawn endings',
+        45: 'Rated Competitor — complete 30 rated rapid games and review your losses',
+        60: 'Club Player — stable 1200+ rating in one rapid pool over 20 games',
+        75: 'Strong Club Player — stable 1500+ in that same rapid pool',
+        90: 'Expert — stable 1800+ in that same rapid pool and analyse without an engine first',
+        100:'Mastery — 2000+ in that same rapid pool or an official 1800+ over-the-board rating',
+      },
+    },
     journaling: {
       xp:0, parentSkill:'mind', icon:'📓', label:'Journaling', active:true,
       quickLog:[
@@ -1388,6 +1411,7 @@
     endurance: 'Aerobic fitness is strongly linked to longevity and energy; a bigger engine means everyday life simply costs you less effort.',
     reading: "Reading is compounding for the mind — it borrows other people's decades of thinking and is tied to sharper focus and vocabulary.",
     focus: 'Deep, undistracted focus is where your best work lives; attention is trainable, and protecting it is a rare modern edge.',
+    chess: 'Chess turns calculation, pattern recognition and decision-making into immediate feedback. Reviewing your own games matters more than chasing quick wins — every mistake can become a reusable pattern.',
     journaling: 'Writing things down offloads mental clutter — expressive writing is linked in studies to lower stress and clearer thinking.',
     sales: 'Selling is just understanding what someone needs and helping them get it — a skill that pays in every job, venture and relationship.',
     marketing: "Marketing is empathy at scale: knowing who you're talking to and why they'd care. Master it and good work stops going unseen.",
