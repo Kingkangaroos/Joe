@@ -35,26 +35,39 @@
 .p2-agent::after{content:"";position:absolute;z-index:-1;width:56px;height:15px;border-radius:50%;left:16px;bottom:19px;background:rgba(0,0,0,.3);filter:blur(3px);transform:scale(var(--ground-scale,1));transition:transform .24s ease,opacity .24s ease}
 .p2-sprite{position:absolute;inset:0;display:block;transform-origin:50% 84%;transform:scaleX(var(--facing,1)) rotate(var(--lean,0deg));transition:transform .18s cubic-bezier(.2,.7,.3,1),filter .35s ease;will-change:transform}
 .p2-sprite::after{content:"";position:absolute;z-index:-1;inset:7px 3px 16px;border:1px solid rgba(255,229,154,.15);border-radius:50%;opacity:0;transform:scale(.78);transition:opacity .35s,transform .35s,box-shadow .35s}
-.p2-agent img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform-origin:50% 82%;animation:p2breathe var(--breath,2.8s) ease-in-out infinite;pointer-events:none}
-.p2-agent[data-skill="ai_tools"] img{animation-name:p2hover}
-.p2-agent[data-skill="tennis"] img{animation-name:p2ready;transform-origin:54% 82%}
-.p2-agent[data-skill="piano"] img{animation-name:p2piano}
-.p2-agent[data-skill="good_deed"] img{animation-name:p2heart;filter:drop-shadow(0 0 calc(3px + 8px * var(--mastery)) rgba(255,186,47,.68))}
-.p2-agent[data-skill="budgeting"] img{animation-name:p2budget}
-.p2-agent[data-skill="sleep"] img{animation-name:p2sleep;filter:drop-shadow(0 0 calc(2px + 8px * var(--mastery)) rgba(146,183,255,.58))}
-.p2-agent[data-skill="walking"] img{animation-name:p2stride}
-.p2-agent[data-skill="meditation"] img{animation-name:p2meditate;filter:drop-shadow(0 0 calc(3px + 9px * var(--mastery)) rgba(202,121,255,.56))}
-.p2-agent.is-moving img{animation-duration:var(--step-rate,.48s);animation-timing-function:ease-in-out;animation-iteration-count:infinite}
-.p2-agent.is-moving.p2-motion-gentle img{animation-name:p2walkGentle}
-.p2-agent.is-moving.p2-motion-hover img{animation-name:p2walkHover}
-.p2-agent.is-moving.p2-motion-dash img{animation-name:p2walkDash}
-.p2-agent.is-moving.p2-motion-stately img{animation-name:p2walkStately}
-.p2-agent.is-moving.p2-motion-shuffle img{animation-name:p2walkShuffle}
-.p2-agent.is-moving.p2-motion-float img{animation-name:p2walkFloat}
-.p2-agent.is-moving.p2-motion-stride img{animation-name:p2walkStride}
+.p2-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform-origin:50% 82%;animation:p2breathe var(--breath,2.8s) ease-in-out infinite;pointer-events:none}
+.p2-puppet{position:absolute;inset:0;display:block;opacity:0;pointer-events:none;will-change:opacity}
+.p2-rig-part{position:absolute;inset:0;display:block;will-change:transform}
+.p2-rig-part>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.p2-rig-body{z-index:2;clip-path:var(--rig-body-clip);transform-origin:50% 64%}
+.p2-rig-leg{z-index:1}
+.p2-rig-leg-left{clip-path:var(--rig-left-clip);transform-origin:var(--rig-left-origin)}
+.p2-rig-leg-right{clip-path:var(--rig-right-clip);transform-origin:var(--rig-right-origin)}
+.p2-agent.has-puppet-rig.is-moving .p2-art{opacity:0;animation:none}
+.p2-agent.has-puppet-rig.is-moving .p2-puppet{opacity:1}
+.p2-agent.has-puppet-rig.is-moving .p2-rig-body{animation:p2rigTrudge var(--step-rate,.48s) ease-in-out infinite}
+.p2-agent.has-puppet-rig.is-moving .p2-rig-leg-left{animation:p2rigStep var(--step-rate,.48s) cubic-bezier(.45,.03,.55,.97) infinite}
+.p2-agent.has-puppet-rig.is-moving .p2-rig-leg-right{animation:p2rigCounterStep var(--step-rate,.48s) cubic-bezier(.45,.03,.55,.97) infinite}
+.p2-agent.has-puppet-rig.p2-motion-hover.is-moving .p2-rig-body{animation-name:p2rigHoverBody}
+.p2-agent.has-puppet-rig.p2-motion-dash.is-moving .p2-rig-body{animation-name:p2rigDashBody}
+.p2-agent.has-puppet-rig.p2-motion-stately.is-moving .p2-rig-body{animation-name:p2rigStatelyBody}
+.p2-agent.has-puppet-rig.p2-motion-shuffle.is-moving .p2-rig-body{animation-name:p2rigShuffleBody}
+.p2-agent.has-puppet-rig[data-skill="sleep"].is-moving .p2-rig-body{animation-name:p2rigSleepBody}
+.p2-agent[data-skill="ai_tools"] .p2-art{animation-name:p2hover}
+.p2-agent[data-skill="tennis"] .p2-art{animation-name:p2ready;transform-origin:54% 82%}
+.p2-agent[data-skill="piano"] .p2-art{animation-name:p2piano}
+.p2-agent[data-skill="good_deed"] .p2-art{animation-name:p2heart}
+.p2-agent[data-skill="good_deed"] .p2-art,.p2-agent[data-skill="good_deed"] .p2-puppet{filter:drop-shadow(0 0 calc(3px + 8px * var(--mastery)) rgba(255,186,47,.68))}
+.p2-agent[data-skill="budgeting"] .p2-art{animation-name:p2budget}
+.p2-agent[data-skill="sleep"] .p2-art{animation-name:p2sleep}
+.p2-agent[data-skill="sleep"] .p2-art,.p2-agent[data-skill="sleep"] .p2-puppet{filter:drop-shadow(0 0 calc(2px + 8px * var(--mastery)) rgba(146,183,255,.58))}
+.p2-agent[data-skill="walking"] .p2-art{animation-name:p2stride}
+.p2-agent[data-skill="meditation"] .p2-art{animation-name:p2meditate;filter:drop-shadow(0 0 calc(3px + 9px * var(--mastery)) rgba(202,121,255,.56))}
+.p2-agent.is-moving:not(.has-puppet-rig) .p2-art{animation-duration:var(--step-rate,.48s);animation-timing-function:ease-in-out;animation-iteration-count:infinite}
+.p2-agent.is-moving:not(.has-puppet-rig).p2-motion-float .p2-art{animation-name:p2walkFloat}
 .p2-agent.is-settling .p2-sprite{transition-duration:.32s}
 .p2-agent.is-settling::after{opacity:.78}
-.p2-agent.is-reacting img{animation:.55s cubic-bezier(.2,.9,.3,1.4) p2react!important}
+.p2-agent.is-reacting .p2-art,.p2-agent.is-reacting .p2-puppet{animation:.55s cubic-bezier(.2,.9,.3,1.4) p2react!important}
 .p2-agent.p2-form-1 .p2-sprite{filter:saturate(.82) brightness(.94)}
 .p2-agent.p2-form-2 .p2-sprite{filter:saturate(.94) brightness(.98)}
 .p2-agent.p2-form-2 .p2-sprite::after{opacity:.2;transform:scale(.84)}
@@ -107,6 +120,14 @@
 @keyframes p2sleep{0%,100%{transform:translateY(1px) rotate(-1deg)}50%{transform:translateY(-4px) rotate(1deg)}}
 @keyframes p2stride{0%,76%,100%{transform:translateY(0) rotate(0)}82%{transform:translateY(-4px) rotate(-2deg)}89%{transform:translateY(-1px) rotate(2deg)}}
 @keyframes p2meditate{0%,100%{transform:translateY(1px) scale(.995)}50%{transform:translateY(-5px) scale(1.015)}}
+@keyframes p2rigStep{0%,100%{transform:rotate(var(--rig-back,-12deg)) translateY(0)}50%{transform:rotate(var(--rig-forward,12deg)) translateY(-1px)}}
+@keyframes p2rigCounterStep{0%,100%{transform:rotate(var(--rig-forward,12deg)) translateY(-1px)}50%{transform:rotate(var(--rig-back,-12deg)) translateY(0)}}
+@keyframes p2rigTrudge{0%,50%,100%{transform:translateY(0) scale(1.025,.975)}25%,75%{transform:translateY(var(--rig-lift,-3px)) scale(.98,1.025)}}
+@keyframes p2rigHoverBody{0%,50%,100%{transform:translateY(-1px) scale(1.015,.985)}25%,75%{transform:translateY(var(--rig-lift,-3px)) scale(.99,1.02) rotate(.4deg)}}
+@keyframes p2rigDashBody{0%,50%,100%{transform:translateY(1px) scale(1.055,.945) rotate(-.7deg)}25%,75%{transform:translateY(var(--rig-lift,-5px)) scale(.955,1.055) rotate(.8deg)}}
+@keyframes p2rigStatelyBody{0%,50%,100%{transform:translateY(0) scale(1.012,.988)}25%,75%{transform:translateY(var(--rig-lift,-2px)) scale(.993,1.01)}}
+@keyframes p2rigShuffleBody{0%,50%,100%{transform:translate(0,0) scale(1.02,.98)}25%{transform:translate(1px,var(--rig-lift,-2px)) scale(.985,1.015)}75%{transform:translate(-1px,var(--rig-lift,-2px)) scale(.985,1.015)}}
+@keyframes p2rigSleepBody{0%,50%,100%{transform:translateY(0) rotate(-.5deg) scale(1.01,.99)}25%,75%{transform:translateY(var(--rig-lift,-2px)) rotate(.5deg) scale(.99,1.015)}}
 @keyframes p2walkGentle{0%,100%{transform:translateY(0) rotate(-.7deg)}25%{transform:translateY(-2px) rotate(.35deg)}50%{transform:translateY(-3.4px) rotate(.7deg)}75%{transform:translateY(-1px) rotate(-.25deg)}}
 @keyframes p2walkHover{0%,100%{transform:translateY(-1px) rotate(-.4deg)}35%{transform:translateY(-4.5px) rotate(.8deg)}70%{transform:translateY(-2px) rotate(-.2deg)}}
 @keyframes p2walkDash{0%,100%{transform:translateY(0) rotate(-1.6deg) scaleY(.985)}30%{transform:translateY(-5px) rotate(1.1deg) scaleY(1.025)}62%{transform:translateY(-1px) rotate(.5deg) scaleY(.99)}}
@@ -129,4 +150,4 @@
 @keyframes p2crown{50%{transform:translateX(-50%) translateY(-2px) scale(1.08);filter:brightness(1.18)}}
 @keyframes p2focus{0%{transform:scale(.7);opacity:.8}100%{transform:scale(1.13);opacity:0}}
 @media (max-width:390px){.park2-stage{height:400px}.p2-agent{width:76px;height:100px;margin:-69px 0 0 -38px}.park2-roster button{font-size:8px;padding-inline:2px}.park2-title{font-size:17px}.park2-detail-state{font-size:8px;white-space:normal;text-align:right}.park2-evolution-track{grid-template-columns:repeat(5,10px) 1fr;gap:4px}.park2-evolution-track span{font-size:7px}}
-@media (prefers-reduced-motion:reduce){.park2 *{animation:none!important}.park2-live-dot{box-shadow:none}.park2-sound{display:none}.p2-sprite{transition:none}}
+@media (prefers-reduced-motion:reduce){.park2 *{animation:none!important}.park2-live-dot{box-shadow:none}.park2-sound{display:none}.p2-sprite{transition:none}.p2-agent.has-puppet-rig .p2-art{opacity:1}.p2-agent.has-puppet-rig .p2-puppet{display:none}}

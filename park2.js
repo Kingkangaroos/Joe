@@ -3,18 +3,25 @@
 
   var CHARACTERS = [
     { key:'ai_tools', label:'AI Tools', image:'img/lab/park2/ai-tools.png', type:'skill', home:[.17,.43], pace:.48, motion:'hover', roam:.21,
+      rig:{ body:'polygon(0 0,100% 0,100% 78%,78% 78%,70% 59%,31% 59%,23% 78%,0 78%)', left:'polygon(20% 54%,51% 54%,55% 96%,17% 96%)', right:'polygon(48% 54%,82% 54%,86% 96%,45% 96%)', leftOrigin:'37% 59%', rightOrigin:'63% 59%', swing:'11deg', lift:'-2.5px' },
       states:['Scant het park','Bouwt een nieuw systeem','Analyseert patronen'], copy:'Wordt scherper, sneller en uitgebreider naarmate je meer met AI bouwt.' },
     { key:'tennis', label:'Tennis', image:'img/lab/park2/tennis.png', type:'skill', home:[.78,.46], pace:.88, motion:'dash', roam:.27,
+      rig:{ body:'polygon(0 0,100% 0,100% 75%,80% 75%,70% 55%,31% 55%,21% 75%,0 75%)', left:'polygon(17% 51%,58% 51%,60% 98%,14% 98%)', right:'polygon(54% 51%,100% 51%,100% 98%,50% 98%)', leftOrigin:'39% 57%', rightOrigin:'67% 57%', swing:'19deg', lift:'-5px' },
       states:['Oefent de backhand','Jaagt op de bal','Neemt een korte adempauze'], copy:'Techniek en houding groeien mee: van oefenen naar wedstrijdklaar.' },
     { key:'piano', label:'Piano', image:'img/lab/park2/piano.png', type:'skill', home:[.68,.71], pace:.28, motion:'stately', roam:.11,
+      rig:{ body:'polygon(0 0,100% 0,100% 82%,82% 82%,75% 67%,27% 67%,20% 82%,0 82%)', left:'polygon(17% 63%,48% 63%,48% 98%,14% 98%)', right:'polygon(61% 63%,92% 63%,96% 98%,59% 98%)', leftOrigin:'34% 68%', rightOrigin:'75% 68%', swing:'6deg', lift:'-1.5px' },
       states:['Speelt een kleine frase','Luistert naar de stilte','Oefent dezelfde maat opnieuw'], copy:'Klank, expressie en podiumuitstraling worden rijker bij ieder nieuw niveau.' },
     { key:'good_deed', label:'Good Deed', image:'img/lab/park2/good-deed.png', type:'habit', home:[.42,.40], pace:.52, motion:'gentle', roam:.20,
+      rig:{ body:'polygon(0 0,100% 0,100% 83%,81% 83%,70% 61%,30% 61%,20% 83%,0 83%)', left:'polygon(22% 58%,54% 58%,56% 98%,18% 98%)', right:'polygon(47% 58%,82% 58%,86% 98%,45% 98%)', leftOrigin:'38% 64%', rightOrigin:'63% 64%', swing:'12deg', lift:'-3px' },
       states:['Helpt een parkgenoot','Laat het hart opladen','Kijkt wie iets nodig heeft'], copy:'Je dagelijkse goede daden houden zijn hart warm en zijn handen krachtig.' },
     { key:'budgeting', label:'Budgeting', image:'img/lab/park2/budgeting.png', type:'habit', home:[.34,.72], pace:.38, motion:'shuffle', roam:.16,
+      rig:{ body:'polygon(0 0,100% 0,100% 82%,78% 82%,69% 61%,31% 61%,22% 82%,0 82%)', left:'polygon(22% 58%,53% 58%,55% 98%,18% 98%)', right:'polygon(47% 58%,80% 58%,84% 98%,45% 98%)', leftOrigin:'38% 64%', rightOrigin:'62% 64%', swing:'8deg', lift:'-2px' },
       states:['Telt de voorraad','Plant nieuwe groei','Zet alles netjes op een rij'], copy:'Consistent plannen laat de muntvoorraad én de tuin rondom hem groeien.' },
     { key:'sleep', label:'Sleep', image:'img/lab/park2/sleep.png', type:'habit', home:[.12,.76], pace:.22, motion:'float', roam:.13,
+      rig:{ body:'polygon(0 0,100% 0,100% 86%,79% 86%,69% 62%,31% 62%,21% 86%,0 86%)', left:'polygon(24% 58%,54% 58%,56% 98%,20% 98%)', right:'polygon(47% 58%,77% 58%,82% 98%,45% 98%)', leftOrigin:'39% 65%', rightOrigin:'61% 65%', swing:'7deg', lift:'-2px' },
       states:['Vangt een droomster','Maakt het kussen zacht','Laadt op onder de maan'], copy:'Rustige nachten vullen haar sterrenlicht en maken haar wolken steeds krachtiger.' },
     { key:'walking', label:'10k Steps', image:'img/lab/park2/walking.png', type:'habit', home:[.87,.72], pace:1, motion:'stride', roam:.31,
+      rig:{ body:'polygon(0 0,100% 0,100% 82%,85% 82%,71% 58%,29% 58%,15% 82%,0 82%)', left:'polygon(10% 53%,61% 53%,63% 100%,7% 100%)', right:'polygon(47% 53%,93% 53%,97% 100%,44% 100%)', leftOrigin:'37% 61%', rightOrigin:'65% 61%', swing:'22deg', lift:'-5.5px' },
       states:['Verkent een nieuwe route','Telt iedere stap','Zet de vaart erin'], copy:'Elke actieve dag geeft deze verkenner meer uithoudingsvermogen, uitrusting en bereik.' },
     { key:'meditation', label:'Meditation', image:'img/lab/park2/meditation.png', type:'habit', home:[.55,.58], pace:.16, motion:'float', roam:.09,
       states:['Zoekt de stilte','Laat de kristallen ademen','Brengt het park tot rust'], copy:'Consistente meditatie opent nieuwe lotusblaadjes en versterkt haar kalme aura.' }
@@ -64,11 +71,22 @@
     return { stage:stage, index:stageIndex, next:next, nextAt:nextAt, progress:progress, prestige:!data.habit&&data.display>=100 };
   }
 
+  function setCharacterArt(owner, src) {
+    if (!owner) return;
+    var artwork = owner.querySelectorAll ? owner.querySelectorAll('[data-character-art]') : [];
+    if (!artwork.length) {
+      var fallback = owner.querySelector && owner.querySelector('img');
+      if (fallback) fallback.src = src;
+      return;
+    }
+    Array.prototype.forEach.call(artwork,function(image){ image.src=src; });
+  }
+
   function loadEvolutionImage(img,config,evolution,owner) {
     var candidate='img/lab/park2/'+(config.assetKey||config.key)+'/'+evolution.stage.key+'.png';
     var probe=new Image();
     probe.onload=function(){
-      img.src=candidate;img.dataset.evolutionAsset='true';
+      setCharacterArt(owner,candidate);img.dataset.evolutionAsset='true';
       if (owner) owner.classList.add('has-evolution-art');
     };
     probe.onerror=function(){
@@ -99,13 +117,30 @@
     var evolution = evolutionFor(data);
     var button = document.createElement('button');
     button.type = 'button';
-    button.className = 'p2-agent p2-motion-'+(config.motion||'gentle')+' p2-form-'+(evolution.index+1)+(evolution.prestige?' is-prestige':'');
+    button.className = 'p2-agent p2-motion-'+(config.motion||'gentle')+' p2-form-'+(evolution.index+1)+(config.rig?' has-puppet-rig':'')+(evolution.prestige?' is-prestige':'');
     button.dataset.skill = config.key;
     button.dataset.evolution = evolution.stage.key;
     button.setAttribute('aria-label', config.label + ', ' + (data.habit ? 'score ' : 'level ') + data.display);
     button.style.setProperty('--mastery', (data.visual/100).toFixed(2));
     button.style.setProperty('--breath', (3.1 - data.visual/100).toFixed(2) + 's');
-    button.innerHTML = '<span class="p2-sprite"><img src="'+config.image+'" alt="" draggable="false"></span>'
+    if (config.rig) {
+      button.style.setProperty('--rig-body-clip',config.rig.body);
+      button.style.setProperty('--rig-left-clip',config.rig.left);
+      button.style.setProperty('--rig-right-clip',config.rig.right);
+      button.style.setProperty('--rig-left-origin',config.rig.leftOrigin);
+      button.style.setProperty('--rig-right-origin',config.rig.rightOrigin);
+      button.style.setProperty('--rig-forward',config.rig.swing);
+      button.style.setProperty('--rig-back','-'+config.rig.swing);
+      button.style.setProperty('--rig-lift',config.rig.lift);
+    }
+    var puppet = config.rig
+      ? '<span class="p2-puppet" aria-hidden="true">'
+        + '<span class="p2-rig-part p2-rig-leg p2-rig-leg-left"><img data-character-art src="'+config.image+'" alt="" draggable="false"></span>'
+        + '<span class="p2-rig-part p2-rig-leg p2-rig-leg-right"><img data-character-art src="'+config.image+'" alt="" draggable="false"></span>'
+        + '<span class="p2-rig-part p2-rig-body"><img data-character-art src="'+config.image+'" alt="" draggable="false"></span>'
+        + '</span>'
+      : '';
+    button.innerHTML = '<span class="p2-sprite"><img class="p2-art" data-character-art src="'+config.image+'" alt="" draggable="false">'+puppet+'</span>'
       + '<span class="p2-effect" aria-hidden="true"></span>'
       + '<span class="p2-badge"><span class="p2-agent-name">'+config.label+'</span><strong>'+(data.habit ? data.display+'/10' : 'L'+data.display)+'</strong></span>';
     agentsEl.appendChild(button);

@@ -52,10 +52,13 @@ class Element {
     this._innerHTML = String(value);
     this.children = [];
     if (this.classList.contains('p2-agent') && this._innerHTML.includes('<img')) {
-      const img = new Element('img');
-      const match = this._innerHTML.match(/<img src="([^"]+)"/);
-      img.src = match ? match[1] : '';
-      this.children.push(img);
+      const matches = Array.from(this._innerHTML.matchAll(/<img(?: [^>]*)? src="([^"]+)"[^>]*>/g));
+      matches.forEach(match => {
+        const img = new Element('img');
+        img.src = match[1];
+        if (match[0].includes('data-character-art')) img.dataset.characterArt = '';
+        this.children.push(img);
+      });
     }
     if (this.id === 'park2Detail' && this._innerHTML.includes('park2FocusToggle')) {
       const button = new Element('button', 'park2FocusToggle');
@@ -71,6 +74,12 @@ class Element {
   querySelector(selector) {
     if (selector === 'img') return this.children.find(child => child.tagName === 'IMG') || null;
     return null;
+  }
+  querySelectorAll(selector) {
+    if (selector === '[data-character-art]') {
+      return this.children.filter(child => child.tagName === 'IMG' && 'characterArt' in child.dataset);
+    }
+    return [];
   }
 }
 
@@ -138,6 +147,7 @@ const sandbox = {
 sandboxWindow.addEventListener = () => {};
 
 const source = fs.readFileSync(path.join(__dirname, '..', 'park2.js'), 'utf8');
+const styles = fs.readFileSync(path.join(__dirname, '..', 'park2.css'), 'utf8');
 vm.runInNewContext(source, sandbox, { filename:'park2.js' });
 
 assert.equal(agents.children.length, 8, 'all eight companions render');
@@ -152,6 +162,11 @@ assert.equal(bySkill('good_deed').dataset.evolution, 'expert');
 assert.ok(bySkill('ai_tools').classList.contains('is-prestige'), 'level 100 gets prestige');
 assert.equal(bySkill('sleep').querySelector('img').src, 'img/lab/park2/sleep/advanced.png');
 assert.equal(bySkill('meditation').querySelector('img').src, 'img/lab/park2/meditation/mastery.png');
+assert.equal(agents.children.filter(agent => agent.classList.contains('has-puppet-rig')).length, 7, 'seven walking characters use jointed puppet rigs');
+assert.ok(!bySkill('meditation').classList.contains('has-puppet-rig'), 'the floating meditation character stays intentionally legless');
+assert.equal(bySkill('walking').querySelectorAll('[data-character-art]').length, 4, 'a rig has one idle image plus three articulated layers');
+assert.ok(bySkill('walking').querySelectorAll('[data-character-art]').every(image => image.src === 'img/lab/park2/walking.png'), 'all fallback rig layers stay on the same artwork');
+assert.ok(bySkill('sleep').querySelectorAll('[data-character-art]').every(image => image.src === 'img/lab/park2/sleep/advanced.png'), 'evolution artwork updates every rig layer together');
 const asset = relative => path.join(__dirname, '..', 'img', 'lab', 'park2', relative);
 const digest = relative => crypto.createHash('sha256').update(fs.readFileSync(asset(relative))).digest('hex');
 ['sleep/advanced.png','meditation/advanced.png','walking/advanced.png','walking/mastery.png'].forEach(relative => {
@@ -164,6 +179,9 @@ assert.notEqual(digest('meditation.png'), digest('meditation/advanced.png'), 'Me
 assert.notEqual(digest('walking.png'), digest('walking/advanced.png'), 'Walking Advanced is a real distinct form');
 assert.notEqual(digest('walking/advanced.png'), digest('walking/mastery.png'), 'Walking Mastery differs from Advanced');
 assert.ok(source.includes('p2-sprite'), 'characters use a separate sprite wrapper for smooth turning');
+assert.ok(source.includes('p2-puppet'), 'characters expose an articulated puppet layer');
+assert.ok(styles.includes('@keyframes p2rigStep'), 'the left and right legs have a true step cycle');
+assert.ok(styles.includes('@keyframes p2rigTrudge'), 'the torso has its own weight-shift cycle');
 assert.ok(bySkill('walking').classList.contains('p2-motion-stride'), 'walking has its own gait');
 assert.ok(bySkill('meditation').classList.contains('p2-motion-float'), 'meditation keeps a floating gait');
 
