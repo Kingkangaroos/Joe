@@ -2,21 +2,21 @@
   'use strict';
 
   var CHARACTERS = [
-    { key:'ai_tools', label:'AI Tools', image:'img/lab/park2/ai-tools.png', type:'skill', home:[.17,.43], pace:.48,
+    { key:'ai_tools', label:'AI Tools', image:'img/lab/park2/ai-tools.png', type:'skill', home:[.17,.43], pace:.48, motion:'hover', roam:.21,
       states:['Scant het park','Bouwt een nieuw systeem','Analyseert patronen'], copy:'Wordt scherper, sneller en uitgebreider naarmate je meer met AI bouwt.' },
-    { key:'tennis', label:'Tennis', image:'img/lab/park2/tennis.png', type:'skill', home:[.78,.46], pace:.88,
+    { key:'tennis', label:'Tennis', image:'img/lab/park2/tennis.png', type:'skill', home:[.78,.46], pace:.88, motion:'dash', roam:.27,
       states:['Oefent de backhand','Jaagt op de bal','Neemt een korte adempauze'], copy:'Techniek en houding groeien mee: van oefenen naar wedstrijdklaar.' },
-    { key:'piano', label:'Piano', image:'img/lab/park2/piano.png', type:'skill', home:[.68,.71], pace:.28,
+    { key:'piano', label:'Piano', image:'img/lab/park2/piano.png', type:'skill', home:[.68,.71], pace:.28, motion:'stately', roam:.11,
       states:['Speelt een kleine frase','Luistert naar de stilte','Oefent dezelfde maat opnieuw'], copy:'Klank, expressie en podiumuitstraling worden rijker bij ieder nieuw niveau.' },
-    { key:'good_deed', label:'Good Deed', image:'img/lab/park2/good-deed.png', type:'habit', home:[.42,.40], pace:.52,
+    { key:'good_deed', label:'Good Deed', image:'img/lab/park2/good-deed.png', type:'habit', home:[.42,.40], pace:.52, motion:'gentle', roam:.20,
       states:['Helpt een parkgenoot','Laat het hart opladen','Kijkt wie iets nodig heeft'], copy:'Je dagelijkse goede daden houden zijn hart warm en zijn handen krachtig.' },
-    { key:'budgeting', label:'Budgeting', image:'img/lab/park2/budgeting.png', type:'habit', home:[.34,.72], pace:.38,
+    { key:'budgeting', label:'Budgeting', image:'img/lab/park2/budgeting.png', type:'habit', home:[.34,.72], pace:.38, motion:'shuffle', roam:.16,
       states:['Telt de voorraad','Plant nieuwe groei','Zet alles netjes op een rij'], copy:'Consistent plannen laat de muntvoorraad én de tuin rondom hem groeien.' },
-    { key:'sleep', label:'Sleep', image:'img/lab/park2/sleep.png', type:'habit', home:[.12,.76], pace:.22,
+    { key:'sleep', label:'Sleep', image:'img/lab/park2/sleep.png', type:'habit', home:[.12,.76], pace:.22, motion:'float', roam:.13,
       states:['Vangt een droomster','Maakt het kussen zacht','Laadt op onder de maan'], copy:'Rustige nachten vullen haar sterrenlicht en maken haar wolken steeds krachtiger.' },
-    { key:'walking', label:'10k Steps', image:'img/lab/park2/walking.png', type:'habit', home:[.87,.72], pace:1,
+    { key:'walking', label:'10k Steps', image:'img/lab/park2/walking.png', type:'habit', home:[.87,.72], pace:1, motion:'stride', roam:.31,
       states:['Verkent een nieuwe route','Telt iedere stap','Zet de vaart erin'], copy:'Elke actieve dag geeft deze verkenner meer uithoudingsvermogen, uitrusting en bereik.' },
-    { key:'meditation', label:'Meditation', image:'img/lab/park2/meditation.png', type:'habit', home:[.55,.58], pace:.16,
+    { key:'meditation', label:'Meditation', image:'img/lab/park2/meditation.png', type:'habit', home:[.55,.58], pace:.16, motion:'float', roam:.09,
       states:['Zoekt de stilte','Laat de kristallen ademen','Brengt het park tot rust'], copy:'Consistente meditatie opent nieuwe lotusblaadjes en versterkt haar kalme aura.' }
   ];
 
@@ -64,11 +64,17 @@
     return { stage:stage, index:stageIndex, next:next, nextAt:nextAt, progress:progress, prestige:!data.habit&&data.display>=100 };
   }
 
-  function loadEvolutionImage(img,config,evolution) {
+  function loadEvolutionImage(img,config,evolution,owner) {
     var candidate='img/lab/park2/'+(config.assetKey||config.key)+'/'+evolution.stage.key+'.png';
     var probe=new Image();
-    probe.onload=function(){img.src=candidate;img.dataset.evolutionAsset='true';};
-    probe.onerror=function(){img.dataset.evolutionAsset='fallback';};
+    probe.onload=function(){
+      img.src=candidate;img.dataset.evolutionAsset='true';
+      if (owner) owner.classList.add('has-evolution-art');
+    };
+    probe.onerror=function(){
+      img.dataset.evolutionAsset='fallback';
+      if (owner) owner.classList.add('uses-evolution-fallback');
+    };
     probe.src=candidate;
   }
 
@@ -93,17 +99,17 @@
     var evolution = evolutionFor(data);
     var button = document.createElement('button');
     button.type = 'button';
-    button.className = 'p2-agent p2-form-'+(evolution.index+1)+(evolution.prestige?' is-prestige':'');
+    button.className = 'p2-agent p2-motion-'+(config.motion||'gentle')+' p2-form-'+(evolution.index+1)+(evolution.prestige?' is-prestige':'');
     button.dataset.skill = config.key;
     button.dataset.evolution = evolution.stage.key;
     button.setAttribute('aria-label', config.label + ', ' + (data.habit ? 'score ' : 'level ') + data.display);
     button.style.setProperty('--mastery', (data.visual/100).toFixed(2));
     button.style.setProperty('--breath', (3.1 - data.visual/100).toFixed(2) + 's');
-    button.innerHTML = '<img src="'+config.image+'" alt="" draggable="false">'
+    button.innerHTML = '<span class="p2-sprite"><img src="'+config.image+'" alt="" draggable="false"></span>'
       + '<span class="p2-effect" aria-hidden="true"></span>'
       + '<span class="p2-badge"><span class="p2-agent-name">'+config.label+'</span><strong>'+(data.habit ? data.display+'/10' : 'L'+data.display)+'</strong></span>';
     agentsEl.appendChild(button);
-    loadEvolutionImage(button.querySelector('img'),config,evolution);
+    loadEvolutionImage(button.querySelector('img'),config,evolution,button);
 
     var roster = document.createElement('button');
     roster.type = 'button'; roster.textContent = config.label;
@@ -113,7 +119,8 @@
       config:config, data:data, evolution:evolution, el:button, roster:roster,
       x:config.home[0]*width, y:config.home[1]*height,
       targetX:config.home[0]*width, targetY:config.home[1]*height,
-      pause:70 + index*22, stateIndex:index%config.states.length, moving:false
+      pause:720 + index*145, stateIndex:index%config.states.length, moving:false,
+      vx:0, vy:0, facing:index%2 ? -1 : 1, wander:Math.random()*Math.PI*2
     };
     button.onclick = roster.onclick = function () {
       if (focusedAgent) setFocus(a, true);
@@ -181,38 +188,87 @@
 
   function newTarget(a) {
     if (focusedAgent) return;
-    var roam = a.config.key === 'piano' ? .11 : .2;
+    var roam = a.config.roam || .2;
     var x = a.config.home[0] + (Math.random()-.5)*roam*2;
     var y = a.config.home[1] + (Math.random()-.5)*roam*1.25;
     a.targetX = Math.max(55, Math.min(width-55, x*width));
     a.targetY = Math.max(215, Math.min(height-43, y*height));
-    a.pause = 80 + Math.random()*210;
+    a.pause = 0;
     a.stateIndex = Math.floor(Math.random()*a.config.states.length);
   }
 
+  function restDuration(a) {
+    if (a.config.motion==='dash' || a.config.motion==='stride') return 520 + Math.random()*1250;
+    if (a.config.motion==='float') return 1500 + Math.random()*2600;
+    if (a.config.motion==='stately') return 1250 + Math.random()*2100;
+    return 850 + Math.random()*1900;
+  }
+
+  function separation(a) {
+    if (focusedAgent) return { x:0, y:0 };
+    var pushX=0, pushY=0;
+    agents.forEach(function(other){
+      if (other===a) return;
+      var dx=a.x-other.x, dy=(a.y-other.y)*1.35;
+      var distance=Math.sqrt(dx*dx+dy*dy);
+      if (!distance || distance>=72) return;
+      var strength=(72-distance)/72*18;
+      pushX+=dx/distance*strength;
+      pushY+=dy/distance*strength*.55;
+    });
+    return { x:pushX, y:pushY };
+  }
+
   function updateAgent(a, delta) {
-    if (a.pause > 0) { a.pause -= delta*.06; a.moving = false; }
-    else {
-      var dx = a.targetX-a.x, dy = a.targetY-a.y;
-      var dist = Math.sqrt(dx*dx+dy*dy);
-      if (dist < 3) {
-        if (!focusedAgent) newTarget(a); else a.pause=20;
-        a.moving = false;
-      }
-      else {
-        var speed = (.016 + a.config.pace*.018) * delta;
-        a.x += dx/dist*speed; a.y += dy/dist*speed; a.moving = true;
+    var dt=Math.max(.001,Math.min(50,delta)/1000);
+    var dx=a.targetX-a.x, dy=a.targetY-a.y;
+    var dist=Math.sqrt(dx*dx+dy*dy);
+    var desiredX=0, desiredY=0;
+    if (!focusedAgent && a.pause>0) {
+      a.pause-=delta;
+      if (a.pause<=0) newTarget(a);
+    } else if (dist<5) {
+      if (!focusedAgent && a.pause<=0) a.pause=restDuration(a);
+    } else {
+      var maxSpeed=18+a.config.pace*42;
+      var arrival=Math.max(46,76-a.config.pace*18);
+      var desiredSpeed=maxSpeed*Math.min(1,dist/arrival);
+      desiredX=dx/dist*desiredSpeed;
+      desiredY=dy/dist*desiredSpeed;
+      if (!focusedAgent) {
+        var avoid=separation(a);
+        a.wander+=dt*(.7+a.config.pace*.55);
+        desiredX+=avoid.x+Math.cos(a.wander)*1.4;
+        desiredY+=avoid.y+Math.sin(a.wander*.73)*.9;
       }
     }
+    var accelerating=Math.abs(desiredX)+Math.abs(desiredY)>1;
+    var response=accelerating ? 3.2+a.config.pace*2.8 : 5.6;
+    var blend=Math.min(1,response*dt);
+    a.vx+=(desiredX-a.vx)*blend;
+    a.vy+=(desiredY-a.vy)*blend;
+    if (!accelerating && Math.abs(a.vx)<.35) a.vx=0;
+    if (!accelerating && Math.abs(a.vy)<.35) a.vy=0;
+    a.x+=a.vx*dt; a.y+=a.vy*dt;
+    a.x=Math.max(48,Math.min(width-48,a.x));
+    a.y=Math.max(205,Math.min(height-40,a.y));
+    var speed=Math.sqrt(a.vx*a.vx+a.vy*a.vy);
+    a.moving=speed>3.2 && dist>4;
+    if (Math.abs(a.vx)>2.4) a.facing=a.vx<0 ? -1 : 1;
     var perspective = .82 + (a.y/height)*.23;
     var levelScale = .92 + a.data.visual/100*.13;
+    var lean=a.moving ? Math.max(-4,Math.min(4,a.vx/(18+a.config.pace*42)*4)) : 0;
+    var stepRate=Math.max(.34,.72-speed/145);
     a.el.style.setProperty('--x', a.x.toFixed(1)+'px');
     a.el.style.setProperty('--y', a.y.toFixed(1)+'px');
     a.el.style.setProperty('--scale', (perspective*levelScale).toFixed(3));
+    a.el.style.setProperty('--facing', a.facing);
+    a.el.style.setProperty('--lean', lean.toFixed(2)+'deg');
+    a.el.style.setProperty('--step-rate', stepRate.toFixed(2)+'s');
+    a.el.style.setProperty('--ground-scale', (.9+Math.min(.18,speed/250)).toFixed(2));
     a.el.style.zIndex = Math.round(a.y);
     a.el.classList.toggle('is-moving', a.moving);
-    var image = a.el.querySelector('img');
-    if (image) image.style.scale = (a.moving && a.targetX<a.x) ? '-1 1' : '1 1';
+    a.el.classList.toggle('is-settling', !a.moving && speed>.6);
   }
 
   function loop(now) {

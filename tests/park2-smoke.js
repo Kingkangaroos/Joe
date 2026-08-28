@@ -4,6 +4,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
@@ -96,7 +97,8 @@ class FakeImage {
   set src(value) {
     this._src = value;
     const available = value.endsWith('/sleep/advanced.png') || value.endsWith('/sleep/mastery.png')
-      || value.endsWith('/meditation/advanced.png') || value.endsWith('/meditation/mastery.png');
+      || value.endsWith('/meditation/advanced.png') || value.endsWith('/meditation/mastery.png')
+      || value.endsWith('/walking/advanced.png') || value.endsWith('/walking/mastery.png');
     if (available && this.onload) this.onload();
     if (!available && this.onerror) this.onerror();
   }
@@ -110,6 +112,14 @@ const sandboxWindow = {
   getHabits: () => Object.fromEntries(Object.entries(habitScores).map(([key,score]) => [key,{score}]))
 };
 
+let queuedFrame = null;
+let randomSeed = 246813579;
+const testMath = Object.create(Math);
+testMath.random = () => {
+  randomSeed = (randomSeed * 1664525 + 1013904223) >>> 0;
+  return randomSeed / 4294967296;
+};
+
 const sandbox = {
   window: sandboxWindow,
   document: {
@@ -117,12 +127,12 @@ const sandbox = {
     getElementById: id => ids[id] || null
   },
   Image: FakeImage,
-  requestAnimationFrame: () => 1,
+  requestAnimationFrame: callback => { queuedFrame = callback; return 1; },
   setTimeout: fn => { fn(); return 1; },
   clearTimeout: () => {},
   console,
   Date,
-  Math,
+  Math:testMath,
   Number
 };
 sandboxWindow.addEventListener = () => {};
@@ -142,6 +152,47 @@ assert.equal(bySkill('good_deed').dataset.evolution, 'expert');
 assert.ok(bySkill('ai_tools').classList.contains('is-prestige'), 'level 100 gets prestige');
 assert.equal(bySkill('sleep').querySelector('img').src, 'img/lab/park2/sleep/advanced.png');
 assert.equal(bySkill('meditation').querySelector('img').src, 'img/lab/park2/meditation/mastery.png');
+const asset = relative => path.join(__dirname, '..', 'img', 'lab', 'park2', relative);
+const digest = relative => crypto.createHash('sha256').update(fs.readFileSync(asset(relative))).digest('hex');
+['sleep/advanced.png','meditation/advanced.png','walking/advanced.png','walking/mastery.png'].forEach(relative => {
+  const png = fs.readFileSync(asset(relative));
+  assert.equal(png.subarray(1,4).toString(), 'PNG', relative + ' is a PNG asset');
+  assert.equal(png[25], 6, relative + ' keeps an RGBA alpha channel');
+});
+assert.notEqual(digest('sleep.png'), digest('sleep/advanced.png'), 'Sleep Advanced is not a copied base form');
+assert.notEqual(digest('meditation.png'), digest('meditation/advanced.png'), 'Meditation Advanced is not a copied base form');
+assert.notEqual(digest('walking.png'), digest('walking/advanced.png'), 'Walking Advanced is a real distinct form');
+assert.notEqual(digest('walking/advanced.png'), digest('walking/mastery.png'), 'Walking Mastery differs from Advanced');
+assert.ok(source.includes('p2-sprite'), 'characters use a separate sprite wrapper for smooth turning');
+assert.ok(bySkill('walking').classList.contains('p2-motion-stride'), 'walking has its own gait');
+assert.ok(bySkill('meditation').classList.contains('p2-motion-float'), 'meditation keeps a floating gait');
+
+const walkingTrail = [];
+let now = 0;
+for (let frame = 0; frame < 170; frame++) {
+  const callback = queuedFrame;
+  assert.equal(typeof callback, 'function', 'animation loop schedules the next frame');
+  queuedFrame = null;
+  now += 40;
+  callback(now);
+  const style = bySkill('walking').style.values;
+  walkingTrail.push([parseFloat(style['--x']), parseFloat(style['--y'])]);
+}
+const travelled = walkingTrail.reduce((sum, point, index) => {
+  if (!index) return sum;
+  const previous = walkingTrail[index - 1];
+  return sum + Math.hypot(point[0] - previous[0], point[1] - previous[1]);
+}, 0);
+const biggestStep = walkingTrail.reduce((largest, point, index) => {
+  if (!index) return largest;
+  const previous = walkingTrail[index - 1];
+  return Math.max(largest, Math.hypot(point[0] - previous[0], point[1] - previous[1]));
+}, 0);
+assert.ok(travelled > 12, 'the walking companion naturally leaves its resting spot');
+assert.ok(biggestStep < 4, 'steering never teleports a companion between frames');
+assert.ok(bySkill('walking').style.values['--step-rate'], 'gait speed follows actual travel speed');
+assert.ok(bySkill('walking').style.values['--lean'], 'movement exposes a soft body lean');
+assert.ok(bySkill('walking').style.values['--facing'], 'turning exposes a stable facing direction');
 
 ids.park2FocusToggle.onclick();
 assert.ok(root.classList.contains('is-focus-mode'), 'focus mode activates');
@@ -156,4 +207,4 @@ ids.park2FocusToggle.onclick();
 assert.ok(!root.classList.contains('is-focus-mode'), 'focus mode releases');
 assert.equal(agents.children.filter(agent => agent.classList.contains('is-focus-lead')).length, 0);
 
-console.log('Park 2.0 smoke test passed: 8 companions, evolution bands, prestige and focus switching.');
+console.log('Park 2.0 smoke test passed: 8 companions, natural steering, distinct evolution art, prestige and focus switching.');

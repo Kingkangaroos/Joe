@@ -44,11 +44,13 @@ Gewone skills gebruiken leveldrempels 1 / 10 / 25 / 50 / 75, met een extra prest
 
 Huidige echte vormassets:
 
-- `sleep/advanced.png` — de huidige middenvorm;
+- `sleep/advanced.png` — echte middenvorm met compact sterrenorbit, korte droomcape, crescent-sluiting en zwaardere wolkenlaarzen;
 - `sleep/mastery.png` — zichtbare celestial guardian-evolutie met grotere anatomie, wolken-/constellatiecape, maankroon en uitgebreid herstelrelic.
-- `meditation/advanced.png` — de huidige middenvorm;
+- `meditation/advanced.png` — echte middenvorm met extra lotuspetalen, groter kernkristal, verfijnde armbanden en drie beheerste kristallichten;
 - `meditation/mastery.png` — zichtbare lotus guardian-evolutie met volwassen anatomie, beschermende kristalpetalen, meervoudige halo en beheerste kristalorbit.
+- `walking/advanced.png` — echte middenvorm met verbeterde trailboots, routekaart, grotere rugzak en uitgebreidere stappenteller;
+- `walking/mastery.png` — eindvorm als legendarische routeverkenner met expeditierugzak, vijfbladige crest, master-kompas en voltooide-route-aura.
 
-De eerste gegenereerde Sleep Starter- en 10k Steps Mastery-pogingen hadden een ingebakken achtergrond/checkerboard en zijn daarom bewust **niet** in de repository opgenomen. Ontbrekende vormen blijven dus eerlijk als open art-productie gelden; de engine doet niet alsof een schaal- of kleurfilter een echte evolutie is.
+Afgekeurde renders met een ingebakken achtergrond/checkerboard zijn bewust **niet** in de repository opgenomen. Meditation Advanced is na een aparte background-extraction technisch opnieuw gecontroleerd op echte alpha. Ontbrekende vormen blijven eerlijk als open art-productie gelden; de engine gebruikt dan het basisbeeld met een bescheiden vorm-aura, maar doet niet alsof dat al een volledig nieuwe anatomische asset is.
 
-Promptfamilie nieuwe companions: premium transparante 3D game-companion, direct leesbaar skill-silhouet, grote expressieve ogen, echte losse armen/benen voor webbeweging, goudaccenten, geen tekst/logo/scenery en consistent met de bestaande Good Deed/Budgeting/Tennis-familie. Gegenereerd met de ingebouwde **OpenAI Image Generation**-tool; selectie, transparantiecontrole, verkleining en integratie zijn uitgevoerd door **ChatGPT (OpenAI)**.
+Promptfamilie nieuwe companions en evoluties: premium transparante 3D game-companion, direct leesbaar skill-silhouet, grote expressieve ogen, echte losse armen/benen voor webbeweging, goudaccenten, dezelfde identiteit tussen vormen, geen tekst/logo/scenery en consistent met de bestaande Good Deed/Budgeting/Tennis-familie. Gegenereerd met de ingebouwde **OpenAI Image Generation**-tool; selectie, transparantiecontrole, verkleining en integratie zijn uitgevoerd door **ChatGPT (OpenAI)**.
