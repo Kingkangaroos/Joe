@@ -141,6 +141,16 @@ Joey (26-08-2026): meldt dat hij eerder iets zei over "vier delen", de homepage,
 
 **Nog te doen**: navragen bij Joey wat het "vier delen/scrolltechniek"-idee precies inhield, en dan meteen vastleggen.
 
+## 5e. Park 2.0 + Daily Mission Garden — Joey's correctie op mijn eerste beoordeling
+
+Ik hield de v11.4-patch (ChatGPT) eerst volledig tegen op stijl ("past niet bij Daylight/DWTD"). Joey, terecht: "ik vond de poppetjes wel mooi anders had ik t niet naar je gestuurd... ik wil het gewoon in het lab tegenkomen dan kan ik zelf een oordeel vellen." Dat was niet mijn beslissing om te maken — mijn taak is informeren, niet namens hem kiezen op smaak.
+
+**Tweede, wél terechte scheiding die Joey zelf maakte**: de Daily Mission Garden raakt in de originele patch de échte Home-pagina (index.html). Park 2.0 zat al netjes alleen in het Lab. Joey: als iets de homepage beïnvloedt, moet het eerst in een aparte, te beoordelen ruimte — niet direct op zijn dagelijkse scherm.
+
+**Oplossing**: beide nu in `lab.html`, geen van beide in `index.html`. Park 2.0 met de originele beelden (ongewijzigd — de stijl is aan Joey, niet aan mij). Daily Mission Garden als los "voorbeeld"-blok in het Lab, zodat hij het kan bekijken zonder dat het zijn echte missies-flow op Main raakt. `index.html` bevat nul verwijzingen naar beide features — geverifieerd, niet aangenomen.
+
+**Nog openstaand, niet stijl-gerelateerd**: de "advanced"-evolutiebeelden voor sleep en meditation zijn nog steeds byte-voor-byte identiek aan hun basisplaatje (bevestigd met md5sum) — geen nieuwe kunst, gewoon een kopie. Dat is geen smaakkwestie maar een content-gat; input van Joey nodig of dat via de Higgsfield-route wordt aangevuld.
+
 ## 5d. Teruggevonden idee — "4 vlakken"-homepage (nooit gebouwd, wel ooit gemockt)
 
 Onderzocht n.a.v. Joey's zorg dat ideeën wegvallen. Bevestigd in het volledige transcript:

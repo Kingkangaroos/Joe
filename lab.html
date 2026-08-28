@@ -9,11 +9,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="park2.css?v=10.98">
+<link rel="stylesheet" href="daily-garden.css?v=10.98">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.97" defer></script>
-<script src="topbar.js?v=10.97" defer></script>
-<script src="xp.js?v=10.97" defer></script>
-<script src="ladders.js?v=10.97" defer></script>
+<script src="sync.js?v=10.98" defer></script>
+<script src="topbar.js?v=10.98" defer></script>
+<script src="xp.js?v=10.98" defer></script>
+<script src="ladders.js?v=10.98" defer></script>
+<script src="park2.js?v=10.98" defer></script>
+<script src="daily-garden.js?v=10.98" defer></script>
 <style>
 :root{
   --bg:#F4F3EF; --card:#FFFFFF; --ink:#15140F; --muted:#6F6C63; --faint:#A6A399;
@@ -124,6 +128,51 @@ body{padding-bottom:90px}
     </span>
     <span style="color:var(--ember);font-weight:700">→</span>
   </a>
+
+  <div class="sec-head">Park 2.0 · optie D</div>
+  <section class="park2" id="park2" aria-label="Park 2.0 met vijf levende skill companions">
+    <div class="park2-topline">
+      <div>
+        <div class="park2-kicker"><span class="park2-live-dot"></span> Live uit jouw data</div>
+        <div class="park2-title">Jouw skills leven hier</div>
+      </div>
+      <button class="park2-sound" id="park2Motion" type="button" aria-pressed="false">Pauzeer</button>
+    </div>
+    <div class="park2-stage" id="park2Stage">
+      <div class="park2-sky-glow"></div>
+      <div class="park2-stars" aria-hidden="true"></div>
+      <div class="park2-hill park2-hill-back"></div>
+      <div class="park2-hill park2-hill-front"></div>
+      <div class="park2-pond" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="park2-path" aria-hidden="true"></div>
+      <div class="park2-tree park2-tree-a" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="park2-tree park2-tree-b" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="park2-garden" id="park2Garden" aria-hidden="true"></div>
+      <div class="park2-agents" id="park2Agents"></div>
+      <div class="park2-time" id="park2Time"></div>
+    </div>
+    <div class="park2-roster" id="park2Roster" aria-label="Kies een skill character"></div>
+    <div class="park2-detail" id="park2Detail" aria-live="polite"></div>
+  </section>
+
+  <!-- v10.98: Daily Mission Garden hoort qua opzet bij Home, maar blijft
+       bewust in het Lab — Joey wil dat nieuwe, nog-te-beoordelen dingen
+       hier landen, niet ongevraagd op zijn dagelijkse Main-scherm. -->
+  <div class="sec-head">Daily Mission Garden — voorbeeld</div>
+  <section class="mission-garden" id="missionGarden" aria-label="Daily Mission mini garden">
+    <div class="mg-head">
+      <div><div class="mg-kicker"><span></span> Daily Mission Garden</div><div class="mg-title" id="mgTitle">Your missions are waking up</div></div>
+    </div>
+    <div class="mg-stage" id="mgStage">
+      <div class="mg-sun" aria-hidden="true"></div><div class="mg-ground" aria-hidden="true"></div><div class="mg-path" aria-hidden="true"></div>
+      <div class="mg-plots" id="mgPlots"></div>
+      <button class="mg-guide mg-guide-good" id="mgGuideGood" type="button" aria-label="Good Deed companion"><img src="img/lab/park2/good-deed.png" alt="" draggable="false"></button>
+      <button class="mg-guide mg-guide-budget" id="mgGuideBudget" type="button" aria-label="Budgeting companion"><img src="img/lab/park2/budgeting.png" alt="" draggable="false"></button>
+      <button class="mg-guide mg-guide-special" id="mgGuideSpecial" type="button" aria-label="Mission companion"><img src="img/lab/park2/sleep.png" alt="" draggable="false"></button>
+      <div class="mg-focus-card" id="mgFocusCard" aria-live="polite"></div>
+    </div>
+    <div class="mg-foot"><span id="mgProgress">0 of 0 blooming</span><span>Tap a mission to focus</span></div>
+  </section>
 
   <div class="sec-head">Skill characters (v11 test)</div>
   <div class="wbar" id="wbar"></div>
