@@ -17,6 +17,9 @@ assert.match(html, /class="draft-line"/, 'the blueprint exposes draw-on-scroll p
 assert.match(html, /getPointAtLength/, 'scroll progress moves the pencil along its path');
 assert.match(html, /--build-progress/, 'the drawing transforms into the finished room');
 assert.match(html, /prefers-reduced-motion:reduce/, 'reduced motion is supported');
+assert.match(html, /@media\(max-width:719px\)/, 'the story has a dedicated phone layout');
+assert.match(html, /\.story-copy\{min-height:265px\}/, 'phone copy reserves enough vertical room before the blueprint');
+assert.match(html, /@media\(max-width:719px\) and \(max-height:730px\)/, 'short phone screens get a compact composition');
 assert.match(html, /data-project-state="before"/, 'the project comparison has a before control');
 assert.match(html, /data-project-state="after"/, 'the project comparison has an after control');
 assert.match(html, /Demoformulier · er worden geen gegevens verstuurd/, 'the prototype never pretends to submit personal data');
