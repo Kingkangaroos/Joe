@@ -42,14 +42,12 @@
 
   async function saveToCloud (sub) {
     const headers = {
-      apikey: SUPABASE_KEY,
-      Authorization: 'Bearer ' + SUPABASE_KEY,
       'Content-Type': 'application/json',
       Prefer: 'resolution=merge-duplicates'
     };
     let subs = [];
     try {
-      const r = await fetch(SUPABASE_URL + '/rest/v1/app_state?key=eq.' + ROW_KEY + '&select=data', { headers });
+      const r = await window.gamenfyAuthedFetch(SUPABASE_URL + '/rest/v1/app_state?key=eq.' + ROW_KEY + '&select=data', { headers });
       if (r.ok) {
         const rows = await r.json();
         if (rows.length && rows[0].data && Array.isArray(rows[0].data.subs)) subs = rows[0].data.subs;
@@ -57,9 +55,9 @@
     } catch (e) {}
     const json = sub.toJSON();
     if (!subs.some(s => s.endpoint === json.endpoint)) subs.push(json);
-    await fetch(SUPABASE_URL + '/rest/v1/app_state', {
+    await window.gamenfyAuthedFetch(SUPABASE_URL + '/rest/v1/app_state', {
       method: 'POST', headers,
-      body: JSON.stringify({ key: ROW_KEY, data: { subs }, updated_at: new Date().toISOString() })
+      body: JSON.stringify({ key: ROW_KEY, user_id: window.gamenfyUserId, data: { subs }, updated_at: new Date().toISOString() })
     });
   }
 

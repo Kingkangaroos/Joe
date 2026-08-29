@@ -3,19 +3,10 @@
 // Replace the two placeholders with your Supabase project URL +
 // publishable key (same ones you used in topbar.js/gym.html).
 //
-// v10.55 — light multi-user workspace support (Joey's decision: max ~4
-// people, no real auth, just data isolation by prefixing the Supabase
-// ROW KEY — not every localStorage key, which would mean touching read/
-// write code across the whole app). A device-local, NEVER-synced
-// localStorage value (gamenfy_workspace_id) decides the prefix:
-//   - unset/empty  -> cloudKey === appKey, EXACTLY as before. This is
-//     Joey's own existing path and is completely unchanged — no
-//     workspace id means no behavior change whatsoever.
-//   - set (e.g. "alex") -> cloudKey becomes "alex:rpg", "alex:finance",
-//     etc. — an entirely separate Supabase row per app key, so a
-//     friend's data can never collide with or overwrite Joey's.
-// localStorage key NAMES on each device stay exactly as they are; only
-// which Supabase row they sync to changes. Set via settings.html.
+// v11.0 — cloud sync is account-gated. Every read/write uses Joey's active
+// Supabase Auth session and writes the authenticated user_id with the row.
+// The old device-local workspace prefix remains readable in Settings for
+// migration visibility, but no longer controls cloud ownership.
 // =============================================================
 (function () {
   'use strict';
@@ -44,24 +35,19 @@
   // with the narrowest key list could overwrite the whole cloud row with a subset
   // and the realtime echo then deleted the missing keys locally (allowDelete).
   window.__cloudSyncRegistry = window.__cloudSyncRegistry || {};
-  window.initCloudSync = function (config) {
+  function startCloudSync(config) {
     const appKey = config && config.appKey;
     const syncedKeys = (config && config.syncedKeys) || [];
     const syncedPrefixes = (config && config.syncedPrefixes) || [];
     const onApplied = config && config.onApplied;
-    if (!appKey || !window.supabase) return;
+    if (!appKey || !window.supabase || !window.gamenfyUserId) return;
     if (syncedKeys.length === 0 && syncedPrefixes.length === 0) return; // empty scope (e.g. shared config not loaded yet): no-op, don't claim the registry slot
     if (window.__cloudSyncRegistry[appKey]) return; // first init wins
     window.__cloudSyncRegistry[appKey] = true;
     if (!SUPABASE_URL || !SUPABASE_KEY) return;
     if (SUPABASE_URL.indexOf('PASTE-') === 0 || SUPABASE_KEY.indexOf('PASTE-') === 0) return;
 
-    // v10.55: the ONLY thing that changes for multi-user — which Supabase row
-    // this appKey's data lives in. Everything below still says "appKey" for
-    // the local registry/matches() logic (those are about local storage keys,
-    // untouched); only the Supabase reads/writes use cloudKey.
-    const workspaceId = getWorkspaceId();
-    const cloudKey = workspaceId ? (workspaceId + ':' + appKey) : appKey;
+    const cloudKey = appKey;
 
     let supa = null, pushTimer = null, suppressSync = false, lastSyncedJson = null, ready = false;
     // v10.65: local writes captured during the initial-pull window (see setItem).
@@ -146,7 +132,7 @@
       if (json === lastSyncedJson) return;
       try {
         const { error } = await supa.from('app_state').upsert(
-          { key: cloudKey, data: state, updated_at: new Date().toISOString() },
+          { key: cloudKey, user_id: window.gamenfyUserId, data: state, updated_at: new Date().toISOString() },
           { onConflict: 'key' }
         );
         if (!error) lastSyncedJson = json;
@@ -173,17 +159,17 @@
           method: 'POST',
           headers: {
             'apikey': SUPABASE_KEY,
-            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Authorization': 'Bearer ' + window.gamenfyAccessToken,
             'Content-Type': 'application/json',
             'Prefer': 'resolution=merge-duplicates',
           },
-          body: JSON.stringify({ key: cloudKey, data: state, updated_at: new Date().toISOString() }),
+          body: JSON.stringify({ key: cloudKey, user_id: window.gamenfyUserId, data: state, updated_at: new Date().toISOString() }),
           keepalive: true,
         }).catch(() => {});
       } catch (e) {}
     }
     (async function init() {
-      supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      supa = window.gamenfySupabase;
       try {
         const { data, error } = await supa.from('app_state').select('data').eq('key', cloudKey).maybeSingle();
         if (!error && data && data.data && Object.keys(data.data).length > 0) {
@@ -252,5 +238,12 @@
     // added as a third safety net alongside the existing two, not instead.
     document.addEventListener('visibilitychange', () => { if (document.hidden) flushOnUnload(); });
     window.addEventListener('storage', (e) => { if (e.key && matches(e.key)) schedulePush(); });
+  }
+
+  window.initCloudSync = function (config) {
+    if (!config) return;
+    window.gamenfyAuthReady
+      .then(() => startCloudSync(config))
+      .catch((error) => console.error('Gamenfy auth failed; cloud sync stays locked.', error));
   };
 })();

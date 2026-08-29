@@ -10,8 +10,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.98" defer></script>
-<script src="topbar.js?v=10.98" defer></script>
+<script src="auth.js?v=11.0" defer></script>
+<script src="sync.js?v=11.0" defer></script>
+<script src="topbar.js?v=11.0" defer></script>
 <script src="xp.js?v=10.98" defer></script>
 <script src="quests.js?v=10.98" defer></script>
 <script src="ladders.js?v=10.98" defer></script>
@@ -4439,7 +4440,7 @@ async function renderBodyComposition(){
   // blijven '—' (Fitbit Air heeft geen vetpercentage-sensor).
   try{
     const SB='https://ttxjsoahmtennnufgeqx.supabase.co', KEY='sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
-    const r=await fetch(SB+'/rest/v1/app_state?key=eq.health_fitbit&select=data',{headers:{apikey:KEY,Authorization:'Bearer '+KEY}});
+    const r=await window.gamenfyAuthedFetch(SB+'/rest/v1/app_state?key=eq.health_fitbit&select=data');
     if(r.ok){
       const rows=await r.json(); const data=((rows[0]||{}).data)||{};
       const dates=Object.keys(data).sort().reverse();
@@ -4505,8 +4506,7 @@ async function hmFetchAll(){
   // is nu de enige bron — geen fallback-merge meer nodig, `cur` start
   // gewoon op de standaardwaarden.
   try{
-    const r2 = await fetch(HM_SB_URL+'/rest/v1/app_state?key=eq.health_fitbit&select=data',
-      { headers:{ apikey:HM_SB_KEY, Authorization:'Bearer '+HM_SB_KEY } });
+    const r2 = await window.gamenfyAuthedFetch(HM_SB_URL+'/rest/v1/app_state?key=eq.health_fitbit&select=data');
     if(r2.ok){
       const rows2 = await r2.json();
       const fb = (rows2[0]||{}).data || {};
@@ -4621,16 +4621,15 @@ function hmMetricDefs(d){
 // data source has to announce itself, otherwise you read numbers that stopped
 // moving. Two-day threshold: tolerates a normal sync hiccup, catches an outage.
 function hmStaleBanner(d){
-  const AUTH = 'https://ttxjsoahmtennnufgeqx.supabase.co/functions/v1/fitbit-sync?auth=1';
   const last = d && d.lastHealthDate;
   if(!last) return '<div class="hm-stale">Nog geen gezondheidsdata binnen. '
-    + '<a href="'+AUTH+'" target="_blank" rel="noopener">Fitbit verbinden</a></div>';
+    + 'Fitbit koppelen is tijdelijk gepauzeerd tijdens de accountbeveiliging.</div>';
   const p = last.split('-').map(Number);
   const days = Math.round((new Date(hmDateStr(0)) - new Date(p[0], p[1]-1, p[2])) / 86400000);
   if(days < 2) return '';
   return '<div class="hm-stale"><b>Gezondheidsdata staat stil.</b> Laatste meting: '+last
     + ' (' + days + ' dagen geleden) \u2014 de cijfers hieronder zijn dus verouderd. '
-    + '<a href="'+AUTH+'" target="_blank" rel="noopener">Fitbit opnieuw verbinden</a></div>';
+    + 'Opnieuw koppelen is tijdelijk gepauzeerd tijdens de accountbeveiliging.</div>';
 }
 
 async function loadHealthMetrics(){

@@ -7,8 +7,9 @@
 <link rel="manifest" href="manifest.json">
 <title>Jarvis — Gamenfy</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js?v=10.98" defer></script>
-<script src="topbar.js?v=10.98" defer></script>
+<script src="auth.js?v=11.0" defer></script>
+<script src="sync.js?v=11.0" defer></script>
+<script src="topbar.js?v=11.0" defer></script>
 <style>
 :root {
   --bg:#F4F3EF; --card:#FFFFFF; --ink:#15140F; --ink-card:#15140F;
@@ -100,8 +101,7 @@ function jvAdd(role, text, extraClass){
 
 async function jvLoadHistory(){
   try{
-    const r=await fetch(SB_URL+'/rest/v1/app_state?key=eq.jarvis_memory&select=data',
-      { headers:{ apikey:SB_KEY, Authorization:'Bearer '+SB_KEY } });
+    const r=await window.gamenfyAuthedFetch(SB_URL+'/rest/v1/app_state?key=eq.jarvis_memory&select=data');
     if(!r.ok) return;
     const rows=await r.json();
     const hist=rows.length&&rows[0].data&&Array.isArray(rows[0].data.history)?rows[0].data.history:[];
@@ -121,7 +121,7 @@ async function jvSend(){
   document.getElementById('jvSend').disabled=true;
   const think=jvAdd('bot','…','thinking');
   try{
-    const r=await fetch(JV_URL,{
+    const r=await window.gamenfyAuthedFetch(JV_URL,{
       method:'POST',
       headers:{ 'Content-Type':'application/json', 'x-jarvis-pin':'1111' },
       body:JSON.stringify({ message: msg })
@@ -177,7 +177,7 @@ async function jvSendAudio(b64, mime){
   const userBubble=jvAdd('user','🎙️ …');
   const think=jvAdd('bot','…','thinking');
   try{
-    const r=await fetch(JV_URL,{
+    const r=await window.gamenfyAuthedFetch(JV_URL,{
       method:'POST',
       headers:{ 'Content-Type':'application/json', 'x-jarvis-pin':'1111' },
       body:JSON.stringify({ audio:{ data:b64, mime:mime } })

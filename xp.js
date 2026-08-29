@@ -1126,8 +1126,7 @@
     if (!targets.length) return 0;             // both days already fully settled
     let byDate = null;
     try {
-      const r = await fetch(AH_SB_URL + '/rest/v1/app_state?key=eq.health_fitbit&select=data',
-        { headers: { apikey: AH_SB_KEY, Authorization: 'Bearer ' + AH_SB_KEY } });
+      const r = await window.gamenfyAuthedFetch(AH_SB_URL + '/rest/v1/app_state?key=eq.health_fitbit&select=data');
       if (!r.ok) return 0;
       const rows = await r.json();
       byDate = rows.length ? rows[0].data : null;
@@ -1579,8 +1578,7 @@
     if (busy) return;
     busy = true;
     try {
-      var r = await fetch(JV_SB_URL + '/rest/v1/app_state?key=eq.jarvis_actions&select=data',
-        { headers: { apikey: JV_SB_KEY, Authorization: 'Bearer ' + JV_SB_KEY } });
+      var r = await window.gamenfyAuthedFetch(JV_SB_URL + '/rest/v1/app_state?key=eq.jarvis_actions&select=data');
       if (!r.ok) return;
       var rows = await r.json();
       var data = (rows[0] && rows[0].data) || {};
@@ -1599,11 +1597,10 @@
       // EERST consumed markeren in de cloud (race-window minimaliseren), dan toepassen
       var ids = pending.map(function(a){ return a.id; });
       var newQueue = queue.map(function(a){ return ids.indexOf(a.id) >= 0 ? Object.assign({}, a, { consumed: true }) : a; });
-      await fetch(JV_SB_URL + '/rest/v1/app_state', {
+      await window.gamenfyAuthedFetch(JV_SB_URL + '/rest/v1/app_state', {
         method: 'POST',
-        headers: { apikey: JV_SB_KEY, Authorization: 'Bearer ' + JV_SB_KEY,
-                   'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' },
-        body: JSON.stringify({ key: 'jarvis_actions', data: { queue: newQueue.slice(-100) }, updated_at: new Date().toISOString() })
+        headers: { 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' },
+        body: JSON.stringify({ key: 'jarvis_actions', user_id: window.gamenfyUserId, data: { queue: newQueue.slice(-100) }, updated_at: new Date().toISOString() })
       });
       ledgerAdd(ids);
       var lines = [];
