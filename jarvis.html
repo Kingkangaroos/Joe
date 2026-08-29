@@ -123,7 +123,7 @@ async function jvSend(){
   try{
     const r=await window.gamenfyAuthedFetch(JV_URL,{
       method:'POST',
-      headers:{ 'Content-Type':'application/json', 'x-jarvis-pin':'1111' },
+      headers:{ 'Content-Type':'application/json' },
       body:JSON.stringify({ message: msg })
     });
     const data=await r.json();
@@ -179,7 +179,7 @@ async function jvSendAudio(b64, mime){
   try{
     const r=await window.gamenfyAuthedFetch(JV_URL,{
       method:'POST',
-      headers:{ 'Content-Type':'application/json', 'x-jarvis-pin':'1111' },
+      headers:{ 'Content-Type':'application/json' },
       body:JSON.stringify({ audio:{ data:b64, mime:mime } })
     });
     const data=await r.json();
