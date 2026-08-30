@@ -1,25 +1,27 @@
 /* Park 3.0 — Daily Mission Evolution Plaza
    Performed-by: ChatGPT (OpenAI)
-   Uses the approved Level 1–10 evolution sheets as immutable art source.
+   Source of truth: approved 11 x 10 companion evolution atlas.
    Live data: rpg_habits_v1 + rpg_habitlog_v1 (same source as Today's Missions).
 */
 (function(){
   'use strict';
 
   var MISSIONS=[
-    {key:'nutrition',label:'Nutrition',sprite:'img/lab/park3/nutrition.webp',desc:'Healthy daily choices build the stomach guardian from tiny starter to Master.'},
-    {key:'teeth',label:'Brush Teeth',sprite:'img/lab/park3/teeth.webp',desc:'Morning + evening brushing strengthens the tooth companion one consistency level at a time.'},
-    {key:'household',label:'Household',sprite:'img/lab/park3/household.webp',desc:'A real daily reset makes the household helper more capable, equipped and polished.'},
-    {key:'gratitude',label:'Gratitude',sprite:'img/lab/park3/gratitude.webp',desc:'Daily gratitude grows the golden spirit from a tiny spark into a radiant Master form.'},
-    {key:'good_deed',label:'Good Deed',sprite:'img/lab/park3/good_deed.webp',desc:'One deliberate act of kindness powers up the red heart hero.'},
-    {key:'screen_time',label:'Screen Time',sprite:'img/lab/park3/screen_time.webp',danger:true,desc:'Low levels are deliberately chaotic; consistency turns overload into calm, controlled screen use.'},
-    {key:'cold_shower',label:'Cold Shower',sprite:'img/lab/park3/cold_shower.webp',desc:'The hesitant water droplet hardens into a crystalline cold-water guardian.'},
-    {key:'weed_control',label:'No Weed',sprite:'img/lab/park3/weed_control.webp',danger:true,desc:'Low levels show loss of control; each consistent day restores clarity, strength and command.'},
-    {key:'no_porn',label:'Discipline',sprite:'img/lab/park3/discipline.webp',danger:true,private:true,desc:'Private discipline arc: chaotic devil energy gradually resolves into an angelic Master guardian.'},
-    {key:'sleep',label:'Sleep',sprite:'img/lab/park3/sleep.webp',desc:'Better sleep turns a tired starter into the fully protected dream guardian.'},
-    {key:'walking',label:'Steps',sprite:'img/lab/park3/walking.webp',desc:'Daily steps make the teal runner faster, fitter and more electrically alive.'}
+    {key:'nutrition',label:'Nutrition',row:0,emoji:'🥗',desc:'Healthy daily choices build the stomach guardian from tiny starter to Master.'},
+    {key:'teeth',label:'Brush Teeth',row:1,emoji:'🦷',desc:'Morning + evening brushing strengthens the tooth companion one consistency level at a time.'},
+    {key:'household',label:'Household',row:2,emoji:'🧹',desc:'A real daily reset makes the household helper more capable, equipped and polished.'},
+    {key:'gratitude',label:'Gratitude',row:3,emoji:'🙏',desc:'Daily gratitude grows the golden spirit from a tiny spark into a radiant Master form.'},
+    {key:'good_deed',label:'Good Deed',row:4,emoji:'❤️',desc:'One deliberate act of kindness powers up the red heart hero.'},
+    {key:'screen_time',label:'Screen Time',row:5,emoji:'📵',danger:true,desc:'Low levels are deliberately chaotic; consistency turns overload into calm, controlled screen use.'},
+    {key:'cold_shower',label:'Cold Shower',row:6,emoji:'💧',desc:'The hesitant water droplet hardens into a crystalline cold-water guardian.'},
+    {key:'weed_control',label:'No Weed',row:7,emoji:'🌿',danger:true,desc:'Low levels show loss of control; each consistent day restores clarity, strength and command.'},
+    {key:'no_porn',label:'Discipline',row:8,emoji:'⚡',danger:true,private:true,desc:'Private discipline arc: chaotic devil energy gradually resolves into an angelic Master guardian.'},
+    {key:'sleep',label:'Sleep',row:9,emoji:'😴',desc:'Better sleep turns a tired starter into the fully protected dream guardian.'},
+    {key:'walking',label:'Steps',row:10,emoji:'👟',desc:'Daily steps make the teal runner faster, fitter and more electrically alive.'}
   ];
 
+  var ATLAS_PARTS=13;
+  var atlasReady=false,atlasError=false;
   var grid,modal,focusArt,titleEl,metaEl,levelEl,stateEl,progressEl,descEl,actionEl,resetEl,prevEl,nextEl;
   var selected=null,preview=null,tries=0;
 
@@ -41,7 +43,8 @@
     }catch(e){return 0;}
   }
   function visualLevel(score){return Math.max(1,Math.min(10,Number(score)||0));}
-  function pos(level){return (((visualLevel(level)-1)/9)*100).toFixed(4)+'%';}
+  function xPos(level){return (((visualLevel(level)-1)/9)*100).toFixed(4)+'%';}
+  function yPos(row){return ((Math.max(0,Math.min(10,row))/10)*100).toFixed(4)+'%';}
   function state(level){
     level=Number(level)||0;
     if(level<=0)return 'Critical';
@@ -54,12 +57,46 @@
   }
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
+  function loadAtlas(){
+    var jobs=[];
+    for(var i=1;i<=ATLAS_PARTS;i++){
+      (function(n){
+        var id=String(n).padStart(2,'0');
+        jobs.push(fetch('img/lab/park3/atlas/part-'+id+'.txt?v=12.1',{cache:'force-cache'}).then(function(r){
+          if(!r.ok)throw new Error('atlas '+id+' '+r.status);
+          return r.text();
+        }).then(function(t){return t.trim();}));
+      })(i);
+    }
+    return Promise.all(jobs).then(function(parts){
+      var data='data:image/webp;base64,'+parts.join('');
+      document.documentElement.style.setProperty('--p3-atlas','url("'+data+'")');
+      atlasReady=true;atlasError=false;
+      document.body.classList.add('p3-atlas-ready');
+      document.body.classList.remove('p3-atlas-error');
+      render();
+      if(selected)updateModal();
+    }).catch(function(err){
+      atlasError=true;atlasReady=false;
+      document.body.classList.add('p3-atlas-error');
+      console.error('[Park 3.0] evolution atlas failed',err);
+      render();
+    });
+  }
+
+  function artHTML(m,score,focus){
+    var frame=visualLevel(score);
+    var cls=focus?'p3-focus-art':'p3-art';
+    return '<span class="'+cls+'" style="--p3-x:'+xPos(frame)+';--p3-y:'+yPos(m.row)+'">'
+      +'<i class="p3-art-placeholder" aria-hidden="true">'+esc(m.emoji)+'</i></span>';
+  }
+
   function card(m){
-    var score=scoreOf(m.key),frame=visualLevel(score),done=isDone(m.key);
+    var score=scoreOf(m.key),done=isDone(m.key);
     var cls='p3-card'+(done?' done':'')+(score===10?' master':'')+(score===0?' is-zero':'')+(m.danger?' is-danger':'');
     return '<button class="'+cls+'" type="button" data-key="'+esc(m.key)+'">'
       +'<span class="p3-zero-tag">LV 0 · '+(m.danger?'ALERT':'START')+'</span>'
-      +'<span class="p3-art" style="background-image:url(\''+esc(m.sprite)+'\');--p3-pos:'+pos(frame)+'"></span>'
+      +artHTML(m,score,false)
       +'<span class="p3-status"><span class="p3-name"><strong>'+esc(m.label)+'</strong><span>'+(done?'completed today':state(score))+'</span></span>'
       +'<span class="p3-level">L'+score+'</span></span></button>';
   }
@@ -82,8 +119,9 @@
   function updateModal(){
     if(!selected)return;
     var live=scoreOf(selected.key),shown=shownLevel(),done=isDone(selected.key);
-    focusArt.style.backgroundImage="url('"+selected.sprite+"')";
-    focusArt.style.setProperty('--p3-pos',pos(shown));
+    focusArt.style.setProperty('--p3-x',xPos(shown));
+    focusArt.style.setProperty('--p3-y',yPos(selected.row));
+    focusArt.innerHTML='<i class="p3-art-placeholder" aria-hidden="true">'+esc(selected.emoji)+'</i>';
     titleEl.textContent=selected.label;
     metaEl.textContent=preview==null?('LIVE SCORE · '+live+'/10'):('PREVIEW · LIVE '+live+'/10');
     levelEl.textContent='Level '+shown;
@@ -131,7 +169,9 @@
     grid=document.getElementById('p3Grid');modal=document.getElementById('p3Modal');focusArt=document.getElementById('p3FocusArt');
     titleEl=document.getElementById('p3Title');metaEl=document.getElementById('p3Meta');levelEl=document.getElementById('p3Level');stateEl=document.getElementById('p3State');
     progressEl=document.getElementById('p3Progress');descEl=document.getElementById('p3Desc');actionEl=document.getElementById('p3Action');resetEl=document.getElementById('p3Reset');prevEl=document.getElementById('p3Prev');nextEl=document.getElementById('p3Next');
-    if(!grid||!modal)return;bind();render();
+    if(!grid||!modal)return;
+    if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('p3-embedded');
+    bind();render();loadAtlas();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
