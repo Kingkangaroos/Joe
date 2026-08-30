@@ -13,3 +13,14 @@
 @keyframes mgPulse{50%{opacity:.45;box-shadow:0 0 0 7px rgba(101,173,104,0)}}@keyframes mgSway{to{transform:rotate(7deg)}}@keyframes mgBreathe{50%{transform:translateY(-2px) scale(1.025)}}@keyframes mgReady{0%,78%,100%{transform:translateY(0) rotate(0)}85%{transform:translateY(-3px) rotate(-2deg)}91%{transform:rotate(2deg)}}@keyframes mgFloat{50%{transform:translateY(-5px) scale(1.02);filter:brightness(1.08)}}@keyframes mgWalk{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-4px) rotate(1.5deg)}}@keyframes mgBloom{35%{transform:scale(1.28)}70%{transform:scale(.92)}}@keyframes mgPetals{0%{transform:translate(-50%,15px) scale(.6);opacity:0}35%{opacity:1}100%{transform:translate(-50%,-52px) scale(1.25);opacity:0}}@keyframes mgEvoBreathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.02)}}@keyframes mgEvoReady{0%,75%,100%{transform:translateY(0) rotate(0)}82%{transform:translateY(-3px) rotate(-1.2deg)}90%{transform:rotate(1.2deg)}}@keyframes mgEvoMaster{0%,100%{transform:translateY(0) scale(1);filter:drop-shadow(0 7px 7px rgba(27,40,30,.12))}50%{transform:translateY(-4px) scale(1.035);filter:drop-shadow(0 0 12px rgba(244,202,79,.48))}}
 @media(max-width:390px){.mg-stage{height:196px}.mg-guide{width:59px;height:73px}.mg-foot{font-size:8px}.mg-focus-card{max-width:160px}.mg-evo-visual{height:102px}}
 @media(prefers-reduced-motion:reduce){.mission-garden *,.mg-evo-workbench *{animation:none!important}.mg-guide{transition:none}.mg-evo-card{transition:none}}
+
+/* Joey-selected Park 2.0 Option D companions — canonical Daily Mission art. */
+.mg-evo-parkd{display:block;width:100%;height:100%;object-fit:contain;padding:5px 7px 3px;transform-origin:50% 72%;filter:drop-shadow(0 9px 8px rgba(27,40,30,.15))}
+.mg-evo-parkd.stage-0{opacity:.62;filter:grayscale(.28) saturate(.78) drop-shadow(0 5px 5px rgba(27,40,30,.08));transform:scale(.88) translateY(5px)}
+.mg-evo-parkd.stage-1{opacity:.88;transform:scale(.93) translateY(3px);animation:mgEvoBreathe 3.4s ease-in-out infinite}
+.mg-evo-parkd.stage-2{transform:scale(.98);animation:mgEvoBreathe 2.8s ease-in-out infinite}
+.mg-evo-parkd.stage-3{transform:scale(1.02);animation:mgEvoReady 2.2s ease-in-out infinite}
+.mg-evo-parkd.stage-4{transform:scale(1.06);animation:mgEvoMaster 2s ease-in-out infinite}
+.mg-evo-pending{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#817a6e;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.96),rgba(238,235,226,.9));border:1px dashed rgba(103,92,156,.25)}
+.mg-evo-pending>span{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;font-size:25px;background:rgba(103,92,156,.08);filter:grayscale(.25)}
+.mg-evo-pending small{font-size:8px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#675c9c}
