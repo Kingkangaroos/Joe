@@ -891,8 +891,8 @@
   // today or backdated. It re-derives score/streak/lastChecked by REPLAYING
   // the day-log (rpg_habitlog_v1) chronologically through the exact same
   // leaky-bucket rules checkHabit()/applyHabitDecay() already use in real
-  // time (+1 per check capped at 10, -1 per missed day with a one-day grace
-  // — the miss only shows up the day AFTER, never the day of). Replaying
+  // time (+1 per check capped at 10, -1 per completed missed calendar day
+  // — today's mission is not treated as missed until the day has ended). Replaying
   // instead of incrementing in place means an uncheck (even for a past day)
   // always lands on exactly the state that would exist had that check never
   // happened — fixing two real bugs Joey hit testing the backfill flow:
@@ -934,6 +934,9 @@
     if (lastChecked !== null) {
       const finalMissed = Math.max(0, daysBetween(lastChecked, today) - 1);
       score = Math.max(0, score - finalMissed);
+      // The current streak ends once a completed calendar day after the
+      // latest check was missed. Score can remain above zero; streak cannot.
+      if (finalMissed > 0) streak = 0;
     }
 
     const h = { label: prev.label, icon: prev.icon, score: score, streak: streak, lastChecked: lastChecked, decayedThrough: today };
@@ -1546,6 +1549,10 @@
           localStorage.setItem('rpg_habitlog_v1', JSON.stringify(hl));
         } catch(e){}
         if (window.checkHabitFor) window.checkHabitFor(p.key, date, d.label, d.icon);
+      // Habitlog is authoritative. Jarvis can backdate a check, so replay the
+      // full log just like Main/Skills/Fitbit instead of leaving incremental
+      // score/streak state that depends on mutation order.
+      if (window.recomputeHabitFromLog) window.recomputeHabitFromLog(p.key);
         return (d.icon || '') + ' ' + (d.label || p.key) + ' \u2713';
       }
       if (a.type === 'claimQuest') {
