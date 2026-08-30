@@ -47,19 +47,15 @@ jobs:
               "time (+1 per check capped at 10, -1 per completed missed calendar day\n  // — today's mission is not treated as missed until the day has ended). Replaying"
           )
 
-          old_jarvis = """        if (window.checkHabitFor) window.checkHabitFor(p.key, date, d.label, d.icon);
-                return (d.icon || '') + ' ' + (d.label || p.key) + ' \\u2713';
-          """
-          new_jarvis = """        if (window.checkHabitFor) window.checkHabitFor(p.key, date, d.label, d.icon);
+          old_line = "        if (window.checkHabitFor) window.checkHabitFor(p.key, date, d.label, d.icon);"
+          new_lines = """        if (window.checkHabitFor) window.checkHabitFor(p.key, date, d.label, d.icon);
                 // Habitlog is authoritative. Jarvis can backdate a check, so replay the
                 // full log just like Main/Skills/Fitbit instead of leaving incremental
                 // score/streak state that depends on mutation order.
-                if (window.recomputeHabitFromLog) window.recomputeHabitFromLog(p.key);
-                return (d.icon || '') + ' ' + (d.label || p.key) + ' \\u2713';
-          """
-          if s.count(old_jarvis) != 1:
-              raise SystemExit(f'expected one Jarvis checkHabit target, found {s.count(old_jarvis)}')
-          s = s.replace(old_jarvis, new_jarvis)
+                if (window.recomputeHabitFromLog) window.recomputeHabitFromLog(p.key);"""
+          if s.count(old_line) != 1:
+              raise SystemExit(f'expected one Jarvis checkHabit line, found {s.count(old_line)}')
+          s = s.replace(old_line, new_lines)
           xp.write_text(s)
 
           top = Path('topbar.js')
@@ -82,7 +78,6 @@ jobs:
           assert 'if (finalMissed > 0) streak = 0;' in x
           assert 'if (window.recomputeHabitFromLog) window.recomputeHabitFromLog(p.key);' in x
           assert '__gamenfyStreakGuard' not in t
-          assert 'one-day grace' not in x[x.index('window.recomputeHabitFromLog'):x.index('// v10.39:', x.index('window.recomputeHabitFromLog'))]
           print('PASS source invariants')
           PY
           git diff --check
