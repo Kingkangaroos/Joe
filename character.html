@@ -3059,41 +3059,45 @@ function renderCharacter(){
 }
 
 // ── Daily quests ───────────────────────────────────
-const ALL_DAILY_QUESTS=[
-  {id:'workout',      icon:'💪',label:'Workout',        skill:'gym',          xp:50},
-  {id:'meditation',   icon:'🧘',label:'Meditation',     skill:'meditation',   xp:20},
-  {id:'no_porn',      icon:'🔒',label:'Private quest',  skill:'no_porn',      xp:45, private:true},
-  {id:'weed_control', icon:'🔒',label:'Private quest 2',skill:'weed_control', xp:40, private:true},
-  {id:'reading',      icon:'📖',label:'Reading',         skill:'reading',      xp:15},
-  {id:'outreach',     icon:'📈',label:'Outreach',        skill:'sales',        xp:35},
-  {id:'gratitude',    icon:'🙏',label:'Gratitude',       skill:'gratitude',    xp:10},
-  {id:'nutrition',    icon:'🥗',label:'Protein',         skill:'nutrition',    xp:20},
-  {id:'grounding',    icon:'🌱',label:'Grounding',       skill:'grounding',    xp:15},
-  {id:'teeth',        icon:'🦷',label:'Brush Teeth 2×',  skill:'teeth',        xp:10},
-  {id:'household',    icon:'🧹',label:'Household',       skill:'household',    xp:15},
-  {id:'good_deed',    icon:'🤲',label:'Good Deed',       skill:'good_deed',    xp:15},
-  {id:'planning',     icon:'📅',label:'Plan the day',    skill:'planning',     xp:15},
+const PRIVATE_DAILY_QUESTS=[
+  {id:'no_porn',      icon:'🛡️',label:'No Porn',      skill:'no_porn',      xp:45, private:true},
+  {id:'weed_control', icon:'🚫',label:'Weed Control', skill:'weed_control', xp:40, private:true},
 ];
-// v9.1: habit-log helpers (zelfde formaat als index.html — rpg_habitlog_v1)
+// Public Daily Missions have one source of truth across Main + Character:
+// active, non-private habits from RPG_DEFAULT_SKILLS, stored per day in
+// rpg_habitlog_v1. The old rpg_active_quests_v1 selection is legacy only.
+function getPublicDailyQuests(){
+  const defs=window.RPG_DEFAULT_SKILLS||{};
+  return Object.keys(defs)
+    .filter(k=>{ const d=defs[k]; return d&&d.isHabit&&d.active!==false&&!d.private; })
+    .map(k=>{ const d=defs[k]; return {id:k,icon:d.icon||'⭐',label:d.label||k,skill:k,xp:15,private:false}; });
+}
+// Habit-log helpers (same authoritative format as index.html).
 function dhLoad(){ try{ return JSON.parse(localStorage.getItem('rpg_habitlog_v1'))||{}; }catch(e){ return {}; } }
 function dhSave(l){ try{ localStorage.setItem('rpg_habitlog_v1', JSON.stringify(l)); }catch(e){} }
 function dhHas(key,date){ const l=dhLoad(); return !!(l[key]&&l[key][date]); }
 function dhSet(key,date,val){ const l=dhLoad(); l[key]=l[key]||{}; if(val) l[key][date]=true; else delete l[key][date]; dhSave(l); }
-const ACTIVE_QUESTS_KEY='rpg_active_quests_v1';
-const DEFAULT_ACTIVE_QUESTS=['workout','meditation','no_porn','weed_control','reading','outreach','gratitude','nutrition','grounding','teeth','household','good_deed'];
-// v7.8 one-time: surface Grounding in the Daily tab for existing stored selections
-try{ const _aq=JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if(Array.isArray(_aq)&&!_aq.includes('grounding')){ _aq.push('grounding'); localStorage.setItem(ACTIVE_QUESTS_KEY, JSON.stringify(_aq)); } }catch(e){}
-// v9.1 one-time: surface Brush Teeth in the Daily tab for existing stored selections
-try{ const _aq2=JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if(Array.isArray(_aq2)&&!_aq2.includes('teeth')){ _aq2.push('teeth'); localStorage.setItem(ACTIVE_QUESTS_KEY, JSON.stringify(_aq2)); } }catch(e){}
-// v9.6 one-time: Household idem
-try{ const _aq3=JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if(Array.isArray(_aq3)&&!_aq3.includes('household')){ _aq3.push('household'); localStorage.setItem(ACTIVE_QUESTS_KEY, JSON.stringify(_aq3)); } }catch(e){}
-// v9.26 one-time: Good Deed idem
-try{ const _aq4=JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if(Array.isArray(_aq4)&&!_aq4.includes('good_deed')){ _aq4.push('good_deed'); localStorage.setItem(ACTIVE_QUESTS_KEY, JSON.stringify(_aq4)); } }catch(e){}
-function getActiveQuestIds(){
-  try{ const s=JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY)); if(Array.isArray(s)) return s; } catch{}
-  return [...DEFAULT_ACTIVE_QUESTS];
+function getDailyQuests(){ return getPublicDailyQuests().concat(PRIVATE_DAILY_QUESTS); }
+function dailyQuestDone(q,date,daily){
+  if(q.private){ const d=daily||loadDaily(date); return !!(d.quests&&d.quests[q.id]&&d.quests[q.id].done); }
+  return dhHas(q.skill,date);
 }
-function getDailyQuests(){ return ALL_DAILY_QUESTS.filter(q=>getActiveQuestIds().includes(q.id)); }
+function toggleDailyQuest(q,date){
+  const was=dailyQuestDone(q,date);
+  if(q.private){
+    const d=loadDaily(date); if(!d.quests) d.quests={};
+    d.quests[q.id]={done:!was};
+    saveDaily(d,date);
+  } else {
+    const hdef=(window.RPG_DEFAULT_SKILLS||{})[q.skill]||{};
+    dhSet(q.skill,date,!was);
+    if(!was&&window.checkHabitFor) window.checkHabitFor(q.skill,date,hdef.label,hdef.icon);
+    if(window.recomputeHabitFromLog) window.recomputeHabitFromLog(q.skill);
+  }
+  if(!was&&typeof window.addXP==='function') window.addXP(q.skill,q.xp,q.label);
+  if(was&&typeof window.removeXP==='function') window.removeXP(q.skill,q.xp,q.label+' unchecked');
+  return !was;
+}
 // v9.1 one-time backfill: Daily-tab checks van de afgelopen 14 dagen die nooit
 // de habit-score kregen (de bug hierboven) alsnog crediteren. Oud → nieuw zodat
 // streaks correct ketenen. Dedupe via het habit-log zelf.
@@ -3108,13 +3112,14 @@ function backfillDailyHabits(){
       const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
       let dd; try{ dd=JSON.parse(localStorage.getItem('rpg_daily_v1:'+ds))||{}; }catch(e){ continue; }
       const qs=dd.quests||{};
-      ALL_DAILY_QUESTS.forEach(q=>{
+      getDailyQuests().forEach(q=>{
         if(!qs[q.id]||!qs[q.id].done) return;
         const hdef=window.RPG_DEFAULT_SKILLS[q.skill];
         if(!hdef||!hdef.isHabit) return;
         if(dhHas(q.skill,ds)) return;
         dhSet(q.skill,ds,true);
         window.checkHabitFor(q.skill,ds,hdef.label,hdef.icon);
+        if(window.recomputeHabitFromLog) window.recomputeHabitFromLog(q.skill);
         repaired++;
       });
     }
@@ -3134,7 +3139,7 @@ function renderDaily(){
   const isToday=selDate===todayKey();
   document.getElementById('dailyDateLabel').textContent=
     (isToday?'Today — ':'')+days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
-  const done=DAILY_QUESTS.filter(q=>quests[q.id]?.done).length;
+  const done=DAILY_QUESTS.filter(q=>dailyQuestDone(q,selDate,daily)).length;
   document.getElementById('dailyQuestCount').textContent=done+' / '+DAILY_QUESTS.length+' completed';
 
   // Score row
@@ -3162,7 +3167,7 @@ function renderDaily(){
   const grid=document.getElementById('dailyQuestGrid');
   grid.innerHTML='';
   DAILY_QUESTS.forEach(q=>{
-    const isDone=!!(quests[q.id]?.done);
+    const isDone=dailyQuestDone(q,selDate,daily);
     const isPriv=q.private&&!isPrivateUnlocked();
     const card=document.createElement('div');
     card.className='quest-card'+(isDone?' done':'');
@@ -3177,31 +3182,7 @@ function renderDaily(){
         ? '<div class="quest-why">'+(window.RPG_DEFAULT_SKILLS)[q.skill].why+'</div>' : '');
     card.addEventListener('click',()=>{
       if(q.private&&!isPrivateUnlocked()){ requirePin(()=>renderDaily()); return; }
-      const sd=getSelectedDate();
-      const dd=loadDaily(sd);
-      if(!dd.quests) dd.quests={};
-      const was=!!(dd.quests[q.id]?.done);
-      dd.quests[q.id]={done:!was};
-      if(!was&&typeof window.addXP==='function')    window.addXP(q.skill,q.xp,q.label);
-      if(was&&typeof window.removeXP==='function')  window.removeXP(q.skill,q.xp,q.label+' unchecked');
-      // v9.1 fix: Daily-tab check telt nu ook voor de habit-score (0-10 level)
-      // en het gedeelde habit-log — voorheen gaf dit alleen XP, waardoor
-      // levels op 0 bleven en Main de check niet zag.
-      const hdef=(window.RPG_DEFAULT_SKILLS||{})[q.skill]||{};
-      if(hdef.isHabit){
-        if(!was){
-          if(!dhHas(q.skill,sd)){
-            dhSet(q.skill,sd,true);
-            if(window.checkHabitFor) window.checkHabitFor(q.skill,sd,hdef.label,hdef.icon);
-          }
-        } else {
-          dhSet(q.skill,sd,false);
-          const hs=window.getHabits?window.getHabits():{};
-          const h=hs[q.skill];
-          if(h){ h.score=Math.max(0,(h.score||0)-1); if(h.lastChecked===sd) h.lastChecked=null; if(window.saveHabits) window.saveHabits(hs); }
-        }
-      }
-      saveDaily(dd,sd);
+      toggleDailyQuest(q,getSelectedDate());
       renderDaily();
     });
     grid.appendChild(card);
@@ -3318,7 +3299,7 @@ function renderQuests(){
   const list=document.getElementById('dailyQuestList');
   list.innerHTML='';
   DAILY_QUESTS.forEach(q=>{
-    const isDone=!!(quests[q.id]?.done);
+    const isDone=dailyQuestDone(q,todayKey(),daily);
     const row=document.createElement('div');
     row.className='quest-row'+(isDone?' done':'');
     row.innerHTML=
@@ -3327,12 +3308,8 @@ function renderQuests(){
       '<div class="quest-row-check">'+(isDone?'✓':'')+'</div>';
     row.addEventListener('click',()=>{
       if(q.private&&!isPrivateUnlocked()){ requirePin(()=>renderQuests()); return; }
-      const d=loadDaily(); if(!d.quests) d.quests={};
-      const was=!!(d.quests[q.id]?.done);
-      d.quests[q.id]={done:!was};
-      if(!was&&typeof window.addXP==='function')   window.addXP(q.skill,q.xp,q.label);
-      if(was&&typeof window.removeXP==='function') window.removeXP(q.skill,q.xp,q.label+' unchecked');
-      saveDaily(d); renderQuests();
+      toggleDailyQuest(q,todayKey());
+      renderQuests();
     });
     list.appendChild(row);
   });
