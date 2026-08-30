@@ -365,14 +365,14 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
 })();
 
 // v11.3 — cross-page consistency guard for the authoritative habit replay.
-// `xp.js` loads after this file on Gamenfy pages, so install at DOMContentLoaded.
-// The underlying recompute stays the source of truth; this only corrects the
-// one edge case where a completed missed day lowered score but left an old 🔥 streak.
+// `topbar.js` executes before `xp.js`, so intercept the later function assignment
+// itself. This closes the load-order window where an earlier DOMContentLoaded
+// listener could call recompute before a late wrapper had been installed.
 (function () {
   'use strict';
-  function installHabitStreakGuard() {
-    const original = window.recomputeHabitFromLog;
-    if (typeof original !== 'function' || original.__gamenfyStreakGuard) return;
+
+  function wrapHabitRecompute(original) {
+    if (typeof original !== 'function' || original.__gamenfyStreakGuard) return original;
     function wrapped(habitId) {
       const h = original.apply(this, arguments);
       if (!h || !h.lastChecked) return h;
@@ -395,11 +395,38 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
       return h;
     }
     wrapped.__gamenfyStreakGuard = true;
-    window.recomputeHabitFromLog = wrapped;
+    return wrapped;
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', installHabitStreakGuard, { once: true });
-  } else {
-    installHabitStreakGuard();
+
+  const existing = window.recomputeHabitFromLog;
+  if (typeof existing === 'function') {
+    window.recomputeHabitFromLog = wrapHabitRecompute(existing);
+    return;
+  }
+
+  let pending;
+  try {
+    Object.defineProperty(window, 'recomputeHabitFromLog', {
+      configurable: true,
+      enumerable: true,
+      get: function () { return pending; },
+      set: function (fn) {
+        pending = wrapHabitRecompute(fn);
+        Object.defineProperty(window, 'recomputeHabitFromLog', {
+          configurable: true,
+          enumerable: true,
+          writable: true,
+          value: pending
+        });
+      }
+    });
+  } catch (e) {
+    // Very old browsers: harmless fallback. All supported Gamenfy browsers use
+    // configurable Window properties, so this should not normally execute.
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof window.recomputeHabitFromLog === 'function') {
+        window.recomputeHabitFromLog = wrapHabitRecompute(window.recomputeHabitFromLog);
+      }
+    }, { once: true });
   }
 })();
