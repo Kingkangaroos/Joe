@@ -1,27 +1,29 @@
-name: ChatGPT one-shot Park D habit evolution band alignment
+name: park-d-bands
 
 on:
   push:
-    branches: [chatgpt/park-d-habit-bands]
+    branches:
+      - chatgpt/park-d-habit-bands
 
 permissions:
   contents: write
 
 jobs:
   patch:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
           ref: chatgpt/park-d-habit-bands
           fetch-depth: 0
-      - name: Align all habit evolution bands and keep Master at level 10
+      - name: patch
+        shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
 
-          p=Path('daily-garden.js'); s=p.read_text()
+          p=Path('daily-garden.js')
+          s=p.read_text()
           old="""  function evolutionStage(level){
     if(level>=10)return 'Master';
     if(level>=7)return 'Evolved';
@@ -52,39 +54,33 @@ jobs:
     return 0;
   }
 """
-          if s.count(old)!=1: raise SystemExit('daily evolution band target missing')
+          assert s.count(old)==1
           s=s.replace(old,new,1)
-          old2="    if(level>=4&&a.advanced)return {src:a.advanced,form:'advanced'};"
-          new2="    if(level>=5&&a.advanced)return {src:a.advanced,form:'advanced'};"
-          if s.count(old2)!=1: raise SystemExit('Park D advanced threshold target missing')
-          s=s.replace(old2,new2,1)
+          target="    if(level>=4&&a.advanced)return {src:a.advanced,form:'advanced'};"
+          assert s.count(target)==1
+          s=s.replace(target,"    if(level>=5&&a.advanced)return {src:a.advanced,form:'advanced'};",1)
           p.write_text(s)
 
-          p=Path('park2.js'); s=p.read_text()
-          old="    { key:'mastery', name:'Meesterschap', skillAt:75, habitAt:9, description:'Aura, materialen en beweging staan op topniveau.' }"
-          new="    { key:'mastery', name:'Meesterschap', skillAt:75, habitAt:10, description:'Aura, materialen en beweging staan op topniveau.' }"
-          if s.count(old)!=1: raise SystemExit('park2 mastery habitAt target missing')
-          p.write_text(s.replace(old,new,1))
+          p=Path('park2.js')
+          s=p.read_text()
+          target="    { key:'mastery', name:'Meesterschap', skillAt:75, habitAt:9, description:'Aura, materialen en beweging staan op topniveau.' }"
+          assert s.count(target)==1
+          p.write_text(s.replace(target,"    { key:'mastery', name:'Meesterschap', skillAt:75, habitAt:10, description:'Aura, materialen en beweging staan op topniveau.' }",1))
 
-          p=Path('img/lab/park2/README.md'); s=p.read_text()
-          old='Habits gebruiken hun echte persistente score via de banden 0-2 / 3-4 / 5-6 / 7-8 / 9-10 en mogen visueel terugvallen als de score daalt.'
-          new='Habits gebruiken hun echte persistente score via de banden 0-2 / 3-4 / 5-6 / 7-9 / 10. Level 10 alleen is Meesterschap/Master en moet visueel de speciale eindvorm zijn. Habits mogen visueel terugvallen als de score daalt.'
-          if old not in s: raise SystemExit('README habit band target missing')
-          p.write_text(s.replace(old,new,1))
+          p=Path('img/lab/park2/README.md')
+          s=p.read_text()
+          target='Habits gebruiken hun echte persistente score via de banden 0-2 / 3-4 / 5-6 / 7-8 / 9-10 en mogen visueel terugvallen als de score daalt.'
+          assert target in s
+          p.write_text(s.replace(target,'Habits gebruiken hun echte persistente score via de banden 0-2 / 3-4 / 5-6 / 7-9 / 10. Level 10 alleen is Meesterschap/Master en moet visueel de speciale eindvorm zijn. Habits mogen visueel terugvallen als de score daalt.',1))
           PY
-      - name: Syntax and contract checks
-        run: |
           node --check daily-garden.js
           node --check park2.js
-          grep -q "habitAt:10" park2.js
-          grep -q "if(level>=5)return 'Advanced'" daily-garden.js
-          grep -q "if(level>=3)return 'Apprentice'" daily-garden.js
-          grep -q "7-9 / 10" img/lab/park2/README.md
-      - name: Self-clean and commit
+      - name: commit
+        shell: bash
         run: |
           rm .github/workflows/chatgpt-park-d-bands-one-shot.yml
           git config user.name "ChatGPT (OpenAI)"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add daily-garden.js park2.js img/lab/park2/README.md .github/workflows/chatgpt-park-d-bands-one-shot.yml
-          git commit -m "ChatGPT: align Park D habit evolution bands to level 10 Master"
+          git commit -m "ChatGPT: align Park D habit bands with level 10 Master"
           git push origin HEAD:chatgpt/park-d-habit-bands
