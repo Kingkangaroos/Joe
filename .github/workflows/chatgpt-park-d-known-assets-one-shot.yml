@@ -1,0 +1,86 @@
+name: ChatGPT one-shot Park D level-band alignment
+
+on:
+  push:
+    branches: [chatgpt/daily-missions-park-d]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: chatgpt/daily-missions-park-d
+          fetch-depth: 0
+      - name: Align Daily Mission evolution bands
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p=Path('daily-garden.js'); s=p.read_text()
+          old="""  function evolutionStage(level){
+    if(level>=10)return 'Master';
+    if(level>=7)return 'Evolved';
+    if(level>=4)return 'Growing';
+    if(level>=1)return 'Awakening';
+    return 'Dormant';
+  }
+  function evolutionIndex(level){
+    if(level>=10)return 4;
+    if(level>=7)return 3;
+    if(level>=4)return 2;
+    if(level>=1)return 1;
+    return 0;
+  }
+"""
+          new="""  function evolutionStage(level){
+    if(level>=10)return 'Master';
+    if(level>=7)return 'Expert';
+    if(level>=5)return 'Advanced';
+    if(level>=3)return 'Apprentice';
+    return 'Starter';
+  }
+  function evolutionIndex(level){
+    if(level>=10)return 4;
+    if(level>=7)return 3;
+    if(level>=5)return 2;
+    if(level>=3)return 1;
+    return 0;
+  }
+"""
+          if s.count(old)!=1: raise SystemExit(f'daily bands count={s.count(old)}')
+          s=s.replace(old,new,1)
+          old2="    if(level>=4&&a.advanced)return {src:a.advanced,form:'advanced'};"
+          if s.count(old2)!=1: raise SystemExit(f'advanced threshold count={s.count(old2)}')
+          s=s.replace(old2,"    if(level>=5&&a.advanced)return {src:a.advanced,form:'advanced'};",1)
+          p.write_text(s)
+
+          p=Path('park2.js'); s=p.read_text()
+          old="    { key:'mastery', name:'Meesterschap', skillAt:75, habitAt:9, description:'Aura, materialen en beweging staan op topniveau.' }"
+          if s.count(old)!=1: raise SystemExit(f'park2 mastery threshold count={s.count(old)}')
+          p.write_text(s.replace(old,"    { key:'mastery', name:'Meesterschap', skillAt:75, habitAt:10, description:'Aura, materialen en beweging staan op topniveau.' }",1))
+
+          p=Path('img/lab/park2/README.md'); s=p.read_text()
+          old='Habits gebruiken hun echte persistente score via de banden 0-2 / 3-4 / 5-6 / 7-8 / 9-10 en mogen visueel terugvallen als de score daalt.'
+          if old not in s: raise SystemExit('README threshold text missing')
+          p.write_text(s.replace(old,'Habits gebruiken hun echte persistente score via de banden 0-2 / 3-4 / 5-6 / 7-9 / 10. Level 10 alleen is Meesterschap/Master en moet visueel de speciale eindvorm zijn. Habits mogen visueel terugvallen als de score daalt.',1))
+          PY
+      - name: Syntax and contract check
+        run: |
+          node --check daily-garden.js
+          node --check park2.js
+          grep -q "habitAt:10" park2.js
+          grep -q "if(level>=5)return 'Advanced'" daily-garden.js
+          grep -q "if(level>=3)return 'Apprentice'" daily-garden.js
+      - name: Self-clean and commit
+        run: |
+          rm .github/workflows/chatgpt-park-d-known-assets-one-shot.yml
+          git config user.name "ChatGPT (OpenAI)"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add daily-garden.js park2.js img/lab/park2/README.md .github/workflows/chatgpt-park-d-known-assets-one-shot.yml
+          git commit -m "ChatGPT: align Park D Daily Mission bands to level 10 Master"
+          git push origin HEAD:chatgpt/daily-missions-park-d
