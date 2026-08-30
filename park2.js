@@ -35,6 +35,15 @@
     { key:'mastery', name:'Meesterschap', skillAt:75, habitAt:9, description:'Aura, materialen en beweging staan op topniveau.' }
   ];
 
+  // Only request evolution files that physically exist. This avoids a 404
+  // probe on every missing starter/apprentice/expert asset. Expert currently
+  // reuses the real advanced form for the three companions that have it.
+  var KNOWN_EVOLUTION_ART={
+    sleep:{advanced:'img/lab/park2/sleep/advanced.png',expert:'img/lab/park2/sleep/advanced.png',mastery:'img/lab/park2/sleep/mastery.png'},
+    walking:{advanced:'img/lab/park2/walking/advanced.png',expert:'img/lab/park2/walking/advanced.png',mastery:'img/lab/park2/walking/mastery.png'},
+    meditation:{advanced:'img/lab/park2/meditation/advanced.png',expert:'img/lab/park2/meditation/advanced.png',mastery:'img/lab/park2/meditation/mastery.png'}
+  };
+
   var root, stage, agentsEl, rosterEl, detailEl, gardenEl, motionButton;
   var agents = [], width = 520, height = 430, running = true, last = 0, focusedAgent = null;
 
@@ -83,17 +92,16 @@
   }
 
   function loadEvolutionImage(img,config,evolution,owner) {
-    var candidate='img/lab/park2/'+(config.assetKey||config.key)+'/'+evolution.stage.key+'.png';
-    var probe=new Image();
-    probe.onload=function(){
-      setCharacterArt(owner,candidate);img.dataset.evolutionAsset='true';
-      if (owner) owner.classList.add('has-evolution-art');
-    };
-    probe.onerror=function(){
+    var known=KNOWN_EVOLUTION_ART[config.assetKey||config.key]||{};
+    var candidate=known[evolution.stage.key];
+    if(!candidate){
       img.dataset.evolutionAsset='fallback';
-      if (owner) owner.classList.add('uses-evolution-fallback');
-    };
-    probe.src=candidate;
+      if(owner) owner.classList.add('uses-evolution-fallback');
+      return;
+    }
+    setCharacterArt(owner,candidate);
+    img.dataset.evolutionAsset='true';
+    if(owner) owner.classList.add('has-evolution-art');
   }
 
   function createPlants(avg) {

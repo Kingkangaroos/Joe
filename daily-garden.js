@@ -12,6 +12,16 @@
     walking:{image:'img/lab/park2/walking.png',label:'10k Steps companion'},
     meditation:{image:'img/lab/park2/meditation.png',label:'Meditation companion'}
   };
+  // Joey chose Park 2.0 Option D (evolvable game companions) as the
+  // canonical Daily Mission character family. Reuse the exact existing art;
+  // do not substitute a different generated/vector style for missing companions.
+  var PARK_D_ASSETS={
+    budgeting:{base:'img/lab/park2/budgeting.png'},
+    good_deed:{base:'img/lab/park2/good-deed.png'},
+    sleep:{base:'img/lab/park2/sleep.png',advanced:'img/lab/park2/sleep/advanced.png',mastery:'img/lab/park2/sleep/mastery.png'},
+    walking:{base:'img/lab/park2/walking.png',advanced:'img/lab/park2/walking/advanced.png',mastery:'img/lab/park2/walking/mastery.png'},
+    meditation:{base:'img/lab/park2/meditation.png',advanced:'img/lab/park2/meditation/advanced.png',mastery:'img/lab/park2/meditation/mastery.png'}
+  };
   var positions=[[.14,.56],[.31,.43],[.49,.58],[.68,.42],[.84,.58],[.22,.78],[.41,.78],[.61,.75],[.80,.78],[.09,.84],[.91,.84]];
 
   function viewedDate(){return typeof viewedDateStr==='function'?viewedDateStr():(typeof todayStr==='function'?todayStr():new Date().toISOString().slice(0,10));}
@@ -139,6 +149,20 @@
     evolutionEl.setAttribute('aria-label','Daily Mission evolution workbench');
     root.insertAdjacentElement('afterend',evolutionEl);
   }
+  function parkDAssetFor(key,level){
+    var a=PARK_D_ASSETS[key];
+    if(!a)return null;
+    if(level>=10&&a.mastery)return {src:a.mastery,form:'mastery'};
+    if(level>=4&&a.advanced)return {src:a.advanced,form:'advanced'};
+    return {src:a.base,form:'base'};
+  }
+  function evolutionVisual(m,level,idx){
+    var a=parkDAssetFor(m.key,level);
+    if(a){
+      return '<img class="mg-evo-parkd stage-'+idx+' form-'+a.form+'" src="'+esc(a.src)+'" alt="'+esc((m.def&&m.def.label)||m.key)+' Park Option D companion">';
+    }
+    return '<div class="mg-evo-pending stage-'+idx+'" aria-label="Park Option D character pending"><span>'+esc((m.def&&m.def.icon)||'✦')+'</span><small>Park D art pending</small></div>';
+  }
   function renderEvolutions(){
     ensureEvolutionWorkbench();
     if(!evolutionEl)return;
@@ -146,12 +170,12 @@
     var cards=missions.map(function(m){
       var h=habits[m.key]||{},level=Math.max(0,Math.min(10,Number(h.score)||0)),idx=evolutionIndex(level);
       return '<button class="mg-evo-card'+(m.done?' done':'')+'" type="button" data-key="'+esc(m.key)+'" aria-label="'+esc(m.def.label||m.key)+', level '+level+' of 10">'
-        +'<div class="mg-evo-visual">'+mascotSvg(m.key,idx)+'<span class="mg-evo-level">Lv '+level+'</span></div>'
+        +'<div class="mg-evo-visual">'+evolutionVisual(m,level,idx)+'<span class="mg-evo-level">Lv '+level+'</span></div>'
         +'<div class="mg-evo-copy"><strong>'+esc((m.def&&m.def.label)||m.key)+'</strong><span>'+evolutionStage(level)+(m.done?' · done today':'')+'</span></div>'
         +'<div class="mg-evo-dots" aria-hidden="true">'+levelDots(level)+'</div>'
         +'</button>';
     }).join('');
-    evolutionEl.innerHTML='<div class="mg-evo-head"><div><div class="mg-evo-kicker">ChatGPT workbench · real Daily Missions only</div><h3>Daily Mission Evolutions</h3><p>Every active public Daily Mission now has five distinct forms driven by the persistent 0–10 level.</p></div><span class="mg-evo-count">'+missions.length+'</span></div><div class="mg-evo-grid">'+cards+'</div><div class="mg-evo-note">Private dailies stay outside this public grid. Regular skills are excluded by the app data itself.</div>';
+    evolutionEl.innerHTML='<div class="mg-evo-head"><div><div class="mg-evo-kicker">Park 2.0 · Option D · real Daily Missions only</div><h3>Daily Mission Companions</h3><p>Option D is the canonical character family. Existing Park-D assets are reused exactly; missing companions stay explicitly pending instead of being replaced by another style.</p></div><span class="mg-evo-count">'+missions.length+'</span></div><div class="mg-evo-grid">'+cards+'</div><div class="mg-evo-note">Current Park-D companions: Budgeting, Good Deed, Sleep, 10k Steps and Meditation. Sleep, 10k Steps and Meditation already use real advanced/mastery art when their 0–10 score reaches those bands.</div>';
     evolutionEl.querySelectorAll('.mg-evo-card').forEach(function(card){
       card.onclick=function(){
         var key=card.dataset.key,plot=plotsEl&&plotsEl.querySelector('[data-key="'+key+'"]'),m=missions.find(function(x){return x.key===key;});
