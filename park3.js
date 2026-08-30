@@ -20,7 +20,8 @@
     {key:'walking',label:'Steps',row:10,emoji:'👟',desc:'Daily steps make the teal runner faster, fitter and more electrically alive.'}
   ];
 
-  var ATLAS_PARTS=13;
+  /* Crisp 1200px atlas: ~120 source pixels per evolution frame instead of ~55px. */
+  var ATLAS_PARTS=5;
   var atlasReady=false,atlasError=false;
   var grid,modal,focusArt,titleEl,metaEl,levelEl,stateEl,progressEl,descEl,actionEl,resetEl,prevEl,nextEl;
   var selected=null,preview=null,tries=0;
@@ -62,14 +63,14 @@
     for(var i=1;i<=ATLAS_PARTS;i++){
       (function(n){
         var id=String(n).padStart(2,'0');
-        jobs.push(fetch('img/lab/park3/atlas/part-'+id+'.txt?v=12.1',{cache:'force-cache'}).then(function(r){
-          if(!r.ok)throw new Error('atlas '+id+' '+r.status);
+        jobs.push(fetch('img/lab/park3/atlas-crisp/part-'+id+'.txt?v=12.3',{cache:'force-cache'}).then(function(r){
+          if(!r.ok)throw new Error('crisp atlas '+id+' '+r.status);
           return r.text();
         }).then(function(t){return t.trim();}));
       })(i);
     }
     return Promise.all(jobs).then(function(parts){
-      var data='data:image/webp;base64,'+parts.join('');
+      var data='data:image/avif;base64,'+parts.join('');
       document.documentElement.style.setProperty('--p3-atlas','url("'+data+'")');
       atlasReady=true;atlasError=false;
       document.body.classList.add('p3-atlas-ready');
@@ -79,7 +80,7 @@
     }).catch(function(err){
       atlasError=true;atlasReady=false;
       document.body.classList.add('p3-atlas-error');
-      console.error('[Park 3.0] evolution atlas failed',err);
+      console.error('[Park 3.0] crisp evolution atlas failed',err);
       render();
     });
   }
