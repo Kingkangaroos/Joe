@@ -1,14 +1,14 @@
 // =============================================================
-// Shared cloud-sync helper — Gamenfy v11.1 race fix
+// Shared cloud-sync helper — Gamenfy v11.2 race fix
 // Performed-by: ChatGPT (OpenAI)
 //
-// v11.1 hardens navigation/realtime races:
+// v11.2 hardens navigation/realtime races:
 // - local writes are journaled immediately, even before Auth/cloud pull is ready
 // - a stale remote/realtime payload may NOT overwrite a newer local dirty value
 // - the dirty journal survives page navigation until a cloud write is confirmed
 // - remote updated_at decides whether a local pending write is genuinely newer
+// - monotone version watermark heals out-of-order whole-row commits
 // - periodic push remains a safety net, not the source of truth
-//
 // =============================================================
 (function () {
   'use strict';
@@ -53,9 +53,9 @@
     let suppressSync = false;
     let lastSyncedJson = null;
     let ready = false;
+    let highWaterMs = 0;
+    let forcePush = false;
 
-    // Capture the browser-native methods before wrapping them. Dirty-journal
-    // writes use these directly so the journal never recursively syncs itself.
     const origSet = localStorage.setItem.bind(localStorage);
     const origRemove = localStorage.removeItem.bind(localStorage);
 
@@ -109,8 +109,6 @@
       if (changed) saveDirty(j);
     }
 
-    // IMPORTANT: patch immediately. initCloudSync can be called before Auth is
-    // ready, and Joey can already tap a mission in that window.
     localStorage.setItem = function (k, v) {
       origSet(k, v);
       try {
@@ -169,8 +167,6 @@
         if (allowDelete) {
           const missing = listAllKeys().filter((k) => !(k in remote) && remoteMayTouchKey(k, remoteMs));
           if (missing.length > 3) {
-            // A large omission is almost certainly a partial/stripped whole-row
-            // write. Heal cloud from local rather than wiping the device.
             schedulePush();
           } else {
             for (const k of missing) {
@@ -214,9 +210,10 @@
       const json = JSON.stringify(state);
       const dirty = loadDirty();
       const hasDirty = Object.keys(dirty.items || {}).length > 0;
-      if (json === lastSyncedJson && !hasDirty) return;
+      if (json === lastSyncedJson && !hasDirty && !forcePush) return;
 
-      const cutoff = Date.now();
+      const cutoff = Math.max(Date.now(), highWaterMs + 1);
+      highWaterMs = cutoff;
       try {
         const { error } = await supa.from('app_state').upsert(
           { key: cloudKey, user_id: window.gamenfyUserId, data: state, updated_at: new Date(cutoff).toISOString() },
@@ -224,6 +221,7 @@
         );
         if (!error) {
           lastSyncedJson = json;
+          forcePush = false;
           clearDirtyThrough(cutoff);
         }
       } catch (e) {}
@@ -231,7 +229,6 @@
 
     function schedulePush() {
       clearTimeout(pushTimer);
-      // Short enough that a normal tab switch usually confirms before navigation.
       pushTimer = setTimeout(pushNow, 120);
     }
 
@@ -253,12 +250,10 @@
             key: cloudKey,
             user_id: window.gamenfyUserId,
             data: state,
-            updated_at: new Date().toISOString()
+            updated_at: new Date(Math.max(Date.now(), highWaterMs + 1)).toISOString()
           }),
           keepalive: true,
         }).catch(() => {});
-        // Deliberately DO NOT clear dirty here: keepalive is fire-and-forget.
-        // The next confirmed push/pull is responsible for clearing it.
       } catch (e) {}
     }
 
@@ -281,10 +276,11 @@
 
         const remote = (!error && data && data.data && typeof data.data === 'object') ? data.data : null;
         const remoteMs = data && data.updated_at ? (Date.parse(data.updated_at) || 0) : 0;
+        highWaterMs = Math.max(highWaterMs, remoteMs);
 
         if (remote && Object.keys(remote).length > 0) {
           lastSyncedJson = JSON.stringify(remote);
-          applyRemote(remote, false, remoteMs); // initial load never deletes local-only keys
+          applyRemote(remote, false, remoteMs);
           const replayed = replayNewerDirty(remoteMs);
           ready = true;
 
@@ -298,7 +294,6 @@
           if (Object.keys(collect()).length > 0 || Object.keys(loadDirty().items || {}).length) schedulePush();
         }
       } catch (e) {
-        // Pull failed: never erase local. Dirty journal remains and will retry.
         ready = true;
         if (Object.keys(loadDirty().items || {}).length) schedulePush();
       }
@@ -309,11 +304,16 @@
         }, (payload) => {
           if (!payload.new || !payload.new.data) return;
           const remoteMs = payload.new.updated_at ? (Date.parse(payload.new.updated_at) || 0) : 0;
+          if (remoteMs && remoteMs < highWaterMs) {
+            forcePush = true;
+            schedulePush();
+            return;
+          }
+          highWaterMs = Math.max(highWaterMs, remoteMs);
           const incoming = JSON.stringify(payload.new.data);
           if (incoming === lastSyncedJson && !Object.keys(loadDirty().items || {}).length) return;
           lastSyncedJson = incoming;
           applyRemote(payload.new.data, true, remoteMs);
-          // If a local write is newer than this realtime echo, keep it and push it.
           if (replayNewerDirty(remoteMs) || Object.keys(loadDirty().items || {}).length) schedulePush();
         })
         .subscribe();
@@ -332,13 +332,11 @@
       if (e.key && matches(e.key)) schedulePush();
     });
 
-    // Confirm pending local state frequently while the app remains open.
     setInterval(function(){ if (ready) pushNow(); }, 5000);
   }
 
   window.initCloudSync = function (config) {
     if (!config) return;
-    // Start immediately so localStorage writes are journaled even while Auth loads.
     startCloudSync(config);
   };
 })();
