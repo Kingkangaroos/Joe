@@ -1,0 +1,144 @@
+/* Daily Mission Windows v11.70
+   Performed-by: ChatGPT (OpenAI)
+   Lab-only experiment. Keeps Home untouched.
+*/
+:root{
+  --dw-bg:#131225;
+  --dw-panel:#1d1b34;
+  --dw-panel2:#25223f;
+  --dw-ink:#f8f7ff;
+  --dw-muted:#aaa6c5;
+  --dw-line:rgba(255,255,255,.10);
+  --dw-purple:#8b6cff;
+  --dw-purple2:#b79cff;
+  --dw-warm:#ffd47b;
+  --dw-green:#63e2a7;
+  --dw-danger:#ff8c9b;
+  --dw-font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --dw-display:'Schibsted Grotesk',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*{box-sizing:border-box}
+html{background:var(--dw-bg)}
+body{margin:0;min-height:100vh;background:
+  radial-gradient(circle at 50% -10%,rgba(139,108,255,.20),transparent 34rem),
+  linear-gradient(180deg,#151329 0%,#0f0f1c 100%);
+  color:var(--dw-ink);font-family:var(--dw-font);padding:env(safe-area-inset-top) 0 calc(88px + env(safe-area-inset-bottom));}
+button,a{font:inherit;-webkit-tap-highlight-color:transparent}
+button{color:inherit}
+.dw-shell{width:min(100%,760px);margin:0 auto;padding:16px 14px 34px}
+.dw-top{padding:6px 2px 8px}
+.dw-back{display:inline-flex;align-items:center;min-height:34px;color:#d7d2f2;text-decoration:none;font-weight:700;font-size:12px}
+.dw-kicker{margin-top:8px;color:#9e90f1;font:800 9px var(--dw-display);letter-spacing:.11em;text-transform:uppercase}
+h1{margin:5px 0 0;font:800 clamp(27px,7vw,42px)/1.02 var(--dw-display);letter-spacing:-.045em}
+.dw-intro{max-width:570px;margin:8px 0 0;color:var(--dw-muted);font-size:12px;line-height:1.55}
+.dw-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:16px}
+.dw-summary>div{padding:10px 9px;border:1px solid var(--dw-line);border-radius:14px;background:rgba(255,255,255,.04);backdrop-filter:blur(12px)}
+.dw-summary strong{display:block;font:800 17px var(--dw-display)}
+.dw-summary span{display:block;margin-top:2px;color:var(--dw-muted);font-size:8px;text-transform:uppercase;letter-spacing:.06em}
+.dw-legend{display:flex;gap:7px;overflow-x:auto;margin:13px -14px 14px;padding:0 14px 3px;scrollbar-width:none}
+.dw-legend::-webkit-scrollbar{display:none}
+.dw-legend span{flex:0 0 auto;display:flex;align-items:center;gap:5px;padding:7px 9px;border:1px solid var(--dw-line);border-radius:999px;background:rgba(255,255,255,.035);color:#c3bedb;font-size:9px;font-weight:700}
+.dw-dot{width:7px;height:7px;border-radius:50%;background:#625f79;box-shadow:0 0 0 3px rgba(255,255,255,.025)}
+.dw-dot.s1{background:#7668a8}.dw-dot.s2{background:#6d89ca}.dw-dot.s3{background:#63c7b1}.dw-dot.s4{background:#f4ca68}
+
+.dw-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.dw-window{position:relative;aspect-ratio:1/1;min-height:166px;overflow:hidden;border:1px solid rgba(255,255,255,.11);border-radius:18px;background:#17162a;box-shadow:0 17px 32px -28px #000;cursor:pointer;isolation:isolate;transition:transform .18s ease,border-color .25s ease,box-shadow .25s ease}
+.dw-window:active{transform:scale(.985)}
+.dw-window:focus-visible{outline:3px solid rgba(183,156,255,.6);outline-offset:2px}
+.dw-room{position:absolute;inset:0;background:
+  linear-gradient(180deg,rgba(22,21,39,.08),rgba(8,8,17,.54)),
+  radial-gradient(circle at 50% 35%,var(--room-glow,rgba(105,95,170,.13)),transparent 58%);transition:filter .35s ease,background .35s ease}
+.dw-window:not(.done) .dw-room{filter:saturate(.68) brightness(.72)}
+.dw-window.done{border-color:rgba(255,218,142,.34);box-shadow:0 18px 42px -25px rgba(255,206,111,.28),inset 0 0 0 1px rgba(255,255,255,.03)}
+.dw-window.done .dw-room{background:
+  linear-gradient(180deg,rgba(255,226,157,.06),rgba(12,10,23,.20)),
+  radial-gradient(circle at 50% 28%,var(--room-lit,rgba(255,204,105,.32)),transparent 56%)}
+.dw-wall{position:absolute;inset:8px 8px 27px;border-radius:13px 13px 9px 9px;border:1px solid rgba(255,255,255,.08);background:
+  linear-gradient(90deg,transparent 49.5%,rgba(255,255,255,.035) 50%,transparent 50.5%),
+  linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));overflow:hidden}
+.dw-window.done .dw-wall{border-color:rgba(255,255,255,.16)}
+.dw-floor{position:absolute;left:8px;right:8px;bottom:27px;height:38%;clip-path:polygon(0 15%,100% 15%,88% 100%,12% 100%);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border-top:1px solid rgba(255,255,255,.07)}
+.dw-light{position:absolute;left:50%;top:-8px;width:92px;height:112px;transform:translateX(-50%);background:radial-gradient(ellipse at 50% 0,rgba(255,214,130,.48),rgba(255,214,130,.08) 35%,transparent 68%);opacity:0;transition:opacity .35s ease;pointer-events:none}
+.dw-window.done .dw-light{opacity:1}
+.dw-fixture{position:absolute;left:50%;top:8px;width:28px;height:7px;border-radius:0 0 10px 10px;transform:translateX(-50%);background:#39354f;border:1px solid rgba(255,255,255,.08)}
+.dw-window.done .dw-fixture{background:#f0ca7a;box-shadow:0 0 18px rgba(255,206,111,.48)}
+
+.dw-char-zone{position:absolute;left:17%;right:17%;top:17%;bottom:29%;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
+.dw-char{position:relative;width:86%;height:86%;display:flex;align-items:flex-end;justify-content:center;transform-origin:50% 100%;transition:filter .3s ease,transform .3s ease,opacity .3s ease}
+.dw-char img{display:block;max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 10px 7px rgba(0,0,0,.28));transform-origin:50% 92%}
+.dw-window:not(.done) .dw-char{filter:grayscale(.18);opacity:.78;transform:translateY(4px) scale(.96)}
+.dw-window.done .dw-char img{animation:dwAlive 2.8s ease-in-out infinite}
+.dw-window.done[data-mission="walking"] .dw-char img{animation:dwWalk .72s ease-in-out infinite}
+.dw-window.done[data-mission="meditation"] .dw-char img{animation:dwFloat 3.4s ease-in-out infinite}
+.dw-window.done[data-mission="sleep"] .dw-char img{animation:dwSleep 3.2s ease-in-out infinite}
+@keyframes dwAlive{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-6px) rotate(1deg)}}
+@keyframes dwWalk{0%,100%{transform:translate(-3px,0) rotate(-1deg)}50%{transform:translate(3px,-5px) rotate(1deg)}}
+@keyframes dwFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes dwSleep{0%,100%{transform:scale(1)}50%{transform:scale(1.035,.97)}}
+
+.dw-pending{position:relative;width:78px;height:78px;display:grid;place-items:center;border:1px dashed rgba(255,255,255,.20);border-radius:26px;background:rgba(255,255,255,.045);font-size:32px;box-shadow:inset 0 0 28px rgba(255,255,255,.025)}
+.dw-pending::after{content:'ART PENDING';position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);white-space:nowrap;color:rgba(255,255,255,.43);font-size:6px;font-weight:800;letter-spacing:.13em}
+.dw-window.done .dw-pending{border-color:rgba(255,218,142,.35);box-shadow:0 0 32px rgba(255,198,105,.10),inset 0 0 28px rgba(255,255,255,.04)}
+
+.dw-window[data-mission="cold_shower"] .dw-wall{background:
+  radial-gradient(circle at 70% 20%,rgba(114,224,255,.16),transparent 23%),
+  linear-gradient(180deg,rgba(98,194,235,.10),rgba(32,51,78,.04));}
+.dw-window[data-mission="cold_shower"] .dw-pending{border-radius:52% 48% 54% 46% / 65% 64% 36% 35%;background:linear-gradient(145deg,rgba(133,228,255,.20),rgba(81,148,225,.08));box-shadow:inset 9px 8px 20px rgba(255,255,255,.06),0 10px 24px rgba(42,130,210,.10)}
+.dw-window[data-mission="cold_shower"] .dw-pending::before{content:'';position:absolute;top:-29px;left:48%;width:48px;height:30px;border-top:5px solid rgba(126,218,244,.44);border-right:5px solid rgba(126,218,244,.44);border-radius:0 18px 0 0;transform:rotate(-4deg)}
+.dw-waterline{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.dw-waterline i{position:absolute;top:-18%;width:2px;height:30%;border-radius:10px;background:linear-gradient(180deg,transparent,rgba(118,221,255,.42));animation:dwRain 1.7s linear infinite;opacity:.2}
+.dw-window.done .dw-waterline i{opacity:.55}
+.dw-waterline i:nth-child(1){left:28%;animation-delay:.2s}.dw-waterline i:nth-child(2){left:45%;animation-delay:.8s}.dw-waterline i:nth-child(3){left:63%;animation-delay:.45s}.dw-waterline i:nth-child(4){left:76%;animation-delay:1.1s}
+@keyframes dwRain{0%{transform:translateY(0)}100%{transform:translateY(420%)}}
+
+.dw-master-aura{position:absolute;inset:15%;border:1px solid rgba(255,214,91,.0);border-radius:50%;pointer-events:none;transition:border-color .25s ease,box-shadow .25s ease}
+.dw-window.stage-4 .dw-master-aura{border-color:rgba(255,214,91,.45);box-shadow:0 0 24px rgba(255,214,91,.25),inset 0 0 25px rgba(255,214,91,.08);animation:dwMaster 2.3s ease-in-out infinite}
+@keyframes dwMaster{50%{transform:scale(1.04);opacity:.75}}
+.dw-crown{display:none;position:absolute;top:11px;left:50%;transform:translateX(-50%);font-size:17px;filter:drop-shadow(0 3px 8px rgba(0,0,0,.4));z-index:5}
+.dw-window.stage-4 .dw-crown{display:block}
+
+.dw-help{position:absolute;z-index:8;top:34px;right:15px;display:none;transform:rotate(-6deg);padding:3px 6px;border:1px solid rgba(255,255,255,.22);border-radius:5px;background:rgba(16,16,29,.55);color:#efe8ff;font:800 8px var(--dw-display);letter-spacing:.08em;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.dw-window.neglected:not(.done) .dw-help{display:block;animation:dwHelp 3s ease-in-out infinite}
+@keyframes dwHelp{0%,100%{opacity:.68}50%{opacity:1}}
+.dw-level-chip{position:absolute;left:11px;top:10px;z-index:7;padding:4px 6px;border:1px solid rgba(255,255,255,.11);border-radius:7px;background:rgba(11,10,22,.52);backdrop-filter:blur(9px);font-size:7px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#d7d2ec}
+.dw-window.stage-4 .dw-level-chip{color:#ffe187;border-color:rgba(255,214,91,.35)}
+.dw-label{position:absolute;z-index:10;left:10px;right:10px;bottom:7px;display:flex;align-items:flex-end;justify-content:space-between;gap:7px}
+.dw-label strong{display:block;min-width:0;font:700 10px/1.1 var(--dw-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dw-label span{flex:0 0 auto;color:#aaa5c3;font-size:7px;font-weight:700}
+.dw-window.done .dw-label span{color:#f2d187}
+.dw-status-led{position:absolute;right:11px;top:11px;z-index:7;width:7px;height:7px;border-radius:50%;background:#514f65;box-shadow:0 0 0 3px rgba(255,255,255,.025)}
+.dw-window.done .dw-status-led{background:#ffe39a;box-shadow:0 0 11px rgba(255,216,123,.85),0 0 0 3px rgba(255,218,142,.08)}
+
+.dw-note{margin-top:12px;padding:12px 13px;border:1px solid var(--dw-line);border-radius:13px;background:rgba(255,255,255,.035);color:var(--dw-muted);font-size:9px;line-height:1.5}
+.dw-note strong{color:#ddd9ed}
+
+.dw-modal[hidden]{display:none}
+.dw-modal{position:fixed;z-index:3000;inset:0;display:grid;place-items:end center;padding:12px;background:rgba(5,5,12,.56);backdrop-filter:blur(10px)}
+.dw-modal-bg{position:absolute;inset:0;border:0;background:transparent}
+.dw-focus{position:relative;z-index:1;width:min(100%,560px);max-height:calc(100vh - env(safe-area-inset-top) - 16px);overflow:auto;border:1px solid rgba(255,255,255,.14);border-radius:24px 24px 18px 18px;background:linear-gradient(180deg,#24213e,#171629);box-shadow:0 35px 90px rgba(0,0,0,.55)}
+.dw-close{position:absolute;right:12px;top:12px;z-index:8;width:34px;height:34px;border:1px solid rgba(255,255,255,.12);border-radius:50%;background:rgba(11,10,22,.56);font-size:21px;cursor:pointer}
+.dw-focus-room{position:relative;min-height:310px;overflow:hidden;border-bottom:1px solid var(--dw-line)}
+.dw-focus-room .dw-window{width:100%;height:100%;min-height:310px;aspect-ratio:auto;border:0;border-radius:0;cursor:default;box-shadow:none}
+.dw-focus-room .dw-label{left:18px;right:18px;bottom:12px}.dw-focus-room .dw-label strong{font-size:15px}.dw-focus-room .dw-label span{font-size:9px}
+.dw-focus-room .dw-level-chip{left:18px;top:17px;font-size:8px}.dw-focus-room .dw-status-led{right:18px;top:18px}
+.dw-focus-room .dw-char-zone{left:24%;right:24%;top:13%;bottom:24%}
+.dw-focus-room .dw-pending{width:112px;height:112px;font-size:46px}
+.dw-focus-copy{padding:16px 16px calc(18px + env(safe-area-inset-bottom))}
+.dw-focus-meta{color:#9d90e9;font-size:8px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.dw-focus h2{margin:4px 0 4px;font:800 24px/1.05 var(--dw-display);letter-spacing:-.03em}
+.dw-focus p{margin:0;color:var(--dw-muted);font-size:11px;line-height:1.55}
+.dw-focus-level{display:flex;align-items:center;gap:7px;margin:13px 0 14px;color:#d8d3ee;font-size:10px;font-weight:700}
+.dw-focus-level .bar{flex:1;height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.dw-focus-level .bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#8b6cff,#70d7c0,#f4cd6d)}
+.dw-action,.dw-secondary{width:100%;min-height:48px;border-radius:14px;cursor:pointer;font-weight:800}
+.dw-action{border:0;background:#f5d47e;color:#201a12;box-shadow:0 8px 25px -16px #f7d26b}
+.dw-action.done{background:#2e2a48;color:#e9e6f5;border:1px solid rgba(255,255,255,.11)}
+.dw-secondary{margin-top:7px;border:1px solid rgba(255,255,255,.10);background:transparent;color:#9d98b5;font-size:10px}
+
+.dw-confetti{position:fixed;z-index:5000;pointer-events:none;inset:0;overflow:hidden}
+.dw-confetti i{position:absolute;top:-14px;width:8px;height:12px;border-radius:2px;background:currentColor;animation:dwConfetti 1.25s cubic-bezier(.1,.6,.2,1) forwards}
+@keyframes dwConfetti{to{transform:translate(var(--dx),105vh) rotate(var(--rot));opacity:.08}}
+
+@media(min-width:620px){.dw-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.dw-window{min-height:190px}.dw-modal{place-items:center}.dw-focus{border-radius:24px}}
+@media(max-width:370px){.dw-grid{gap:7px}.dw-window{min-height:150px;border-radius:16px}.dw-label strong{font-size:9px}.dw-char-zone{left:13%;right:13%}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
