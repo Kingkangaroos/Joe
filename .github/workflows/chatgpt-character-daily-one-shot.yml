@@ -1,0 +1,164 @@
+name: ChatGPT one-shot Character Daily source-of-truth patch
+
+on:
+  push:
+    branches:
+      - chatgpt/character-daily-source-of-truth
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: chatgpt/character-daily-source-of-truth
+          fetch-depth: 0
+
+      - name: Patch Character Daily to canonical habit source
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('character.html')
+          s=p.read_text()
+
+          # 1) Replace the legacy mixed public quest list with dynamic public habits
+          #    plus the same two separate private dailies used by Home.
+          a=s.index('const ALL_DAILY_QUESTS=[')
+          b=s.index('// v9.1: habit-log helpers', a)
+          new_defs="""const PRIVATE_DAILY_QUESTS=[
+            {id:'no_porn',      icon:'🛡️',label:'No Porn',      skill:'no_porn',      xp:45, private:true},
+            {id:'weed_control', icon:'🚫',label:'Weed Control', skill:'weed_control', xp:40, private:true},
+          ];
+          function getPublicDailyQuests(){
+            const defs=window.RPG_DEFAULT_SKILLS||{};
+            return Object.keys(defs)
+              .filter(k=>{ const d=defs[k]; return d&&d.isHabit&&d.active!==false&&!d.private; })
+              .map(k=>{ const d=defs[k]; return {id:k,icon:d.icon||'⭐',label:d.label||k,skill:k,xp:15,private:false}; });
+          }
+          """
+          s=s[:a]+new_defs+s[b:]
+
+          # 2) Remove the obsolete customizable legacy active-quest list. Public
+          #    Daily Missions are now the app's active non-private habits, period.
+          a=s.index("const ACTIVE_QUESTS_KEY='rpg_active_quests_v1';")
+          b=s.index('// v9.1 one-time backfill', a)
+          s=s[:a]+"function getDailyQuests(){ return getPublicDailyQuests().concat(PRIVATE_DAILY_QUESTS); }\n"+s[b:]
+
+          # 3) Legacy one-time repair also replays the authoritative log after each
+          #    recovered habit date so gaps cannot inflate score/streak.
+          if s.count('      ALL_DAILY_QUESTS.forEach(q=>{') != 1:
+              raise SystemExit('expected one legacy ALL_DAILY_QUESTS backfill loop')
+          s=s.replace('      ALL_DAILY_QUESTS.forEach(q=>{','      getDailyQuests().forEach(q=>{')
+          old="""        dhSet(q.skill,ds,true);
+                  window.checkHabitFor(q.skill,ds,hdef.label,hdef.icon);
+                  repaired++;
+          """
+          new="""        dhSet(q.skill,ds,true);
+                  window.checkHabitFor(q.skill,ds,hdef.label,hdef.icon);
+                  if(window.recomputeHabitFromLog) window.recomputeHabitFromLog(q.skill);
+                  repaired++;
+          """
+          if s.count(old)!=1: raise SystemExit(f'backfill mutation block count={s.count(old)}')
+          s=s.replace(old,new)
+
+          # 4) Rendering/counting public dailies uses habitlog, not the stale
+          #    rpg_daily_v1 quest mirror. Private dailies keep their quest store.
+          old="  const done=DAILY_QUESTS.filter(q=>quests[q.id]?.done).length;"
+          new="  const done=DAILY_QUESTS.filter(q=>q.private ? !!(quests[q.id]?.done) : dhHas(q.skill,selDate)).length;"
+          if s.count(old)!=1: raise SystemExit('daily count target not found')
+          s=s.replace(old,new)
+          old="    const isDone=!!(quests[q.id]?.done);"
+          new="    const isDone=q.private ? !!(quests[q.id]?.done) : dhHas(q.skill,selDate);"
+          if s.count(old)!=1: raise SystemExit('isDone target not found')
+          s=s.replace(old,new)
+
+          # 5) Patch only the quest-card click handler. Public habits write the
+          #    authoritative habitlog and replay; only private dailies write dd.quests.
+          qs=s.index('  // Quest grid')
+          a=s.index("    card.addEventListener('click',()=>{", qs)
+          b=s.index('    grid.appendChild(card);', a)
+          click=s[a:b]
+          old="""      const was=!!(dd.quests[q.id]?.done);
+                dd.quests[q.id]={done:!was};
+          """
+          new="""      const was=q.private ? !!(dd.quests[q.id]?.done) : dhHas(q.skill,sd);
+                if(q.private) dd.quests[q.id]={done:!was};
+          """
+          if click.count(old)!=1: raise SystemExit('click was/done target not found')
+          click=click.replace(old,new)
+
+          old="""      const hdef=(window.RPG_DEFAULT_SKILLS||{})[q.skill]||{};
+                if(hdef.isHabit){
+                  if(!was){
+                    if(!dhHas(q.skill,sd)){
+                      dhSet(q.skill,sd,true);
+                      if(window.checkHabitFor) window.checkHabitFor(q.skill,sd,hdef.label,hdef.icon);
+                    }
+                  } else {
+                    dhSet(q.skill,sd,false);
+                    const hs=window.getHabits?window.getHabits():{};
+                    const h=hs[q.skill];
+                    if(h){ h.score=Math.max(0,(h.score||0)-1); if(h.lastChecked===sd) h.lastChecked=null; if(window.saveHabits) window.saveHabits(hs); }
+                  }
+                }
+          """
+          new="""      const hdef=(window.RPG_DEFAULT_SKILLS||{})[q.skill]||{};
+                if(hdef.isHabit){
+                  if(!was){
+                    if(!dhHas(q.skill,sd)){
+                      dhSet(q.skill,sd,true);
+                      if(window.checkHabitFor) window.checkHabitFor(q.skill,sd,hdef.label,hdef.icon);
+                    }
+                  } else {
+                    dhSet(q.skill,sd,false);
+                  }
+                  if(window.recomputeHabitFromLog) window.recomputeHabitFromLog(q.skill);
+                }
+          """
+          if click.count(old)!=1: raise SystemExit('habit mutation target not found')
+          click=click.replace(old,new)
+
+          old='      saveDaily(dd,sd);\n      renderDaily();'
+          new='      if(q.private) saveDaily(dd,sd);\n      renderDaily();'
+          if click.count(old)!=1: raise SystemExit('private saveDaily target not found')
+          click=click.replace(old,new)
+          s=s[:a]+click+s[b:]
+
+          p.write_text(s)
+          PY
+
+      - name: Source and inline-script syntax checks
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('character.html').read_text()
+          assert 'const ALL_DAILY_QUESTS=[' not in s
+          assert 'ACTIVE_QUESTS_KEY' not in s
+          assert 'DEFAULT_ACTIVE_QUESTS' not in s
+          assert 'function getPublicDailyQuests()' in s
+          assert "d&&d.isHabit&&d.active!==false&&!d.private" in s
+          assert "q.private ? !!(quests[q.id]?.done) : dhHas(q.skill,selDate)" in s
+          assert "if(q.private) saveDaily(dd,sd);" in s
+          assert "h.score=Math.max(0,(h.score||0)-1)" not in s
+          assert "if(window.recomputeHabitFromLog) window.recomputeHabitFromLog(q.skill);" in s
+          blocks=re.findall(r'<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>',s,re.S|re.I)
+          out=Path('/tmp/character-inline')
+          out.mkdir(exist_ok=True)
+          for i,b in enumerate(blocks): (out/f'{i}.js').write_text(b)
+          print('inline blocks',len(blocks))
+          PY
+          for f in /tmp/character-inline/*.js; do node --check "$f"; done
+          git diff --check
+
+      - name: Self-clean and commit Character product change only
+        run: |
+          rm .github/workflows/chatgpt-character-daily-one-shot.yml
+          git config user.name "ChatGPT (OpenAI)"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "ChatGPT: unify Character Daily with habit source of truth"
+          git push origin HEAD:chatgpt/character-daily-source-of-truth
