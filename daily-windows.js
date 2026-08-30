@@ -1,4 +1,4 @@
-/* Daily Mission Windows v11.70
+/* Daily Mission Windows v11.71
    Performed-by: ChatGPT (OpenAI)
    Purpose: Lab-only living-room prototype for the 11 public Daily Missions.
    Data contract: RPG_DEFAULT_SKILLS + rpg_habitlog_v1 + canonical habit recompute.
@@ -12,18 +12,15 @@
   var previewLevel=null;
   var initTries=0;
 
+  // Only known-real Park D assets are listed. Missing companions deliberately
+  // remain null/pending so the prototype never probes fake filenames or mixes art styles.
   var ART={
     budgeting:{base:'img/lab/park2/budgeting.png'},
     good_deed:{base:'img/lab/park2/good-deed.png'},
     sleep:{base:'img/lab/park2/sleep.png',advanced:'img/lab/park2/sleep/advanced.png',mastery:'img/lab/park2/sleep/mastery.png'},
     walking:{base:'img/lab/park2/walking.png',advanced:'img/lab/park2/walking/advanced.png',mastery:'img/lab/park2/walking/mastery.png'},
     meditation:{base:'img/lab/park2/meditation.png',advanced:'img/lab/park2/meditation/advanced.png',mastery:'img/lab/park2/meditation/mastery.png'},
-    nutrition:{base:'img/lab/park2/nutrition.png'},
-    teeth:{base:'img/lab/park2/teeth.png'},
-    household:{base:'img/lab/park2/household.png'},
-    gratitude:{base:'img/lab/park2/gratitude.png'},
-    screen_time:{base:'img/lab/park2/screen-time.png'},
-    cold_shower:{base:'img/lab/park2/cold-shower.png'}
+    nutrition:{}, teeth:{}, household:{}, gratitude:{}, screen_time:{}, cold_shower:{}
   };
 
   var ROOM={
