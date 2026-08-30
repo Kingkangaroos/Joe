@@ -2,107 +2,74 @@
 
 **Decision owner:** Joey  
 **Recorded by:** ChatGPT (OpenAI)  
-**Status:** canonical art direction for public Daily Missions
+**Status:** Level 6 character family **approved** on 2026-08-30
 
-Joey explicitly chose the existing **Park 2.0 Option D — evolvable game companions** as the Daily Mission character family. Do not substitute another generic vector/cartoon family when an asset is missing.
+> **Current source of truth:** `img/lab/daily-missions/APPROVED-LEVEL6-BASE.md`
+>
+> Do not restart from the older missing-character briefs below or from generic Option-D placeholders. The approved Level 6 lineup now owns the identity of the character family.
+
+## What is locked now
+
+The approved reference is the dark/night Gamenfy Daily Mission companion group, ChatGPT generation `659d026b-2969-430d-a2da-2f7f99f8e297`.
+
+Approved Level 6 identities:
+
+1. Nutrition — living pink stomach / nutrition body
+2. Brush Teeth — glossy heroic tooth companion
+3. Household — human maid / household helper
+4. Gratitude — warm golden gratitude spirit
+5. Good Deed — red heart superhero
+6. Screen Time — compact retro screen/robot creature
+7. Cold Shower — crystalline blue ice/cold-water elemental
+8. No Weed — green plant/forest guardian
+9. Private discipline mission — half-demon / half-angel human transition; no explicit private wording in public art
+10. Sleep — blond male sleeper in purple star/moon sleepwear and cloud/pillow volume
+11. Steps — teal/green athletic alternate-species / fox-like runner, not a normal human
+
+For exact visual notes, privacy wording, hashes and the evolution contract, read `../daily-missions/APPROVED-LEVEL6-BASE.md`.
 
 ## Locked visual language
 
 - premium toy-like / animated-film 3D finish;
-- transparent background;
+- one coherent game-universe family despite different body concepts;
 - large expressive shared eye language;
-- playful and expressive, but not babyish;
-- real separate arms/legs and a clean silhouette suitable for web animation;
-- the mission must be readable from the **body/silhouette itself**, not merely from clothing or a floating icon;
-- restrained gold accents connect the whole Park-D family;
-- no text, logo, scenery, UI card or baked-in background;
-- preserve the same identity across all evolution forms.
+- playful and expressive, but not flat/generic baby clip-art;
+- mission identity should read from silhouette/body first;
+- props support identity instead of replacing it;
+- dark navy / purple night presentation is the preferred comparison environment;
+- preserve the same character identity through evolution;
+- Level 10 must be visually exceptional, not just a label change.
 
-## Habit evolution contract
+## Evolution contract — next production phase
 
-Daily Missions have a persistent score from 0–10. The intended visible bands are:
+The Level 6 lineup is the identity anchor. Build only these five visible milestone forms per character:
 
-- **0–2 — Starter:** smallest/least equipped form; subdued posture/materials.
-- **3–4 — Apprentice:** first clear upgrade and more confidence.
-- **5–6 — Advanced:** stronger silhouette and meaningful equipment/material upgrade.
-- **7–9 — Expert:** powerful mature form, but explicitly **not Master yet**.
-- **10 — Master:** unique end form; unmistakably special. Master status is reserved for level 10.
+- **Level 2** — early / weak / inexperienced
+- **Level 4** — first meaningful development
+- **Level 6** — **approved baseline**
+- **Level 8** — expert / stronger / more equipped
+- **Level 10** — Master, deliberately extravagant and unmistakably final
+
+Intermediate numeric scores can change behavior, energy, lighting, particles and room details without demanding a separate identity image at every level.
 
 If a score falls, the visible form may fall back too.
 
-## Already real Option-D companions
+## Privacy / data boundary
 
-1. **Budgeting** — `budgeting.png`
-2. **Good Deed** — `good-deed.png`
-3. **Sleep** — `sleep.png`, plus `sleep/advanced.png`, `sleep/mastery.png`
-4. **10k Steps / Walking** — `walking.png`, plus `walking/advanced.png`, `walking/mastery.png`
-5. **Meditation** — `meditation.png`, plus `meditation/advanced.png`, `meditation/mastery.png`
+The approved group image is an **art-direction lineup**, not permission to silently rewrite app membership or privacy logic.
 
-These exact assets are the reference family. Do not redesign them unless Joey explicitly changes direction.
+- Private discipline/No Porn art must not visibly spell out `No Porn` in public-facing UI/art.
+- Private habit wiring remains a separate implementation decision.
+- Home must not be changed merely because the Lab art baseline is approved.
 
----
+## Production order from here
 
-# Missing public Daily Mission companions
+1. Preserve the approved Level 6 identities as isolated, reusable character assets.
+2. Confirm each isolated asset still looks like the approved group character.
+3. Build Level 2 and Level 4 backward from Level 6.
+4. Build Level 8 and Level 10 forward from Level 6.
+5. Only then wire the final approved assets into Daily Mission Windows and evaluate motion/room behavior.
 
-## 1. Nutrition
+## Historical note
 
-**Core silhouette:** the body itself is a compact, premium food/protein bowl companion — rounded bowl torso with layered healthy ingredients forming its crown/upper silhouette. It should read as nutrition before any prop is noticed.
-
-**Identity cues:** leafy greens, protein element, grain/energy layer, small gold utensil/accent, strong energetic legs. Avoid making it merely a generic orange/vegetable blob.
-
-**Evolution:** Starter is a simple balanced bowl; Apprentice gains ingredient variety; Advanced gets a stronger layered bowl/body and energy accents; Expert looks like a highly prepared performance-fuel companion; Master becomes a polished golden-accented nutrition guardian with a rich but still clean food silhouette.
-
-## 2. Brush Teeth 2×
-
-**Core silhouette:** pearlescent molar/tooth body with separate limbs. The tooth shape itself must remain instantly readable.
-
-**Identity cues:** toothbrush tool, subtle mint/foam details, enamel shine, small gold dental accent. Avoid grotesque mouths or realistic dental anatomy.
-
-**Evolution:** Starter slightly dull/soft enamel; Apprentice brighter with first mint accent; Advanced gets cleaner pearl materials and upgraded brush; Expert gains protective enamel-like armor details; Master is brilliant pearlescent white with a refined gold/mint crest and unmistakable healthy-tooth glow.
-
-## 3. Household
-
-**Core silhouette:** a tiny living home/clean-space companion — house-shaped torso or compact room/house form integrated into the body, not a normal character merely holding a broom.
-
-**Identity cues:** broom or cleaning tool as one limb/prop, tidy storage/laundry detail, warm home materials, gold hardware accent.
-
-**Evolution:** Starter looks slightly cluttered and under-equipped; Apprentice becomes tidier; Advanced gains organized storage/tool details; Expert has a strong polished home silhouette and efficient cleaning gear; Master is an immaculate warm home-guardian with elegant gold hardware and a visibly calm/ordered design.
-
-## 4. Gratitude
-
-**Core silhouette:** an open journal / memory-book companion rather than another heart character (Good Deed already owns the heart identity). The open pages/body should be the silhouette.
-
-**Identity cues:** three small glowing memory/orb lights representing things appreciated, warm paper/cream materials, subtle gold page edges, expressive eyes integrated into the book form.
-
-**Evolution:** Starter has a simple mostly blank journal; Apprentice gains its first orbiting memory lights; Advanced has richer pages/bookmark and stronger warm glow; Expert carries a stable constellation of appreciated moments; Master becomes a radiant golden-edged gratitude tome with three beautifully controlled memory lights and a calm, fulfilled expression.
-
-## 5. Screen Time
-
-**Core silhouette:** a living phone/screen/device companion whose screen is part of its face/body. It should communicate conscious digital use, not generic technology/AI (AI Tools already owns that identity).
-
-**Identity cues:** screen dimmer/moon/hourglass motif, physical lock/focus toggle, subdued digital glow, gold control ring. Avoid coding/terminal imagery.
-
-**Evolution:** Starter looks overstimulated/bright and slightly restless; Apprentice gains a dimmer/focus control; Advanced becomes calmer with reduced visual noise; Expert has a disciplined dark-screen/focus-mode design; Master is a serene minimal device guardian with controlled soft light, premium dark materials and a refined gold focus ring.
-
-## 6. Cold Shower
-
-**Core silhouette:** translucent water-droplet / ice-water companion with a shower-head or water-flow crest integrated into its silhouette.
-
-**Identity cues:** clear blue/cyan materials, small ice facets, water stream motif, gold valve/ring accent, energetic posture. Avoid making it a generic snowman or ice cube.
-
-**Evolution:** Starter is a small hesitant droplet; Apprentice gains sharper cold-water facets; Advanced has a stronger flowing/ice hybrid body; Expert looks energised and resilient with controlled water/ice details; Master becomes a crystalline cold-water guardian with a powerful shower-flow crest, clear premium material and gold valve accent.
-
----
-
-## Production order
-
-Prioritize base companions first so all 11 public Daily Missions share the same Park-D family:
-
-1. Nutrition
-2. Brush Teeth 2×
-3. Household
-4. Gratitude
-5. Screen Time
-6. Cold Shower
-
-Then complete missing evolution forms for all 11. Do **not** generate 30–60 arbitrary images in one uncontrolled batch; keep identity consistency by locking each base companion before producing its evolution family.
+Earlier briefs described Nutrition as a bowl body, Household as a living house and Gratitude as an open journal. Those were useful exploration prompts but are **superseded** by the approved Level 6 lineup. Likewise, earlier generic SVG placeholders are implementation scaffolding only and must not overrule the approved character identities.
