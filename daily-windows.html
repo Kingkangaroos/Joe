@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#161429">
+<title>Daily Mission Windows — Gamenfy Lab</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="daily-windows.css?v=11.70">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=11.0" defer></script>
+<script src="sync.js?v=11.0" defer></script>
+<script src="topbar.js?v=11.0" defer></script>
+<script src="xp.js?v=11.70" defer></script>
+<script src="daily-windows.js?v=11.70" defer></script>
+</head>
+<body>
+<main class="dw-shell" id="dailyWindowsApp">
+  <header class="dw-top">
+    <a class="dw-back" href="lab.html">‹ Lab</a>
+    <div class="dw-kicker">CHATGPT LAB · V11 EXPERIMENT</div>
+    <h1>Daily Mission Windows</h1>
+    <p class="dw-intro">Every mission has its own little room. Finish the mission and the room wakes up. Ignore it and the room slowly asks for you back.</p>
+
+    <div class="dw-summary" aria-live="polite">
+      <div><strong id="dwDoneCount">0 / 0</strong><span>rooms lit</span></div>
+      <div><strong id="dwAvgLevel">0.0</strong><span>avg level</span></div>
+      <div><strong id="dwMasterCount">0</strong><span>masters</span></div>
+    </div>
+  </header>
+
+  <section class="dw-legend" aria-label="Evolution levels">
+    <span><i class="dw-dot s0"></i>0–2 Starter</span>
+    <span><i class="dw-dot s1"></i>3–4 Apprentice</span>
+    <span><i class="dw-dot s2"></i>5–6 Advanced</span>
+    <span><i class="dw-dot s3"></i>7–9 Expert</span>
+    <span><i class="dw-dot s4"></i>10 Master</span>
+  </section>
+
+  <section class="dw-grid" id="dwGrid" aria-label="Daily Mission rooms"></section>
+
+  <aside class="dw-note">
+    <strong>Prototype rule:</strong> this page reads and writes the same public Daily Mission log as Home and Character. No separate completion system is introduced here.
+  </aside>
+</main>
+
+<div class="dw-modal" id="dwModal" hidden>
+  <button class="dw-modal-bg" type="button" data-close-modal aria-label="Close mission room"></button>
+  <section class="dw-focus" role="dialog" aria-modal="true" aria-labelledby="dwFocusTitle">
+    <button class="dw-close" type="button" data-close-modal aria-label="Close">×</button>
+    <div class="dw-focus-room" id="dwFocusRoom"></div>
+    <div class="dw-focus-copy">
+      <div class="dw-focus-meta" id="dwFocusMeta"></div>
+      <h2 id="dwFocusTitle"></h2>
+      <p id="dwFocusDesc"></p>
+      <div class="dw-focus-level" id="dwFocusLevel"></div>
+      <button class="dw-action" id="dwAction" type="button"></button>
+      <button class="dw-secondary" id="dwResetPreview" type="button">Preview all states</button>
+    </div>
+  </section>
+</div>
+
+<div class="dw-confetti" id="dwConfetti" aria-hidden="true"></div>
+</body>
+</html>
