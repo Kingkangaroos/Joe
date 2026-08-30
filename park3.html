@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0820">
+<title>Park 3.0 — Gamenfy</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="park3.css?v=12.0">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=11.0" defer></script>
+<script src="sync.js?v=11.0" defer></script>
+<script src="topbar.js?v=11.0" defer></script>
+<script src="xp.js?v=10.98" defer></script>
+<script src="park3.js?v=12.0" defer></script>
+</head>
+<body>
+<main class="p3-shell">
+  <header class="p3-head">
+    <a class="p3-back" href="lab.html#chatgpt-lab">‹ Lab</a>
+    <div class="p3-kicker"><span></span> ChatGPT build · Park 3.0</div>
+    <h1>Daily Mission Evolution Plaza</h1>
+    <p>De goedgekeurde companions, nu als echte level 1–10 evoluties. Het live level komt uit dezelfde Today’s Missions-data.</p>
+    <div class="p3-live"><i></i><span>LIVE · rpg_habits_v1 + rpg_habitlog_v1</span></div>
+  </header>
+
+  <section class="p3-stats" aria-label="Park 3.0 status">
+    <div><strong id="p3Done">0/11</strong><span>done today</span></div>
+    <div><strong id="p3Avg">0.0</strong><span>avg level</span></div>
+    <div><strong id="p3Masters">0</strong><span>masters</span></div>
+  </section>
+
+  <section class="p3-stage" aria-label="Park 3.0 Daily Mission companions">
+    <div class="p3-sky" aria-hidden="true"></div>
+    <div class="p3-stars" aria-hidden="true"></div>
+    <div class="p3-arch" aria-hidden="true"><span>GAMENFY</span><small>PARK 3.0</small></div>
+    <div class="p3-grid" id="p3Grid"></div>
+  </section>
+
+  <div class="p3-note">
+    <strong>Hoe dit werkt</strong>
+    <span>Tap een companion om zijn level te bekijken. “Complete today” schrijft naar dezelfde Daily Mission-log en herberekent direct je persistente 0–10 level. Score 0 gebruikt visueel Level 1 als noodvorm, maar blijft technisch Level 0.</span>
+  </div>
+</main>
+
+<div class="p3-modal" id="p3Modal" hidden>
+  <button class="p3-shade" type="button" data-p3-close aria-label="Close"></button>
+  <section class="p3-sheet" role="dialog" aria-modal="true" aria-labelledby="p3Title">
+    <div class="p3-grab" aria-hidden="true"></div>
+    <button class="p3-close" type="button" data-p3-close aria-label="Close">×</button>
+    <div class="p3-modal-kicker" id="p3Meta">LIVE LEVEL</div>
+    <h2 id="p3Title">Mission</h2>
+    <div class="p3-focus-art" id="p3FocusArt"></div>
+    <div class="p3-level-row">
+      <button id="p3Prev" type="button" aria-label="Previous level">−</button>
+      <div><strong id="p3Level">Level 1</strong><span id="p3State">Starter</span></div>
+      <button id="p3Next" type="button" aria-label="Next level">+</button>
+    </div>
+    <div class="p3-progress"><i id="p3Progress"></i></div>
+    <p id="p3Desc"></p>
+    <div class="p3-actions">
+      <button class="p3-secondary" id="p3Reset" type="button">Use live level</button>
+      <button class="p3-primary" id="p3Action" type="button">Complete today</button>
+    </div>
+  </section>
+</div>
+</body>
+</html>
