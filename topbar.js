@@ -363,3 +363,43 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
     boot();
   }
 })();
+
+// v11.3 — cross-page consistency guard for the authoritative habit replay.
+// `xp.js` loads after this file on Gamenfy pages, so install at DOMContentLoaded.
+// The underlying recompute stays the source of truth; this only corrects the
+// one edge case where a completed missed day lowered score but left an old 🔥 streak.
+(function () {
+  'use strict';
+  function installHabitStreakGuard() {
+    const original = window.recomputeHabitFromLog;
+    if (typeof original !== 'function' || original.__gamenfyStreakGuard) return;
+    function wrapped(habitId) {
+      const h = original.apply(this, arguments);
+      if (!h || !h.lastChecked) return h;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const p = String(h.lastChecked).split('-').map(Number);
+      const last = new Date(p[0], p[1] - 1, p[2]);
+      last.setHours(0, 0, 0, 0);
+      const completedMissedDays = Math.max(0, Math.floor((today - last) / 86400000) - 1);
+      if (completedMissedDays > 0 && (h.streak || 0) !== 0) {
+        h.streak = 0;
+        try {
+          const all = window.getHabits ? window.getHabits() : {};
+          if (all && all[habitId]) {
+            all[habitId].streak = 0;
+            if (window.saveHabits) window.saveHabits(all);
+          }
+        } catch (e) {}
+      }
+      return h;
+    }
+    wrapped.__gamenfyStreakGuard = true;
+    window.recomputeHabitFromLog = wrapped;
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', installHabitStreakGuard, { once: true });
+  } else {
+    installHabitStreakGuard();
+  }
+})();
