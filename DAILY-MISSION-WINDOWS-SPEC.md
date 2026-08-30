@@ -4,9 +4,27 @@
 **Recorded / implementation by:** ChatGPT (OpenAI)  
 **Status:** Lab experiment only — do not replace Home until Joey approves the concept.
 
+## 2026-08-30 art lock
+
+The character-family exploration has now produced an **approved Level 6 baseline**. Before generating, editing or wiring any Daily Mission companion, read:
+
+`img/lab/daily-missions/APPROVED-LEVEL6-BASE.md`
+
+That file supersedes earlier generic SVG placeholders and older unapproved missing-character briefs. Approved reference generation: `659d026b-2969-430d-a2da-2f7f99f8e297`.
+
+The intended visible evolution milestone artwork is now explicitly:
+
+- **Level 2** — early / weak form
+- **Level 4** — developing form
+- **Level 6** — **approved identity baseline**
+- **Level 8** — expert form
+- **Level 10** — Master, deliberately over-the-top final form
+
+The underlying score remains 0–10; intermediate levels can use the nearest milestone identity plus behavior/energy/lighting/detail changes.
+
 ## Core concept
 
-Replace the old Daily Mission Garden presentation with a wall / cluster of small square **Daily Mission Windows**. Every public Daily Mission owns a tiny room and a character. The room itself communicates whether Joey has done the mission today.
+Replace the old Daily Mission Garden presentation with a wall / cluster of small square **Daily Mission Windows**. Every Daily Mission shown in this experience owns a tiny room and a character. The room itself communicates whether the mission was done today.
 
 - Compact square rooms/windows, visually related as one building/system.
 - Uncompleted today: room is dark, character is low-energy / sleepy / subdued.
@@ -20,29 +38,17 @@ Replace the old Daily Mission Garden presentation with a wall / cluster of small
 
 ## Data rules — non-negotiable
 
-This experiment must not invent a parallel Daily Mission state.
-
-Public Daily Missions come from `RPG_DEFAULT_SKILLS` where:
-- `isHabit === true`
-- `active !== false`
-- `!private`
+This experiment must not invent a parallel Daily Mission completion state.
 
 Per-day completion source of truth: `rpg_habitlog_v1`.
 
-Current public set:
-1. Budgeting
-2. Sleep
-3. Nutrition
-4. 10k Steps / Walking
-5. Brush Teeth 2×
-6. Household
-7. Meditation
-8. Gratitude
-9. Good Deed
-10. Screen Time
-11. Cold Shower
+Persistent score source: `rpg_habits_v1`.
 
-Never put Tennis, Reading or Finger Whistling into the public Daily Mission grid. No Porn and Weed Control stay separate private quests.
+The approved group image is an **art-direction lineup**. It does not itself authorize changes to public/private membership or Home wiring. Any difference between the art review lineup and current skill/private flags must be resolved explicitly in implementation rather than inferred from the picture.
+
+In particular, private discipline / No Porn art must not expose the explicit private wording in public-facing art. Neutral presentation language such as `Discipline` is permitted where a visible label is needed.
+
+Never add unrelated normal skills such as Tennis, Reading or Finger Whistling merely because character art exists for them.
 
 ## Persistent 0–10 evolution
 
@@ -53,77 +59,73 @@ The score never resets at the start of a week.
 - level 10 remains 10 while the mission keeps being completed
 - after a miss at 10 it becomes 9; completing again is required to return to 10
 
-Visible evolution bands:
-- **0–2 — Starter**
-- **3–4 — Apprentice**
-- **5–6 — Advanced**
-- **7–9 — Expert**
-- **10 — Master**
+The character does not need eleven totally separate identities. Use the five approved milestone forms at 2 / 4 / 6 / 8 / 10. Intermediate numeric levels communicate progress through energy, movement, lighting, effects, props and room details.
 
-Master is level 10 only. Level 9 must never visually read as Master.
-
-The character does not need eleven totally separate identities. Use approximately five genuine visual forms; intermediate numeric levels can communicate progress through energy, movement, lighting, effects and room details.
+Master is level 10 only. Level 8 or 9 must never visually read as Master.
 
 ## Character art direction
 
-Canonical family: **Park 2.0 Option D — evolvable game companions**.
+Canonical family: **the approved 2026-08-30 Park-D / Daily Mission companion family** documented in `img/lab/daily-missions/APPROVED-LEVEL6-BASE.md`.
+
+Core family rules:
 
 - premium toy-like / animated-film 3D finish
-- transparent background
 - expressive shared eye language
-- playful, expressive, not babyish
-- actual separate arms/legs and animation-friendly silhouette
-- mission should read from the body/silhouette itself, not only a floating icon or costume
-- restrained gold details tie the family together
+- compact, animation-friendly silhouettes
+- one coherent universe despite very different mission-body concepts
+- mission should read from body/silhouette, with props as support
+- dark navy / purple night presentation is the preferred comparison environment
 - preserve each character's identity across all forms
-- no baked-in background, UI, text or logo
+- no accidental style reset when only one character needs revision
 
-Existing real Park-D Daily companions should be reused exactly where available. Missing companions stay explicitly pending rather than being replaced by a mismatched generic vector family.
+Approved human exceptions at Level 6: Household, private Discipline, Sleep. Steps must remain an alternate-species sporty creature rather than becoming a normal human.
 
-## Cold Shower — locked character brief
+## Cold Shower — approved direction
 
-Cold Shower must read as cold water before any accessory is noticed.
+Cold Shower is now locked at Level 6 as a crystalline blue cold-water / ice elemental: translucent blue body, strong crystalline facets/spikes, droplets and an energetic expression.
 
-**Core silhouette:** a translucent water-droplet / ice-water companion with a shower-head or water-flow crest integrated into its silhouette.
+Evolution direction:
 
-**Identity cues:** clear blue/cyan materials, small ice facets, visible water-stream motif, a restrained gold valve/ring accent and an energetic posture. Do not turn it into a generic snowman or ice cube.
-
-Evolution:
-- **Starter (0–2):** small hesitant droplet; visibly unsure of the cold.
-- **Apprentice (3–4):** sharper cold-water facets and more confidence.
-- **Advanced (5–6):** stronger flowing-water / ice hybrid body.
-- **Expert (7–9):** energetic and resilient; controlled water and ice detailing.
-- **Master (10):** crystalline cold-water guardian with a powerful integrated shower-flow crest, premium transparent material and refined gold valve accent.
+- **Level 2:** small hesitant cold-water/ice being
+- **Level 4:** clearer facets, more confidence
+- **Level 6:** approved crystalline baseline
+- **Level 8:** powerful resilient ice/water guardian
+- **Level 10:** extravagant crystalline Master form with exceptional silhouette/effects
 
 Room behavior in the Windows concept:
-- off: colder/darker blue room, subdued droplet, sparse/slower falling water
-- on: cyan light and stronger moving water streams; character visibly energised
-- Master: crystalline/gold light accent without making the whole room gold
+
+- off: colder/darker blue room, subdued elemental, sparse/slower water
+- on: cyan light and stronger water/ice motion; character visibly energised
+- Master: rare crystalline/gold accent without making the whole room gold
 
 ## Current v11 prototype
 
 Implementation lives on `chatgpt/daily-mission-windows-v11`:
+
 - `daily-windows.html`
 - `daily-windows.css`
 - `daily-windows.js`
+- `daily-windows-option-d.js`
 
 Prototype already includes:
-- all public Daily Missions generated from the canonical skill definitions
+
 - compact room grid
 - light-on / light-off completion state
 - expanded focused room
 - explicit complete / undo
 - confetti
-- five visual evolution bands with Master only at 10
-- preview button to inspect levels 0, 3, 5, 7 and 10 without changing saved data
+- persistent 0–10 score reading
 - HELP state after multiple missed days
-- special Cold Shower water-flow room treatment
-- real existing Park-D assets where available and explicit pending treatment where art is missing
+- special Cold Shower room treatment
+- existing art / temporary bridge assets where available
 
-## Next visual pass after Joey reviews the prototype
+Important: temporary SVG bridge assets are scaffolding and are **not** the new source of truth. The approved Level 6 lineup is.
 
-1. Decide whether the overall room/window language feels right before moving anything to Home.
-2. Lock the six missing base Park-D companions, starting with the art queue already documented in `img/lab/park2/DAILY-MISSION-ART-QUEUE.md`.
-3. Make each room more behavior-specific (e.g. Sleep settles into bed, Household visibly tidies, Screen Time dims/locks, Cold Shower braces then energises).
-4. Add room-to-room ambient interaction only if it improves the life-RPG feeling without making the grid visually noisy.
-5. Only after approval, decide how much of Daily Mission Windows belongs on Home versus Character/Lab.
+## Next production phase
+
+1. Extract/recreate each approved Level 6 character as an isolated reusable asset without changing its identity.
+2. Review isolated Level 6 assets for consistency with the approved group image.
+3. Build Level 2 and Level 4 backward from the approved Level 6 form.
+4. Build Level 8 and Level 10 forward from the approved Level 6 form.
+5. Add mission-specific room behavior and animation.
+6. Only after Joey approves the Windows experience, decide what belongs on Home.
