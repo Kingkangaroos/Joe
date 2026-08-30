@@ -45,16 +45,27 @@ Vercel production deployment is READY. The old `sync.js?v=11.0` URL was also fet
 
 ## iOS/PWA bottom navigation drifts into content while scrolling
 **Reported:** 30 Aug 2026  
-**Status:** **OPEN — intentionally kept out of the sync/visual production merges. Screenshot / real-device investigation needed.**
+**Status:** **OPEN — likely WebKit/iOS 26 rendering bug; intentionally kept out of the sync/visual production merges. Screenshot / real-device investigation still useful.**
 
 Joey reports that the bottom navigation (Main / Body / Skills / Finance / Jarvis) can visually travel upward while scrolling and end up in the middle of the content instead of remaining pinned to the bottom viewport edge.
 
-Important history:
+### Strong external match found
+This symptom closely matches open WebKit bugs, not just a Gamenfy CSS mistake:
+- WebKit #301172 — **“Fixed and sticky elements do not render in correct position while scrolling in PWA”**. Report explicitly describes standalone PWAs where fixed/sticky elements drift approximately halfway through the viewport during scrolling.
+  https://bugs.webkit.org/show_bug.cgi?id=301172
+- WebKit #312149 — **“iOS 26: position: fixed; bottom: 0 element painted at wrong vertical position”**. Report specifically describes bottom navigation/footer-style elements ending up mid-viewport after scroll gestures; it also notes that JS/CSSOM measurements can report the correct position while the element is visibly painted elsewhere.
+  https://bugs.webkit.org/show_bug.cgi?id=312149
+
+Both are iOS 26 / WebKit Layout & Rendering issues. This means a JS fix based only on `getBoundingClientRect()` / `visualViewport.height` may be unable to detect the visual failure, and blindly adding transforms / `!important` rules is not a reliable fix.
+
+Important Gamenfy history:
 - An early combined test branch contained stronger fixed-position/transform/safe-area CSS.
 - That mixed branch was deliberately closed and **the bottom-nav hardening was NOT merged** because it could not be visually verified against the installed iOS PWA.
 - Current production still uses the existing `topbar.js` bottom bar implementation.
 
-Next useful input: Joey's screenshot showing the wrong bar position, ideally while the issue is happening. Then compare the actual visual viewport/safe-area behavior rather than guessing.
+Possible fallback if the bug proves persistent on Joey's device: prototype an **iOS-standalone-only non-fixed navigation architecture** (e.g. shell/internal scroller with nav as normal-flow sibling) instead of piling more CSS onto `position:fixed`. That is a larger layout change and should be tested on a branch first.
+
+Next useful input: Joey's screenshot showing the wrong bar position, ideally while the issue is happening. Then compare the symptom with WebKit #301172/#312149 before choosing a workaround.
 
 ---
 
