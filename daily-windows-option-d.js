@@ -1,4 +1,4 @@
-/* Daily Mission Windows — ChatGPT Option-D companion bridge v11.72
+/* Daily Mission Windows — ChatGPT Option-D companion bridge v11.73
    Replaces only the six explicit art-pending placeholders with ChatGPT-created
    Option-D companion assets. Existing real Park-D PNGs remain untouched.
 */
@@ -12,8 +12,14 @@
     screen_time:'img/lab/park2/screen-time.svg',
     cold_shower:'img/lab/park2/cold-shower.svg'
   };
+  function roomsIn(scope){
+    var rooms=[];
+    if(scope&&scope.matches&&scope.matches('.dw-window[data-mission]'))rooms.push(scope);
+    if(scope&&scope.querySelectorAll)rooms=rooms.concat(Array.from(scope.querySelectorAll('.dw-window[data-mission]')));
+    return rooms;
+  }
   function upgrade(scope){
-    (scope||document).querySelectorAll('.dw-window[data-mission]').forEach(function(room){
+    roomsIn(scope||document).forEach(function(room){
       var key=room.getAttribute('data-mission'),src=ASSETS[key];
       if(!src)return;
       room.querySelectorAll('.dw-pending').forEach(function(pending){
