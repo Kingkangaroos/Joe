@@ -21,111 +21,109 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import re
           p=Path('character.html')
           s=p.read_text()
 
-          # 1) Replace the legacy mixed public quest list with dynamic public habits
-          #    plus the same two separate private dailies used by Home.
-          a=s.index('const ALL_DAILY_QUESTS=[')
-          b=s.index('// v9.1: habit-log helpers', a)
-          new_defs="""const PRIVATE_DAILY_QUESTS=[
+          # Replace the complete legacy Daily definition/config region. Public
+          # missions are now dynamic active habits; private dailies stay separate.
+          start=s.index('const ALL_DAILY_QUESTS=[')
+          end=s.index('// v9.1 one-time backfill:', start)
+          defs="""const PRIVATE_DAILY_QUESTS=[
             {id:'no_porn',      icon:'🛡️',label:'No Porn',      skill:'no_porn',      xp:45, private:true},
             {id:'weed_control', icon:'🚫',label:'Weed Control', skill:'weed_control', xp:40, private:true},
           ];
+          // Public Daily Missions have one source of truth across Main + Character:
+          // active, non-private habits from RPG_DEFAULT_SKILLS, stored per day in
+          // rpg_habitlog_v1. The old rpg_active_quests_v1 selection is legacy only.
           function getPublicDailyQuests(){
             const defs=window.RPG_DEFAULT_SKILLS||{};
             return Object.keys(defs)
               .filter(k=>{ const d=defs[k]; return d&&d.isHabit&&d.active!==false&&!d.private; })
               .map(k=>{ const d=defs[k]; return {id:k,icon:d.icon||'⭐',label:d.label||k,skill:k,xp:15,private:false}; });
           }
+          // Habit-log helpers (same authoritative format as index.html).
+          function dhLoad(){ try{ return JSON.parse(localStorage.getItem('rpg_habitlog_v1'))||{}; }catch(e){ return {}; } }
+          function dhSave(l){ try{ localStorage.setItem('rpg_habitlog_v1', JSON.stringify(l)); }catch(e){} }
+          function dhHas(key,date){ const l=dhLoad(); return !!(l[key]&&l[key][date]); }
+          function dhSet(key,date,val){ const l=dhLoad(); l[key]=l[key]||{}; if(val) l[key][date]=true; else delete l[key][date]; dhSave(l); }
+          function getDailyQuests(){ return getPublicDailyQuests().concat(PRIVATE_DAILY_QUESTS); }
+          function dailyQuestDone(q,date,daily){
+            if(q.private){ const d=daily||loadDaily(date); return !!(d.quests&&d.quests[q.id]&&d.quests[q.id].done); }
+            return dhHas(q.skill,date);
+          }
+          function toggleDailyQuest(q,date){
+            const was=dailyQuestDone(q,date);
+            if(q.private){
+              const d=loadDaily(date); if(!d.quests) d.quests={};
+              d.quests[q.id]={done:!was};
+              saveDaily(d,date);
+            } else {
+              const hdef=(window.RPG_DEFAULT_SKILLS||{})[q.skill]||{};
+              dhSet(q.skill,date,!was);
+              if(!was&&window.checkHabitFor) window.checkHabitFor(q.skill,date,hdef.label,hdef.icon);
+              if(window.recomputeHabitFromLog) window.recomputeHabitFromLog(q.skill);
+            }
+            if(!was&&typeof window.addXP==='function') window.addXP(q.skill,q.xp,q.label);
+            if(was&&typeof window.removeXP==='function') window.removeXP(q.skill,q.xp,q.label+' unchecked');
+            return !was;
+          }
           """
-          s=s[:a]+new_defs+s[b:]
+          s=s[:start]+defs+s[end:]
 
-          # 2) Remove the obsolete customizable legacy active-quest list. Public
-          #    Daily Missions are now the app's active non-private habits, period.
-          a=s.index("const ACTIVE_QUESTS_KEY='rpg_active_quests_v1';")
-          b=s.index('// v9.1 one-time backfill', a)
-          s=s[:a]+"function getDailyQuests(){ return getPublicDailyQuests().concat(PRIVATE_DAILY_QUESTS); }\n"+s[b:]
-
-          # 3) Legacy one-time repair also replays the authoritative log after each
-          #    recovered habit date so gaps cannot inflate score/streak.
-          if s.count('      ALL_DAILY_QUESTS.forEach(q=>{') != 1:
-              raise SystemExit('expected one legacy ALL_DAILY_QUESTS backfill loop')
-          s=s.replace('      ALL_DAILY_QUESTS.forEach(q=>{','      getDailyQuests().forEach(q=>{')
-          old="""        dhSet(q.skill,ds,true);
+          # Legacy repair: only dynamically-current habits are candidates, and every
+          # recovered date ends with an authoritative replay.
+          s=s.replace('      ALL_DAILY_QUESTS.forEach(q=>{','      getDailyQuests().forEach(q=>{',1)
+          old='''        dhSet(q.skill,ds,true);
                   window.checkHabitFor(q.skill,ds,hdef.label,hdef.icon);
                   repaired++;
-          """
-          new="""        dhSet(q.skill,ds,true);
+          '''
+          new='''        dhSet(q.skill,ds,true);
                   window.checkHabitFor(q.skill,ds,hdef.label,hdef.icon);
                   if(window.recomputeHabitFromLog) window.recomputeHabitFromLog(q.skill);
                   repaired++;
-          """
-          if s.count(old)!=1: raise SystemExit(f'backfill mutation block count={s.count(old)}')
-          s=s.replace(old,new)
+          '''
+          if old not in s: raise SystemExit('legacy backfill mutation block not found')
+          s=s.replace(old,new,1)
 
-          # 4) Rendering/counting public dailies uses habitlog, not the stale
-          #    rpg_daily_v1 quest mirror. Private dailies keep their quest store.
-          old="  const done=DAILY_QUESTS.filter(q=>quests[q.id]?.done).length;"
-          new="  const done=DAILY_QUESTS.filter(q=>q.private ? !!(quests[q.id]?.done) : dhHas(q.skill,selDate)).length;"
-          if s.count(old)!=1: raise SystemExit('daily count target not found')
-          s=s.replace(old,new)
-          old="    const isDone=!!(quests[q.id]?.done);"
-          new="    const isDone=q.private ? !!(quests[q.id]?.done) : dhHas(q.skill,selDate);"
-          if s.count(old)!=1: raise SystemExit('isDone target not found')
-          s=s.replace(old,new)
+          # The live Daily grid: count and card state through the shared helper.
+          s,n=re.subn(r"  const done=DAILY_QUESTS\.filter\(q=>quests\[q\.id\]\?\.done\)\.length;",
+                      "  const done=DAILY_QUESTS.filter(q=>dailyQuestDone(q,selDate,daily)).length;",s,count=1)
+          if n!=1: raise SystemExit(f'daily count replacements={n}')
+          # First isDone after the Quest grid marker belongs to renderDaily.
+          qstart=s.index('  // Quest grid')
+          qend=s.index('  // Gratitude tag-input',qstart)
+          qseg=s[qstart:qend]
+          qseg,n=re.subn(r"    const isDone=!!\(quests\[q\.id\]\?\.done\);",
+                         "    const isDone=dailyQuestDone(q,selDate,daily);",qseg,count=1)
+          if n!=1: raise SystemExit(f'renderDaily isDone replacements={n}')
+          # Replace the whole Daily card click implementation with the canonical helper.
+          pat=re.compile(r"    card\.addEventListener\('click',\(\)=>\{.*?\n    \}\);",re.S)
+          repl="""    card.addEventListener('click',()=>{
+                if(q.private&&!isPrivateUnlocked()){ requirePin(()=>renderDaily()); return; }
+                toggleDailyQuest(q,getSelectedDate());
+                renderDaily();
+              });"""
+          qseg,n=pat.subn(repl,qseg,count=1)
+          if n!=1: raise SystemExit(f'renderDaily click replacements={n}')
+          s=s[:qstart]+qseg+s[qend:]
 
-          # 5) Patch only the quest-card click handler. Public habits write the
-          #    authoritative habitlog and replay; only private dailies write dd.quests.
-          qs=s.index('  // Quest grid')
-          a=s.index("    card.addEventListener('click',()=>{", qs)
-          b=s.index('    grid.appendChild(card);', a)
-          click=s[a:b]
-          old="""      const was=!!(dd.quests[q.id]?.done);
-                dd.quests[q.id]={done:!was};
-          """
-          new="""      const was=q.private ? !!(dd.quests[q.id]?.done) : dhHas(q.skill,sd);
-                if(q.private) dd.quests[q.id]={done:!was};
-          """
-          if click.count(old)!=1: raise SystemExit('click was/done target not found')
-          click=click.replace(old,new)
-
-          old="""      const hdef=(window.RPG_DEFAULT_SKILLS||{})[q.skill]||{};
-                if(hdef.isHabit){
-                  if(!was){
-                    if(!dhHas(q.skill,sd)){
-                      dhSet(q.skill,sd,true);
-                      if(window.checkHabitFor) window.checkHabitFor(q.skill,sd,hdef.label,hdef.icon);
-                    }
-                  } else {
-                    dhSet(q.skill,sd,false);
-                    const hs=window.getHabits?window.getHabits():{};
-                    const h=hs[q.skill];
-                    if(h){ h.score=Math.max(0,(h.score||0)-1); if(h.lastChecked===sd) h.lastChecked=null; if(window.saveHabits) window.saveHabits(hs); }
-                  }
-                }
-          """
-          new="""      const hdef=(window.RPG_DEFAULT_SKILLS||{})[q.skill]||{};
-                if(hdef.isHabit){
-                  if(!was){
-                    if(!dhHas(q.skill,sd)){
-                      dhSet(q.skill,sd,true);
-                      if(window.checkHabitFor) window.checkHabitFor(q.skill,sd,hdef.label,hdef.icon);
-                    }
-                  } else {
-                    dhSet(q.skill,sd,false);
-                  }
-                  if(window.recomputeHabitFromLog) window.recomputeHabitFromLog(q.skill);
-                }
-          """
-          if click.count(old)!=1: raise SystemExit('habit mutation target not found')
-          click=click.replace(old,new)
-
-          old='      saveDaily(dd,sd);\n      renderDaily();'
-          new='      if(q.private) saveDaily(dd,sd);\n      renderDaily();'
-          if click.count(old)!=1: raise SystemExit('private saveDaily target not found')
-          click=click.replace(old,new)
-          s=s[:a]+click+s[b:]
+          # The older Quests screen must use the exact same helper as the Daily grid.
+          rstart=s.index('function renderQuests(){')
+          rend=s.index("  ['wq-workouts'",rstart)
+          rseg=s[rstart:rend]
+          rseg,n=re.subn(r"    const isDone=!!\(quests\[q\.id\]\?\.done\);",
+                         "    const isDone=dailyQuestDone(q,todayKey(),daily);",rseg,count=1)
+          if n!=1: raise SystemExit(f'renderQuests isDone replacements={n}')
+          rpat=re.compile(r"    row\.addEventListener\('click',\(\)=>\{.*?\n    \}\);",re.S)
+          rrepl="""    row.addEventListener('click',()=>{
+                if(q.private&&!isPrivateUnlocked()){ requirePin(()=>renderQuests()); return; }
+                toggleDailyQuest(q,todayKey());
+                renderQuests();
+              });"""
+          rseg,n=rpat.subn(rrepl,rseg,count=1)
+          if n!=1: raise SystemExit(f'renderQuests click replacements={n}')
+          s=s[:rstart]+rseg+s[rend:]
 
           p.write_text(s)
           PY
@@ -141,13 +139,15 @@ jobs:
           assert 'DEFAULT_ACTIVE_QUESTS' not in s
           assert 'function getPublicDailyQuests()' in s
           assert "d&&d.isHabit&&d.active!==false&&!d.private" in s
-          assert "q.private ? !!(quests[q.id]?.done) : dhHas(q.skill,selDate)" in s
-          assert "if(q.private) saveDaily(dd,sd);" in s
+          assert 'function dailyQuestDone(q,date,daily)' in s
+          assert 'function toggleDailyQuest(q,date)' in s
+          assert "const isDone=dailyQuestDone(q,selDate,daily);" in s
+          assert "const isDone=dailyQuestDone(q,todayKey(),daily);" in s
           assert "h.score=Math.max(0,(h.score||0)-1)" not in s
-          assert "if(window.recomputeHabitFromLog) window.recomputeHabitFromLog(q.skill);" in s
+          assert "toggleDailyQuest(q,getSelectedDate());" in s
+          assert "toggleDailyQuest(q,todayKey());" in s
           blocks=re.findall(r'<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>',s,re.S|re.I)
-          out=Path('/tmp/character-inline')
-          out.mkdir(exist_ok=True)
+          out=Path('/tmp/character-inline'); out.mkdir(exist_ok=True)
           for i,b in enumerate(blocks): (out/f'{i}.js').write_text(b)
           print('inline blocks',len(blocks))
           PY
