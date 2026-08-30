@@ -69,25 +69,59 @@ Next useful input: Joey's screenshot showing the wrong bar position, ideally whi
 
 ---
 
-## Daily Mission evolution workbench
-**Status:** **LIVE** — merged via PR #5, production commit `c17ba434a1a8954ad6c556ac85d53fdc73e91f29`.
+## Daily Mission state/source of truth
+**Status:** **LIVE / unified** — Character and Main now use the same public Daily Mission source and completion log.
 
-The Lab Daily Mission workbench is data-driven and has dedicated five-stage inline SVG evolution art for all 11 current public Daily Missions:
-- level 0 → Dormant
-- levels 1–3 → Awakening
-- levels 4–6 → Growing
-- levels 7–9 → Evolved
-- level 10 → Master
+PR #8 / production commit `63aef5ca420e233b0adcde4b05bc15a48fcab21c` removed Character's old split-brain Daily implementation.
 
-Mobile Chromium validation at 390×844 passed: 11/11 expected labels, 11 SVG characters, 0 fallbacks, correct stage mapping, complete/toggle changed score + done state + visual stage, and 0 console/page errors.
+Public Daily Missions are now generated from `RPG_DEFAULT_SKILLS` entries where `isHabit === true`, `active !== false`, and `!private`, and their per-day completion state comes from `rpg_habitlog_v1` on both Main and Character. Public Character toggles no longer mirror a competing completion flag into `rpg_daily_v1`; No Porn and Weed Control remain separate private quests there.
+
+Regression verification passed on mobile Chromium:
+- exact 11 public + 2 private;
+- Home check is immediately reflected in Character;
+- backdated Character check/uncheck replays canonical habit state;
+- public mutations do not create public `rpg_daily_v1` quest flags;
+- private mutation still writes its private quest flag;
+- 0 page/console errors.
+
+Non-negotiable membership:
+- **Tennis, Reading, Finger Whistling are regular skills and must NEVER enter the Daily Mission grid.**
+- **No Porn / Weed Control are separate private dailies** and must not appear in the public Daily Mission grid or public assets.
+- Current public set: Budgeting, Sleep, Nutrition, 10k Steps, Brush Teeth 2×, Household, Meditation, Gratitude, Good Deed, Screen Time, Cold Shower.
+- Grounding is disabled.
 
 ---
 
-## Daily Mission source-of-truth constraints
-These are non-negotiable after prior AI mistakes:
-- Public Daily Missions = `RPG_DEFAULT_SKILLS` entries where `isHabit === true`, `active !== false`, and `!private`.
-- **Tennis, Reading, Finger Whistling are regular skills and must NEVER enter the Daily Mission grid.**
-- **No Porn / Weed Control are separate private dailies** and must not appear in the public Daily Mission grid or public assets.
-- Habit progress/evolution uses the persistent **0–10 consistency score**.
+## Daily Mission characters — Park 2.0 Option D
+**Status:** **LIVE art direction, 5 real companions + 6 explicitly pending.**
 
-Current public Daily Mission set from the app definition: Budgeting, Sleep, Nutrition, 10k Steps, Brush Teeth 2×, Household, Meditation, Gratitude, Good Deed, Screen Time, Cold Shower. Grounding is disabled.
+Joey explicitly selected the existing **Park 2.0 Option D — evolvable game companions** as the canonical character family for Daily Missions. PR #9 / production commit `5075aab4ca900cdee129b9493650ac570fafa3a4` removed the newer generic inline-vector family from the Daily Mission workbench.
+
+Real Option-D Daily companions currently reused in the app:
+- Budgeting;
+- Good Deed;
+- Sleep (base + real Advanced + Mastery);
+- 10k Steps / Walking (base + real Advanced + Mastery);
+- Meditation (base + real Advanced + Mastery).
+
+Missing companions are deliberately shown as **Park D art pending**, not replaced with another style:
+- Nutrition;
+- Brush Teeth 2×;
+- Household;
+- Gratitude;
+- Screen Time;
+- Cold Shower.
+
+The detailed locked art brief and production order are in `img/lab/park2/DAILY-MISSION-ART-QUEUE.md` (commit `307257024bdea979ea153555defba5eae7ef48ea`). Claude and ChatGPT should use that file as the character-art source of truth.
+
+Mobile preview verification for the live Park-D integration passed: 5 exact Park-D images loaded, 6 pending, 0 old `.mg-evo-svg` characters, 0 relevant asset 404s and 0 JS/page errors. The Park 2.0 loader was also changed so it no longer probes known-missing evolution files just to fall back.
+
+### Open consistency cleanup — do not treat level 9 as Master
+The definitive Daily Mission rule is that **Master belongs to level 10 only**. The intended visual bands are:
+- 0–2 → Starter;
+- 3–4 → Apprentice;
+- 5–6 → Advanced;
+- 7–9 → Expert;
+- 10 → Master.
+
+The art-queue already records this contract. However, an older threshold remains in `park2.js` where the historical Park engine uses `habitAt:9` for its mastery stage, and `daily-garden.js` still contains older intermediate labels/bands from the superseded vector workbench. This is a **known small consistency cleanup**, not permission to change the 0–10 scoring semantics. A test-only helper branch failed at GitHub workflow parsing before product code ran and was intentionally not merged. Fix these thresholds only through a clean, reviewable code write and verify boundary levels 0/2/3/4/5/6/7/9/10 before merging.
