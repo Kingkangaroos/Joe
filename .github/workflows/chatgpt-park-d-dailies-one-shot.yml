@@ -1,0 +1,70 @@
+name: ChatGPT one-shot Park D Daily Mission visual patch
+
+on:
+  push:
+    branches: [chatgpt/daily-missions-park-d]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: chatgpt/daily-missions-park-d
+          fetch-depth: 0
+      - name: Make Park Option D the canonical Daily Mission art direction
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p=Path('daily-garden.js')
+          s=p.read_text()
+
+          marker="  var positions=[[.14,.56],[.31,.43],[.49,.58],[.68,.42],[.84,.58],[.22,.78],[.41,.78],[.61,.75],[.80,.78],[.09,.84],[.91,.84]];"
+          if marker not in s: raise SystemExit('positions marker missing')
+          parkd="""  // Joey chose Park 2.0 Option D (evolvable game companions) as the\n  // canonical Daily Mission character family. Reuse the exact existing art;\n  // do not substitute a different generated/vector style for missing companions.\n  var PARK_D_ASSETS={\n    budgeting:{base:'img/lab/park2/budgeting.png'},\n    good_deed:{base:'img/lab/park2/good-deed.png'},\n    sleep:{base:'img/lab/park2/sleep.png',advanced:'img/lab/park2/sleep/advanced.png',mastery:'img/lab/park2/sleep/mastery.png'},\n    walking:{base:'img/lab/park2/walking.png',advanced:'img/lab/park2/walking/advanced.png',mastery:'img/lab/park2/walking/mastery.png'},\n    meditation:{base:'img/lab/park2/meditation.png',advanced:'img/lab/park2/meditation/advanced.png',mastery:'img/lab/park2/meditation/mastery.png'}\n  };\n"""
+          s=s.replace(marker,parkd+marker,1)
+
+          func_marker='  function renderEvolutions(){\n'
+          if func_marker not in s: raise SystemExit('renderEvolutions marker missing')
+          funcs="""  function parkDAssetFor(key,level){\n    var a=PARK_D_ASSETS[key];\n    if(!a)return null;\n    if(level>=10&&a.mastery)return {src:a.mastery,form:'mastery'};\n    if(level>=4&&a.advanced)return {src:a.advanced,form:'advanced'};\n    return {src:a.base,form:'base'};\n  }\n  function evolutionVisual(m,level,idx){\n    var a=parkDAssetFor(m.key,level);\n    if(a){\n      return '<img class=\"mg-evo-parkd stage-'+idx+' form-'+a.form+'\" src=\"'+esc(a.src)+'\" alt=\"'+esc((m.def&&m.def.label)||m.key)+' Park Option D companion\">';\n    }\n    return '<div class=\"mg-evo-pending stage-'+idx+'\" aria-label=\"Park Option D character pending\"><span>'+esc((m.def&&m.def.icon)||'✦')+'</span><small>Park D art pending</small></div>';\n  }\n"""
+          s=s.replace(func_marker,funcs+func_marker,1)
+
+          old="+'<div class=\"mg-evo-visual\">'+mascotSvg(m.key,idx)+'<span class=\"mg-evo-level\">Lv '+level+'</span></div>'"
+          new="+'<div class=\"mg-evo-visual\">'+evolutionVisual(m,level,idx)+'<span class=\"mg-evo-level\">Lv '+level+'</span></div>'"
+          if s.count(old)!=1: raise SystemExit(f'visual expression count={s.count(old)}')
+          s=s.replace(old,new,1)
+
+          old_head="evolutionEl.innerHTML='<div class=\"mg-evo-head\"><div><div class=\"mg-evo-kicker\">ChatGPT workbench · real Daily Missions only</div><h3>Daily Mission Evolutions</h3><p>Every active public Daily Mission now has five distinct forms driven by the persistent 0–10 level.</p></div><span class=\"mg-evo-count\">'+missions.length+'</span></div><div class=\"mg-evo-grid\">'+cards+'</div><div class=\"mg-evo-note\">Private dailies stay outside this public grid. Regular skills are excluded by the app data itself.</div>';"
+          new_head="evolutionEl.innerHTML='<div class=\"mg-evo-head\"><div><div class=\"mg-evo-kicker\">Park 2.0 · Option D · real Daily Missions only</div><h3>Daily Mission Companions</h3><p>Option D is the canonical character family. Existing Park-D assets are reused exactly; missing companions stay explicitly pending instead of being replaced by another style.</p></div><span class=\"mg-evo-count\">'+missions.length+'</span></div><div class=\"mg-evo-grid\">'+cards+'</div><div class=\"mg-evo-note\">Current Park-D companions: Budgeting, Good Deed, Sleep, 10k Steps and Meditation. Sleep, 10k Steps and Meditation already use real advanced/mastery art when their 0–10 score reaches those bands.</div>';"
+          if old_head not in s: raise SystemExit('workbench header target missing')
+          s=s.replace(old_head,new_head,1)
+
+          p.write_text(s)
+
+          c=Path('daily-garden.css')
+          css=c.read_text()
+          addon="""\n/* Joey-selected Park 2.0 Option D companions — canonical Daily Mission art. */\n.mg-evo-parkd{display:block;width:100%;height:100%;object-fit:contain;padding:5px 7px 3px;transform-origin:50% 72%;filter:drop-shadow(0 9px 8px rgba(27,40,30,.15))}\n.mg-evo-parkd.stage-0{opacity:.62;filter:grayscale(.28) saturate(.78) drop-shadow(0 5px 5px rgba(27,40,30,.08));transform:scale(.88) translateY(5px)}\n.mg-evo-parkd.stage-1{opacity:.88;transform:scale(.93) translateY(3px);animation:mgEvoBreathe 3.4s ease-in-out infinite}\n.mg-evo-parkd.stage-2{transform:scale(.98);animation:mgEvoBreathe 2.8s ease-in-out infinite}\n.mg-evo-parkd.stage-3{transform:scale(1.02);animation:mgEvoReady 2.2s ease-in-out infinite}\n.mg-evo-parkd.stage-4{transform:scale(1.06);animation:mgEvoMaster 2s ease-in-out infinite}\n.mg-evo-pending{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#817a6e;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.96),rgba(238,235,226,.9));border:1px dashed rgba(103,92,156,.25)}\n.mg-evo-pending>span{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;font-size:25px;background:rgba(103,92,156,.08);filter:grayscale(.25)}\n.mg-evo-pending small{font-size:8px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#675c9c}\n"""
+          if 'canonical Daily Mission art.' in css: raise SystemExit('Park D CSS already present')
+          c.write_text(css+addon)
+          PY
+      - name: Syntax and source checks
+        run: |
+          node --check daily-garden.js
+          grep -q "PARK_D_ASSETS" daily-garden.js
+          grep -q "img/lab/park2/budgeting.png" daily-garden.js
+          grep -q "Park D art pending" daily-garden.js
+          ! grep -q "ChatGPT workbench · real Daily Missions only" daily-garden.js
+      - name: Self-clean and commit product files only
+        run: |
+          rm .github/workflows/chatgpt-park-d-dailies-one-shot.yml
+          git config user.name "ChatGPT (OpenAI)"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add daily-garden.js daily-garden.css .github/workflows/chatgpt-park-d-dailies-one-shot.yml
+          git commit -m "ChatGPT: use Park Option D companions for Daily Missions"
+          git push origin HEAD:chatgpt/daily-missions-park-d
