@@ -1,8 +1,9 @@
 /* Park 3.0 — Daily Mission Evolution Plaza
-   Performed-by: ChatGPT (OpenAI)
+   Performed-by: ChatGPT (OpenAI), Retina asset pass by Claude
    Source of truth: approved 11 x 10 companion evolution atlas.
    Live data: same sources as Today's Missions on Main.
-   v12.4: iOS-safe WebP atlas + parent/live-level bridge.
+   v13.0: real per-mission WebP strips replace the shared base64 atlas —
+   see PARK3-RETINA-NOTES.md for why and the honest resolution ceiling.
 */
 (function(){
   'use strict';
@@ -21,10 +22,20 @@
     {key:'walking',label:'Steps',row:10,emoji:'👟',desc:'Daily steps make the teal runner faster, fitter and more electrically alive.'}
   ];
 
-  /* Original WebP atlas is intentionally used here: it is more reliable in iOS PWAs
-     than the newer AVIF/data-URL atlas that rendered as black cards on Joey's phone. */
-  var ATLAS_PARTS=13;
-  var atlasReady=false,atlasError=false,atlasObjectUrl=null;
+  /* v13.0 — Retina asset pass (Performed-by: Claude).
+     The single 10x11 shared atlas forced every frame down to 55x96 source
+     pixels (the atlas image itself is only 550x1063px total) — a ~10x
+     upscale on a 3x-Retina iPhone, which is the actual cause of the
+     softness, not a compression setting. Replaced with 11 real per-mission
+     WebP strips (1 row x 10 levels each, 110x192 per frame — the maximum
+     this source material honestly supports; see PARK3-RETINA-NOTES.md).
+     Real static files load once and cache normally, and no longer depend
+     on base64 text-chunk reassembly + Blob decode on every page view — the
+     exact mechanism that produced black cards when an AVIF variant was
+     tried earlier (atlas-hd/-sharp/-crisp in git history are all corrupted
+     AVIF, confirmed independently with two decoders; not used here). */
+  var STRIP_VERSION='13.0';
+  var stripsReady={},stripsError={};
   var grid,modal,focusArt,titleEl,metaEl,levelEl,stateEl,progressEl,descEl,actionEl,resetEl,prevEl,nextEl;
   var selected=null,preview=null,tries=0,pollId=null;
 
@@ -68,8 +79,8 @@
     }
     return {raw:0,art:1,source:'empty'};
   }
+  // Strips are 1 row x 10 columns now — only X positioning needed, background-size drops the 1100%.
   function xPos(level){return (((clamp(Number(level)||1,1,10)-1)/9)*100).toFixed(4)+'%';}
-  function yPos(row){return ((clamp(row,0,10)/10)*100).toFixed(4)+'%';}
   function state(level){
     level=Number(level)||0;
     if(level<=0)return 'Critical';
@@ -82,49 +93,30 @@
   }
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
-  function b64ToBlobUrl(b64,mime){
-    var bin=atob(b64),len=bin.length,bytes=new Uint8Array(len);
-    for(var i=0;i<len;i++)bytes[i]=bin.charCodeAt(i);
-    return URL.createObjectURL(new Blob([bytes],{type:mime}));
-  }
-  function loadAtlas(){
-    var jobs=[];
-    document.body.classList.remove('p3-atlas-ready','p3-atlas-error');
-    for(var i=1;i<=ATLAS_PARTS;i++){
-      (function(n){
-        var id=String(n).padStart(2,'0');
-        jobs.push(fetch('img/lab/park3/atlas/part-'+id+'.txt?v=12.4',{cache:'no-cache'}).then(function(r){
-          if(!r.ok)throw new Error('webp atlas '+id+' '+r.status);
-          return r.text();
-        }).then(function(t){return t.trim();}));
-      })(i);
-    }
-    Promise.all(jobs).then(function(parts){
-      var url=b64ToBlobUrl(parts.join(''),'image/webp');
-      var probe=new Image();
-      probe.onload=function(){
-        if(atlasObjectUrl)try{URL.revokeObjectURL(atlasObjectUrl);}catch(e){}
-        atlasObjectUrl=url;
-        document.documentElement.style.setProperty('--p3-atlas','url("'+url+'")');
-        atlasReady=true;atlasError=false;
-        document.body.classList.add('p3-atlas-ready');
-        document.body.classList.remove('p3-atlas-error');
-        render(); if(selected)updateModal();
-      };
-      probe.onerror=function(){try{URL.revokeObjectURL(url);}catch(e){};atlasError=true;atlasReady=false;document.body.classList.add('p3-atlas-error');document.body.classList.remove('p3-atlas-ready');render();};
-      probe.src=url;
-    }).catch(function(err){
-      atlasError=true;atlasReady=false;
-      document.body.classList.add('p3-atlas-error');
-      document.body.classList.remove('p3-atlas-ready');
-      console.error('[Park 3.0] evolution atlas failed',err);
-      render();
+  function stripUrl(key){return 'img/lab/park3/strips/'+key+'.webp?v='+STRIP_VERSION;}
+  function loadStrips(){
+    document.body.classList.remove('p3-atlas-ready');
+    var jobs=MISSIONS.map(function(m){
+      return new Promise(function(resolve){
+        var img=new Image();
+        img.onload=function(){stripsReady[m.key]=true;stripsError[m.key]=false;resolve();};
+        img.onerror=function(){stripsReady[m.key]=false;stripsError[m.key]=true;resolve();};
+        img.src=stripUrl(m.key);
+      });
+    });
+    Promise.all(jobs).then(function(){
+      // "ready" once every strip has resolved (loaded or failed). A single
+      // broken file only affects its own card's error state below — not
+      // the whole grid, unlike the old one-shared-atlas failure mode.
+      document.body.classList.add('p3-atlas-ready');
+      render(); if(selected)updateModal();
     });
   }
 
   function artHTML(m,artLevel,focus){
     var cls=focus?'p3-focus-art':'p3-art';
-    return '<span class="'+cls+'" style="--p3-x:'+xPos(artLevel)+';--p3-y:'+yPos(m.row)+'">'
+    var broken=stripsError[m.key]?' p3-art-broken':'';
+    return '<span class="'+cls+broken+'" style="background-image:url(\''+stripUrl(m.key)+'\');--p3-x:'+xPos(artLevel)+'">'
       +'<i class="p3-art-placeholder" aria-hidden="true">'+esc(m.emoji)+'</i></span>';
   }
   function levelLabel(info){return info.raw>10?'L'+info.raw+' · M':'L'+info.raw;}
@@ -158,8 +150,8 @@
   function updateModal(){
     if(!selected)return;
     var info=levelInfo(selected),shown=shownLevel(),done=isDone(selected);
+    focusArt.style.backgroundImage="url('"+stripUrl(selected.key)+"')";
     focusArt.style.setProperty('--p3-x',xPos(shown));
-    focusArt.style.setProperty('--p3-y',yPos(selected.row));
     focusArt.innerHTML='<i class="p3-art-placeholder" aria-hidden="true">'+esc(selected.emoji)+'</i>';
     titleEl.textContent=selected.label;
     metaEl.textContent=preview==null?('LIVE LEVEL · '+info.raw):('PREVIEW '+shown+' · LIVE '+info.raw);
@@ -231,11 +223,11 @@
     progressEl=document.getElementById('p3Progress');descEl=document.getElementById('p3Desc');actionEl=document.getElementById('p3Action');resetEl=document.getElementById('p3Reset');prevEl=document.getElementById('p3Prev');nextEl=document.getElementById('p3Next');
     if(!grid||!modal)return;
     if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('p3-embedded');
-    bind();render();loadAtlas();
+    bind();render();loadStrips();
     if(window.parent===window&&typeof window.initCloudSync==='function'&&window.supabase){
       try{window.initCloudSync({appKey:'rpg',syncedKeys:window.RPG_SYNC_KEYS,syncedPrefixes:window.RPG_SYNC_PREFIXES});}catch(e){}
     }
   }
-  window.addEventListener('beforeunload',function(){if(pollId)clearInterval(pollId);if(atlasObjectUrl)try{URL.revokeObjectURL(atlasObjectUrl);}catch(e){}});
+  window.addEventListener('beforeunload',function(){if(pollId)clearInterval(pollId);});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
