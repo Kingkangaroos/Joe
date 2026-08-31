@@ -2,6 +2,10 @@
 
 A set of small, self-contained HTML apps that share a top bar.
 
+## Current work
+
+Start with [BUILDER-NOW.md](BUILDER-NOW.md) for the current Builder agreement, verified project state and Park 3.1 handoff.
+
 ## Deploy your own copy
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FRowanThistlebrooke%2FYTdashh1)
