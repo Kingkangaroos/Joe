@@ -77,24 +77,24 @@
     if(level===9)return 'Elite';
     return 'Master';
   }
-  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c];});}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
-  /* The desired final mapping. No atlas math, no crop position at runtime. */
-  function levelUrl(key,level){
-    return 'img/lab/park3/levels/'+key+'/l'+padLevel(level)+'.webp?v='+ASSET_VERSION;
-  }
-  /* v13 fallback only, so main never gets broken while binary assets are being imported. */
+  /* Final mapping: no atlas/sprite math for the primary art. */
+  function levelUrl(key,level){return 'img/lab/park3/levels/'+key+'/l'+padLevel(level)+'.webp?v='+ASSET_VERSION;}
+  /* Safe fallback while extracted binary assets are still being copied into the repo. */
   function stripUrl(key){return 'img/lab/park3/strips/'+key+'.webp?v='+STRIP_VERSION;}
   function stripX(level){return (((clamp(Number(level)||1,1,10)-1)/9)*100).toFixed(4)+'%';}
-
-  function artHTML(m,artLevel,focus){
-    var cls=focus?'p3-focus-art':'p3-art';
-    return '<span class="'+cls+' p3-level-frame" style="--p3-x:'+stripX(artLevel)+';--p3-strip:url(\''+stripUrl(m.key)+'\')">'
-      +'<span class="p3-strip-fallback" aria-hidden="true"></span>'
+  function artChildrenHTML(m,artLevel){
+    return '<span class="p3-strip-fallback" aria-hidden="true"></span>'
       +'<img class="p3-level-img" src="'+levelUrl(m.key,artLevel)+'" alt="" decoding="async" draggable="false" '
       +'onload="this.parentElement.classList.add(\'has-level-img\')" '
       +'onerror="this.parentElement.classList.add(\'use-strip\');this.remove()">'
-      +'<i class="p3-art-placeholder" aria-hidden="true">'+esc(m.emoji)+'</i></span>';
+      +'<i class="p3-art-placeholder" aria-hidden="true">'+esc(m.emoji)+'</i>';
+  }
+  function artHTML(m,artLevel,focus){
+    var cls=focus?'p3-focus-art':'p3-art';
+    return '<span class="'+cls+' p3-level-frame" style="--p3-x:'+stripX(artLevel)+';--p3-strip:url(\''+stripUrl(m.key)+'\')">'
+      +artChildrenHTML(m,artLevel)+'</span>';
   }
   function levelLabel(info){return info.raw>10?'L'+info.raw+' · M':'L'+info.raw;}
 
@@ -124,27 +124,22 @@
   function open(key){selected=mission(key);preview=null;if(!selected)return;updateModal();modal.hidden=false;document.body.style.overflow='hidden';prefetchAround(selected,shownLevel());}
   function close(){modal.hidden=true;document.body.style.overflow='';selected=null;preview=null;}
   function shownLevel(){var info=levelInfo(selected);return preview==null?info.art:preview;}
-  function prefetchAround(m,level){
-    [level-1,level+1].forEach(function(n){if(n<1||n>10)return;var i=new Image();i.src=levelUrl(m.key,n);});
-  }
+  function prefetchAround(m,level){[level-1,level+1].forEach(function(n){if(n<1||n>10)return;var i=new Image();i.src=levelUrl(m.key,n);});}
   function updateModal(){
     if(!selected)return;
     var info=levelInfo(selected),shown=shownLevel(),done=isDone(selected);
-    focusArt.className='p3-focus-art';
-    focusArt.innerHTML=artHTML(selected,shown,true).replace(/^<span[^>]*>|<\/span>$/g,'');
+    focusArt.className='p3-focus-art p3-level-frame';
+    focusArt.style.setProperty('--p3-x',stripX(shown));
+    focusArt.style.setProperty('--p3-strip',"url('"+stripUrl(selected.key)+"')");
+    focusArt.innerHTML=artChildrenHTML(selected,shown);
     titleEl.textContent=selected.label;
     metaEl.textContent=preview==null?('LIVE LEVEL · '+info.raw):('PREVIEW '+shown+' · LIVE '+info.raw);
     levelEl.textContent='Level '+shown;
     stateEl.textContent=preview==null&&info.raw===0?'Level 0 uses Level 1 art':state(shown);
     progressEl.style.width=(clamp(preview==null?info.art:shown,0,10)*10)+'%';
     descEl.textContent=selected.desc;
-    if(selected.private){
-      actionEl.textContent='Open Today’s Missions';
-      actionEl.classList.remove('done');
-    }else{
-      actionEl.textContent=done?'Undo today':'Complete today';
-      actionEl.classList.toggle('done',done);
-    }
+    if(selected.private){actionEl.textContent='Open Today’s Missions';actionEl.classList.remove('done');}
+    else{actionEl.textContent=done?'Undo today':'Complete today';actionEl.classList.toggle('done',done);}
     resetEl.disabled=preview==null;resetEl.style.opacity=preview==null?'.45':'1';
     prefetchAround(selected,shown);
   }
@@ -159,15 +154,11 @@
   }
   function toggle(){
     if(!selected)return;
-    if(selected.private){
-      try{window.top.location.href='index.html#missionsCard';}catch(e){location.href='index.html#missionsCard';}
-      return;
-    }
+    if(selected.private){try{window.top.location.href='index.html#missionsCard';}catch(e){location.href='index.html#missionsCard';}return;}
     var was=isDone(selected);setDone(selected.key,!was);
     var w=hostWindow();
-    if(typeof w.recomputeHabitFromLog==='function'){
-      try{w.recomputeHabitFromLog(selected.key);}catch(e){fallbackRecompute(selected.key);}
-    }else fallbackRecompute(selected.key);
+    if(typeof w.recomputeHabitFromLog==='function'){try{w.recomputeHabitFromLog(selected.key);}catch(e){fallbackRecompute(selected.key);}}
+    else fallbackRecompute(selected.key);
     try{window.dispatchEvent(new CustomEvent('gamenfy:daily-mission-change',{detail:{key:selected.key,date:dayKey(),done:!was,source:'park3'}}));}catch(e){}
     try{if(w!==window)w.dispatchEvent(new CustomEvent('gamenfy:daily-mission-change',{detail:{key:selected.key,date:dayKey(),done:!was,source:'park3'}}));}catch(e){}
     preview=null;render();updateModal();
@@ -183,12 +174,7 @@
     window.addEventListener('storage',function(e){if(!e.key||e.key==='rpg_habits_v1'||e.key==='rpg_habitlog_v1'||e.key==='rpg_character_v1')refresh();});
     window.addEventListener('gamenfy:daily-mission-change',refresh);
     window.addEventListener('gamenfy:remote-state-applied',refresh);
-    try{
-      if(window.parent&&window.parent!==window){
-        window.parent.addEventListener('gamenfy:daily-mission-change',refresh);
-        window.parent.addEventListener('gamenfy:remote-state-applied',refresh);
-      }
-    }catch(e){}
+    try{if(window.parent&&window.parent!==window){window.parent.addEventListener('gamenfy:daily-mission-change',refresh);window.parent.addEventListener('gamenfy:remote-state-applied',refresh);}}catch(e){}
     window.addEventListener('focus',refresh);
     document.addEventListener('visibilitychange',function(){if(!document.hidden)refresh();});
     pollId=setInterval(function(){if(!document.hidden)refresh();},1200);
@@ -204,9 +190,7 @@
     if(!grid||!modal)return;
     if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('p3-embedded');
     bind();render();
-    if(window.parent===window&&typeof window.initCloudSync==='function'&&window.supabase){
-      try{window.initCloudSync({appKey:'rpg',syncedKeys:window.RPG_SYNC_KEYS,syncedPrefixes:window.RPG_SYNC_PREFIXES});}catch(e){}
-    }
+    if(window.parent===window&&typeof window.initCloudSync==='function'&&window.supabase){try{window.initCloudSync({appKey:'rpg',syncedKeys:window.RPG_SYNC_KEYS,syncedPrefixes:window.RPG_SYNC_PREFIXES});}catch(e){}}
   }
   window.addEventListener('beforeunload',function(){if(pollId)clearInterval(pollId);});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
