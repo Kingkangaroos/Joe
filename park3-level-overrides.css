@@ -1,0 +1,15 @@
+/* Park 3.0 v14 — exact per-level art overrides
+   Performed-by: ChatGPT (OpenAI)
+   Individual approved character crops are wider than the legacy atlas frames.
+   Contain them instead of re-cropping them at runtime. */
+.p3-art{
+  aspect-ratio:.72/1;
+}
+.p3-focus-art{
+  width:min(250px,70vw);
+  aspect-ratio:.72/1;
+}
+.p3-level-img{
+  object-fit:contain;
+  object-position:center bottom;
+}
