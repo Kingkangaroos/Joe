@@ -26,8 +26,9 @@ jobs:
           test -d .park3-packs
           shopt -s nullglob
           chunks=(.park3-packs/part-*)
-          test "${#chunks[@]}" -eq 17
+          test "${#chunks[@]}" -eq 66
           cat "${chunks[@]}" > /tmp/park3-levels.tar.gz
+          echo '7146400978e1081ad8f1cdf917622bb9e4e9102142167609c869ee9da005e041  /tmp/park3-levels.tar.gz' | sha256sum -c -
           tar -tzf /tmp/park3-levels.tar.gz >/dev/null
           rm -rf img/lab/park3/levels
           tar -xzf /tmp/park3-levels.tar.gz -C .
