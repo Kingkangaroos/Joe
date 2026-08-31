@@ -5,7 +5,7 @@ on:
     branches:
       - chatgpt/park3-exact-assets-worker
     paths:
-      - .park3-assets.tar.gz
+      - '.park3-assets/**'
 
 permissions:
   contents: write
@@ -22,15 +22,20 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f .park3-assets.tar.gz
-          tar -xzf .park3-assets.tar.gz -C .
+          test -d .park3-assets
+          shopt -s nullglob
+          packs=(.park3-assets/*.tar.gz)
+          test "${#packs[@]}" -eq 11
+          for pack in "${packs[@]}"; do
+            tar -xzf "$pack" -C .
+          done
           test "$(find img/lab/park3/levels -type f -name '*.webp' | wc -l)" -eq 110
-          rm .park3-assets.tar.gz
+          rm -rf .park3-assets
       - name: Commit exact level assets
         shell: bash
         run: |
           git config user.name "ChatGPT asset worker"
           git config user.email "chatgpt-assets@users.noreply.github.com"
-          git add img/lab/park3/levels .park3-assets.tar.gz
+          git add -A img/lab/park3/levels .park3-assets
           git commit -m "ChatGPT: add 110 exact Park 3.0 level assets"
           git push origin HEAD:chatgpt/park3-exact-assets-worker
