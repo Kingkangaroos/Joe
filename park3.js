@@ -1,50 +1,37 @@
 /* Park 3.0 — Daily Mission Evolution Plaza
-   Performed-by: ChatGPT (OpenAI), Retina asset pass by Claude
-   Source of truth: approved 11 x 10 companion evolution atlas.
+   Performed-by: ChatGPT (OpenAI)
+   Source of truth: approved evolution overview images, extracted one file per level.
    Live data: same sources as Today's Missions on Main.
-   v13.0: real per-mission WebP strips replace the shared base64 atlas —
-   see PARK3-RETINA-NOTES.md for why and the honest resolution ceiling.
+   v14.0: primary rendering is now mission + level -> one real WebP file.
+   Claude's v13 per-mission strips remain fallback-only until every extracted file exists.
 */
 (function(){
   'use strict';
 
   var MISSIONS=[
-    {key:'nutrition',label:'Nutrition',row:0,emoji:'🥗',desc:'Healthy daily choices build the stomach guardian from tiny starter to Master.'},
-    {key:'teeth',label:'Brush Teeth',row:1,emoji:'🦷',desc:'Morning + evening brushing strengthens the tooth companion one consistency level at a time.'},
-    {key:'household',label:'Household',row:2,emoji:'🧹',desc:'A real daily reset makes the household helper more capable, equipped and polished.'},
-    {key:'gratitude',label:'Gratitude',row:3,emoji:'🙏',desc:'Daily gratitude grows the golden spirit from a tiny spark into a radiant Master form.'},
-    {key:'good_deed',label:'Good Deed',row:4,emoji:'❤️',desc:'One deliberate act of kindness powers up the red heart hero.'},
-    {key:'screen_time',label:'Screen Time',row:5,emoji:'📵',danger:true,desc:'Low levels are deliberately chaotic; consistency turns overload into calm, controlled screen use.'},
-    {key:'cold_shower',label:'Cold Shower',row:6,emoji:'💧',desc:'The hesitant water droplet hardens into a crystalline cold-water guardian.'},
-    {key:'weed_control',label:'No Weed',row:7,emoji:'🌿',danger:true,private:true,desc:'Low levels show loss of control; each consistent day restores clarity, strength and command.'},
-    {key:'no_porn',label:'Discipline',row:8,emoji:'⚡',danger:true,private:true,desc:'Private discipline arc: chaotic devil energy gradually resolves into an angelic Master guardian.'},
-    {key:'sleep',label:'Sleep',row:9,emoji:'😴',desc:'Better sleep turns a tired starter into the fully protected dream guardian.'},
-    {key:'walking',label:'Steps',row:10,emoji:'👟',desc:'Daily steps make the teal runner faster, fitter and more electrically alive.'}
+    {key:'nutrition',label:'Nutrition',emoji:'🥗',desc:'Healthy daily choices build the stomach guardian from tiny starter to Master.'},
+    {key:'teeth',label:'Brush Teeth',emoji:'🦷',desc:'Morning + evening brushing strengthens the tooth companion one consistency level at a time.'},
+    {key:'household',label:'Household',emoji:'🧹',desc:'A real daily reset makes the household helper more capable, equipped and polished.'},
+    {key:'gratitude',label:'Gratitude',emoji:'🙏',desc:'Daily gratitude grows the golden spirit from a tiny spark into a radiant Master form.'},
+    {key:'good_deed',label:'Good Deed',emoji:'❤️',desc:'One deliberate act of kindness powers up the red heart hero.'},
+    {key:'screen_time',label:'Screen Time',emoji:'📵',danger:true,desc:'Low levels are deliberately chaotic; consistency turns overload into calm, controlled screen use.'},
+    {key:'cold_shower',label:'Cold Shower',emoji:'💧',desc:'The hesitant water droplet hardens into a crystalline cold-water guardian.'},
+    {key:'weed_control',label:'No Weed',emoji:'🌿',danger:true,private:true,desc:'Low levels show loss of control; each consistent day restores clarity, strength and command.'},
+    {key:'no_porn',label:'Discipline',emoji:'⚡',danger:true,private:true,desc:'Private discipline arc: chaotic devil energy gradually resolves into an angelic Master guardian.'},
+    {key:'sleep',label:'Sleep',emoji:'😴',desc:'Better sleep turns a tired starter into the fully protected dream guardian.'},
+    {key:'walking',label:'Steps',emoji:'👟',desc:'Daily steps make the teal runner faster, fitter and more electrically alive.'}
   ];
 
-  /* v13.0 — Retina asset pass (Performed-by: Claude).
-     The single 10x11 shared atlas forced every frame down to 55x96 source
-     pixels (the atlas image itself is only 550x1063px total) — a ~10x
-     upscale on a 3x-Retina iPhone, which is the actual cause of the
-     softness, not a compression setting. Replaced with 11 real per-mission
-     WebP strips (1 row x 10 levels each, 110x192 per frame — the maximum
-     this source material honestly supports; see PARK3-RETINA-NOTES.md).
-     Real static files load once and cache normally, and no longer depend
-     on base64 text-chunk reassembly + Blob decode on every page view — the
-     exact mechanism that produced black cards when an AVIF variant was
-     tried earlier (atlas-hd/-sharp/-crisp in git history are all corrupted
-     AVIF, confirmed independently with two decoders; not used here). */
+  var ASSET_VERSION='14.0';
   var STRIP_VERSION='13.0';
-  var stripsReady={},stripsError={};
   var grid,modal,focusArt,titleEl,metaEl,levelEl,stateEl,progressEl,descEl,actionEl,resetEl,prevEl,nextEl;
   var selected=null,preview=null,tries=0,pollId=null;
 
   function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
+  function padLevel(n){return String(clamp(Math.round(Number(n)||1),1,10)).padStart(2,'0');}
   function dayKey(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
   function hostWindow(){
-    try{
-      if(window.parent&&window.parent!==window&&typeof window.parent.getHabits==='function')return window.parent;
-    }catch(e){}
+    try{if(window.parent&&window.parent!==window&&typeof window.parent.getHabits==='function')return window.parent;}catch(e){}
     return window;
   }
   function loadLog(){try{return JSON.parse(localStorage.getItem('rpg_habitlog_v1'))||{};}catch(e){return {};}}
@@ -79,8 +66,7 @@
     }
     return {raw:0,art:1,source:'empty'};
   }
-  // Strips are 1 row x 10 columns now — only X positioning needed, background-size drops the 1100%.
-  function xPos(level){return (((clamp(Number(level)||1,1,10)-1)/9)*100).toFixed(4)+'%';}
+
   function state(level){
     level=Number(level)||0;
     if(level<=0)return 'Critical';
@@ -91,32 +77,23 @@
     if(level===9)return 'Elite';
     return 'Master';
   }
-  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c];});}
 
-  function stripUrl(key){return 'img/lab/park3/strips/'+key+'.webp?v='+STRIP_VERSION;}
-  function loadStrips(){
-    document.body.classList.remove('p3-atlas-ready');
-    var jobs=MISSIONS.map(function(m){
-      return new Promise(function(resolve){
-        var img=new Image();
-        img.onload=function(){stripsReady[m.key]=true;stripsError[m.key]=false;resolve();};
-        img.onerror=function(){stripsReady[m.key]=false;stripsError[m.key]=true;resolve();};
-        img.src=stripUrl(m.key);
-      });
-    });
-    Promise.all(jobs).then(function(){
-      // "ready" once every strip has resolved (loaded or failed). A single
-      // broken file only affects its own card's error state below — not
-      // the whole grid, unlike the old one-shared-atlas failure mode.
-      document.body.classList.add('p3-atlas-ready');
-      render(); if(selected)updateModal();
-    });
+  /* The desired final mapping. No atlas math, no crop position at runtime. */
+  function levelUrl(key,level){
+    return 'img/lab/park3/levels/'+key+'/l'+padLevel(level)+'.webp?v='+ASSET_VERSION;
   }
+  /* v13 fallback only, so main never gets broken while binary assets are being imported. */
+  function stripUrl(key){return 'img/lab/park3/strips/'+key+'.webp?v='+STRIP_VERSION;}
+  function stripX(level){return (((clamp(Number(level)||1,1,10)-1)/9)*100).toFixed(4)+'%';}
 
   function artHTML(m,artLevel,focus){
     var cls=focus?'p3-focus-art':'p3-art';
-    var broken=stripsError[m.key]?' p3-art-broken':'';
-    return '<span class="'+cls+broken+'" style="background-image:url(\''+stripUrl(m.key)+'\');--p3-x:'+xPos(artLevel)+'">'
+    return '<span class="'+cls+' p3-level-frame" style="--p3-x:'+stripX(artLevel)+';--p3-strip:url(\''+stripUrl(m.key)+'\')">'
+      +'<span class="p3-strip-fallback" aria-hidden="true"></span>'
+      +'<img class="p3-level-img" src="'+levelUrl(m.key,artLevel)+'" alt="" decoding="async" draggable="false" '
+      +'onload="this.parentElement.classList.add(\'has-level-img\')" '
+      +'onerror="this.parentElement.classList.add(\'use-strip\');this.remove()">'
       +'<i class="p3-art-placeholder" aria-hidden="true">'+esc(m.emoji)+'</i></span>';
   }
   function levelLabel(info){return info.raw>10?'L'+info.raw+' · M':'L'+info.raw;}
@@ -144,15 +121,17 @@
   }
 
   function mission(key){return MISSIONS.find(function(m){return m.key===key;})||null;}
-  function open(key){selected=mission(key);preview=null;if(!selected)return;updateModal();modal.hidden=false;document.body.style.overflow='hidden';}
+  function open(key){selected=mission(key);preview=null;if(!selected)return;updateModal();modal.hidden=false;document.body.style.overflow='hidden';prefetchAround(selected,shownLevel());}
   function close(){modal.hidden=true;document.body.style.overflow='';selected=null;preview=null;}
   function shownLevel(){var info=levelInfo(selected);return preview==null?info.art:preview;}
+  function prefetchAround(m,level){
+    [level-1,level+1].forEach(function(n){if(n<1||n>10)return;var i=new Image();i.src=levelUrl(m.key,n);});
+  }
   function updateModal(){
     if(!selected)return;
     var info=levelInfo(selected),shown=shownLevel(),done=isDone(selected);
-    focusArt.style.backgroundImage="url('"+stripUrl(selected.key)+"')";
-    focusArt.style.setProperty('--p3-x',xPos(shown));
-    focusArt.innerHTML='<i class="p3-art-placeholder" aria-hidden="true">'+esc(selected.emoji)+'</i>';
+    focusArt.className='p3-focus-art';
+    focusArt.innerHTML=artHTML(selected,shown,true).replace(/^<span[^>]*>|<\/span>$/g,'');
     titleEl.textContent=selected.label;
     metaEl.textContent=preview==null?('LIVE LEVEL · '+info.raw):('PREVIEW '+shown+' · LIVE '+info.raw);
     levelEl.textContent='Level '+shown;
@@ -167,6 +146,7 @@
       actionEl.classList.toggle('done',done);
     }
     resetEl.disabled=preview==null;resetEl.style.opacity=preview==null?'.45':'1';
+    prefetchAround(selected,shown);
   }
   function stepPreview(delta){if(!selected)return;preview=clamp(shownLevel()+delta,1,10);updateModal();}
   function resetPreview(){preview=null;updateModal();}
@@ -223,7 +203,7 @@
     progressEl=document.getElementById('p3Progress');descEl=document.getElementById('p3Desc');actionEl=document.getElementById('p3Action');resetEl=document.getElementById('p3Reset');prevEl=document.getElementById('p3Prev');nextEl=document.getElementById('p3Next');
     if(!grid||!modal)return;
     if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('p3-embedded');
-    bind();render();loadStrips();
+    bind();render();
     if(window.parent===window&&typeof window.initCloudSync==='function'&&window.supabase){
       try{window.initCloudSync({appKey:'rpg',syncedKeys:window.RPG_SYNC_KEYS,syncedPrefixes:window.RPG_SYNC_PREFIXES});}catch(e){}
     }
