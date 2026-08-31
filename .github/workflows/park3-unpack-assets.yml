@@ -26,11 +26,11 @@ jobs:
           test -d .park3-packs
           shopt -s nullglob
           chunks=(.park3-packs/part-*)
-          test "${#chunks[@]}" -eq 7
-          cat "${chunks[@]}" > /tmp/park3-levels.zip
-          unzip -tq /tmp/park3-levels.zip
+          test "${#chunks[@]}" -eq 17
+          cat "${chunks[@]}" > /tmp/park3-levels.tar.gz
+          tar -tzf /tmp/park3-levels.tar.gz >/dev/null
           rm -rf img/lab/park3/levels
-          unzip -q /tmp/park3-levels.zip -d .
+          tar -xzf /tmp/park3-levels.tar.gz -C .
           test "$(find img/lab/park3/levels -type f -name '*.webp' | wc -l)" -eq 110
           for mission in nutrition teeth household gratitude good_deed screen_time cold_shower weed_control no_porn sleep walking; do
             test "$(find "img/lab/park3/levels/$mission" -maxdepth 1 -type f -name 'l??.webp' | wc -l)" -eq 10
