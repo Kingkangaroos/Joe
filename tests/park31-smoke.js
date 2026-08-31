@@ -63,7 +63,7 @@ vm.runInNewContext(source,sandbox,{filename:'park31.js'});
 
 assert.equal(ids.p31Stage.dataset.liveLevel,'7','live walking score is shown');
 assert.equal(ids.p31Stage.dataset.artLevel,'7','walking level selects matching artwork');
-assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.1$/,'level 7 loads l07.webp');
+assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.2$/,'level 7 loads l07.webp');
 assert.equal(levelNodes[6].attributes['aria-current'],'step','live evolution dot is selected');
 assert.ok(!ids.p31Stage.classList.contains('is-lit'),'park starts inactive');
 ids.p31Companion.listeners.click();
@@ -75,7 +75,7 @@ storage.rpg_habits_v1=JSON.stringify({walking:{score:0}});
 timers[0]();
 assert.equal(ids.p31Stage.dataset.liveLevel,'0');
 assert.equal(ids.p31Stage.dataset.artLevel,'1','technical level 0 deliberately uses Level 1 art');
-assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.1$/);
+assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.2$/);
 assert.ok(ids.p31Stage.classList.contains('is-zero'),'level 0 gets critical treatment');
 
 const assetDir=path.join(__dirname,'..','img','lab','park31','steps');
@@ -91,12 +91,12 @@ assert.equal(new Set(digests).size,10,'all ten level images are distinct');
 assert.ok(source.includes("var KEY='walking'"),'Park 3.1 stays connected to Steps/Walking');
 assert.ok(!source.includes('recomputeHabitFromLog'),'Park 3.1 cannot mutate the mission level');
 assert.ok(!source.includes('rpg_habitlog_v1\',JSON.stringify'),'Park 3.1 never writes the completion log');
-assert.equal((ids.p31Roster.innerHTML.match(/<article class="p31-slot/g)||[]).length,11,'the Park 3.1 roster reserves all eleven habit slots');
+assert.equal((ids.p31Roster.innerHTML.match(/<button class="p31-slot/g)||[]).length,11,'the Park 3.1 roster reserves all eleven habit slots');
 assert.match(ids.p31Roster.innerHTML,/Steps[\s\S]*HQ artwork ready/,'Steps occupies the completed artwork slot');
 assert.match(ids.p31Roster.innerHTML,/Cold Shower[\s\S]*artwork onderweg/,'future companions keep an explicit artwork placeholder');
 
 const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
-assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;v=1\.1"/,'Park 3.1 renders directly inside the normal Lab');
+assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;v=1\.2"/,'Park 3.1 renders directly inside the normal Lab');
 assert.doesNotMatch(lab,/class="chatgpt-lab-card" href="park31\.html"/,'Park 3.1 is not hidden behind a separate Lab card');
 
 console.log('Park 3.1 smoke test passed.');

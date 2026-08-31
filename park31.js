@@ -7,7 +7,7 @@
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.1';
+  var VERSION='1.2';
   var MISSIONS=[
     {key:'walking',label:'Steps',emoji:'👟',dir:'steps'},
     {key:'nutrition',label:'Nutrition',emoji:'🥗',dir:'nutrition'},
@@ -77,10 +77,10 @@
   }
   function rosterCard(mission){
     var info=levelInfo(mission),ready=!!artworkReady[mission.key];
-    return '<article class="p31-slot'+(ready?' is-ready':' is-waiting')+'" data-mission="'+mission.key+'">'
+    return '<button class="p31-slot'+(ready?' is-ready':' is-waiting')+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+'>'
       +'<span class="p31-slot-art">'+(ready?'<img src="'+assetUrl(info.art,mission)+'" alt="" draggable="false">':mission.emoji)+'</span>'
       +'<span class="p31-slot-copy"><strong>'+mission.label+'</strong><small>10 level slots prepared</small><em>'+(ready?'HQ artwork ready':'artwork onderweg')+'</em></span>'
-      +'<span class="p31-slot-level">L'+info.raw+'</span></article>';
+      +'<span class="p31-slot-level">L'+info.raw+'</span></button>';
   }
   function renderRoster(){
     if(!rosterEl)return;
@@ -137,6 +137,11 @@
   function refresh(){render();}
   function bind(){
     button.addEventListener('click',toggleLight);
+    rosterEl.addEventListener('click',function(event){
+      var slot=event.target.closest('[data-mission]');
+      if(!slot||slot.disabled)return;
+      slot.classList.toggle('is-lit');
+    });
     art.addEventListener('load',function(){stage.classList.remove('is-loading');errorEl.hidden=true;});
     art.addEventListener('error',function(){stage.classList.remove('is-loading');errorEl.hidden=false;});
     window.addEventListener('storage',function(event){if(!event.key||event.key==='rpg_habits_v1'||event.key==='rpg_habitlog_v1')refresh();});
