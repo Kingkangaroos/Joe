@@ -5,7 +5,7 @@ on:
     branches:
       - chatgpt/park3-exact-assets-worker
     paths:
-      - '.park3-assets/**'
+      - '.park3-packs/**'
 
 permissions:
   contents: write
@@ -18,24 +18,33 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: chatgpt/park3-exact-assets-worker
-      - name: Unpack exact per-level art
+          fetch-depth: 0
+      - name: Unpack and validate 110 exact level assets
         shell: bash
         run: |
           set -euo pipefail
-          test -d .park3-assets
+          test -d .park3-packs
           shopt -s nullglob
-          packs=(.park3-assets/*.tar.gz)
-          test "${#packs[@]}" -eq 4
+          packs=(.park3-packs/*.tar.gz)
+          test "${#packs[@]}" -eq 11
+          rm -rf img/lab/park3/levels
           for pack in "${packs[@]}"; do
             tar -xzf "$pack" -C .
           done
           test "$(find img/lab/park3/levels -type f -name '*.webp' | wc -l)" -eq 110
-          rm -rf .park3-assets
-      - name: Commit exact level assets
+          for mission in nutrition teeth household gratitude good_deed screen_time cold_shower weed_control no_porn sleep walking; do
+            test "$(find "img/lab/park3/levels/$mission" -maxdepth 1 -type f -name 'l??.webp' | wc -l)" -eq 10
+            for level in 01 02 03 04 05 06 07 08 09 10; do
+              test -s "img/lab/park3/levels/$mission/l$level.webp"
+            done
+          done
+          rm -rf .park3-packs .park3-assets
+          rm -f .github/workflows/park3-unpack-assets.yml
+      - name: Commit exact level assets and cleanup
         shell: bash
         run: |
           git config user.name "ChatGPT asset worker"
           git config user.email "chatgpt-assets@users.noreply.github.com"
-          git add -A img/lab/park3/levels .park3-assets
+          git add -A
           git commit -m "ChatGPT: add 110 exact Park 3.0 level assets"
           git push origin HEAD:chatgpt/park3-exact-assets-worker
