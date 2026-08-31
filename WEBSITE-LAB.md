@@ -85,10 +85,24 @@ One bathroom, one camera:
 
 The five states are stored in one lightweight sprite and are crossfaded based on normal page scroll. Crossfade is combined only with a very subtle scale/vertical shift to avoid a slideshow feeling.
 
+### Accepted timing/layout correction — 2026-08-31
+
+Joey's feedback on the first 1.2 implementation:
+- the visual appeared to stay still for too long;
+- the visible state changed only after the related copy had already been scrolled past;
+- the visual works better as a **full-bleed background behind the short story copy** than as a separate sticky card above it.
+
+Hard interaction rules added:
+- the first crossfade starts **immediately when the story enters the viewport**; there is no padded/dead scroll zone before movement begins;
+- background state and foreground copy progress together;
+- the five states should feel like one room continuously materialising behind the text;
+- copy stays readable via restrained dark gradients/glass cards, not by shrinking or pausing the visual;
+- transition remains continuous between adjacent frames rather than jumping at section boundaries.
+
 ### Page rhythm
 
 1. Hero: company proposition, CTA, trust proof and first concept visible immediately.
-2. Scroll story: plan → rough build → finish → final room with extremely short copy.
+2. Full-bleed background scroll story: concept → plan → rough build → finish → final room with extremely short copy layered above.
 3. Services: horizontally swipeable/tappable cards, with progressive disclosure.
 4. Projects: visual proof cards.
 5. About: short human trust block.
@@ -96,4 +110,4 @@ The five states are stored in one lightweight sprite and are crossfaded based on
 
 ### Collaboration note
 
-Claude may refine Test 1.2, but preserve the north-star rules above. A substantially different mechanic or art direction should remain a separate numbered variant rather than silently replacing Test 1.2.
+Claude may refine Test 1.2, but preserve the north-star rules and the immediate/background-led transition timing above. A substantially different mechanic or art direction should remain a separate numbered variant rather than silently replacing Test 1.2.
