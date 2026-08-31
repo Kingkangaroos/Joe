@@ -61,15 +61,20 @@ Verified against GitHub on 2026-08-31:
 - Only the exact Level-1 attachment ID above was recoverable from conversation context. The exact attachment IDs for Levels 2–10 were not recoverable.
 - Existing Park 3.0 strip assets are upscaled exports from a low-resolution atlas. They are useful as the current Park 3.0 source, but they are not native HQ replacements for Park 3.1.
 
+## Park 3.1 Steps — implemented 2026-08-31
+
+- The ten approved native images were recovered and committed as `img/lab/park31/steps/l01.webp` through `l10.webp`.
+- Level 1 is the exact selected second, yawning alternative; Levels 2–10 are the original approved progression.
+- `park31.html`, `park31.css` and `park31.js` provide a separate Steps-only Lab test.
+- The live `walking` score selects the matching artwork; technical Level 0 reuses Level 1 art with critical styling.
+- Tapping only toggles light/glow and never writes mission completion or level data.
+- Both Park 3.0 and Park 3.1 are independently linked from the normal Lab; Home remains untouched.
+
 ## Next build sequence
 
-1. Creator supplies or re-exports the ten approved native Steps images, preserving the locked Level-1 choice and Level 1–10 identity.
-2. Builder validates dimensions, transparency, color consistency, file integrity and iPhone-safe WebP decoding.
-3. Builder commits the assets to `img/lab/park31/steps/l01.webp`–`l10.webp` on `chatgpt/park31-steps-hq`.
-4. Builder integrates Park 3.1 into `lab.html` as a separate reviewable experiment while leaving Park 3.0 and Home unchanged.
-5. Builder connects the live `walking` level and the glow/light interaction.
-6. Builder runs behavior checks for Levels 0–10, private/normal state interactions, refresh persistence and mobile layout.
-7. Builder verifies the Vercel preview on iPhone dimensions before proposing any merge.
+1. Review Park 3.1 visually on the branch preview.
+2. Decide later whether and how the static companion should move.
+3. Only after approval, consider bringing other Daily Mission companions into the Park 3.1 HQ format.
 
 ## Definition of done for Park 3.1 Steps
 
