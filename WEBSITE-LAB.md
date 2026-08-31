@@ -8,80 +8,92 @@
 
 Do not overwrite an accepted experiment just to try a different technique. Keep it as a numbered test and add the next direction as Test 2, Test 3, etc. This lets Joey compare directions and lets ChatGPT/Claude review the same implementation history.
 
+## Website Lab north star — accepted 2026-08-31
+
+The target is **Apple-like clarity and premium motion applied to a local-service conversion website**.
+
+Hard rules:
+- within about **5 scroll gestures**, the visitor should understand the company, feel trust, see the level of work and want a price indication;
+- one clear focus per section;
+- headlines are short; supporting copy is usually one sentence;
+- motion supports the sales story and must never hold useful information hostage;
+- no scroll-jacking and no long empty cinematic stretches;
+- the signature visual should feel expensive because of art direction, consistency, typography and restraint — not because many things move;
+- mobile-first;
+- service detail can progressively disclose on tap instead of dumping text on the homepage;
+- project proof should be visual and swipeable/compact;
+- primary conversion direction is a **low-friction first price indication / free site visit**, not a heavy quote form;
+- when images are generated for a transition sequence, use the same room, same camera, same perspective and logical build progression;
+- ChatGPT-generated visuals should be tried first; external stock imagery is not the desired Test 1.2 direction.
+
 ## Test 1 — Scroll Animations
 
 **File:** `site-klus-scroll.html`  
 **Regression checks:** `tests/scroll-site-smoke.js`  
 **Lab index:** `sites.html`
 
-### Original concept
+Original mobile-first construction-company experiment: a sticky blueprint canvas, pencil path and long staged build sequence.
 
-A mobile-first construction-company website built around a sticky blueprint canvas. Normal page scrolling scrubs the build sequence: a pencil follows an SVG path, drawing the plan in stages, and the blueprint gradually becomes the finished bathroom.
-
-### Joey feedback — accepted 2026-08-31
-
-**KEEP**
-- the idea that one visual story evolves as the visitor scrolls;
-- sketch / blueprint → construction → finished room;
-- a pencil or visual companion can move with the story;
-- premium motion that makes the site memorable.
-
-**CHANGE**
-- Test 1 asks for too much scrolling before the visitor gets useful website information;
-- the animation currently becomes the main event and steals attention from the actual company/site content;
-- the website needs a much stronger expensive / premium / art-directed feeling;
-- the final result should look substantially more photorealistic — almost like a real architectural/interior camera shoot.
-
-**REUSE**
-- scroll-driven progress;
-- sticky/persistent visual layer;
-- staged build progression;
-- reduced-motion support;
-- mobile-first implementation.
+Accepted feedback:
+- keep scroll-driven progress and the idea of one story evolving;
+- change the long cinematic pacing, because it delays useful company information;
+- keep Test 1 as technical reference rather than overwriting it.
 
 ## Test 1.1 — Content-first persistent scroll story
 
-This is the next iteration of Test 1, not a replacement for the archived original.
+**File:** `site-klus-scroll-1-1.html`
 
-### Core principle
+First attempt to let normal site content move at normal speed while a persistent bathroom visual evolves alongside it.
 
-**The visitor keeps receiving normal website content at normal speed while one visual construction story travels alongside it.** Motion supports the content; it does not delay it.
+Accepted feedback:
+- content-first was the right correction;
+- the drawing/pencil still felt too dominant and not logically connected enough to the final room;
+- the copy did not feel inviting enough to read;
+- the visual still behaved too much like a demo effect;
+- using an Unsplash payoff was not the desired production direction;
+- the next version should use self-generated, highly consistent keyframes.
 
-### Proposed page rhythm
+## Test 1.2 — Apple-like 5-frame conversion story
 
-1. **Hero — finished promise + first sketch**  
-   Strong headline, trust/CTA immediately visible. The visual starts as an elegant architectural sketch or partial blueprint, but the visitor already understands what the company does.
+**File:** `site-klus-scroll-1-2.html`  
+**Visual asset:** `img/lab/website-test-1-2/a-sequence.webp`
 
-2. **Services — blueprint becomes structure**  
-   Normal readable service copy enters while the same visual scene gains walls / plumbing / framing / material detail.
+### Chosen art direction: Alternative A — Architectural Luxury
 
-3. **Process — room is being built**  
-   The visual progresses through believable construction stages while short process steps remain readable and tappable.
+Four visual directions were explored:
+A. Architectural Luxury  
+B. Warm Minimal  
+C. Construction Reveal  
+D. Ultra Premium Showcase
 
-4. **Proof / reviews — almost finished**  
-   Materials, lighting and surfaces become increasingly realistic. Reviews and proof stay foreground content, not hidden behind a cinematic sequence.
+**A was selected for the first working 1.2 site.** It gives the best balance between:
+- premium / expensive visual impact;
+- believable renovation-company positioning;
+- a dark, architectural aesthetic with natural stone, walnut and warm light;
+- enough restraint to support conversion.
 
-5. **Final CTA — photoreal finished bathroom / interior**  
-   The same composition resolves into a polished, camera-shot-feeling final room. This is the visual payoff, with the CTA directly adjacent.
+D can be tested later as a more spectacular variant, but risks making the company feel like a luxury interior-design studio rather than a contractor/renovation business.
 
-### Visual behavior
+### 5 visual states
 
-- no long blank scroll sections;
-- no scroll-jacking;
-- a persistent/sticky visual may sit beside content on desktop and behind/above compact content beats on mobile;
-- each normal content section advances the visual state;
-- transitions should feel continuous rather than five unrelated images;
-- the final image must aim for architectural-photography realism, not generic AI art;
-- typography, spacing, material detail and motion should create the "someone spent serious money on this site" feeling.
+One bathroom, one camera:
+1. elegant architectural concept;
+2. definitive plan with first material information;
+3. clean rough construction / framing / plumbing;
+4. high-end finish nearly complete;
+5. final architectural-photography-feeling bathroom.
 
-### Higgsfield / generation role
+The five states are stored in one lightweight sprite and are crossfaded based on normal page scroll. Crossfade is combined only with a very subtle scale/vertical shift to avoid a slideshow feeling.
 
-Use a **ChatGPT-first** workflow for layout, still concepts, composition and implementation. Higgsfield is not the whole production line; it is a specialist step only where it produces a clear delta — especially smooth sketch→build→photoreal motion, cinematic material transitions, or higher-end image/video consistency.
+### Page rhythm
 
-### Earlier Gamenfy parallel
-
-An older Gamenfy direction used the same principle: a character/companion travels with the user through changing scenes (e.g. jumping/moving between areas) while the actual app content remains usable. That interaction idea is a useful reference for Test 1.1: **one persistent visual companion/story, changing with scroll, without holding the content hostage.**
+1. Hero: company proposition, CTA, trust proof and first concept visible immediately.
+2. Scroll story: plan → rough build → finish → final room with extremely short copy.
+3. Services: horizontally swipeable/tappable cards, with progressive disclosure.
+4. Projects: visual proof cards.
+5. About: short human trust block.
+6. Price indication: lightweight two-choice demo that returns a broad range and points toward a free site visit.
 
 ### Collaboration note
 
-Claude may improve Test 1.1, but should preserve the content-first rule. A substantially different scroll mechanic should become a separate numbered test rather than silently replacing Test 1 or Test 1.1.
+Claude may refine Test 1.2, but preserve the north-star rules above. A substantially different mechanic or art direction should remain a separate numbered variant rather than silently replacing Test 1.2.
