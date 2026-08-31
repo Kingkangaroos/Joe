@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img">
+  <defs><filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#11101b" flood-opacity=".34"/></filter><linearGradient id="paper1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff5d8"/><stop offset="1" stop-color="#e7d4a8"/></linearGradient><linearGradient id="paper2" x1="1" y1="0" x2="0" y2="1"><stop stop-color="#fff7e1"/><stop offset="1" stop-color="#e8d5ad"/></linearGradient></defs>
+  <g filter="url(#shadow)" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M42 74 Q66 58 98 73 V151 Q72 136 42 149Z" fill="url(#paper1)" stroke="#705c49" stroke-width="4"/><path d="M158 74 Q134 58 102 73 V151 Q128 136 158 149Z" fill="url(#paper2)" stroke="#705c49" stroke-width="4"/><path d="M100 72 V151" stroke="#b49258" stroke-width="4"/>
+    <path d="M53 84 q19-10 37-2 M53 99 q18-8 37-1 M110 82 q19-9 37 1 M110 98 q18-7 37 1" fill="none" stroke="#c9b996" stroke-width="3"/>
+    <ellipse cx="78" cy="91" rx="13" ry="16" fill="#fff"/><ellipse cx="122" cy="91" rx="13" ry="16" fill="#fff"/><ellipse cx="81" cy="94" rx="6" ry="8" fill="#242236"/><ellipse cx="119" cy="94" rx="6" ry="8" fill="#242236"/><circle cx="83" cy="91" r="2.6" fill="#fff"/><circle cx="121" cy="91" r="2.6" fill="#fff"/>
+    <path d="M89 116 Q100 122 111 116" fill="none" stroke="#4c443a" stroke-width="4"/>
+    <circle cx="64" cy="54" r="10" fill="#ffd77a" stroke="#9f7430" stroke-width="2.5"/><circle cx="101" cy="42" r="11" fill="#ffb98f" stroke="#a56748" stroke-width="2.5"/><circle cx="139" cy="55" r="10" fill="#b9d9ff" stroke="#637da4" stroke-width="2.5"/>
+    <path d="M64 64 Q77 73 84 78 M101 53 V72 M139 65 Q126 72 117 78" fill="none" stroke="#e6bf63" stroke-width="2.5" stroke-dasharray="4 5"/>
+    <path d="M47 128 q-16 6-20 20 M153 128 q16 6 20 20" fill="none" stroke="#705c49" stroke-width="7"/><path d="M76 148 q-8 16-19 18 M124 148 q8 16 19 18" fill="none" stroke="#705c49" stroke-width="8"/>
+  </g>
+</svg>

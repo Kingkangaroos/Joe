@@ -1,0 +1,32 @@
+{
+  "status": "approved",
+  "approved_at": "2026-08-30",
+  "approved_by": "Joey",
+  "recorded_by": "ChatGPT (OpenAI)",
+  "role": "canonical-level-6-daily-mission-companion-baseline",
+  "generation_id": "659d026b-2969-430d-a2da-2f7f99f8e297",
+  "export_filename": "gamenfy_daily_mission_companions.png",
+  "width": 1448,
+  "height": 1086,
+  "sha256": "f88d39ae473b47d5d38637388dfdbed81ec1b618794fe4e3d5d12150b43d98d4",
+  "evolution_milestones": [2, 4, 6, 8, 10],
+  "identity_anchor_level": 6,
+  "master_level": 10,
+  "privacy": {
+    "private_discipline_public_label": "Discipline",
+    "forbid_explicit_no_porn_text_in_public_art": true
+  },
+  "companions": [
+    {"order": 1, "key": "nutrition", "identity": "living pink stomach nutrition companion"},
+    {"order": 2, "key": "teeth", "identity": "glossy heroic tooth companion"},
+    {"order": 3, "key": "household", "identity": "human maid household helper"},
+    {"order": 4, "key": "gratitude", "identity": "glowing golden gratitude spirit"},
+    {"order": 5, "key": "good_deed", "identity": "red heart superhero companion"},
+    {"order": 6, "key": "screen_time", "identity": "compact retro screen robot creature"},
+    {"order": 7, "key": "cold_shower", "identity": "crystalline blue ice cold-water elemental"},
+    {"order": 8, "key": "weed_control", "identity": "green plant forest guardian"},
+    {"order": 9, "key": "private_discipline", "identity": "half-demon half-angel human transition character"},
+    {"order": 10, "key": "sleep", "identity": "blond male sleeper with purple star moon sleepwear and cloud pillow"},
+    {"order": 11, "key": "walking", "identity": "teal green athletic alternate-species fox-like runner"}
+  ]
+}

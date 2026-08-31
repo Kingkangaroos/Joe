@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img">
+  <defs>
+    <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#11101b" flood-opacity=".34"/></filter>
+    <linearGradient id="tooth" x1=".2" y1="0" x2=".8" y2="1"><stop stop-color="#ffffff"/><stop offset=".48" stop-color="#e9fbf8"/><stop offset="1" stop-color="#bee2e3"/></linearGradient>
+    <linearGradient id="brush" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7fddd0"/><stop offset="1" stop-color="#42aeb0"/></linearGradient>
+  </defs>
+  <g filter="url(#shadow)" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M65 50 Q100 32 135 50 Q151 62 142 91 L134 139 Q130 164 114 153 L100 132 L86 153 Q70 164 66 139 L58 91 Q49 62 65 50Z" fill="url(#tooth)" stroke="#527e87" stroke-width="4"/>
+    <path d="M71 57 Q99 45 127 57" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="7"/>
+    <ellipse cx="78" cy="91" rx="13" ry="16" fill="#fff"/><ellipse cx="122" cy="91" rx="13" ry="16" fill="#fff"/>
+    <ellipse cx="81" cy="94" rx="6" ry="8" fill="#242236"/><ellipse cx="119" cy="94" rx="6" ry="8" fill="#242236"/>
+    <circle cx="83" cy="91" r="2.6" fill="#fff"/><circle cx="121" cy="91" r="2.6" fill="#fff"/>
+    <path d="M89 116 Q100 122 111 116" fill="none" stroke="#3b4f55" stroke-width="4"/>
+    <g transform="rotate(-12 153 101)"><rect x="147" y="65" width="11" height="72" rx="5.5" fill="url(#brush)" stroke="#3c7d80" stroke-width="3"/><rect x="140" y="55" width="25" height="18" rx="6" fill="#b7f1e6" stroke="#4c8d8b" stroke-width="3"/><path d="M144 60h4M150 60h4M156 60h4" stroke="#fff" stroke-width="2.5"/></g>
+    <circle cx="60" cy="56" r="6" fill="#d6fff9"/><circle cx="147" cy="47" r="4" fill="#d6fff9"/>
+    <path d="M62 123 q-18 8-20 23 M138 123 q18 8 20 23" fill="none" stroke="#527e87" stroke-width="7"/>
+    <path d="M84 151 q-7 13-19 16 M116 151 q7 13 19 16" fill="none" stroke="#527e87" stroke-width="8"/>
+    <circle cx="100" cy="44" r="7" fill="#f2ca68" stroke="#8c6b25" stroke-width="2.5"/>
+  </g>
+</svg>
