@@ -159,8 +159,79 @@ body{padding-bottom:90px}
 .other-lab-intro span{color:var(--muted);font-size:10px;line-height:1.4}
 @media(max-width:390px){.chatgpt-lab-grid{grid-template-columns:1fr}.chatgpt-lab-card{min-height:62px}.chatgpt-lab-hero{padding:14px}}
 @media (prefers-reduced-motion:reduce){.mv,.ring,.ring2{animation:none!important}}
-</style>
-</head>
+/* ── Animatie test 1 (Claude) — kopie van ChatGPT's Park 3.1 steps-art,
+   los experiment met loop-animatie/achtergrond/effecten. Geen bestaande
+   Park3/Park3.1/Main-bestanden aangeraakt. ── */
+.at1-wrap{background:#0a0e2e;border-radius:18px;padding:16px;margin-bottom:14px;
+  border:1px solid #1c2456;position:relative;overflow:hidden}
+.at1-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(107,227,255,.12);
+  border:1px solid rgba(107,227,255,.35);color:#8fe8ff;font-family:var(--font-display);
+  font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;
+  padding:5px 11px;border-radius:999px;margin-bottom:10px}
+.at1-badge i{width:6px;height:6px;border-radius:50%;background:#6be3ff;
+  box-shadow:0 0 8px #6be3ff;animation:at1Pulse 1.4s ease-in-out infinite}
+@keyframes at1Pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.at1-stage{position:relative;height:260px;border-radius:14px;overflow:hidden;
+  background:linear-gradient(180deg,#02072f 0%,#060c3a 55%,#0a1244 100%)}
+.at1-vignette{position:absolute;inset:0;pointer-events:none;z-index:2;
+  box-shadow:inset 0 0 46px 14px #02072f}
+/* parallax achtergrondlagen — elk in eigen tempo naar links, loopt naadloos */
+.at1-layer{position:absolute;inset:0;background-repeat:repeat-x;background-size:auto 100%;
+  will-change:background-position}
+.at1-l-stars{opacity:.5;background-image:radial-gradient(1.5px 1.5px at 10% 20%,#fff,transparent),
+  radial-gradient(1px 1px at 35% 45%,#fff,transparent),radial-gradient(1.5px 1.5px at 60% 15%,#fff,transparent),
+  radial-gradient(1px 1px at 80% 55%,#fff,transparent),radial-gradient(1.5px 1.5px at 95% 30%,#fff,transparent),
+  radial-gradient(1px 1px at 22% 70%,#fff,transparent),radial-gradient(1.5px 1.5px at 70% 80%,#fff,transparent);
+  background-size:220px 260px;animation:at1Scroll 26s linear infinite}
+.at1-l-hills{bottom:0;top:auto;height:46%;opacity:.55;
+  background-image:radial-gradient(ellipse 90px 60px at 50% 100%,#2a3680 60%,transparent 61%);
+  background-size:180px 100%;animation:at1Scroll 9s linear infinite}
+.at1-l-mid{bottom:0;top:auto;height:30%;opacity:.8;
+  background-image:linear-gradient(90deg,transparent 0 40px,#232f74 40px 46px,transparent 46px 140px);
+  background-size:140px 100%;animation:at1Scroll 3.2s linear infinite}
+.at1-l-ground{bottom:0;top:auto;height:14%;background:linear-gradient(180deg,#3a4696,#232c68);
+  box-shadow:0 -1px 0 rgba(255,255,255,.08) inset}
+.at1-l-fast{bottom:8%;top:auto;height:10%;opacity:.9;
+  background-image:linear-gradient(90deg,transparent 0 18px,rgba(107,227,255,.55) 18px 22px,transparent 22px 90px);
+  background-size:90px 100%;animation:at1Scroll 1.1s linear infinite}
+@keyframes at1Scroll{from{background-position:0 0}to{background-position:-1000px 0}}
+.at1-run-anchor{position:absolute;left:50%;bottom:8%;width:150px;margin-left:-75px;
+  transform-origin:50% 100%;animation:at1Gait .52s ease-in-out infinite}
+@keyframes at1Gait{
+  0%{transform:translateY(0) rotate(-1.4deg) scaleY(1)}
+  22%{transform:translateY(-13px) rotate(0deg) scaleY(1.03)}
+  46%{transform:translateY(0) rotate(1.6deg) scaleY(.97)}
+  72%{transform:translateY(-9px) rotate(0deg) scaleY(1.02)}
+  100%{transform:translateY(0) rotate(-1.4deg) scaleY(1)}
+}
+.at1-char{width:100%;display:block;filter:drop-shadow(0 14px 18px rgba(0,0,0,.55))}
+.at1-shadow{position:absolute;left:50%;bottom:6%;width:96px;height:16px;margin-left:-48px;
+  background:radial-gradient(ellipse,rgba(0,0,0,.55) 0%,transparent 72%);
+  animation:at1ShadowPulse .52s ease-in-out infinite}
+@keyframes at1ShadowPulse{0%,100%{transform:scaleX(1);opacity:.55}46%{transform:scaleX(.7);opacity:.3}}
+/* stofpufje bij elke "voetstap" (2x per gait-cyclus) */
+.at1-dust{position:absolute;bottom:9%;width:10px;height:10px;border-radius:50%;
+  background:radial-gradient(circle,rgba(180,200,255,.9),rgba(180,200,255,0) 70%);
+  opacity:0;pointer-events:none}
+.at1-dust-a{left:41%;animation:at1Dust .52s ease-out infinite}
+.at1-dust-b{left:59%;animation:at1Dust .52s .26s ease-out infinite}
+@keyframes at1Dust{0%{opacity:0;transform:scale(.3) translateY(0)}8%{opacity:.85;transform:scale(.5) translateY(0)}
+  40%{opacity:0;transform:scale(2.4) translateY(-6px)}100%{opacity:0}}
+.at1-speedline{position:absolute;height:2px;background:linear-gradient(90deg,transparent,#7fd8ff,transparent);
+  border-radius:2px;opacity:0;animation:at1Speed 1.05s linear infinite}
+@keyframes at1Speed{0%{opacity:0;transform:translateX(70px)}12%{opacity:.85}100%{opacity:0;transform:translateX(-260px)}}
+.at1-controls{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+.at1-btn{font-family:var(--font-display);font-weight:700;font-size:12px;color:#0a0e2e;
+  background:#8fe8ff;border:0;border-radius:999px;padding:8px 16px;cursor:pointer}
+.at1-btn.off{background:transparent;color:#8fe8ff;border:1px solid rgba(143,232,255,.4)}
+.at1-note{font-size:11px;color:#7a84c4;line-height:1.5;margin-top:8px}
+.at1-lvl{font-size:11px;color:#8fe8ff;font-weight:700;font-family:var(--mono)}
+body.at1-paused .at1-run-anchor,body.at1-paused .at1-layer,body.at1-paused .at1-dust,
+body.at1-paused .at1-speedline,body.at1-paused .at1-shadow{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){
+  .at1-run-anchor,.at1-layer,.at1-dust,.at1-speedline,.at1-shadow,.at1-badge i{animation:none!important}
+}
+
 <body>
 <div class="wrap">
   <a href="character.html" style="display:inline-block;font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:10px">‹ Terug naar Skills</a>
@@ -282,6 +353,29 @@ body{padding-bottom:90px}
     </span>
     <span style="color:var(--ember);font-weight:700">→</span>
   </a>
+
+  <div class="at1-wrap" id="at1Wrap">
+    <span class="at1-badge"><i></i> Animatie test 1 · Claude</span>
+    <div class="at1-stage" id="at1Stage">
+      <div class="at1-layer at1-l-stars"></div>
+      <div class="at1-layer at1-l-mid"></div>
+      <div class="at1-layer at1-l-fast"></div>
+      <div class="at1-vignette"></div>
+      <div class="at1-layer at1-l-ground"></div>
+      <div class="at1-shadow"></div>
+      <div class="at1-dust at1-dust-a"></div>
+      <div class="at1-dust at1-dust-b"></div>
+      <div class="at1-run-anchor" id="at1Anchor">
+        <img class="at1-char" id="at1Char" src="img/lab/animtest1/steps-l05.webp" alt="10k Steps — animatietest" draggable="false">
+      </div>
+    </div>
+    <div class="at1-controls">
+      <button class="at1-btn" id="at1Toggle" type="button">Pauze</button>
+      <button class="at1-btn off" id="at1Reroll" type="button">Nieuwe snelheidslijnen</button>
+      <span class="at1-lvl" id="at1LvlTag">live level —</span>
+    </div>
+    <div class="at1-note">Kopie van ChatGPT's Park 3.1-poppetje (10k Steps), niet het origineel — puur om te testen wat mogelijk is qua loop-animatie, dieptelagen en effecten. Raakt Park 3.0/3.1, Main of de habit-data niet aan.</div>
+  </div>
 
   <div class="sec-head">Skill characters (v11 test)</div>
   <div class="wbar" id="wbar"></div>
@@ -944,6 +1038,72 @@ body{padding-bottom:90px}
     requestAnimationFrame(tick);
   }
   start();
+
+  // ── Animatie test 1 (Claude) — volledig los van de rest van dit bestand.
+  // Leest hetzelfde live gewoonte-getal als Park 3.1 (getHabits().walking.score),
+  // zodat de kopie het echte level toont, maar raakt geen bestaand element,
+  // functie of variabele hierboven aan.
+  function at1Start(){
+    var stage=document.getElementById('at1Stage');
+    if(!stage) return; // sectie niet aanwezig, niets te doen
+    var img=document.getElementById('at1Char');
+    var lvlTag=document.getElementById('at1LvlTag');
+    var toggleBtn=document.getElementById('at1Toggle');
+    var rerollBtn=document.getElementById('at1Reroll');
+    var paused=false;
+
+    function liveLevel(){
+      try{
+        if(window.getHabits){
+          var h=window.getHabits();
+          var raw=Number((h.walking||{}).score);
+          if(Number.isFinite(raw)) return Math.max(0,Math.min(10,Math.round(raw)));
+        }
+      }catch(e){}
+      try{
+        var local=JSON.parse(localStorage.getItem('rpg_habits_v1'))||{};
+        var r=Number((local.walking||{}).score);
+        if(Number.isFinite(r)) return Math.max(0,Math.min(10,Math.round(r)));
+      }catch(e){}
+      return 5; // demo-fallback als er nog geen data is
+    }
+    function applyLevel(){
+      var raw=liveLevel(), art=Math.max(1,raw||1);
+      var id=String(art).padStart(2,'0');
+      img.src='img/lab/animtest1/steps-l'+id+'.webp';
+      lvlTag.textContent='live level '+raw+' (kunst L'+art+')';
+    }
+    applyLevel();
+    // reageert op dezelfde manier als de rest van de app op verse sync-data
+    window.addEventListener('storage', applyLevel);
+    setInterval(applyLevel, 12000);
+
+    // dynamische snelheidslijnen: een paar willekeurig getimede/geplaatste
+    // strepen bovenop de vaste CSS-lagen, voor wat visuele variatie per run
+    function spawnSpeedlines(n){
+      stage.querySelectorAll('.at1-speedline').forEach(function(el){ el.remove(); });
+      for(var i=0;i<n;i++){
+        var el=document.createElement('div');
+        el.className='at1-speedline';
+        el.style.top=(18+Math.random()*55)+'%';
+        el.style.width=(40+Math.random()*90)+'px';
+        el.style.left=(60+Math.random()*30)+'%';
+        el.style.animationDelay=(Math.random()*1.05)+'s';
+        el.style.animationDuration=(0.75+Math.random()*0.6)+'s';
+        stage.appendChild(el);
+      }
+    }
+    spawnSpeedlines(6);
+
+    toggleBtn.addEventListener('click', function(){
+      paused=!paused;
+      document.body.classList.toggle('at1-paused', paused);
+      toggleBtn.textContent = paused ? 'Hervat' : 'Pauze';
+    });
+    rerollBtn.addEventListener('click', function(){ spawnSpeedlines(6); });
+  }
+  if(document.readyState==='complete'||document.readyState==='interactive') at1Start();
+  else document.addEventListener('DOMContentLoaded', at1Start);
 
   if (typeof initCloudSync==='function' && window.supabase) {
     initCloudSync({ appKey:'rpg', syncedKeys: window.RPG_SYNC_KEYS, syncedPrefixes: window.RPG_SYNC_PREFIXES });
