@@ -25,7 +25,7 @@ jobs:
           test -d .park3-assets
           shopt -s nullglob
           packs=(.park3-assets/*.tar.gz)
-          test "${#packs[@]}" -eq 11
+          test "${#packs[@]}" -eq 4
           for pack in "${packs[@]}"; do
             tar -xzf "$pack" -C .
           done
