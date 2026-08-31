@@ -26,10 +26,10 @@ jobs:
           test -f .park3-packs/READY
           shopt -s nullglob
           chunks=(.park3-packs/part-*.b64)
-          test "${#chunks[@]}" -eq 34
+          test "${#chunks[@]}" -eq 27
           cat "${chunks[@]}" > /tmp/park3-levels.b64
           base64 -d /tmp/park3-levels.b64 > /tmp/park3-levels.tar.gz
-          echo '51d4d0eb42306eb1a421e6221080d638fdcc6e4f4b6fc1fe3cd7c943c154df62  /tmp/park3-levels.tar.gz' | sha256sum -c -
+          echo '5ff27985ec02bceab970892c04ab134ee539668a0eac8f8c1734fd4a96dc95ba  /tmp/park3-levels.tar.gz' | sha256sum -c -
           tar -tzf /tmp/park3-levels.tar.gz >/dev/null
           rm -rf img/lab/park3/levels
           tar -xzf /tmp/park3-levels.tar.gz -C .
