@@ -21,4 +21,5 @@ Built by ChatGPT (OpenAI), 2026-08-31.
 
 - Park 3.0 files and assets are unchanged.
 - Home/Main is unchanged.
-- Park 3.0 and Park 3.1 are both linked as separate experiments in the normal Lab.
+- Park 3.1 renders directly inside the normal Lab; it is not hidden behind a separate preview card.
+- Park 3.0 remains separately available as the reference version.

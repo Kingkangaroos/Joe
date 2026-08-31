@@ -119,6 +119,7 @@
     tries++;
     var w=hostWindow();
     if(typeof w.getHabits!=='function'&&tries<100){setTimeout(init,75);return;}
+    if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('p31-embedded');
     stage=document.getElementById('p31Stage');button=document.getElementById('p31Companion');art=document.getElementById('p31Art');
     levelEl=document.getElementById('p31LiveLevel');stateEl=document.getElementById('p31State');sourceEl=document.getElementById('p31Source');
     copyEl=document.getElementById('p31EvolutionCopy');levelsEl=document.getElementById('p31Levels');progressEl=document.getElementById('p31Progress');

@@ -141,6 +141,17 @@ body{padding-bottom:90px}
 .chatgpt-lab-card small{display:block;margin-top:2px;color:var(--muted);font-size:8px;line-height:1.35}
 .chatgpt-lab-card em{position:absolute;right:8px;top:7px;color:#6f6698;font-size:7px;font-style:normal;font-weight:800;
   letter-spacing:.05em;text-transform:uppercase}
+.park31-lab{overflow:hidden;margin-bottom:20px;border:1px solid #242a54;border-radius:20px;background:#080b25;
+  box-shadow:0 22px 50px -34px rgba(15,28,85,.8)}
+.park31-lab-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;
+  border-bottom:1px solid rgba(185,211,255,.14);color:#f6f8ff;background:linear-gradient(135deg,#10173c,#0b1030)}
+.park31-lab-head strong{display:block;font:800 13px var(--font-display)}
+.park31-lab-head span{display:block;margin-top:2px;color:#aeb7da;font-size:8px;line-height:1.4}
+.park31-lab-live{display:flex!important;align-items:center;gap:6px!important;margin:0!important;color:#79e9c4!important;
+  font-size:8px!important;font-weight:800;letter-spacing:.06em;white-space:nowrap}
+.park31-lab-live i{width:6px;height:6px;border-radius:50%;background:#70efb1;box-shadow:0 0 11px #70efb1}
+.park31-frame{width:100%;height:clamp(500px,135vw,720px);background:#05091f}
+.park31-frame iframe{display:block;width:100%;height:100%;border:0;background:#05091f}
 .other-lab-intro{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;padding:13px 14px;
   border:1px solid var(--line);border-radius:14px;background:var(--card)}
 .other-lab-intro strong{font:700 14px var(--font-display)}
@@ -171,11 +182,6 @@ body{padding-bottom:90px}
     </div>
 
     <div class="chatgpt-lab-grid" aria-label="ChatGPT-creaties">
-      <a class="chatgpt-lab-card" href="park31.html">
-        <span class="chatgpt-lab-icon">👟</span>
-        <span><strong>Park 3.1 · Steps</strong><small>HQ evoluties op je live level</small></span>
-        <em>Nieuwe test</em>
-      </a>
       <a class="chatgpt-lab-card" href="park3.html">
         <span class="chatgpt-lab-icon">✨</span>
         <span><strong>Park 3.0</strong><small>11 Daily Mission-evoluties</small></span>
@@ -202,6 +208,17 @@ body{padding-bottom:90px}
         <em>Live skill</em>
       </a>
     </div>
+
+  <div class="sec-head">Park 3.1 · Steps HQ</div>
+  <section class="park31-lab" id="park31" aria-label="Park 3.1 met de live Steps companion">
+    <div class="park31-lab-head">
+      <span><strong>Steps Companion</strong><span>Level 1–10 volgt automatisch je actuele Steps-level</span></span>
+      <span class="park31-lab-live"><i></i> LIVE DATA</span>
+    </div>
+    <div class="park31-frame">
+      <iframe src="park31.html?embed=1" title="Park 3.1 Steps companion" loading="eager"></iframe>
+    </div>
+  </section>
 
   <div class="sec-head">Park 2.0 · optie D</div>
   <section class="park2" id="park2" aria-label="Park 2.0 met vijf levende skill companions">

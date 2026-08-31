@@ -68,7 +68,7 @@ Verified against GitHub on 2026-08-31:
 - `park31.html`, `park31.css` and `park31.js` provide a separate Steps-only Lab test.
 - The live `walking` score selects the matching artwork; technical Level 0 reuses Level 1 art with critical styling.
 - Tapping only toggles light/glow and never writes mission completion or level data.
-- Both Park 3.0 and Park 3.1 are independently linked from the normal Lab; Home remains untouched.
+- Park 3.1 renders directly inside the normal Lab; Park 3.0 remains separately available and Home remains untouched.
 
 ## Next build sequence
 

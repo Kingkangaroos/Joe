@@ -92,4 +92,8 @@ assert.ok(source.includes("var KEY='walking'"),'Park 3.1 stays connected to Step
 assert.ok(!source.includes('recomputeHabitFromLog'),'Park 3.1 cannot mutate the mission level');
 assert.ok(!source.includes('rpg_habitlog_v1\',JSON.stringify'),'Park 3.1 never writes the completion log');
 
+const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
+assert.match(lab,/<iframe src="park31\.html\?embed=1"/,'Park 3.1 renders directly inside the normal Lab');
+assert.doesNotMatch(lab,/class="chatgpt-lab-card" href="park31\.html"/,'Park 3.1 is not hidden behind a separate Lab card');
+
 console.log('Park 3.1 smoke test passed.');
