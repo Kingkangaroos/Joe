@@ -5,7 +5,7 @@ on:
     branches:
       - chatgpt/park3-exact-assets-worker
     paths:
-      - '.park3-packs/READY-Q78'
+      - '.park3-packs/READY-Q45'
 
 permissions:
   contents: write
@@ -23,13 +23,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f .park3-packs/READY-Q78
+          test -f .park3-packs/READY-Q45
           shopt -s nullglob
-          chunks=(.park3-packs/q78-*.b64)
-          test "${#chunks[@]}" -eq 7
+          chunks=(.park3-packs/q45-*.b64)
+          test "${#chunks[@]}" -eq 21
           cat "${chunks[@]}" > /tmp/park3-levels.b64
           base64 -d /tmp/park3-levels.b64 > /tmp/park3-levels.tar.gz
-          echo '5ff27985ec02bceab970892c04ab134ee539668a0eac8f8c1734fd4a96dc95ba  /tmp/park3-levels.tar.gz' | sha256sum -c -
+          echo 'e2fcc583c9e4080755750d33c45f0022bb9fb08ab590d8e58fe6505b87def8f3  /tmp/park3-levels.tar.gz' | sha256sum -c -
           tar -tzf /tmp/park3-levels.tar.gz >/dev/null
           rm -rf img/lab/park3/levels
           tar -xzf /tmp/park3-levels.tar.gz -C .
