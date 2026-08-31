@@ -7,9 +7,23 @@
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.0';
-  var stage,button,art,levelEl,stateEl,sourceEl,copyEl,levelsEl,progressEl,lightEl,errorEl;
+  var VERSION='1.1';
+  var MISSIONS=[
+    {key:'walking',label:'Steps',emoji:'👟',dir:'steps'},
+    {key:'nutrition',label:'Nutrition',emoji:'🥗',dir:'nutrition'},
+    {key:'teeth',label:'Brush Teeth',emoji:'🦷',dir:'teeth'},
+    {key:'household',label:'Household',emoji:'🧹',dir:'household'},
+    {key:'gratitude',label:'Gratitude',emoji:'🙏',dir:'gratitude'},
+    {key:'good_deed',label:'Good Deed',emoji:'❤️',dir:'good-deed'},
+    {key:'screen_time',label:'Screen Time',emoji:'📵',dir:'screen-time'},
+    {key:'cold_shower',label:'Cold Shower',emoji:'💧',dir:'cold-shower'},
+    {key:'weed_control',label:'No Weed',emoji:'🌿',dir:'no-weed'},
+    {key:'no_porn',label:'Discipline',emoji:'⚡',dir:'discipline'},
+    {key:'sleep',label:'Sleep',emoji:'😴',dir:'sleep'}
+  ];
+  var stage,button,art,levelEl,stateEl,sourceEl,copyEl,levelsEl,progressEl,lightEl,errorEl,rosterEl,rosterCountEl;
   var current={raw:0,art:1,source:'empty'};
+  var artworkReady={walking:true};
   var tries=0,pollId=null;
 
   function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
@@ -25,23 +39,24 @@
     var n=Number(value);
     return Number.isFinite(n)&&n>=0&&n<=10?Math.round(n):null;
   }
-  function levelInfo(){
-    var forced=previewLevel();
+  function levelInfo(mission){
+    mission=mission||MISSIONS[0];
+    var forced=mission.key===KEY?previewLevel():null;
     if(forced!==null)return {raw:forced,art:clamp(forced||1,1,10),source:'preview'};
     var w=hostWindow();
     try{
       var habits=(w.getHabits&&w.getHabits())||{};
-      var n=Number((habits[KEY]||{}).score);
+      var n=Number((habits[mission.key]||{}).score);
       if(Number.isFinite(n))return {raw:clamp(Math.round(n),0,10),art:clamp(Math.round(n)||1,1,10),source:'habit'};
     }catch(e){}
     try{
       var local=JSON.parse(localStorage.getItem('rpg_habits_v1'))||{};
-      var score=Number((local[KEY]||{}).score);
+      var score=Number((local[mission.key]||{}).score);
       if(Number.isFinite(score))return {raw:clamp(Math.round(score),0,10),art:clamp(Math.round(score)||1,1,10),source:'local-habit'};
     }catch(e){}
     return {raw:0,art:1,source:'empty'};
   }
-  function assetUrl(level){return 'img/lab/park31/steps/l'+String(clamp(level,1,10)).padStart(2,'0')+'.webp?v='+VERSION;}
+  function assetUrl(level,mission){mission=mission||MISSIONS[0];return 'img/lab/park31/'+mission.dir+'/l'+String(clamp(level,1,10)).padStart(2,'0')+'.webp?v='+VERSION;}
   function state(level){
     level=Number(level)||0;
     if(level<=0)return 'CRITICAL';
@@ -59,6 +74,27 @@
       var level=index+1;
       return '<span class="p31-level" data-level="'+level+'" aria-label="Level '+level+'">'+level+'</span>';
     }).join('');
+  }
+  function rosterCard(mission){
+    var info=levelInfo(mission),ready=!!artworkReady[mission.key];
+    return '<article class="p31-slot'+(ready?' is-ready':' is-waiting')+'" data-mission="'+mission.key+'">'
+      +'<span class="p31-slot-art">'+(ready?'<img src="'+assetUrl(info.art,mission)+'" alt="" draggable="false">':mission.emoji)+'</span>'
+      +'<span class="p31-slot-copy"><strong>'+mission.label+'</strong><small>10 level slots prepared</small><em>'+(ready?'HQ artwork ready':'artwork onderweg')+'</em></span>'
+      +'<span class="p31-slot-level">L'+info.raw+'</span></article>';
+  }
+  function renderRoster(){
+    if(!rosterEl)return;
+    rosterEl.innerHTML=MISSIONS.map(rosterCard).join('');
+    var ready=MISSIONS.filter(function(mission){return artworkReady[mission.key];}).length;
+    rosterCountEl.textContent=ready+'/11 artwork ready';
+  }
+  function probeRoster(){
+    MISSIONS.slice(1).forEach(function(mission){
+      var image=new Image(),info=levelInfo(mission);
+      image.onload=function(){artworkReady[mission.key]=true;renderRoster();};
+      image.onerror=function(){artworkReady[mission.key]=false;};
+      image.src=assetUrl(info.art,mission);
+    });
   }
   function render(){
     if(!stage||!art)return;
@@ -83,6 +119,7 @@
       node.classList.toggle('is-current',active);
       if(active)node.setAttribute('aria-current','step');else node.removeAttribute('aria-current');
     });
+    renderRoster();
   }
   function preload(){
     for(var level=1;level<=10;level++){
@@ -123,9 +160,9 @@
     stage=document.getElementById('p31Stage');button=document.getElementById('p31Companion');art=document.getElementById('p31Art');
     levelEl=document.getElementById('p31LiveLevel');stateEl=document.getElementById('p31State');sourceEl=document.getElementById('p31Source');
     copyEl=document.getElementById('p31EvolutionCopy');levelsEl=document.getElementById('p31Levels');progressEl=document.getElementById('p31Progress');
-    lightEl=document.getElementById('p31LightState');errorEl=document.getElementById('p31Error');
-    if(!stage||!button||!art||!levelsEl)return;
-    buildLevels();bind();render();preload();
+    lightEl=document.getElementById('p31LightState');errorEl=document.getElementById('p31Error');rosterEl=document.getElementById('p31Roster');rosterCountEl=document.getElementById('p31RosterCount');
+    if(!stage||!button||!art||!levelsEl||!rosterEl||!rosterCountEl)return;
+    buildLevels();bind();render();preload();probeRoster();
     if(art.complete&&art.naturalWidth){stage.classList.remove('is-loading');errorEl.hidden=true;}
     if(window.parent===window&&typeof window.initCloudSync==='function'&&window.supabase){
       try{window.initCloudSync({appKey:'rpg',syncedKeys:window.RPG_SYNC_KEYS,syncedPrefixes:window.RPG_SYNC_PREFIXES});}catch(e){}

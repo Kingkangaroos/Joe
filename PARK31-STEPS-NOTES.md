@@ -23,3 +23,9 @@ Built by ChatGPT (OpenAI), 2026-08-31.
 - Home/Main is unchanged.
 - Park 3.1 renders directly inside the normal Lab; it is not hidden behind a separate preview card.
 - Park 3.0 remains separately available as the reference version.
+
+## Eleven-companion format
+
+- Park 3.1 reserves roster slots for all eleven current Daily Mission habits.
+- Each slot follows one fixed `l01.webp` through `l10.webp` asset contract documented in `img/lab/park31/ASSET-MAP.md`.
+- Steps is live now; the other ten slots deliberately remain labelled `artwork onderweg` until their generated files are supplied.
