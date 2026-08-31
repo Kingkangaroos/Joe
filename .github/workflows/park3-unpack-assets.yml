@@ -1,0 +1,36 @@
+name: Park 3.0 unpack exact level assets
+
+on:
+  push:
+    branches:
+      - chatgpt/park3-exact-assets-worker
+    paths:
+      - .park3-assets.tar.gz
+
+permissions:
+  contents: write
+
+jobs:
+  unpack:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: chatgpt/park3-exact-assets-worker
+      - name: Unpack exact per-level art
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f .park3-assets.tar.gz
+          tar -xzf .park3-assets.tar.gz -C .
+          test "$(find img/lab/park3/levels -type f -name '*.webp' | wc -l)" -eq 110
+          rm .park3-assets.tar.gz
+      - name: Commit exact level assets
+        shell: bash
+        run: |
+          git config user.name "ChatGPT asset worker"
+          git config user.email "chatgpt-assets@users.noreply.github.com"
+          git add img/lab/park3/levels .park3-assets.tar.gz
+          git commit -m "ChatGPT: add 110 exact Park 3.0 level assets"
+          git push origin HEAD:chatgpt/park3-exact-assets-worker
