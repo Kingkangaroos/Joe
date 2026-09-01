@@ -18,4 +18,4 @@ Park 3.1 has **11 Daily Mission companions**, each with **10 level images**. Eve
 
 All directories live beneath `img/lab/park31/`. Example: Level 4 Cold Shower belongs at `img/lab/park31/cold-shower/l04.webp`.
 
-Steps, Good Deed, Cold Shower and Sleep are complete. The other seven roster slots automatically replace their placeholder when the artwork for the current live level exists.
+Steps, Good Deed, Screen Time, Cold Shower, No Weed, Discipline and Sleep are complete. The other four roster slots automatically replace their placeholder when the artwork for the current live level exists.

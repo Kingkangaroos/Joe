@@ -7,7 +7,7 @@
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.3';
+  var VERSION='1.4';
   var MISSIONS=[
     {key:'walking',label:'Steps',emoji:'👟',dir:'steps'},
     {key:'nutrition',label:'Nutrition',emoji:'🥗',dir:'nutrition'},
@@ -23,7 +23,7 @@
   ];
   var stage,button,art,levelEl,stateEl,sourceEl,copyEl,levelsEl,progressEl,lightEl,errorEl,rosterEl,rosterCountEl;
   var current={raw:0,art:1,source:'empty'};
-  var artworkReady={walking:true,good_deed:true,cold_shower:true,sleep:true};
+  var artworkReady={walking:true,good_deed:true,screen_time:true,cold_shower:true,weed_control:true,no_porn:true,sleep:true};
   var tries=0,pollId=null;
 
   function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
