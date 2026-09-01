@@ -28,5 +28,6 @@ Built by ChatGPT (OpenAI), 2026-08-31.
 
 - Park 3.1 reserves roster slots for all eleven current Daily Mission habits.
 - Each slot follows one fixed `l01.webp` through `l10.webp` asset contract documented in `img/lab/park31/ASSET-MAP.md`.
-- Steps is live now; the other ten slots deliberately remain labelled `artwork onderweg` until their generated files are supplied.
+- Steps, Sleep, Good Deed and Cold Shower are live with ten separate level images each.
+- The three new sets use the original generated files from Joey's Paarse Paard branch; the remaining seven slots stay labelled `artwork onderweg` until their artwork is supplied.
 - In the embedded Lab, companions use a three-column card grid: recognizably based on Park 3.0, but slightly smaller so all eleven fit without one oversized focus image.

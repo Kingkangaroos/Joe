@@ -63,7 +63,7 @@ vm.runInNewContext(source,sandbox,{filename:'park31.js'});
 
 assert.equal(ids.p31Stage.dataset.liveLevel,'7','live walking score is shown');
 assert.equal(ids.p31Stage.dataset.artLevel,'7','walking level selects matching artwork');
-assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.2$/,'level 7 loads l07.webp');
+assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.3$/,'level 7 loads l07.webp');
 assert.equal(levelNodes[6].attributes['aria-current'],'step','live evolution dot is selected');
 assert.ok(!ids.p31Stage.classList.contains('is-lit'),'park starts inactive');
 ids.p31Companion.listeners.click();
@@ -75,28 +75,34 @@ storage.rpg_habits_v1=JSON.stringify({walking:{score:0}});
 timers[0]();
 assert.equal(ids.p31Stage.dataset.liveLevel,'0');
 assert.equal(ids.p31Stage.dataset.artLevel,'1','technical level 0 deliberately uses Level 1 art');
-assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.2$/);
+assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.3$/);
 assert.ok(ids.p31Stage.classList.contains('is-zero'),'level 0 gets critical treatment');
 
-const assetDir=path.join(__dirname,'..','img','lab','park31','steps');
-const digests=[];
-for(let level=1;level<=10;level++){
-  const name='l'+String(level).padStart(2,'0')+'.webp';
-  const bytes=fs.readFileSync(path.join(assetDir,name));
-  assert.equal(bytes.subarray(0,4).toString(),'RIFF',name+' is a WebP RIFF file');
-  assert.equal(bytes.subarray(8,12).toString(),'WEBP',name+' has a WebP signature');
-  digests.push(crypto.createHash('sha256').update(bytes).digest('hex'));
+for(const missionDir of ['steps','good-deed','cold-shower','sleep']){
+  const assetDir=path.join(__dirname,'..','img','lab','park31',missionDir);
+  const digests=[];
+  for(let level=1;level<=10;level++){
+    const name='l'+String(level).padStart(2,'0')+'.webp';
+    const bytes=fs.readFileSync(path.join(assetDir,name));
+    assert.equal(bytes.subarray(0,4).toString(),'RIFF',missionDir+'/'+name+' is a WebP RIFF file');
+    assert.equal(bytes.subarray(8,12).toString(),'WEBP',missionDir+'/'+name+' has a WebP signature');
+    digests.push(crypto.createHash('sha256').update(bytes).digest('hex'));
+  }
+  assert.equal(new Set(digests).size,10,missionDir+' has ten distinct level images');
 }
-assert.equal(new Set(digests).size,10,'all ten level images are distinct');
 assert.ok(source.includes("var KEY='walking'"),'Park 3.1 stays connected to Steps/Walking');
 assert.ok(!source.includes('recomputeHabitFromLog'),'Park 3.1 cannot mutate the mission level');
 assert.ok(!source.includes('rpg_habitlog_v1\',JSON.stringify'),'Park 3.1 never writes the completion log');
 assert.equal((ids.p31Roster.innerHTML.match(/<button class="p31-slot/g)||[]).length,11,'the Park 3.1 roster reserves all eleven habit slots');
 assert.match(ids.p31Roster.innerHTML,/Steps[\s\S]*HQ artwork ready/,'Steps occupies the completed artwork slot');
-assert.match(ids.p31Roster.innerHTML,/Cold Shower[\s\S]*artwork onderweg/,'future companions keep an explicit artwork placeholder');
+assert.match(ids.p31Roster.innerHTML,/Good Deed[\s\S]*HQ artwork ready/,'Good Deed uses the Paarse Paard artwork');
+assert.match(ids.p31Roster.innerHTML,/Cold Shower[\s\S]*HQ artwork ready/,'Cold Shower uses the Paarse Paard artwork');
+assert.match(ids.p31Roster.innerHTML,/Sleep[\s\S]*HQ artwork ready/,'Sleep uses the Paarse Paard artwork');
+assert.match(ids.p31Roster.innerHTML,/Nutrition[\s\S]*artwork onderweg/,'future companions keep an explicit artwork placeholder');
+assert.equal(ids.p31RosterCount.textContent,'4/11 artwork ready','four complete companion sets are reported');
 
 const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
-assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;v=1\.2"/,'Park 3.1 renders directly inside the normal Lab');
+assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;v=1\.3"/,'Park 3.1 renders directly inside the normal Lab');
 assert.doesNotMatch(lab,/class="chatgpt-lab-card" href="park31\.html"/,'Park 3.1 is not hidden behind a separate Lab card');
 
 console.log('Park 3.1 smoke test passed.');

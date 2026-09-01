@@ -1,4 +1,4 @@
-/* Park 3.1 — Steps companion HQ integration
+/* Park 3.1 — Daily Mission companion HQ integration
    Performed-by: ChatGPT (OpenAI), 2026-08-31.
    The live walking habit score selects l01.webp through l10.webp.
    A tap only toggles light/glow; character movement is intentionally deferred.
@@ -7,7 +7,7 @@
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.2';
+  var VERSION='1.3';
   var MISSIONS=[
     {key:'walking',label:'Steps',emoji:'👟',dir:'steps'},
     {key:'nutrition',label:'Nutrition',emoji:'🥗',dir:'nutrition'},
@@ -23,7 +23,7 @@
   ];
   var stage,button,art,levelEl,stateEl,sourceEl,copyEl,levelsEl,progressEl,lightEl,errorEl,rosterEl,rosterCountEl;
   var current={raw:0,art:1,source:'empty'};
-  var artworkReady={walking:true};
+  var artworkReady={walking:true,good_deed:true,cold_shower:true,sleep:true};
   var tries=0,pollId=null;
 
   function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
