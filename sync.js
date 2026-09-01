@@ -1,5 +1,5 @@
 // =============================================================
-// Shared cloud-sync helper — Gamenfy v11.2 race fix
+// Shared cloud-sync helper — Gamenfy v11.3 per-key merge + save status
 // Performed-by: ChatGPT (OpenAI)
 //
 // v11.2 hardens navigation/realtime races:
@@ -59,6 +59,12 @@
     const origSet = localStorage.setItem.bind(localStorage);
     const origRemove = localStorage.removeItem.bind(localStorage);
 
+    function emitStatus(state, detail) {
+      try {
+        window.dispatchEvent(new CustomEvent('gamenfy:sync-status', { detail: Object.assign({ state: state, appKey: appKey }, detail || {}) }));
+      } catch (e) {}
+    }
+
     function matches(k) {
       if (!k) return false;
       if (syncedKeys.indexOf(k) !== -1) return true;
@@ -114,6 +120,7 @@
       try {
         if (!suppressSync && matches(k)) {
           markDirty(k, v, false);
+          emitStatus('local', { key: k });
           schedulePush();
         }
       } catch (e) {}
@@ -123,6 +130,7 @@
       try {
         if (!suppressSync && matches(k)) {
           markDirty(k, null, true);
+          emitStatus('local', { key: k });
           schedulePush();
         }
       } catch (e) {}
@@ -178,6 +186,9 @@
       if (changed && typeof onApplied === 'function') {
         try { onApplied(); } catch (e) {}
       }
+      if (changed) {
+        try { window.dispatchEvent(new CustomEvent('gamenfy:remote-state-applied')); } catch (e) {}
+      }
       return changed;
     }
 
@@ -206,15 +217,41 @@
 
     async function pushNow() {
       if (!supa || !ready || !window.gamenfyUserId) return;
-      const state = collect();
-      const json = JSON.stringify(state);
       const dirty = loadDirty();
       const hasDirty = Object.keys(dirty.items || {}).length > 0;
+      let state = collect();
+      let json = JSON.stringify(state);
       if (json === lastSyncedJson && !hasDirty && !forcePush) return;
 
-      const cutoff = Math.max(Date.now(), highWaterMs + 1);
-      highWaterMs = cutoff;
+      emitStatus('saving');
       try {
+        // v11.3: fetch-and-merge before every write. Each page still stores one
+        // app row, but a stale tab may no longer replace unrelated keys written
+        // by another tab/device. Only this tab's dirty keys override the latest
+        // remote snapshot; remote values win for untouched keys.
+        const latest = await supa.from('app_state').select('data,updated_at').eq('key', cloudKey).maybeSingle();
+        const remote = latest && !latest.error && latest.data && latest.data.data && typeof latest.data.data === 'object'
+          ? latest.data.data : null;
+        const remoteMs = latest && latest.data && latest.data.updated_at ? (Date.parse(latest.data.updated_at) || 0) : 0;
+        highWaterMs = Math.max(highWaterMs, remoteMs);
+        if (remote) {
+          const merged = Object.assign({}, remote);
+          Object.keys(state).forEach((k) => {
+            if (!(k in merged) || (dirty.items && dirty.items[k])) merged[k] = state[k];
+          });
+          Object.keys(dirty.items || {}).forEach((k) => {
+            const d = dirty.items[k];
+            if (d.removed) delete merged[k];
+            else {
+              try { merged[k] = JSON.parse(d.value); } catch (e) { merged[k] = d.value; }
+            }
+          });
+          state = merged;
+          json = JSON.stringify(state);
+        }
+
+        const cutoff = Math.max(Date.now(), highWaterMs + 1);
+        highWaterMs = cutoff;
         const { error } = await supa.from('app_state').upsert(
           { key: cloudKey, user_id: window.gamenfyUserId, data: state, updated_at: new Date(cutoff).toISOString() },
           { onConflict: 'key' }
@@ -223,8 +260,12 @@
           lastSyncedJson = json;
           forcePush = false;
           clearDirtyThrough(cutoff);
+          applyRemote(state, false, cutoff);
+          emitStatus('saved', { at: cutoff });
+        } else {
+          emitStatus('offline', { reason: 'write' });
         }
-      } catch (e) {}
+      } catch (e) { emitStatus('offline', { reason: 'network' }); }
     }
 
     function schedulePush() {
@@ -262,9 +303,10 @@
         if (window.gamenfyAuthReady) await window.gamenfyAuthReady;
       } catch (e) {
         console.error('Gamenfy auth failed; cloud sync stays locked.', e);
+        emitStatus('local', { reason: 'auth' });
         return;
       }
-      if (!window.supabase || !window.gamenfySupabase || !window.gamenfyUserId) return;
+      if (!window.supabase || !window.gamenfySupabase || !window.gamenfyUserId) { emitStatus('local', { reason: 'unavailable' }); return; }
       supa = window.gamenfySupabase;
 
       try {
@@ -289,13 +331,16 @@
             if (!(k in remote)) { hasLocalOnly = true; break; }
           }
           if (hasLocalOnly || replayed || Object.keys(loadDirty().items || {}).length) schedulePush();
+          else emitStatus('saved', { at: remoteMs });
         } else {
           ready = true;
           if (Object.keys(collect()).length > 0 || Object.keys(loadDirty().items || {}).length) schedulePush();
+          else emitStatus('saved');
         }
       } catch (e) {
         ready = true;
         if (Object.keys(loadDirty().items || {}).length) schedulePush();
+        else emitStatus('offline', { reason: 'network' });
       }
 
       supa.channel('app_state_' + cloudKey + '_' + Math.random().toString(36).slice(2,8))
@@ -333,6 +378,7 @@
     });
 
     setInterval(function(){ if (ready) pushNow(); }, 5000);
+    window.flushGamenfySync = pushNow;
   }
 
   window.initCloudSync = function (config) {

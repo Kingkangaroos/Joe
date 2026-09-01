@@ -20,7 +20,7 @@ Built by ChatGPT (OpenAI), 2026-08-31.
 ## Safety
 
 - Park 3.0 files and assets are unchanged.
-- Home/Main is unchanged.
+- Home/Main later received the explicitly approved Park 3.1 mission mode; the Lab version remains non-mutating.
 - Park 3.1 renders directly inside the normal Lab; it is not hidden behind a separate preview card.
 - Park 3.0 remains separately available as the reference version.
 
@@ -28,7 +28,8 @@ Built by ChatGPT (OpenAI), 2026-08-31.
 
 - Park 3.1 reserves roster slots for all eleven current Daily Mission habits.
 - Each slot follows one fixed `l01.webp` through `l10.webp` asset contract documented in `img/lab/park31/ASSET-MAP.md`.
-- Steps, Sleep, Good Deed, Cold Shower, Screen Time, No Weed and Discipline are live with ten separate level images each.
+- All eleven Daily Mission companions are live with ten separate level images each.
 - Sleep, Good Deed and Cold Shower use the original generated files from Joey's Paarse Paard branch.
-- Screen Time, No Weed and Discipline use the corrected individual assets from Joey's Witte Paard branch, including the intentionally extreme Level 1 forms. The remaining four slots stay labelled `artwork onderweg` until individual artwork is supplied.
+- Screen Time, Gardening and Discipline use the corrected individual assets from Joey's Witte Paard branch, including the intentionally extreme Level 1 forms.
+- Household, Gratitude, Nutrition and Brush Teeth use Joey's final Gouden Paard series. Their generated checkerboards were removed technically; the repository WebP files contain real alpha transparency.
 - In the embedded Lab, companions use a three-column card grid: recognizably based on Park 3.0, but slightly smaller so all eleven fit without one oversized focus image.

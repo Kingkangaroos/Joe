@@ -11,9 +11,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=11.0" defer></script>
-<script src="sync.js?v=11.0" defer></script>
+<script src="sync.js?v=11.3" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
-<script src="xp.js?v=10.98" defer></script>
+<script src="xp.js?v=10.99" defer></script>
 <script src="quests.js?v=10.98" defer></script>
 <script src="ladders.js?v=10.98" defer></script>
 <script src="ventures.js?v=10.98" defer></script>
@@ -3061,7 +3061,7 @@ function renderCharacter(){
 // ── Daily quests ───────────────────────────────────
 const PRIVATE_DAILY_QUESTS=[
   {id:'no_porn',      icon:'🛡️',label:'No Porn',      skill:'no_porn',      xp:45, private:true},
-  {id:'weed_control', icon:'🚫',label:'Weed Control', skill:'weed_control', xp:40, private:true},
+  {id:'weed_control', icon:'🌿',label:'Gardening', skill:'weed_control', xp:40, private:true},
 ];
 // Public Daily Missions have one source of truth across Main + Character:
 // active, non-private habits from RPG_DEFAULT_SKILLS, stored per day in

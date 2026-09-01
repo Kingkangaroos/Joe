@@ -64,7 +64,7 @@ Huidig gebruiksdoel (Joey's eigen woorden, 24-08-2026): voornamelijk zelfmotivat
 
 ## 4. Tabs in het kort
 
-**Main** — streak-pill, Jarvis-knop, dagquote, ochtend/avond-check-in, Weekly Review, Next Move (venture-stappen), agenda met Time Sketcher, Missions met auto-afvink-status, Gratitude, Core Tracker.
+**Main** — streak-pill, Jarvis-knop, dagquote, level-aware Daily Challenge, Next Move (met `Already done` voor verouderde stappen), agenda met Time Sketcher, Park 3.1 als interactieve Daily Missions, groeiend Gratitude-word-web, datumvaste To-Do en Core Tracker. Day Score, Evening Check-in, de vaste Weekly Review-kaart, het losse Free Time-blok en Your Skills zijn op Joey's verzoek verwijderd.
 
 **Body** (`character.html`) — hologram-bodyscan, gezondheidskaarten (met een waarschuwing als de data >2 dagen stilstaat), body-skill-kaarten.
 
@@ -114,8 +114,8 @@ Op Joey's verzoek: zijn oorspronkelijke Gamenfy-visiedocument uit Notion opgezoc
 
 ## 7. Open items
 
-### 🤖 Claude to-do (kan ik zelfstandig oppakken)
-*Niets actief in de wachtrij op dit moment.* Alles wat deze sessie is gevraagd is afgerond en live.
+### 🤖 Builder to-do (kan ik zelfstandig oppakken)
+- Health Walker pas bouwen nadat Fitbit weer betrouwbaar gekoppeld is en Creator-art is goedgekeurd; specificatie staat in `HEALTH-WALKER-SPEC.md`.
 
 ### 📥 Als Joey "ga verder"/"go ahead" zegt zonder verdere context
 **Correctie 24-08-2026**: Joey wil NIET in Notion werken — dat was alleen bedoeld om eenmalig het originele plan op te halen (zie §5b), niet als doorlopende plek. Hij wil alles op één plek: in de app zelf. De Notion-ideeën-pagina die hier eerder stond is losgekoppeld van dit protocol.
@@ -126,6 +126,7 @@ Vaste volgorde nu:
 ### 🧑 Joey to-do (wacht op jou)
 - **Higgsfield-abonnement** — je zei woensdag. Gebruik bij voorkeur het aankooppad via de koppeling hier in de chat, niet de losse higgsfield.ai-website (andere prijzen, onduidelijk of ze dezelfde toegang geven).
 - **De `visibilitychange`-fix (v10.90) in de praktijk bevestigen** — check iets af, sluit de app zoals je normaal doet, en vraag me te controleren of het is aangekomen. Nog niet bevestigd te werken op jouw toestel.
+- **Fitbit opnieuw autoriseren** — de test-OAuth toestemming verloopt na ongeveer zeven dagen; daarna de duurzame productie-/testconfiguratie oplossen.
 - **Websites-venture: welke branches/doelgroepen wil je specifiek bereiken?** — bepaalt of de huidige niche-aanname (klusbedrijven/PT) nog klopt of dat er een ander plan nodig is.
 - Apple Health-shortcut officieel afschrijven — grotendeels moot nu Fitbit werkt, jouw eigen taak als je het nog wil opruimen.
 

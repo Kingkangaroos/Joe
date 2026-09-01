@@ -11,9 +11,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=11.0" defer></script>
-<script src="sync.js?v=11.0" defer></script>
+<script src="sync.js?v=11.3" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
-<script src="xp.js?v=10.98" defer></script>
+<script src="xp.js?v=10.99" defer></script>
 <script src="quests.js?v=10.98" defer></script>
 <script src="ladders.js?v=10.98" defer></script>
 <script src="ventures.js?v=10.98" defer></script>
@@ -251,6 +251,8 @@ body {
   border:none; cursor:pointer; background:var(--ink,#15140F); color:#F4F3EF;
   font-family:var(--font-display); -webkit-tap-highlight-color:transparent;
 }
+.nextmove-actions{display:flex;flex-direction:column;gap:5px;flex-shrink:0}.nextmove-actions .nextmove-start{padding:8px 14px}
+.nextmove-done{border:0;background:transparent;color:var(--muted);font:700 10px var(--font-display);cursor:pointer;padding:3px 8px}
 .focus-overlay {
   position:fixed; inset:0; z-index:9500; background:var(--ink-card,#15140F);
   display:flex; align-items:center; justify-content:center;
@@ -1086,6 +1088,23 @@ body {
   padding:2px 6px; -webkit-tap-highlight-color:transparent; flex-shrink:0;
 }
 .todo-empty { text-align:center; color:var(--faint); font-size:13px; padding:14px 0 6px; }
+.save-status{display:flex;align-items:center;gap:6px;min-height:18px;margin:-12px 0 14px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.02em}
+.save-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--faint)}
+.save-status.is-local::before,.save-status.is-saving::before{background:var(--gold)}
+.save-status.is-saved::before{background:var(--green)}
+.save-status.is-offline::before{background:var(--ember)}
+.home-park{overflow:hidden;margin-bottom:20px;border:1px solid #242a54;border-radius:20px;background:#080b25;box-shadow:0 12px 34px rgba(19,24,62,.12)}
+.home-park-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;background:linear-gradient(135deg,#0d1236,#111942);color:#f7fbff}
+.home-park-head strong,.home-park-head small{display:block}.home-park-head strong{font:800 13px var(--font-display)}.home-park-head small{margin-top:2px;color:#aeb7da;font-size:9px}
+.home-park-live{color:#79e9c4;font:800 8px var(--font-display);letter-spacing:.08em;white-space:nowrap}
+.home-park-frame{height:clamp(850px,220vw,930px);background:#05091f}.home-park-frame iframe{display:block;width:100%;height:100%;border:0;background:#05091f}
+@media(min-width:480px){.home-park-frame{height:760px}}
+.grat-tags{align-items:center;justify-content:center;gap:8px;padding:8px 2px}
+.grat-tag{font-size:calc(11px + (var(--grat-weight,1) * 1.5px));font-weight:700;padding:5px 12px;opacity:.42;transform:rotate(var(--grat-tilt,0deg));transition:opacity .2s,transform .2s}
+.grat-tag.is-day{opacity:1;color:var(--green);border-color:rgba(46,139,95,.5);background:rgba(46,139,95,.06)}
+.grat-day-label{font-weight:700;color:var(--muted)}
+.ts-leisure-note{margin:10px 0 2px;padding:11px 12px;border:1px solid rgba(212,99,62,.2);border-radius:12px;background:rgba(212,99,62,.05);color:var(--muted);font-size:11px;line-height:1.45}
+.ts-leisure-note strong{display:block;color:var(--ink);font-family:var(--font-display);font-size:12px;margin-bottom:2px}
 </style>
 </head>
 <body>
@@ -1125,6 +1144,8 @@ body {
     </div>
   </div>
 
+  <div class="save-status is-local" id="saveStatus" role="status" aria-live="polite">Saved on this device</div>
+
   <!-- Daily Quote -->
   <div class="quote-card" id="quoteCard">
     <div class="quote-text" id="quoteText">…</div>
@@ -1134,39 +1155,6 @@ body {
   <!-- Season (v10.39, moved up + made bigger/punchier v10.43) — only shown while one is active -->
   <div id="seasonBannerWrap" style="display:none">
     <div class="season-banner" id="seasonBanner"></div>
-  </div>
-
-  <!-- Day Arc -->
-  <div class="sec-head">Day Score</div>
-  <div class="day-arc-card" id="dayArcCard">
-    <div class="arc-wrap">
-      <svg class="arc-svg" width="160" height="90" viewBox="0 0 160 90">
-        <!-- half-circle track, left to right -->
-        <path class="arc-track" id="arcTrack" d=""/>
-        <path class="arc-fill"  id="arcFill"  d=""/>
-        <text class="arc-pct"   id="arcPct"  x="80" y="82">0%</text>
-        <text class="arc-label" id="arcLbl"  x="80" y="95">Missions Done</text>
-      </svg>
-    </div>
-    <div class="arc-stats">
-      <div class="arc-stat">
-        <div class="arc-stat-val" id="arcXpToday">0</div>
-        <div class="arc-stat-lbl">XP Today</div>
-      </div>
-      <div class="arc-stat">
-        <div class="arc-stat-val gold" id="arcTotalLevel">—</div>
-        <div class="arc-stat-lbl">Total Level</div>
-      </div>
-      <div class="arc-stat">
-        <div class="arc-stat-val" id="arcBestStreak">0</div>
-        <div class="arc-stat-lbl">Top Habit</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Evening Check-in (Jarvis) -->
-  <div id="checkinWrap" style="display:none">
-    <div class="checkin-cta" id="checkinCta" onclick="openCheckin()"></div>
   </div>
 
   <!-- Fitbit Coach tip (v9.33 — data-driven advice from today's Fitbit data) -->
@@ -1182,23 +1170,11 @@ body {
   <!-- Push setup (one-time) -->
   <div class="push-card" id="pushCard" style="display:none"></div>
 
-  <!-- Weekly review (Sundays) -->
-  <div id="weeklyWrap" style="display:none">
-    <div class="checkin-cta" id="weeklyCta" onclick="openWeekly()"></div>
-  </div>
-
   <!-- Next Move (Ventures + custom) -->
   <div id="nextMoveWrap" style="display:none">
     <div class="sec-head" style="display:flex;align-items:center;justify-content:space-between">Next Move
       <button class="nm-add" onclick="addCustomMove()">+ Add</button></div>
     <div class="nextmove-card" id="nextMoveCard"></div>
-  </div>
-
-  <!-- Choice Gate (v8.9) -->
-  <div class="choice-card" onclick="openChoiceGate()">
-    <div><div class="checkin-cta-label">Free time?</div>
-    <div class="checkin-cta-title">Choose it consciously</div></div>
-    <div class="checkin-cta-arrow">›</div>
   </div>
 
   <!-- Agenda -->
@@ -1239,9 +1215,15 @@ body {
   <div class="sec-head" style="display:flex;align-items:center;justify-content:space-between"><span id="missionsHead">Today's Missions</span>
     <button class="nm-add" id="missionsDayBtn" onclick="toggleMissionsDay()">Yesterday</button></div>
   <div id="weekStrip" style="display:flex;gap:2px;margin:2px 0 10px;padding:0 4px"></div>
-  <div class="missions-grid" id="missionsCard">
-    <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px;grid-column:1/-1">Loading habits…</div>
-  </div>
+  <section class="home-park" aria-label="Interactive Daily Mission Park">
+    <div class="home-park-head">
+      <span><strong>Daily Mission Park</strong><small>Tap a companion to check or uncheck that day</small></span>
+      <span class="home-park-live">LIVE LEVELS</span>
+    </div>
+    <div class="home-park-frame">
+      <iframe src="park31.html?embed=1&amp;mode=missions&amp;v=1.6" title="Interactive Daily Mission companions" loading="eager"></iframe>
+    </div>
+  </section>
 
   <!-- Gratitude (v9) -->
   <div class="sec-head">Gratitude</div>
@@ -1251,23 +1233,7 @@ body {
       <button class="grat-add" onclick="gratAdd()">+ Add</button>
     </div>
     <div class="grat-tags" id="gratTags"></div>
-    <div class="grat-sub">First word of the day · +10 XP Gratitude</div>
-  </div>
-
-  <!-- Your Skills (v10.65 — now presented exactly like the Core Tracker card
-       below: same wrapper, same 2-column grid, same per-skill layout. Joey
-       asked for this repeatedly; the previous horizontal chip row was the
-       wrong shape entirely.) -->
-  <div class="core-card">
-    <div class="core-head">
-      <div>
-        <div class="core-head-label">Your Skills</div>
-        <div class="core-head-sub">Most recently practised first</div>
-      </div>
-    </div>
-    <div class="core-skills" id="focusGrid">
-      <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">Loading skills…</div>
-    </div>
+    <div class="grat-sub"><span class="grat-day-label" id="gratDateLabel">Today</span> · highlighted in your growing word web · first word +10 XP</div>
   </div>
 
   <!-- Core Tracker -->
@@ -1334,7 +1300,7 @@ function renderCharStrip() {
   const totalLevel = window.xpToLevel(totalXp / Math.max(1, activeCount));
   document.getElementById('charTotalLevel').textContent = totalLevel;
   document.getElementById('charSubLine').textContent = activeCount + ' active skills';
-  document.getElementById('arcTotalLevel').textContent = totalLevel;
+  const arcTotal=document.getElementById('arcTotalLevel'); if(arcTotal) arcTotal.textContent = totalLevel;
 }
 
 // ── Day Arc SVG ──────────────────────────────────────────────
@@ -1496,16 +1462,16 @@ function renderMissions() {
 const GRAT_KEY = 'rpg_gratitude_v1';
 function gratLoad(){ try{ return JSON.parse(localStorage.getItem(GRAT_KEY))||{}; }catch(e){ return {}; } }
 function gratSave(o){ try{ localStorage.setItem(GRAT_KEY, JSON.stringify(o)); }catch(e){} }
-function gratDailyLoad(){ try{ return JSON.parse(localStorage.getItem('rpg_daily_v1:'+todayStr()))||{}; }catch(e){ return {}; } }
-function gratDailySave(d){ try{ localStorage.setItem('rpg_daily_v1:'+todayStr(), JSON.stringify(d)); }catch(e){} }
+function gratDailyLoad(date){ try{ return JSON.parse(localStorage.getItem('rpg_daily_v1:'+(date||viewedDateStr())))||{}; }catch(e){ return {}; } }
+function gratDailySave(date,d){ try{ localStorage.setItem('rpg_daily_v1:'+date, JSON.stringify(d)); }catch(e){} }
 function renderGratitude(){
   const box=document.getElementById('gratTags'); if(!box) return;
-  const t=todayStr();
+  const t=viewedDateStr();
   // v10.28: prefer the dedicated race-safe store; fall back to the old
   // per-day field, then the aggregate, so nothing already stored is lost.
   let words = (typeof window.getGratitudeWordsFor==='function') ? window.getGratitudeWordsFor(t) : [];
   if(!words.length){
-    const dd=gratDailyLoad();
+    const dd=gratDailyLoad(t);
     words = Array.isArray(dd.gratitudeWords) ? dd.gratitudeWords.slice() : [];
   }
   if(!words.length){
@@ -1513,21 +1479,34 @@ function renderGratitude(){
     const items=gratLoad();
     words = Object.entries(items).filter(([,d])=>d.lastDate===t).map(([w])=>w);
   }
-  box.innerHTML=words.map(w=>'<span class="grat-tag">'+escapeHtml(w)+'</span>').join('');
+  const items=gratLoad();
+  const selected=new Set(words.map(w=>String(w).toLowerCase()));
+  const web=Object.keys(items).sort((a,b)=>{
+    const as=selected.has(a),bs=selected.has(b); if(as!==bs) return as?-1:1;
+    return ((items[b]||{}).count||1)-((items[a]||{}).count||1);
+  }).slice(0,40);
+  words.forEach(w=>{ const k=String(w).toLowerCase(); if(!web.includes(k)) web.unshift(k); });
+  box.innerHTML=web.map((key,index)=>{
+    const item=items[key]||{}; const weight=Math.min(5,Math.max(1,item.count||1));
+    const tilt=((index%5)-2)*1.2;
+    return '<span class="grat-tag'+(selected.has(key)?' is-day':'')+'" style="--grat-weight:'+weight+';--grat-tilt:'+tilt+'deg">'+escapeHtml(key)+'</span>';
+  }).join('');
+  const dateLabel=document.getElementById('gratDateLabel'); if(dateLabel) dateLabel.textContent=viewedDateLabel();
 }
 window.gratAdd=function(){
   const inp=document.getElementById('gratInput'); if(!inp) return;
   const word=(inp.value||'').trim(); if(!word) return;
   const key=word.toLowerCase();
+  const date=viewedDateStr();
   // aggregaat (weekstats)
   const items=gratLoad();
-  if(!items[key]) items[key]={ count:0, firstDate:todayStr(), lastDate:todayStr() };
-  items[key].count++; items[key].lastDate=todayStr();
+  if(!items[key]) items[key]={ count:0, firstDate:date, lastDate:date };
+  items[key].count++; items[key].lastDate=date;
   gratSave(items);
   // v10.28: dedicated store is now the source of truth (race-safe — see xp.js)
-  if(typeof window.addGratitudeWordFor==='function') window.addGratitudeWordFor(todayStr(), word);
+  if(typeof window.addGratitudeWordFor==='function') window.addGratitudeWordFor(date, word);
   // v10.14: per-dag lijst blijft ook geschreven voor backward-compat
-  const dd=gratDailyLoad();
+  const dd=gratDailyLoad(date);
   dd.gratitudeWords = Array.isArray(dd.gratitudeWords) ? dd.gratitudeWords : [];
   if(!dd.gratitudeWords.some(w=>String(w).toLowerCase()===key)) dd.gratitudeWords.push(word);
   if(!dd.gratitudeXpGiven && typeof window.addXP==='function'){
@@ -1535,7 +1514,7 @@ window.gratAdd=function(){
     dd.gratitudeXpGiven=true;
     showToast('Grateful \u00b7 +10 XP');
   }
-  gratDailySave(dd);
+  gratDailySave(date,dd);
   inp.value='';
   renderGratitude();
 };
@@ -1584,14 +1563,15 @@ window.setViewDay=function(offset){
   } else {
     renderGreeting();
   }
-  renderMissions();
+  renderMissions(); renderGratitude(); renderTodos();
+  window.dispatchEvent(new CustomEvent('gamenfy:view-day-change',{detail:{date:viewedDateStr()}}));
 };
 window.toggleMissionsDay=function(){ setViewDay(missionsDayOffset===0 ? -1 : 0); };
 // v9.1: spiegel van de privé entries in ALL_DAILY_QUESTS (character.html).
 // Dit zijn XP-skills met eigen quest-ladder — géén 0-10 habits.
 const PRIVATE_DAILY = [
   { id:'no_porn',      icon:'🛡️', label:'No Porn',      skill:'no_porn',      xp:45 },
-  { id:'weed_control', icon:'🚫', label:'Weed Control', skill:'weed_control', xp:40 },
+  { id:'weed_control', icon:'🌿', label:'Gardening', skill:'weed_control', xp:40 },
 ];
 
 window.togglePrivateQuest = function(id){
@@ -2118,19 +2098,21 @@ function wcScaleTarget(target, factor){
 function todaysWorkoutChallenge(){
   const d=new Date(); const start=new Date(d.getFullYear(),0,0);
   const doy=Math.floor((d-start)/86400000);
-  let lvl = 1;
+  let levels = { calisthenics:1, core:1 };
   try {
     if (window.getCharacter && window.xpToLevel) {
       const sk = (window.getCharacter().skills) || {};
-      const cal = window.xpToLevel((sk.calisthenics||{}).xp || 0);
-      const core = window.xpToLevel((sk.core||{}).xp || 0);
-      lvl = Math.max(cal, core);
+      Object.keys(levels).forEach(skill=>{
+        const raw=window.getSkillLevel?window.getSkillLevel(skill,(sk[skill]||{}).xp||0):window.xpToLevel((sk[skill]||{}).xp||0);
+        levels[skill]=window.tierLockInfo?window.tierLockInfo(skill,raw).level:raw;
+      });
     }
   } catch(e){}
-  const band = wcBandFor(lvl);
-  const eligible = WORKOUT_CHALLENGES.filter(c => (c.minBand || 1) <= band);
+  const eligible = WORKOUT_CHALLENGES.filter(c => (c.minBand || 1) <= wcBandFor(levels[c.skill]||1));
   const pool = eligible.length ? eligible : WORKOUT_CHALLENGES;
   const base = pool[((doy % pool.length)+pool.length)%pool.length];
+  const lvl=levels[base.skill]||1;
+  const band=wcBandFor(lvl);
   const factor = WC_SCALE[band] || 1;
   return Object.assign({}, base, { target: wcScaleTarget(base.target, factor), level: lvl });
 }
@@ -2316,7 +2298,7 @@ function saveAgenda(key, items) {
 
 // ── Personal To-Do list (date-scoped to today) ──────────
 const TODO_PREFIX = 'rpg_todo_v1:';   // + yyyy-mm-dd -> [{id,text,done}]
-function todoKeyToday(){ return dateKey(new Date()); }
+function todoKeyToday(){ return (typeof viewedDateStr==='function') ? viewedDateStr() : dateKey(new Date()); }
 function loadTodos(key){
   try { return JSON.parse(localStorage.getItem(TODO_PREFIX+key)) || []; } catch(e){ return []; }
 }
@@ -2357,7 +2339,7 @@ window.pushAllTodosToTomorrow=function(){
   const items=loadTodos(today);
   const unfinished=items.filter(t=>!t.done);
   if(!unfinished.length){ if(window.showToast) showToast('No open to-dos to push'); return; }
-  const tmrw=new Date(); tmrw.setDate(tmrw.getDate()+1);
+  const parts=today.split('-').map(Number); const tmrw=new Date(parts[0],parts[1]-1,parts[2]+1);
   const tk=dateKey(tmrw);
   const tmItems=loadTodos(tk);
   unfinished.forEach(t=>tmItems.push({ id:'t'+Date.now()+Math.random().toString(36).slice(2,6), text:t.text, done:false }));
@@ -2786,6 +2768,7 @@ function openTimeSketcher(key, hour) {
         </div>
       </div>
       <div class="ts-sub">${d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})} · pick a skill — or type your own task</div>
+      <div class="ts-leisure-note"><strong>Where is this hour going?</strong>If you reach for leisure, choose it consciously. The better hour is ready below.</div>
       <div class="ts-custom">
         <input id="tsCustomName" type="text" maxlength="48" placeholder="Your own task… (tap a skill to link it)">
         <button onclick="tsPlaceCustom('${key}',${hour})">+ Add</button>
@@ -3411,7 +3394,8 @@ function renderNextMove() {
       '<div><div class="nextmove-venture">' + v.name + '</div>' +
       '<div class="nextmove-title">' + nx.step.title + '</div>' +
       (nx.step.minutes ? '<div class="nextmove-min" style="display:inline-block;margin-top:4px">~' + nx.step.minutes + ' min</div>' : '') + '</div>' +
-      '<button class="nextmove-start" onclick="event.stopPropagation();startFocus(\'' + v.id + '\',\'' + nx.step.id + '\')">Start</button>' +
+      '<div class="nextmove-actions"><button class="nextmove-start" onclick="event.stopPropagation();startFocus(\'' + v.id + '\',\'' + nx.step.id + '\')">Start</button>' +
+      '<button class="nextmove-done" onclick="event.stopPropagation();completeVentureMove(\'' + v.id + '\',\'' + nx.step.id + '\')">Already done</button></div>' +
     '</div>'
   ).join('') + custom.map(m =>
     '<div class="nextmove-row" onclick="if(confirm(\'Remove this move?\')) removeCustomMove(\'' + m.id + '\')">' +
@@ -3422,6 +3406,13 @@ function renderNextMove() {
     '</div>'
   ).join('');
 }
+
+window.completeVentureMove=function(ventureId,stepId){
+  if(!window.Ventures) return;
+  const hit=window.Ventures.completeStep(ventureId,stepId);
+  if(hit&&typeof showToast==='function') showToast('Done · '+hit.title);
+  renderNextMove(); renderCharStrip();
+};
 
 function boot() {
   installLevelUpToasts();
@@ -3467,6 +3458,13 @@ if (window.getCharacter) {
 
 // Sync
 document.addEventListener('DOMContentLoaded', () => {
+  const save=document.getElementById('saveStatus');
+  window.addEventListener('gamenfy:sync-status',event=>{
+    if(!save) return;
+    const state=(event.detail&&event.detail.state)||'local';
+    save.className='save-status is-'+state;
+    save.textContent=state==='saved'?'Saved to cloud':state==='saving'?'Saving to cloud…':state==='offline'?'Saved on device · cloud retrying':'Saved on this device';
+  });
   if (typeof initCloudSync === 'function' && window.supabase) {
     initCloudSync({ appKey:'rpg', syncedKeys: window.RPG_SYNC_KEYS, syncedPrefixes: window.RPG_SYNC_PREFIXES });
   }

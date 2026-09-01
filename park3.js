@@ -16,7 +16,7 @@
     {key:'good_deed',label:'Good Deed',row:4,emoji:'❤️',desc:'One deliberate act of kindness powers up the red heart hero.'},
     {key:'screen_time',label:'Screen Time',row:5,emoji:'📵',danger:true,desc:'Low levels are deliberately chaotic; consistency turns overload into calm, controlled screen use.'},
     {key:'cold_shower',label:'Cold Shower',row:6,emoji:'💧',desc:'The hesitant water droplet hardens into a crystalline cold-water guardian.'},
-    {key:'weed_control',label:'No Weed',row:7,emoji:'🌿',danger:true,private:true,desc:'Low levels show loss of control; each consistent day restores clarity, strength and command.'},
+    {key:'weed_control',label:'Gardening',row:7,emoji:'🌿',danger:true,private:true,desc:'Low levels show an overgrown garden; each consistent day restores clarity, strength and command.'},
     {key:'no_porn',label:'Discipline',row:8,emoji:'⚡',danger:true,private:true,desc:'Private discipline arc: chaotic devil energy gradually resolves into an angelic Master guardian.'},
     {key:'sleep',label:'Sleep',row:9,emoji:'😴',desc:'Better sleep turns a tired starter into the fully protected dream guardian.'},
     {key:'walking',label:'Steps',row:10,emoji:'👟',desc:'Daily steps make the teal runner faster, fitter and more electrically alive.'}

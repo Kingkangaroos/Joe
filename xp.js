@@ -604,7 +604,7 @@
       quickLog:null,
     },
     weed_control: {
-      xp:0, parentSkill:'discipline', icon:'🚫', label:'Weed Control', active:true, private:true,
+      xp:0, parentSkill:'discipline', icon:'🌿', label:'Gardening', active:true, private:true,
       why:'THC suppresses REM sleep and measurably impairs verbal memory (Auer 2016); chronic use blunts the dopamine system — less motivation and less pleasure from ordinary things (Volkow 2014; Bloomfield 2016). The good news: memory largely recovers within ~4 weeks of abstinence.',
       benefits:[{d:2,t:'REM rebound: vivid dreams return'},{d:7,t:'sleep architecture normalises'},{d:28,t:'verbal memory largely recovered (abstinence studies)'},{d:90,t:'motivation/dopamine at a new baseline'}],
       quickLog:null,

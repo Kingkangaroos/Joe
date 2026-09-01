@@ -13,7 +13,7 @@ Park 3.0 uses the exact approved level 1–10 evolution sheets created in the Ch
 5. Good Deed (`good_deed`)
 6. Screen Time (`screen_time`)
 7. Cold Shower (`cold_shower`)
-8. No Weed (`weed_control`)
+8. Gardening (`weed_control`)
 9. Discipline (`no_porn`, private name intentionally not shown in UI)
 10. Sleep (`sleep`)
 11. Steps (`walking`)
@@ -24,7 +24,7 @@ Park 3.0 uses the exact approved level 1–10 evolution sheets created in the Ch
 - After a toggle, Park 3.0 calls the canonical `window.recomputeHabitFromLog(key)` from `xp.js`.
 - This preserves the existing rule: completion +1 (max 10), completed missed day -1 (min 0), no weekly reset.
 - Score 0 remains a real technical level. Because the approved art set is Level 1–10, score 0 deliberately reuses Level 1 art with a visible critical-state treatment.
-- Screen Time, No Weed and Discipline are intentionally more visually alarming at low levels.
+- Screen Time, Gardening and Discipline are intentionally more visually alarming at low levels.
 
 ## Safety / rollback
 Park 2.0 is not overwritten. Park 3.0 is a separate Lab experiment and can be removed without affecting Home or the existing Park 2.0.

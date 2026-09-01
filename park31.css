@@ -35,4 +35,8 @@ body.p31-embedded{min-height:0;padding:0;overflow:hidden;background:#05091f}
 .p31-embedded .p31-slot-copy small{display:none}
 .p31-embedded .p31-slot-copy em{margin-top:3px;font-size:5px}
 .p31-embedded .p31-slot-level{top:10px;right:10px}
+.p31-embedded.p31-mission-mode .p31-slot{cursor:pointer}
+.p31-embedded.p31-mission-mode .p31-slot.is-done{border-color:rgba(86,231,160,.88);background:linear-gradient(145deg,rgba(20,78,67,.96),rgba(10,35,43,.98));box-shadow:0 0 20px rgba(50,214,157,.17)}
+.p31-embedded.p31-mission-mode .p31-slot.is-done .p31-slot-art img{filter:saturate(1.08) brightness(1.08)}
+.p31-embedded.p31-mission-mode .p31-slot.is-done .p31-slot-copy em{color:#8ff0c5}
 @media(min-width:480px){.p31-embedded .p31-roster-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}

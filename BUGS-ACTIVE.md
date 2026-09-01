@@ -74,7 +74,7 @@ Next useful input: Joey's screenshot showing the wrong bar position, ideally whi
 
 PR #8 / production commit `63aef5ca420e233b0adcde4b05bc15a48fcab21c` removed Character's old split-brain Daily implementation.
 
-Public Daily Missions are now generated from `RPG_DEFAULT_SKILLS` entries where `isHabit === true`, `active !== false`, and `!private`, and their per-day completion state comes from `rpg_habitlog_v1` on both Main and Character. Public Character toggles no longer mirror a competing completion flag into `rpg_daily_v1`; No Porn and Weed Control remain separate private quests there.
+Public Daily Missions are now generated from `RPG_DEFAULT_SKILLS` entries where `isHabit === true`, `active !== false`, and `!private`, and their per-day completion state comes from `rpg_habitlog_v1` on both Main and Character. Public Character toggles no longer mirror a competing completion flag into `rpg_daily_v1`; No Porn and Gardening remain separate private quests there.
 
 Regression verification passed on mobile Chromium:
 - exact 11 public + 2 private;
@@ -86,7 +86,7 @@ Regression verification passed on mobile Chromium:
 
 Non-negotiable membership:
 - **Tennis, Reading, Finger Whistling are regular skills and must NEVER enter the Daily Mission grid.**
-- **No Porn / Weed Control are separate private dailies** and must not appear in the public Daily Mission grid or public assets.
+- **No Porn / Gardening are separate private dailies** and must not appear in the public Daily Mission grid or public assets.
 - Current public set: Budgeting, Sleep, Nutrition, 10k Steps, Brush Teeth 2×, Household, Meditation, Gratitude, Good Deed, Screen Time, Cold Shower.
 - Grounding is disabled.
 

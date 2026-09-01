@@ -63,7 +63,7 @@ vm.runInNewContext(source,sandbox,{filename:'park31.js'});
 
 assert.equal(ids.p31Stage.dataset.liveLevel,'7','live walking score is shown');
 assert.equal(ids.p31Stage.dataset.artLevel,'7','walking level selects matching artwork');
-assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.4$/,'level 7 loads l07.webp');
+assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.6$/,'level 7 loads l07.webp');
 assert.equal(levelNodes[6].attributes['aria-current'],'step','live evolution dot is selected');
 assert.ok(!ids.p31Stage.classList.contains('is-lit'),'park starts inactive');
 ids.p31Companion.listeners.click();
@@ -75,10 +75,10 @@ storage.rpg_habits_v1=JSON.stringify({walking:{score:0}});
 timers[0]();
 assert.equal(ids.p31Stage.dataset.liveLevel,'0');
 assert.equal(ids.p31Stage.dataset.artLevel,'1','technical level 0 deliberately uses Level 1 art');
-assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.4$/);
+assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.6$/);
 assert.ok(ids.p31Stage.classList.contains('is-zero'),'level 0 gets critical treatment');
 
-for(const missionDir of ['steps','good-deed','screen-time','cold-shower','no-weed','discipline','sleep']){
+for(const missionDir of ['steps','nutrition','teeth','household','gratitude','good-deed','screen-time','cold-shower','no-weed','discipline','sleep']){
   const assetDir=path.join(__dirname,'..','img','lab','park31',missionDir);
   const digests=[];
   for(let level=1;level<=10;level++){
@@ -98,14 +98,23 @@ assert.match(ids.p31Roster.innerHTML,/Steps[\s\S]*HQ artwork ready/,'Steps occup
 assert.match(ids.p31Roster.innerHTML,/Good Deed[\s\S]*HQ artwork ready/,'Good Deed uses the Paarse Paard artwork');
 assert.match(ids.p31Roster.innerHTML,/Screen Time[\s\S]*HQ artwork ready/,'Screen Time uses the Witte Paard artwork');
 assert.match(ids.p31Roster.innerHTML,/Cold Shower[\s\S]*HQ artwork ready/,'Cold Shower uses the Paarse Paard artwork');
-assert.match(ids.p31Roster.innerHTML,/No Weed[\s\S]*HQ artwork ready/,'No Weed uses the Witte Paard artwork');
+assert.match(ids.p31Roster.innerHTML,/Gardening[\s\S]*HQ artwork ready/,'Gardening uses the Witte Paard artwork');
 assert.match(ids.p31Roster.innerHTML,/Discipline[\s\S]*HQ artwork ready/,'Discipline uses the Witte Paard artwork');
 assert.match(ids.p31Roster.innerHTML,/Sleep[\s\S]*HQ artwork ready/,'Sleep uses the Paarse Paard artwork');
-assert.match(ids.p31Roster.innerHTML,/Nutrition[\s\S]*artwork onderweg/,'future companions keep an explicit artwork placeholder');
-assert.equal(ids.p31RosterCount.textContent,'7/11 artwork ready','seven complete companion sets are reported');
+assert.match(ids.p31Roster.innerHTML,/Nutrition[\s\S]*HQ artwork ready/,'Nutrition uses the Gouden Paard artwork');
+assert.match(ids.p31Roster.innerHTML,/Brush Teeth[\s\S]*HQ artwork ready/,'Brush Teeth uses the Gouden Paard artwork');
+assert.match(ids.p31Roster.innerHTML,/Household[\s\S]*HQ artwork ready/,'Household uses the Gouden Paard artwork');
+assert.match(ids.p31Roster.innerHTML,/Gratitude[\s\S]*HQ artwork ready/,'Gratitude uses the Gouden Paard artwork');
+assert.equal(ids.p31RosterCount.textContent,'11/11 artwork ready','all eleven complete companion sets are reported');
 
 const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
-assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;v=1\.4"/,'Park 3.1 renders directly inside the normal Lab');
+assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;v=1\.6"/,'Park 3.1 renders directly inside the normal Lab');
 assert.doesNotMatch(lab,/class="chatgpt-lab-card" href="park31\.html"/,'Park 3.1 is not hidden behind a separate Lab card');
+const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+assert.match(home,/park31\.html\?embed=1&amp;mode=missions&amp;v=1\.6/,'Home embeds the explicit interactive mission mode');
+assert.doesNotMatch(home,/>Day Score</,'the old Day Score card is removed from Home');
+assert.doesNotMatch(home,/id="missionsCard"/,'the old duplicate mission-card grid is removed from Home');
+assert.match(source,/missionMode&&selected\)\{toggleMission\(selected\)/,'mission mode routes a companion tap to the host completion engine');
+assert.match(source,/mission\.private&&typeof w\.togglePrivateQuest/,'private companions keep the existing PIN-backed completion route');
 
 console.log('Park 3.1 smoke test passed.');
