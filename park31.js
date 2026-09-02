@@ -7,7 +7,7 @@
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.10';
+  var VERSION='1.11';
   var HOLD_MS=560;
   var MISSIONS=[
     {key:'walking',label:'Steps',emoji:'👟',dir:'steps'},
@@ -24,8 +24,10 @@
   ];
   var stage,button,art,levelEl,stateEl,sourceEl,copyEl,levelsEl,progressEl,lightEl,errorEl,rosterEl,rosterCountEl;
   var modal,modalArt,modalTitle,modalMeta,modalLevel,modalState,modalProgress,modalStatus,prevEl,nextEl,liveResetEl;
+  var celebration,celebrationTitle,celebrationMeta,celebrationTimer=null;
   var current={raw:0,art:1,source:'empty'};
   var artworkReady={walking:true,nutrition:true,teeth:true,household:true,gratitude:true,good_deed:true,screen_time:true,cold_shower:true,weed_control:true,no_porn:true,sleep:true};
+  var litUntil={};
   var tries=0,pollId=null,missionMode=false,selected=null,preview=null,pointerPress=null,keyPress=null;
 
   function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
@@ -88,10 +90,12 @@
   }
   function rosterCard(mission){
     var info=levelInfo(mission),ready=!!artworkReady[mission.key],done=missionMode&&isDone(mission);
+    var neglected=missionMode&&!done&&inactivityDays(mission)>=3;
+    var lit=(litUntil[mission.key]||0)>Date.now();
     var selectedNow=!!(selected&&selected.key===mission.key);
-    var instruction=done?'Vandaag voltooid · Houd vast om terug te draaien':'Tik om te openen · Houd vast om te voltooien';
-    return '<button class="p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(selectedNow?' is-selected':'')+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+' aria-pressed="'+(done?'true':'false')+'"'+(selectedNow?' aria-current="true"':'')+'>'
-      +'<span class="p31-slot-art">'+(ready?'<img src="'+assetUrl(info.art,mission)+'" alt="" draggable="false">':mission.emoji)+'</span>'
+    var instruction=done?'Vandaag voltooid · Houd vast om terug te draaien':(neglected?'HELP · Tik om te openen':'Tik om te openen · Houd vast om te voltooien');
+    return '<button class="p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(neglected?' is-neglected':'')+(lit?' is-lit':'')+(selectedNow?' is-selected':'')+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+' aria-pressed="'+(done?'true':'false')+'"'+(selectedNow?' aria-current="true"':'')+'>'
+      +'<span class="p31-slot-art">'+(ready?'<img src="'+assetUrl(info.art,mission)+'" alt="" draggable="false">':mission.emoji)+(neglected?'<span class="p31-help" aria-hidden="true">HELP</span>':'')+'</span>'
       +'<span class="p31-slot-copy"><strong>'+mission.label+'</strong><small>10 evolution levels</small><em>'+(missionMode?instruction:(ready?'Tik om te openen':'artwork pending'))+'</em></span>'
       +'<span class="p31-slot-level">L'+info.raw+'</span></button>';
   }
@@ -100,8 +104,12 @@
     try{if(typeof w.viewedDateStr==='function')return w.viewedDateStr();}catch(e){}
     var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   }
-  function isDone(mission){
-    var date=viewedDay();
+  function dateDaysAgo(days){
+    var parts=viewedDay().split('-').map(Number),date=new Date(parts[0],parts[1]-1,parts[2]);
+    date.setDate(date.getDate()-days);
+    return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
+  }
+  function doneOn(mission,date){
     try{
       if(mission.private){
         var daily=JSON.parse(localStorage.getItem('rpg_daily_v1:'+date))||{};
@@ -111,13 +119,38 @@
       return !!(log[mission.key]&&log[mission.key][date]);
     }catch(e){return false;}
   }
+  function isDone(mission){
+    return doneOn(mission,viewedDay());
+  }
+  function inactivityDays(mission){
+    for(var days=0;days<14;days++)if(doneOn(mission,dateDaysAgo(days)))return days;
+    return 14;
+  }
+  function celebrateLevelUp(mission,fromLevel,toLevel){
+    if(!celebration||toLevel<=fromLevel)return;
+    clearTimeout(celebrationTimer);
+    celebrationTitle.textContent=mission.label;
+    celebrationMeta.textContent='LEVEL '+toLevel;
+    litUntil[mission.key]=Date.now()+5000;
+    celebration.hidden=false;
+    var slot=rosterEl&&typeof rosterEl.querySelector==='function'?rosterEl.querySelector('[data-mission="'+mission.key+'"]'):null;
+    if(slot)slot.classList.add('is-level-up','is-lit');
+    celebrationTimer=setTimeout(function(){
+      celebration.hidden=true;
+      if(slot)slot.classList.remove('is-level-up');
+    },2200);
+  }
   function toggleMission(mission){
-    var w=hostWindow();
+    var w=hostWindow(),before=levelInfo(mission).raw,result;
     try{
-      if(mission.private&&typeof w.togglePrivateQuest==='function')w.togglePrivateQuest(mission.key);
-      else if(!mission.private&&typeof w.toggleMission==='function')w.toggleMission(mission.key);
+      if(mission.private&&typeof w.togglePrivateQuest==='function')result=w.togglePrivateQuest(mission.key);
+      else if(!mission.private&&typeof w.toggleMission==='function')result=w.toggleMission(mission.key);
       else return;
-      setTimeout(refresh,0);
+      setTimeout(function(){
+        var after=levelInfo(mission).raw;
+        refresh();
+        if(result===true&&after>before)celebrateLevelUp(mission,before,after);
+      },0);
     }catch(e){}
   }
   function openMission(key){
@@ -322,7 +355,8 @@
     modal=document.getElementById('p31Modal');modalArt=document.getElementById('p31ModalArt');modalTitle=document.getElementById('p31ModalTitle');modalMeta=document.getElementById('p31ModalMeta');
     modalLevel=document.getElementById('p31ModalLevel');modalState=document.getElementById('p31ModalState');modalProgress=document.getElementById('p31ModalProgress');modalStatus=document.getElementById('p31ModalStatus');
     prevEl=document.getElementById('p31Prev');nextEl=document.getElementById('p31Next');liveResetEl=document.getElementById('p31LiveReset');
-    if(!stage||!button||!art||!levelsEl||!rosterEl||!rosterCountEl||!modal||!modalArt||!prevEl||!nextEl||!liveResetEl)return;
+    celebration=document.getElementById('p31Celebration');celebrationTitle=document.getElementById('p31CelebrationTitle');celebrationMeta=document.getElementById('p31CelebrationMeta');
+    if(!stage||!button||!art||!levelsEl||!rosterEl||!rosterCountEl||!modal||!modalArt||!prevEl||!nextEl||!liveResetEl||!celebration||!celebrationTitle||!celebrationMeta)return;
     buildLevels();bind();render();preload();probeRoster();
     if(art.complete&&art.naturalWidth){stage.classList.remove('is-loading');errorEl.hidden=true;}
     if(window.parent===window&&typeof window.initCloudSync==='function'&&window.supabase){

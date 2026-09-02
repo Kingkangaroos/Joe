@@ -92,9 +92,16 @@ Verified against GitHub on 2026-08-31:
 - Every changed cutout was reviewed on pink, mint and dark backgrounds. Automated smoke coverage now verifies that the affected WebP files contain real alpha data.
 - Asset URLs were bumped to Park 3.1 version 1.10 so the normal Lab cannot keep stale artwork in cache.
 
+## Park 3.1 feedback layer — implemented 2026-09-02
+
+- A mission that has not been completed for three or more days now writes **HELP** across its companion window, matching Joey's earlier motivation concept.
+- A real mission completion that raises the live level triggers a short room expansion, light-up and confetti celebration showing the new level.
+- Previewing with `− / +` never triggers the celebration and still cannot write mission data.
+- Reduced-motion users receive the level-up status without movement. Park 3.1 cache URLs are now version 1.11.
+
 ## Next build sequence
 
-1. Keep reviewing the eleven companions in the normal Lab and correct concrete artwork feedback there.
+1. Keep reviewing the eleven companions and their HELP/level-up feedback in the normal Lab; correct concrete feedback there.
 2. Keep Home untouched until Joey explicitly approves a separate Home rollout.
 3. Treat convincing character movement as a separate frame/animation-asset job; do not fake it with a wobbling static image.
 
