@@ -63,7 +63,7 @@ vm.runInNewContext(source,sandbox,{filename:'park31.js'});
 
 assert.equal(ids.p31Stage.dataset.liveLevel,'7','live walking score is shown');
 assert.equal(ids.p31Stage.dataset.artLevel,'7','walking level selects matching artwork');
-assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.6$/,'level 7 loads l07.webp');
+assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.7$/,'level 7 loads l07.webp');
 assert.equal(levelNodes[6].attributes['aria-current'],'step','live evolution dot is selected');
 assert.ok(!ids.p31Stage.classList.contains('is-lit'),'park starts inactive');
 ids.p31Companion.listeners.click();
@@ -75,7 +75,7 @@ storage.rpg_habits_v1=JSON.stringify({walking:{score:0}});
 timers[0]();
 assert.equal(ids.p31Stage.dataset.liveLevel,'0');
 assert.equal(ids.p31Stage.dataset.artLevel,'1','technical level 0 deliberately uses Level 1 art');
-assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.6$/);
+assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.7$/);
 assert.ok(ids.p31Stage.classList.contains('is-zero'),'level 0 gets critical treatment');
 
 for(const missionDir of ['steps','nutrition','teeth','household','gratitude','good-deed','screen-time','cold-shower','no-weed','discipline','sleep']){
@@ -108,7 +108,8 @@ assert.match(ids.p31Roster.innerHTML,/Gratitude[\s\S]*HQ artwork ready/,'Gratitu
 assert.equal(ids.p31RosterCount.textContent,'11/11 artwork ready','all eleven complete companion sets are reported');
 
 const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
-assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;v=1\.6"/,'Park 3.1 renders directly inside the normal Lab');
+assert.match(lab,/park31-lab\.js\?v=1\.0/,'the normal Lab loads its dedicated Daily Mission controller');
+assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.7"/,'Park 3.1 renders interactively inside the normal Lab');
 assert.doesNotMatch(lab,/class="chatgpt-lab-card" href="park31\.html"/,'Park 3.1 is not hidden behind a separate Lab card');
 const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 assert.doesNotMatch(home,/park31\.html\?embed=1&amp;mode=missions/,'Park 3.1 remains Lab-only during this release');

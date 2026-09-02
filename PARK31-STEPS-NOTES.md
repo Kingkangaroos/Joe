@@ -14,7 +14,9 @@ Built by ChatGPT (OpenAI), 2026-08-31.
 - Live level comes from the `walking` score in `rpg_habits_v1` through `window.getHabits()`.
 - Levels 1–10 select their corresponding artwork automatically.
 - Technical level 0 reuses Level 1 artwork with a visible critical treatment.
-- Tapping the character only toggles the park light/glow. It does not complete a mission, change a level or start movement.
+- On the standalone companion stage, tapping the large Steps character only toggles the park light/glow.
+- Inside the normal Lab roster, tapping a card completes or uncompletes today's corresponding Daily Mission. The existing habit log, XP, level recomputation and cloud-sync scope remain authoritative.
+- Gardening and Discipline retain the existing PIN-protected private-mission route.
 - `?level=0` through `?level=10` is available as a visual-review override; without it the live score is authoritative.
 
 ## Safety

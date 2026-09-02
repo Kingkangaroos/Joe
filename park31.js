@@ -7,7 +7,7 @@
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.6';
+  var VERSION='1.7';
   var MISSIONS=[
     {key:'walking',label:'Steps',emoji:'👟',dir:'steps'},
     {key:'nutrition',label:'Nutrition',emoji:'🥗',dir:'nutrition'},
@@ -88,7 +88,7 @@
     var info=levelInfo(mission),ready=!!artworkReady[mission.key],done=missionMode&&isDone(mission);
     return '<button class="p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+' aria-pressed="'+(done?'true':'false')+'">'
       +'<span class="p31-slot-art">'+(ready?'<img src="'+assetUrl(info.art,mission)+'" alt="" draggable="false">':mission.emoji)+'</span>'
-      +'<span class="p31-slot-copy"><strong>'+mission.label+'</strong><small>10 evolution levels</small><em>'+(missionMode?(done?'Completed':'Tap to complete'):(ready?'HQ artwork ready':'artwork pending'))+'</em></span>'
+      +'<span class="p31-slot-copy"><strong>'+mission.label+'</strong><small>10 evolution levels</small><em>'+(missionMode?(done?'Completed today':'Tap to complete'):(ready?'HQ artwork ready':'artwork pending'))+'</em></span>'
       +'<span class="p31-slot-level">L'+info.raw+'</span></button>';
   }
   function viewedDay(){

@@ -77,6 +77,8 @@ Verified against GitHub on 2026-08-31:
 - Household, Gratitude, Nutrition and Brush Teeth use Joey's final Gouden Paard files.
 - Their source checkerboard backgrounds were removed technically and exported as transparent WebP files; no replacement artwork was generated.
 - The normal `lab.html` embeds the complete Park 3.1 roster directly.
+- The Lab roster runs in Daily Mission mode: tapping a public companion completes or uncompletes today's mission, updates XP and recalculates its live level through the existing habit engine.
+- Gardening and Discipline keep the established PIN gate and write to the existing private daily-quest store.
 - Home/Main is deliberately unchanged in this release. The larger Home and persistence rebuild remains isolated until Joey explicitly approves that separate rollout.
 - Park 3.0 remains available as the rollback/reference implementation.
 
