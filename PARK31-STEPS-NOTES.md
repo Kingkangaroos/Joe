@@ -16,6 +16,7 @@ Built by ChatGPT (OpenAI), 2026-08-31.
 - Technical level 0 reuses Level 1 artwork with a visible critical treatment.
 - On the standalone companion stage, tapping the large Steps character only toggles the park light/glow.
 - Inside the normal Lab roster, tapping a card opens its evolution sheet. The `− / +` controls are preview-only and never write mission or level data.
+- The open evolution sheet has an explicit `Voltooi vandaag` / `Ongedaan maken` action for the live mission. Entering preview disables that action until the live level is restored.
 - Holding a card for 560 ms completes or uncompletes today's corresponding Daily Mission. Moving to scroll cancels the hold. The existing habit log, XP, level recomputation and cloud-sync scope remain authoritative.
 - If a mission has no completion in the last three days, its artwork window visibly says `HELP`. Completing it removes the warning.
 - When completion produces a real live-level increase, the card briefly expands and lights up while a level/confetti overlay confirms the new level. Read-only previews never trigger it.

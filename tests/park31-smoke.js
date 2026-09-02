@@ -33,7 +33,7 @@ class Element {
 }
 
 const ids={};
-['p31Stage','p31Companion','p31Art','p31LiveLevel','p31State','p31Source','p31EvolutionCopy','p31Levels','p31Progress','p31LightState','p31Error','p31Roster','p31RosterCount','p31Modal','p31ModalArt','p31ModalTitle','p31ModalMeta','p31ModalLevel','p31ModalState','p31ModalProgress','p31ModalStatus','p31Prev','p31Next','p31LiveReset','p31Celebration','p31CelebrationTitle','p31CelebrationMeta'].forEach(id=>{ids[id]=new Element(id);});
+['p31Stage','p31Companion','p31Art','p31LiveLevel','p31State','p31Source','p31EvolutionCopy','p31Levels','p31Progress','p31LightState','p31Error','p31Roster','p31RosterCount','p31Modal','p31ModalArt','p31ModalTitle','p31ModalMeta','p31ModalLevel','p31ModalState','p31ModalProgress','p31ModalStatus','p31Prev','p31Next','p31MissionToggle','p31LiveReset','p31Celebration','p31CelebrationTitle','p31CelebrationMeta'].forEach(id=>{ids[id]=new Element(id);});
 ids.p31Modal.hidden=true;
 ids.p31Celebration.hidden=true;
 const levelNodes=Array.from({length:10},(_,index)=>{const node=new Element('level-'+(index+1));node.dataset.level=String(index+1);return node;});
@@ -102,7 +102,7 @@ vm.runInNewContext(source,sandbox,{filename:'park31.js'});
 
 assert.equal(ids.p31Stage.dataset.liveLevel,'7','live walking score is shown');
 assert.equal(ids.p31Stage.dataset.artLevel,'7','walking level selects matching artwork');
-assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.11$/,'level 7 loads l07.webp');
+assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.12$/,'level 7 loads l07.webp');
 assert.equal(levelNodes[6].attributes['aria-current'],'step','live evolution dot is selected');
 assert.ok(!ids.p31Stage.classList.contains('is-lit'),'park starts inactive');
 ids.p31Companion.listeners.click();
@@ -114,7 +114,7 @@ storage.rpg_habits_v1=JSON.stringify({walking:{score:0}});
 intervalTimers[0]();
 assert.equal(ids.p31Stage.dataset.liveLevel,'0');
 assert.equal(ids.p31Stage.dataset.artLevel,'1','technical level 0 deliberately uses Level 1 art');
-assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.11$/);
+assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.12$/);
 assert.ok(ids.p31Stage.classList.contains('is-zero'),'level 0 gets critical treatment');
 
 for(const missionDir of ['steps','nutrition','teeth','household','gratitude','good-deed','screen-time','cold-shower','no-weed','discipline','sleep']){
@@ -152,7 +152,7 @@ assert.match(ids.p31Roster.innerHTML,/class="p31-help"[^>]*>HELP<\/span>/,'a mis
 
 const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
 assert.match(lab,/park31-lab\.js\?v=1\.1/,'the normal Lab loads its dedicated Daily Mission controller');
-assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.11"/,'Park 3.1 renders interactively inside the normal Lab');
+assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.12"/,'Park 3.1 renders interactively inside the normal Lab');
 assert.doesNotMatch(lab,/class="chatgpt-lab-card" href="park31\.html"/,'Park 3.1 is not hidden behind a separate Lab card');
 const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 assert.doesNotMatch(home,/park31\.html\?embed=1&amp;mode=missions/,'Park 3.1 remains Lab-only during this release');
@@ -167,11 +167,15 @@ ids.p31Roster.listeners.pointerup(pointerEvent);
 assert.equal(ids.p31Modal.hidden,false,'a short tap opens the companion detail');
 assert.equal(ids.p31ModalTitle.textContent,'Steps');
 assert.equal(missionToggles.length,0,'a short tap never completes the mission');
+assert.equal(ids.p31MissionToggle.textContent,'Voltooi vandaag','the expanded companion offers an explicit completion action');
+assert.equal(ids.p31MissionToggle.disabled,false,'the live mission action is available outside preview');
 
 const liveStorage=storage.rpg_habits_v1;
 ids.p31Next.listeners.click();
 assert.equal(ids.p31ModalMeta.textContent,'PREVIEW 2 · LIVE 0','plus enters read-only level preview');
-assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.11$/);
+assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.12$/);
+assert.equal(ids.p31MissionToggle.disabled,true,'preview disables the completion action');
+assert.equal(ids.p31MissionToggle.textContent,'Ga terug naar live om te wijzigen');
 assert.equal(storage.rpg_habits_v1,liveStorage,'preview does not touch real habit data');
 closeNodes[0].listeners.click();
 
@@ -193,5 +197,16 @@ ids.p31Roster.listeners.pointerdown(scrollEvent);
 ids.p31Roster.listeners.pointermove({...scrollEvent,clientY:48});
 runTimeoutsAtLeast(560);
 assert.deepEqual(missionToggles,['walking'],'moving to scroll cancels the hold action');
+
+const nutritionSlot=new Element('nutrition-slot');nutritionSlot.dataset.mission='nutrition';
+const nutritionTap={target:nutritionSlot,pointerType:'touch',button:0,pointerId:10,clientX:20,clientY:30,preventDefault(){this.prevented=true;}};
+ids.p31Roster.listeners.pointerdown(nutritionTap);
+ids.p31Roster.listeners.pointerup(nutritionTap);
+assert.equal(ids.p31ModalTitle.textContent,'Nutrition');
+assert.equal(ids.p31MissionToggle.textContent,'Voltooi vandaag');
+ids.p31MissionToggle.listeners.click();
+runImmediateTimeouts();
+assert.deepEqual(missionToggles,['walking','nutrition'],'the explicit modal action completes through the host controller');
+assert.equal(ids.p31MissionToggle.textContent,'Ongedaan maken','the action changes to undo after completion');
 
 console.log('Park 3.1 smoke test passed.');

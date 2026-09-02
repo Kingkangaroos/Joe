@@ -97,7 +97,13 @@ Verified against GitHub on 2026-08-31:
 - A mission that has not been completed for three or more days now writes **HELP** across its companion window, matching Joey's earlier motivation concept.
 - A real mission completion that raises the live level triggers a short room expansion, light-up and confetti celebration showing the new level.
 - Previewing with `− / +` never triggers the celebration and still cannot write mission data.
-- Reduced-motion users receive the level-up status without movement. Park 3.1 cache URLs are now version 1.11.
+- The expanded companion now has an explicit `Voltooi vandaag` / `Ongedaan maken` button. The 560 ms card hold remains available as a shortcut, while previews disable the action entirely.
+- Reduced-motion users receive the level-up status without movement. Park 3.1 cache URLs are now version 1.12.
+
+## Chess audit — verified 2026-09-02
+
+- The existing Chess skill already contains XP, eleven tiers, gates, assessment, logging and Lab visuals; the dedicated smoke test passes.
+- No duplicate Chess implementation was added.
 
 ## Next build sequence
 
@@ -112,7 +118,7 @@ Verified against GitHub on 2026-08-31:
 - The chosen yawning Level-1 image is visibly the exact selected variant.
 - Park 3.0 is still available and unchanged.
 - Home is unchanged.
-- Short tap opens the selected companion without changing mission data; `− / +` previews without changing the live level.
+- Short tap opens the selected companion without changing mission data; the explicit live action or deliberate hold changes completion, while `− / +` previews remain read-only.
 - A deliberate hold completes/uncompletes through the existing mission controller; scrolling cancels the hold.
 - Refresh and live Daily Mission level changes update correctly.
 - No black/corrupt assets on iPhone; layout and text remain usable.
