@@ -23,7 +23,7 @@ assert.match(html, /@media\(max-width:719px\) and \(max-height:730px\)/, 'short 
 assert.match(html, /data-project-state="before"/, 'the project comparison has a before control');
 assert.match(html, /data-project-state="after"/, 'the project comparison has an after control');
 assert.match(html, /Demoformulier · er worden geen gegevens verstuurd/, 'the prototype never pretends to submit personal data');
-assert.match(lab, /href="site-klus-scroll\.html"/, 'ChatGPT Lab links to the experiment');
+assert.doesNotMatch(lab, /href="site-klus-scroll\.html"/, 'the Lab does not hide this experiment behind a link');
 assert.match(sites, /href="site-klus-scroll\.html"/, 'the examples overview links to the experiment');
 
 const scripts = Array.from(html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g));
@@ -41,4 +41,4 @@ for (const character of style) {
 }
 assert.equal(depth, 0, 'CSS braces are balanced');
 
-console.log('Potloodscroll smoke test passed: path drawing, build transition, project toggle, reduced motion and Lab links are wired.');
+console.log('Potloodscroll smoke test passed: path drawing, build transition, project toggle, reduced motion and link-free Lab separation are wired.');

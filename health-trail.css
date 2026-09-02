@@ -1,0 +1,29 @@
+/* Health Trail Lab prototype v1.0 — ChatGPT (OpenAI) */
+.ht-card{--ht-accent:#66ead0;--ht-progress:0%;--ht-runner:8%;overflow:hidden;margin:0 0 20px;border:1px solid #26305e;border-radius:22px;background:#080c28;color:#f8f9ff;box-shadow:0 22px 52px -34px rgba(10,24,90,.78)}
+.ht-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:16px 16px 12px;background:linear-gradient(145deg,#111943,#0a1031)}
+.ht-kicker{display:flex;align-items:center;gap:7px;color:#82efda;font:800 12px var(--font-display);letter-spacing:.09em;text-transform:uppercase}
+.ht-kicker i{width:7px;height:7px;border-radius:50%;background:#6df0b5;box-shadow:0 0 12px #6df0b5}
+.ht-head h2{margin-top:5px;font:800 22px var(--font-display);letter-spacing:-.035em}
+.ht-head p{max-width:330px;margin-top:4px;color:#aeb7d9;font-size:13px;line-height:1.45}
+.ht-level{flex:0 0 auto;min-width:72px;padding:9px 10px;border:1px solid rgba(122,239,217,.32);border-radius:15px;background:rgba(61,224,195,.08);text-align:center}
+.ht-level small,.ht-level strong{display:block}.ht-level small{color:#91a0cb;font:700 12px var(--font-display);text-transform:uppercase}.ht-level strong{margin-top:2px;color:#fff;font:900 28px var(--font-display)}
+.ht-stage{position:relative;height:270px;overflow:hidden;background:linear-gradient(180deg,#111b54 0%,#233a79 52%,#6aa491 53%,#376b57 100%)}
+.ht-sky{position:absolute;inset:0 0 45%;background:radial-gradient(circle at 78% 24%,rgba(255,232,153,.92) 0 7%,rgba(255,232,153,.2) 8%,transparent 20%),linear-gradient(180deg,#101b51,#456d9a)}
+.ht-hills,.ht-hills:after{position:absolute;left:-10%;right:-10%;bottom:34%;height:42%;border-radius:50% 50% 0 0;background:#315f6a;content:''}.ht-hills:after{left:33%;right:-15%;bottom:-15%;height:90%;background:#284d5a}
+.ht-track{position:absolute;left:8%;right:8%;bottom:19%;height:13px;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(5,14,35,.55);box-shadow:0 7px 17px rgba(0,0,0,.28)}
+.ht-track-fill{display:block;width:var(--ht-progress);height:100%;border-radius:inherit;background:linear-gradient(90deg,#39bba3,var(--ht-accent));box-shadow:0 0 18px rgba(102,234,208,.45);transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.ht-track-marks{position:absolute;inset:-7px 0 auto;display:flex;justify-content:space-between;color:#dce8e2;font:700 11px var(--font-display)}
+.ht-runner{position:absolute;z-index:3;left:var(--ht-runner);bottom:22%;width:132px;transform:translateX(-50%);transition:left .7s cubic-bezier(.2,.8,.2,1)}
+.ht-runner img{display:block;width:100%;height:auto;filter:drop-shadow(0 14px 15px rgba(0,0,0,.42));animation:htStride var(--ht-speed,1s) ease-in-out infinite}
+.ht-runner-badge{position:absolute;left:50%;top:-4px;transform:translate(-50%,-100%);padding:6px 9px;border:1px solid rgba(255,255,255,.26);border-radius:999px;background:rgba(5,12,35,.86);box-shadow:0 5px 18px rgba(0,0,0,.25);color:#fff;font:800 12px var(--font-display);white-space:nowrap}
+.ht-shadow{position:absolute;left:50%;bottom:2px;width:74px;height:12px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.55),transparent 70%);animation:htShadow var(--ht-speed,1s) ease-in-out infinite}
+@keyframes htStride{0%,100%{transform:translateY(0) rotate(-1deg)}26%{transform:translateY(-8px) rotate(.5deg)}52%{transform:translateY(0) rotate(1deg)}76%{transform:translateY(-5px) rotate(0)}}
+@keyframes htShadow{0%,52%,100%{opacity:.55;transform:translateX(-50%) scaleX(1)}26%,76%{opacity:.28;transform:translateX(-50%) scaleX(.72)}}
+.ht-readout{padding:14px 16px 16px;background:linear-gradient(180deg,#0a0e2c,#080b25)}
+.ht-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ht-metric{min-width:0;padding:10px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.045)}
+.ht-metric span,.ht-metric strong,.ht-metric small{display:block}.ht-metric span{color:#8e99c3;font:700 11px var(--font-display);text-transform:uppercase}.ht-metric strong{margin-top:4px;font:800 18px var(--font-display)}.ht-metric small{margin-top:2px;color:#8f9abe;font-size:11px;line-height:1.25}
+.ht-bar{height:7px;margin-top:13px;overflow:hidden;border-radius:999px;background:#20274b}.ht-bar i{display:block;width:var(--ht-progress);height:100%;border-radius:inherit;background:linear-gradient(90deg,#38baa2,#6eead1,#ffdc6a);transition:width .7s ease}
+.ht-message{margin-top:10px;color:#d8def3;font-size:13px;line-height:1.45}.ht-formula{margin-top:5px;color:#7783ad;font-size:11px;line-height:1.4}
+.ht-card[data-band="critical"]{--ht-accent:#ff6f91}.ht-card[data-band="building"]{--ht-accent:#ffbe5f}.ht-card[data-band="strong"]{--ht-accent:#66ead0}.ht-card[data-band="king"]{--ht-accent:#ffe16e}
+@media(max-width:390px){.ht-head{padding:14px}.ht-head h2{font-size:20px}.ht-head p{font-size:12px}.ht-level{min-width:64px}.ht-stage{height:245px}.ht-runner{width:116px}.ht-readout{padding:12px}.ht-metric{padding:8px}.ht-metric strong{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.ht-runner,.ht-track-fill,.ht-bar i{transition:none}.ht-runner img,.ht-shadow{animation:none}}

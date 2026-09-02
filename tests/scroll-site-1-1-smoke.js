@@ -18,7 +18,7 @@ const checks = [
   ['final photo stage exists', /class="photo"/],
   ['pencil still follows SVG path', /getPointAtLength/],
   ['reduced motion supported', /prefers-reduced-motion/],
-  ['no giant 460svh cinematic wrapper', !/height:\s*460svh/],
+  ['no giant 460svh cinematic wrapper', !/height:\s*460svh/.test(html)],
 ];
 
 let failed = 0;
