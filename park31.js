@@ -7,7 +7,7 @@
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.8';
+  var VERSION='1.9';
   var HOLD_MS=560;
   var MISSIONS=[
     {key:'walking',label:'Steps',emoji:'👟',dir:'steps'},

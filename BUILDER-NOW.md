@@ -83,12 +83,19 @@ Verified against GitHub on 2026-08-31:
 - Home/Main is deliberately unchanged in this release. The larger Home and persistence rebuild remains isolated until Joey explicitly approves that separate rollout.
 - Park 3.0 remains available as the rollback/reference implementation.
 
+## Park 3.1 artwork cleanup — implemented 2026-09-02
+
+- All ten Cold Shower levels are now true transparent WebP cutouts. The embedded night amusement-park scenery is gone; characters, water effects and purple stone pedestals remain.
+- All ten Brush Teeth levels were re-cleaned. Checkerboard fragments and ragged detached effect remnants are removed while the companion progression stays intact.
+- Household Level 1 is now intentionally more confronting: the same companion is overwhelmed by trash, laundry, dirty dishes and dust, giving the mission a stronger immediate cleanup trigger.
+- Every changed cutout was reviewed on pink, mint and dark backgrounds. Automated smoke coverage now verifies that the affected WebP files contain real alpha data.
+- Asset URLs were bumped to Park 3.1 version 1.9 so the normal Lab cannot keep stale artwork in cache.
+
 ## Next build sequence
 
-1. Review all eleven Park 3.1 companions inside the normal Lab.
-2. Correct any artwork mapping or sizing issue there before touching Home.
-3. Only after explicit approval, move the mission interaction and simplified layout to Home.
-4. Decide later whether and how the static companions should move.
+1. Keep reviewing the eleven companions in the normal Lab and correct concrete artwork feedback there.
+2. Keep Home untouched until Joey explicitly approves a separate Home rollout.
+3. Treat convincing character movement as a separate frame/animation-asset job; do not fake it with a wobbling static image.
 
 ## Definition of done for Park 3.1 Steps
 
