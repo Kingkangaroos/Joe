@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="park2.css?v=11.01">
 <link rel="stylesheet" href="daily-garden.css?v=10.98">
+<link rel="stylesheet" href="health-trail.css?v=1.0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=11.0" defer></script>
 <script src="sync.js?v=11.0" defer></script>
@@ -20,6 +21,7 @@
 <script src="ladders.js?v=10.98" defer></script>
 <script src="park2.js?v=11.01" defer></script>
 <script src="daily-garden.js?v=11.7" defer></script>
+<script src="health-trail.js?v=1.0" defer></script>
 <style>
 :root{
   --bg:#F4F3EF; --card:#FFFFFF; --ink:#15140F; --muted:#6F6C63; --faint:#A6A399;
@@ -256,33 +258,55 @@ body.at1-paused .at1-speedline,body.at1-paused .at1-shadow{animation-play-state:
       </div>
     </div>
 
-    <div class="chatgpt-lab-grid" aria-label="ChatGPT-creaties">
-      <a class="chatgpt-lab-card" href="park3.html">
+    <div class="chatgpt-lab-grid" aria-label="Wat rechtstreeks in dit Lab staat">
+      <div class="chatgpt-lab-card">
+        <span class="chatgpt-lab-icon">🏃</span>
+        <span><strong>Health Trail</strong><small>Daily Missions + Fitbit-herstel</small></span>
+        <em>Nieuw</em>
+      </div>
+      <div class="chatgpt-lab-card">
         <span class="chatgpt-lab-icon">✨</span>
-        <span><strong>Park 3.0</strong><small>11 Daily Mission-evoluties</small></span>
-        <em>Referentie</em>
-      </a>
-      <a class="chatgpt-lab-card" href="#park2">
+        <span><strong>Park 3.1</strong><small>11 Daily Mission-evoluties</small></span>
+        <em>Live Lab</em>
+      </div>
+      <div class="chatgpt-lab-card">
         <span class="chatgpt-lab-icon">🌳</span>
         <span><strong>Park 2.0</strong><small>8 levende skill-companions</small></span>
-        <em>Testen</em>
-      </a>
-      <a class="chatgpt-lab-card" href="#park2">
-        <span class="chatgpt-lab-icon">🎯</span>
-        <span><strong>Focus & evoluties</strong><small>Movement, focusstand en 5 vormen</small></span>
-        <em>Doorbouwen</em>
-      </a>
-      <a class="chatgpt-lab-card" href="#missionGarden">
+        <em>Referentie</em>
+      </div>
+      <div class="chatgpt-lab-card">
         <span class="chatgpt-lab-icon">🌱</span>
         <span><strong>Mission Garden</strong><small>Daily Missions als mini-tuin</small></span>
         <em>Voorbeeld</em>
-      </a>
-      <a class="chatgpt-lab-card" href="character.html#skill=chess">
-        <span class="chatgpt-lab-icon">♞</span>
-        <span><strong>Chess skill</strong><small>XP, levels, ladder en assessment</small></span>
-        <em>Live skill</em>
-      </a>
+      </div>
     </div>
+
+  <div class="sec-head">Health Trail · D-score opvolger</div>
+  <section class="ht-card" id="healthTrail" data-band="building" aria-label="Read-only Health Trail prototype">
+    <div class="ht-head">
+      <div>
+        <div class="ht-kicker"><i></i> Live prototype</div>
+        <h2>Jouw Health Trail</h2>
+        <p>Je Daily Missions bepalen het tempo. Slaap, HRV en rusthartslag bepalen hoeveel herstel je meeneemt.</p>
+      </div>
+      <div class="ht-level"><small>Level</small><strong id="htLevel">—</strong></div>
+    </div>
+    <div class="ht-stage" id="htStage">
+      <div class="ht-sky" aria-hidden="true"></div><div class="ht-hills" aria-hidden="true"></div>
+      <div class="ht-track" aria-hidden="true"><i class="ht-track-fill"></i><span class="ht-track-marks"><b>0</b><b>5</b><b>10</b></span></div>
+      <div class="ht-runner"><span class="ht-runner-badge" id="htRunnerLevel">LEVEL —</span><span class="ht-shadow" aria-hidden="true"></span><img id="htCharacter" src="img/lab/park31/steps/l01.webp?v=1.12" alt="Steps companion on the Health Trail" draggable="false"></div>
+    </div>
+    <div class="ht-readout">
+      <div class="ht-metrics">
+        <div class="ht-metric"><span>Totaal</span><strong id="htTotal">—</strong><small>van 10</small></div>
+        <div class="ht-metric"><span>Missies</span><strong id="htMissions">—</strong><small id="htMissionMeta">laden…</small></div>
+        <div class="ht-metric"><span>Herstel</span><strong id="htRecovery">—</strong><small id="htRecoveryMeta">Fitbit laden…</small></div>
+      </div>
+      <div class="ht-bar" aria-hidden="true"><i></i></div>
+      <p class="ht-message" id="htMessage" aria-live="polite">Je trail wordt geladen…</p>
+      <p class="ht-formula">70% gemiddelde van je publieke Daily Mission-levels · 30% beschikbare Fitbit-hersteldata · alleen lezen</p>
+    </div>
+  </section>
 
   <div class="sec-head">Park 3.1 · Daily Mission companions</div>
   <section class="park31-lab" id="park31" aria-label="Park 3.1 with all live Daily Mission companions">

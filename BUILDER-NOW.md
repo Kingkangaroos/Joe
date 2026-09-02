@@ -105,6 +105,14 @@ Verified against GitHub on 2026-08-31:
 - The existing Chess skill already contains XP, eleven tiers, gates, assessment, logging and Lab visuals; the dedicated smoke test passes.
 - No duplicate Chess implementation was added.
 
+## Health Trail — Lab prototype implemented 2026-09-02
+
+- Joey's earlier D-score replacement idea now exists directly in the normal Lab, not behind a preview link.
+- The displayed 0–10 level combines 70% of the average public Daily Mission level with 30% of the available Fitbit recovery score.
+- Recovery uses sleep plus HRV and resting-heart-rate movement against Joey's own recent baseline. Missing Fitbit data is omitted instead of being treated as failure.
+- The existing Park 3.1 Steps evolution is reused as the runner; the prototype is read-only and cannot modify habits, XP or health data.
+- Home/Main remains unchanged pending Joey's later judgment of the Lab prototype.
+
 ## Next build sequence
 
 1. Keep reviewing the eleven companions and their HELP/level-up feedback in the normal Lab; correct concrete feedback there.
