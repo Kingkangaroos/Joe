@@ -1,4 +1,4 @@
-/* Daily Mission Garden v11.6
+/* Daily Mission Garden v11.7
    Performed-by: ChatGPT (OpenAI)
    Purpose: Daily Mission Garden + complete 0–10 evolution workbench.
    Source of truth: RPG_DEFAULT_SKILLS entries with isHabit:true, active !== false, !private.
@@ -35,16 +35,16 @@
   }
   function evolutionStage(level){
     if(level>=10)return 'Master';
-    if(level>=7)return 'Evolved';
-    if(level>=4)return 'Growing';
-    if(level>=1)return 'Awakening';
-    return 'Dormant';
+    if(level>=7)return 'Expert';
+    if(level>=5)return 'Advanced';
+    if(level>=3)return 'Apprentice';
+    return 'Starter';
   }
   function evolutionIndex(level){
     if(level>=10)return 4;
     if(level>=7)return 3;
-    if(level>=4)return 2;
-    if(level>=1)return 1;
+    if(level>=5)return 2;
+    if(level>=3)return 1;
     return 0;
   }
   function levelDots(level){
@@ -153,7 +153,7 @@
     var a=PARK_D_ASSETS[key];
     if(!a)return null;
     if(level>=10&&a.mastery)return {src:a.mastery,form:'mastery'};
-    if(level>=4&&a.advanced)return {src:a.advanced,form:'advanced'};
+    if(level>=5&&a.advanced)return {src:a.advanced,form:'advanced'};
     return {src:a.base,form:'base'};
   }
   function evolutionVisual(m,level,idx){

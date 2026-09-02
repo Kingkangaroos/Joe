@@ -56,6 +56,7 @@ class Element {
   }
   get innerHTML() { return this._innerHTML; }
   appendChild(child) { this.children.push(child); return child; }
+  insertAdjacentElement(position, child) { this.adjacentPosition = position; this.adjacentElement = child; if (child.id) ids[child.id] = child; return child; }
   setAttribute(name, value) { this[name] = String(value); }
   removeAttribute(name) { delete this[name]; }
   querySelectorAll(selector) {
@@ -94,9 +95,10 @@ const defs = {
 };
 const toggled = [];
 
+const habitScores = Object.fromEntries(Object.keys(defs).map(key => [key,key === 'sleep' ? 5 : 2]));
 const sandboxWindow = {
   RPG_DEFAULT_SKILLS: defs,
-  getHabits: () => Object.fromEntries(Object.keys(defs).map(key => [key,{score:key === 'sleep' ? 5 : 2}])),
+  getHabits: () => Object.fromEntries(Object.entries(habitScores).map(([key,score]) => [key,{score}])),
   toggleMission: key => toggled.push(key),
   addEventListener: () => {}
 };
@@ -121,9 +123,24 @@ const sandbox = {
 };
 
 const source = fs.readFileSync(path.join(__dirname, '..', 'daily-garden.js'), 'utf8');
+const lab = fs.readFileSync(path.join(__dirname, '..', 'lab.html'), 'utf8');
+assert.match(lab,/daily-garden\.js\?v=11\.7/,'the Lab requests the corrected evolution-band release');
 vm.runInNewContext(source, sandbox, { filename:'daily-garden.js' });
 
 assert.equal(plots.children.length, 5, 'all active public missions render');
+const evolution = root.adjacentElement;
+assert.equal(root.adjacentPosition, 'afterend', 'the evolution workbench mounts beside the Lab garden');
+const expectedBands = [[0,'Starter'],[2,'Starter'],[3,'Apprentice'],[4,'Apprentice'],[5,'Advanced'],[6,'Advanced'],[7,'Expert'],[9,'Expert'],[10,'Master']];
+for (const [level,label] of expectedBands) {
+  habitScores.sleep = level;
+  sandboxWindow.renderMissionEvolutions();
+  const sleepCard = evolution.innerHTML.match(/<button class="mg-evo-card[\s\S]*?data-key="sleep"[\s\S]*?<\/button>/)[0];
+  assert.match(sleepCard,new RegExp('<span>'+label+'<\\/span>'),'level '+level+' uses the '+label+' band');
+  if (level === 4) assert.doesNotMatch(sleepCard,/form-advanced/,'level 4 does not load Advanced artwork');
+  if (level === 5) assert.match(sleepCard,/form-advanced/,'level 5 starts Advanced artwork');
+  if (level === 9) assert.doesNotMatch(sleepCard,/form-mastery/,'level 9 never loads Master artwork');
+  if (level === 10) assert.match(sleepCard,/form-mastery/,'level 10 alone loads Master artwork');
+}
 assert.equal(good.style['--gx'], '16px', 'Good Deed guide starts at the left edge');
 assert.equal(budget.style['--gx'], '308px', 'Budgeting guide uses the mobile stage width instead of its own width');
 
