@@ -7,7 +7,7 @@
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.11';
+  var VERSION='1.12';
   var HOLD_MS=560;
   var MISSIONS=[
     {key:'walking',label:'Steps',emoji:'👟',dir:'steps'},
@@ -23,7 +23,7 @@
     {key:'sleep',label:'Sleep',emoji:'😴',dir:'sleep'}
   ];
   var stage,button,art,levelEl,stateEl,sourceEl,copyEl,levelsEl,progressEl,lightEl,errorEl,rosterEl,rosterCountEl;
-  var modal,modalArt,modalTitle,modalMeta,modalLevel,modalState,modalProgress,modalStatus,prevEl,nextEl,liveResetEl;
+  var modal,modalArt,modalTitle,modalMeta,modalLevel,modalState,modalProgress,modalStatus,prevEl,nextEl,liveResetEl,missionToggleEl;
   var celebration,celebrationTitle,celebrationMeta,celebrationTimer=null;
   var current={raw:0,art:1,source:'empty'};
   var artworkReady={walking:true,nutrition:true,teeth:true,household:true,gratitude:true,good_deed:true,screen_time:true,cold_shower:true,weed_control:true,no_porn:true,sleep:true};
@@ -187,6 +187,10 @@
       ?'Alleen preview — je live level blijft '+info.raw+'.'
       :(missionMode?(done?'Vandaag voltooid · Houd de kaart vast om terug te draaien.':'Nog niet voltooid · Houd de kaart vast om te voltooien.'):'Live level uit Today’s Missions.');
     liveResetEl.disabled=preview===null;
+    missionToggleEl.hidden=!missionMode;
+    missionToggleEl.disabled=preview!==null;
+    missionToggleEl.classList.toggle('is-undo',done);
+    missionToggleEl.textContent=preview!==null?'Ga terug naar live om te wijzigen':(done?'Ongedaan maken':'Voltooi vandaag');
   }
   function stepPreview(delta){
     if(!selected)return;
@@ -324,6 +328,7 @@
     prevEl.addEventListener('click',function(){stepPreview(-1);});
     nextEl.addEventListener('click',function(){stepPreview(1);});
     liveResetEl.addEventListener('click',resetPreview);
+    missionToggleEl.addEventListener('click',function(){if(selected&&missionMode&&preview===null)toggleMission(selected);});
     document.addEventListener('keydown',function(event){if(event.key==='Escape'&&modal&&!modal.hidden)closeModal();});
     art.addEventListener('load',function(){stage.classList.remove('is-loading');errorEl.hidden=true;});
     art.addEventListener('error',function(){stage.classList.remove('is-loading');errorEl.hidden=false;});
@@ -354,9 +359,9 @@
     lightEl=document.getElementById('p31LightState');errorEl=document.getElementById('p31Error');rosterEl=document.getElementById('p31Roster');rosterCountEl=document.getElementById('p31RosterCount');
     modal=document.getElementById('p31Modal');modalArt=document.getElementById('p31ModalArt');modalTitle=document.getElementById('p31ModalTitle');modalMeta=document.getElementById('p31ModalMeta');
     modalLevel=document.getElementById('p31ModalLevel');modalState=document.getElementById('p31ModalState');modalProgress=document.getElementById('p31ModalProgress');modalStatus=document.getElementById('p31ModalStatus');
-    prevEl=document.getElementById('p31Prev');nextEl=document.getElementById('p31Next');liveResetEl=document.getElementById('p31LiveReset');
+    prevEl=document.getElementById('p31Prev');nextEl=document.getElementById('p31Next');liveResetEl=document.getElementById('p31LiveReset');missionToggleEl=document.getElementById('p31MissionToggle');
     celebration=document.getElementById('p31Celebration');celebrationTitle=document.getElementById('p31CelebrationTitle');celebrationMeta=document.getElementById('p31CelebrationMeta');
-    if(!stage||!button||!art||!levelsEl||!rosterEl||!rosterCountEl||!modal||!modalArt||!prevEl||!nextEl||!liveResetEl||!celebration||!celebrationTitle||!celebrationMeta)return;
+    if(!stage||!button||!art||!levelsEl||!rosterEl||!rosterCountEl||!modal||!modalArt||!prevEl||!nextEl||!liveResetEl||!missionToggleEl||!celebration||!celebrationTitle||!celebrationMeta)return;
     buildLevels();bind();render();preload();probeRoster();
     if(art.complete&&art.naturalWidth){stage.classList.remove('is-loading');errorEl.hidden=true;}
     if(window.parent===window&&typeof window.initCloudSync==='function'&&window.supabase){
