@@ -85,7 +85,7 @@ vm.runInNewContext(source,sandbox,{filename:'park31.js'});
 
 assert.equal(ids.p31Stage.dataset.liveLevel,'7','live walking score is shown');
 assert.equal(ids.p31Stage.dataset.artLevel,'7','walking level selects matching artwork');
-assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.9$/,'level 7 loads l07.webp');
+assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.10$/,'level 7 loads l07.webp');
 assert.equal(levelNodes[6].attributes['aria-current'],'step','live evolution dot is selected');
 assert.ok(!ids.p31Stage.classList.contains('is-lit'),'park starts inactive');
 ids.p31Companion.listeners.click();
@@ -97,7 +97,7 @@ storage.rpg_habits_v1=JSON.stringify({walking:{score:0}});
 intervalTimers[0]();
 assert.equal(ids.p31Stage.dataset.liveLevel,'0');
 assert.equal(ids.p31Stage.dataset.artLevel,'1','technical level 0 deliberately uses Level 1 art');
-assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.9$/);
+assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.10$/);
 assert.ok(ids.p31Stage.classList.contains('is-zero'),'level 0 gets critical treatment');
 
 for(const missionDir of ['steps','nutrition','teeth','household','gratitude','good-deed','screen-time','cold-shower','no-weed','discipline','sleep']){
@@ -112,7 +112,7 @@ for(const missionDir of ['steps','nutrition','teeth','household','gratitude','go
   }
   assert.equal(new Set(digests).size,10,missionDir+' has ten distinct level images');
 }
-for(const missionDir of ['cold-shower','teeth']){
+for(const missionDir of ['cold-shower','teeth','good-deed','steps','sleep']){
   for(let level=1;level<=10;level++){
     const name='l'+String(level).padStart(2,'0')+'.webp';
     const bytes=fs.readFileSync(path.join(__dirname,'..','img','lab','park31',missionDir,name));
@@ -134,7 +134,7 @@ assert.equal(ids.p31RosterCount.textContent,'11/11 artwork ready','all eleven co
 
 const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
 assert.match(lab,/park31-lab\.js\?v=1\.1/,'the normal Lab loads its dedicated Daily Mission controller');
-assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.9"/,'Park 3.1 renders interactively inside the normal Lab');
+assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.10"/,'Park 3.1 renders interactively inside the normal Lab');
 assert.doesNotMatch(lab,/class="chatgpt-lab-card" href="park31\.html"/,'Park 3.1 is not hidden behind a separate Lab card');
 const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 assert.doesNotMatch(home,/park31\.html\?embed=1&amp;mode=missions/,'Park 3.1 remains Lab-only during this release');
@@ -153,7 +153,7 @@ assert.equal(missionToggles.length,0,'a short tap never completes the mission');
 const liveStorage=storage.rpg_habits_v1;
 ids.p31Next.listeners.click();
 assert.equal(ids.p31ModalMeta.textContent,'PREVIEW 2 · LIVE 0','plus enters read-only level preview');
-assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.9$/);
+assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.10$/);
 assert.equal(storage.rpg_habits_v1,liveStorage,'preview does not touch real habit data');
 closeNodes[0].listeners.click();
 
