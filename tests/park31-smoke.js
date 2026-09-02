@@ -18,7 +18,7 @@ class ClassList {
 }
 class Style {constructor(){this.values={};}setProperty(name,value){this.values[name]=String(value);}}
 class Element {
-  constructor(id){this.id=id;this.dataset={};this.classList=new ClassList();this.style=new Style();this.attributes={};this.listeners={};this.hidden=false;this.textContent='';this._innerHTML='';}
+  constructor(id){this.id=id;this.dataset={};this.classList=new ClassList();this.style=new Style();this.attributes={};this.listeners={};this.hidden=false;this.disabled=false;this.textContent='';this._innerHTML='';}
   set innerHTML(value){this._innerHTML=String(value);}
   get innerHTML(){return this._innerHTML;}
   addEventListener(type,fn){this.listeners[type]=fn;}
@@ -26,44 +26,66 @@ class Element {
   getAttribute(name){return this.attributes[name]||null;}
   removeAttribute(name){delete this.attributes[name];}
   querySelectorAll(selector){return selector==='[data-level]'?levelNodes:[];}
+  closest(selector){return selector==='[data-mission]'&&this.dataset.mission?this:null;}
+  setPointerCapture(){}
+  releasePointerCapture(){}
+  focus(){this.focused=true;}
 }
 
 const ids={};
-['p31Stage','p31Companion','p31Art','p31LiveLevel','p31State','p31Source','p31EvolutionCopy','p31Levels','p31Progress','p31LightState','p31Error','p31Roster','p31RosterCount'].forEach(id=>{ids[id]=new Element(id);});
+['p31Stage','p31Companion','p31Art','p31LiveLevel','p31State','p31Source','p31EvolutionCopy','p31Levels','p31Progress','p31LightState','p31Error','p31Roster','p31RosterCount','p31Modal','p31ModalArt','p31ModalTitle','p31ModalMeta','p31ModalLevel','p31ModalState','p31ModalProgress','p31ModalStatus','p31Prev','p31Next','p31LiveReset'].forEach(id=>{ids[id]=new Element(id);});
+ids.p31Modal.hidden=true;
 const levelNodes=Array.from({length:10},(_,index)=>{const node=new Element('level-'+(index+1));node.dataset.level=String(index+1);return node;});
 ids.p31Levels.querySelectorAll=selector=>selector==='[data-level]'?levelNodes:[];
-const timers=[];
+const intervalTimers=[];
+const timeoutTimers=[];
 const windowListeners={};
 const documentListeners={};
 const storage={rpg_habits_v1:JSON.stringify({walking:{score:7}})};
+const missionToggles=[];
 class FakeImage {set src(value){this._src=value;}get src(){return this._src;}}
+const parentListeners={};
+const parentWindow={
+  getHabits:()=>JSON.parse(storage.rpg_habits_v1),
+  getCharacter:()=>({skills:{}}),
+  getSkillLevel:()=>0,
+  toggleMission:key=>missionToggles.push(key),
+  addEventListener:(type,fn)=>{parentListeners[type]=fn;}
+};
 const sandboxWindow={
-  parent:null,
+  parent:parentWindow,
   getHabits:()=>JSON.parse(storage.rpg_habits_v1),
   addEventListener:(type,fn)=>{windowListeners[type]=fn;},
   dispatchEvent:()=>{},
   supabase:null
 };
-sandboxWindow.parent=sandboxWindow;
+const body=new Element('body');
+const closeNodes=[new Element('close-shade'),new Element('close-button')];
 const sandbox={
   window:sandboxWindow,
-  document:{readyState:'complete',hidden:false,getElementById:id=>ids[id]||null,addEventListener:(type,fn)=>{documentListeners[type]=fn;}},
+  document:{readyState:'complete',hidden:false,body,getElementById:id=>ids[id]||null,querySelectorAll:selector=>selector==='[data-p31-close]'?closeNodes:[],addEventListener:(type,fn)=>{documentListeners[type]=fn;}},
   localStorage:{getItem:key=>storage[key]||null},
-  location:{search:''},
+  location:{search:'?embed=1&mode=missions'},
   URLSearchParams,
   Image:FakeImage,
-  setTimeout:fn=>{fn();return 1;},
-  setInterval:fn=>{timers.push(fn);return timers.length;},
+  navigator:{vibrate:()=>{}},
+  setTimeout:(fn,delay=0)=>{const timer={fn,delay,cancelled:false};timeoutTimers.push(timer);return timer;},
+  clearTimeout:timer=>{if(timer)timer.cancelled=true;},
+  setInterval:fn=>{intervalTimers.push(fn);return intervalTimers.length;},
   clearInterval:()=>{},
   console,Number,Math,JSON,Array,String
 };
+
+function runTimeoutsAtLeast(delay){
+  for(const timer of timeoutTimers){if(!timer.cancelled&&!timer.ran&&timer.delay>=delay){timer.ran=true;timer.fn();}}
+}
 
 const source=fs.readFileSync(path.join(__dirname,'..','park31.js'),'utf8');
 vm.runInNewContext(source,sandbox,{filename:'park31.js'});
 
 assert.equal(ids.p31Stage.dataset.liveLevel,'7','live walking score is shown');
 assert.equal(ids.p31Stage.dataset.artLevel,'7','walking level selects matching artwork');
-assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.7$/,'level 7 loads l07.webp');
+assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.8$/,'level 7 loads l07.webp');
 assert.equal(levelNodes[6].attributes['aria-current'],'step','live evolution dot is selected');
 assert.ok(!ids.p31Stage.classList.contains('is-lit'),'park starts inactive');
 ids.p31Companion.listeners.click();
@@ -72,10 +94,10 @@ assert.equal(ids.p31Companion.attributes['aria-pressed'],'true');
 assert.equal(storage.rpg_habits_v1,JSON.stringify({walking:{score:7}}),'tap never changes habit data');
 
 storage.rpg_habits_v1=JSON.stringify({walking:{score:0}});
-timers[0]();
+intervalTimers[0]();
 assert.equal(ids.p31Stage.dataset.liveLevel,'0');
 assert.equal(ids.p31Stage.dataset.artLevel,'1','technical level 0 deliberately uses Level 1 art');
-assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.7$/);
+assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.8$/);
 assert.ok(ids.p31Stage.classList.contains('is-zero'),'level 0 gets critical treatment');
 
 for(const missionDir of ['steps','nutrition','teeth','household','gratitude','good-deed','screen-time','cold-shower','no-weed','discipline','sleep']){
@@ -94,26 +116,47 @@ assert.ok(source.includes("var KEY='walking'"),'Park 3.1 stays connected to Step
 assert.ok(!source.includes('recomputeHabitFromLog'),'Park 3.1 cannot mutate the mission level');
 assert.ok(!source.includes('rpg_habitlog_v1\',JSON.stringify'),'Park 3.1 never writes the completion log');
 assert.equal((ids.p31Roster.innerHTML.match(/<button class="p31-slot/g)||[]).length,11,'the Park 3.1 roster reserves all eleven habit slots');
-assert.match(ids.p31Roster.innerHTML,/Steps[\s\S]*HQ artwork ready/,'Steps occupies the completed artwork slot');
-assert.match(ids.p31Roster.innerHTML,/Good Deed[\s\S]*HQ artwork ready/,'Good Deed uses the Paarse Paard artwork');
-assert.match(ids.p31Roster.innerHTML,/Screen Time[\s\S]*HQ artwork ready/,'Screen Time uses the Witte Paard artwork');
-assert.match(ids.p31Roster.innerHTML,/Cold Shower[\s\S]*HQ artwork ready/,'Cold Shower uses the Paarse Paard artwork');
-assert.match(ids.p31Roster.innerHTML,/Gardening[\s\S]*HQ artwork ready/,'Gardening uses the Witte Paard artwork');
-assert.match(ids.p31Roster.innerHTML,/Discipline[\s\S]*HQ artwork ready/,'Discipline uses the Witte Paard artwork');
-assert.match(ids.p31Roster.innerHTML,/Sleep[\s\S]*HQ artwork ready/,'Sleep uses the Paarse Paard artwork');
-assert.match(ids.p31Roster.innerHTML,/Nutrition[\s\S]*HQ artwork ready/,'Nutrition uses the Gouden Paard artwork');
-assert.match(ids.p31Roster.innerHTML,/Brush Teeth[\s\S]*HQ artwork ready/,'Brush Teeth uses the Gouden Paard artwork');
-assert.match(ids.p31Roster.innerHTML,/Household[\s\S]*HQ artwork ready/,'Household uses the Gouden Paard artwork');
-assert.match(ids.p31Roster.innerHTML,/Gratitude[\s\S]*HQ artwork ready/,'Gratitude uses the Gouden Paard artwork');
+for(const label of ['Steps','Good Deed','Screen Time','Cold Shower','Gardening','Discipline','Sleep','Nutrition','Brush Teeth','Household','Gratitude']){
+  assert.match(ids.p31Roster.innerHTML,new RegExp(label+'[\\s\\S]*Tik om te openen'),'the '+label+' artwork slot exposes the new tap/hold interaction');
+}
 assert.equal(ids.p31RosterCount.textContent,'11/11 artwork ready','all eleven complete companion sets are reported');
 
 const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
-assert.match(lab,/park31-lab\.js\?v=1\.0/,'the normal Lab loads its dedicated Daily Mission controller');
-assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.7"/,'Park 3.1 renders interactively inside the normal Lab');
+assert.match(lab,/park31-lab\.js\?v=1\.1/,'the normal Lab loads its dedicated Daily Mission controller');
+assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.8"/,'Park 3.1 renders interactively inside the normal Lab');
 assert.doesNotMatch(lab,/class="chatgpt-lab-card" href="park31\.html"/,'Park 3.1 is not hidden behind a separate Lab card');
 const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 assert.doesNotMatch(home,/park31\.html\?embed=1&amp;mode=missions/,'Park 3.1 remains Lab-only during this release');
-assert.match(source,/missionMode&&selected\)\{toggleMission\(selected\)/,'mission mode routes a companion tap to the host completion engine');
+assert.match(source,/var HOLD_MS=560/,'completion requires a deliberate hold');
+assert.match(source,/rosterEl\.addEventListener\('pointerdown',startPointerPress\)/,'the roster distinguishes press duration');
 assert.match(source,/mission\.private&&typeof w\.togglePrivateQuest/,'private companions keep the existing PIN-backed completion route');
+
+const walkingSlot=new Element('walking-slot');walkingSlot.dataset.mission='walking';
+const pointerEvent={target:walkingSlot,pointerType:'touch',button:0,pointerId:7,clientX:20,clientY:30,preventDefault(){this.prevented=true;}};
+ids.p31Roster.listeners.pointerdown(pointerEvent);
+ids.p31Roster.listeners.pointerup(pointerEvent);
+assert.equal(ids.p31Modal.hidden,false,'a short tap opens the companion detail');
+assert.equal(ids.p31ModalTitle.textContent,'Steps');
+assert.equal(missionToggles.length,0,'a short tap never completes the mission');
+
+const liveStorage=storage.rpg_habits_v1;
+ids.p31Next.listeners.click();
+assert.equal(ids.p31ModalMeta.textContent,'PREVIEW 2 · LIVE 0','plus enters read-only level preview');
+assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.8$/);
+assert.equal(storage.rpg_habits_v1,liveStorage,'preview does not touch real habit data');
+closeNodes[0].listeners.click();
+
+const holdEvent={target:walkingSlot,pointerType:'touch',button:0,pointerId:8,clientX:20,clientY:30,preventDefault(){this.prevented=true;}};
+ids.p31Roster.listeners.pointerdown(holdEvent);
+runTimeoutsAtLeast(560);
+ids.p31Roster.listeners.pointerup(holdEvent);
+assert.deepEqual(missionToggles,['walking'],'holding completes exactly one mission through the host controller');
+assert.equal(ids.p31Modal.hidden,true,'a hold completes without also opening the preview');
+
+const scrollEvent={target:walkingSlot,pointerType:'touch',button:0,pointerId:9,clientX:20,clientY:30,preventDefault(){}};
+ids.p31Roster.listeners.pointerdown(scrollEvent);
+ids.p31Roster.listeners.pointermove({...scrollEvent,clientY:48});
+runTimeoutsAtLeast(560);
+assert.deepEqual(missionToggles,['walking'],'moving to scroll cancels the hold action');
 
 console.log('Park 3.1 smoke test passed.');

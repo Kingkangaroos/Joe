@@ -15,7 +15,8 @@ Built by ChatGPT (OpenAI), 2026-08-31.
 - Levels 1–10 select their corresponding artwork automatically.
 - Technical level 0 reuses Level 1 artwork with a visible critical treatment.
 - On the standalone companion stage, tapping the large Steps character only toggles the park light/glow.
-- Inside the normal Lab roster, tapping a card completes or uncompletes today's corresponding Daily Mission. The existing habit log, XP, level recomputation and cloud-sync scope remain authoritative.
+- Inside the normal Lab roster, tapping a card opens its evolution sheet. The `− / +` controls are preview-only and never write mission or level data.
+- Holding a card for 560 ms completes or uncompletes today's corresponding Daily Mission. Moving to scroll cancels the hold. The existing habit log, XP, level recomputation and cloud-sync scope remain authoritative.
 - Gardening and Discipline retain the existing PIN-protected private-mission route.
 - `?level=0` through `?level=10` is available as a visual-review override; without it the live score is authoritative.
 
