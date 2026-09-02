@@ -46,7 +46,7 @@ Park 3.1 started with the **Steps / Walking** companion and now contains all ele
   `img/lab/park31/steps/l01.webp` through `img/lab/park31/steps/l10.webp`
 - Live `walking` score selects the corresponding Level 1–10 artwork.
 - Score 0 remains a real technical level and may reuse Level-1 art with the existing critical treatment, consistent with Park 3.0.
-- Tapping/clicking the Steps companion activates its light/glow interaction.
+- Tapping/clicking the large standalone Steps companion activates its light/glow interaction.
 - The new version belongs in the existing Lab and must coexist with Park 3.0.
 - Do not add Park 3.1 to Home.
 
@@ -77,7 +77,8 @@ Verified against GitHub on 2026-08-31:
 - Household, Gratitude, Nutrition and Brush Teeth use Joey's final Gouden Paard files.
 - Their source checkerboard backgrounds were removed technically and exported as transparent WebP files; no replacement artwork was generated.
 - The normal `lab.html` embeds the complete Park 3.1 roster directly.
-- The Lab roster runs in Daily Mission mode: tapping a public companion completes or uncompletes today's mission, updates XP and recalculates its live level through the existing habit engine.
+- The Lab roster runs in Daily Mission mode: a short tap opens that companion's read-only evolution sheet, where `− / +` only previews Levels 1–10. Holding a public companion for 560 ms completes or uncompletes today's mission, updates XP and recalculates its live level through the existing habit engine.
+- Moving more than 12 px cancels the hold, so normal Lab scrolling cannot accidentally claim a mission.
 - Gardening and Discipline keep the established PIN gate and write to the existing private daily-quest store.
 - Home/Main is deliberately unchanged in this release. The larger Home and persistence rebuild remains isolated until Joey explicitly approves that separate rollout.
 - Park 3.0 remains available as the rollback/reference implementation.
@@ -96,7 +97,8 @@ Verified against GitHub on 2026-08-31:
 - The chosen yawning Level-1 image is visibly the exact selected variant.
 - Park 3.0 is still available and unchanged.
 - Home is unchanged.
-- Tap/click glow works.
+- Short tap opens the selected companion without changing mission data; `− / +` previews without changing the live level.
+- A deliberate hold completes/uncompletes through the existing mission controller; scrolling cancels the hold.
 - Refresh and live Daily Mission level changes update correctly.
 - No black/corrupt assets on iPhone; layout and text remain usable.
 - Commit and deployed normal-Lab route are verified before reporting completion.
