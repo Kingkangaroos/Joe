@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
@@ -9,21 +9,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="park31.css?v=1.4">
+<link rel="stylesheet" href="park31.css?v=1.6">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=11.0" defer></script>
 <script src="sync.js?v=11.0" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
 <script src="xp.js?v=10.98" defer></script>
-<script src="park31.js?v=1.4" defer></script>
+<script src="park31.js?v=1.6" defer></script>
 </head>
 <body>
 <main class="p31-shell">
   <header class="p31-head">
     <a class="p31-back" href="lab.html#chatgpt-lab">‹ Lab</a>
     <div class="p31-kicker"><span></span> ChatGPT build · Park 3.1</div>
-    <h1>Steps Companion</h1>
-    <p>Jouw actuele Steps-level bepaalt welke evolutie in het park staat. Het karakter blijft voorlopig rustig staan; tikken schakelt alleen het parklicht in.</p>
+    <h1>Daily Mission Park</h1>
+    <p>All eleven mission companions now follow their own live level. They stay calmly in place for now; tapping only switches on their glow.</p>
   </header>
 
   <section class="p31-livebar" aria-label="Live Steps-status">
@@ -34,31 +34,31 @@
   <section class="p31-stage is-loading" id="p31Stage" aria-label="Park 3.1 Steps companion">
     <div class="p31-stars" aria-hidden="true"></div>
     <div class="p31-arch" aria-hidden="true"><span>GAMENFY</span><small>PARK 3.1</small></div>
-    <button class="p31-companion" id="p31Companion" type="button" aria-pressed="false" aria-label="Zet het parklicht aan">
+    <button class="p31-companion" id="p31Companion" type="button" aria-pressed="false" aria-label="Turn the park light on">
       <span class="p31-halo" aria-hidden="true"></span>
-      <img id="p31Art" src="img/lab/park31/steps/l01.webp?v=1.4" alt="Steps companion op level 1" draggable="false">
-      <span class="p31-error" id="p31Error" role="status" hidden>De Steps-afbeelding kon niet laden.</span>
+      <img id="p31Art" src="img/lab/park31/steps/l01.webp?v=1.6" alt="Steps companion at level 1" draggable="false">
+      <span class="p31-error" id="p31Error" role="status" hidden>The Steps artwork could not load.</span>
     </button>
-    <div class="p31-light-state" id="p31LightState" aria-live="polite">Parklicht uit</div>
+    <div class="p31-light-state" id="p31LightState" aria-live="polite">Park light off</div>
   </section>
 
   <section class="p31-roster" aria-label="Park 3.1 companion-formaat voor alle Daily Missions">
     <div class="p31-roster-head">
       <span><strong>Daily Mission companions</strong><small>11 habits · 10 evoluties per habit</small></span>
-      <span id="p31RosterCount">7/11 artwork ready</span>
+      <span id="p31RosterCount">11/11 artwork ready</span>
     </div>
     <div class="p31-roster-grid" id="p31Roster"></div>
   </section>
 
   <section class="p31-evolution" aria-label="Steps-levels 1 tot en met 10">
-    <div class="p31-evolution-head"><strong>Evolution path</strong><span id="p31EvolutionCopy">Level 1-art bij technisch level 0</span></div>
+    <div class="p31-evolution-head"><strong>Evolution path</strong><span id="p31EvolutionCopy">Level 1 artwork at technical level 0</span></div>
     <div class="p31-levels" id="p31Levels"></div>
     <div class="p31-progress" aria-hidden="true"><i id="p31Progress"></i></div>
   </section>
 
   <div class="p31-note">
-    <strong>Tik het karakter</strong>
-    <span>Alleen het licht en de gloed gaan aan. Beweging en andere interacties komen pas in een latere Park-versie.</span>
+    <strong>Tap a companion</strong>
+    <span>Only the light and glow switch on. Movement and other interactions belong to a later Park version.</span>
   </div>
 </main>
 </body>

@@ -12,10 +12,10 @@ Park 3.1 has **11 Daily Mission companions**, each with **10 level images**. Eve
 | `good_deed` | Good Deed | `good-deed/` |
 | `screen_time` | Screen Time | `screen-time/` |
 | `cold_shower` | Cold Shower | `cold-shower/` |
-| `weed_control` | No Weed | `no-weed/` |
+| `weed_control` | Gardening | `no-weed/` |
 | `no_porn` | Discipline | `discipline/` |
 | `sleep` | Sleep | `sleep/` |
 
 All directories live beneath `img/lab/park31/`. Example: Level 4 Cold Shower belongs at `img/lab/park31/cold-shower/l04.webp`.
 
-Steps, Good Deed, Screen Time, Cold Shower, No Weed, Discipline and Sleep are complete. The other four roster slots automatically replace their placeholder when the artwork for the current live level exists.
+All eleven companion sets are complete. Household, Gratitude, Nutrition and Brush Teeth use the final Gouden Paard artwork; their checkerboard source backgrounds were removed technically and exported with real transparency without regenerating the artwork.

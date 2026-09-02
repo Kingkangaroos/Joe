@@ -1,6 +1,6 @@
 # BUILDER — Current handoff
 
-Last updated: 2026-08-31  
+Last updated: 2026-09-02
 Owner: Joey Siemons  
 Primary builder: ChatGPT (OpenAI)
 
@@ -31,11 +31,11 @@ This repository is the durable source of truth for Gamenfy. This chat is the **B
 - Supabase project: `Kingkangaroos's Project`
 - Park implementation files on `main`: `park3.html`, `park3.css`, `park3.js`
 - Lab entry point: `lab.html`
-- Park 3.1 working branch: `chatgpt/park31-steps-hq`
+- Park 3.1 Lab release branch: `chatgpt/park31-lab-release`
 
 ## Park 3.1 — locked user decisions
 
-Park 3.1 starts with the **Steps / Walking** companion only.
+Park 3.1 started with the **Steps / Walking** companion and now contains all eleven Daily Mission companion sets.
 
 - The companion must remain recognizably the same character across Levels 1–10.
 - Joey chose the **second Level-1 alternative**: the sleepy, yawning/gaping version.
@@ -69,17 +69,27 @@ Verified against GitHub on 2026-08-31:
 - The live `walking` score selects the matching artwork; technical Level 0 reuses Level 1 art with critical styling.
 - Tapping only toggles light/glow and never writes mission completion or level data.
 - Park 3.1 renders directly inside the normal Lab; Park 3.0 remains separately available and Home remains untouched.
-- The Lab now reserves a roster for all 11 Daily Mission companions (10 levels each); `img/lab/park31/ASSET-MAP.md` is the canonical drop-in contract for the remaining artwork.
+- The Lab reserves a roster for all 11 Daily Mission companions (10 levels each); `img/lab/park31/ASSET-MAP.md` remains the canonical asset contract.
+
+## Park 3.1 full Lab roster — implemented 2026-09-02
+
+- Park 3.1 now has all 11 companion sets and all 110 level assets.
+- Household, Gratitude, Nutrition and Brush Teeth use Joey's final Gouden Paard files.
+- Their source checkerboard backgrounds were removed technically and exported as transparent WebP files; no replacement artwork was generated.
+- The normal `lab.html` embeds the complete Park 3.1 roster directly.
+- Home/Main is deliberately unchanged in this release. The larger Home and persistence rebuild remains isolated until Joey explicitly approves that separate rollout.
+- Park 3.0 remains available as the rollback/reference implementation.
 
 ## Next build sequence
 
-1. Review Park 3.1 visually on the branch preview.
-2. Decide later whether and how the static companion should move.
-3. Only after approval, consider bringing other Daily Mission companions into the Park 3.1 HQ format.
+1. Review all eleven Park 3.1 companions inside the normal Lab.
+2. Correct any artwork mapping or sizing issue there before touching Home.
+3. Only after explicit approval, move the mission interaction and simplified layout to Home.
+4. Decide later whether and how the static companions should move.
 
 ## Definition of done for Park 3.1 Steps
 
-- Ten approved HQ assets are present in GitHub at the canonical paths.
+- All 110 approved companion assets are present in GitHub at the canonical paths.
 - Levels 1–10 render the correct distinct images; Level 0 uses the agreed critical treatment.
 - The chosen yawning Level-1 image is visibly the exact selected variant.
 - Park 3.0 is still available and unchanged.
@@ -87,4 +97,4 @@ Verified against GitHub on 2026-08-31:
 - Tap/click glow works.
 - Refresh and live Daily Mission level changes update correctly.
 - No black/corrupt assets on iPhone; layout and text remain usable.
-- Commit, branch and preview URL are verified before reporting completion.
+- Commit and deployed normal-Lab route are verified before reporting completion.
