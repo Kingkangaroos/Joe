@@ -33,8 +33,9 @@ class Element {
 }
 
 const ids={};
-['p31Stage','p31Companion','p31Art','p31LiveLevel','p31State','p31Source','p31EvolutionCopy','p31Levels','p31Progress','p31LightState','p31Error','p31Roster','p31RosterCount','p31Modal','p31ModalArt','p31ModalTitle','p31ModalMeta','p31ModalLevel','p31ModalState','p31ModalProgress','p31ModalStatus','p31Prev','p31Next','p31LiveReset'].forEach(id=>{ids[id]=new Element(id);});
+['p31Stage','p31Companion','p31Art','p31LiveLevel','p31State','p31Source','p31EvolutionCopy','p31Levels','p31Progress','p31LightState','p31Error','p31Roster','p31RosterCount','p31Modal','p31ModalArt','p31ModalTitle','p31ModalMeta','p31ModalLevel','p31ModalState','p31ModalProgress','p31ModalStatus','p31Prev','p31Next','p31LiveReset','p31Celebration','p31CelebrationTitle','p31CelebrationMeta'].forEach(id=>{ids[id]=new Element(id);});
 ids.p31Modal.hidden=true;
+ids.p31Celebration.hidden=true;
 const levelNodes=Array.from({length:10},(_,index)=>{const node=new Element('level-'+(index+1));node.dataset.level=String(index+1);return node;});
 ids.p31Levels.querySelectorAll=selector=>selector==='[data-level]'?levelNodes:[];
 const intervalTimers=[];
@@ -49,7 +50,20 @@ const parentWindow={
   getHabits:()=>JSON.parse(storage.rpg_habits_v1),
   getCharacter:()=>({skills:{}}),
   getSkillLevel:()=>0,
-  toggleMission:key=>missionToggles.push(key),
+  toggleMission:key=>{
+    missionToggles.push(key);
+    const habits=JSON.parse(storage.rpg_habits_v1||'{}');
+    habits[key]=habits[key]||{};
+    habits[key].score=Math.min(10,Number(habits[key].score||0)+1);
+    storage.rpg_habits_v1=JSON.stringify(habits);
+    const date=new Date();
+    const dateKey=date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
+    const log=JSON.parse(storage.rpg_habitlog_v1||'{}');
+    log[key]=log[key]||{};
+    log[key][dateKey]=true;
+    storage.rpg_habitlog_v1=JSON.stringify(log);
+    return true;
+  },
   addEventListener:(type,fn)=>{parentListeners[type]=fn;}
 };
 const sandboxWindow={
@@ -79,13 +93,16 @@ const sandbox={
 function runTimeoutsAtLeast(delay){
   for(const timer of timeoutTimers){if(!timer.cancelled&&!timer.ran&&timer.delay>=delay){timer.ran=true;timer.fn();}}
 }
+function runImmediateTimeouts(){
+  for(const timer of timeoutTimers){if(!timer.cancelled&&!timer.ran&&timer.delay===0){timer.ran=true;timer.fn();}}
+}
 
 const source=fs.readFileSync(path.join(__dirname,'..','park31.js'),'utf8');
 vm.runInNewContext(source,sandbox,{filename:'park31.js'});
 
 assert.equal(ids.p31Stage.dataset.liveLevel,'7','live walking score is shown');
 assert.equal(ids.p31Stage.dataset.artLevel,'7','walking level selects matching artwork');
-assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.10$/,'level 7 loads l07.webp');
+assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.11$/,'level 7 loads l07.webp');
 assert.equal(levelNodes[6].attributes['aria-current'],'step','live evolution dot is selected');
 assert.ok(!ids.p31Stage.classList.contains('is-lit'),'park starts inactive');
 ids.p31Companion.listeners.click();
@@ -97,7 +114,7 @@ storage.rpg_habits_v1=JSON.stringify({walking:{score:0}});
 intervalTimers[0]();
 assert.equal(ids.p31Stage.dataset.liveLevel,'0');
 assert.equal(ids.p31Stage.dataset.artLevel,'1','technical level 0 deliberately uses Level 1 art');
-assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.10$/);
+assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.11$/);
 assert.ok(ids.p31Stage.classList.contains('is-zero'),'level 0 gets critical treatment');
 
 for(const missionDir of ['steps','nutrition','teeth','household','gratitude','good-deed','screen-time','cold-shower','no-weed','discipline','sleep']){
@@ -131,10 +148,11 @@ for(const label of ['Steps','Good Deed','Screen Time','Cold Shower','Gardening',
   assert.match(ids.p31Roster.innerHTML,new RegExp(label+'[\\s\\S]*Tik om te openen'),'the '+label+' artwork slot exposes the new tap/hold interaction');
 }
 assert.equal(ids.p31RosterCount.textContent,'11/11 artwork ready','all eleven complete companion sets are reported');
+assert.match(ids.p31Roster.innerHTML,/class="p31-help"[^>]*>HELP<\/span>/,'a mission inactive for at least three days writes HELP on its artwork window');
 
 const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
 assert.match(lab,/park31-lab\.js\?v=1\.1/,'the normal Lab loads its dedicated Daily Mission controller');
-assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.10"/,'Park 3.1 renders interactively inside the normal Lab');
+assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.11"/,'Park 3.1 renders interactively inside the normal Lab');
 assert.doesNotMatch(lab,/class="chatgpt-lab-card" href="park31\.html"/,'Park 3.1 is not hidden behind a separate Lab card');
 const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 assert.doesNotMatch(home,/park31\.html\?embed=1&amp;mode=missions/,'Park 3.1 remains Lab-only during this release');
@@ -153,7 +171,7 @@ assert.equal(missionToggles.length,0,'a short tap never completes the mission');
 const liveStorage=storage.rpg_habits_v1;
 ids.p31Next.listeners.click();
 assert.equal(ids.p31ModalMeta.textContent,'PREVIEW 2 · LIVE 0','plus enters read-only level preview');
-assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.10$/);
+assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.11$/);
 assert.equal(storage.rpg_habits_v1,liveStorage,'preview does not touch real habit data');
 closeNodes[0].listeners.click();
 
@@ -161,8 +179,14 @@ const holdEvent={target:walkingSlot,pointerType:'touch',button:0,pointerId:8,cli
 ids.p31Roster.listeners.pointerdown(holdEvent);
 runTimeoutsAtLeast(560);
 ids.p31Roster.listeners.pointerup(holdEvent);
+runImmediateTimeouts();
 assert.deepEqual(missionToggles,['walking'],'holding completes exactly one mission through the host controller');
 assert.equal(ids.p31Modal.hidden,true,'a hold completes without also opening the preview');
+assert.equal(ids.p31Celebration.hidden,false,'a real level increase opens the level-up celebration');
+assert.equal(ids.p31CelebrationTitle.textContent,'Steps');
+assert.equal(ids.p31CelebrationMeta.textContent,'LEVEL 1');
+const restoredWalkingCard=ids.p31Roster.innerHTML.match(/<button[^>]*data-mission="walking"[\s\S]*?<\/button>/)[0];
+assert.doesNotMatch(restoredWalkingCard,/class="p31-help"/,'completion removes HELP from the restored mission window');
 
 const scrollEvent={target:walkingSlot,pointerType:'touch',button:0,pointerId:9,clientX:20,clientY:30,preventDefault(){}};
 ids.p31Roster.listeners.pointerdown(scrollEvent);

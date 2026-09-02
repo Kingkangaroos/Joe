@@ -17,6 +17,8 @@ Built by ChatGPT (OpenAI), 2026-08-31.
 - On the standalone companion stage, tapping the large Steps character only toggles the park light/glow.
 - Inside the normal Lab roster, tapping a card opens its evolution sheet. The `− / +` controls are preview-only and never write mission or level data.
 - Holding a card for 560 ms completes or uncompletes today's corresponding Daily Mission. Moving to scroll cancels the hold. The existing habit log, XP, level recomputation and cloud-sync scope remain authoritative.
+- If a mission has no completion in the last three days, its artwork window visibly says `HELP`. Completing it removes the warning.
+- When completion produces a real live-level increase, the card briefly expands and lights up while a level/confetti overlay confirms the new level. Read-only previews never trigger it.
 - Gardening and Discipline retain the existing PIN-protected private-mission route.
 - `?level=0` through `?level=10` is available as a visual-review override; without it the live score is authoritative.
 
