@@ -88,8 +88,9 @@ Verified against GitHub on 2026-08-31:
 - All ten Cold Shower levels are now true transparent WebP cutouts. The embedded night amusement-park scenery is gone; characters, water effects and purple stone pedestals remain.
 - All ten Brush Teeth levels were re-cleaned. Checkerboard fragments and ragged detached effect remnants are removed while the companion progression stays intact.
 - Household Level 1 is now intentionally more confronting: the same companion is overwhelmed by trash, laundry, dirty dishes and dust, giving the mission a stronger immediate cleanup trigger.
+- Good Deed, Steps and Sleep Levels 1–10 are now true transparent WebP cutouts. Their characters and progression effects remain intact; the fixed navy rectangular backdrops are gone.
 - Every changed cutout was reviewed on pink, mint and dark backgrounds. Automated smoke coverage now verifies that the affected WebP files contain real alpha data.
-- Asset URLs were bumped to Park 3.1 version 1.9 so the normal Lab cannot keep stale artwork in cache.
+- Asset URLs were bumped to Park 3.1 version 1.10 so the normal Lab cannot keep stale artwork in cache.
 
 ## Next build sequence
 

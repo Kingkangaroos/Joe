@@ -32,10 +32,11 @@ Built by ChatGPT (OpenAI), 2026-08-31.
 - Park 3.1 reserves roster slots for all eleven current Daily Mission habits.
 - Each slot follows one fixed `l01.webp` through `l10.webp` asset contract documented in `img/lab/park31/ASSET-MAP.md`.
 - Steps, Sleep, Good Deed, Cold Shower, Screen Time, Gardening and Discipline are live with ten separate level images each.
-- Sleep and Good Deed use the original generated files from Joey's Paarse Paard branch.
+- Sleep and Good Deed keep the original generated artwork from Joey's Paarse Paard branch. Their embedded navy backdrops were technically removed on 2026-09-02, preserving the clouds, beds, stone platforms, hearts and gold effects as transparent cutouts.
 - Cold Shower keeps the approved Paarse Paard progression, but its ten amusement-park backgrounds were replaced and technically keyed to true transparency on 2026-09-02. The result is reviewed on pink, mint and dark backgrounds.
 - Screen Time, Gardening and Discipline use the corrected individual assets from Joey's Witte Paard branch, including the intentionally extreme Level 1 forms.
 - Gratitude and Nutrition use the final Gouden Paard files, technically cleaned to true transparency without generating replacement artwork.
 - Brush Teeth was re-cleaned on 2026-09-02: the central characters stay intact while checkerboard fragments and ragged detached effect remnants are removed from all ten levels.
 - Household Levels 2–10 keep their cleaned Gouden Paard artwork. Level 1 is intentionally replaced by a more confronting, overwhelmed starter form with trash, laundry, dishes and dust to make the cleanup mission motivating immediately.
+- Steps Levels 1–10 were technically extracted from their navy rectangles on 2026-09-02. The exact approved companions and running trails remain; only the fixed rectangular scenery is transparent.
 - In the embedded Lab, companions use a three-column card grid: recognizably based on Park 3.0, but slightly smaller so all eleven fit without one oversized focus image.
