@@ -116,7 +116,7 @@ The detailed locked art brief and production order are in `img/lab/park2/DAILY-M
 
 Mobile preview verification for the live Park-D integration passed: 5 exact Park-D images loaded, 6 pending, 0 old `.mg-evo-svg` characters, 0 relevant asset 404s and 0 JS/page errors. The Park 2.0 loader was also changed so it no longer probes known-missing evolution files just to fall back.
 
-### Open consistency cleanup — do not treat level 9 as Master
+### Level-band consistency cleanup — fixed in Lab
 The definitive Daily Mission rule is that **Master belongs to level 10 only**. The intended visual bands are:
 - 0–2 → Starter;
 - 3–4 → Apprentice;
@@ -124,4 +124,4 @@ The definitive Daily Mission rule is that **Master belongs to level 10 only**. T
 - 7–9 → Expert;
 - 10 → Master.
 
-The art-queue already records this contract. However, an older threshold remains in `park2.js` where the historical Park engine uses `habitAt:9` for its mastery stage, and `daily-garden.js` still contains older intermediate labels/bands from the superseded vector workbench. This is a **known small consistency cleanup**, not permission to change the 0–10 scoring semantics. A test-only helper branch failed at GitHub workflow parsing before product code ran and was intentionally not merged. Fix these thresholds only through a clean, reviewable code write and verify boundary levels 0/2/3/4/5/6/7/9/10 before merging.
+The active Lab implementations now follow this contract. `daily-garden.js` no longer uses the superseded Dormant/Awakening/Growing/Evolved labels, Advanced artwork starts at Level 5, and Master artwork starts at Level 10 only. Automated coverage verifies boundary levels 0/2/3/4/5/6/7/9/10. The current local `park2.js` is only a compatibility loader for the pinned historical Park 2.0 rollback, so that deliberately frozen reference implementation was not rewritten.
