@@ -47,8 +47,10 @@ Durable coverage now includes:
 - Fitbit retrospective reconciliation, manual-off behavior, symmetric uncheck/recheck and full manual-cycle integration;
 - retry-safe / exact-once Fitbit XP awards;
 - authoritative public habit replay after cloud baseline;
+- Character dated public Daily Mission writes, exact-date Walking/Sleep manual-off symmetry and historical XP attribution;
+- retirement of Character's obsolete v9.1 `rpg_daily_v1` → habitlog migration;
 - authoritative Daily Mission reset;
-- global streak net-activity + historical activity-date attribution;
+- global streak net-activity + historical activity-date attribution + canonical habitlog activity;
 - RPG sync scope and stale-realtime/pre-auth edit/deletion races;
 - remote-state refresh events + legacy storage bridge + Main refresh contract;
 - shared JS cache revalidation contract;
@@ -56,15 +58,19 @@ Durable coverage now includes:
 
 **Rule:** do not claim a new change is safe merely because a test file exists. Inspect the newest Actions run and exact Vercel deployment first.
 
-## Latest verified functional checkpoints
+## Latest verified functional checkpoint
 
-The following functional chains have been verified in GitHub Actions and deployed as Vercel production `READY`:
+Current verified production head:
 
+- `dcb5676ce95aad39a0b264850441430b28ae1d97` — full suite `success`, Vercel production `READY`.
+
+This head includes the earlier locked checkpoints:
+- `1715a9a16d150635d187d4f46837a1291811bf4b` — Character dated Daily guard + retired legacy backfill;
 - `99efac426a2b48293b0865eb49eea00f0b79ace6` — full Fitbit auto → manual uncheck → manual recheck cycle;
 - `d18864da02f2c2e82f6926dc554344854244efb0` — Daily Windows Fitbit override symmetry;
 - `01dcd190ae06bfa0fbc29cf87ab27734ab89fce2` — shared JS revalidation/cache contract.
 
-Earlier locked foundations include authoritative cloud-baseline replay, backdated streak attribution and retry-safe Fitbit XP awards.
+A temporary CI failure at `78af031…` was only a browserless test fixture missing `setTimeout`; it was corrected immediately and the full suite is green again on `dcb5676…`.
 
 ## Daily Mission source of truth — LOCKED
 
@@ -101,7 +107,7 @@ Persistence contract:
 - missed **completed calendar day**: −1 down to 0;
 - today is not treated as missed before the day ends.
 
-`sync.js` v11.7 now treats the day log as authoritative after the safe RPG cloud baseline: every public habit is replayed once baseline convergence is known, and replay runs again after later RPG remote applies. A stale `rpg_habits_v1` score/streak/lastChecked combination therefore cannot remain authoritative merely because `lastChecked` happens to match.
+`sync.js` v11.8 treats the day log as authoritative after the safe RPG cloud baseline: every public habit is replayed once baseline convergence is known, and replay runs again after later RPG remote applies. A stale `rpg_habits_v1` score/streak/lastChecked combination therefore cannot remain authoritative merely because `lastChecked` happens to match.
 
 Visual bands:
 - 0–2 → Starter
@@ -118,9 +124,11 @@ A public Daily Mission completion can still write `+15 XP` to the character XP a
 - Character Level explicitly sums only **non-habit** skill XP;
 - the Skills Total Level/average likewise excludes habits.
 
-Do not remove habit XP merely to “fix” the 0–10 display. It is activity/audit data, not the habit's visible level.
+Do not remove habit XP merely to “fix” the 0–10 display. It is audit/activity data, not the habit's visible level.
 
 One legacy category-XP statistic still aggregates all XP inside a category, including habit XP. Treat that as a separate product-definition question; do not silently change it as part of Daily Mission correctness work.
+
+Jarvis `checkHabit` currently writes the canonical completion/replay but does not itself manufacture the usual habit `+15 XP` event. This is no longer a correctness risk for Daily level or global streak because `checkin.js` v7.6 treats canonical `rpg_habitlog_v1` completion itself as independent activity evidence. Decide separately later whether Jarvis should also create the optional habit-XP audit event for category-XP consistency.
 
 ## Fitbit → Daily Missions retrospective reconciliation — v11.6
 
@@ -149,20 +157,29 @@ Locked behavior:
 
 Legacy ambiguous auto-ledger booleans migrate once using `__retrospective_v2_migrated=true`. XP award-ledger migration uses `__xp_ledger_v1_migrated=true`.
 
-### Manual override routes — now symmetric
+### Manual override routes — symmetric
 
 - Main current/backdated flow: protected;
 - Park 3.1 host controller: protected;
-- Character current-day `checkHabit`/`uncheckHabit`: centrally protected by `sync.js` v11.7;
-- Daily Windows direct dated-log route: explicitly calls `setAutoHabitManualOverride(key,date,suppressed)` because it intentionally bypasses the shared current-day wrappers.
+- Character current-day `checkHabit`/`uncheckHabit`: centrally protected by `sync.js`;
+- Character dated Daily Quest route: wrapped by `sync.js` v11.8; exact edited date controls `manual-off`, and `±XP` audit reason carries `(YYYY-MM-DD)`;
+- Daily Windows direct dated-log route: self-contained `rpg_autohabit_v1` fallback in v11.73 because that standalone page does not load Main's reconciler helper.
 
 A full regression proves: auto +15 → manual uncheck −15 → Fitbit cannot fight it → manual recheck +15 → Fitbit cannot add a second +15.
+
+### Character legacy backfill — RETIRED
+
+`character.html` still physically contains the old v9.1 one-time migration from legacy `rpg_daily_v1:<date>.quests` into `rpg_habitlog_v1` for rollback/history reasons. Modern `sync.js` v11.8 sets `rpg_daily_habit_backfill_v1=1` before Character's delayed 300 ms migration callback can execute.
+
+Why: `rpg_habitlog_v1` is now itself cloud-synced/canonical. Re-running the legacy migration on a clean/new device could otherwise resurrect a historical mission deliberately removed from canonical history.
+
+Regression: `tests/character-dated-daily-smoke.js` locks both the dated writer contract and retirement ordering.
 
 ### Live-data status — still pending natural client exercise
 
 Do **not** force this with SQL.
 
-Latest read-only Supabase audit on 2026-09-03 still showed the RPG row unchanged since `2026-09-03 11:12:10 UTC`, with the retrospective migration marker absent. That means the stored cloud row had not yet proven that Joey's authenticated Main had naturally exercised the new reconciler at the time of that read.
+Latest recorded read-only Supabase audit before this build chain showed the RPG row unchanged since `2026-09-03 11:12:10 UTC`, with the retrospective migration marker absent. That means the stored cloud row had not yet proven that Joey's authenticated Main had naturally exercised the reconciler at the time of that read.
 
 After Joey naturally opens Main again, re-query read-only and verify migration/backfill. Never manufacture the proof.
 
@@ -178,23 +195,30 @@ A confirmed reset:
 
 Regression: `tests/habit-reset-smoke.js`.
 
-## Global streak — v7.5
+## Global streak — v7.6
 
-Current rule:
-- XP is netted **per skill per actual activity day**;
-- a +15/−15 mission pair cancels only that mission's activity contribution;
+Current activity sources:
+- canonical public Daily Mission completion from `rpg_habitlog_v1`;
+- XP netted **per skill per actual activity day**;
+- completed venture steps;
+- explicit evening check-in.
+
+Consequences:
+- a canonical mission counts even if its writer (for example Jarvis) emitted no XP event;
+- a +15/−15 mission pair cancels only that mission's XP contribution;
+- removing one mission cannot erase another legitimate activity source on that date;
 - another positive skill on the same date keeps the day active;
-- completed venture steps independently count;
-- explicit evening check-in independently counts;
 - only dates represented by current retained evidence are reconciled destructively;
 - older streak history outside capped XP evidence is preserved;
 - historical `best` never shrinks.
 
-Backdated Main/Fitbit XP is physically written when reconciliation occurs, but its audit reason contains `(YYYY-MM-DD)`. `checkin.js` v7.5 prefers that explicit historical activity date, so filling 31 August on 3 September cannot falsely make 3 September an active streak day.
+Backdated Main/Fitbit/Character XP can be physically written later, but its audit reason contains `(YYYY-MM-DD)`. `checkin.js` prefers that explicit historical activity date, so filling 31 August on 3 September cannot falsely make 3 September active.
 
-Regression: `tests/streak-net-activity-smoke.js` and the dedicated backdated streak smoke.
+Main also wraps dated `checkHabitFor()` only to schedule a post-write streak/UI refresh, so Jarvis/Fitbit dated completion becomes visible without inventing a second mutation path.
 
-## Cloud sync + live refresh — v11.7
+Regressions: `tests/streak-net-activity-smoke.js` and `tests/streak-backdated-xp-smoke.js`.
+
+## Cloud sync + live refresh — v11.8
 
 `sync.js` maintains a persistent dirty journal and monotone high-water mark so older remote/realtime snapshots cannot roll newer local state backwards.
 
@@ -211,17 +235,19 @@ A real remote apply emits:
 
 The key-less bridge cannot cause sync echo writes because sync only schedules pushes for matching non-empty `event.key` values.
 
+v11.8 additionally owns Character's dated public Daily Quest guard and retires the obsolete Character v9.1 legacy daily backfill.
+
 ## Cache/PWA correctness — LOCKED
 
 `sw.js` is intentionally **push-only**: it has no `fetch` listener and no Cache API use.
 
-`vercel.json` now explicitly serves all own `*.js` with:
+`vercel.json` explicitly serves all own `*.js` with:
 
 `Cache-Control: no-cache, must-revalidate`
 
-This means legacy query labels such as `sync.js?v=11.0` cannot silently pin old app logic in Safari/WebView: the JS must revalidate after deploys. Daily Windows also explicitly points at `daily-windows.js?v=11.72`.
+This means legacy query labels such as `sync.js?v=11.0` cannot silently pin old app logic in Safari/WebView: the JS must revalidate after deploys. Daily Windows explicitly points at `daily-windows.js?v=11.73`.
 
-Regression: `tests/cache-revalidation-smoke.js` fails if the JS revalidation rule disappears or the service worker starts caching app files without a separate versioning contract.
+Regression: `tests/cache-revalidation-smoke.js` fails if JS revalidation disappears, the Daily Windows cache key regresses or the service worker starts caching app files without a separate versioning contract.
 
 ## Park 3.1 — current Lab state
 
@@ -279,28 +305,29 @@ Bottom navigation can visually drift upward while scrolling on iOS 26 standalone
 
 ## Next build sequence
 
-1. After Joey next naturally opens Main, inspect Supabase **read-only** for retrospective migration/backfill; never force history with SQL.
-2. Verify Walking historical qualified days, current Sleep, resulting Walking/Sleep levels and migration markers.
-3. Keep membership, reset, streak, exact-once XP, manual-off and sync contracts locked through CI.
-4. Continue non-device-dependent consistency audits before speculative UI changes.
-5. Decide separately whether category-XP cards should exclude habit XP; Character/Total Level already correctly exclude it.
-6. Budgeting + Meditation native Park 3.1 ten-level art remains a Creator task.
-7. Continue concrete Park interaction/visual fixes from Joey's feedback inside Lab.
-8. Keep Home visual layout unchanged without explicit rollout approval.
-9. Treat convincing locomotion as a real animation/frame asset problem, not a wobbling static-image trick.
+1. Continue the writer/migration audit: any remaining path that can mutate `rpg_habitlog_v1` must preserve canonical replay and, for Walking/Sleep, deliberate override semantics.
+2. After Joey next naturally opens Main, inspect Supabase **read-only** for retrospective migration/backfill; never force history with SQL.
+3. Verify historical qualified Walking/Sleep dates, resulting levels and migration markers.
+4. Keep membership, reset, streak, exact-once XP, manual-off and sync contracts locked through CI.
+5. Decide separately whether Jarvis should also create the optional +15 habit-XP audit event; it is no longer required for streak correctness.
+6. Decide separately whether category-XP cards should exclude habit XP; Character/Total Level already correctly exclude it.
+7. Budgeting + Meditation native Park 3.1 ten-level art remains a Creator task.
+8. Continue concrete Park interaction/visual fixes from Joey's feedback inside Lab.
+9. Keep Home visual layout unchanged without explicit rollout approval.
+10. Treat convincing locomotion as a real animation/frame asset problem, not a wobbling static-image trick.
 
 ## Definition of done for the current Daily Mission layer
 
-- Main, Character, Park and Daily Windows converge on the same public day log.
+- Main, Character, Park, Daily Windows and Jarvis converge on the same public day log.
 - Park public roster equals canonical RPG public 11; private dailies stay separate.
 - Public 0–10 levels come from authoritative replay; no weekly reset.
 - Manual, backdated, cloud and Fitbit changes converge.
 - Fitbit cannot fight deliberate Walking/Sleep uncheck or duplicate a manual recheck.
 - Late Fitbit correction can restore a legitimately qualified older date.
 - Fitbit XP is retry-safe/exact-once.
-- Reset cannot be undone by old log history.
+- Reset cannot be undone by old canonical/legacy history.
 - Character/Total Level do not double-count habit XP.
-- Global streak reflects net activity on the real activity date, not the audit-write date.
+- Global streak treats canonical Daily completion as real activity and still nets reversible XP on the real activity date.
 - Remote cloud applies refresh dependent views without reload.
 - Own JS revalidates after deployments; service worker stays push-only.
 - Automatic CI is green for newest functional commit.
