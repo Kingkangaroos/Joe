@@ -15,7 +15,7 @@
 <script src="sync.js?v=11.0" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
 <script src="xp.js?v=10.98" defer></script>
-<script src="park31.js?v=1.12" defer></script>
+<script src="park31.js?v=1.13" defer></script>
 </head>
 <body>
 <main class="p31-shell">
@@ -27,8 +27,8 @@
   </header>
 
   <section class="p31-livebar" aria-label="Live Steps-status">
-    <span class="p31-live"><i></i><span id="p31Source">LIVE · TODAY’S MISSIONS</span></span>
-    <span class="p31-livelevel"><strong id="p31LiveLevel">LEVEL 0</strong><small id="p31State">CRITICAL</small></span>
+    <span class="p31-live"><i></i><span id="p31Source">LIVE · DAILY MISSION LEVEL</span></span>
+    <span class="p31-livelevel"><strong id="p31LiveLevel">LEVEL 0</strong><small id="p31State">STARTER</small></span>
   </section>
 
   <section class="p31-stage is-loading" id="p31Stage" aria-label="Park 3.1 Steps companion">
@@ -36,7 +36,7 @@
     <div class="p31-arch" aria-hidden="true"><span>GAMENFY</span><small>PARK 3.1</small></div>
     <button class="p31-companion" id="p31Companion" type="button" aria-pressed="false" aria-label="Turn the park light on">
       <span class="p31-halo" aria-hidden="true"></span>
-      <img id="p31Art" src="img/lab/park31/steps/l01.webp?v=1.12" alt="Steps companion at level 1" draggable="false">
+      <img id="p31Art" src="img/lab/park31/steps/l01.webp?v=1.13" alt="Steps companion at level 1" draggable="false">
       <span class="p31-error" id="p31Error" role="status" hidden>The Steps artwork could not load.</span>
     </button>
     <div class="p31-light-state" id="p31LightState" aria-live="polite">Park light off</div>
@@ -80,10 +80,10 @@
     <button class="p31-close" type="button" data-p31-close aria-label="Close">×</button>
     <div class="p31-modal-kicker" id="p31ModalMeta">LIVE LEVEL</div>
     <h2 id="p31ModalTitle" tabindex="-1">Mission</h2>
-    <div class="p31-modal-art"><img id="p31ModalArt" src="img/lab/park31/steps/l01.webp?v=1.12" alt="" draggable="false"></div>
+    <div class="p31-modal-art"><img id="p31ModalArt" src="img/lab/park31/steps/l01.webp?v=1.13" alt="" draggable="false"></div>
     <div class="p31-level-row">
       <button id="p31Prev" type="button" aria-label="Preview previous level">−</button>
-      <div><strong id="p31ModalLevel">Level 1</strong><span id="p31ModalState">Starter</span></div>
+      <div><strong id="p31ModalLevel">Level 0</strong><span id="p31ModalState">Starter</span></div>
       <button id="p31Next" type="button" aria-label="Preview next level">+</button>
     </div>
     <div class="p31-modal-progress" aria-hidden="true"><i id="p31ModalProgress"></i></div>
