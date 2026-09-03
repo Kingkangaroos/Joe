@@ -109,11 +109,9 @@
   };
 })();
 
-// v11.4: keep the Fitbit -> Daily Mission reconciliation separate from xp.js,
+// v11.5: keep the Fitbit -> Daily Mission reconciliation separate from xp.js,
 // but replace xp.js' legacy today+yesterday checker SYNCHRONOUSLY before Main
 // can call it. Calls made while the safer module is still loading are queued.
-// This closes the startup race where the old checker could mutate stale local
-// state before sync.js had applied the newest cloud snapshot.
 (function () {
   'use strict';
   if (window.__gamenfyAutohabitLoaderInstalled) return;
@@ -128,7 +126,7 @@
 
   if (document.querySelector('script[data-gamenfy-autohabit-reconcile]')) return;
   const script = document.createElement('script');
-  script.src = 'autohabit-reconcile.js?v=11.4';
+  script.src = 'autohabit-reconcile.js?v=11.5';
   script.dataset.gamenfyAutohabitReconcile = '1';
   document.head.appendChild(script);
 })();
