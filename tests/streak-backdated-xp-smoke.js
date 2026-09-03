@@ -25,7 +25,9 @@ const xpLog=[
   {skill:'reading',amount:40,reason:'Read 30 pages',date:'2026-09-02'}
 ];
 const window={getCharacter:()=>({xpLog})};
-const sandbox={window,localStorage,Date,String,JSON,Number,Object,Math,console};
+// checkin.js is browser code. Keep timers inert so this smoke exercises only the
+// synchronous streak reconciliation while still providing the browser API shape.
+const sandbox={window,localStorage,Date,String,JSON,Number,Object,Math,console,setTimeout:()=>0,clearTimeout:()=>{}};
 const source=fs.readFileSync(path.join(__dirname,'..','checkin.js'),'utf8');
 const streakSource=source.split('// v11.5:')[0];
 vm.runInNewContext(streakSource,sandbox,{filename:'checkin-streak.js'});
