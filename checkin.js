@@ -109,14 +109,26 @@
   };
 })();
 
-// v11.3: keep the Fitbit -> Daily Mission reconciliation separate from xp.js
-// so this safety fix can be rolled back independently. checkin.js is loaded on
-// Main after xp.js, which makes it a stable hook without changing the RPG engine.
+// v11.4: keep the Fitbit -> Daily Mission reconciliation separate from xp.js,
+// but replace xp.js' legacy today+yesterday checker SYNCHRONOUSLY before Main
+// can call it. Calls made while the safer module is still loading are queued.
+// This closes the startup race where the old checker could mutate stale local
+// state before sync.js had applied the newest cloud snapshot.
 (function () {
   'use strict';
+  if (window.__gamenfyAutohabitLoaderInstalled) return;
+  window.__gamenfyAutohabitLoaderInstalled = true;
+
+  const queued = window.__gamenfyAutoHabitQueuedCallbacks = window.__gamenfyAutoHabitQueuedCallbacks || [];
+  window.__gamenfyLegacyAutoCheckHealthHabits = window.autoCheckHealthHabits;
+  window.autoCheckHealthHabits = function (onChange) {
+    if (typeof onChange === 'function') queued.push(onChange);
+    return Promise.resolve(0);
+  };
+
   if (document.querySelector('script[data-gamenfy-autohabit-reconcile]')) return;
   const script = document.createElement('script');
-  script.src = 'autohabit-reconcile.js?v=11.3';
+  script.src = 'autohabit-reconcile.js?v=11.4';
   script.dataset.gamenfyAutohabitReconcile = '1';
   document.head.appendChild(script);
 })();
