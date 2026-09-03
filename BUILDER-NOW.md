@@ -1,6 +1,6 @@
 # BUILDER — Current handoff
 
-Last updated: 2026-09-02
+Last updated: 2026-09-03
 Owner: Joey Siemons  
 Primary builder: ChatGPT (OpenAI)
 
@@ -113,11 +113,27 @@ Verified against GitHub on 2026-08-31:
 - The existing Park 3.1 Steps evolution is reused as the runner; the prototype is read-only and cannot modify habits, XP or health data.
 - Home/Main remains unchanged pending Joey's later judgment of the Lab prototype.
 
+## Fitbit → Daily Missions retrospective reconciliation — implemented 2026-09-03
+
+- Joey explicitly requested Steps and Sleep to auto-complete even retrospectively when a later Fitbit sync proves that the target was reached.
+- Live Supabase inspection confirmed the ingest itself was healthy and exposed the real failure case: a finalized historical Steps day could exceed 10,000 while `rpg_habitlog_v1` still missed that day because legacy `rpg_autohabit_v1` had already marked it as settled.
+- `autohabit-reconcile.js` now scans every available Fitbit calendar day through today instead of only today + yesterday.
+- A failed threshold is never permanently settled. If Fitbit later finalizes or corrects an older day upward, the mission can self-heal on the next Main reconciliation.
+- The authoritative `rpg_habitlog_v1` is updated first, then the 0–10 habit score/streak is recomputed from the full log. There is no weekly reset.
+- Walking remains 10,000 steps. Sleep remains the existing 7-hour / 420-minute automatic threshold.
+- A deliberate manual uncheck is stored as `manual-off`; Fitbit will not fight that choice. Park 3.1 Lab writes the same override for Walking/Sleep.
+- Legacy ambiguous auto flags are migrated safely: genuine completed log days remain complete; stale settled misses reopen; historical manual unchecks are inferred from the newest manual XP-log event when possible.
+- Reconciliation can rerun when the app regains focus/visibility, so a same-day Fitbit update can be caught without requiring a full reload.
+- The fix is isolated from `xp.js` and loaded by `checkin.js`, making rollback independent from the RPG engine.
+- Smoke coverage: `tests/autohabit-retrospective-smoke.js` verifies late backfill, stale-miss reopening, score recomputation and manual-uncheck protection.
+- Vercel production deployment for the final test commit is READY.
+
 ## Next build sequence
 
-1. Keep reviewing the eleven companions and their HELP/level-up feedback in the normal Lab; correct concrete feedback there.
-2. Keep Home untouched until Joey explicitly approves a separate Home rollout.
-3. Treat convincing character movement as a separate frame/animation-asset job; do not fake it with a wobbling static image.
+1. Let the next real Main open/sync exercise the retrospective reconciler against Joey's live local/session state; do not force-write historical habit data directly from the database.
+2. Keep reviewing the eleven companions and their HELP/level-up feedback in the normal Lab; correct concrete feedback there.
+3. Keep Home visual/layout work untouched until Joey explicitly approves a separate Home rollout.
+4. Treat convincing character movement as a separate frame/animation-asset job; do not fake it with a wobbling static image.
 
 ## Definition of done for Park 3.1 Steps
 
@@ -125,7 +141,7 @@ Verified against GitHub on 2026-08-31:
 - Levels 1–10 render the correct distinct images; Level 0 uses the agreed critical treatment.
 - The chosen yawning Level-1 image is visibly the exact selected variant.
 - Park 3.0 is still available and unchanged.
-- Home is unchanged.
+- Home visual layout is unchanged; the authorized Fitbit mission logic may run on Main.
 - Short tap opens the selected companion without changing mission data; the explicit live action or deliberate hold changes completion, while `− / +` previews remain read-only.
 - A deliberate hold completes/uncompletes through the existing mission controller; scrolling cancels the hold.
 - Refresh and live Daily Mission level changes update correctly.
