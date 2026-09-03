@@ -44,4 +44,21 @@ assert.match(source,/budgeting'.*fallback:'budgeting'/s,'Budgeting uses explicit
 assert.match(source,/meditation'.*fallback:'meditation'/s,'Meditation uses explicit fallback art until native Park 3.1 evolution is approved');
 assert.match(source,/PRIVATE_MISSIONS[\s\S]*weed_control[\s\S]*no_porn/,'private companion art remains available without corrupting public membership');
 
-console.log('Daily Mission membership smoke: RPG public 11 == Park public 11; private dailies stay separate.');
+// Jarvis deployed source is intentionally not committed because it currently
+// contains server-only credentials. Its durable deployment marker/README must
+// nevertheless carry the exact canonical roster so the next secure redeploy
+// cannot silently repeat the observed Budgeting/Good Deed/Grounding drift.
+const jarvisReadme=fs.readFileSync(path.join(__dirname,'..','server','jarvis','README.md'),'utf8');
+const jarvisMarker=fs.readFileSync(path.join(__dirname,'..','server','jarvis','index.ts'),'utf8');
+for(const key of canonical){
+  assert.match(jarvisReadme,new RegExp('`'+key+'`'),'Jarvis redeploy contract must name canonical habit '+key);
+  assert.ok(jarvisMarker.includes(key),'Jarvis deployment marker must retain canonical habit '+key);
+}
+assert.match(jarvisReadme,/`grounding` — disabled/,'Jarvis contract explicitly rejects disabled Grounding');
+assert.match(jarvisReadme,/`no_porn` \/ `weed_control` — private/,'Jarvis contract explicitly keeps private dailies out of public check_habit');
+assert.match(jarvisReadme,/Budgeting is not marked as a habit/,'current deployed Budgeting drift stays documented until a secure redeploy');
+assert.match(jarvisReadme,/Good Deed is missing/,'current deployed Good Deed drift stays documented until a secure redeploy');
+assert.match(jarvisReadme,/Grounding is still marked as a habit/,'current deployed Grounding drift stays documented until a secure redeploy');
+assert.match(jarvisReadme,/environment secret/,'Jarvis redeploy remains tied to credential hardening rather than re-embedding a secret');
+
+console.log('Daily Mission membership smoke: RPG + Park public 11 and Jarvis redeploy contract stay canonical; private/disabled entries stay separate.');
