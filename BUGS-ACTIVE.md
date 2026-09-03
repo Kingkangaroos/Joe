@@ -37,8 +37,6 @@ Regression checks passed against the exact merged implementation:
 - normal update/delete convergence;
 - two writes committing in reverse order (older write physically lands last → detected + healed).
 
-Vercel production deployment is READY. The old `sync.js?v=11.0` URL was also fetched directly from production and already returns the new v11.2 implementation with `max-age=0, must-revalidate`, so no stale service-worker cache is involved (`sw.js` does not cache app assets).
-
 **Still verify on Joey's installed iPhone PWA:** repeat the original Saturday/10k Steps → Skills → Home flow several times and background/reopen once. If all stays checked, this bug can move to resolved/history.
 
 ---
@@ -63,8 +61,8 @@ Replaying the canonical +1/−1 rules after adding those qualified days gives:
 
 No historical habit data was force-written with SQL. The normal authenticated app/sync path remains authoritative.
 
-### Fix now live
-`autohabit-reconcile.js` v11.4:
+### Fix now live — v11.5
+`autohabit-reconcile.js`:
 - scans every available Fitbit calendar day through today, rather than only today + yesterday;
 - treats a failed threshold as reopenable so later Fitbit corrections can still self-heal it;
 - writes a missing qualified day to `rpg_habitlog_v1`, then calls the existing authoritative `recomputeHabitFromLog()`;
@@ -74,11 +72,23 @@ No historical habit data was force-written with SQL. The normal authenticated ap
 - waits until `sync.js` has either applied that baseline locally or has proof of a genuinely newer local dirty write before it mutates anything;
 - safely aborts/retries instead of running on a stale startup snapshot.
 
-`checkin.js` v11.4 synchronously gates the legacy `xp.js` today+yesterday checker while the new reconciler loads, queues any early Main callback, and hands it to the cloud-baselined reconciler. This closes the startup race in which the legacy checker could otherwise run first.
+`checkin.js` v11.5 synchronously gates the legacy `xp.js` today+yesterday checker while the new reconciler loads, queues any early Main callback, and hands it to the cloud-baselined reconciler.
 
-Regression coverage lives in `tests/autohabit-retrospective-smoke.js`. Latest related Vercel production deployments are READY.
+### One-time auto-ledger ambiguity migration
+Legacy boolean `true` in `rpg_autohabit_v1` used to mean both “completed” and “past miss already settled”. v11.5 resolves that ambiguity once and stores `__retrospective_v2_migrated=true`.
 
-**Still verify on Joey's installed iPhone/PWA:** open Main after a Fitbit sync, then inspect an older qualified date (notably Walking 31 Aug) and today's Sleep. The app should self-reconcile through its normal sync engine.
+During migration, qualified missing Fitbit days can be repaired while stale settled misses reopen. After migration, a `true` auto-ledger entry means that date was genuinely present in the authoritative habitlog. If that confirmed date later disappears from `rpg_habitlog_v1` on a safe baseline, the reconciler interprets the disappearance as a deliberate manual uncheck and converts the ledger entry to `manual-off` rather than re-adding the date.
+
+This protects:
+- Main unchecks (which also write `manual-off` immediately);
+- Park 3.1 unchecks (same immediate override);
+- Character/backdated unchecks, even though Character uses its own Daily Mission UI, because the post-migration ledger invariant detects the confirmed-date removal on the next pass.
+
+Regression coverage: `tests/autohabit-retrospective-smoke.js` includes late backfill, stale-miss reopening, startup baseline protection, Main manual-off and simulated Character/backdated removal after migration.
+
+At the latest non-destructive cloud check, `app_state:rpg` was still last updated `2026-09-03 11:12:10.174+00`; Walking was Level 10, Sleep Level 0, Walking 31 Aug and Sleep 3 Sep were still absent, and the migration marker was null. Joey's real Main session therefore had **not yet run the new reconciler** at that point.
+
+**Still verify on Joey's installed iPhone/PWA:** open Main after a Fitbit sync, then inspect Walking 31 Aug and current Sleep. The app should self-reconcile through its normal sync engine.
 
 ---
 
@@ -90,21 +100,15 @@ Joey reports that the bottom navigation (Main / Body / Skills / Finance / Jarvis
 
 ### Strong external match found
 This symptom closely matches open WebKit bugs, not just a Gamenfy CSS mistake:
-- WebKit #301172 — **“Fixed and sticky elements do not render in correct position while scrolling in PWA”**. Report explicitly describes standalone PWAs where fixed/sticky elements drift approximately halfway through the viewport during scrolling.
-  https://bugs.webkit.org/show_bug.cgi?id=301172
-- WebKit #312149 — **“iOS 26: position: fixed; bottom: 0 element painted at wrong vertical position”**. Report specifically describes bottom navigation/footer-style elements ending up mid-viewport after scroll gestures; it also notes that JS/CSSOM measurements can report the correct position while the element is visibly painted elsewhere.
-  https://bugs.webkit.org/show_bug.cgi?id=312149
-
-Both are iOS 26 / WebKit Layout & Rendering issues. This means a JS fix based only on `getBoundingClientRect()` / `visualViewport.height` may be unable to detect the visual failure, and blindly adding transforms / `!important` rules is not a reliable fix.
+- WebKit #301172 — **“Fixed and sticky elements do not render in correct position while scrolling in PWA”**.
+- WebKit #312149 — **“iOS 26: position: fixed; bottom: 0 element painted at wrong vertical position”**.
 
 Important Gamenfy history:
 - An early combined test branch contained stronger fixed-position/transform/safe-area CSS.
 - That mixed branch was deliberately closed and **the bottom-nav hardening was NOT merged** because it could not be visually verified against the installed iOS PWA.
 - Current production still uses the existing `topbar.js` bottom bar implementation.
 
-Possible fallback if the bug proves persistent on Joey's device: prototype an **iOS-standalone-only non-fixed navigation architecture** (e.g. shell/internal scroller with nav as normal-flow sibling) instead of piling more CSS onto `position:fixed`. That is a larger layout change and should be tested on a branch first.
-
-Next useful input: Joey's screenshot showing the wrong bar position, ideally while the issue is happening. Then compare the symptom with WebKit #301172/#312149 before choosing a workaround.
+Possible fallback if the bug proves persistent on Joey's device: prototype an **iOS-standalone-only non-fixed navigation architecture** (e.g. shell/internal scroller with nav as normal-flow sibling) instead of piling more CSS onto `position:fixed`.
 
 ---
 
@@ -114,14 +118,6 @@ Next useful input: Joey's screenshot showing the wrong bar position, ideally whi
 PR #8 / production commit `63aef5ca420e233b0adcde4b05bc15a48fcab21c` removed Character's old split-brain Daily implementation.
 
 Public Daily Missions are generated from `RPG_DEFAULT_SKILLS` entries where `isHabit === true`, `active !== false`, and `!private`, and their per-day completion state comes from `rpg_habitlog_v1`. Their live level comes from `rpg_habits_v1` after authoritative replay of that log. Public Character toggles no longer mirror a competing completion flag into `rpg_daily_v1`; No Porn and Weed Control remain separate private quests.
-
-Regression verification covered:
-- exact 11 public + 2 private;
-- Home check reflected in Character;
-- backdated Character check/uncheck replaying canonical habit state;
-- public mutations not creating public `rpg_daily_v1` quest flags;
-- private mutation retaining its private quest flag;
-- Park 3.1 reading the same live habit scores and routing public completion through the host mission controller.
 
 Non-negotiable membership:
 - **Tennis, Reading, Finger Whistling are regular skills and must NEVER enter the Daily Mission grid.**
@@ -146,7 +142,7 @@ Current Park 3.1 facts:
 - the normal `lab.html` embeds Park 3.1 in Daily Mission mode;
 - Park 3.0 remains separately available as rollback/reference;
 - Home/Main has not received the Park 3.1 visual layout;
-- the old `img/lab/park2/DAILY-MISSION-ART-QUEUE.md` may be useful as historical design context but is **not** the current missing-asset task list.
+- the old `img/lab/park2/DAILY-MISSION-ART-QUEUE.md` is historical design context, not the current missing-asset task list.
 
 ### Canonical level bands — fixed and regression-covered
 The definitive Daily Mission visual bands are:
@@ -156,4 +152,7 @@ The definitive Daily Mission visual bands are:
 - 7–9 → Expert;
 - 10 → Master.
 
-Park 3.1 v1.13 removed stale `BUILDING` / `ELITE` labels and now follows the same contract at boundary levels 0/2/3/4/5/6/7/9/10. Technical Level 0 remains a real level: it may reuse Level-1 artwork with the critical visual treatment, but the UI now displays **Level 0 and 0% progress**, not the fallback art level. Fitbit reconciliation also triggers an immediate Park refresh event instead of waiting for the periodic poll.
+Park 3.1 v1.13 removed stale `BUILDING` / `ELITE` labels and follows the same contract at boundary levels 0/2/3/4/5/6/7/9/10. Technical Level 0 remains a real level: it may reuse Level-1 artwork with the critical visual treatment, but the UI displays **Level 0 and 0% progress**, not the fallback art level. Fitbit reconciliation also triggers an immediate Park refresh event instead of waiting for the periodic poll.
+
+## Health Trail consistency
+`health-trail.js` v1.1 remains read-only and still uses the agreed 70% public Daily Mission average + 30% available Fitbit recovery formula. It reads the same `getHabits()` levels and now listens to manual mission changes, retrospective Fitbit changes, remote-state application, focus and foreground events. Rapid events coalesce Fitbit requests so Park and Health Trail converge immediately without a request fan-out.
