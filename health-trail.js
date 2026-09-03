@@ -1,5 +1,6 @@
-/* Health Trail Lab prototype v1.1 — ChatGPT (OpenAI)
-   Read-only: public Daily Mission levels + Fitbit recovery signals.
+/* Health Trail Lab prototype v1.2 — ChatGPT (OpenAI)
+   Read-only: public Daily Mission levels + Fitbit recovery signals + cautious
+   personal-baseline insights. This is a wearable trend experiment, not diagnosis.
 */
 (function(){
   'use strict';
@@ -17,6 +18,15 @@
     return values.length%2?values[middle]:(values[middle-1]+values[middle])/2;
   }
   function dateKey(date){date=date||new Date();return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');}
+  function minutesLabel(value){
+    value=Math.max(0,Math.round(number(value)||0));
+    var h=Math.floor(value/60),m=value%60;
+    return h+'u'+(m?String(m).padStart(2,'0'):'00');
+  }
+  function signed(value,suffix){
+    value=Math.round(value||0);
+    return (value>0?'+':'')+value+(suffix||'');
+  }
   function missionScore(defs,habits){
     defs=defs||{};habits=habits||{};
     var keys=Object.keys(defs).filter(function(key){var def=defs[key];return def&&def.isHabit&&def.active!==false&&!def.private;});
@@ -52,10 +62,144 @@
     if(score<9)return {key:'strong',label:'Sterk',message:'Je systeem draait sterk. Hou de lijn vast zonder je herstel te vergeten.'};
     return {key:'king',label:'King mode',message:'Missies en herstel staan allebei hoog. Dit is het tempo dat je wilt beschermen.'};
   }
+
+  // ── Read-only Fitbit insight engine ────────────────────────────────
+  // Principles:
+  // - compare to Joey's own recent wearable baseline, not population cut-offs;
+  // - require >=5 historical values before calling a personal-baseline change;
+  // - a recovery warning requires HRV + resting HR to move together;
+  // - sleep can use the app's existing 7h mission threshold as a practical nudge;
+  // - steps only nudge later in the day, never label early-day inactivity as failure;
+  // - intentionally do not interpret SpO2/breathing/skin-temperature as diagnosis.
+  function valuesFor(data,dates,key){
+    return dates.map(function(day){return number((data[day]||{})[key]);}).filter(function(value){return value!==null;});
+  }
+  function sourceFor(data,today){
+    var dates=Object.keys(data||{}).filter(function(day){return /^\d{4}-\d{2}-\d{2}$/.test(day)&&day<=today;}).sort();
+    var sourceDate=dates.length?dates[dates.length-1]:null;
+    return {dates:dates,date:sourceDate,day:sourceDate?(data[sourceDate]||{}):null};
+  }
+  function healthInsights(data,today,hour){
+    data=data||{};today=today||dateKey();
+    if(hour===undefined||hour===null)hour=(new Date()).getHours();
+    hour=Number(hour);
+    var source=sourceFor(data,today);
+    if(!source.day)return [{key:'waiting',tone:'neutral',priority:0,title:'Nog geen Fitbit-trend',body:'Zodra er genoeg dagen binnen zijn, vergelijkt dit experiment je herstel met je eigen recente baseline.',meta:'Read-only · geen diagnose'}];
+
+    var day=source.day,sourceDate=source.date,dates=source.dates;
+    var historyDates=dates.filter(function(d){return d<sourceDate;}).slice(-14);
+    var hrvHistory=valuesFor(data,historyDates,'hrvMs');
+    var rhrHistory=valuesFor(data,historyDates,'restingHR');
+    var stepsHistory=valuesFor(data,historyDates,'steps');
+    var hrvBase=hrvHistory.length>=5?median(hrvHistory):null;
+    var rhrBase=rhrHistory.length>=5?median(rhrHistory):null;
+    var stepsBase=stepsHistory.length>=5?median(stepsHistory):null;
+    var hrv=number(day.hrvMs),rhr=number(day.restingHR),steps=number(day.steps),sleep=number(day.sleepMinutes);
+    var insights=[];
+
+    // Require two independent recovery signals to move together before warning.
+    if(hrv!==null&&rhr!==null&&hrvBase!==null&&rhrBase!==null){
+      var hrvDelta=((hrv/hrvBase)-1)*100;
+      var rhrDelta=rhr-rhrBase;
+      if(hrvDelta<=-12&&rhrDelta>=4){
+        insights.push({
+          key:'recovery_load',tone:'watch',priority:100,
+          title:'Herstelsignalen wijken samen af',
+          body:'HRV staat '+Math.abs(Math.round(hrvDelta))+'% onder je eigen recente mediaan en rusthartslag '+signed(rhrDelta,' bpm')+' erboven. Kies desnoods een lichtere trainingsdag en geef slaap/herstel voorrang.',
+          meta:'Twee signalen · vergeleken met jouw eigen baseline'
+        });
+      }else if(hrvDelta>=-5&&rhrDelta<=1){
+        insights.push({
+          key:'recovery_steady',tone:'good',priority:20,
+          title:'Herstelsignalen zijn stabiel',
+          body:'HRV en rusthartslag geven samen geen duidelijke herstelwaarschuwing tegenover je recente baseline. Gebruik hoe je je voelt als laatste check.',
+          meta:'HRV + rusthartslag · persoonlijke baseline'
+        });
+      }
+    }
+
+    // Compare the latest three sleep opportunities with an older personal baseline.
+    var recentSleepDates=dates.slice(-3);
+    var recentSleep=valuesFor(data,recentSleepDates,'sleepMinutes');
+    var baselineEnd=recentSleepDates.length?recentSleepDates[0]:sourceDate;
+    var sleepBaseDates=dates.filter(function(d){return d<baselineEnd;}).slice(-14);
+    var sleepBaseValues=valuesFor(data,sleepBaseDates,'sleepMinutes');
+    var sleepBase=sleepBaseValues.length>=5?median(sleepBaseValues):null;
+    var recentSleepAvg=recentSleep.length>=2?average(recentSleep):null;
+    var sleepTrendAdded=false;
+    if(recentSleepAvg!==null&&sleepBase!==null&&(recentSleepAvg<=sleepBase-45||recentSleepAvg<420)){
+      sleepTrendAdded=true;
+      insights.push({
+        key:'sleep_trend',tone:'watch',priority:90,
+        title:'Slaap loopt een paar dagen achter',
+        body:'Je recente gemiddelde is '+minutesLabel(recentSleepAvg)+', tegenover ongeveer '+minutesLabel(sleepBase)+' in je eerdere persoonlijke baseline. Maak van extra slaapruimte vanavond de simpelste herstelactie.',
+        meta:recentSleep.length+' recente nachten · eigen baseline'
+      });
+    }
+    if(!sleepTrendAdded&&sleep!==null&&sleep<420){
+      insights.push({
+        key:'sleep_short',tone:'watch',priority:75,
+        title:'Onder je 7u-slaapmissie',
+        body:'De laatste geregistreerde slaap is '+minutesLabel(sleep)+'. Plan vanavond wat extra slaapruimte in plaats van dit ene wearable-getal als diagnose te zien.',
+        meta:'Mission threshold · niet-medische wearabletrend'
+      });
+    }
+
+    // Activity nudge only when the day is mature enough to judge progress.
+    if(sourceDate===today&&Number.isFinite(hour)&&hour>=18&&steps!==null&&steps<10000){
+      var lowVsSelf=stepsBase!==null&&steps<stepsBase*.70;
+      if(lowVsSelf||steps<6500){
+        insights.push({
+          key:'steps_evening',tone:'action',priority:55,
+          title:'Nog ruimte voor een korte wandeling',
+          body:'Je staat op '+Math.round(steps).toLocaleString('nl-NL')+' stappen. Als het vanavond past, is een korte wandeling de meest directe manier om je 10k-missie nog dichterbij te brengen.',
+          meta:stepsBase!==null?'Avondcheck · eigen activiteitsbaseline':'Avondcheck · 10k-missie'
+        });
+      }
+    }
+
+    // If baseline data is still thin, say so instead of inventing certainty.
+    var baselineSignals=(hrvBase!==null?1:0)+(rhrBase!==null?1:0)+(sleepBase!==null?1:0)+(stepsBase!==null?1:0);
+    if(!insights.length){
+      insights.push({
+        key:'quiet',tone:'neutral',priority:10,
+        title:baselineSignals>=2?'Geen duidelijke afwijking':'Baseline wordt nog opgebouwd',
+        body:baselineSignals>=2?'De beschikbare wearabletrends geven nu geen duidelijke actie bovenop je gewone missies. Dat is ook een geldige uitkomst.':'Er zijn nog te weinig consistente historische dagen om HRV, rusthartslag, slaap en activiteit stevig met jezelf te vergelijken.',
+        meta:baselineSignals+' persoonlijke baseline-signalen beschikbaar'
+      });
+    }
+
+    insights.sort(function(a,b){return b.priority-a.priority;});
+    // Keep the card actionable rather than turning it into a wall of biometrics.
+    return insights.slice(0,3);
+  }
+
   function formatScore(value){return value===null?'—':value.toFixed(1);}
   function getHabits(){
     try{if(typeof window.getHabits==='function')return window.getHabits()||{};}catch(e){}
     try{return JSON.parse(localStorage.getItem('rpg_habits_v1'))||{};}catch(e){return {};}
+  }
+  function ensureInsightsUi(root){
+    var wrap=document.getElementById('htInsights');
+    if(wrap)return wrap;
+    wrap=document.createElement('div');
+    wrap.id='htInsights';
+    wrap.className='ht-insights';
+    wrap.innerHTML='<div class="ht-insights-head"><span><i></i> Health Insights</span><small>persoonlijke wearabletrends</small></div><div id="htInsightList" class="ht-insight-list"></div><p class="ht-insight-note">Read-only experiment · geen diagnose. Bij aanhoudende afwijkingen én klachten is een zorgprofessional een betere bron dan je wearable.</p>';
+    var host=null;
+    try{host=root.querySelector('.ht-readout');}catch(e){}
+    (host||root).appendChild(wrap);
+    return wrap;
+  }
+  function renderInsights(root,fitbit){
+    if(!root)return;
+    ensureInsightsUi(root);
+    var list=document.getElementById('htInsightList');
+    if(!list)return;
+    var items=healthInsights(fitbit||{},dateKey(),(new Date()).getHours());
+    list.innerHTML=items.map(function(item){
+      return '<article class="ht-insight ht-insight--'+item.tone+'" data-insight="'+item.key+'"><div class="ht-insight-dot"></div><div><strong>'+item.title+'</strong><p>'+item.body+'</p><small>'+item.meta+'</small></div></article>';
+    }).join('');
   }
   function render(fitbit){
     var root=document.getElementById('healthTrail');if(!root)return;
@@ -77,6 +221,7 @@
     document.getElementById('htRecovery').textContent=formatScore(recovery.score);
     document.getElementById('htRecoveryMeta').textContent=recovery.score===null?'Fitbit nog niet geladen':recovery.components.length+' herstelsignalen';
     document.getElementById('htMessage').textContent=state.label+' — '+state.message;
+    renderInsights(root,fitbit||{});
   }
   async function loadFitbit(){
     if(typeof window.gamenfyAuthedFetch!=='function')return null;
@@ -105,6 +250,6 @@
     document.addEventListener('visibilitychange',function(){if(!document.hidden)refresh();});
     setInterval(refresh,60000);
   }
-  window.GamenfyHealthTrail={missionScore:missionScore,recoveryScore:recoveryScore,totalScore:totalScore,band:band,render:render,refresh:refresh};
+  window.GamenfyHealthTrail={missionScore:missionScore,recoveryScore:recoveryScore,totalScore:totalScore,band:band,healthInsights:healthInsights,render:render,refresh:refresh};
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',start):start();
 })();
