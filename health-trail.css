@@ -1,4 +1,4 @@
-/* Health Trail Lab prototype v1.0 — ChatGPT (OpenAI) */
+/* Health Trail Lab prototype v1.2 — ChatGPT (OpenAI) */
 .ht-card{--ht-accent:#66ead0;--ht-progress:0%;--ht-runner:8%;overflow:hidden;margin:0 0 20px;border:1px solid #26305e;border-radius:22px;background:#080c28;color:#f8f9ff;box-shadow:0 22px 52px -34px rgba(10,24,90,.78)}
 .ht-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:16px 16px 12px;background:linear-gradient(145deg,#111943,#0a1031)}
 .ht-kicker{display:flex;align-items:center;gap:7px;color:#82efda;font:800 12px var(--font-display);letter-spacing:.09em;text-transform:uppercase}
@@ -24,6 +24,13 @@
 .ht-metric span,.ht-metric strong,.ht-metric small{display:block}.ht-metric span{color:#8e99c3;font:700 11px var(--font-display);text-transform:uppercase}.ht-metric strong{margin-top:4px;font:800 18px var(--font-display)}.ht-metric small{margin-top:2px;color:#8f9abe;font-size:11px;line-height:1.25}
 .ht-bar{height:7px;margin-top:13px;overflow:hidden;border-radius:999px;background:#20274b}.ht-bar i{display:block;width:var(--ht-progress);height:100%;border-radius:inherit;background:linear-gradient(90deg,#38baa2,#6eead1,#ffdc6a);transition:width .7s ease}
 .ht-message{margin-top:10px;color:#d8def3;font-size:13px;line-height:1.45}.ht-formula{margin-top:5px;color:#7783ad;font-size:11px;line-height:1.4}
+.ht-insights{margin-top:14px;padding-top:13px;border-top:1px solid rgba(255,255,255,.09)}
+.ht-insights-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}.ht-insights-head>span{display:flex;align-items:center;gap:7px;color:#f8f9ff;font:800 12px var(--font-display);letter-spacing:.03em}.ht-insights-head i{width:7px;height:7px;border-radius:50%;background:#6eead1;box-shadow:0 0 10px rgba(110,234,209,.6)}.ht-insights-head small{color:#7783ad;font-size:9px;text-align:right}
+.ht-insight-list{display:grid;gap:7px}.ht-insight{display:grid;grid-template-columns:8px minmax(0,1fr);gap:9px;padding:10px 11px;border:1px solid rgba(255,255,255,.09);border-radius:13px;background:rgba(255,255,255,.035)}.ht-insight-dot{width:7px;height:7px;margin-top:4px;border-radius:50%;background:#8a95bb}.ht-insight strong{display:block;color:#eef1ff;font:750 12px var(--font-display);line-height:1.3}.ht-insight p{margin-top:3px;color:#b7bfdc;font-size:10.5px;line-height:1.45}.ht-insight small{display:block;margin-top:5px;color:#707da7;font-size:9px;line-height:1.35}
+.ht-insight--watch{border-color:rgba(255,190,95,.2);background:rgba(255,190,95,.055)}.ht-insight--watch .ht-insight-dot{background:#ffbe5f;box-shadow:0 0 9px rgba(255,190,95,.45)}
+.ht-insight--action{border-color:rgba(102,234,208,.18);background:rgba(102,234,208,.045)}.ht-insight--action .ht-insight-dot,.ht-insight--good .ht-insight-dot{background:#66ead0;box-shadow:0 0 9px rgba(102,234,208,.4)}
+.ht-insight--good{border-color:rgba(102,234,208,.14)}.ht-insight--neutral .ht-insight-dot{background:#8490b8}
+.ht-insight-note{margin:9px 1px 0;color:#66739c;font-size:8.5px;line-height:1.4}
 .ht-card[data-band="critical"]{--ht-accent:#ff6f91}.ht-card[data-band="building"]{--ht-accent:#ffbe5f}.ht-card[data-band="strong"]{--ht-accent:#66ead0}.ht-card[data-band="king"]{--ht-accent:#ffe16e}
-@media(max-width:390px){.ht-head{padding:14px}.ht-head h2{font-size:20px}.ht-head p{font-size:12px}.ht-level{min-width:64px}.ht-stage{height:245px}.ht-runner{width:116px}.ht-readout{padding:12px}.ht-metric{padding:8px}.ht-metric strong{font-size:16px}}
+@media(max-width:390px){.ht-head{padding:14px}.ht-head h2{font-size:20px}.ht-head p{font-size:12px}.ht-level{min-width:64px}.ht-stage{height:245px}.ht-runner{width:116px}.ht-readout{padding:12px}.ht-metric{padding:8px}.ht-metric strong{font-size:16px}.ht-insights-head{align-items:flex-start}.ht-insights-head small{max-width:112px}}
 @media(prefers-reduced-motion:reduce){.ht-runner,.ht-track-fill,.ht-bar i{transition:none}.ht-runner img,.ht-shadow{animation:none}}
