@@ -46,10 +46,14 @@
     else if(state[stateKey]==='manual-off')delete state[stateKey];
     saveJson(AUTO_KEY,state);
   }
-  function updateDayMarker(date,value){
+  // Completing a mission can safely mark a day active immediately. Unchecking
+  // one mission cannot safely erase the WHOLE day here because Lab does not
+  // load every activity source (ventures/check-in). Main's Streak.refresh()
+  // reconciles the marker from net XP + ventures + check-in on the next load.
+  function markDayActive(date){
     var streak=loadJson('rpg_streak_v1',{days:{}});
     streak.days=streak.days||{};
-    if(value)streak.days[date]=true;else delete streak.days[date];
+    streak.days[date]=true;
     saveJson('rpg_streak_v1',streak);
   }
   function notify(key,done){
@@ -70,14 +74,13 @@
       markAutoOverride(key,date,true);
       if(typeof window.recomputeHabitFromLog==='function')window.recomputeHabitFromLog(key);
       if(typeof window.addXP==='function')window.addXP(key,-15,'Habit unchecked: '+def.label);
-      updateDayMarker(date,false);
     }else{
       window.checkHabit(key,def.label,def.icon);
       hlogSet(key,date,true);
       markAutoOverride(key,date,false);
       if(typeof window.recomputeHabitFromLog==='function')window.recomputeHabitFromLog(key);
       if(typeof window.addXP==='function')window.addXP(key,15,'Habit: '+def.label);
-      updateDayMarker(date,true);
+      markDayActive(date);
     }
     notify(key,!done);
     return !done;
