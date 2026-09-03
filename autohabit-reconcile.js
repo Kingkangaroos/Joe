@@ -107,15 +107,19 @@
     } catch (e) { return null; }
   }
 
-  // On the first XP-ledger migration, every already-confirmed legacy auto day is
-  // considered paid. We intentionally do NOT reconstruct old XP if its event has
-  // aged out of the capped XP log; that would risk paying historical days twice.
+  // First XP-ledger migration is deliberately conservative: every Walking/Sleep
+  // date that ALREADY exists in the canonical habitlog is treated as historically
+  // paid, regardless of whether an old auto flag survived. This protects manual
+  // completions whose XP event may already have aged out of the 200-row XP log.
+  // New Fitbit additions are created only AFTER this migration, so they still
+  // enter the retry-safe reward queue normally.
   function migrateXpLedger(state, habitlog) {
     if (state[XP_MIGRATION_KEY] === true) return false;
-    Object.keys(state).forEach(function (key) {
-      var m = key.match(/^(walking|sleep):(\d{4}-\d{2}-\d{2})$/);
-      if (!m || state[key] !== true) return;
-      if (habitlogHas(habitlog, m[1], m[2])) state[xpLedgerKey(m[1], m[2])] = true;
+    Object.keys(AUTO_HABITS).forEach(function (habitId) {
+      var days = habitlog[habitId] || {};
+      Object.keys(days).forEach(function (date) {
+        if (days[date] && validDay(date)) state[xpLedgerKey(habitId, date)] = true;
+      });
     });
     state[XP_MIGRATION_KEY] = true;
     return true;
