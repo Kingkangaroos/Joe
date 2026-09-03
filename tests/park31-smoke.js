@@ -102,7 +102,8 @@ vm.runInNewContext(source,sandbox,{filename:'park31.js'});
 
 assert.equal(ids.p31Stage.dataset.liveLevel,'7','live walking score is shown');
 assert.equal(ids.p31Stage.dataset.artLevel,'7','walking level selects matching artwork');
-assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.12$/,'level 7 loads l07.webp');
+assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.13$/,'level 7 loads l07.webp');
+assert.equal(ids.p31State.textContent,'EXPERT','level 7 uses canonical Expert band');
 assert.equal(levelNodes[6].attributes['aria-current'],'step','live evolution dot is selected');
 assert.ok(!ids.p31Stage.classList.contains('is-lit'),'park starts inactive');
 ids.p31Companion.listeners.click();
@@ -110,12 +111,21 @@ assert.ok(ids.p31Stage.classList.contains('is-lit'),'tap activates light/glow');
 assert.equal(ids.p31Companion.attributes['aria-pressed'],'true');
 assert.equal(storage.rpg_habits_v1,JSON.stringify({walking:{score:7}}),'tap never changes habit data');
 
+const expectedBands=[[0,'STARTER'],[2,'STARTER'],[3,'APPRENTICE'],[4,'APPRENTICE'],[5,'ADVANCED'],[6,'ADVANCED'],[7,'EXPERT'],[9,'EXPERT'],[10,'MASTER']];
+for(const [score,label] of expectedBands){
+  storage.rpg_habits_v1=JSON.stringify({walking:{score}});
+  intervalTimers[0]();
+  assert.equal(ids.p31Stage.dataset.liveLevel,String(score),'live score '+score+' is preserved');
+  assert.equal(ids.p31State.textContent,label,'level '+score+' maps to '+label);
+}
+
 storage.rpg_habits_v1=JSON.stringify({walking:{score:0}});
 intervalTimers[0]();
 assert.equal(ids.p31Stage.dataset.liveLevel,'0');
 assert.equal(ids.p31Stage.dataset.artLevel,'1','technical level 0 deliberately uses Level 1 art');
-assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.12$/);
-assert.ok(ids.p31Stage.classList.contains('is-zero'),'level 0 gets critical treatment');
+assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.13$/);
+assert.ok(ids.p31Stage.classList.contains('is-zero'),'level 0 gets critical visual treatment while remaining in Starter band');
+assert.equal(ids.p31Progress.style.width,'0%','technical level 0 has zero live progress even though it reuses Level 1 art');
 
 for(const missionDir of ['steps','nutrition','teeth','household','gratitude','good-deed','screen-time','cold-shower','no-weed','discipline','sleep']){
   const assetDir=path.join(__dirname,'..','img','lab','park31',missionDir);
@@ -149,6 +159,8 @@ for(const label of ['Steps','Good Deed','Screen Time','Cold Shower','Gardening',
 }
 assert.equal(ids.p31RosterCount.textContent,'11/11 artwork ready','all eleven complete companion sets are reported');
 assert.match(ids.p31Roster.innerHTML,/class="p31-help"[^>]*>HELP<\/span>/,'a mission inactive for at least three days writes HELP on its artwork window');
+assert.equal(typeof windowListeners['gamenfy:auto-habits-changed'],'function','the iframe refreshes immediately after local Fitbit reconciliation');
+assert.equal(typeof parentListeners['gamenfy:auto-habits-changed'],'function','the embedded Lab listens for parent Fitbit reconciliation');
 
 const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
 assert.match(lab,/park31-lab\.js\?v=1\.1/,'the normal Lab loads its dedicated Daily Mission controller');
@@ -166,6 +178,9 @@ ids.p31Roster.listeners.pointerdown(pointerEvent);
 ids.p31Roster.listeners.pointerup(pointerEvent);
 assert.equal(ids.p31Modal.hidden,false,'a short tap opens the companion detail');
 assert.equal(ids.p31ModalTitle.textContent,'Steps');
+assert.equal(ids.p31ModalLevel.textContent,'Level 0','technical level 0 stays visibly Level 0 in the modal');
+assert.equal(ids.p31ModalState.textContent,'STARTER','technical level 0 uses the canonical Starter band');
+assert.equal(ids.p31ModalProgress.style.width,'0%','technical level 0 modal progress stays at zero');
 assert.equal(missionToggles.length,0,'a short tap never completes the mission');
 assert.equal(ids.p31MissionToggle.textContent,'Voltooi vandaag','the expanded companion offers an explicit completion action');
 assert.equal(ids.p31MissionToggle.disabled,false,'the live mission action is available outside preview');
@@ -173,7 +188,7 @@ assert.equal(ids.p31MissionToggle.disabled,false,'the live mission action is ava
 const liveStorage=storage.rpg_habits_v1;
 ids.p31Next.listeners.click();
 assert.equal(ids.p31ModalMeta.textContent,'PREVIEW 2 · LIVE 0','plus enters read-only level preview');
-assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.12$/);
+assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.13$/);
 assert.equal(ids.p31MissionToggle.disabled,true,'preview disables the completion action');
 assert.equal(ids.p31MissionToggle.textContent,'Ga terug naar live om te wijzigen');
 assert.equal(storage.rpg_habits_v1,liveStorage,'preview does not touch real habit data');
