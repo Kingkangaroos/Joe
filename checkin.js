@@ -108,3 +108,15 @@
     closeDay: closeDay
   };
 })();
+
+// v11.3: keep the Fitbit -> Daily Mission reconciliation separate from xp.js
+// so this safety fix can be rolled back independently. checkin.js is loaded on
+// Main after xp.js, which makes it a stable hook without changing the RPG engine.
+(function () {
+  'use strict';
+  if (document.querySelector('script[data-gamenfy-autohabit-reconcile]')) return;
+  const script = document.createElement('script');
+  script.src = 'autohabit-reconcile.js?v=11.3';
+  script.dataset.gamenfyAutohabitReconcile = '1';
+  document.head.appendChild(script);
+})();
