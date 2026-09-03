@@ -1,9 +1,11 @@
 // =============================================================
-// Gamenfy — Streak + Evening Check-in engine (v7.4)
+// Gamenfy — Streak + Evening Check-in engine (v7.5)
 // A day counts when you did at least one real thing: net XP gained,
 // a venture step done, or the day closed via the evening check-in.
 // Streak = consecutive active days. Reversed XP (for example a mission
 // check followed by an uncheck) is reconciled instead of leaving a ghost day.
+// Backdated/retrospective XP uses the explicit YYYY-MM-DD audit date in its
+// reason, so filling an old mission today cannot create a fake active today.
 // Historical days outside the retained XP log are never deleted implicitly.
 // No punishment mechanics — today only breaks the streak once it is over.
 // Storage: rpg_streak_v1, rpg_checkin_v1 (both synced).
@@ -39,6 +41,15 @@
   // XP is stored as an append-only event log. A mission check (+15) and its
   // later uncheck (-15) must cancel each other. Sum per skill first so a
   // reversal in one skill can never erase unrelated activity in another.
+  // Backdated Main/Fitbit writes retain addXP's physical write timestamp in
+  // e.date, but append the actual activity date as `(YYYY-MM-DD)` to reason.
+  // Prefer that explicit audit date when present.
+  function xpEntryDate (entry) {
+    const raw = String((entry && entry.reason) || '');
+    const match = raw.match(/\((\d{4}-\d{2}-\d{2})\)\s*$/);
+    if (match) return match[1];
+    return entry && entry.date ? String(entry.date).slice(0, 10) : null;
+  }
   // `observed` lets refresh safely remove stale markers only for dates that
   // are actually represented by the retained XP log; older history survives.
   function xpLogActivity () {
@@ -47,10 +58,11 @@
       const character = window.getCharacter() || {};
       const log = character.xpLog || [];
       for (const e of log) {
-        if (!e || !e.date) continue;
+        if (!e) continue;
         const amount = Number(e.amount || 0);
         if (!Number.isFinite(amount) || amount === 0) continue;
-        const day = String(e.date).slice(0, 10);
+        const day = xpEntryDate(e);
+        if (!day) continue;
         const skill = e.skill || '__global__';
         perDay[day] = perDay[day] || {};
         perDay[day][skill] = (perDay[day][skill] || 0) + amount;
