@@ -7,7 +7,7 @@
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.12';
+  var VERSION='1.13';
   var HOLD_MS=560;
   var MISSIONS=[
     {key:'walking',label:'Steps',emoji:'👟',dir:'steps'},
@@ -71,16 +71,14 @@
   }
   function assetUrl(level,mission){mission=mission||MISSIONS[0];return 'img/lab/park31/'+mission.dir+'/l'+String(clamp(level,1,10)).padStart(2,'0')+'.webp?v='+VERSION;}
   function state(level){
-    level=Number(level)||0;
-    if(level<=0)return 'CRITICAL';
+    level=clamp(Math.round(Number(level)||0),0,10);
     if(level<=2)return 'STARTER';
-    if(level<=4)return 'BUILDING';
+    if(level<=4)return 'APPRENTICE';
     if(level<=6)return 'ADVANCED';
-    if(level<=8)return 'EXPERT';
-    if(level===9)return 'ELITE';
+    if(level<=9)return 'EXPERT';
     return 'MASTER';
   }
-  function sourceLabel(source){return source==='preview'?'PREVIEW MODE':source==='empty'?'LIVE · NO SCORE YET':'LIVE · TODAY’S MISSIONS';}
+  function sourceLabel(source){return source==='preview'?'PREVIEW MODE':source==='empty'?'LIVE · NO SCORE YET':'LIVE · DAILY MISSION LEVEL';}
   function buildLevels(){
     if(!levelsEl)return;
     levelsEl.innerHTML=Array.from({length:10},function(_,index){
@@ -175,17 +173,18 @@
   function updateModal(){
     if(!selected||!modalArt)return;
     var info=levelInfo(selected),shown=shownLevel(),done=missionMode&&isDone(selected);
+    var displayLevel=preview===null?info.raw:shown;
     var url=assetUrl(shown,selected);
     if(modalArt.getAttribute('src')!==url)modalArt.setAttribute('src',url);
     modalArt.alt=selected.label+' companion preview at level '+shown;
     modalTitle.textContent=selected.label;
     modalMeta.textContent=preview===null?'LIVE LEVEL · '+info.raw:'PREVIEW '+shown+' · LIVE '+info.raw;
-    modalLevel.textContent='Level '+shown;
-    modalState.textContent=state(preview===null?info.raw:shown);
-    modalProgress.style.width=(shown*10)+'%';
+    modalLevel.textContent='Level '+displayLevel;
+    modalState.textContent=state(displayLevel);
+    modalProgress.style.width=(clamp(displayLevel,0,10)*10)+'%';
     modalStatus.textContent=preview!==null
       ?'Alleen preview — je live level blijft '+info.raw+'.'
-      :(missionMode?(done?'Vandaag voltooid · Houd de kaart vast om terug te draaien.':'Nog niet voltooid · Houd de kaart vast om te voltooien.'):'Live level uit Today’s Missions.');
+      :(missionMode?(done?'Vandaag voltooid · Houd de kaart vast om terug te draaien.':'Nog niet voltooid · Houd de kaart vast om te voltooien.'):'Live level uit Daily Missions.');
     liveResetEl.disabled=preview===null;
     missionToggleEl.hidden=!missionMode;
     missionToggleEl.disabled=preview!==null;
@@ -293,7 +292,7 @@
     stateEl.textContent=state(current.raw);
     sourceEl.textContent=sourceLabel(current.source);
     copyEl.textContent=current.raw===0?'Level 1 artwork at technical level 0':'Live evolution · artwork '+current.art+' of 10';
-    progressEl.style.width=(current.art*10)+'%';
+    progressEl.style.width=(clamp(current.raw,0,10)*10)+'%';
     levelsEl.querySelectorAll('[data-level]').forEach(function(node){
       var active=Number(node.dataset.level)===current.art;
       node.classList.toggle('is-current',active);
@@ -334,10 +333,12 @@
     art.addEventListener('error',function(){stage.classList.remove('is-loading');errorEl.hidden=false;});
     window.addEventListener('storage',function(event){if(!event.key||event.key==='rpg_habits_v1'||event.key==='rpg_habitlog_v1')refresh();});
     window.addEventListener('gamenfy:daily-mission-change',refresh);
+    window.addEventListener('gamenfy:auto-habits-changed',refresh);
     window.addEventListener('gamenfy:remote-state-applied',refresh);
     try{
       if(window.parent&&window.parent!==window){
         window.parent.addEventListener('gamenfy:daily-mission-change',refresh);
+        window.parent.addEventListener('gamenfy:auto-habits-changed',refresh);
         window.parent.addEventListener('gamenfy:remote-state-applied',refresh);
       }
     }catch(e){}
