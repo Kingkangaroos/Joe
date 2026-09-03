@@ -1,4 +1,4 @@
-/* Daily Mission Windows v11.71
+/* Daily Mission Windows v11.72
    Performed-by: ChatGPT (OpenAI)
    Purpose: Lab-only living-room prototype for the 11 public Daily Missions.
    Data contract: RPG_DEFAULT_SKILLS + rpg_habitlog_v1 + canonical habit recompute.
@@ -37,7 +37,7 @@
     cold_shower:{glow:'rgba(76,166,226,.19)',lit:'rgba(96,205,244,.34)',emoji:'💧'}
   };
 
-  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c];});}
   function localDateKey(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
   function todayKey(){return localDateKey(new Date());}
   function shiftDate(key,delta){var p=key.split('-').map(Number),d=new Date(p[0],p[1]-1,p[2]+delta);return localDateKey(d);}
@@ -128,6 +128,15 @@
     var m=missionByKey(selectedKey);if(!m)return;
     var date=todayKey(),was=isDone(m.key,date),def=m.def||{};
     setDone(m.key,date,!was);
+
+    // Daily Windows writes the dated log directly instead of going through the
+    // shared checkHabit()/uncheckHabit() wrappers. Keep Fitbit's manual override
+    // state symmetric here as well, otherwise a Walking/Sleep re-check could leave
+    // an old manual-off token behind and permanently suppress later reconciliation.
+    if((m.key==='walking'||m.key==='sleep')&&typeof window.setAutoHabitManualOverride==='function'){
+      try{window.setAutoHabitManualOverride(m.key,date,was);}catch(e){}
+    }
+
     if(!was&&typeof window.checkHabitFor==='function'){
       try{window.checkHabitFor(m.key,date,def.label,def.icon);}catch(e){}
     }
