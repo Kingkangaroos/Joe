@@ -2,6 +2,7 @@ const fs = require('fs');
 const vm = require('vm');
 
 const src = fs.readFileSync('sync.js', 'utf8');
+const characterSrc = fs.readFileSync('character.html', 'utf8');
 const marker = '// Character has a second public Daily Quest control';
 const start = src.indexOf(marker);
 if (start < 0) throw new Error('Character dated Daily guard missing from sync.js');
@@ -55,6 +56,14 @@ function runGuard(options = {}) {
 function assert(cond, msg) { if (!cond) throw new Error(msg); }
 const date = '2026-08-31';
 const walking = { id: 'walking', skill: 'walking', label: '10k Steps', xp: 15, private: false };
+
+// The obsolete Character migration is still physically present for rollback, but
+// modern sync must retire it before its own 300 ms delayed callback can mutate data.
+assert(characterSrc.includes('setTimeout(backfillDailyHabits,300)'), 'legacy Character backfill timing changed; review retirement ordering');
+{
+  const { localStorage } = runGuard();
+  assert(localStorage.getItem('rpg_daily_habit_backfill_v1') === '1', 'modern sync must retire legacy Daily backfill');
+}
 
 // Complete a backdated Fitbit-backed mission.
 {
