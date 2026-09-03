@@ -21,8 +21,20 @@ function makeHarness({unlocked=false,pin='2468'}={}){
     setItem:(key,value)=>{store[key]=String(value);}
   };
   function CustomEvent(type,init){this.type=type;this.detail=init&&init.detail;}
-  function fakeNode(id){
-    return nodes[id]={id,value:'',textContent:'',style:{cssText:''},dataset:{},listeners:{},focus(){this.focused=true;},addEventListener(type,fn){this.listeners[type]=fn;},remove(){delete nodes[id];if(id==='p31PinModal'){delete nodes.p31PinInput;delete nodes.p31PinError;delete nodes.p31PinCancel;}}};
+  function fakeNode(initialId){
+    const node={
+      _id:initialId,value:'',textContent:'',style:{cssText:''},dataset:{},listeners:{},
+      focus(){this.focused=true;},
+      addEventListener(type,fn){this.listeners[type]=fn;},
+      remove(){
+        const currentId=this.id;
+        delete nodes[currentId];
+        if(currentId==='p31PinModal'){delete nodes.p31PinInput;delete nodes.p31PinError;delete nodes.p31PinCancel;}
+      }
+    };
+    Object.defineProperty(node,'id',{get(){return this._id||'';},set(value){if(this._id)delete nodes[this._id];this._id=value;nodes[value]=this;}});
+    nodes[initialId]=node;
+    return node;
   }
   const document={
     getElementById:id=>nodes[id]||null,
@@ -32,12 +44,6 @@ function makeHarness({unlocked=false,pin='2468'}={}){
         nodes.p31PinModal=node;fakeNode('p31PinInput');fakeNode('p31PinError');fakeNode('p31PinCancel');
       }
     }}
-  };
-  const originalCreate=document.createElement;
-  document.createElement=tag=>{
-    const node=originalCreate(tag);
-    Object.defineProperty(node,'id',{get(){return this._id||'';},set(value){this._id=value;nodes[value]=this;}});
-    return node;
   };
   const window={
     RPG_DEFAULT_SKILLS:{walking:{label:'Steps',icon:'👟'},sleep:{label:'Sleep',icon:'😴'}},
@@ -68,6 +74,8 @@ function makeHarness({unlocked=false,pin='2468'}={}){
   assert.equal(log.walking[today],undefined);
   assert.deepEqual(h.habitCalls.slice(2),[['uncheck','walking'],['recompute','walking']]);
   assert.equal(h.xpCalls[1].amount,-15);
+  const auto=JSON.parse(h.store.rpg_autohabit_v1||'{}');
+  assert.equal(auto['walking:'+today],'manual-off','Park Walking uncheck protects the deliberate choice from later Fitbit reconciliation');
 
   assert.equal(h.window.togglePrivateQuest('weed_control'),true,'unlocked Gardening can complete');
   let daily=JSON.parse(h.store['rpg_daily_v1:'+today]);
@@ -106,4 +114,5 @@ const source=fs.readFileSync(path.join(__dirname,'..','park31-lab.js'),'utf8');
 assert.match(source,/localStorage\.getItem\('rpg_pin_v1'\)\|\|'1111'/,'controller respects configured PIN with established fallback');
 assert.match(source,/if\(!privateUnlocked\(\)\)[\s\S]*showPinModal/,'private write is structurally gated behind PIN state');
 assert.match(source,/rpg_daily_v1:/,'private completions remain outside the public habit log');
-console.log('Park 3.1 Lab mission smoke: public route, unlocked private route and PIN gate passed.');
+assert.match(source,/markAutoOverride\(key,date,true\)/,'public Fitbit-backed unchecks explicitly record manual suppression');
+console.log('Park 3.1 Lab mission smoke: public/manual-off route, private route and PIN gate passed.');
