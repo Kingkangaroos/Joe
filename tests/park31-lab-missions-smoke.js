@@ -68,6 +68,8 @@ function makeHarness({unlocked=false,pin='2468'}={}){
   assert.equal(log.walking[today],true,'public completion is stored in canonical day log');
   assert.deepEqual(h.habitCalls.slice(0,2),[['check','walking'],['recompute','walking']]);
   assert.equal(h.xpCalls[0].amount,15);
+  let streak=JSON.parse(h.store.rpg_streak_v1);
+  assert.equal(streak.days[today],true,'completion can safely mark the day active immediately');
 
   assert.equal(h.window.toggleMission('walking'),false,'second tap unchecks public mission');
   log=JSON.parse(h.store.rpg_habitlog_v1);
@@ -76,6 +78,8 @@ function makeHarness({unlocked=false,pin='2468'}={}){
   assert.equal(h.xpCalls[1].amount,-15);
   const auto=JSON.parse(h.store.rpg_autohabit_v1||'{}');
   assert.equal(auto['walking:'+today],'manual-off','Park Walking uncheck protects the deliberate choice from later Fitbit reconciliation');
+  streak=JSON.parse(h.store.rpg_streak_v1);
+  assert.equal(streak.days[today],true,'Park never erases the whole day on one mission undo; Main reconciles all activity sources');
 
   assert.equal(h.window.togglePrivateQuest('weed_control'),true,'unlocked Gardening can complete');
   let daily=JSON.parse(h.store['rpg_daily_v1:'+today]);
@@ -115,4 +119,5 @@ assert.match(source,/localStorage\.getItem\('rpg_pin_v1'\)\|\|'1111'/,'controlle
 assert.match(source,/if\(!privateUnlocked\(\)\)[\s\S]*showPinModal/,'private write is structurally gated behind PIN state');
 assert.match(source,/rpg_daily_v1:/,'private completions remain outside the public habit log');
 assert.match(source,/markAutoOverride\(key,date,true\)/,'public Fitbit-backed unchecks explicitly record manual suppression');
-console.log('Park 3.1 Lab mission smoke: public/manual-off route, private route and PIN gate passed.');
+assert.doesNotMatch(source,/else delete streak\.days\[date\]/,'one Park mission undo can no longer blindly erase the complete streak day');
+console.log('Park 3.1 Lab mission smoke: public/manual-off route, streak safety, private route and PIN gate passed.');
