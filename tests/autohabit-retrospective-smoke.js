@@ -20,6 +20,7 @@ const store = {
 const xpCalls = [];
 const recomputes = [];
 const scheduled = [];
+const fetchUrls = [];
 const localStorage = {
   getItem: key => Object.prototype.hasOwnProperty.call(store, key) ? store[key] : null,
   setItem: (key, value) => { store[key] = String(value); },
@@ -28,19 +29,34 @@ const localStorage = {
 function CustomEvent(type, init) { this.type = type; this.detail = init && init.detail; }
 function fakeSetTimeout(fn, ms) { scheduled.push({ fn, ms }); return scheduled.length; }
 const document = { hidden: false, addEventListener() {} };
+const healthData = {
+  '2026-08-31': { steps: 11239, sleepMinutes: 417 },
+  '2026-09-01': { steps: 10698, sleepMinutes: 386 },
+  '2026-09-02': { steps: 11785, sleepMinutes: 500 },
+  '2026-09-03': { steps: 12000, sleepMinutes: 456 }
+};
+function currentRemoteRpg(){
+  return {
+    rpg_autohabit_v1: JSON.parse(store.rpg_autohabit_v1 || '{}'),
+    rpg_habitlog_v1: JSON.parse(store.rpg_habitlog_v1 || '{}'),
+    rpg_streak_v1: JSON.parse(store.rpg_streak_v1 || '{"days":{}}')
+  };
+}
 const window = {
   localStorage,
+  gamenfyAuthReady: Promise.resolve(),
   getCharacter: () => ({ xpLog: [] }),
   viewedDateStr: () => '2026-09-03',
-  gamenfyAuthedFetch: async () => ({
-    ok: true,
-    json: async () => [{ data: {
-      '2026-08-31': { steps: 11239, sleepMinutes: 417 },
-      '2026-09-01': { steps: 10698, sleepMinutes: 386 },
-      '2026-09-02': { steps: 11785, sleepMinutes: 500 },
-      '2026-09-03': { steps: 12000, sleepMinutes: 456 }
-    } }]
-  }),
+  gamenfyAuthedFetch: async url => {
+    fetchUrls.push(url);
+    return {
+      ok: true,
+      json: async () => [
+        { key: 'health_fitbit', data: healthData, updated_at: '2026-09-03T11:15:15.789Z' },
+        { key: 'rpg', data: currentRemoteRpg(), updated_at: '2026-09-03T11:12:10.174Z' }
+      ]
+    };
+  },
   recomputeHabitFromLog: key => recomputes.push(key),
   addXP: (key, amount, reason) => xpCalls.push({ key, amount, reason }),
   addEventListener() {},
@@ -66,6 +82,7 @@ vm.runInContext(code, context);
   let log = JSON.parse(store.rpg_habitlog_v1);
   let state = JSON.parse(store.rpg_autohabit_v1);
 
+  assert.ok(fetchUrls[0].includes('key=in.(health_fitbit,rpg)'), 'health and current RPG cloud baseline are fetched together');
   assert.equal(log.walking['2026-08-31'], true, 'late finalized steps should backfill');
   assert.equal(log.sleep['2026-09-03'], true, 'today sleep should auto-complete');
   assert.equal(log.sleep && log.sleep['2026-09-02'], undefined, 'manual-off must be respected');
@@ -84,5 +101,7 @@ vm.runInContext(code, context);
   log = JSON.parse(store.rpg_habitlog_v1);
   assert.equal(log.walking['2026-09-03'], undefined, 'Fitbit must not fight a manual uncheck');
 
+  assert.ok(code.includes('__gamenfy_sync_dirty_v1:rpg'), 'reconciler understands sync.js dirty journal');
+  assert.ok(code.includes('waitForCloudBaseline'), 'reconciler waits for cloud/local convergence before mutation');
   console.log('autohabit retrospective smoke: ok');
 })().catch(err => { console.error(err); process.exitCode = 1; });
