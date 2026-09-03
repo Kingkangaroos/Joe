@@ -1,5 +1,5 @@
 // =============================================================
-// Shared cloud-sync helper — Gamenfy v11.3 remote-apply events
+// Shared cloud-sync helper — Gamenfy v11.4 remote refresh bridge
 // Performed-by: ChatGPT (OpenAI)
 //
 // v11.2 hardens navigation/realtime races:
@@ -11,6 +11,9 @@
 // - periodic push remains a safety net, not the source of truth
 // v11.3 adds one generic gamenfy:remote-state-applied event whenever remote
 // state genuinely changes/replays local storage, so dependent views can refresh.
+// v11.4 also emits a key-less synthetic storage event for older views that
+// already refresh on storage (e.g. Character/Daily Garden). The sync listener
+// ignores that bridge because there is no key, so it cannot create echo writes.
 // =============================================================
 (function () {
   'use strict';
@@ -162,6 +165,15 @@
           window.dispatchEvent(new CustomEvent('gamenfy:remote-state-applied', {
             detail: { appKey: appKey, source: source || 'remote' }
           }));
+        }
+      } catch (e) {}
+      // Same-window localStorage writes do not trigger the browser's native
+      // storage event. Older Gamenfy views already use a generic storage
+      // listener as their render hook, so bridge a real remote apply into that
+      // existing contract. No key is supplied: sync's own listener ignores it.
+      try {
+        if (typeof window.dispatchEvent === 'function' && typeof Event === 'function') {
+          window.dispatchEvent(new Event('storage'));
         }
       } catch (e) {}
     }
