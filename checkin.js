@@ -1,10 +1,11 @@
 // =============================================================
-// Gamenfy — Streak + Evening Check-in engine (v7.1)
-// A day counts when you did at least one real thing: XP gained,
-// a mission checked, a venture step done, or the day closed via
-// the evening check-in. Streak = consecutive active days.
-// No punishment mechanics — today only breaks the streak once
-// it is actually over.
+// Gamenfy — Streak + Evening Check-in engine (v7.2)
+// A day counts when you did at least one real thing: net XP gained,
+// a venture step done, or the day closed via the evening check-in.
+// Streak = consecutive active days. Reversed XP (for example a mission
+// check followed by an uncheck) is reconciled instead of leaving a ghost day.
+// Historical days outside the retained XP log are never deleted implicitly.
+// No punishment mechanics — today only breaks the streak once it is over.
 // Storage: rpg_streak_v1, rpg_checkin_v1 (both synced).
 // =============================================================
 (function () {
@@ -35,15 +36,32 @@
   function loadCheckin () { return loadJSON(CHECKIN_KEY, { days: {} }); }
 
   // ── Activity detection ──────────────────────────────────────
-  function xpLogActiveDays () {
-    const days = {};
+  // XP is stored as an append-only event log. A mission check (+15) and its
+  // later uncheck (-15) must cancel each other. Sum per skill first so a
+  // reversal in one skill can never erase unrelated activity in another.
+  // `observed` lets refresh safely remove stale markers only for dates that
+  // are actually represented by the retained XP log; older history survives.
+  function xpLogActivity () {
+    const perDay = {};
     if (typeof window.getCharacter === 'function') {
-      const log = (window.getCharacter().xpLog) || [];
+      const character = window.getCharacter() || {};
+      const log = character.xpLog || [];
       for (const e of log) {
-        if ((e.amount || 0) > 0 && e.date) days[String(e.date).slice(0, 10)] = true;
+        if (!e || !e.date) continue;
+        const amount = Number(e.amount || 0);
+        if (!Number.isFinite(amount) || amount === 0) continue;
+        const day = String(e.date).slice(0, 10);
+        const skill = e.skill || '__global__';
+        perDay[day] = perDay[day] || {};
+        perDay[day][skill] = (perDay[day][skill] || 0) + amount;
       }
     }
-    return days;
+    const observed = {}, active = {};
+    Object.keys(perDay).forEach(day => {
+      observed[day] = true;
+      active[day] = Object.keys(perDay[day]).some(skill => perDay[day][skill] > 0);
+    });
+    return { observed: observed, active: active };
   }
   function ventureActiveDays () {
     const days = {};
@@ -55,13 +73,31 @@
     }
     return days;
   }
+  function checkinActiveDays () {
+    const days = {};
+    const source = loadCheckin().days || {};
+    Object.keys(source).forEach(day => { if (source[day]) days[day] = true; });
+    return days;
+  }
 
-  // Merge every known activity source into the persistent streak record.
+  // Reconcile dates covered by current evidence. We intentionally do NOT
+  // rebuild the whole historical map because xpLog is capped; doing so would
+  // make old legitimate streak history disappear once its XP events age out.
   function refresh () {
     const st = loadStreak();
-    const merge = Object.assign({}, xpLogActiveDays(), ventureActiveDays(), loadCheckin().days ? Object.keys(loadCheckin().days).reduce((a, d) => (a[d] = true, a), {}) : {});
+    st.days = st.days || {};
+    const xp = xpLogActivity();
+    const ventures = ventureActiveDays();
+    const checkins = checkinActiveDays();
+    const known = Object.assign({}, xp.observed, ventures, checkins);
     let changed = false;
-    Object.keys(merge).forEach(d => { if (!st.days[d]) { st.days[d] = true; changed = true; } });
+
+    Object.keys(known).forEach(day => {
+      const active = !!(xp.active[day] || ventures[day] || checkins[day]);
+      if (active && !st.days[day]) { st.days[day] = true; changed = true; }
+      else if (!active && st.days[day]) { delete st.days[day]; changed = true; }
+    });
+
     const cur = computeFrom(st.days);
     if (cur.current > (st.best || 0)) { st.best = cur.current; changed = true; }
     if (changed) saveJSON(STREAK_KEY, st);
@@ -94,6 +130,7 @@
     c.days[todayStr()] = { closedAt: new Date().toISOString() };
     saveJSON(CHECKIN_KEY, c);
     const st = loadStreak();
+    st.days = st.days || {};
     st.days[todayStr()] = true;
     saveJSON(STREAK_KEY, st);
     return status();
