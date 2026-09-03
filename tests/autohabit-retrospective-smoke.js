@@ -83,25 +83,41 @@ vm.runInContext(code, context);
   let state = JSON.parse(store.rpg_autohabit_v1);
 
   assert.ok(fetchUrls[0].includes('key=in.(health_fitbit,rpg)'), 'health and current RPG cloud baseline are fetched together');
-  assert.equal(log.walking['2026-08-31'], true, 'late finalized steps should backfill');
+  assert.equal(log.walking['2026-08-31'], true, 'late finalized steps should backfill during legacy migration');
   assert.equal(log.sleep['2026-09-03'], true, 'today sleep should auto-complete');
   assert.equal(log.sleep && log.sleep['2026-09-02'], undefined, 'manual-off must be respected');
   assert.equal(state['sleep:2026-09-01'], undefined, 'legacy settled miss must reopen');
+  assert.equal(state.__retrospective_v2_migrated, true, 'the ambiguous legacy auto-ledger is migrated exactly once');
   assert.ok(added >= 2, 'expected retrospective additions');
   assert.ok(xpCalls.some(x => x.reason.includes('2026-08-31')), 'backfill should be auditable in XP log');
   assert.deepEqual(new Set(recomputes), new Set(['walking', 'sleep']), 'habit scores should be recomputed from the day log');
 
+  // Main route: explicit wrapper creates manual-off immediately.
   window.toggleMission('walking');
   log = JSON.parse(store.rpg_habitlog_v1);
   state = JSON.parse(store.rpg_autohabit_v1);
   assert.equal(log.walking['2026-09-03'], undefined, 'manual uncheck should remove the day');
-  assert.equal(state['walking:2026-09-03'], 'manual-off', 'manual uncheck should create suppression marker');
+  assert.equal(state['walking:2026-09-03'], 'manual-off', 'Main manual uncheck should create suppression marker');
 
   await window.autoCheckHealthHabits();
   log = JSON.parse(store.rpg_habitlog_v1);
-  assert.equal(log.walking['2026-09-03'], undefined, 'Fitbit must not fight a manual uncheck');
+  assert.equal(log.walking['2026-09-03'], undefined, 'Fitbit must not fight a Main manual uncheck');
+
+  // Character/backdated route does not call Main's toggleMission. Simulate its
+  // authoritative dhSet(false): the previously confirmed ledger entry remains true.
+  // After migration, that mismatch itself is sufficient evidence of a deliberate
+  // uncheck and the reconciler must convert it to manual-off instead of restoring it.
+  log = JSON.parse(store.rpg_habitlog_v1);
+  delete log.walking['2026-08-31'];
+  store.rpg_habitlog_v1 = JSON.stringify(log);
+  await window.autoCheckHealthHabits();
+  log = JSON.parse(store.rpg_habitlog_v1);
+  state = JSON.parse(store.rpg_autohabit_v1);
+  assert.equal(log.walking['2026-08-31'], undefined, 'Fitbit must not fight a Character/backdated uncheck after migration');
+  assert.equal(state['walking:2026-08-31'], 'manual-off', 'confirmed day disappearing after migration becomes manual-off');
 
   assert.ok(code.includes('__gamenfy_sync_dirty_v1:rpg'), 'reconciler understands sync.js dirty journal');
   assert.ok(code.includes('waitForCloudBaseline'), 'reconciler waits for cloud/local convergence before mutation');
+  assert.ok(code.includes('__retrospective_v2_migrated'), 'reconciler has a one-time ambiguity migration marker');
   console.log('autohabit retrospective smoke: ok');
 })().catch(err => { console.error(err); process.exitCode = 1; });
