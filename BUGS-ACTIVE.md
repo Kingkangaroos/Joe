@@ -152,7 +152,7 @@ Canonical visual bands:
 ## 7. CI / regression status
 **Status:** **LIVE.**
 
-`.github/workflows/smoke.yml` automatically runs all `tests/*-smoke.js` on pushes and PRs to `main` with Node 22.
+`.github/workflows/smoke.yml` automatically runs all `tests/*-smoke.js` on pushes and PRs to `main` with Node 22 and current GitHub Actions v7.
 
 Recent green runs have covered:
 - the full Park 3.1 native asset inventory and interaction suite;
@@ -160,8 +160,31 @@ Recent green runs have covered:
 - sync race healing;
 - Fitbit retrospective reconciliation;
 - authoritative reset;
+- global streak net-activity reconciliation;
 - Health Trail;
 - Chess;
 - existing Lab/website regressions.
 
 Before claiming a future functional change is complete, inspect the newest Actions run rather than relying on old test results.
+
+---
+
+## 8. Global streak ghost/erasure bug
+**Status:** **FIXED + CI-LOCKED + PRODUCTION READY.**
+
+A 3 Sep audit found two opposing errors in the global activity streak:
+- `checkin.js` treated any historical positive XP event as permanent activity, so a Daily Mission check (+15 XP) followed by its uncheck (-15 XP) could leave a ghost active day forever;
+- Park/Main mission undo paths could delete the whole `rpg_streak_v1.days[date]` marker even when another skill, venture step or explicit evening check-in made that day legitimately active.
+
+Current behavior in `checkin.js` v7.2:
+- XP is netted **per skill per day**;
+- one reversed mission therefore cancels only its own activity contribution;
+- another positive skill on the same date keeps the day active;
+- venture steps and explicit evening check-ins independently keep a day active;
+- dates represented by the retained XP log may be added or removed during reconciliation;
+- older streak history outside the capped XP evidence window is deliberately preserved rather than reconstructed/destructively wiped;
+- historical `best` streak never shrinks during reconciliation.
+
+Park 3.1 now only marks a day active on completion; an undo no longer blindly erases the entire day because Lab does not load every activity source. Main's `Streak.refresh()` performs the authoritative multi-source reconciliation.
+
+Regression: `tests/streak-net-activity-smoke.js` plus the Park mission smoke. The newest functional CI run passed and Vercel deployed that commit as production `READY`.
