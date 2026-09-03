@@ -5,6 +5,7 @@
   'use strict';
 
   var HABITLOG_KEY='rpg_habitlog_v1';
+  var AUTO_KEY='rpg_autohabit_v1';
   var PRIVATE_DAILY={
     weed_control:{skill:'weed_control',label:'Gardening',xp:40},
     no_porn:{skill:'no_porn',label:'Discipline',xp:45}
@@ -30,6 +31,21 @@
     if(value)log[key][date]=true;else delete log[key][date];
     saveJson(HABITLOG_KEY,log);
   }
+  // Walking + Sleep are auto-backed by Fitbit on Main. If Joey deliberately
+  // unchecks one here in the Lab, record that choice so a later Fitbit
+  // reconciliation cannot immediately fight him and re-check it.
+  function markAutoOverride(key,date,suppressed){
+    if(key!=='walking'&&key!=='sleep')return;
+    if(typeof window.setAutoHabitManualOverride==='function'){
+      window.setAutoHabitManualOverride(key,date,suppressed);
+      return;
+    }
+    var state=loadJson(AUTO_KEY,{});
+    var stateKey=key+':'+date;
+    if(suppressed)state[stateKey]='manual-off';
+    else if(state[stateKey]==='manual-off')delete state[stateKey];
+    saveJson(AUTO_KEY,state);
+  }
   function updateDayMarker(date,value){
     var streak=loadJson('rpg_streak_v1',{days:{}});
     streak.days=streak.days||{};
@@ -51,12 +67,14 @@
     if(done){
       if(typeof window.uncheckHabit==='function')window.uncheckHabit(key);
       hlogSet(key,date,false);
+      markAutoOverride(key,date,true);
       if(typeof window.recomputeHabitFromLog==='function')window.recomputeHabitFromLog(key);
       if(typeof window.addXP==='function')window.addXP(key,-15,'Habit unchecked: '+def.label);
       updateDayMarker(date,false);
     }else{
       window.checkHabit(key,def.label,def.icon);
       hlogSet(key,date,true);
+      markAutoOverride(key,date,false);
       if(typeof window.recomputeHabitFromLog==='function')window.recomputeHabitFromLog(key);
       if(typeof window.addXP==='function')window.addXP(key,15,'Habit: '+def.label);
       updateDayMarker(date,true);
