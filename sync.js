@@ -1,5 +1,5 @@
 // =============================================================
-// Shared cloud-sync helper — Gamenfy v11.6 authoritative habit replay
+// Shared cloud-sync helper — Gamenfy v11.7 symmetric Fitbit override guard
 // Performed-by: ChatGPT (OpenAI)
 //
 // v11.2 hardens navigation/realtime races:
@@ -20,6 +20,9 @@
 // every canonical public Daily Mission from rpg_habitlog_v1 at that safe point
 // and after later RPG remote applies. History is therefore authoritative even
 // when rpg_habits_v1 arrives with the same lastChecked but a stale score.
+// v11.7 makes the current-day override symmetric: uncheckHabit sets manual-off,
+// checkHabit clears it. Character therefore cannot leave Fitbit suppressed after
+// Joey deliberately re-checks Walking or Sleep.
 // =============================================================
 (function () {
   'use strict';
@@ -378,10 +381,10 @@
   };
 })();
 
-// Current-day Fitbit-backed uncheck guard.
-// Main's backdated flow does not call uncheckHabit(); it edits the dated log
-// directly, so using local today here is intentionally safe. This closes the
-// Character habit-tile route and future current-day UIs built on the XP engine.
+// Current-day Fitbit-backed manual override guard.
+// Main's backdated flow edits the dated log directly, so using local today here
+// is intentionally safe. Any current-day UI using the shared XP engine now has
+// symmetric semantics: uncheck => manual-off, re-check => manual-off cleared.
 (function () {
   'use strict';
   const AUTO_KEY = 'rpg_autohabit_v1';
@@ -391,34 +394,48 @@
     const d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   }
-  function markManualOff(key) {
+  function setOverride(key, suppressed) {
     if (key !== 'walking' && key !== 'sleep') return;
     const date = todayStr();
     if (typeof window.setAutoHabitManualOverride === 'function') {
-      try { window.setAutoHabitManualOverride(key, date, true); return; } catch (e) {}
+      try { window.setAutoHabitManualOverride(key, date, suppressed); return; } catch (e) {}
     }
     try {
       const state = JSON.parse(localStorage.getItem(AUTO_KEY)) || {};
-      state[key + ':' + date] = 'manual-off';
+      const stateKey = key + ':' + date;
+      if (suppressed) state[stateKey] = 'manual-off';
+      else if (state[stateKey] === 'manual-off') delete state[stateKey];
       localStorage.setItem(AUTO_KEY, JSON.stringify(state));
     } catch (e) {}
   }
   function install() {
     tries++;
-    const original = window.uncheckHabit;
-    if (typeof original !== 'function') {
+    const originalUncheck = window.uncheckHabit;
+    const originalCheck = window.checkHabit;
+    if (typeof originalUncheck !== 'function' || typeof originalCheck !== 'function') {
       if (tries < 120) setTimeout(install, 50);
       return;
     }
-    if (original.__gamenfyAutoUncheckGuard) return;
-    const wrapped = function (key) {
-      const result = original.apply(this, arguments);
-      markManualOff(key);
-      return result;
-    };
-    wrapped.__gamenfyAutoUncheckGuard = true;
-    wrapped.__gamenfyAutoUncheckOriginal = original;
-    window.uncheckHabit = wrapped;
+    if (!originalUncheck.__gamenfyAutoUncheckGuard) {
+      const wrappedUncheck = function (key) {
+        const result = originalUncheck.apply(this, arguments);
+        setOverride(key, true);
+        return result;
+      };
+      wrappedUncheck.__gamenfyAutoUncheckGuard = true;
+      wrappedUncheck.__gamenfyAutoUncheckOriginal = originalUncheck;
+      window.uncheckHabit = wrappedUncheck;
+    }
+    if (!originalCheck.__gamenfyAutoCheckGuard) {
+      const wrappedCheck = function (key) {
+        const result = originalCheck.apply(this, arguments);
+        setOverride(key, false);
+        return result;
+      };
+      wrappedCheck.__gamenfyAutoCheckGuard = true;
+      wrappedCheck.__gamenfyAutoCheckOriginal = originalCheck;
+      window.checkHabit = wrappedCheck;
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install);
