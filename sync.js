@@ -1,5 +1,5 @@
 // =============================================================
-// Shared cloud-sync helper — Gamenfy v11.7 symmetric Fitbit override guard
+// Shared cloud-sync helper — Gamenfy v11.8 dated Character Daily guard
 // Performed-by: ChatGPT (OpenAI)
 //
 // v11.2 hardens navigation/realtime races:
@@ -23,6 +23,9 @@
 // v11.7 makes the current-day override symmetric: uncheckHabit sets manual-off,
 // checkHabit clears it. Character therefore cannot leave Fitbit suppressed after
 // Joey deliberately re-checks Walking or Sleep.
+// v11.8 also guards Character's separate dated Daily Quest route. That route
+// writes rpg_habitlog_v1 directly, so backdated Walking/Sleep undo/recheck now
+// keeps manual-off symmetric and XP audit events retain their actual activity day.
 // =============================================================
 (function () {
   'use strict';
@@ -485,4 +488,87 @@
   // registered by later scripts see the same remote-state-applied event.
   window.addEventListener('gamenfy:cloud-sync-ready', onRpgBaseline);
   window.addEventListener('gamenfy:remote-state-applied', onRpgBaseline);
+})();
+
+// Character has a second public Daily Quest control that can edit any viewed
+// calendar day. Its legacy function bypasses checkHabit/uncheckHabit, so it needs
+// an explicit dated guard: Fitbit suppression must follow the edited day and XP
+// must be attributed to that activity day rather than the physical write day.
+(function () {
+  'use strict';
+  const AUTO_KEY = 'rpg_autohabit_v1';
+  const HABITLOG_KEY = 'rpg_habitlog_v1';
+  let tries = 0;
+
+  function validDate(date) {
+    return /^\d{4}-\d{2}-\d{2}$/.test(String(date || ''));
+  }
+  function setDatedOverride(key, date, suppressed) {
+    if (key !== 'walking' && key !== 'sleep') return;
+    if (typeof window.setAutoHabitManualOverride === 'function') {
+      try { window.setAutoHabitManualOverride(key, date, suppressed); return; } catch (e) {}
+    }
+    try {
+      const state = JSON.parse(localStorage.getItem(AUTO_KEY)) || {};
+      const stateKey = key + ':' + date;
+      if (suppressed) state[stateKey] = 'manual-off';
+      else if (state[stateKey] === 'manual-off') delete state[stateKey];
+      localStorage.setItem(AUTO_KEY, JSON.stringify(state));
+    } catch (e) {}
+  }
+  function installDatedCharacterGuard() {
+    tries++;
+    const original = window.toggleDailyQuest;
+    if (typeof original !== 'function') {
+      if (tries < 120) setTimeout(installDatedCharacterGuard, 50);
+      return;
+    }
+    if (original.__gamenfyDatedDailyGuard) return;
+
+    const wrapped = function (q, date) {
+      const defs = window.RPG_DEFAULT_SKILLS || {};
+      const skill = q && q.skill;
+      const def = skill && defs[skill];
+      if (!q || q.private || !skill || !def || !def.isHabit || !validDate(date)) {
+        return original.apply(this, arguments);
+      }
+
+      let log;
+      try { log = JSON.parse(localStorage.getItem(HABITLOG_KEY)) || {}; } catch (e) { log = {}; }
+      log[skill] = log[skill] || {};
+      const was = !!log[skill][date];
+      if (was) delete log[skill][date];
+      else log[skill][date] = true;
+      try { localStorage.setItem(HABITLOG_KEY, JSON.stringify(log)); } catch (e) {}
+
+      setDatedOverride(skill, date, was);
+      if (!was && typeof window.checkHabitFor === 'function') {
+        try { window.checkHabitFor(skill, date, def.label, def.icon); } catch (e) {}
+      }
+      if (typeof window.recomputeHabitFromLog === 'function') {
+        try { window.recomputeHabitFromLog(skill); } catch (e) {}
+      }
+
+      const amount = Number(q.xp) || 15;
+      const label = q.label || def.label || skill;
+      if (!was && typeof window.addXP === 'function') {
+        try { window.addXP(skill, amount, label + ' (' + date + ')'); } catch (e) {}
+      } else if (was && typeof window.removeXP === 'function') {
+        try { window.removeXP(skill, amount, label + ' unchecked (' + date + ')'); } catch (e) {}
+      }
+
+      try {
+        window.dispatchEvent(new CustomEvent('gamenfy:daily-mission-change', {
+          detail: { source: 'character-dated-daily', key: skill, date: date, done: !was }
+        }));
+      } catch (e) {}
+      return !was;
+    };
+    wrapped.__gamenfyDatedDailyGuard = true;
+    wrapped.__gamenfyDatedDailyOriginal = original;
+    window.toggleDailyQuest = wrapped;
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', installDatedCharacterGuard);
+  else setTimeout(installDatedCharacterGuard, 0);
 })();
