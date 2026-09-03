@@ -1,8 +1,10 @@
 /* Gamenfy retrospective Fitbit -> Daily Mission reconciler
    ChatGPT (OpenAI), 2026-09-03.
    Fixes late Fitbit finalization without fighting deliberate manual unchecks.
-   v11.5 waits for the authoritative RPG cloud baseline and makes the
-   auto-ledger self-diagnosing after its one-time legacy migration. */
+   v11.6 keeps the authoritative cloud-baseline migration from v11.5 and adds
+   a retry-safe XP award ledger. A crash before +15 can be repaired; a crash
+   after +15 but before ledger persistence is detected from the XP audit log
+   so the same Fitbit completion can never be paid twice. */
 (function () {
   'use strict';
 
@@ -13,6 +15,8 @@
   var HABITS_KEY = 'rpg_habits_v1';
   var DIRTY_KEY = '__gamenfy_sync_dirty_v1:rpg';
   var MIGRATION_KEY = '__retrospective_v2_migrated';
+  var XP_MIGRATION_KEY = '__xp_ledger_v1_migrated';
+  var XP_LEDGER_PREFIX = '__xp_awarded_v1:';
   var STATE_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co/rest/v1/app_state?key=in.(health_fitbit,rpg)&select=key,data,updated_at';
   var AUTO_HABITS = {
     walking: { field: 'steps', min: 10000, label: '10k stappen' },
@@ -41,6 +45,7 @@
   }
   function sleep(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
   function autoStateKey(habitId, dateStr) { return habitId + ':' + dateStr; }
+  function xpLedgerKey(habitId, dateStr) { return XP_LEDGER_PREFIX + habitId + ':' + dateStr; }
   function isAutoHabit(key) { return Object.prototype.hasOwnProperty.call(AUTO_HABITS, key); }
   function habitlogHas(log, key, date) { return !!(log[key] && log[key][date]); }
 
@@ -79,6 +84,41 @@
     var reason = String((entry && entry.reason) || '');
     var m = reason.match(/\((\d{4}-\d{2}-\d{2})\)\s*$/);
     return m ? m[1] : String((entry && entry.date) || '').slice(0, 10);
+  }
+
+  function completionXpEvidence(habitId, dateStr) {
+    if (typeof window.getCharacter !== 'function') return null;
+    try {
+      var rows = (window.getCharacter().xpLog || []);
+      var net = 0;
+      var saw = false;
+      for (var i = 0; i < rows.length; i++) {
+        var e = rows[i] || {};
+        if (e.skill !== habitId || logEntryDate(e) !== dateStr) continue;
+        var reason = String(e.reason || '');
+        var looksLikeCompletion = reason.indexOf('Auto:') === 0 || reason.indexOf('Habit:') === 0 || /\bhabit\b/i.test(reason) || /\bunchecked\b/i.test(reason);
+        if (!looksLikeCompletion) continue;
+        var amount = Number(e.amount || 0);
+        if (!Number.isFinite(amount) || amount === 0) continue;
+        saw = true;
+        net += amount;
+      }
+      return saw && net > 0;
+    } catch (e) { return null; }
+  }
+
+  // On the first XP-ledger migration, every already-confirmed legacy auto day is
+  // considered paid. We intentionally do NOT reconstruct old XP if its event has
+  // aged out of the capped XP log; that would risk paying historical days twice.
+  function migrateXpLedger(state, habitlog) {
+    if (state[XP_MIGRATION_KEY] === true) return false;
+    Object.keys(state).forEach(function (key) {
+      var m = key.match(/^(walking|sleep):(\d{4}-\d{2}-\d{2})$/);
+      if (!m || state[key] !== true) return;
+      if (habitlogHas(habitlog, m[1], m[2])) state[xpLedgerKey(m[1], m[2])] = true;
+    });
+    state[XP_MIGRATION_KEY] = true;
+    return true;
   }
 
   // Old versions used boolean true for both "goal met" and "past day settled as miss".
@@ -201,8 +241,15 @@
       var streak = loadJson(STREAK_KEY, { days: {} });
       streak.days = streak.days || {};
       var additions = [];
+      var rewardCandidates = {};
       var changedHabits = {};
-      var stateChanged = false;
+      var stateChanged = migrateXpLedger(state, habitlog);
+
+      function queueReward(habitId, date, cfg) {
+        var ledgerKey = xpLedgerKey(habitId, date);
+        if (state[ledgerKey] === true) return;
+        rewardCandidates[habitId + ':' + date] = { key: habitId, date: date, cfg: cfg, ledgerKey: ledgerKey };
+      }
 
       dates.forEach(function (date) {
         var day = byDate[date] || {};
@@ -217,10 +264,9 @@
           }
           if (state[stateKey] === 'manual-off') return;
 
-          // After the first v11.5 migration, boolean true has one unambiguous
-          // meaning: this day was previously confirmed in the authoritative log.
-          // If it later disappears while the cloud/local baseline is safe, that is
-          // a deliberate uncheck from some UI (including Character/backdated UI).
+          // After the first retrospective migration, boolean true has one
+          // unambiguous meaning: this day was previously confirmed in the
+          // authoritative log. If it later disappears, preserve the uncheck.
           if (migrated && state[stateKey] === true && !already) {
             state[stateKey] = 'manual-off';
             stateChanged = true;
@@ -232,13 +278,12 @@
 
           if (already) {
             if (state[stateKey] !== true) { state[stateKey] = true; stateChanged = true; }
+            queueReward(habitId, date, cfg);
             return;
           }
 
-          // During the first migration an old boolean true can still mean either
-          // "completed" or the legacy "settled miss". Re-open a miss; repair a met
-          // goal. Once MIGRATION_KEY is stored, later missing confirmed dates are
-          // interpreted as manual unchecks by the branch above.
+          // During the first retrospective migration an old boolean true can
+          // still mean either "completed" or the legacy "settled miss".
           if (!met) {
             if (state[stateKey] === true) { delete state[stateKey]; stateChanged = true; }
             return;
@@ -251,6 +296,7 @@
           streak.days[date] = true;
           changedHabits[habitId] = true;
           additions.push({ key: habitId, date: date, cfg: cfg });
+          queueReward(habitId, date, cfg);
         });
       });
 
@@ -259,6 +305,9 @@
         stateChanged = true;
       }
 
+      // Persist canonical completion/state before attempting XP. If execution
+      // stops here, the next pass sees a confirmed day with a missing XP ledger
+      // and repairs the +15 exactly once.
       if (additions.length) saveJson(HABITLOG_KEY, habitlog);
       if (stateChanged) saveJson(AUTO_KEY, state);
       if (additions.length) saveJson(STREAK_KEY, streak);
@@ -268,15 +317,34 @@
           if (typeof window.recomputeHabitFromLog === 'function') window.recomputeHabitFromLog(habitId);
         } catch (e) {}
       });
-      additions.forEach(function (item) {
+
+      var xpAwards = 0;
+      Object.keys(rewardCandidates).forEach(function (candidateKey) {
+        var item = rewardCandidates[candidateKey];
+        if (state[item.ledgerKey] === true) return;
+
+        // Crash-after-addXP protection: if the completion XP already exists,
+        // persist only the ledger marker. Net completion XP <= 0 is not enough.
+        var evidence = completionXpEvidence(item.key, item.date);
+        if (evidence === true) {
+          state[item.ledgerKey] = true;
+          saveJson(AUTO_KEY, state);
+          return;
+        }
+        // If the XP log cannot be inspected yet, defer rather than risk double pay.
+        if (evidence === null || typeof window.addXP !== 'function') return;
+
         try {
-          if (typeof window.addXP === 'function') {
-            window.addXP(item.key, 15, 'Auto: ' + item.cfg.label + ' gehaald (' + item.date + ')');
-          }
+          window.addXP(item.key, 15, 'Auto: ' + item.cfg.label + ' gehaald (' + item.date + ')');
+          xpAwards++;
+          state[item.ledgerKey] = true;
+          // Save immediately per award. If execution stops between addXP and this
+          // save, completionXpEvidence() makes the next pass idempotent anyway.
+          saveJson(AUTO_KEY, state);
         } catch (e) {}
       });
 
-      if (additions.length) refreshKnownMissionUI();
+      if (additions.length || xpAwards > 0) refreshKnownMissionUI();
       return additions.length;
     })();
 
