@@ -26,6 +26,8 @@
 // v11.8 also guards Character's separate dated Daily Quest route. That route
 // writes rpg_habitlog_v1 directly, so backdated Walking/Sleep undo/recheck now
 // keeps manual-off symmetric and XP audit events retain their actual activity day.
+// The obsolete v9.1 rpg_daily_v1 -> habitlog migration is retired before its
+// delayed Character callback can run; canonical habitlog is already cloud-synced.
 // =============================================================
 (function () {
   'use strict';
@@ -571,4 +573,18 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', installDatedCharacterGuard);
   else setTimeout(installDatedCharacterGuard, 0);
+})();
+
+// Character v9.1 once migrated public Daily Quest checks out of legacy
+// rpg_daily_v1:* blobs into rpg_habitlog_v1. That canonical log is now itself
+// cloud-synced and authoritative, so rerunning the old migration on a clean/new
+// device could resurrect a deliberately removed historical mission. Retire it
+// before Character's own delayed (300 ms) backfill callback gets a chance to run.
+(function () {
+  'use strict';
+  function retireLegacyDailyBackfill() {
+    try { localStorage.setItem('rpg_daily_habit_backfill_v1', '1'); } catch (e) {}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', retireLegacyDailyBackfill);
+  else retireLegacyDailyBackfill();
 })();
