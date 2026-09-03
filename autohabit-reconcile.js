@@ -1,7 +1,8 @@
 /* Gamenfy retrospective Fitbit -> Daily Mission reconciler
    ChatGPT (OpenAI), 2026-09-03.
    Fixes late Fitbit finalization without fighting deliberate manual unchecks.
-   v11.4 also waits for the authoritative RPG cloud baseline before mutating. */
+   v11.5 waits for the authoritative RPG cloud baseline and makes the
+   auto-ledger self-diagnosing after its one-time legacy migration. */
 (function () {
   'use strict';
 
@@ -11,6 +12,7 @@
   var CHARACTER_KEY = 'rpg_character_v1';
   var HABITS_KEY = 'rpg_habits_v1';
   var DIRTY_KEY = '__gamenfy_sync_dirty_v1:rpg';
+  var MIGRATION_KEY = '__retrospective_v2_migrated';
   var STATE_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co/rest/v1/app_state?key=in.(health_fitbit,rpg)&select=key,data,updated_at';
   var AUTO_HABITS = {
     walking: { field: 'steps', min: 10000, label: '10k stappen' },
@@ -80,8 +82,9 @@
   }
 
   // Old versions used boolean true for both "goal met" and "past day settled as miss".
-  // If a user explicitly unchecked a health habit, infer that from the newest manual
-  // habit event so a one-time migration never re-checks something they deliberately undid.
+  // During the one-time migration, use the newest same-day manual XP event when
+  // possible. Character's daily UI uses generic "... unchecked" reasons, while
+  // Main uses "Habit unchecked:" — support both shapes.
   function inferManualOff(habitId, dateStr) {
     if (typeof window.getCharacter !== 'function') return false;
     try {
@@ -90,8 +93,8 @@
         var e = rows[i] || {};
         if (e.skill !== habitId || logEntryDate(e) !== dateStr) continue;
         var reason = String(e.reason || '');
-        if (reason.indexOf('Habit unchecked:') === 0) return true;
-        if (reason.indexOf('Habit:') === 0) return false;
+        if (reason.indexOf('Habit unchecked:') === 0 || /\bunchecked\b/i.test(reason) || Number(e.amount || 0) < 0) return true;
+        if (reason.indexOf('Habit:') === 0 || Number(e.amount || 0) > 0) return false;
       }
     } catch (e) {}
     return false;
@@ -193,6 +196,7 @@
       // From this point localStorage is known to be either the fetched cloud baseline
       // or a newer local dirty edit, so all mutations can safely use the normal engine.
       var state = loadJson(AUTO_KEY, {});
+      var migrated = state[MIGRATION_KEY] === true;
       var habitlog = loadJson(HABITLOG_KEY, {});
       var streak = loadJson(STREAK_KEY, { days: {} });
       streak.days = streak.days || {};
@@ -213,6 +217,16 @@
           }
           if (state[stateKey] === 'manual-off') return;
 
+          // After the first v11.5 migration, boolean true has one unambiguous
+          // meaning: this day was previously confirmed in the authoritative log.
+          // If it later disappears while the cloud/local baseline is safe, that is
+          // a deliberate uncheck from some UI (including Character/backdated UI).
+          if (migrated && state[stateKey] === true && !already) {
+            state[stateKey] = 'manual-off';
+            stateChanged = true;
+            return;
+          }
+
           var val = Number(day[cfg.field]);
           var met = Number.isFinite(val) && val >= cfg.min;
 
@@ -221,8 +235,10 @@
             return;
           }
 
-          // A miss is never final. Fitbit can finalize/correct a previous date later.
-          // Delete the old ambiguous boolean so legacy "settled miss" flags self-heal.
+          // During the first migration an old boolean true can still mean either
+          // "completed" or the legacy "settled miss". Re-open a miss; repair a met
+          // goal. Once MIGRATION_KEY is stored, later missing confirmed dates are
+          // interpreted as manual unchecks by the branch above.
           if (!met) {
             if (state[stateKey] === true) { delete state[stateKey]; stateChanged = true; }
             return;
@@ -237,6 +253,11 @@
           additions.push({ key: habitId, date: date, cfg: cfg });
         });
       });
+
+      if (!migrated) {
+        state[MIGRATION_KEY] = true;
+        stateChanged = true;
+      }
 
       if (additions.length) saveJson(HABITLOG_KEY, habitlog);
       if (stateChanged) saveJson(AUTO_KEY, state);
