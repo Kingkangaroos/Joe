@@ -1,12 +1,14 @@
 // =============================================================
-// Gamenfy — Streak + Evening Check-in engine (v7.5)
-// A day counts when you did at least one real thing: net XP gained,
-// a venture step done, or the day closed via the evening check-in.
+// Gamenfy — Streak + Evening Check-in engine (v7.6)
+// A day counts when you did at least one real thing: a canonical Daily Mission,
+// net XP gained, a venture step done, or the day closed via evening check-in.
 // Streak = consecutive active days. Reversed XP (for example a mission
 // check followed by an uncheck) is reconciled instead of leaving a ghost day.
 // Backdated/retrospective XP uses the explicit YYYY-MM-DD audit date in its
 // reason, so filling an old mission today cannot create a fake active today.
-// Historical days outside the retained XP log are never deleted implicitly.
+// Canonical rpg_habitlog_v1 is an independent activity source so a completion
+// remains real even when its writer (for example Jarvis) did not emit habit XP.
+// Historical days outside retained evidence are never deleted implicitly.
 // No punishment mechanics — today only breaks the streak once it is over.
 // Storage: rpg_streak_v1, rpg_checkin_v1 (both synced).
 // =============================================================
@@ -15,6 +17,7 @@
 
   const STREAK_KEY  = 'rpg_streak_v1';
   const CHECKIN_KEY = 'rpg_checkin_v1';
+  const HABITLOG_KEY = 'rpg_habitlog_v1';
 
   function todayStr (d) {
     const x = d || new Date();
@@ -75,6 +78,18 @@
     });
     return { observed: observed, active: active };
   }
+  // Daily Mission completion already has a canonical dated source of truth.
+  // Treat it as activity directly instead of requiring every writer to also
+  // manufacture an XP event just to keep the global streak alive.
+  function habitLogActiveDays () {
+    const days = {};
+    const log = loadJSON(HABITLOG_KEY, {});
+    Object.keys(log || {}).forEach(key => {
+      const entries = log[key] || {};
+      Object.keys(entries).forEach(day => { if (entries[day]) days[day] = true; });
+    });
+    return days;
+  }
   function ventureActiveDays () {
     const days = {};
     if (window.Ventures) {
@@ -99,13 +114,14 @@
     const st = loadStreak();
     st.days = st.days || {};
     const xp = xpLogActivity();
+    const habits = habitLogActiveDays();
     const ventures = ventureActiveDays();
     const checkins = checkinActiveDays();
-    const known = Object.assign({}, xp.observed, ventures, checkins);
+    const known = Object.assign({}, xp.observed, habits, ventures, checkins);
     let changed = false;
 
     Object.keys(known).forEach(day => {
-      const active = !!(xp.active[day] || ventures[day] || checkins[day]);
+      const active = !!(xp.active[day] || habits[day] || ventures[day] || checkins[day]);
       if (active && !st.days[day]) { st.days[day] = true; changed = true; }
       else if (!active && st.days[day]) { delete st.days[day]; changed = true; }
     });
@@ -176,10 +192,34 @@
   }
   if (typeof window.addEventListener === 'function') {
     window.addEventListener('gamenfy:remote-state-applied', refreshVisibleRpg);
+    window.addEventListener('gamenfy:daily-mission-change', refreshVisibleRpg);
     window.addEventListener('storage', function (event) {
-      if (!event || !event.key || event.key === STREAK_KEY || event.key === CHECKIN_KEY || event.key === 'rpg_character_v1' || event.key === 'rpg_ventures_v1') refreshVisibleRpg();
+      if (!event || !event.key || event.key === STREAK_KEY || event.key === CHECKIN_KEY || event.key === HABITLOG_KEY || event.key === 'rpg_character_v1' || event.key === 'rpg_ventures_v1') refreshVisibleRpg();
     });
   }
+
+  // Jarvis uses checkHabitFor() directly. Wrap that dated engine only to schedule
+  // a post-write refresh; the original still owns the actual habit mutation.
+  // setTimeout(0) lets the caller finish writing habitlog/replay before we read it.
+  (function installDatedHabitRefresh(){
+    let tries = 0;
+    function install(){
+      tries++;
+      const original = window.checkHabitFor;
+      if (typeof original !== 'function') { if (tries < 120) setTimeout(install, 50); return; }
+      if (original.__gamenfyStreakRefresh) return;
+      const wrapped = function(){
+        const result = original.apply(this, arguments);
+        setTimeout(function(){ refreshVisibleRpg(); }, 0);
+        return result;
+      };
+      wrapped.__gamenfyStreakRefresh = true;
+      wrapped.__gamenfyStreakRefreshOriginal = original;
+      window.checkHabitFor = wrapped;
+    }
+    install();
+  })();
+
   if (typeof setTimeout === 'function') setTimeout(function(){ refreshVisibleRpg(); }, 0);
 })();
 
