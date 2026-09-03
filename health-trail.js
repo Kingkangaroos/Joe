@@ -1,10 +1,11 @@
-/* Health Trail Lab prototype v1.0 — ChatGPT (OpenAI)
+/* Health Trail Lab prototype v1.1 — ChatGPT (OpenAI)
    Read-only: public Daily Mission levels + Fitbit recovery signals.
 */
 (function(){
   'use strict';
-  var ART_VERSION='1.12';
+  var ART_VERSION='1.13';
   var SB_URL='https://ttxjsoahmtennnufgeqx.supabase.co';
+  var refreshInFlight=null;
 
   function clamp(value,min,max){return Math.max(min,Math.min(max,value));}
   function number(value){value=Number(value);return Number.isFinite(value)?value:null;}
@@ -85,14 +86,25 @@
       var rows=await response.json();return ((rows[0]||{}).data)||null;
     }catch(e){return null;}
   }
-  async function refresh(){render(null);var fitbit=await loadFitbit();if(fitbit)render(fitbit);}
+  function refresh(){
+    // Coalesce rapid mission/sync events so reconciliation cannot fan out
+    // duplicate Fitbit reads while still updating the mission component instantly.
+    render(null);
+    if(refreshInFlight)return refreshInFlight;
+    refreshInFlight=loadFitbit().then(function(fitbit){if(fitbit)render(fitbit);return fitbit;}).finally(function(){refreshInFlight=null;});
+    return refreshInFlight;
+  }
   function start(){
     if(!document.getElementById('healthTrail'))return;
     refresh();
     window.addEventListener('storage',function(event){if(!event.key||event.key==='rpg_habits_v1'||event.key==='rpg_habitlog_v1')refresh();});
     window.addEventListener('gamenfy:daily-mission-change',refresh);
+    window.addEventListener('gamenfy:auto-habits-changed',refresh);
+    window.addEventListener('gamenfy:remote-state-applied',refresh);
+    window.addEventListener('focus',refresh);
+    document.addEventListener('visibilitychange',function(){if(!document.hidden)refresh();});
     setInterval(refresh,60000);
   }
-  window.GamenfyHealthTrail={missionScore:missionScore,recoveryScore:recoveryScore,totalScore:totalScore,band:band,render:render};
+  window.GamenfyHealthTrail={missionScore:missionScore,recoveryScore:recoveryScore,totalScore:totalScore,band:band,render:render,refresh:refresh};
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',start):start();
 })();
