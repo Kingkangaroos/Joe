@@ -130,3 +130,80 @@
   script.dataset.gamenfyAutohabitReconcile = '1';
   document.head.appendChild(script);
 })();
+
+// v11.6: Main's existing Reset & start fresh marker only filtered the detail
+// statistics; the authoritative rpg_habitlog_v1 still contained every old check.
+// xp.js could therefore reconstruct the pre-reset level on the next getHabits().
+// Install after Main's inline script has defined mdReset, then prune pre-reset
+// completion history while preserving earned XP. Today's completion is retained
+// and becomes Day 1 if it already happened before the reset.
+(function () {
+  'use strict';
+  const RESET_KEY = 'rpg_habit_reset_v1';
+  const HABITLOG_KEY = 'rpg_habitlog_v1';
+  const AUTO_KEY = 'rpg_autohabit_v1';
+
+  function load(key, fallback) {
+    try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
+    catch (e) { return fallback; }
+  }
+  function save(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+  }
+  function install() {
+    const original = window.mdReset;
+    if (typeof original !== 'function' || original.__gamenfyAuthoritativeReset) return;
+
+    const wrapped = function (key, isPrivate, privateId, e) {
+      const btn = e && e.target;
+      const confirming = !isPrivate && !!(btn && btn.dataset && btn.dataset.arm);
+      const result = original.apply(this, arguments);
+      if (!confirming) return result;
+
+      const resets = load(RESET_KEY, {});
+      const resetDate = resets[key];
+      if (!resetDate) return result;
+
+      const log = load(HABITLOG_KEY, {});
+      const days = log[key] || {};
+      const removed = [];
+      Object.keys(days).forEach((date) => {
+        if (date < resetDate) { delete days[date]; removed.push(date); }
+      });
+      log[key] = days;
+      save(HABITLOG_KEY, log);
+
+      // A reset explicitly says history before resetDate no longer counts.
+      // For Fitbit-backed missions, mark those pruned dates manual-off so the
+      // retrospective reconciler cannot reconstruct pre-reset history later.
+      if ((key === 'walking' || key === 'sleep') && removed.length) {
+        const auto = load(AUTO_KEY, {});
+        removed.forEach((date) => { auto[key + ':' + date] = 'manual-off'; });
+        save(AUTO_KEY, auto);
+      }
+
+      try { if (typeof window.recomputeHabitFromLog === 'function') window.recomputeHabitFromLog(key); } catch (err) {}
+      try {
+        window.dispatchEvent(new CustomEvent('gamenfy:daily-mission-change', {
+          detail: { source: 'habit-reset', key: key, date: resetDate }
+        }));
+      } catch (err) {}
+
+      // Original mdReset opened the sheet before the authoritative replay above.
+      // Re-open once so the visible score/stats match the pruned log immediately.
+      setTimeout(() => {
+        try {
+          document.getElementById('mdBg')?.remove();
+          if (typeof window.openMissionDetail === 'function') window.openMissionDetail(key, false, privateId || undefined);
+        } catch (err) {}
+      }, 0);
+      return result;
+    };
+    wrapped.__gamenfyAuthoritativeReset = true;
+    wrapped.__gamenfyOriginalReset = original;
+    window.mdReset = wrapped;
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install);
+  else setTimeout(install, 0);
+})();
