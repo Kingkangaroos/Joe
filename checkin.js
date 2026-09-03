@@ -1,5 +1,5 @@
 // =============================================================
-// Gamenfy — Streak + Evening Check-in engine (v7.2)
+// Gamenfy — Streak + Evening Check-in engine (v7.3)
 // A day counts when you did at least one real thing: net XP gained,
 // a venture step done, or the day closed via the evening check-in.
 // Streak = consecutive active days. Reversed XP (for example a mission
@@ -144,6 +144,23 @@
     isClosedToday: isClosedToday,
     closeDay: closeDay
   };
+
+  // sync.js v11.3 emits this after a real remote apply. Refresh both the
+  // underlying streak evidence and Main's visible streak/check-in surfaces
+  // without requiring a navigation or manual reload.
+  function refreshVisibleStreak(event) {
+    if (event && event.detail && event.detail.appKey && event.detail.appKey !== 'rpg') return;
+    refresh();
+    try { if (typeof window.renderStreakPill === 'function') window.renderStreakPill(); } catch (e) {}
+    try { if (typeof window.renderCheckinCard === 'function') window.renderCheckinCard(); } catch (e) {}
+  }
+  if (typeof window.addEventListener === 'function') {
+    window.addEventListener('gamenfy:remote-state-applied', refreshVisibleStreak);
+    window.addEventListener('storage', function (event) {
+      if (!event || !event.key || event.key === STREAK_KEY || event.key === CHECKIN_KEY || event.key === 'rpg_character_v1' || event.key === 'rpg_ventures_v1') refreshVisibleStreak();
+    });
+  }
+  if (typeof setTimeout === 'function') setTimeout(function(){ refreshVisibleStreak(); }, 0);
 })();
 
 // v11.5: keep the Fitbit -> Daily Mission reconciliation separate from xp.js,
