@@ -1,5 +1,5 @@
 // =============================================================
-// Gamenfy — Streak + Evening Check-in engine (v7.6)
+// Gamenfy — Streak + Evening Check-in engine (v7.7)
 // A day counts when you did at least one real thing: a canonical Daily Mission,
 // net XP gained, a venture step done, or the day closed via evening check-in.
 // Streak = consecutive active days. Reversed XP (for example a mission
@@ -12,6 +12,44 @@
 // No punishment mechanics — today only breaks the streak once it is over.
 // Storage: rpg_streak_v1, rpg_checkin_v1 (both synced).
 // =============================================================
+
+// v7.7: Main still contains a v8.9 legacy hlogHas() migration fallback that
+// treats rpg_habits_v1.lastChecked as evidence and writes that date back into
+// rpg_habitlog_v1. That was useful before the dated log became cloud-synced,
+// but today it can resurrect a deliberately removed date from a stale materialized
+// cache during boot. Keep the old fallback harmless by ensuring getHabits() never
+// exposes a lastChecked date that the canonical day log does not actually contain.
+// This guard is read-only: the existing sync/recompute pipeline remains the only
+// writer that materializes canonical score/streak/lastChecked state.
+(function installCanonicalHabitReadGuard () {
+  'use strict';
+  const HABITLOG_KEY = 'rpg_habitlog_v1';
+  const original = window.getHabits;
+  if (typeof original !== 'function' || original.__gamenfyCanonicalHabitReadGuard) return;
+
+  const guarded = function () {
+    const habits = original.apply(this, arguments) || {};
+    let log = {};
+    try { log = JSON.parse(localStorage.getItem(HABITLOG_KEY)) || {}; } catch (e) {}
+
+    Object.keys(habits).forEach((key) => {
+      const h = habits[key];
+      if (!h || !h.lastChecked) return;
+      const days = (log && log[key]) || {};
+      if (days[h.lastChecked]) return;
+
+      const canonicalDates = Object.keys(days).filter((date) => !!days[date]).sort();
+      h.lastChecked = canonicalDates.length ? canonicalDates[canonicalDates.length - 1] : null;
+      if (!h.lastChecked) h.streak = 0;
+    });
+    return habits;
+  };
+
+  guarded.__gamenfyCanonicalHabitReadGuard = true;
+  guarded.__gamenfyOriginalGetHabits = original;
+  window.getHabits = guarded;
+})();
+
 (function () {
   'use strict';
 
