@@ -2,22 +2,17 @@
 
 > Shared handoff for Claude + ChatGPT. Technical fixes can be regression-covered automatically, but device/live-user-data behavior is not fully closed until Joey's real app state confirms it.
 
+Last refreshed: 2026-09-03 by ChatGPT (OpenAI)
+
 ## 1. Daily Missions — intermittent state rollback
 **Reported:** 30 Aug 2026  
 **Status:** **TECHNICALLY FIXED + CI-LOCKED; real-device confirmation still useful.**
 
 Original symptom: a backdated mission could appear checked, then return unchecked after navigating between Main and Skills.
 
-Confirmed root cause was an out-of-order whole-row sync/realtime race. Current `sync.js` uses a persistent dirty journal and monotone high-water mark so a stale remote snapshot cannot overwrite a newer local edit.
+Current `sync.js` uses a persistent dirty journal + monotone high-water mark so stale initial/realtime cloud snapshots cannot overwrite newer local edits or resurrect pre-auth deletions.
 
-Regression coverage protects:
-- edit before Auth / initial cloud pull;
-- stale initial cloud snapshot;
-- newer-local healing write;
-- stale realtime echo after newer state;
-- pre-auth deletion that must not be resurrected.
-
-**Remaining verification:** repeat a previous-day mission edit → Skills → Main → background/reopen on Joey's installed PWA. If stable, this can move fully to resolved history.
+**Remaining verification:** previous-day mission edit → Skills → Main → background/reopen on Joey's installed PWA. If stable, move fully to resolved history.
 
 ---
 
@@ -28,189 +23,166 @@ Regression coverage protects:
 Locked behavior:
 - Walking auto-completes at 10,000 steps;
 - Sleep auto-completes at 420 minutes / 7 hours;
-- later Fitbit finalization can repair older qualified calendar days;
-- public 0–10 levels replay from authoritative `rpg_habitlog_v1`;
+- later Fitbit finalization can repair older qualified days;
+- public 0–10 levels replay from `rpg_habitlog_v1`;
 - no weekly reset;
-- deliberate manual uncheck must not be fought by Fitbit;
-- deliberate manual recheck must clear `manual-off`;
-- Fitbit XP must be exact-once across retries/crashes.
+- manual undo must not be fought by Fitbit;
+- manual recheck clears suppression;
+- Fitbit XP is exact-once across retries/crashes.
 
-### Current technical implementation
-
-`autohabit-reconcile.js` v11.6:
-- scans all available Fitbit dates through today;
-- leaves misses reopenable for later corrections;
-- fetches Fitbit and RPG cloud baseline together;
-- waits for safe sync/local convergence before mutation;
-- backfills genuinely qualified missing days;
-- recomputes through authoritative replay;
-- respects `manual-off`;
-- reruns on focus/foreground;
-- uses a retry-safe XP ledger (`__xp_awarded_v1:<habit>:<date>`);
-- conservatively treats legacy already-confirmed canonical Fitbit days as historically paid;
-- detects XP already written before a ledger-save crash, preventing duplicate +15;
-- can recover the opposite crash window where canonical completion was saved before +15 XP.
-
-`sync.js` v11.7 centrally protects Character/current-day routes:
-- `uncheckHabit(walking|sleep)` ⇒ `manual-off` on;
-- `checkHabit(walking|sleep)` ⇒ `manual-off` cleared.
-
-Main, Park 3.1 and Daily Windows have equivalent protection for their own dated/direct-log routes.
+`autohabit-reconcile.js` v11.6 scans all available Fitbit dates, waits for safe sync convergence, writes genuinely missing qualified dates, replays canonical state, respects `manual-off`, reruns on foreground and keeps a retry-safe XP ledger.
 
 Full integration regression proves:
 **auto +15 → manual uncheck −15 → Fitbit blocked → manual recheck +15 → later Fitbit pass adds 0 extra XP.**
 
-Relevant production-ready checkpoints include:
-- `99efac426a2b48293b0865eb49eea00f0b79ace6` — full manual cycle;
-- `d18864da02f2c2e82f6926dc554344854244efb0` — Daily Windows override symmetry.
+### Manual override routes
+- Main current/backdated: protected;
+- Park 3.1 host: protected;
+- Character current-day: protected centrally;
+- Character dated Daily Quest: protected by `sync.js` v11.8 with exact edited date + historical `(YYYY-MM-DD)` XP attribution;
+- Daily Windows: self-contained `manual-off` fallback in v11.73.
 
 ### Live-data status — still open by design
-
-No historical habit data has been force-written through SQL.
-
-Latest read-only Supabase audit on 3 Sep still showed the RPG cloud row unchanged since `2026-09-03 11:12:10 UTC` and the retrospective migration marker absent. Therefore the stored cloud row had not yet proven a natural authenticated Main execution of the new reconciler at that read.
-
-**Still verify after Joey naturally opens Main:** re-query read-only for migration markers, historical Walking backfill, current Sleep and resulting Walking/Sleep levels. Do not manufacture this proof.
+No history has been force-written through SQL. Latest recorded read-only audit still predated natural client proof of the new migration. After Joey naturally opens authenticated Main, re-query read-only for migration markers, historical Walking/Sleep repairs and resulting levels.
 
 ---
 
-## 3. iOS/PWA bottom navigation drifts into content while scrolling
-**Reported:** 30 Aug 2026  
-**Status:** **OPEN — device-dependent.**
+## 3. Character dated Daily Quest bypass
+**Status:** **FIXED + CI-LOCKED + PRODUCTION READY.**
 
-Symptom: bottom navigation can visually travel upward into page content while scrolling in the standalone PWA.
+Audit found Character had a second public dated Daily control that wrote `rpg_habitlog_v1` directly. Before the fix:
+- Walking/Sleep backdated undo/recheck bypassed exact-date `manual-off` symmetry;
+- `±15 XP` for a backdated day lacked `(YYYY-MM-DD)`, so global streak could attribute it to the later write day.
 
-Do not stack speculative transforms/`!important` rules. If still reproducible, the safer experiment is an iOS-standalone-only shell/internal-scroller architecture where navigation is outside the scrolling paint layer.
+`sync.js` v11.8 wraps only public dated Daily Missions:
+- canonical day-log remains source of truth;
+- Walking/Sleep exact edited date sets/clears suppression;
+- replay runs after mutation;
+- XP audit reason carries the real activity date;
+- private quests delegate to Character's existing PIN/private route.
 
-**Needed before closing:** real-device screenshot/reproduction and validation of any workaround.
+Regression: `tests/character-dated-daily-smoke.js`.
 
 ---
 
-## 4. Daily Mission membership / source of truth
+## 4. Character legacy v9.1 Daily backfill
+**Status:** **RETIRED + CI-LOCKED.**
+
+Character still contains an old one-time migration that scans legacy `rpg_daily_v1:<date>.quests` and copies public completions into `rpg_habitlog_v1` after a 300 ms delay.
+
+That migration is obsolete because `rpg_habitlog_v1` is now itself cloud-synced and canonical. Its old local-only flag could disappear on a clean/new device, allowing stale legacy data to resurrect a deliberately removed historical mission.
+
+Modern `sync.js` v11.8 sets `rpg_daily_habit_backfill_v1=1` before Character's delayed migration can run. It deletes no legacy data; it only prevents old data from becoming authority again.
+
+Regression: `tests/character-dated-daily-smoke.js` locks retirement ordering.
+
+---
+
+## 5. Global streak ghost / wrong-date / Jarvis writer bugs
+**Status:** **FIXED + CI-LOCKED + PRODUCTION READY.**
+
+Current `checkin.js` v7.6 activity sources:
+- canonical public Daily Mission completion from `rpg_habitlog_v1`;
+- XP netted per skill per actual activity date;
+- completed venture steps;
+- explicit evening check-in.
+
+This closes three classes of error:
+- `+15/-15` mission reversal no longer leaves a ghost day;
+- historical XP with `(YYYY-MM-DD)` counts on the real day, not later write date;
+- Jarvis can write a valid canonical Daily Mission without a habit-XP event and that completion still counts as real streak activity.
+
+A dated `checkHabitFor()` wrapper on Main schedules a post-write streak/UI refresh, without taking ownership of the actual mission mutation.
+
+Regressions:
+- `tests/streak-net-activity-smoke.js`
+- `tests/streak-backdated-xp-smoke.js`
+
+Current green production checkpoint: `dcb5676ce95aad39a0b264850441430b28ae1d97`.
+
+---
+
+## 6. Jarvis habit XP audit consistency
+**Status:** **NON-BLOCKING PRODUCT/CONSISTENCY DECISION.**
+
+Jarvis `checkHabit` writes canonical completion and replay but currently does not create the usual public habit `+15 XP` audit event.
+
+This no longer affects:
+- visible Daily Mission 0–10 level;
+- Character Level / Total Level (habits are excluded there anyway);
+- global streak (canonical habitlog is now independent activity evidence).
+
+It can still make the legacy category-XP statistic differ depending on which writer completed the mission. Do not modify this silently; decide later whether Jarvis should create optional habit audit XP or category-XP should exclude habits entirely.
+
+---
+
+## 7. Daily Mission authoritative reset
 **Status:** **FIXED + CI-LOCKED.**
 
-Canonical public 11:
-- Budgeting
-- Sleep
-- Nutrition
-- 10k Steps / Walking
-- Brush Teeth 2×
-- Household
-- Meditation
-- Gratitude
-- Good Deed
-- Screen Time
-- Cold Shower
-
-Private dailies remain separate/PIN-backed:
-- Weed Control / Gardening
-- No Porn / Discipline
-
-Park 3.1 displays the exact public eleven plus a separate private section. Tennis, Reading and Finger Whistling are normal skills, never public Daily Missions. Grounding is disabled.
-
-Public completion source: `rpg_habitlog_v1`.  
-Public 0–10 cache: `rpg_habits_v1`, rebuilt by authoritative replay.
-
-`sync.js` now replays every public mission after the safe RPG cloud baseline and after later remote applies, so stale score/streak/lastChecked cache state cannot outrank the canonical day log.
-
----
-
-## 5. Daily Mission authoritative reset
-**Status:** **FIXED + CI-LOCKED.**
-
-Current reset:
-- prunes pre-reset canonical completion dates;
-- protects pruned Fitbit-backed dates from immediate re-addition;
-- preserves earned XP history;
-- recomputes from remaining post-reset dates;
-- refreshes dependent Lab views.
+Reset prunes pre-reset canonical completion dates, protects pruned Fitbit-backed dates from automatic resurrection, preserves earned XP history, replays remaining dates and refreshes dependent views.
 
 Regression: `tests/habit-reset-smoke.js`.
 
 ---
 
-## 6. Global streak ghost / wrong-date bugs
-**Status:** **FIXED + CI-LOCKED + PRODUCTION READY.**
+## 8. Daily Mission membership / source of truth
+**Status:** **FIXED + CI-LOCKED.**
 
-Current `checkin.js` v7.5 behavior:
-- XP is netted per skill per activity date;
-- +15/−15 mission reversal cancels only that mission;
-- another real activity on the date keeps the day active;
-- venture steps and evening check-ins independently count;
-- old streak history outside capped XP evidence is preserved;
-- historical `best` never shrinks;
-- backdated Main/Fitbit XP uses trailing `(YYYY-MM-DD)` audit date rather than the later physical XP-write date.
+Canonical public 11:
+Budgeting, Sleep, Nutrition, 10k Steps, Brush Teeth 2×, Household, Meditation, Gratitude, Good Deed, Screen Time, Cold Shower.
 
-Therefore a 31-Aug Fitbit backfill written on 3-Sep cannot falsely mark 3-Sep active.
+Private/PIN-backed and separate:
+Weed Control / Gardening; No Porn / Discipline.
 
-Regression: streak net-activity + dedicated backdated-date smoke tests.
+Public completion source: `rpg_habitlog_v1`. Public 0–10 cache: `rpg_habits_v1` rebuilt by authoritative replay. Tennis, Reading and Finger Whistling are normal skills; Grounding is disabled.
 
 ---
 
-## 7. Habit XP versus visible levels
+## 9. Habit XP versus visible levels
 **Status:** **AUDITED — NO DOUBLE COUNT IN CHARACTER/TOTAL LEVEL.**
 
-Daily Mission completion still writes audit/activity XP. This is intentional and separate from the mission's visible 0–10 level.
+Habit-visible level uses canonical 0–10 score. Character Level and Skills Total Level/average explicitly exclude `isHabit` skills.
 
-Verified:
-- habit-visible level uses the canonical 0–10 score;
-- Character Level sums only non-habit skill XP;
-- Skills Total Level/average excludes habits.
-
-One legacy category-XP statistic does aggregate all XP in its category, including habit XP. This is not currently treated as a correctness bug because it is a separate product-definition choice. Do not silently change it without deciding what category progression should mean.
+One legacy category-XP statistic includes habit XP. Treat that as a separate product-definition decision, not a Daily Mission correctness bug.
 
 ---
 
-## 8. JS/PWA stale logic after deploy
+## 10. JS/PWA stale logic after deploy
 **Status:** **FIXED + CI-LOCKED + PRODUCTION READY.**
 
-Audit found stale-looking query labels such as `sync.js?v=11.0` and Daily Windows `v11.71`. The service worker was confirmed push-only: no fetch handler and no Cache API use.
+`sw.js` is push-only: no fetch/cache handler. `vercel.json` serves own `*.js` with `Cache-Control: no-cache, must-revalidate`, so old query labels cannot silently pin stale logic. Daily Windows explicitly points at `daily-windows.js?v=11.73`.
 
-Rather than risk rewriting giant HTML files purely for query strings, `vercel.json` now explicitly sends all own `*.js` with:
-
-`Cache-Control: no-cache, must-revalidate`
-
-Daily Windows additionally points directly at `daily-windows.js?v=11.72`.
-
-Regression `tests/cache-revalidation-smoke.js` protects:
-- JS revalidation header;
-- current Daily Windows cache key;
-- push-only/non-caching service worker contract.
-
-Commit `01dcd190ae06bfa0fbc29cf87ab27734ab89fce2` passed GitHub Actions and is Vercel production `READY`.
+Regression: `tests/cache-revalidation-smoke.js`.
 
 ---
 
-## 9. Park 3.1 asset gap
+## 11. iOS/PWA bottom navigation drifts into content while scrolling
+**Reported:** 30 Aug 2026  
+**Status:** **OPEN — device-dependent.**
+
+Do not stack speculative transforms/`!important` fixes. If still reproducible, test an iOS-standalone-only shell/internal-scroller architecture and validate on Joey's actual installed PWA.
+
+---
+
+## 12. Park 3.1 asset gap
 **Status:** **OPEN CREATOR TASK, NOT A LOGIC BUG.**
 
-Repository asset truth:
-- 110 native Park 3.1 WebPs = 11 native sets ×10;
-- native sets represent 9 public + 2 private companions;
-- Budgeting and Meditation still lack native Park 3.1 ten-level sets.
-
-Current explicit fallbacks:
-- Budgeting → existing Park 2 base art;
-- Meditation → existing Park 2 base/Advanced/Mastery art.
+110 native Park 3.1 WebPs = 9 public sets ×10 + 2 private sets ×10. Missing native public ten-level sets:
+- Budgeting — current labelled Park 2 fallback;
+- Meditation — current labelled Park 2 staged fallback.
 
 Do not fabricate replacements. See `img/lab/park31/ASSET-MAP.md`.
 
 ---
 
-## 10. CI / regression status
+## 13. CI / deployment gate
 **Status:** **LIVE.**
 
-`.github/workflows/smoke.yml` automatically runs every `tests/*-smoke.js` on pushes and PRs to `main` with Node 22.
+`.github/workflows/smoke.yml` runs every `tests/*-smoke.js` on pushes/PRs to `main` with Node 22.
 
-Recent green coverage includes:
-- exact public/private Daily Mission membership;
-- authoritative habit replay and reset;
-- sync race healing and remote refresh;
-- Fitbit retrospective reconciliation;
-- symmetric manual overrides across Character/Park/Daily Windows;
-- exact-once Fitbit XP and full manual cycle;
-- streak net activity and historical date attribution;
-- JS cache revalidation;
-- Park, Daily Garden, Health Trail, Chess and existing Lab/website regressions.
+Do not call a technical change complete until:
+1. newest relevant GitHub Actions run is `completed/success`;
+2. Vercel production deployment for that exact/latest commit is `READY` when deployment matters;
+3. device/live-data behavior is separately verified when applicable.
 
-Before claiming any future functional change complete, inspect the newest Actions run **and** the exact production deployment.
+Current functional baseline `dcb5676ce95aad39a0b264850441430b28ae1d97` passed the full suite and is production `READY`.
