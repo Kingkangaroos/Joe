@@ -123,7 +123,7 @@ Canonical replay after adding all currently qualified Fitbit dates predicts:
 
 No historical habit data was force-written through SQL. The normal authenticated app/sync path remains authoritative.
 
-### Implementation v11.4
+### Implementation v11.5
 
 `autohabit-reconcile.js` now:
 - scans every available Fitbit calendar day through today instead of only today + yesterday;
@@ -132,10 +132,21 @@ No historical habit data was force-written through SQL. The normal authenticated
 - recomputes affected habit levels via existing `recomputeHabitFromLog()`;
 - records audit-friendly XP reason with the actual historical date;
 - stores deliberate manual Walking/Sleep unchecks as `manual-off` and will not fight them;
-- can infer older manual unchecks from the existing XP log where possible;
 - reruns when the app returns to focus/foreground.
 
-### Startup/sync race hardening v11.4
+### One-time legacy auto-ledger migration
+
+Old `rpg_autohabit_v1` boolean `true` was ambiguous: it could mean either “completed” or the old “past day settled even though missed”. v11.5 resolves that ambiguity once, then stores `__retrospective_v2_migrated=true`.
+
+During that first migration:
+- a qualified Fitbit day missing from the log is repaired unless a same-day manual uncheck can be inferred from XP history;
+- a non-qualified legacy “settled miss” is reopened instead of frozen forever.
+
+After migration, `true` has one meaning only: that date was previously confirmed in the authoritative habitlog. Therefore, if a safe cloud/local baseline later shows `state[habit:date] === true` but that date has disappeared from `rpg_habitlog_v1`, the reconciler treats the disappearance as a **deliberate manual uncheck** and converts it to `manual-off` rather than restoring it. This protects backdated unchecks made through Character as well as the explicit Main/Park override paths, without a risky rewrite of the large `character.html` file.
+
+Main and Park still create `manual-off` immediately when their own Walking/Sleep controls are used. Character/backdated removal is recognized on the next reconciler pass through the post-migration ledger invariant.
+
+### Startup/sync race hardening
 
 The reconciler fetches `health_fitbit` and the current cloud `rpg` baseline together, then waits until `sync.js` has either:
 - applied that cloud baseline to the critical local RPG keys, or
@@ -143,11 +154,9 @@ The reconciler fetches `health_fitbit` and the current cloud `rpg` baseline toge
 
 If the baseline is not safe yet, it aborts/retries rather than mutating stale local state.
 
-`checkin.js` v11.4 synchronously replaces the legacy `xp.js` today+yesterday checker with a queueing placeholder before Main can call it. Once the safer module loads, queued UI callbacks are handed to the authoritative pass. This prevents the old checker from racing the initial cloud pull.
+`checkin.js` v11.5 synchronously replaces the legacy `xp.js` today+yesterday checker with a queueing placeholder before Main can call it. Once the safer module loads, queued UI callbacks are handed to the authoritative pass. This prevents the old checker from racing the initial cloud pull.
 
-`park31-lab.js` records the same `manual-off` override when Joey deliberately unchecks Walking or Sleep in the Lab.
-
-Regression file: `tests/autohabit-retrospective-smoke.js`.
+Regression file: `tests/autohabit-retrospective-smoke.js`, including late backfill, stale-miss reopening, Main manual-off, and simulated Character/backdated removal after migration.
 
 ## Health Trail — current Lab prototype
 
@@ -189,15 +198,15 @@ The iOS/PWA bottom navigation can visually drift upward while scrolling. This re
 ## Verification status
 
 - GitHub contains the implementation/test changes above.
-- Vercel production deployments for the Daily Mission/Park/Health Trail changes have been observed as READY after their commits.
+- Vercel production deployments for the Daily Mission/Park/Health Trail changes have been observed as READY after their commits; re-check the newest commit before reporting final deployment state.
 - There is currently no `.github/workflows` CI in this repository; the Node smoke files are regression assets, not a claim that GitHub Actions executed them.
 - Container-side internet/DNS was unavailable during this work session, so do not misreport the browserless smoke files as locally executed here.
-- Joey's authenticated cloud `rpg` row had **not yet changed** after deployment at the last check; the first real Main open on his device is intentionally allowed to exercise the reconciler rather than force-writing history from the database.
+- At the latest Supabase check, the authenticated cloud `rpg` row was still last updated `2026-09-03 11:12:10.174+00`, Walking was Level 10, Sleep Level 0, Walking 2026-08-31 absent, Sleep 2026-09-03 absent, and the v11.5 migration marker was not present. This confirms Joey's real Main session has **not yet exercised the deployed reconciler**; do not force history through SQL.
 
 ## Next build sequence
 
 1. After Joey's next real Main open, inspect Supabase non-destructively and verify that the missing qualified Fitbit dates reconciled through the normal app path; do not force them with SQL.
-2. Verify Walking 31 Aug and current Sleep specifically, plus resulting Walking/Sleep scores.
+2. Verify Walking 31 Aug and current Sleep specifically, plus resulting Walking/Sleep scores and the migration marker.
 3. Continue concrete Park 3.1 companion/interaction fixes in Lab if Joey gives visual feedback.
 4. Keep Home visual/layout work untouched until explicit rollout approval.
 5. Treat convincing character locomotion as a separate animation/frame-asset problem; do not fake leg movement by simply wobbling a static image.
@@ -208,7 +217,7 @@ The iOS/PWA bottom navigation can visually drift upward while scrolling. This re
 - All public 0–10 levels come from authoritative replay of that log.
 - No weekly reset exists.
 - Manual check/uncheck, backdated edits and Fitbit backfill converge to the same result.
-- Fitbit cannot fight a deliberate manual Walking/Sleep uncheck.
+- Fitbit cannot fight a deliberate manual Walking/Sleep uncheck from Main, Park or Character/backdated flow.
 - A late Fitbit correction can restore a legitimately qualified older day.
 - Park and Health Trail refresh immediately after reconciliation.
 - Park 3.1 uses canonical level bands and technical Level 0 remains visibly 0.
