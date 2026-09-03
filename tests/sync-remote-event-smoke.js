@@ -82,9 +82,12 @@ async function runCase({seed={},remote}){
   assert.match(syncSource,/new CustomEvent\('gamenfy:remote-state-applied'/,'sync owns the dedicated remote-state event contract');
   assert.match(syncSource,/new Event\('storage'\)/,'sync bridges genuine remote applies to older storage-driven views');
   assert.match(syncSource,/if \(e\.key && matches\(e\.key\)\) schedulePush\(\)/,'the sync storage listener ignores the key-less refresh bridge');
-  assert.match(checkinSource,/addEventListener\('gamenfy:remote-state-applied', refreshVisibleStreak\)/,'Main streak/check-in surfaces subscribe to dedicated remote applies');
+  assert.match(checkinSource,/addEventListener\('gamenfy:remote-state-applied', refreshVisibleRpg\)/,'Main subscribes to dedicated RPG remote applies');
+  for(const renderer of ['renderStreakPill','renderCheckinCard','renderMissions','renderCharStrip','renderFocusGrid','renderAgenda','renderNextMove']){
+    assert.match(checkinSource,new RegExp("typeof window\\."+renderer+" === 'function'"),'Main remote refresh includes '+renderer);
+  }
   assert.match(gardenSource,/window\.addEventListener\('storage',render\)/,'Daily Garden is covered by the legacy refresh bridge');
   assert.match(characterSource,/window\.addEventListener\('storage',[\s\S]*char-screen\.active/,'Character active tab is covered by the legacy refresh bridge');
 
-  console.log('sync remote event smoke: dedicated + legacy view refresh contracts pass without echo writes or eventspam.');
+  console.log('sync remote event smoke: Main + dedicated + legacy view refresh contracts pass without echo writes or eventspam.');
 })().catch(err=>{console.error(err);process.exitCode=1;});
