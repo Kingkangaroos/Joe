@@ -1,6 +1,6 @@
 # BUILDER — Current handoff
 
-Last updated: 2026-09-03
+Last updated: 2026-09-03  
 Owner: Joey Siemons  
 Primary builder: ChatGPT (OpenAI)
 
@@ -8,142 +8,209 @@ Primary builder: ChatGPT (OpenAI)
 
 This repository is the durable source of truth for Gamenfy. This chat is the **Builder**:
 
-- The Builder reads the live repository before making claims or changes.
-- The Builder owns implementation, integration, data wiring, tests, rollback and technical documentation.
-- When new images, animation or other original visual assets must be created, a separate **Creator** is used. The Builder writes the exact asset brief and integrates the approved output.
-- A chat claim is not treated as completed work until the relevant commit/files are verified in GitHub.
-- Joey remains the decision-maker for meaningful product and visual choices.
+- Read live GitHub/current data before making claims or changes.
+- Own implementation, integration, data wiring, tests, rollback and technical documentation.
+- New original visual assets belong to a separate Creator workflow; Builder integrates approved output.
+- A chat claim is not completed work until the relevant files/commit are verified in GitHub.
+- Joey remains decision-maker for meaningful product/visual choices.
+- When Joey says **“ga verder, druk”**, continue autonomously within these locked boundaries instead of stopping for routine clarification.
 
 ## Hard product boundaries
 
-- New work is built and reviewed inside the **normal app's Lab**.
-- **Home / Main stays untouched unless Joey explicitly requests a Home change.**
-- Existing experiments are not overwritten to make room for a new version.
-- Park 3.0 remains intact as the rollback/reference version.
-- Park 3.1 is a separate iteration, not a silent replacement of Park 3.0.
-- Mobile verification must include a real iPhone-sized viewport and asset loading; visual work is not considered complete from syntax checks alone.
+- New visual/product experiments are built and reviewed inside the **normal app's Lab**.
+- **Home/Main visual layout stays untouched unless Joey explicitly requests a Home rollout.** The authorized Fitbit/Daily Mission logic may run on Main.
+- Existing experiments are not overwritten merely to make room for a new version.
+- Park 3.0 remains intact as rollback/reference.
+- Park 3.1 is a separate current iteration, not a silent replacement of Park 3.0.
+- Mobile/device-specific visual work is not fully closed until Joey's installed iPhone/PWA verifies it.
 
 ## Connected project
 
 - GitHub: `Kingkangaroos/Joe`
 - Default branch: `main`
 - Vercel project: `joe`
-- Supabase project: `Kingkangaroos's Project`
-- Park implementation files on `main`: `park3.html`, `park3.css`, `park3.js`
+- Supabase project: `Kingkangaroos's Project` (`ttxjsoahmtennnufgeqx`)
 - Lab entry point: `lab.html`
-- Park 3.1 Lab release branch: `chatgpt/park31-lab-release`
+- Park 3.0 implementation: `park3.html`, `park3.css`, `park3.js`
+- Park 3.1 implementation: `park31.html`, `park31.css`, `park31.js`, host controller `park31-lab.js`
 
-## Park 3.1 — locked user decisions
+## Daily Mission source of truth — LOCKED
 
-Park 3.1 started with the **Steps / Walking** companion and now contains all eleven Daily Mission companion sets.
+Public Daily Missions are active, non-private `RPG_DEFAULT_SKILLS` entries with `isHabit === true`.
 
-- The companion must remain recognizably the same character across Levels 1–10.
-- Joey chose the **second Level-1 alternative**: the sleepy, yawning/gaping version.
-- Known original attachment reference for the chosen Level 1:  
-  `file_000000005f10821093cbeaefddd5e707` → `walking-l01.png`
-- Canonical source filenames: `walking-l01.png` through `walking-l10.png`.
-- Intended repository assets:  
-  `img/lab/park31/steps/l01.webp` through `img/lab/park31/steps/l10.webp`
-- Live `walking` score selects the corresponding Level 1–10 artwork.
-- Score 0 remains a real technical level and may reuse Level-1 art with the existing critical treatment, consistent with Park 3.0.
-- Tapping/clicking the large standalone Steps companion activates its light/glow interaction.
-- The new version belongs in the existing Lab and must coexist with Park 3.0.
-- Do not add Park 3.1 to Home.
+Current public set (11):
+- Budgeting
+- Sleep
+- Nutrition
+- 10k Steps / Walking
+- Brush Teeth 2×
+- Household
+- Meditation
+- Gratitude
+- Good Deed
+- Screen Time
+- Cold Shower
 
-## Verified status at handoff
+Grounding is disabled. Tennis, Reading and Finger Whistling are regular skills and must never enter the Daily Mission grid. No Porn and Weed Control are separate private dailies and retain the PIN-backed route.
 
-Verified against GitHub on 2026-08-31:
+Canonical persistence:
+- Per-day completion: `rpg_habitlog_v1`
+- Current 0–10 score/streak/last check: `rpg_habits_v1`
+- `recomputeHabitFromLog(habitId)` is the authoritative public-habit replay engine.
+- No weekly reset.
+- Daily Mission score rule: complete day `+1` (max 10); completed missed calendar day `−1` (min 0); today is not considered missed before the day ends.
 
-- `main` contains Park 3.0 and the current Lab implementation.
-- `chatgpt/park31-steps-hq` existed but had **0 unique commits** and was 7 commits behind `main`.
-- No `img/lab/park31/steps/l01.webp`–`l10.webp` assets had been committed.
-- The earlier statement that ten HQ assets were “prepared” did not become durable repository work.
-- Only the exact Level-1 attachment ID above was recoverable from conversation context. The exact attachment IDs for Levels 2–10 were not recoverable.
-- Existing Park 3.0 strip assets are upscaled exports from a low-resolution atlas. They are useful as the current Park 3.0 source, but they are not native HQ replacements for Park 3.1.
+Canonical visual bands:
+- 0–2 → Starter
+- 3–4 → Apprentice
+- 5–6 → Advanced
+- 7–9 → Expert
+- 10 → Master
 
-## Park 3.1 Steps — implemented 2026-08-31
+## Park 3.1 — current Daily Mission Lab
 
-- The ten approved native images were recovered and committed as `img/lab/park31/steps/l01.webp` through `l10.webp`.
-- Level 1 is the exact selected second, yawning alternative; Levels 2–10 are the original approved progression.
-- `park31.html`, `park31.css` and `park31.js` provide a separate Steps-only Lab test.
-- The live `walking` score selects the matching artwork; technical Level 0 reuses Level 1 art with critical styling.
-- Tapping only toggles light/glow and never writes mission completion or level data.
-- Park 3.1 renders directly inside the normal Lab; Park 3.0 remains separately available and Home remains untouched.
-- The Lab reserves a roster for all 11 Daily Mission companions (10 levels each); `img/lab/park31/ASSET-MAP.md` remains the canonical asset contract.
+Park 3.1 contains all **11 companion sets × 10 levels = 110 committed assets**. The old Park 2.0 “5 ready / 6 pending” status is historical and must not be treated as an active asset queue.
 
-## Park 3.1 full Lab roster — implemented 2026-09-02
+Current asset contract:
+- `img/lab/park31/ASSET-MAP.md`
+- `img/lab/park31/<mission>/l01.webp` through `l10.webp`
 
-- Park 3.1 now has all 11 companion sets and all 110 level assets.
-- Household, Gratitude, Nutrition and Brush Teeth use Joey's final Gouden Paard files.
-- Their source checkerboard backgrounds were removed technically and exported as transparent WebP files; no replacement artwork was generated.
-- The normal `lab.html` embeds the complete Park 3.1 roster directly.
-- The Lab roster runs in Daily Mission mode: a short tap opens that companion's read-only evolution sheet, where `− / +` only previews Levels 1–10. Holding a public companion for 560 ms completes or uncompletes today's mission, updates XP and recalculates its live level through the existing habit engine.
-- Moving more than 12 px cancels the hold, so normal Lab scrolling cannot accidentally claim a mission.
-- Gardening and Discipline keep the established PIN gate and write to the existing private daily-quest store.
-- Home/Main is deliberately unchanged in this release. The larger Home and persistence rebuild remains isolated until Joey explicitly approves that separate rollout.
-- Park 3.0 remains available as the rollback/reference implementation.
+Locked Steps decisions:
+- The same character remains recognisable across Levels 1–10.
+- Joey selected the second Level-1 yawning/sleepy alternative.
+- Technical Level 0 is real; it may reuse Level-1 artwork with critical styling, but the actual displayed level/progress remains **0 / 0%**.
 
-## Park 3.1 artwork cleanup — implemented 2026-09-02
+Current interaction:
+- Short tap opens the companion detail/evolution preview.
+- `− / +` is read-only preview and cannot change live data.
+- Explicit `Voltooi vandaag` / `Ongedaan maken` changes the real mission.
+- Deliberate 560 ms hold is a shortcut for the same action.
+- Moving >12 px cancels the hold so scrolling does not claim a mission.
+- Public companions route through the host Daily Mission controller.
+- Gardening / Discipline retain private PIN flow.
+- After 3+ inactive days a companion may show **HELP**.
+- A real completion that raises live level triggers the existing short level-up celebration.
 
-- All ten Cold Shower levels are now true transparent WebP cutouts. The embedded night amusement-park scenery is gone; characters, water effects and purple stone pedestals remain.
-- All ten Brush Teeth levels were re-cleaned. Checkerboard fragments and ragged detached effect remnants are removed while the companion progression stays intact.
-- Household Level 1 is now intentionally more confronting: the same companion is overwhelmed by trash, laundry, dirty dishes and dust, giving the mission a stronger immediate cleanup trigger.
-- Good Deed, Steps and Sleep Levels 1–10 are now true transparent WebP cutouts. Their characters and progression effects remain intact; the fixed navy rectangular backdrops are gone.
-- Every changed cutout was reviewed on pink, mint and dark backgrounds. Automated smoke coverage now verifies that the affected WebP files contain real alpha data.
-- Asset URLs were bumped to Park 3.1 version 1.10 so the normal Lab cannot keep stale artwork in cache.
+### Park 3.1 consistency pass — 2026-09-03
 
-## Park 3.1 feedback layer — implemented 2026-09-02
+`park31.js` v1.13 now uses the canonical bands everywhere. The stale labels `BUILDING` and `ELITE` were removed. Boundary regression coverage explicitly checks 0/2/3/4/5/6/7/9/10.
 
-- A mission that has not been completed for three or more days now writes **HELP** across its companion window, matching Joey's earlier motivation concept.
-- A real mission completion that raises the live level triggers a short room expansion, light-up and confetti celebration showing the new level.
-- Previewing with `− / +` never triggers the celebration and still cannot write mission data.
-- The expanded companion now has an explicit `Voltooi vandaag` / `Ongedaan maken` button. The 560 ms card hold remains available as a shortcut, while previews disable the action entirely.
-- Reduced-motion users receive the level-up status without movement. Park 3.1 cache URLs are now version 1.12.
+Technical Level 0 was also corrected:
+- art fallback can remain `l01.webp`;
+- live header/modal display `Level 0`;
+- progress is 0%, not 10%;
+- band label is Starter while the existing zero/critical visual treatment may remain.
 
-## Chess audit — verified 2026-09-02
+Park 3.1 listens to `gamenfy:auto-habits-changed`, so a Fitbit retrospective reconciliation refreshes the companion level immediately rather than waiting for its periodic poll.
 
-- The existing Chess skill already contains XP, eleven tiers, gates, assessment, logging and Lab visuals; the dedicated smoke test passes.
-- No duplicate Chess implementation was added.
+## Fitbit → Daily Missions retrospective reconciliation — LIVE code, device exercise pending
 
-## Health Trail — Lab prototype implemented 2026-09-02
+Joey explicitly requested automatic Steps/Sleep completion to work retrospectively when Fitbit finalizes/corrects an older day.
 
-- Joey's earlier D-score replacement idea now exists directly in the normal Lab, not behind a preview link.
-- The displayed 0–10 level combines 70% of the average public Daily Mission level with 30% of the available Fitbit recovery score.
-- Recovery uses sleep plus HRV and resting-heart-rate movement against Joey's own recent baseline. Missing Fitbit data is omitted instead of being treated as failure.
-- The existing Park 3.1 Steps evolution is reused as the runner; the prototype is read-only and cannot modify habits, XP or health data.
-- Home/Main remains unchanged pending Joey's later judgment of the Lab prototype.
+Thresholds remain:
+- Walking: **10,000 steps**
+- Sleep: **420 minutes / 7 hours**
 
-## Fitbit → Daily Missions retrospective reconciliation — implemented 2026-09-03
+### Live-data audit before first reconciler run
 
-- Joey explicitly requested Steps and Sleep to auto-complete even retrospectively when a later Fitbit sync proves that the target was reached.
-- Live Supabase inspection confirmed the ingest itself was healthy and exposed the real failure case: a finalized historical Steps day could exceed 10,000 while `rpg_habitlog_v1` still missed that day because legacy `rpg_autohabit_v1` had already marked it as settled.
-- `autohabit-reconcile.js` now scans every available Fitbit calendar day through today instead of only today + yesterday.
-- A failed threshold is never permanently settled. If Fitbit later finalizes or corrects an older day upward, the mission can self-heal on the next Main reconciliation.
-- The authoritative `rpg_habitlog_v1` is updated first, then the 0–10 habit score/streak is recomputed from the full log. There is no weekly reset.
-- Walking remains 10,000 steps. Sleep remains the existing 7-hour / 420-minute automatic threshold.
-- A deliberate manual uncheck is stored as `manual-off`; Fitbit will not fight that choice. Park 3.1 Lab writes the same override for Walking/Sleep.
-- Legacy ambiguous auto flags are migrated safely: genuine completed log days remain complete; stale settled misses reopen; historical manual unchecks are inferred from the newest manual XP-log event when possible.
-- Reconciliation can rerun when the app regains focus/visibility, so a same-day Fitbit update can be caught without requiring a full reload.
-- The fix is isolated from `xp.js` and loaded by `checkin.js`, making rollback independent from the RPG engine.
-- Smoke coverage: `tests/autohabit-retrospective-smoke.js` verifies late backfill, stale-miss reopening, score recomputation and manual-uncheck protection.
-- Vercel production deployment for the final test commit is READY.
+Supabase ingest was healthy. Before Joey's next Main open, the cloud audit found:
+- **7** Fitbit-qualified Walking dates absent from `rpg_habitlog_v1`;
+- **5** Fitbit-qualified Sleep dates absent from `rpg_habitlog_v1`.
+
+Canonical replay after adding all currently qualified Fitbit dates predicts:
+- Walking → **Level 10** (unchanged, already capped)
+- Sleep → **Level 1** (cloud was stale at Level 0)
+
+No historical habit data was force-written through SQL. The normal authenticated app/sync path remains authoritative.
+
+### Implementation v11.4
+
+`autohabit-reconcile.js` now:
+- scans every available Fitbit calendar day through today instead of only today + yesterday;
+- leaves threshold misses reopenable, so a later Fitbit correction can self-heal an old day;
+- writes only genuinely missing qualified days to `rpg_habitlog_v1`;
+- recomputes affected habit levels via existing `recomputeHabitFromLog()`;
+- records audit-friendly XP reason with the actual historical date;
+- stores deliberate manual Walking/Sleep unchecks as `manual-off` and will not fight them;
+- can infer older manual unchecks from the existing XP log where possible;
+- reruns when the app returns to focus/foreground.
+
+### Startup/sync race hardening v11.4
+
+The reconciler fetches `health_fitbit` and the current cloud `rpg` baseline together, then waits until `sync.js` has either:
+- applied that cloud baseline to the critical local RPG keys, or
+- recorded a genuinely newer local dirty edit in `__gamenfy_sync_dirty_v1:rpg`.
+
+If the baseline is not safe yet, it aborts/retries rather than mutating stale local state.
+
+`checkin.js` v11.4 synchronously replaces the legacy `xp.js` today+yesterday checker with a queueing placeholder before Main can call it. Once the safer module loads, queued UI callbacks are handed to the authoritative pass. This prevents the old checker from racing the initial cloud pull.
+
+`park31-lab.js` records the same `manual-off` override when Joey deliberately unchecks Walking or Sleep in the Lab.
+
+Regression file: `tests/autohabit-retrospective-smoke.js`.
+
+## Health Trail — current Lab prototype
+
+The D-score replacement prototype is mounted directly in the normal Lab and remains read-only.
+
+Score model:
+- 70% = average current public Daily Mission level
+- 30% = available Fitbit recovery score
+- recovery currently uses sleep plus HRV and resting-heart-rate movement against Joey's recent baseline
+- missing Fitbit signals are omitted rather than counted as failure
+
+`health-trail.js` v1.1 reads the same `getHabits()` public levels, so retrospective Daily Mission corrections feed the trail automatically. It now listens to:
+- `gamenfy:daily-mission-change`
+- `gamenfy:auto-habits-changed`
+- `gamenfy:remote-state-applied`
+- focus / foreground changes
+
+Rapid events coalesce the Fitbit read rather than fanning out duplicate network requests. The runner reuses current Park 3.1 Steps artwork v1.13.
+
+Regression file: `tests/health-trail-smoke.js`.
+
+## Other verified project state
+
+### Park 3.1 artwork
+- Household, Gratitude, Nutrition and Brush Teeth use Joey's approved final files.
+- Cold Shower, Brush Teeth, Good Deed, Steps and Sleep cleanup produced transparent WebP cutouts where intended.
+- Household Level 1 is intentionally more confronting/messy for motivation.
+- Park 3.0 remains rollback/reference.
+
+### Chess
+The existing Chess skill already contains XP, tiers/gates, assessment, logging and Lab visuals. Do not create a duplicate Chess system.
+
+### Sync
+`sync.js` v11.2 is the current whole-row race hardening layer: persistent dirty journal, newer-local protection, monotone watermark, stale realtime healing and unload safety net.
+
+### Known device issue
+The iOS/PWA bottom navigation can visually drift upward while scrolling. This remains open and is likely related to iOS 26/WebKit fixed-position rendering. Do not blindly pile CSS transforms onto it without device evidence; see `BUGS-ACTIVE.md`.
+
+## Verification status
+
+- GitHub contains the implementation/test changes above.
+- Vercel production deployments for the Daily Mission/Park/Health Trail changes have been observed as READY after their commits.
+- There is currently no `.github/workflows` CI in this repository; the Node smoke files are regression assets, not a claim that GitHub Actions executed them.
+- Container-side internet/DNS was unavailable during this work session, so do not misreport the browserless smoke files as locally executed here.
+- Joey's authenticated cloud `rpg` row had **not yet changed** after deployment at the last check; the first real Main open on his device is intentionally allowed to exercise the reconciler rather than force-writing history from the database.
 
 ## Next build sequence
 
-1. Let the next real Main open/sync exercise the retrospective reconciler against Joey's live local/session state; do not force-write historical habit data directly from the database.
-2. Keep reviewing the eleven companions and their HELP/level-up feedback in the normal Lab; correct concrete feedback there.
-3. Keep Home visual/layout work untouched until Joey explicitly approves a separate Home rollout.
-4. Treat convincing character movement as a separate frame/animation-asset job; do not fake it with a wobbling static image.
+1. After Joey's next real Main open, inspect Supabase non-destructively and verify that the missing qualified Fitbit dates reconciled through the normal app path; do not force them with SQL.
+2. Verify Walking 31 Aug and current Sleep specifically, plus resulting Walking/Sleep scores.
+3. Continue concrete Park 3.1 companion/interaction fixes in Lab if Joey gives visual feedback.
+4. Keep Home visual/layout work untouched until explicit rollout approval.
+5. Treat convincing character locomotion as a separate animation/frame-asset problem; do not fake leg movement by simply wobbling a static image.
 
-## Definition of done for Park 3.1 Steps
+## Definition of done for current Daily Mission layer
 
-- All 110 approved companion assets are present in GitHub at the canonical paths.
-- Levels 1–10 render the correct distinct images; Level 0 uses the agreed critical treatment.
-- The chosen yawning Level-1 image is visibly the exact selected variant.
-- Park 3.0 is still available and unchanged.
-- Home visual layout is unchanged; the authorized Fitbit mission logic may run on Main.
-- Short tap opens the selected companion without changing mission data; the explicit live action or deliberate hold changes completion, while `− / +` previews remain read-only.
-- A deliberate hold completes/uncompletes through the existing mission controller; scrolling cancels the hold.
-- Refresh and live Daily Mission level changes update correctly.
-- No black/corrupt assets on iPhone; layout and text remain usable.
-- Commit and deployed normal-Lab route are verified before reporting completion.
+- Main, Character and Park 3.1 read the same public per-day completion log.
+- All public 0–10 levels come from authoritative replay of that log.
+- No weekly reset exists.
+- Manual check/uncheck, backdated edits and Fitbit backfill converge to the same result.
+- Fitbit cannot fight a deliberate manual Walking/Sleep uncheck.
+- A late Fitbit correction can restore a legitimately qualified older day.
+- Park and Health Trail refresh immediately after reconciliation.
+- Park 3.1 uses canonical level bands and technical Level 0 remains visibly 0.
+- Park 3.0 remains available as rollback/reference.
+- Device-specific issues are not marked fully resolved until Joey's iPhone/PWA confirms them.
