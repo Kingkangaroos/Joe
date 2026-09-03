@@ -1,0 +1,38 @@
+name: Gamenfy smoke tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: smoke-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: Browserless regression suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run all smoke tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/*-smoke.js; do
+            echo "::group::$test"
+            node "$test"
+            echo "::endgroup::"
+          done
