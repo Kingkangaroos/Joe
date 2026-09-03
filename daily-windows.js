@@ -1,4 +1,4 @@
-/* Daily Mission Windows v11.72
+/* Daily Mission Windows v11.73
    Performed-by: ChatGPT (OpenAI)
    Purpose: Lab-only living-room prototype for the 11 public Daily Missions.
    Data contract: RPG_DEFAULT_SKILLS + rpg_habitlog_v1 + canonical habit recompute.
@@ -6,6 +6,7 @@
 (function(){
   'use strict';
 
+  var AUTO_KEY='rpg_autohabit_v1';
   var grid,modal,focusRoom,focusTitle,focusMeta,focusDesc,focusLevel,actionBtn,previewBtn;
   var missions=[];
   var selectedKey=null;
@@ -45,6 +46,22 @@
   function logSave(log){try{localStorage.setItem('rpg_habitlog_v1',JSON.stringify(log));}catch(e){}}
   function isDone(key,date){var l=logLoad();return !!(l[key]&&l[key][date||todayKey()]);}
   function setDone(key,date,val){var l=logLoad();l[key]=l[key]||{};if(val)l[key][date]=true;else delete l[key][date];logSave(l);}
+  function markAutoOverride(key,date,suppressed){
+    if(key!=='walking'&&key!=='sleep')return;
+    if(typeof window.setAutoHabitManualOverride==='function'){
+      try{window.setAutoHabitManualOverride(key,date,suppressed);return;}catch(e){}
+    }
+    // Daily Windows intentionally does not load checkin/autohabit-reconcile.
+    // Keep the same durable fallback contract as Park so this standalone Lab
+    // surface cannot leave an invisible stale manual-off token behind.
+    try{
+      var state=JSON.parse(localStorage.getItem(AUTO_KEY))||{};
+      var stateKey=key+':'+date;
+      if(suppressed)state[stateKey]='manual-off';
+      else if(state[stateKey]==='manual-off')delete state[stateKey];
+      localStorage.setItem(AUTO_KEY,JSON.stringify(state));
+    }catch(e){}
+  }
   function scoreOf(key){try{return Math.max(0,Math.min(10,Number(((window.getHabits&&window.getHabits()[key])||{}).score)||0));}catch(e){return 0;}}
   function band(level){if(level>=10)return {i:4,name:'Master'};if(level>=7)return {i:3,name:'Expert'};if(level>=5)return {i:2,name:'Advanced'};if(level>=3)return {i:1,name:'Apprentice'};return {i:0,name:'Starter'};}
   function missedDays(key){if(isDone(key,todayKey()))return 0;var misses=0;for(var i=0;i<14;i++){var d=shiftDate(todayKey(),-i);if(isDone(key,d))break;misses++;}return misses;}
@@ -129,13 +146,9 @@
     var date=todayKey(),was=isDone(m.key,date),def=m.def||{};
     setDone(m.key,date,!was);
 
-    // Daily Windows writes the dated log directly instead of going through the
-    // shared checkHabit()/uncheckHabit() wrappers. Keep Fitbit's manual override
-    // state symmetric here as well, otherwise a Walking/Sleep re-check could leave
-    // an old manual-off token behind and permanently suppress later reconciliation.
-    if((m.key==='walking'||m.key==='sleep')&&typeof window.setAutoHabitManualOverride==='function'){
-      try{window.setAutoHabitManualOverride(m.key,date,was);}catch(e){}
-    }
+    // `was` is exactly the suppression value: undoing a completed auto-backed
+    // mission sets manual-off; completing/re-checking clears it.
+    markAutoOverride(m.key,date,was);
 
     if(!was&&typeof window.checkHabitFor==='function'){
       try{window.checkHabitFor(m.key,date,def.label,def.icon);}catch(e){}
