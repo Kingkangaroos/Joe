@@ -37,7 +37,7 @@
     cold_shower:{glow:'rgba(76,166,226,.19)',lit:'rgba(96,205,244,.34)',emoji:'💧'}
   };
 
-  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c];});}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function localDateKey(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
   function todayKey(){return localDateKey(new Date());}
   function shiftDate(key,delta){var p=key.split('-').map(Number),d=new Date(p[0],p[1]-1,p[2]+delta);return localDateKey(d);}
