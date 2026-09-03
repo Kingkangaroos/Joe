@@ -1,5 +1,5 @@
 // =============================================================
-// Shared cloud-sync helper — Gamenfy v11.5 central uncheck guard
+// Shared cloud-sync helper — Gamenfy v11.6 authoritative habit replay
 // Performed-by: ChatGPT (OpenAI)
 //
 // v11.2 hardens navigation/realtime races:
@@ -16,6 +16,10 @@
 // ignores that bridge because there is no key, so it cannot create echo writes.
 // v11.5 centrally protects current-day Walking/Sleep unchecks so any UI that
 // uses the shared uncheckHabit engine records Fitbit manual-off immediately.
+// v11.6 emits cloud-sync-ready after the initial baseline settles and replays
+// every canonical public Daily Mission from rpg_habitlog_v1 at that safe point
+// and after later RPG remote applies. History is therefore authoritative even
+// when rpg_habits_v1 arrives with the same lastChecked but a stale score.
 // =============================================================
 (function () {
   'use strict';
@@ -176,6 +180,16 @@
       } catch (e) {}
     }
 
+    function notifyReady() {
+      try {
+        if (typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
+          window.dispatchEvent(new CustomEvent('gamenfy:cloud-sync-ready', {
+            detail: { appKey: appKey }
+          }));
+        }
+      } catch (e) {}
+    }
+
     function applyRemote(remote, allowDelete, remoteMs) {
       if (!remote || typeof remote !== 'object') return false;
       suppressSync = true;
@@ -319,6 +333,8 @@
         if (Object.keys(loadDirty().items || {}).length) schedulePush();
       }
 
+      notifyReady();
+
       supa.channel('app_state_' + cloudKey + '_' + Math.random().toString(36).slice(2,8))
         .on('postgres_changes', {
           event: '*', schema: 'public', table: 'app_state', filter: 'key=eq.' + cloudKey,
@@ -407,4 +423,49 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install);
   else setTimeout(install, 0);
+})();
+
+// Canonical public Daily Mission state guard.
+// `rpg_habitlog_v1` is the history/source of truth; `rpg_habits_v1` is a
+// materialized current-state cache. Rebuild that cache only after the initial
+// RPG cloud baseline has settled, and before dependent views process later
+// remote applies. This repairs stale score/streak/lastChecked combinations
+// without turning an unverified pre-cloud local cache into a newer dirty edit.
+(function () {
+  'use strict';
+  let pendingRetry = null;
+
+  function publicHabitKeys() {
+    const defs = window.RPG_DEFAULT_SKILLS || {};
+    return Object.keys(defs).filter((key) => {
+      const def = defs[key];
+      return !!(def && def.isHabit && !def.private && def.active !== false);
+    });
+  }
+
+  function replayPublicHabits() {
+    if (typeof window.recomputeHabitFromLog !== 'function' || !window.RPG_DEFAULT_SKILLS) {
+      clearTimeout(pendingRetry);
+      pendingRetry = setTimeout(replayPublicHabits, 50);
+      return false;
+    }
+    clearTimeout(pendingRetry);
+    pendingRetry = null;
+    publicHabitKeys().forEach((key) => {
+      try { window.recomputeHabitFromLog(key); } catch (e) {}
+    });
+    return true;
+  }
+
+  function onRpgBaseline(event) {
+    const detail = event && event.detail;
+    if (!detail || detail.appKey !== 'rpg') return;
+    replayPublicHabits();
+  }
+
+  // Registered while sync.js loads, before DOMContentLoaded starts cloud sync.
+  // Therefore the replay runs before Main/Park/Health Trail listeners that are
+  // registered by later scripts see the same remote-state-applied event.
+  window.addEventListener('gamenfy:cloud-sync-ready', onRpgBaseline);
+  window.addEventListener('gamenfy:remote-state-applied', onRpgBaseline);
 })();
