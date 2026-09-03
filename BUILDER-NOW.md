@@ -13,7 +13,7 @@ This repository is the durable source of truth for Gamenfy.
 - New original visual assets belong to a separate Creator workflow; Builder integrates only approved output.
 - A chat claim is not completed work until the relevant commit/files are verified.
 - Joey decides meaningful product/visual choices.
-- When Joey says **“ga verder, druk”**, continue autonomously inside the locked boundaries instead of stopping for routine clarification.
+- When Joey says **“ga verder, druk”** or otherwise asks Builder to keep going, continue autonomously inside the locked boundaries instead of stopping for routine clarification.
 - Do not force live user data through SQL merely to make a feature look verified. Prefer real app execution + read-only verification.
 
 ## Hard boundaries
@@ -34,29 +34,37 @@ This repository is the durable source of truth for Gamenfy.
 - Lab: `lab.html`
 - Park 3.0: `park3.html`, `park3.css`, `park3.js`
 - Park 3.1: `park31.html`, `park31.css`, `park31.js`, host controller `park31-lab.js`
+- Daily Windows experiment: `daily-windows.html`, `daily-windows.js`, `daily-windows-option-d.js`
 
 ## Automated regression gate — LIVE
 
 `.github/workflows/smoke.yml` runs every `tests/*-smoke.js` on pushes and pull requests to `main`, using Node 22 and current GitHub Actions v7.
 
-Current durable coverage includes:
-- Park 3.1 interaction, canonical level bands, Level 0, native asset integrity, public/private roster and PIN/manual-off routes;
+Durable coverage now includes:
 - exact Daily Mission membership versus `RPG_DEFAULT_SKILLS`;
-- Daily Mission Garden;
-- Park 2 rollback loader;
-- Chess skill registry/gates;
-- Health Trail scoring/events;
-- Fitbit retrospective reconciliation and manual-off behavior;
+- Park 3.1 interaction, level bands, Level 0, native asset integrity, public/private roster and PIN/manual-off routes;
+- Daily Mission Garden and Daily Windows direct-log behavior;
+- Fitbit retrospective reconciliation, manual-off behavior, symmetric uncheck/recheck and full manual-cycle integration;
+- retry-safe / exact-once Fitbit XP awards;
+- authoritative public habit replay after cloud baseline;
 - authoritative Daily Mission reset;
-- global streak net-activity reconciliation;
-- RPG sync scope;
-- `sync.js` stale-realtime / pre-auth edit / pre-auth deletion races;
+- global streak net-activity + historical activity-date attribution;
+- RPG sync scope and stale-realtime/pre-auth edit/deletion races;
 - remote-state refresh events + legacy storage bridge + Main refresh contract;
-- website scroll prototypes.
+- shared JS cache revalidation contract;
+- Health Trail, Chess and existing Lab/website regressions.
 
-The latest functional remote-refresh commit passed the full GitHub Actions suite and Vercel deployed that exact commit as production `READY`.
+**Rule:** do not claim a new change is safe merely because a test file exists. Inspect the newest Actions run and exact Vercel deployment first.
 
-**Rule:** do not claim a new change is safe merely because a test file exists. Inspect the newest Actions run and repair failures first.
+## Latest verified functional checkpoints
+
+The following functional chains have been verified in GitHub Actions and deployed as Vercel production `READY`:
+
+- `99efac426a2b48293b0865eb49eea00f0b79ace6` — full Fitbit auto → manual uncheck → manual recheck cycle;
+- `d18864da02f2c2e82f6926dc554344854244efb0` — Daily Windows Fitbit override symmetry;
+- `01dcd190ae06bfa0fbc29cf87ab27734ab89fce2` — shared JS revalidation/cache contract.
+
+Earlier locked foundations include authoritative cloud-baseline replay, backdated streak attribution and retry-safe Fitbit XP awards.
 
 ## Daily Mission source of truth — LOCKED
 
@@ -81,17 +89,19 @@ Private dailies, separate/PIN-backed:
 
 Never place Tennis, Reading or Finger Whistling into the public Daily Mission grid. Grounding is disabled.
 
-Persistence:
-- per-day public completion: `rpg_habitlog_v1`
-- current public 0–10 state: `rpg_habits_v1`
-- authoritative replay: `recomputeHabitFromLog(habitId)`
-- Fitbit/manual suppression ledger: `rpg_autohabit_v1`
-- authoritative reset markers: `rpg_habit_reset_v1`
-- private per-day quests: `rpg_daily_v1:<date>`
-- no weekly reset
-- completed day: +1 up to 10
-- missed completed calendar day: −1 down to 0
-- today is not treated as missed before the day ends
+Persistence contract:
+- authoritative per-day public completion: `rpg_habitlog_v1`;
+- materialized public 0–10 cache: `rpg_habits_v1`;
+- authoritative replay: `recomputeHabitFromLog(habitId)`;
+- Fitbit/manual suppression + reconciliation ledger: `rpg_autohabit_v1`;
+- authoritative reset markers: `rpg_habit_reset_v1`;
+- private per-day quests: `rpg_daily_v1:<date>`;
+- no weekly reset;
+- completed day: +1 up to 10;
+- missed **completed calendar day**: −1 down to 0;
+- today is not treated as missed before the day ends.
+
+`sync.js` v11.7 now treats the day log as authoritative after the safe RPG cloud baseline: every public habit is replayed once baseline convergence is known, and replay runs again after later RPG remote applies. A stale `rpg_habits_v1` score/streak/lastChecked combination therefore cannot remain authoritative merely because `lastChecked` happens to match.
 
 Visual bands:
 - 0–2 → Starter
@@ -100,13 +110,126 @@ Visual bands:
 - 7–9 → Expert
 - 10 → Master
 
+## Habit XP versus habit level — LOCKED
+
+A public Daily Mission completion can still write `+15 XP` to the character XP audit/activity log. That does **not** create a second habit level:
+
+- habit-visible level comes from `getSkillLevel()` → canonical 0–10 habit score;
+- Character Level explicitly sums only **non-habit** skill XP;
+- the Skills Total Level/average likewise excludes habits.
+
+Do not remove habit XP merely to “fix” the 0–10 display. It is activity/audit data, not the habit's visible level.
+
+One legacy category-XP statistic still aggregates all XP inside a category, including habit XP. Treat that as a separate product-definition question; do not silently change it as part of Daily Mission correctness work.
+
+## Fitbit → Daily Missions retrospective reconciliation — v11.6
+
+Locked behavior:
+- Walking auto-completes at 10,000 steps;
+- Sleep auto-completes at 420 minutes / 7 hours;
+- later Fitbit finalization/correction can repair an older calendar day;
+- public 0–10 level is replayed from the full canonical day log;
+- deliberate manual uncheck must remain deliberate;
+- deliberate manual recheck must clear that suppression;
+- retries/crashes must not duplicate XP.
+
+`autohabit-reconcile.js` v11.6:
+- scans every available Fitbit day through today;
+- leaves threshold misses reopenable;
+- fetches Fitbit and current RPG cloud baseline together;
+- waits for safe sync/local convergence before mutation;
+- writes genuinely missing qualified dates to `rpg_habitlog_v1`;
+- recomputes through authoritative replay;
+- respects `manual-off`;
+- reruns on focus/foreground;
+- maintains a retry-safe XP award ledger using `__xp_awarded_v1:<habit>:<date>`;
+- migrates legacy already-confirmed canonical Walking/Sleep days conservatively as historically paid;
+- detects an XP event already written before a ledger-save crash, preventing duplicate +15;
+- can repair the opposite crash window where canonical completion was saved but +15 was not yet written.
+
+Legacy ambiguous auto-ledger booleans migrate once using `__retrospective_v2_migrated=true`. XP award-ledger migration uses `__xp_ledger_v1_migrated=true`.
+
+### Manual override routes — now symmetric
+
+- Main current/backdated flow: protected;
+- Park 3.1 host controller: protected;
+- Character current-day `checkHabit`/`uncheckHabit`: centrally protected by `sync.js` v11.7;
+- Daily Windows direct dated-log route: explicitly calls `setAutoHabitManualOverride(key,date,suppressed)` because it intentionally bypasses the shared current-day wrappers.
+
+A full regression proves: auto +15 → manual uncheck −15 → Fitbit cannot fight it → manual recheck +15 → Fitbit cannot add a second +15.
+
+### Live-data status — still pending natural client exercise
+
+Do **not** force this with SQL.
+
+Latest read-only Supabase audit on 2026-09-03 still showed the RPG row unchanged since `2026-09-03 11:12:10 UTC`, with the retrospective migration marker absent. That means the stored cloud row had not yet proven that Joey's authenticated Main had naturally exercised the new reconciler at the time of that read.
+
+After Joey naturally opens Main again, re-query read-only and verify migration/backfill. Never manufacture the proof.
+
+## Authoritative Reset & start fresh
+
+A confirmed reset:
+- writes/reset marker;
+- prunes pre-reset canonical completion dates for that habit;
+- suppresses pruned Fitbit-backed dates so they cannot immediately return;
+- preserves earned XP history;
+- recomputes from remaining post-reset log;
+- emits refresh event for dependent Lab views.
+
+Regression: `tests/habit-reset-smoke.js`.
+
+## Global streak — v7.5
+
+Current rule:
+- XP is netted **per skill per actual activity day**;
+- a +15/−15 mission pair cancels only that mission's activity contribution;
+- another positive skill on the same date keeps the day active;
+- completed venture steps independently count;
+- explicit evening check-in independently counts;
+- only dates represented by current retained evidence are reconciled destructively;
+- older streak history outside capped XP evidence is preserved;
+- historical `best` never shrinks.
+
+Backdated Main/Fitbit XP is physically written when reconciliation occurs, but its audit reason contains `(YYYY-MM-DD)`. `checkin.js` v7.5 prefers that explicit historical activity date, so filling 31 August on 3 September cannot falsely make 3 September an active streak day.
+
+Regression: `tests/streak-net-activity-smoke.js` and the dedicated backdated streak smoke.
+
+## Cloud sync + live refresh — v11.7
+
+`sync.js` maintains a persistent dirty journal and monotone high-water mark so older remote/realtime snapshots cannot roll newer local state backwards.
+
+Protected races:
+- local edit before Auth/initial cloud pull;
+- stale initial remote snapshot;
+- confirmed cloud healing push;
+- stale realtime echo after newer local/cloud state;
+- local deletion before Auth that must not be resurrected.
+
+A real remote apply emits:
+1. `gamenfy:remote-state-applied` with `{appKey, source}` for modern views;
+2. one key-less synthetic `storage` event for older storage-driven views.
+
+The key-less bridge cannot cause sync echo writes because sync only schedules pushes for matching non-empty `event.key` values.
+
+## Cache/PWA correctness — LOCKED
+
+`sw.js` is intentionally **push-only**: it has no `fetch` listener and no Cache API use.
+
+`vercel.json` now explicitly serves all own `*.js` with:
+
+`Cache-Control: no-cache, must-revalidate`
+
+This means legacy query labels such as `sync.js?v=11.0` cannot silently pin old app logic in Safari/WebView: the JS must revalidate after deploys. Daily Windows also explicitly points at `daily-windows.js?v=11.72`.
+
+Regression: `tests/cache-revalidation-smoke.js` fails if the JS revalidation rule disappears or the service worker starts caching app files without a separate versioning contract.
+
 ## Park 3.1 — current Lab state
 
-Park 3.1 displays the exact **11 canonical public Daily Missions**, followed by a visibly separate **2 private dailies** section. `tests/daily-membership-smoke.js` derives the public set from `RPG_DEFAULT_SKILLS`, preventing private companions from replacing public slots again.
+Park 3.1 displays exact **11 canonical public Daily Missions**, followed by a visibly separate **2 private dailies** section.
 
 Asset truth:
-- **110 native Park 3.1 WebPs = 11 native sets ×10**;
-- those native sets are **9 public + 2 private**;
+- 110 native Park 3.1 WebPs = 11 native sets ×10;
+- those native sets are 9 public + 2 private;
 - missing native public Park 3.1 sets are **Budgeting** and **Meditation**.
 
 Current public art:
@@ -114,9 +237,9 @@ Current public art:
 - Budgeting: explicitly labelled existing Park 2 base-art fallback;
 - Meditation: explicitly labelled Park 2 base / Advanced / Mastery fallback.
 
-Private native sets remain:
-- Gardening → `no-weed/l01–l10.webp`
-- Discipline → `discipline/l01–l10.webp`
+Private native sets:
+- Gardening → `no-weed/l01–l10.webp`;
+- Discipline → `discipline/l01–l10.webp`.
 
 Do not fabricate Budgeting/Meditation replacements. See `img/lab/park31/ASSET-MAP.md`.
 
@@ -131,107 +254,7 @@ Interaction:
 - 3+ inactive days can show HELP;
 - real public level-up can trigger celebration.
 
-Park mission undo no longer deletes the entire global streak day. Park cannot know every activity source, so Main's Streak engine performs authoritative multi-source reconciliation.
-
-## Fitbit → Daily Missions retrospective reconciliation — v11.5
-
-Locked behavior:
-- Walking auto-completes at 10,000 steps;
-- Sleep auto-completes at 420 minutes / 7 hours;
-- later Fitbit finalization/correction can repair an older calendar day;
-- public 0–10 level is replayed from the full canonical day log;
-- deliberate manual uncheck must remain deliberate.
-
-`autohabit-reconcile.js` v11.5:
-- scans every available Fitbit day through today;
-- leaves threshold misses reopenable;
-- fetches Fitbit and current RPG cloud baseline together;
-- waits for safe sync/local convergence before mutation;
-- writes genuinely missing qualified dates to `rpg_habitlog_v1`;
-- recomputes through authoritative replay;
-- respects `manual-off`;
-- protects Main, Park and Character/backdated unchecks;
-- reruns on focus/foreground.
-
-Legacy ambiguous auto-ledger booleans migrate once using `__retrospective_v2_migrated=true`. After migration, disappearance of a previously confirmed Fitbit-backed date from canonical habitlog is treated as deliberate removal rather than something Fitbit should re-add.
-
-### Live-device status — still pending
-
-Do **not** force this with SQL.
-
-Latest read-only Supabase audit on 2026-09-03 still showed:
-- RPG cloud row unchanged since `2026-09-03 11:12:10 UTC`;
-- Walking score 10;
-- Sleep score 0;
-- Walking `2026-08-31` absent from canonical habitlog;
-- Sleep `2026-09-03` absent;
-- `__retrospective_v2_migrated` absent.
-
-Therefore Joey's authenticated Main has **not yet exercised the deployed v11.5 reconciler**. After Joey naturally opens Main again, re-query read-only and verify migration/backfill. Never manufacture the proof.
-
-## Authoritative Reset & start fresh
-
-A confirmed reset now:
-- writes/reset marker;
-- prunes pre-reset canonical completion dates for that habit;
-- suppresses pruned Fitbit-backed dates so they cannot immediately return;
-- preserves earned XP history;
-- recomputes from remaining post-reset log;
-- emits refresh event for dependent Lab views.
-
-Regression: `tests/habit-reset-smoke.js`.
-
-## Global streak — v7.4
-
-The old streak had two opposing bugs:
-- any historical positive XP event permanently marked a day active, even if later reversed;
-- one mission undo could erase an entire day even when another activity legitimately happened.
-
-Current rule:
-- XP is netted **per skill per day**;
-- a +15/−15 mission pair cancels only that mission's activity contribution;
-- another positive skill on the same date keeps the day active;
-- completed venture steps independently count;
-- explicit evening check-in independently counts;
-- only dates represented by current retained evidence are reconciled destructively;
-- older streak history outside capped XP evidence is preserved;
-- historical `best` never shrinks during reconciliation.
-
-Regression: `tests/streak-net-activity-smoke.js` plus Park mission smoke.
-
-## Cloud sync + live refresh — v11.4
-
-### Race protection
-
-`sync.js` maintains a persistent dirty journal and monotone high-water mark so older remote/realtime snapshots cannot roll newer local state backwards.
-
-`tests/sync-race-smoke.js` protects:
-- local edit before Auth/initial cloud pull;
-- stale initial remote snapshot;
-- confirmed cloud healing push;
-- stale realtime echo after newer local/cloud state;
-- local deletion before Auth that must not be resurrected.
-
-### Remote UI refresh contract
-
-A real remote apply now produces two safe signals:
-1. `gamenfy:remote-state-applied` with `{appKey, source}` for modern views;
-2. one **key-less synthetic `storage` event** for older views already built around storage refresh.
-
-The key-less bridge cannot trigger sync echo writes because sync schedules a push only when `event.key` matches its configured scope.
-
-Covered views:
-- Park 3.1 → dedicated remote event;
-- Health Trail → dedicated remote event;
-- Main → `checkin.js` v7.4 redraws existing Missions, character strip, streak/check-in, focus, agenda, next move, arc/workout surfaces;
-- Daily Mission Garden → existing storage renderer via bridge;
-- Character → existing active-tab storage renderer via bridge.
-
-Identical remote state emits neither fake dedicated refresh nor fake storage bridge event. Regression: `tests/sync-remote-event-smoke.js`.
-
-### Cache/PWA verification
-
-`sw.js` has no fetch/cache handler, only push/notification behavior. Vercel serves `sync.js?v=11.0` with `Cache-Control: public, max-age=0, must-revalidate`; production fetch already returned the current v11.4 code despite the legacy query label. Do not rewrite giant HTML files solely to bump that query string unless caching behavior actually changes.
+Park mission undo no longer deletes the entire global streak day. Main's Streak engine performs authoritative multi-source reconciliation.
 
 ## Health Trail
 
@@ -256,29 +279,30 @@ Bottom navigation can visually drift upward while scrolling on iOS 26 standalone
 
 ## Next build sequence
 
-1. After Joey next naturally opens Main, inspect Supabase **read-only** for v11.5 migration/backfill; never force history with SQL.
-2. Verify Walking `2026-08-31`, current Sleep, resulting Walking/Sleep levels and migration marker.
-3. Keep Daily Mission membership, reset, streak and sync contracts locked through CI.
-4. Continue non-device-dependent consistency audits before adding speculative UI work.
-5. Budgeting + Meditation native Park 3.1 ten-level art remains a Creator task.
-6. Continue concrete Park interaction/visual fixes from Joey's feedback inside Lab.
-7. Keep Home visual layout unchanged without explicit rollout approval.
-8. Treat convincing locomotion as a real animation/frame asset problem, not a wobbling static-image trick.
+1. After Joey next naturally opens Main, inspect Supabase **read-only** for retrospective migration/backfill; never force history with SQL.
+2. Verify Walking historical qualified days, current Sleep, resulting Walking/Sleep levels and migration markers.
+3. Keep membership, reset, streak, exact-once XP, manual-off and sync contracts locked through CI.
+4. Continue non-device-dependent consistency audits before speculative UI changes.
+5. Decide separately whether category-XP cards should exclude habit XP; Character/Total Level already correctly exclude it.
+6. Budgeting + Meditation native Park 3.1 ten-level art remains a Creator task.
+7. Continue concrete Park interaction/visual fixes from Joey's feedback inside Lab.
+8. Keep Home visual layout unchanged without explicit rollout approval.
+9. Treat convincing locomotion as a real animation/frame asset problem, not a wobbling static-image trick.
 
 ## Definition of done for the current Daily Mission layer
 
-- Main, Character and Park read the same public day log.
-- Park public roster equals canonical RPG public 11.
-- Private dailies are visibly/logically separate.
-- Public 0–10 levels come from authoritative replay.
-- No weekly reset.
+- Main, Character, Park and Daily Windows converge on the same public day log.
+- Park public roster equals canonical RPG public 11; private dailies stay separate.
+- Public 0–10 levels come from authoritative replay; no weekly reset.
 - Manual, backdated, cloud and Fitbit changes converge.
-- Fitbit cannot fight deliberate Walking/Sleep uncheck.
+- Fitbit cannot fight deliberate Walking/Sleep uncheck or duplicate a manual recheck.
 - Late Fitbit correction can restore a legitimately qualified older date.
+- Fitbit XP is retry-safe/exact-once.
 - Reset cannot be undone by old log history.
-- Global streak reflects net real activity, not ghost XP events.
-- Remote cloud applies refresh Main, Character, Garden, Park and Health Trail without reload.
-- Park uses canonical bands and visible Level 0 semantics.
+- Character/Total Level do not double-count habit XP.
+- Global streak reflects net activity on the real activity date, not the audit-write date.
+- Remote cloud applies refresh dependent views without reload.
+- Own JS revalidates after deployments; service worker stays push-only.
 - Automatic CI is green for newest functional commit.
 - Production deployment is READY for newest functional commit.
 - Park 3.0 remains rollback/reference.
