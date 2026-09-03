@@ -1,5 +1,5 @@
 // =============================================================
-// Shared cloud-sync helper — Gamenfy v11.4 remote refresh bridge
+// Shared cloud-sync helper — Gamenfy v11.5 central uncheck guard
 // Performed-by: ChatGPT (OpenAI)
 //
 // v11.2 hardens navigation/realtime races:
@@ -14,6 +14,8 @@
 // v11.4 also emits a key-less synthetic storage event for older views that
 // already refresh on storage (e.g. Character/Daily Garden). The sync listener
 // ignores that bridge because there is no key, so it cannot create echo writes.
+// v11.5 centrally protects current-day Walking/Sleep unchecks so any UI that
+// uses the shared uncheckHabit engine records Fitbit manual-off immediately.
 // =============================================================
 (function () {
   'use strict';
@@ -167,10 +169,6 @@
           }));
         }
       } catch (e) {}
-      // Same-window localStorage writes do not trigger the browser's native
-      // storage event. Older Gamenfy views already use a generic storage
-      // listener as their render hook, so bridge a real remote apply into that
-      // existing contract. No key is supplied: sync's own listener ignores it.
       try {
         if (typeof window.dispatchEvent === 'function' && typeof Event === 'function') {
           window.dispatchEvent(new Event('storage'));
@@ -362,4 +360,51 @@
     if (!config) return;
     startCloudSync(config);
   };
+})();
+
+// Current-day Fitbit-backed uncheck guard.
+// Main's backdated flow does not call uncheckHabit(); it edits the dated log
+// directly, so using local today here is intentionally safe. This closes the
+// Character habit-tile route and future current-day UIs built on the XP engine.
+(function () {
+  'use strict';
+  const AUTO_KEY = 'rpg_autohabit_v1';
+  let tries = 0;
+
+  function todayStr() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function markManualOff(key) {
+    if (key !== 'walking' && key !== 'sleep') return;
+    const date = todayStr();
+    if (typeof window.setAutoHabitManualOverride === 'function') {
+      try { window.setAutoHabitManualOverride(key, date, true); return; } catch (e) {}
+    }
+    try {
+      const state = JSON.parse(localStorage.getItem(AUTO_KEY)) || {};
+      state[key + ':' + date] = 'manual-off';
+      localStorage.setItem(AUTO_KEY, JSON.stringify(state));
+    } catch (e) {}
+  }
+  function install() {
+    tries++;
+    const original = window.uncheckHabit;
+    if (typeof original !== 'function') {
+      if (tries < 120) setTimeout(install, 50);
+      return;
+    }
+    if (original.__gamenfyAutoUncheckGuard) return;
+    const wrapped = function (key) {
+      const result = original.apply(this, arguments);
+      markManualOff(key);
+      return result;
+    };
+    wrapped.__gamenfyAutoUncheckGuard = true;
+    wrapped.__gamenfyAutoUncheckOriginal = original;
+    window.uncheckHabit = wrapped;
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install);
+  else setTimeout(install, 0);
 })();
