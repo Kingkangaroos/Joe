@@ -15,7 +15,9 @@ const store={
     '2026-09-02':true,       // one mission reversed, another real XP event remains
     '2026-09-03':true        // XP fully reversed, but explicit evening check-in remains
   },best:9}),
-  rpg_checkin_v1:JSON.stringify({days:{'2026-09-03':{closedAt:'2026-09-03T20:00:00Z'}}})
+  rpg_checkin_v1:JSON.stringify({days:{'2026-09-03':{closedAt:'2026-09-03T20:00:00Z'}}}),
+  // Simulates a canonical Daily Mission written by Jarvis without a separate XP event.
+  rpg_habitlog_v1:JSON.stringify({gratitude:{'2026-09-07':true}})
 };
 const localStorage={
   getItem:key=>Object.prototype.hasOwnProperty.call(store,key)?store[key]:null,
@@ -36,12 +38,16 @@ const xpLog=[
 ];
 const window={
   getCharacter:()=>({xpLog}),
+  checkHabitFor:()=>({}),
   Ventures:{load:()=>({ventures:[{phases:[{steps:[
     {done:true,doneAt:'2026-09-04T12:00:00Z'},
     {done:false,doneAt:'2026-09-06T12:00:00Z'}
   ]}]}]})}
 };
-const sandbox={window,localStorage,Date,String,JSON,Number,Object,Math,console};
+const sandbox={
+  window,localStorage,Date,String,JSON,Number,Object,Math,console,
+  setTimeout:()=>0,clearTimeout:()=>{},
+};
 const source=fs.readFileSync(path.join(__dirname,'..','checkin.js'),'utf8');
 const streakSource=source.split('// v11.5:')[0];
 vm.runInNewContext(streakSource,sandbox,{filename:'checkin-streak.js'});
@@ -53,11 +59,14 @@ assert.equal(result.days['2026-09-03'],true,'an explicit evening check-in keeps 
 assert.equal(result.days['2026-09-04'],true,'a completed venture step independently marks its day active');
 assert.equal(result.days['2026-09-05'],true,'ordinary positive XP independently marks its day active');
 assert.equal(result.days['2026-09-06'],undefined,'an incomplete venture step never creates activity');
-assert.equal(result.days['2026-01-01'],true,'history outside the retained XP evidence window is preserved');
+assert.equal(result.days['2026-09-07'],true,'a canonical Daily Mission counts even when its writer emitted no XP event');
+assert.equal(result.days['2026-01-01'],true,'history outside retained evidence is preserved');
 assert.equal(result.best,9,'historical best streak never shrinks during reconciliation');
 
 assert.match(source,/perDay\[day\]\[skill\].*\+ amount/,'XP is netted per skill rather than blindly treating every positive event as permanent');
-assert.match(source,/const known = Object\.assign\(\{\}, xp\.observed, ventures, checkins\)/,'only dates covered by current evidence are reconciled');
+assert.match(source,/function habitLogActiveDays \(\)/,'canonical Daily Mission history is an independent activity source');
+assert.match(source,/const known = Object\.assign\(\{\}, xp\.observed, habits, ventures, checkins\)/,'all current evidence sources participate in reconciliation');
+assert.match(source,/xp\.active\[day\] \|\| habits\[day\] \|\| ventures\[day\] \|\| checkins\[day\]/,'habitlog activity participates in the final active decision');
 assert.doesNotMatch(streakSource,/if \(\(e\.amount \|\| 0\) > 0/,'legacy ever-positive XP detector is gone');
 
-console.log('Streak net activity smoke: reversals, mixed XP, venture/check-in and preserved history passed.');
+console.log('Streak net activity smoke: canonical missions, reversals, mixed XP, venture/check-in and preserved history passed.');
