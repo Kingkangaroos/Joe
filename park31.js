@@ -1,32 +1,37 @@
 /* Park 3.1 — Daily Mission companion HQ integration
-   Performed-by: ChatGPT (OpenAI), 2026-08-31; interaction pass 2026-09-02.
-   Tap opens a read-only evolution preview. A deliberate hold completes or
-   uncompletes the mission through the Lab's existing mission controller.
+   Performed-by: ChatGPT (OpenAI), 2026-08-31; membership pass 2026-09-03.
+   Public roster follows the canonical 11 Daily Missions. Private dailies remain
+   available as a separate companion group and never replace public missions.
 */
 (function(){
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.13';
+  var VERSION='1.14';
   var HOLD_MS=560;
-  var MISSIONS=[
-    {key:'walking',label:'Steps',emoji:'👟',dir:'steps'},
+  var PUBLIC_MISSIONS=[
+    {key:'budgeting',label:'Budgeting',emoji:'💰',fallback:'budgeting'},
+    {key:'sleep',label:'Sleep',emoji:'😴',dir:'sleep'},
     {key:'nutrition',label:'Nutrition',emoji:'🥗',dir:'nutrition'},
+    {key:'walking',label:'Steps',emoji:'👟',dir:'steps'},
     {key:'teeth',label:'Brush Teeth',emoji:'🦷',dir:'teeth'},
     {key:'household',label:'Household',emoji:'🧹',dir:'household'},
+    {key:'meditation',label:'Meditation',emoji:'🧘',fallback:'meditation'},
     {key:'gratitude',label:'Gratitude',emoji:'🙏',dir:'gratitude'},
     {key:'good_deed',label:'Good Deed',emoji:'❤️',dir:'good-deed'},
     {key:'screen_time',label:'Screen Time',emoji:'📵',dir:'screen-time'},
-    {key:'cold_shower',label:'Cold Shower',emoji:'💧',dir:'cold-shower'},
-    {key:'weed_control',label:'Gardening',emoji:'🌿',dir:'no-weed',private:true},
-    {key:'no_porn',label:'Discipline',emoji:'⚡',dir:'discipline',private:true},
-    {key:'sleep',label:'Sleep',emoji:'😴',dir:'sleep'}
+    {key:'cold_shower',label:'Cold Shower',emoji:'💧',dir:'cold-shower'}
   ];
+  var PRIVATE_MISSIONS=[
+    {key:'weed_control',label:'Gardening',emoji:'🌿',dir:'no-weed',private:true},
+    {key:'no_porn',label:'Discipline',emoji:'⚡',dir:'discipline',private:true}
+  ];
+  var MISSIONS=PUBLIC_MISSIONS.concat(PRIVATE_MISSIONS);
   var stage,button,art,levelEl,stateEl,sourceEl,copyEl,levelsEl,progressEl,lightEl,errorEl,rosterEl,rosterCountEl;
   var modal,modalArt,modalTitle,modalMeta,modalLevel,modalState,modalProgress,modalStatus,prevEl,nextEl,liveResetEl,missionToggleEl;
   var celebration,celebrationTitle,celebrationMeta,celebrationTimer=null;
   var current={raw:0,art:1,source:'empty'};
-  var artworkReady={walking:true,nutrition:true,teeth:true,household:true,gratitude:true,good_deed:true,screen_time:true,cold_shower:true,weed_control:true,no_porn:true,sleep:true};
+  var artworkReady={budgeting:true,sleep:true,nutrition:true,walking:true,teeth:true,household:true,meditation:true,gratitude:true,good_deed:true,screen_time:true,cold_shower:true,weed_control:true,no_porn:true};
   var litUntil={};
   var tries=0,pollId=null,missionMode=false,selected=null,preview=null,pointerPress=null,keyPress=null;
 
@@ -44,7 +49,7 @@
     return Number.isFinite(n)&&n>=0&&n<=10?Math.round(n):null;
   }
   function levelInfo(mission){
-    mission=mission||MISSIONS[0];
+    mission=mission||PUBLIC_MISSIONS.find(function(item){return item.key===KEY;})||PUBLIC_MISSIONS[0];
     var forced=mission.key===KEY?previewLevel():null;
     if(forced!==null)return {raw:forced,art:clamp(forced||1,1,10),source:'preview'};
     var w=hostWindow();
@@ -53,7 +58,10 @@
         var character=(w.getCharacter&&w.getCharacter())||{};
         var xp=((((character||{}).skills||{})[mission.key]||{}).xp)||0;
         var privateLevel=Number(w.getSkillLevel?w.getSkillLevel(mission.key,xp):(w.xpToLevel?w.xpToLevel(xp):1));
-        if(Number.isFinite(privateLevel))return {raw:Math.max(0,Math.round(privateLevel)),art:clamp(Math.round(privateLevel)||1,1,10),source:'private-skill'};
+        if(Number.isFinite(privateLevel)){
+          var privateStage=clamp(Math.ceil(Math.max(1,Math.round(privateLevel))/10),1,10);
+          return {raw:privateStage,art:privateStage,source:'private-skill'};
+        }
       }catch(e){}
       return {raw:0,art:1,source:'empty'};
     }
@@ -69,7 +77,17 @@
     }catch(e){}
     return {raw:0,art:1,source:'empty'};
   }
-  function assetUrl(level,mission){mission=mission||MISSIONS[0];return 'img/lab/park31/'+mission.dir+'/l'+String(clamp(level,1,10)).padStart(2,'0')+'.webp?v='+VERSION;}
+  function assetUrl(level,mission){
+    mission=mission||PUBLIC_MISSIONS.find(function(item){return item.key===KEY;})||PUBLIC_MISSIONS[0];
+    level=clamp(Math.round(Number(level)||1),1,10);
+    if(mission.fallback==='budgeting')return 'img/lab/park2/budgeting.png?v='+VERSION;
+    if(mission.fallback==='meditation'){
+      if(level>=10)return 'img/lab/park2/meditation/mastery.png?v='+VERSION;
+      if(level>=5)return 'img/lab/park2/meditation/advanced.png?v='+VERSION;
+      return 'img/lab/park2/meditation.png?v='+VERSION;
+    }
+    return 'img/lab/park31/'+mission.dir+'/l'+String(level).padStart(2,'0')+'.webp?v='+VERSION;
+  }
   function state(level){
     level=clamp(Math.round(Number(level)||0),0,10);
     if(level<=2)return 'STARTER';
@@ -86,15 +104,21 @@
       return '<span class="p31-level" data-level="'+level+'" aria-label="Level '+level+'">'+level+'</span>';
     }).join('');
   }
+  function artworkLabel(mission){
+    if(mission.fallback==='budgeting')return 'Park 2 fallback · native evolution pending';
+    if(mission.fallback==='meditation')return 'Park 2 3-stage fallback · native evolution pending';
+    if(mission.private)return 'Private daily · 10 companion stages';
+    return '10 evolution levels';
+  }
   function rosterCard(mission){
     var info=levelInfo(mission),ready=!!artworkReady[mission.key],done=missionMode&&isDone(mission);
     var neglected=missionMode&&!done&&inactivityDays(mission)>=3;
     var lit=(litUntil[mission.key]||0)>Date.now();
     var selectedNow=!!(selected&&selected.key===mission.key);
     var instruction=done?'Vandaag voltooid · Houd vast om terug te draaien':(neglected?'HELP · Tik om te openen':'Tik om te openen · Houd vast om te voltooien');
-    return '<button class="p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(neglected?' is-neglected':'')+(lit?' is-lit':'')+(selectedNow?' is-selected':'')+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+' aria-pressed="'+(done?'true':'false')+'"'+(selectedNow?' aria-current="true"':'')+'>'
+    return '<button class="p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(neglected?' is-neglected':'')+(lit?' is-lit':'')+(selectedNow?' is-selected':'')+(mission.private?' is-private':'')+(mission.fallback?' is-fallback':'')+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+' aria-pressed="'+(done?'true':'false')+'"'+(selectedNow?' aria-current="true"':'')+'>'
       +'<span class="p31-slot-art">'+(ready?'<img src="'+assetUrl(info.art,mission)+'" alt="" draggable="false">':mission.emoji)+(neglected?'<span class="p31-help" aria-hidden="true">HELP</span>':'')+'</span>'
-      +'<span class="p31-slot-copy"><strong>'+mission.label+'</strong><small>10 evolution levels</small><em>'+(missionMode?instruction:(ready?'Tik om te openen':'artwork pending'))+'</em></span>'
+      +'<span class="p31-slot-copy"><strong>'+mission.label+'</strong><small>'+artworkLabel(mission)+'</small><em>'+(missionMode?instruction:(ready?'Tik om te openen':'artwork pending'))+'</em></span>'
       +'<span class="p31-slot-level">L'+info.raw+'</span></button>';
   }
   function viewedDay(){
@@ -117,9 +141,7 @@
       return !!(log[mission.key]&&log[mission.key][date]);
     }catch(e){return false;}
   }
-  function isDone(mission){
-    return doneOn(mission,viewedDay());
-  }
+  function isDone(mission){return doneOn(mission,viewedDay());}
   function inactivityDays(mission){
     for(var days=0;days<14;days++)if(doneOn(mission,dateDaysAgo(days)))return days;
     return 14;
@@ -178,21 +200,25 @@
     if(modalArt.getAttribute('src')!==url)modalArt.setAttribute('src',url);
     modalArt.alt=selected.label+' companion preview at level '+shown;
     modalTitle.textContent=selected.label;
-    modalMeta.textContent=preview===null?'LIVE LEVEL · '+info.raw:'PREVIEW '+shown+' · LIVE '+info.raw;
+    modalMeta.textContent=(preview===null?'LIVE LEVEL · '+info.raw:'PREVIEW '+shown+' · LIVE '+info.raw)+(selected.private?' · PRIVATE':'');
     modalLevel.textContent='Level '+displayLevel;
     modalState.textContent=state(displayLevel);
     modalProgress.style.width=(clamp(displayLevel,0,10)*10)+'%';
+    var fallbackNote=selected.fallback?' Park 3.1 native artwork voor deze missie staat nog apart op de asset-todo; dit is de bestaande Park 2 fallback.':'';
     modalStatus.textContent=preview!==null
-      ?'Alleen preview — je live level blijft '+info.raw+'.'
-      :(missionMode?(done?'Vandaag voltooid · Houd de kaart vast om terug te draaien.':'Nog niet voltooid · Houd de kaart vast om te voltooien.'):'Live level uit Daily Missions.');
+      ?'Alleen preview — je live level blijft '+info.raw+'.'+fallbackNote
+      :(missionMode?(done?'Vandaag voltooid · Houd de kaart vast om terug te draaien.':'Nog niet voltooid · Houd de kaart vast om te voltooien.'):'Live level uit Daily Missions.')+fallbackNote;
     liveResetEl.disabled=preview===null;
     missionToggleEl.hidden=!missionMode;
     missionToggleEl.disabled=preview!==null;
     missionToggleEl.classList.toggle('is-undo',done);
     missionToggleEl.textContent=preview!==null?'Ga terug naar live om te wijzigen':(done?'Ongedaan maken':'Voltooi vandaag');
+    var fixedFallback=selected.fallback==='budgeting';
+    prevEl.disabled=fixedFallback;
+    nextEl.disabled=fixedFallback;
   }
   function stepPreview(delta){
-    if(!selected)return;
+    if(!selected||selected.fallback==='budgeting')return;
     preview=clamp(shownLevel()+delta,1,10);
     updateModal();
   }
@@ -222,8 +248,7 @@
       active.slot.classList.remove('is-holding');
       active.slot.classList.add('is-held');
       selected=active.mission;
-      if(missionMode)toggleMission(active.mission);
-      else openMission(active.mission.key);
+      if(missionMode)toggleMission(active.mission);else openMission(active.mission.key);
       try{if(navigator.vibrate)navigator.vibrate(18);}catch(e){}
       setTimeout(function(){try{active.slot.classList.remove('is-held');}catch(e){}},360);
     },HOLD_MS);
@@ -239,9 +264,7 @@
     if(active&&!active.held)openMission(active.mission.key);
     if(active&&typeof event.preventDefault==='function')event.preventDefault();
   }
-  function cancelPointerPress(event){
-    if(pointerPress&&(!event||pointerPress.pointerId===event.pointerId))clearPointerPress();
-  }
+  function cancelPointerPress(event){if(pointerPress&&(!event||pointerPress.pointerId===event.pointerId))clearPointerPress();}
   function startKeyPress(event){
     if((event.key!=='Enter'&&event.key!==' ')||event.repeat||keyPress)return;
     var slot=slotFrom(event.target),selectedMission=missionFromSlot(slot);
@@ -263,22 +286,24 @@
   }
   function renderRoster(){
     if(!rosterEl)return;
-    rosterEl.innerHTML=MISSIONS.map(rosterCard).join('');
-    var ready=MISSIONS.filter(function(mission){return artworkReady[mission.key];}).length;
-    rosterCountEl.textContent=ready+'/11 artwork ready';
+    rosterEl.innerHTML=PUBLIC_MISSIONS.map(rosterCard).join('')
+      +'<div class="p31-roster-divider"><strong>Private dailies</strong><span>PIN-backed · apart van de publieke 11</span></div>'
+      +PRIVATE_MISSIONS.map(rosterCard).join('');
+    rosterCountEl.textContent=PUBLIC_MISSIONS.length+' public · '+PRIVATE_MISSIONS.length+' private';
   }
   function probeRoster(){
-    MISSIONS.slice(1).forEach(function(mission){
+    MISSIONS.filter(function(mission){return mission.key!==KEY;}).forEach(function(mission){
       var image=new Image(),info=levelInfo(mission);
       image.onload=function(){artworkReady[mission.key]=true;renderRoster();};
-      image.onerror=function(){artworkReady[mission.key]=false;};
+      image.onerror=function(){artworkReady[mission.key]=false;renderRoster();};
       image.src=assetUrl(info.art,mission);
     });
   }
   function render(){
     if(!stage||!art)return;
-    current=levelInfo();
-    var url=assetUrl(current.art);
+    var stepsMission=PUBLIC_MISSIONS.find(function(item){return item.key===KEY;});
+    current=levelInfo(stepsMission);
+    var url=assetUrl(current.art,stepsMission);
     if(art.getAttribute('src')!==url){
       stage.classList.add('is-loading');
       errorEl.hidden=true;
@@ -301,9 +326,9 @@
     renderRoster();
   }
   function preload(){
+    var stepsMission=PUBLIC_MISSIONS.find(function(item){return item.key===KEY;});
     for(var level=1;level<=10;level++){
-      var image=new Image();
-      image.src=assetUrl(level);
+      var image=new Image();image.src=assetUrl(level,stepsMission);
     }
   }
   function toggleLight(){
@@ -369,6 +394,10 @@
       try{window.initCloudSync({appKey:'rpg',syncedKeys:window.RPG_SYNC_KEYS,syncedPrefixes:window.RPG_SYNC_PREFIXES});}catch(e){}
     }
   }
+  window.GamenfyPark31Registry={
+    publicKeys:PUBLIC_MISSIONS.map(function(item){return item.key;}),
+    privateKeys:PRIVATE_MISSIONS.map(function(item){return item.key;})
+  };
   window.addEventListener('beforeunload',function(){if(pollId)clearInterval(pollId);});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
