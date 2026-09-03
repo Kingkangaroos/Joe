@@ -61,13 +61,23 @@ function datedSeries(startDay,count,make){
   assert.match(insights[0].body,/lichtere trainingsdag/,'recovery insight gives a concrete low-risk action rather than a diagnosis');
 }
 
-// Sleep compares a recent run to older personal sleep data and proposes sleep opportunity, not disease language.
+// A genuine multi-day sleep decline is distinct from simply living below the 7h mission.
 {
   const data=datedSeries(10,10,i=>({sleepMinutes:i<7?480:390,steps:9000}));
   const insights=api.healthInsights(data,'2026-08-19',12);
-  assert.equal(insights[0].key,'sleep_trend','multi-day short sleep is summarized as a trend');
-  assert.match(insights[0].body,/eerdere persoonlijke baseline/,'sleep trend compares the user with themselves');
+  assert.equal(insights[0].key,'sleep_trend','a real drop versus older personal sleep is summarized as a decline');
+  assert.match(insights[0].body,/eerdere persoonlijke mediaan/,'sleep decline compares the user with themselves');
+  assert.match(insights[0].meta,/duidelijke daling/,'decline label is reserved for a meaningful personal-baseline drop');
   assert.doesNotMatch(insights[0].body,/ziekte|stoornis|diagnos/i,'sleep trend never invents a diagnosis');
+}
+
+// Stable-but-short sleep must not be mislabeled as a sudden decline.
+{
+  const data=datedSeries(10,10,i=>({sleepMinutes:i<7?400:402,steps:9000}));
+  const insights=api.healthInsights(data,'2026-08-19',12);
+  assert.equal(insights[0].key,'sleep_consistency','stable sub-7h sleep is a mission-consistency issue, not a fake deterioration');
+  assert.match(insights[0].body,/niet automatisch op een plotselinge verslechtering/,'copy explicitly distinguishes goal gap from decline');
+  assert.doesNotMatch(insights[0].title,/gedaald|achter/,'stable low sleep title must not claim a decline');
 }
 
 // Steps nudge only appears once the current day is mature enough to judge.
@@ -114,4 +124,4 @@ assert.doesNotMatch(section,/href=/,'Health Trail is built directly in Lab, not 
 assert.doesNotMatch(chatgptPanel,/<a class="chatgpt-lab-card"/,'ChatGPT Lab creation cards are status cards, not preview links');
 assert.match(lab,/health-trail\.js\?v=1\.0/,'existing Lab loader remains valid; Vercel revalidates the updated file at the same path');
 assert.match(lab,/health-trail\.css\?v=1\.0/);
-console.log('Health Trail smoke test passed: scoring, cautious personal-baseline insights, Fitbit fallback, refresh and direct Lab mount.');
+console.log('Health Trail smoke test passed: scoring, cautious personal-baseline insights, sleep distinction, Fitbit fallback, refresh and direct Lab mount.');
