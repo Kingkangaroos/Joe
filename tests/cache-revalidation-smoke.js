@@ -17,8 +17,8 @@ assert.ok(jsRule,'Vercel must define an explicit revalidation rule for shared JS
 const cacheHeader=(jsRule.headers||[]).find(h=>String(h.key).toLowerCase()==='cache-control');
 assert.equal(cacheHeader&&cacheHeader.value,'no-cache, must-revalidate','shared JS must revalidate instead of silently serving stale app logic');
 
-assert.match(windows,/daily-windows\.js\?v=11\.72/,'Daily Windows HTML must point at the current v11.72 controller');
-assert.doesNotMatch(windows,/daily-windows\.js\?v=11\.71/,'obsolete Daily Windows controller cache key must be gone');
+assert.match(windows,/daily-windows\.js\?v=11\.73/,'Daily Windows HTML must point at the current v11.73 controller');
+assert.doesNotMatch(windows,/daily-windows\.js\?v=11\.(?:71|72)/,'obsolete Daily Windows controller cache keys must be gone');
 
 // The service worker is intentionally push-only. If a future build starts
 // intercepting fetches, caching becomes a separate correctness concern and
