@@ -1,4 +1,4 @@
-/* Health Trail Lab prototype v1.2 — ChatGPT (OpenAI)
+/* Health Trail Lab prototype v1.21 — ChatGPT (OpenAI)
    Read-only: public Daily Mission levels + Fitbit recovery signals + cautious
    personal-baseline insights. This is a wearable trend experiment, not diagnosis.
 */
@@ -118,7 +118,9 @@
       }
     }
 
-    // Compare the latest three sleep opportunities with an older personal baseline.
+    // Separate a real decline versus personal baseline from merely being under
+    // the app's 7h mission. Otherwise a stable 6h40 baseline would be mislabeled
+    // as a sudden deterioration just because it is below the mission threshold.
     var recentSleepDates=dates.slice(-3);
     var recentSleep=valuesFor(data,recentSleepDates,'sleepMinutes');
     var baselineEnd=recentSleepDates.length?recentSleepDates[0]:sourceDate;
@@ -126,17 +128,25 @@
     var sleepBaseValues=valuesFor(data,sleepBaseDates,'sleepMinutes');
     var sleepBase=sleepBaseValues.length>=5?median(sleepBaseValues):null;
     var recentSleepAvg=recentSleep.length>=2?average(recentSleep):null;
-    var sleepTrendAdded=false;
-    if(recentSleepAvg!==null&&sleepBase!==null&&(recentSleepAvg<=sleepBase-45||recentSleepAvg<420)){
-      sleepTrendAdded=true;
+    var sleepInsightAdded=false;
+    if(recentSleepAvg!==null&&sleepBase!==null&&recentSleepAvg<=sleepBase-45){
+      sleepInsightAdded=true;
       insights.push({
         key:'sleep_trend',tone:'watch',priority:90,
-        title:'Slaap loopt een paar dagen achter',
-        body:'Je recente gemiddelde is '+minutesLabel(recentSleepAvg)+', tegenover ongeveer '+minutesLabel(sleepBase)+' in je eerdere persoonlijke baseline. Maak van extra slaapruimte vanavond de simpelste herstelactie.',
-        meta:recentSleep.length+' recente nachten · eigen baseline'
+        title:'Slaap is echt gedaald tegenover je baseline',
+        body:'Je recente gemiddelde is '+minutesLabel(recentSleepAvg)+', ongeveer '+Math.round(sleepBase-recentSleepAvg)+' minuten onder je eerdere persoonlijke mediaan van '+minutesLabel(sleepBase)+'. Maak van extra slaapruimte vanavond de simpelste herstelactie.',
+        meta:recentSleep.length+' recente nachten · duidelijke daling vs eigen baseline'
+      });
+    }else if(recentSleepAvg!==null&&recentSleepAvg<420){
+      sleepInsightAdded=true;
+      insights.push({
+        key:'sleep_consistency',tone:'watch',priority:85,
+        title:'Je 7u-slaapmissie is nog niet je vaste baseline',
+        body:'Je recente gemiddelde is '+minutesLabel(recentSleepAvg)+', onder je 7u-missie.'+(sleepBase!==null?' Je eerdere persoonlijke mediaan ligt rond '+minutesLabel(sleepBase)+', dus dit lijkt niet automatisch op een plotselinge verslechtering.':'')+' De winst zit hier vooral in structureel meer slaapruimte maken.',
+        meta:recentSleep.length+' recente nachten · mission consistency'
       });
     }
-    if(!sleepTrendAdded&&sleep!==null&&sleep<420){
+    if(!sleepInsightAdded&&sleep!==null&&sleep<420){
       insights.push({
         key:'sleep_short',tone:'watch',priority:75,
         title:'Onder je 7u-slaapmissie',
@@ -170,7 +180,6 @@
     }
 
     insights.sort(function(a,b){return b.priority-a.priority;});
-    // Keep the card actionable rather than turning it into a wall of biometrics.
     return insights.slice(0,3);
   }
 
@@ -232,8 +241,6 @@
     }catch(e){return null;}
   }
   function refresh(){
-    // Coalesce rapid mission/sync events so reconciliation cannot fan out
-    // duplicate Fitbit reads while still updating the mission component instantly.
     render(null);
     if(refreshInFlight)return refreshInFlight;
     refreshInFlight=loadFitbit().then(function(fitbit){if(fitbit)render(fitbit);return fitbit;}).finally(function(){refreshInFlight=null;});
