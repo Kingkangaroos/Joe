@@ -1,20 +1,26 @@
 /* Gamenfy retrospective Fitbit -> Daily Mission reconciler
    ChatGPT (OpenAI), 2026-09-03.
-   Fixes late Fitbit finalization without fighting deliberate manual unchecks. */
+   Fixes late Fitbit finalization without fighting deliberate manual unchecks.
+   v11.4 also waits for the authoritative RPG cloud baseline before mutating. */
 (function () {
   'use strict';
 
   var AUTO_KEY = 'rpg_autohabit_v1';
   var HABITLOG_KEY = 'rpg_habitlog_v1';
   var STREAK_KEY = 'rpg_streak_v1';
-  var HEALTH_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co/rest/v1/app_state?key=eq.health_fitbit&select=data';
+  var CHARACTER_KEY = 'rpg_character_v1';
+  var HABITS_KEY = 'rpg_habits_v1';
+  var DIRTY_KEY = '__gamenfy_sync_dirty_v1:rpg';
+  var STATE_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co/rest/v1/app_state?key=in.(health_fitbit,rpg)&select=key,data,updated_at';
   var AUTO_HABITS = {
     walking: { field: 'steps', min: 10000, label: '10k stappen' },
     sleep: { field: 'sleepMinutes', min: 420, label: '7 uur slaap' }
   };
+  var BASELINE_KEYS = [HABITLOG_KEY, AUTO_KEY, STREAK_KEY, CHARACTER_KEY, HABITS_KEY];
   var inFlight = null;
   var callbacks = [];
   var lastFocusRun = 0;
+  var baselineRetryCount = 0;
 
   function localDay() {
     var d = new Date();
@@ -31,9 +37,41 @@
     try { localStorage.setItem(key, JSON.stringify(value)); return true; }
     catch (e) { return false; }
   }
+  function sleep(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
   function autoStateKey(habitId, dateStr) { return habitId + ':' + dateStr; }
   function isAutoHabit(key) { return Object.prototype.hasOwnProperty.call(AUTO_HABITS, key); }
   function habitlogHas(log, key, date) { return !!(log[key] && log[key][date]); }
+
+  function dirtyJournal() {
+    var journal = loadJson(DIRTY_KEY, { items: {} });
+    return journal && journal.items && typeof journal.items === 'object' ? journal.items : {};
+  }
+  function localDirtyIsNewer(key, remoteMs) {
+    var entry = dirtyJournal()[key];
+    return !!(entry && Number(entry.ts || 0) > Number(remoteMs || 0));
+  }
+  function localMatchesRemote(key, value) {
+    try { return localStorage.getItem(key) === JSON.stringify(value); }
+    catch (e) { return false; }
+  }
+
+  // sync.js owns the cloud pull. The reconciler never force-applies a remote RPG
+  // snapshot itself: that would mark it dirty and could push it back unnecessarily.
+  // Instead, wait until sync.js has either applied each remote key OR recorded a
+  // genuinely newer local dirty edit. If neither happens, abort safely and retry.
+  async function waitForCloudBaseline(remoteRpg, remoteMs) {
+    if (!remoteRpg || typeof remoteRpg !== 'object') return true;
+    for (var attempt = 0; attempt < 30; attempt++) {
+      var ready = BASELINE_KEYS.every(function (key) {
+        if (!Object.prototype.hasOwnProperty.call(remoteRpg, key)) return true;
+        if (localDirtyIsNewer(key, remoteMs)) return true;
+        return localMatchesRemote(key, remoteRpg[key]);
+      });
+      if (ready) return true;
+      await sleep(80);
+    }
+    return false;
+  }
 
   function logEntryDate(entry) {
     var reason = String((entry && entry.reason) || '');
@@ -124,19 +162,36 @@
 
     inFlight = (async function () {
       if (typeof window.gamenfyAuthedFetch !== 'function') return 0;
-      var response, rows, byDate;
+      try { if (window.gamenfyAuthReady) await window.gamenfyAuthReady; } catch (e) { return 0; }
+
+      var response, rows, healthRow, rpgRow, byDate, remoteRpg, remoteMs;
       try {
-        response = await window.gamenfyAuthedFetch(HEALTH_URL);
+        response = await window.gamenfyAuthedFetch(STATE_URL);
         if (!response || !response.ok) return 0;
         rows = await response.json();
-        byDate = rows && rows.length ? rows[0].data : null;
+        healthRow = (rows || []).find(function (row) { return row && row.key === 'health_fitbit'; });
+        rpgRow = (rows || []).find(function (row) { return row && row.key === 'rpg'; });
+        byDate = healthRow && healthRow.data;
+        remoteRpg = rpgRow && rpgRow.data;
+        remoteMs = rpgRow && rpgRow.updated_at ? (Date.parse(rpgRow.updated_at) || 0) : 0;
       } catch (e) { return 0; }
       if (!byDate || typeof byDate !== 'object') return 0;
+
+      if (!(await waitForCloudBaseline(remoteRpg, remoteMs))) {
+        if (baselineRetryCount < 2) {
+          baselineRetryCount++;
+          setTimeout(function () { window.autoCheckHealthHabits(refreshKnownMissionUI); }, 700 * baselineRetryCount);
+        }
+        return 0;
+      }
+      baselineRetryCount = 0;
 
       var today = localDay();
       var dates = Object.keys(byDate).filter(function (d) { return validDay(d) && d <= today; }).sort();
       if (!dates.length) return 0;
 
+      // From this point localStorage is known to be either the fetched cloud baseline
+      // or a newer local dirty edit, so all mutations can safely use the normal engine.
       var state = loadJson(AUTO_KEY, {});
       var habitlog = loadJson(HABITLOG_KEY, {});
       var streak = loadJson(STREAK_KEY, { days: {} });
@@ -212,7 +267,18 @@
 
   installManualToggleGuard();
   setTimeout(installManualToggleGuard, 120);
-  setTimeout(function () { window.autoCheckHealthHabits(refreshKnownMissionUI); }, 160);
+
+  // Main may have called the synchronous loader placeholder before this file
+  // finished downloading. Preserve those UI callbacks and run one authoritative pass.
+  try {
+    var startupQueue = window.__gamenfyAutoHabitQueuedCallbacks;
+    if (Array.isArray(startupQueue) && startupQueue.length) {
+      startupQueue.splice(0, startupQueue.length).forEach(function (fn) {
+        if (typeof fn === 'function') callbacks.push(fn);
+      });
+    }
+  } catch (e) {}
+  setTimeout(function () { window.autoCheckHealthHabits(refreshKnownMissionUI); }, 220);
 
   function rerunFromFocus() {
     var now = Date.now();
