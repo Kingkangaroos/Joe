@@ -9,13 +9,22 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="park31.css?v=1.12">
+<link rel="stylesheet" href="park31.css?v=1.14">
+<style>
+.p31-roster-divider{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:5px 0 -1px;padding:9px 4px 6px;border-top:1px solid rgba(185,211,255,.16);color:#c9cce9}
+.p31-roster-divider strong{font:800 9px 'Schibsted Grotesk',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.08em}
+.p31-roster-divider span{color:#898eaf;font-size:7px;text-align:right}
+.p31-slot.is-private{border-color:rgba(183,121,255,.38)}
+.p31-slot.is-private .p31-slot-copy small{color:#bd9de6}
+.p31-slot.is-fallback{border-style:dashed;border-color:rgba(240,196,92,.48)}
+.p31-slot.is-fallback .p31-slot-copy small{color:#d7bb73}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=11.0" defer></script>
 <script src="sync.js?v=11.0" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
 <script src="xp.js?v=10.98" defer></script>
-<script src="park31.js?v=1.13" defer></script>
+<script src="park31.js?v=1.14" defer></script>
 </head>
 <body>
 <main class="p31-shell">
@@ -23,7 +32,7 @@
     <a class="p31-back" href="lab.html#chatgpt-lab">‹ Lab</a>
     <div class="p31-kicker"><span></span> ChatGPT build · Park 3.1</div>
     <h1>Daily Mission Park</h1>
-    <p>Alle elf missie-companions volgen hun eigen live level. Tik om te openen, of houd vast om de missie van vandaag te voltooien.</p>
+    <p>De elf publieke Daily Missions volgen exact dezelfde live levels als Main en Character. De twee PIN-backed private dailies staan apart eronder.</p>
   </header>
 
   <section class="p31-livebar" aria-label="Live Steps-status">
@@ -36,16 +45,16 @@
     <div class="p31-arch" aria-hidden="true"><span>GAMENFY</span><small>PARK 3.1</small></div>
     <button class="p31-companion" id="p31Companion" type="button" aria-pressed="false" aria-label="Turn the park light on">
       <span class="p31-halo" aria-hidden="true"></span>
-      <img id="p31Art" src="img/lab/park31/steps/l01.webp?v=1.13" alt="Steps companion at level 1" draggable="false">
+      <img id="p31Art" src="img/lab/park31/steps/l01.webp?v=1.14" alt="Steps companion at level 1" draggable="false">
       <span class="p31-error" id="p31Error" role="status" hidden>The Steps artwork could not load.</span>
     </button>
     <div class="p31-light-state" id="p31LightState" aria-live="polite">Park light off</div>
   </section>
 
-  <section class="p31-roster" aria-label="Park 3.1 companion-formaat voor alle Daily Missions">
+  <section class="p31-roster" aria-label="Park 3.1 Daily Mission companions">
     <div class="p31-roster-head">
-      <span><strong>Daily Mission companions</strong><small>11 habits · 10 evoluties per habit</small></span>
-      <span id="p31RosterCount">11/11 artwork ready</span>
+      <span><strong>Daily Mission companions</strong><small>11 public · 2 private · live mission state</small></span>
+      <span id="p31RosterCount">11 public · 2 private</span>
     </div>
     <div class="p31-roster-grid" id="p31Roster"></div>
   </section>
@@ -58,7 +67,7 @@
 
   <div class="p31-note">
     <strong>Mission controls</strong>
-    <span>Tik om te openen · Houd vast om te voltooien. Met − / + bekijk je alleen de evoluties; je echte level verandert niet.</span>
+    <span>Tik om te openen · Houd vast om te voltooien. Met − / + bekijk je alleen bestaande evolutie-art; je echte level verandert niet. Budgeting en Meditation gebruiken zichtbaar gelabelde Park 2 fallback-art tot hun eigen 10-level sets zijn goedgekeurd.</span>
   </div>
 </main>
 
@@ -80,7 +89,7 @@
     <button class="p31-close" type="button" data-p31-close aria-label="Close">×</button>
     <div class="p31-modal-kicker" id="p31ModalMeta">LIVE LEVEL</div>
     <h2 id="p31ModalTitle" tabindex="-1">Mission</h2>
-    <div class="p31-modal-art"><img id="p31ModalArt" src="img/lab/park31/steps/l01.webp?v=1.13" alt="" draggable="false"></div>
+    <div class="p31-modal-art"><img id="p31ModalArt" src="img/lab/park31/steps/l01.webp?v=1.14" alt="" draggable="false"></div>
     <div class="p31-level-row">
       <button id="p31Prev" type="button" aria-label="Preview previous level">−</button>
       <div><strong id="p31ModalLevel">Level 0</strong><span id="p31ModalState">Starter</span></div>
