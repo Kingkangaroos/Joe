@@ -1,5 +1,5 @@
 // =============================================================
-// Shared cloud-sync helper — Gamenfy v11.2 race fix
+// Shared cloud-sync helper — Gamenfy v11.3 remote-apply events
 // Performed-by: ChatGPT (OpenAI)
 //
 // v11.2 hardens navigation/realtime races:
@@ -9,6 +9,8 @@
 // - remote updated_at decides whether a local pending write is genuinely newer
 // - monotone version watermark heals out-of-order whole-row commits
 // - periodic push remains a safety net, not the source of truth
+// v11.3 adds one generic gamenfy:remote-state-applied event whenever remote
+// state genuinely changes/replays local storage, so dependent views can refresh.
 // =============================================================
 (function () {
   'use strict';
@@ -151,6 +153,19 @@
       return !(d && (d.ts || 0) > remoteMs);
     }
 
+    function notifyApplied(source) {
+      if (typeof onApplied === 'function') {
+        try { onApplied(); } catch (e) {}
+      }
+      try {
+        if (typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
+          window.dispatchEvent(new CustomEvent('gamenfy:remote-state-applied', {
+            detail: { appKey: appKey, source: source || 'remote' }
+          }));
+        }
+      } catch (e) {}
+    }
+
     function applyRemote(remote, allowDelete, remoteMs) {
       if (!remote || typeof remote !== 'object') return false;
       suppressSync = true;
@@ -175,9 +190,7 @@
           }
         }
       } finally { suppressSync = false; }
-      if (changed && typeof onApplied === 'function') {
-        try { onApplied(); } catch (e) {}
-      }
+      if (changed) notifyApplied('apply-remote');
       return changed;
     }
 
@@ -198,9 +211,7 @@
         });
       } finally { suppressSync = false; }
       discardDirtyNotNewerThan(remoteMs);
-      if (replayed && typeof onApplied === 'function') {
-        try { onApplied(); } catch (e) {}
-      }
+      if (replayed) notifyApplied('replay-newer-local');
       return replayed;
     }
 
