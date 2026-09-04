@@ -21,6 +21,7 @@ const xpCalls = [];
 const recomputes = [];
 const scheduled = [];
 const fetchUrls = [];
+let characterReads = 0;
 const localStorage = {
   getItem: key => Object.prototype.hasOwnProperty.call(store, key) ? store[key] : null,
   setItem: (key, value) => { store[key] = String(value); },
@@ -45,7 +46,7 @@ function currentRemoteRpg(){
 const window = {
   localStorage,
   gamenfyAuthReady: Promise.resolve(),
-  getCharacter: () => ({ xpLog: [] }),
+  getCharacter: () => { characterReads++; return { xpLog: [] }; },
   viewedDateStr: () => '2026-09-03',
   gamenfyAuthedFetch: async url => {
     fetchUrls.push(url);
@@ -83,6 +84,7 @@ vm.runInContext(code, context);
   let state = JSON.parse(store.rpg_autohabit_v1);
 
   assert.ok(fetchUrls[0].includes('key=in.(health_fitbit,rpg)'), 'health and current RPG cloud baseline are fetched together');
+  assert.equal(characterReads, 1, 'one reconcile pass snapshots the retained XP audit only once');
   assert.equal(log.walking['2026-08-31'], true, 'late finalized steps should backfill during legacy migration');
   assert.equal(log.sleep['2026-09-03'], true, 'today sleep should auto-complete');
   assert.equal(log.sleep && log.sleep['2026-09-02'], undefined, 'manual-off must be respected');
@@ -115,9 +117,11 @@ vm.runInContext(code, context);
   state = JSON.parse(store.rpg_autohabit_v1);
   assert.equal(log.walking['2026-08-31'], undefined, 'Fitbit must not fight a Character/backdated uncheck after migration');
   assert.equal(state['walking:2026-08-31'], 'manual-off', 'confirmed day disappearing after migration becomes manual-off');
+  assert.equal(characterReads, 3, 'three explicit reconcile passes read the character audit three times total');
 
   assert.ok(code.includes('__gamenfy_sync_dirty_v1:rpg'), 'reconciler understands sync.js dirty journal');
   assert.ok(code.includes('waitForCloudBaseline'), 'reconciler waits for cloud/local convergence before mutation');
   assert.ok(code.includes('__retrospective_v2_migrated'), 'reconciler has a one-time ambiguity migration marker');
+  assert.ok(code.includes('buildXpAuditIndex'), 'reconciler has a single-pass XP audit index');
   console.log('autohabit retrospective smoke: ok');
 })().catch(err => { console.error(err); process.exitCode = 1; });
