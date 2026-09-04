@@ -7,12 +7,12 @@ Last refreshed: 2026-09-04 by ChatGPT (OpenAI)
 ## Current production baseline
 
 Latest verified functional code checkpoint:
-- `9a85e8bd64ba3d7cc7f88fe5c8ed9ed0ea1651fd`
-- GitHub smoke suite: `completed/success`
-- exact Vercel production deployment: `dpl_B5YoUTjzuvsUZuhBZ58xrYmZa32K`
+- `e6bee3a687116ce75b161b7afbb65119d603cbc4`
+- GitHub smoke suite: `completed/success` (run 106)
+- exact Vercel production deployment: `dpl_EhXNj9y4NgABPQD3GCYY3XfA1P9j`
 - deployment state: `READY`
 
-This checkpoint includes Health Trail v1.25 source-day transparency on top of v1.24 conservative recovery baselines, stable refresh behavior and real Fitbit-calendar filtering.
+This checkpoint includes Health Trail v1.26 stale-source gating: Fitbit data older than yesterday can no longer produce current-sounding recovery/activity advice, while today/yesterday insights disclose their source day. It retains v1.25 source-day transparency, conservative recovery baselines, stable refresh behavior and real Fitbit-calendar filtering.
 
 Documentation may have later commits; do not confuse a docs-only head with the latest functional checkpoint.
 
@@ -66,8 +66,8 @@ The reconciler is not Main-only anymore. It may run on an authenticated surface 
 
 No history has been force-written through SQL.
 
-Latest observed rows at the last audit:
-- `health_fitbit.updated_at = 2026-09-04 08:15:05.897+00` (10:15 Amsterdam);
+Latest observed rows at the 16:15 Amsterdam audit:
+- `health_fitbit.updated_at = 2026-09-04 14:15:08.02+00` (16:15 Amsterdam);
 - `rpg.updated_at = 2026-09-03 22:32:45.196+00`;
 - Fitbit data exists through 4 Sep;
 - exactly **12** Fitbit-qualified canonical completions are still absent.
@@ -255,6 +255,7 @@ The following are not current blockers unless a regression is demonstrated:
 - **Health Trail recovery flicker during focus/minute refetch** — fixed with in-memory last-good Fitbit snapshot; failed fetch preserves last visible recovery.
 - **Health Trail HRV/RHR overreaction with thin history** — fixed; personal recovery baseline requires at least five valid historical values, otherwise component stays neutral.
 - **Health Trail stale-source ambiguity** — fixed in v1.25; recovery readout labels `vandaag`, `gisteren`, or the exact older source date.
+- **Health Insights stale data sounding current** — fixed in v1.26; data older than yesterday yields one neutral stale-source state, while current/yesterday cards disclose their source day.
 
 ---
 
