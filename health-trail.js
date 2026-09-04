@@ -1,4 +1,4 @@
-/* Health Trail Lab prototype v1.26 — ChatGPT (OpenAI)
+/* Health Trail Lab prototype v1.27 — ChatGPT (OpenAI)
    Read-only: public Daily Mission levels + Fitbit recovery signals + cautious
    personal-baseline insights. This is a wearable trend experiment, not diagnosis.
 */
@@ -6,6 +6,8 @@
   'use strict';
   var ART_VERSION='1.13';
   var SB_URL='https://ttxjsoahmtennnufgeqx.supabase.co';
+  var SLEEP_MISSION_MINUTES=420;
+  var SLEEP_ADVICE_MARGIN=15;
   var refreshInFlight=null;
   var lastFitbit=null;
 
@@ -90,7 +92,8 @@
   // - compare to Joey's own recent wearable baseline, not population cut-offs;
   // - require >=5 historical values before calling a personal-baseline change;
   // - a recovery warning requires HRV + resting HR to move together;
-  // - sleep can use the app's existing 7h mission threshold as a practical nudge;
+  // - sleep uses the exact 7h mission as a goal, but a <=15 minute miss alone is
+  //   neutral advice rather than a recovery warning;
   // - steps only nudge later in the day, never label early-day inactivity as failure;
   // - intentionally do not interpret SpO2/breathing/skin-temperature as diagnosis.
   function valuesFor(data,dates,key){
@@ -151,8 +154,8 @@
     }
 
     // Separate a real decline versus personal baseline from merely being under
-    // the app's 7h mission. Otherwise a stable 6h40 baseline would be mislabeled
-    // as a sudden deterioration just because it is below the mission threshold.
+    // the app's exact 7h mission. The mission remains 420 minutes; the 15-minute
+    // margin only prevents a tiny miss from becoming a standalone warning.
     var recentSleepDates=dates.slice(-3);
     var recentSleep=valuesFor(data,recentSleepDates,'sleepMinutes');
     var baselineEnd=recentSleepDates.length?recentSleepDates[0]:sourceDate;
@@ -160,6 +163,7 @@
     var sleepBaseValues=valuesFor(data,sleepBaseDates,'sleepMinutes');
     var sleepBase=sleepBaseValues.length>=5?median(sleepBaseValues):null;
     var recentSleepAvg=recentSleep.length>=2?average(recentSleep):null;
+    var sleepAdviceFloor=SLEEP_MISSION_MINUTES-SLEEP_ADVICE_MARGIN;
     var sleepInsightAdded=false;
     if(recentSleepAvg!==null&&sleepBase!==null&&recentSleepAvg<=sleepBase-45){
       sleepInsightAdded=true;
@@ -169,21 +173,38 @@
         body:'Je recente gemiddelde is '+minutesLabel(recentSleepAvg)+', ongeveer '+Math.round(sleepBase-recentSleepAvg)+' minuten onder je eerdere persoonlijke mediaan van '+minutesLabel(sleepBase)+'. Maak van extra slaapruimte vanavond de simpelste herstelactie.',
         meta:recentSleep.length+' recente nachten · duidelijke daling vs eigen baseline'
       });
-    }else if(recentSleepAvg!==null&&recentSleepAvg<420){
+    }else if(recentSleepAvg!==null&&recentSleepAvg<sleepAdviceFloor){
       sleepInsightAdded=true;
       insights.push({
         key:'sleep_consistency',tone:'watch',priority:85,
         title:'Je 7u-slaapmissie is nog niet je vaste baseline',
-        body:'Je recente gemiddelde is '+minutesLabel(recentSleepAvg)+', onder je 7u-missie.'+(sleepBase!==null?' Je eerdere persoonlijke mediaan ligt rond '+minutesLabel(sleepBase)+', dus dit lijkt niet automatisch op een plotselinge verslechtering.':'')+' De winst zit hier vooral in structureel meer slaapruimte maken.',
+        body:'Je recente gemiddelde is '+minutesLabel(recentSleepAvg)+', duidelijk onder je 7u-missie.'+(sleepBase!==null?' Je eerdere persoonlijke mediaan ligt rond '+minutesLabel(sleepBase)+', dus dit lijkt niet automatisch op een plotselinge verslechtering.':'')+' De winst zit hier vooral in structureel meer slaapruimte maken.',
         meta:recentSleep.length+' recente nachten · mission consistency'
       });
+    }else if(recentSleepAvg!==null&&recentSleepAvg<SLEEP_MISSION_MINUTES){
+      sleepInsightAdded=true;
+      var recentGap=Math.max(1,Math.round(SLEEP_MISSION_MINUTES-recentSleepAvg));
+      insights.push({
+        key:'sleep_near_goal',tone:'neutral',priority:35,
+        title:'Dicht bij je 7u-slaapmissie',
+        body:'Je recente gemiddelde is '+minutesLabel(recentSleepAvg)+', nog ongeveer '+recentGap+' minuten onder je 7u-missie.'+(sleepBase!==null?' Je eerdere persoonlijke mediaan ligt rond '+minutesLabel(sleepBase)+'.':'')+' De missie blijft exact 7 uur; deze kleine missiegap is op zichzelf geen herstelwaarschuwing.',
+        meta:recentSleep.length+' recente nachten · adviesbuffer '+SLEEP_ADVICE_MARGIN+' min · missie blijft 7u exact'
+      });
     }
-    if(!sleepInsightAdded&&sleep!==null&&sleep<420){
+    if(!sleepInsightAdded&&sleep!==null&&sleep<sleepAdviceFloor){
       insights.push({
         key:'sleep_short',tone:'watch',priority:75,
         title:'Onder je 7u-slaapmissie',
         body:'De laatste geregistreerde slaap is '+minutesLabel(sleep)+'. Plan vanavond wat extra slaapruimte in plaats van dit ene wearable-getal als diagnose te zien.',
         meta:'Mission threshold · niet-medische wearabletrend'
+      });
+    }else if(!sleepInsightAdded&&sleep!==null&&sleep<SLEEP_MISSION_MINUTES){
+      var singleGap=Math.max(1,Math.round(SLEEP_MISSION_MINUTES-sleep));
+      insights.push({
+        key:'sleep_near_goal',tone:'neutral',priority:35,
+        title:'Dicht bij je 7u-slaapmissie',
+        body:'De laatste geregistreerde slaap is '+minutesLabel(sleep)+', ongeveer '+singleGap+' minuten onder je 7u-missie. De missie blijft exact 7 uur; deze kleine missiegap is op zichzelf geen herstelwaarschuwing.',
+        meta:'Adviesbuffer '+SLEEP_ADVICE_MARGIN+' min · missie blijft 7u exact'
       });
     }
 
