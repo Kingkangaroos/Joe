@@ -1,5 +1,5 @@
 // =============================================================
-// Gamenfy — Push client (v7.2)
+// Gamenfy — Push client (v7.3)
 // Registers the service worker and manages the push subscription.
 // Subscriptions are stored in Supabase app_state under key
 // 'push_subscriptions' so the daily edge function can reach
@@ -40,25 +40,53 @@
     return reg.pushManager.getSubscription();
   }
 
-  async function saveToCloud (sub) {
-    const headers = {
+  function cloudHeaders () {
+    return {
       'Content-Type': 'application/json',
       Prefer: 'resolution=merge-duplicates'
     };
-    let subs = [];
-    try {
-      const r = await window.gamenfyAuthedFetch(SUPABASE_URL + '/rest/v1/app_state?key=eq.' + ROW_KEY + '&select=data', { headers });
-      if (r.ok) {
-        const rows = await r.json();
-        if (rows.length && rows[0].data && Array.isArray(rows[0].data.subs)) subs = rows[0].data.subs;
-      }
-    } catch (e) {}
-    const json = sub.toJSON();
-    if (!subs.some(s => s.endpoint === json.endpoint)) subs.push(json);
-    await window.gamenfyAuthedFetch(SUPABASE_URL + '/rest/v1/app_state', {
-      method: 'POST', headers,
-      body: JSON.stringify({ key: ROW_KEY, user_id: window.gamenfyUserId, data: { subs }, updated_at: new Date().toISOString() })
+  }
+
+  async function readCloudSubscriptions () {
+    const headers = cloudHeaders();
+    const r = await window.gamenfyAuthedFetch(
+      SUPABASE_URL + '/rest/v1/app_state?key=eq.' + ROW_KEY + '&select=data',
+      { headers }
+    );
+    if (!r.ok) throw new Error('push subscription read failed');
+    const rows = await r.json();
+    return (rows.length && rows[0].data && Array.isArray(rows[0].data.subs))
+      ? rows[0].data.subs
+      : [];
+  }
+
+  async function writeCloudSubscriptions (subs) {
+    if (!window.gamenfyUserId) throw new Error('auth not ready');
+    const r = await window.gamenfyAuthedFetch(SUPABASE_URL + '/rest/v1/app_state', {
+      method: 'POST',
+      headers: cloudHeaders(),
+      body: JSON.stringify({
+        key: ROW_KEY,
+        user_id: window.gamenfyUserId,
+        data: { subs },
+        updated_at: new Date().toISOString()
+      })
     });
+    if (!r.ok) throw new Error('push subscription write failed');
+  }
+
+  async function saveToCloud (sub) {
+    const subs = await readCloudSubscriptions();
+    const json = sub.toJSON();
+    if (!subs.some(s => s && s.endpoint === json.endpoint)) subs.push(json);
+    await writeCloudSubscriptions(subs);
+  }
+
+  async function removeFromCloud (endpoint) {
+    if (!endpoint) return;
+    const subs = await readCloudSubscriptions();
+    const next = subs.filter(s => !s || s.endpoint !== endpoint);
+    if (next.length !== subs.length) await writeCloudSubscriptions(next);
   }
 
   // Must be called from a user gesture (button tap).
@@ -76,7 +104,33 @@
         applicationServerKey: b64ToUint8(VAPID_PUBLIC)
       });
     }
-    await saveToCloud(sub);
+    try {
+      await saveToCloud(sub);
+    } catch (e) {
+      // Do not present a device as enabled when the server cannot reach it.
+      try { await sub.unsubscribe(); } catch (_) {}
+      return { ok: false, reason: 'cloud-save-failed' };
+    }
+    return { ok: true };
+  }
+
+  async function disable () {
+    if (!supported()) return { ok: false, reason: 'unsupported' };
+    const sub = await getSubscription();
+    if (!sub) return { ok: true, alreadyDisabled: true };
+    const endpoint = sub.endpoint;
+    try {
+      // Remove server reachability first. If that fails, keep the local
+      // subscription so Settings cannot falsely show a successful opt-out.
+      await removeFromCloud(endpoint);
+    } catch (e) {
+      return { ok: false, reason: 'cloud-remove-failed' };
+    }
+    try {
+      await sub.unsubscribe();
+    } catch (e) {
+      return { ok: false, reason: 'unsubscribe-failed' };
+    }
     return { ok: true };
   }
 
@@ -94,5 +148,5 @@
   // Register the SW early so push can be enabled later.
   if (supported()) registerSW();
 
-  window.GamenfyPush = { enable, status, isStandalone };
+  window.GamenfyPush = { enable, disable, status, isStandalone };
 })();
