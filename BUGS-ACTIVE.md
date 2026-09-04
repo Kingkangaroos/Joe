@@ -7,12 +7,12 @@ Last refreshed: 2026-09-04 by ChatGPT (OpenAI)
 ## Current production baseline
 
 Latest verified functional code checkpoint:
-- `e6bee3a687116ce75b161b7afbb65119d603cbc4`
-- GitHub smoke suite: `completed/success` (run 106)
-- exact Vercel production deployment: `dpl_EhXNj9y4NgABPQD3GCYY3XfA1P9j`
+- `c6d61411c7d85a7ddf0fdd7023b2c1c69c6a380f`
+- GitHub smoke suite: `completed/success` (run 110)
+- exact Vercel production deployment: `dpl_GUQqKZDBg8AmXr6T5vnHPkny9TJ8`
 - deployment state: `READY`
 
-This checkpoint includes Health Trail v1.26 stale-source gating: Fitbit data older than yesterday can no longer produce current-sounding recovery/activity advice, while today/yesterday insights disclose their source day. It retains v1.25 source-day transparency, conservative recovery baselines, stable refresh behavior and real Fitbit-calendar filtering.
+This checkpoint includes Health Trail v1.28 recent-calendar evidence hardening on top of v1.27 sleep-advice nuance. The Sleep Daily Mission remains exactly 420 minutes / 7 hours; only Health Insights treats a miss of at most 15 minutes as neutral unless a clear personal-baseline decline exists. HRV/RHR/steps personal baselines now require enough observations inside a real recent 14-calendar-day window, and sleep "recent nights" means actual recent calendar days rather than merely the last available rows. It also retains v1.26 stale-source gating, stable refresh behavior and real Fitbit-calendar filtering.
 
 Documentation may have later commits; do not confuse a docs-only head with the latest functional checkpoint.
 
@@ -256,6 +256,9 @@ The following are not current blockers unless a regression is demonstrated:
 - **Health Trail HRV/RHR overreaction with thin history** — fixed; personal recovery baseline requires at least five valid historical values, otherwise component stays neutral.
 - **Health Trail stale-source ambiguity** — fixed in v1.25; recovery readout labels `vandaag`, `gisteren`, or the exact older source date.
 - **Health Insights stale data sounding current** — fixed in v1.26; data older than yesterday yields one neutral stale-source state, while current/yesterday cards disclose their source day.
+- **Health Insights near-7h sleep over-warning** — fixed in v1.27; a miss of at most 15 minutes can be neutral advice, while the actual Sleep Daily Mission remains exactly 420 minutes and a clear personal-baseline decline still wins.
+- **Health Trail stale historical baseline across data gaps** — fixed in v1.28; HRV/RHR/steps need enough measurements in a real recent calendar window, and sleep recent/baseline windows are calendar-bounded rather than "last available rows".
+- **Brittle Health Trail version-pinned smoke assertions** — fixed; stale-source and sleep-nuance tests lock behavior/invariants rather than a prototype version number.
 
 ---
 
