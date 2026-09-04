@@ -1488,7 +1488,7 @@
   // (health, po-water) it overwrote the whole cloud row with those 2 keys and the
   // realtime echo deleted streak/daily/quests/ventures/gratitude everywhere.
   window.RPG_SYNC_KEYS = ['rpg_character_v1','rpg_habits_v1','rpg_milestones_v1','rpg_quotes_v1','rpg_pin_v1','rpg_last_reminder','rpg_active_quests_v1','rpg_focus_skills_v1','rpg_ventures_v1','rpg_streak_v1','rpg_checkin_v1','rpg_quests_done_v1','rpg_weekly_v1','rpg_custom_moves_v1','rpg_prefs_v1','rpg_habitlog_v1','rpg_gratitude_v1','rpg_gratitude_words_v1','rpg_seasons_v1','rpg_recipes_v1','rpg_jarvis_applied_v1','rpg_habit_reset_v1','rpg_tier_claims_v1','rpg_optional_quests_v1','rpg_goals_v1','rpg_autohabit_v1','rpg_venture_notes_v1',
-    'rpg_routes_v1'];
+    'rpg_routes_v1','po_coach_weights']; // manual Body weight history; user data, not derived cache
   window.RPG_SYNC_PREFIXES = ['rpg_daily_v1:','rpg_agenda_v1:','rpg_todo_v1:','hevy_xp:','ah_xp_given:'];
   function initRPGSync() {
     if (!window.initCloudSync || !window.supabase) return;
