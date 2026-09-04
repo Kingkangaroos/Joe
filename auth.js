@@ -9,6 +9,8 @@
   let readyResolved = false;
   let autoHabitLoaderTimer = null;
   let autoHabitLoaderAttempts = 0;
+  let autoHabitLoaderLoading = false;
+  let autoHabitScriptFailures = 0;
   window.gamenfyAuthReady = new Promise((resolve) => { resolveReady = resolve; });
   window.gamenfyAccessToken = null;
   window.gamenfyUserId = null;
@@ -21,6 +23,7 @@
   function maybeLoadAutoHabitReconciler() {
     if (!window.gamenfyUserId) return false;
     if (window.__gamenfyAutohabitLoaderInstalled || window.__gamenfyAutohabitSessionLoaderLoaded) return true;
+    if (autoHabitLoaderLoading) return true;
     if (document.querySelector('script[data-gamenfy-autohabit-reconcile]')) return true;
 
     const rpgSyncStarted = !!(window.__cloudSyncRegistry && window.__cloudSyncRegistry.rpg);
@@ -37,10 +40,24 @@
 
     clearTimeout(autoHabitLoaderTimer);
     autoHabitLoaderTimer = null;
-    window.__gamenfyAutohabitSessionLoaderLoaded = true;
+    autoHabitLoaderLoading = true;
     const script = document.createElement('script');
-    script.src = 'autohabit-reconcile.js?v=11.6';
+    script.src = 'autohabit-reconcile.js?v=11.7';
     script.dataset.gamenfyAutohabitReconcile = '1';
+    script.onload = () => {
+      autoHabitLoaderLoading = false;
+      autoHabitScriptFailures = 0;
+      window.__gamenfyAutohabitSessionLoaderLoaded = true;
+    };
+    script.onerror = () => {
+      autoHabitLoaderLoading = false;
+      autoHabitScriptFailures += 1;
+      try { script.remove(); } catch (_error) {}
+      if (!window.gamenfyUserId || autoHabitScriptFailures > 5) return;
+      clearTimeout(autoHabitLoaderTimer);
+      const retryDelay = Math.min(4000, 250 * Math.pow(2, autoHabitScriptFailures - 1));
+      autoHabitLoaderTimer = setTimeout(maybeLoadAutoHabitReconciler, retryDelay);
+    };
     document.head.appendChild(script);
     return true;
   }
