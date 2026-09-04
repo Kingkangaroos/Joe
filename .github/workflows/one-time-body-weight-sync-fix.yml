@@ -27,3 +27,4 @@ jobs:
           git add xp.js .github/workflows/one-time-body-weight-sync-fix.yml tools/one-time-body-weight-sync-fix.py
           git commit -m "ChatGPT: sync manual Body weight history"
           git push origin HEAD:main
+# retry after exact compact-array anchor audit
