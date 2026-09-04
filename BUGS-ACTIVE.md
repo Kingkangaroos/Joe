@@ -7,10 +7,12 @@ Last refreshed: 2026-09-04 by ChatGPT (OpenAI)
 ## Current production baseline
 
 Latest verified functional code checkpoint:
-- `4b9c1c5be03c3e0d53c8fccea4994023af41a59f`
-- GitHub smoke suite: `success`
-- exact Vercel production deployment: `dpl_HkEvziQpbVLQQzi5NeoD2QeAxeEL`
+- `9a85e8bd64ba3d7cc7f88fe5c8ed9ed0ea1651fd`
+- GitHub smoke suite: `completed/success`
+- exact Vercel production deployment: `dpl_B5YoUTjzuvsUZuhBZ58xrYmZa32K`
 - deployment state: `READY`
+
+This checkpoint includes Health Trail v1.25 source-day transparency on top of v1.24 conservative recovery baselines, stable refresh behavior and real Fitbit-calendar filtering.
 
 Documentation may have later commits; do not confuse a docs-only head with the latest functional checkpoint.
 
@@ -64,7 +66,7 @@ The reconciler is not Main-only anymore. It may run on an authenticated surface 
 
 No history has been force-written through SQL.
 
-Latest observed rows:
+Latest observed rows at the last audit:
 - `health_fitbit.updated_at = 2026-09-04 08:15:05.897+00` (10:15 Amsterdam);
 - `rpg.updated_at = 2026-09-03 22:32:45.196+00`;
 - Fitbit data exists through 4 Sep;
@@ -97,7 +99,7 @@ Expected first natural current authenticated RPG reconciliation against this sta
 
 ### XP-log capacity audit
 
-Current retained XP log = 194/200. Twelve awards would evict six oldest rows. Read-only inspection showed those six are ordinary positive Walking/Sleep/Good Deed records, not undo/manual-off evidence. Existing canonical history + durable XP-ledger protect correctness.
+Current retained XP log at that audit = 194/200. Twelve awards would evict six oldest rows. Read-only inspection showed those six are ordinary positive Walking/Sleep/Good Deed records, not undo/manual-off evidence. Existing canonical history + durable XP-ledger protect correctness.
 
 **Decision:** do not raise `MAX_LOG` just for this migration; it would enlarge the hot whole-RPG sync row with little correctness benefit.
 
@@ -249,6 +251,10 @@ The following are not current blockers unless a regression is demonstrated:
 - **JS/PWA stale own-script cache after deploy** — `no-cache, must-revalidate`; SW push-only; CI locked.
 - **Local civil-day keys** — active writers audited; repo contract locked.
 - **Cross-surface Fitbit reconciler loading / Main boot race** — CI locked.
+- **Health Trail metadata key selected as a fake recovery day** — fixed; only real `YYYY-MM-DD` Fitbit keys are eligible.
+- **Health Trail recovery flicker during focus/minute refetch** — fixed with in-memory last-good Fitbit snapshot; failed fetch preserves last visible recovery.
+- **Health Trail HRV/RHR overreaction with thin history** — fixed; personal recovery baseline requires at least five valid historical values, otherwise component stays neutral.
+- **Health Trail stale-source ambiguity** — fixed in v1.25; recovery readout labels `vandaag`, `gisteren`, or the exact older source date.
 
 ---
 
