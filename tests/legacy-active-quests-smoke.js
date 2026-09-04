@@ -25,7 +25,7 @@ const settings=fs.readFileSync(path.join(ROOT,'settings.html'),'utf8');
 assert.match(settings,/Legacy daily quest selection · inactive/,'Settings must clearly mark the old selector inactive');
 assert.match(settings,/This older quest selector is no longer used by the current Daily Missions/,'Settings must explain the canonical replacement');
 assert.doesNotMatch(settings,/\n\s*renderDailyQuestToggles\(\);/,'Settings boot must not render the legacy selector');
-const toggle=(settings.match(/window\.toggleQuest = function\([^)]*\) \{[\s\S]*?\n\};/)||[])[0]||'';
+const toggle=(settings.match(/window\.toggleQuest\s*=\s*function\([^)]*\)\s*\{[\s\S]*?\n\};/)||[])[0]||'';
 assert.ok(toggle,'legacy toggleQuest compatibility function should remain explicit');
 assert.match(toggle,/Legacy quest selection is inactive/,'legacy toggle function must fail safe');
 assert.doesNotMatch(toggle,/saveActiveQuests\(/,'inactive selector must not mutate legacy selection state');
