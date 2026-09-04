@@ -1,5 +1,5 @@
 // =============================================================
-// Gamenfy — Streak + Evening Check-in engine (v7.7)
+// Gamenfy — Streak + Evening Check-in engine (v7.8)
 // A day counts when you did at least one real thing: a canonical Daily Mission,
 // net XP gained, a venture step done, or the day closed via evening check-in.
 // Streak = consecutive active days. Reversed XP (for example a mission
@@ -8,6 +8,8 @@
 // reason, so filling an old mission today cannot create a fake active today.
 // Canonical rpg_habitlog_v1 is an independent activity source so a completion
 // remains real even when its writer (for example Jarvis) did not emit habit XP.
+// Venture doneAt stays an absolute ISO timestamp, but streak attribution converts
+// that instant to the local civil day before counting it.
 // Historical days outside retained evidence are never deleted implicitly.
 // No punishment mechanics — today only breaks the streak once it is over.
 // Storage: rpg_streak_v1, rpg_checkin_v1 (both synced).
@@ -60,6 +62,13 @@
   function todayStr (d) {
     const x = d || new Date();
     return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
+  }
+  function localDayFromTimestamp (value) {
+    if (!value) return null;
+    const instant = new Date(value);
+    if (!Number.isNaN(instant.getTime())) return todayStr(instant);
+    const fallback = String(value).match(/^(\d{4}-\d{2}-\d{2})/);
+    return fallback ? fallback[1] : null;
   }
   function shiftDays (dateStr, n) {
     const p = dateStr.split('-').map(Number);
@@ -133,7 +142,9 @@
     if (window.Ventures) {
       const data = window.Ventures.load();
       (data.ventures || []).forEach(v => (v.phases || []).forEach(p => (p.steps || []).forEach(s => {
-        if (s.done && s.doneAt) days[String(s.doneAt).slice(0, 10)] = true;
+        if (!s.done || !s.doneAt) return;
+        const day = localDayFromTimestamp(s.doneAt);
+        if (day) days[day] = true;
       })));
     }
     return days;
