@@ -17,8 +17,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Disable misleading workspace isolation UI
-        shell: python
+        shell: bash
         run: |
+          python3 - <<'PY'
           from pathlib import Path
           import re
 
@@ -68,6 +69,7 @@ jobs:
               raise SystemExit('Expected workspace behavior block not found')
 
           p.write_text(text, encoding='utf-8')
+          PY
 
       - name: Remove one-time workflow and commit
         shell: bash
