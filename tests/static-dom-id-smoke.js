@@ -17,8 +17,17 @@ const duplicates=[];
 for(const file of html){
   const src=fs.readFileSync(file,'utf8');
   const counts=new Map();
-  for(const m of src.matchAll(/\bid\s*=\s*["']([^"']+)["']/g)) counts.set(m[1],(counts.get(m[1])||0)+1);
+  // Only inspect real static start tags. A file-wide id= regex also matches
+  // template strings inside JavaScript (for example id="${item.id}").
+  for(const tagMatch of src.matchAll(/<[a-zA-Z][^>]*>/g)){
+    const tag=tagMatch[0];
+    const m=tag.match(/\bid\s*=\s*["']([^"']+)["']/);
+    if(!m) continue;
+    const id=m[1];
+    if(id.includes('${')||id.includes('{{')||id.includes('<%')) continue;
+    counts.set(id,(counts.get(id)||0)+1);
+  }
   for(const [id,n] of counts) if(n>1) duplicates.push(path.relative(ROOT,file).replaceAll('\\','/')+' #'+id+' x'+n);
 }
 assert.deepEqual(duplicates,[],'duplicate static DOM ids found:\n'+duplicates.join('\n'));
-console.log('DOM id smoke: '+html.length+' active HTML files contain no duplicate static ids.');
+console.log('DOM id smoke: '+html.length+' active HTML files contain no duplicate literal ids.');
