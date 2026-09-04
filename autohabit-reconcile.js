@@ -1,10 +1,10 @@
 /* Gamenfy retrospective Fitbit -> Daily Mission reconciler
    ChatGPT (OpenAI), 2026-09-03.
    Fixes late Fitbit finalization without fighting deliberate manual unchecks.
-   v11.6 keeps the authoritative cloud-baseline migration from v11.5 and adds
-   a retry-safe XP award ledger. A crash before +15 can be repaired; a crash
-   after +15 but before ledger persistence is detected from the XP audit log
-   so the same Fitbit completion can never be paid twice. */
+   v11.7 keeps the retry-safe v11.6 XP ledger but indexes the retained XP audit
+   once per reconciliation pass. Manual-off inference and crash-after-addXP
+   evidence therefore share one consistent snapshot instead of repeatedly
+   parsing/scanning the near-cap character log for every Fitbit day. */
 (function () {
   'use strict';
 
@@ -86,25 +86,46 @@
     return m ? m[1] : String((entry && entry.date) || '').slice(0, 10);
   }
 
-  function completionXpEvidence(habitId, dateStr) {
+  // Build one immutable view of the retained XP audit per reconciliation pass.
+  // xpLog is newest-first, so the first same-day decision exactly matches the
+  // old inferManualOff() behavior while completion XP remains netted over every
+  // matching completion/reversal row for crash-idempotency.
+  function buildXpAuditIndex() {
     if (typeof window.getCharacter !== 'function') return null;
     try {
       var rows = (window.getCharacter().xpLog || []);
-      var net = 0;
-      var saw = false;
+      var index = {};
       for (var i = 0; i < rows.length; i++) {
         var e = rows[i] || {};
-        if (e.skill !== habitId || logEntryDate(e) !== dateStr) continue;
+        if (!isAutoHabit(e.skill)) continue;
+        var date = logEntryDate(e);
+        if (!validDay(date)) continue;
+        var k = e.skill + ':' + date;
+        var rec = index[k] || { completionSaw: false, completionNet: 0, manualDecision: null };
         var reason = String(e.reason || '');
-        var looksLikeCompletion = reason.indexOf('Auto:') === 0 || reason.indexOf('Habit:') === 0 || /\bhabit\b/i.test(reason) || /\bunchecked\b/i.test(reason);
-        if (!looksLikeCompletion) continue;
         var amount = Number(e.amount || 0);
-        if (!Number.isFinite(amount) || amount === 0) continue;
-        saw = true;
-        net += amount;
+        var finiteAmount = Number.isFinite(amount);
+        var looksLikeCompletion = reason.indexOf('Auto:') === 0 || reason.indexOf('Habit:') === 0 || /\bhabit\b/i.test(reason) || /\bunchecked\b/i.test(reason);
+
+        if (looksLikeCompletion && finiteAmount && amount !== 0) {
+          rec.completionSaw = true;
+          rec.completionNet += amount;
+        }
+
+        if (rec.manualDecision === null) {
+          if (reason.indexOf('Habit unchecked:') === 0 || /\bunchecked\b/i.test(reason) || (finiteAmount && amount < 0)) rec.manualDecision = true;
+          else if (reason.indexOf('Habit:') === 0 || (finiteAmount && amount > 0)) rec.manualDecision = false;
+        }
+        index[k] = rec;
       }
-      return saw && net > 0;
+      return index;
     } catch (e) { return null; }
+  }
+
+  function completionXpEvidence(auditIndex, habitId, dateStr) {
+    if (auditIndex === null) return null;
+    var rec = auditIndex[habitId + ':' + dateStr];
+    return !!(rec && rec.completionSaw && rec.completionNet > 0);
   }
 
   // First XP-ledger migration is deliberately conservative: every Walking/Sleep
@@ -129,19 +150,10 @@
   // During the one-time migration, use the newest same-day manual XP event when
   // possible. Character's daily UI uses generic "... unchecked" reasons, while
   // Main uses "Habit unchecked:" — support both shapes.
-  function inferManualOff(habitId, dateStr) {
-    if (typeof window.getCharacter !== 'function') return false;
-    try {
-      var rows = (window.getCharacter().xpLog || []);
-      for (var i = 0; i < rows.length; i++) {
-        var e = rows[i] || {};
-        if (e.skill !== habitId || logEntryDate(e) !== dateStr) continue;
-        var reason = String(e.reason || '');
-        if (reason.indexOf('Habit unchecked:') === 0 || /\bunchecked\b/i.test(reason) || Number(e.amount || 0) < 0) return true;
-        if (reason.indexOf('Habit:') === 0 || Number(e.amount || 0) > 0) return false;
-      }
-    } catch (e) {}
-    return false;
+  function inferManualOff(auditIndex, habitId, dateStr) {
+    if (auditIndex === null) return false;
+    var rec = auditIndex[habitId + ':' + dateStr];
+    return !!(rec && rec.manualDecision === true);
   }
 
   window.setAutoHabitManualOverride = function (habitId, dateStr, suppressed) {
@@ -239,6 +251,7 @@
 
       // From this point localStorage is known to be either the fetched cloud baseline
       // or a newer local dirty edit, so all mutations can safely use the normal engine.
+      var xpAudit = buildXpAuditIndex();
       var state = loadJson(AUTO_KEY, {});
       var migrated = state[MIGRATION_KEY] === true;
       var habitlog = loadJson(HABITLOG_KEY, {});
@@ -262,7 +275,7 @@
           var stateKey = autoStateKey(habitId, date);
           var already = habitlogHas(habitlog, habitId, date);
 
-          if (state[stateKey] !== 'manual-off' && !already && inferManualOff(habitId, date)) {
+          if (state[stateKey] !== 'manual-off' && !already && inferManualOff(xpAudit, habitId, date)) {
             state[stateKey] = 'manual-off';
             stateChanged = true;
           }
@@ -329,7 +342,7 @@
 
         // Crash-after-addXP protection: if the completion XP already exists,
         // persist only the ledger marker. Net completion XP <= 0 is not enough.
-        var evidence = completionXpEvidence(item.key, item.date);
+        var evidence = completionXpEvidence(xpAudit, item.key, item.date);
         if (evidence === true) {
           state[item.ledgerKey] = true;
           saveJson(AUTO_KEY, state);
