@@ -209,9 +209,9 @@ body::before {
   </div>
 
   <!-- ── DAILY QUESTS ─────────────────────────────── -->
-  <div class="sec-title">Daily quests</div>
+  <div class="sec-title">Legacy daily quest selection · inactive</div>
   <div class="card" id="dailyQuestToggles">
-    <div style="font-size:11px;color:var(--t3);margin-bottom:12px">Your daily quest lineup.</div>
+    <div style="font-size:11px;color:var(--t3);line-height:1.5">This older quest selector is no longer used by the current Daily Missions. The current mission lineup comes from the canonical RPG habit definitions.</div>
   </div>
 
   <!-- ── NOTIFICATIONS ────────────────────────────── -->
@@ -450,13 +450,9 @@ function renderDailyQuestToggles() {
   container.innerHTML = html;
 }
 
-window.toggleQuest = function(id, checked) {
-  const active = getActiveQuests();
-  const idx = active.indexOf(id);
-  if (checked && idx < 0) active.push(id);
-  if (!checked && idx >= 0) active.splice(idx, 1);
-  saveActiveQuests(active);
-  showToast(checked ? '✓ Quest enabled' : 'Quest disabled');
+window.toggleQuest = function(){
+  showToast('Legacy quest selection is inactive');
+  return false;
 };
 
 // ── Quotes ────────────────────────────────────────────────────
@@ -704,7 +700,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Wait for xp.js to expose RPG_DEFAULT_SKILLS
   setTimeout(() => {
     renderSkillPills();
-    renderDailyQuestToggles();
+    // Legacy rpg_active_quests_v1 selector intentionally not rendered.
     renderQuotes();
   }, 50);
   // Existing device Hevy key, if configured manually. No embedded fallback.
