@@ -1,5 +1,6 @@
 /* Repo-wide RPG sync authority regression — ChatGPT (OpenAI)
-   Ensures xp.js remains the only active source that registers appKey='rpg'. */
+   xp.js owns the canonical key/prefix lists. Other pages may only delegate
+   to those exact shared lists; they may never invent a smaller RPG scope. */
 'use strict';
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -22,19 +23,29 @@ function walk(dir, out) {
 
 const files = [];
 walk(ROOT, files);
-const hits = [];
+const registrars = [];
+const unsafe = [];
 for (const file of files) {
   const rel = path.relative(ROOT, file).replaceAll('\\', '/');
   const src = fs.readFileSync(file, 'utf8');
-  if (!/initCloudSync\s*\(\s*\{[\s\S]{0,700}?appKey\s*:\s*['\"]rpg['\"]/m.test(src)) continue;
-  hits.push(rel);
+  const calls = src.match(/initCloudSync\s*\(\s*\{[\s\S]{0,900}?\}\s*\)/gm) || [];
+  for (const call of calls) {
+    if (!/appKey\s*:\s*['\"]rpg['\"]/.test(call)) continue;
+    registrars.push(rel);
+    if (rel === 'xp.js') continue;
+    const delegatesKeys = /syncedKeys\s*:\s*window\.RPG_SYNC_KEYS/.test(call);
+    const delegatesPrefixes = /syncedPrefixes\s*:\s*window\.RPG_SYNC_PREFIXES/.test(call);
+    if (!delegatesKeys || !delegatesPrefixes) unsafe.push(rel);
+  }
 }
 
-assert.deepEqual(hits, ['xp.js'], 'xp.js must remain the sole active RPG whole-row sync registrar; found: ' + hits.join(', '));
+assert.ok(registrars.includes('xp.js'), 'xp.js must keep the canonical RPG sync registration');
+assert.equal(unsafe.length, 0, 'non-canonical RPG sync scope found in: ' + unsafe.join(', '));
 
 const xp = fs.readFileSync(path.join(ROOT, 'xp.js'), 'utf8');
 assert.match(xp, /window\.RPG_SYNC_KEYS\s*=\s*\[/, 'canonical RPG sync key list must stay centralized in xp.js');
 assert.match(xp, /window\.RPG_SYNC_PREFIXES\s*=\s*\[/, 'canonical RPG sync prefix list must stay centralized in xp.js');
-assert.match(xp, /appKey\s*:\s*['\"]rpg['\"]/, 'xp.js must continue registering the rpg app key');
+assert.equal((xp.match(/window\.RPG_SYNC_KEYS\s*=\s*\[/g) || []).length, 1, 'RPG sync key list should have one canonical definition');
+assert.equal((xp.match(/window\.RPG_SYNC_PREFIXES\s*=\s*\[/g) || []).length, 1, 'RPG sync prefix list should have one canonical definition');
 
-console.log('RPG sync authority smoke: xp.js is the only active whole-row RPG sync registrar.');
+console.log('RPG sync authority smoke: ' + registrars.length + ' registrar(s), all non-xp delegates use the canonical shared scope.');
