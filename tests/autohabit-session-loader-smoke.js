@@ -29,8 +29,8 @@ async function runScenario(opts) {
   function createElement(tag) {
     return {
       tagName: String(tag || '').toUpperCase(),
-      id: '', dataset: {}, style: {}, textContent: '', innerHTML: '',
-      addEventListener() {}, setAttribute() {}, appendChild() {}
+      id: '', dataset: {}, style: {}, textContent: '', innerHTML: '', removed: false,
+      addEventListener() {}, setAttribute() {}, appendChild() {}, remove() { this.removed = true; }
     };
   }
 
@@ -74,6 +74,7 @@ async function runScenario(opts) {
     Object,
     String,
     Error,
+    Math,
     console,
     fetch: () => Promise.resolve({}),
     confirm: () => false,
@@ -90,14 +91,35 @@ async function runScenario(opts) {
 (async () => {
   {
     const state = await runScenario({ rpgSync: true, engine: true });
-    const scripts = state.appended.filter((el) => el.tagName === 'SCRIPT');
+    let scripts = state.appended.filter((el) => el.tagName === 'SCRIPT');
     assert.equal(scripts.length, 1, 'authenticated RPG surfaces load exactly one retrospective reconciler');
-    assert.equal(scripts[0].src, 'autohabit-reconcile.js?v=11.6');
+    assert.equal(scripts[0].src, 'autohabit-reconcile.js?v=11.7');
     assert.equal(scripts[0].dataset.gamenfyAutohabitReconcile, '1');
-    assert.equal(state.window.__gamenfyAutohabitSessionLoaderLoaded, true, 'session loader records ownership after injection');
+    assert.equal(state.window.__gamenfyAutohabitSessionLoaderLoaded, undefined, 'loader does not claim success before script.onload');
 
     state.windowListeners['gamenfy:cloud-sync-ready']({ detail: { appKey: 'rpg' } });
-    assert.equal(state.appended.filter((el) => el.tagName === 'SCRIPT').length, 1, 'later cloud-ready events cannot double-inject');
+    scripts = state.appended.filter((el) => el.tagName === 'SCRIPT');
+    assert.equal(scripts.length, 1, 'cloud-ready event cannot double-inject while reconciler script is still loading');
+
+    scripts[0].onload();
+    assert.equal(state.window.__gamenfyAutohabitSessionLoaderLoaded, true, 'session loader records ownership only after successful script load');
+    state.windowListeners['gamenfy:cloud-sync-ready']({ detail: { appKey: 'rpg' } });
+    assert.equal(state.appended.filter((el) => el.tagName === 'SCRIPT').length, 1, 'successful load remains deduplicated');
+  }
+
+  {
+    const state = await runScenario({ rpgSync: true, engine: true });
+    let scripts = state.appended.filter((el) => el.tagName === 'SCRIPT');
+    assert.equal(scripts.length, 1, 'first reconciler request is injected');
+    scripts[0].onerror();
+    assert.equal(scripts[0].removed, true, 'failed script node is removed so it cannot block a retry');
+    assert.equal(state.window.__gamenfyAutohabitSessionLoaderLoaded, undefined, 'failed network load never claims reconciler ownership');
+
+    state.windowListeners['gamenfy:cloud-sync-ready']({ detail: { appKey: 'rpg' } });
+    scripts = state.appended.filter((el) => el.tagName === 'SCRIPT');
+    assert.equal(scripts.length, 2, 'a later readiness signal retries the reconciler after script failure');
+    scripts[1].onload();
+    assert.equal(state.window.__gamenfyAutohabitSessionLoaderLoaded, true, 'retry can become the successful owner');
   }
 
   {
@@ -114,6 +136,8 @@ async function runScenario(opts) {
   assert.match(source, /typeof window\.recomputeHabitFromLog === 'function'/, 'loader requires authoritative replay engine');
   assert.match(source, /typeof window\.getCharacter === 'function'/, 'loader requires character audit engine');
   assert.match(source, /typeof window\.addXP === 'function'/, 'loader requires XP writer before reconciliation');
+  assert.match(source, /script\.onerror = \(\) =>/, 'loader handles script network failure explicitly');
+  assert.match(source, /script\.onload = \(\) =>/, 'loader marks success only after script load');
 
   // Main boot race contract: all three are deferred, xp.js waits for DOMContentLoaded
   // before starting RPG sync, while checkin.js executes as a deferred script before
@@ -129,7 +153,7 @@ async function runScenario(opts) {
   assert.ok(index.indexOf(authTag) < index.indexOf(xpTag) && index.indexOf(xpTag) < index.indexOf(checkinTag), 'Main keeps auth -> xp -> checkin deferred execution order');
   assert.match(xp, /document\.readyState==='loading'\) document\.addEventListener\('DOMContentLoaded', initRPGSync\)/, 'RPG sync cannot start before deferred checkin.js installs Main loader ownership');
 
-  console.log('Authenticated Fitbit reconciliation loader smoke passed: cross-surface load, utility-page block, Main dedupe and boot ordering.');
+  console.log('Authenticated Fitbit reconciliation loader smoke passed: cross-surface load, retry after network failure, utility-page block, Main dedupe and boot ordering.');
 })().catch((error) => {
   console.error(error);
   process.exitCode = 1;
