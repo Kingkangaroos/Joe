@@ -111,7 +111,7 @@ async function jvLoadHistory(){
 
 let jvBusy=false;
 async function jvSend(){
-  if(jvBusy) return;
+  if(jvBusy || (jvRec && jvRec.state==='recording')) return;
   const input=document.getElementById('jvInput');
   const msg=input.value.trim();
   if(!msg) return;
@@ -119,6 +119,7 @@ async function jvSend(){
   jvAdd('user', msg);
   jvBusy=true;
   document.getElementById('jvSend').disabled=true;
+  document.getElementById('jvMic').disabled=true;
   const think=jvAdd('bot','…','thinking');
   try{
     const r=await window.gamenfyAuthedFetch(JV_URL,{
@@ -135,6 +136,7 @@ async function jvSend(){
   }
   jvBusy=false;
   document.getElementById('jvSend').disabled=false;
+  document.getElementById('jvMic').disabled=false;
   document.getElementById('jvMsgs').scrollTop=document.getElementById('jvMsgs').scrollHeight;
 }
 
@@ -147,6 +149,7 @@ function jvMime(){
 }
 window.jvMicTap=async function(){
   const btn=document.getElementById('jvMic');
+  if(jvBusy) return;
   if(jvRec && jvRec.state==='recording'){ jvRec.stop(); return; }
   const mime=jvMime();
   if(!mime || !navigator.mediaDevices){ alert('Spraak wordt niet ondersteund op dit apparaat.'); return; }
@@ -158,15 +161,16 @@ window.jvMicTap=async function(){
   jvRec.ondataavailable=e=>{ if(e.data&&e.data.size) jvChunks.push(e.data); };
   jvRec.onstop=async()=>{
     clearTimeout(jvRecTimer);
-    btn.classList.remove('rec'); btn.textContent='🎤';
+    btn.classList.remove('rec'); btn.textContent='🎤'; btn.disabled=true;
     stream.getTracks().forEach(t=>t.stop());
     const blob=new Blob(jvChunks,{type:mime});
-    if(blob.size<1200) return; // te kort / per ongeluk
+    if(blob.size<1200){ btn.disabled=false; document.getElementById('jvSend').disabled=false; return; } // te kort / per ongeluk
     const b64=await new Promise((res,rej)=>{ const r=new FileReader();
       r.onload=()=>res(String(r.result).split(',')[1]); r.onerror=rej; r.readAsDataURL(blob); });
     jvSendAudio(b64, mime);
   };
   jvRec.start();
+  document.getElementById('jvSend').disabled=true;
   btn.classList.add('rec'); btn.textContent='■';
   jvRecTimer=setTimeout(()=>{ try{ jvRec.stop(); }catch(e){} }, 60000); // max 60s
 };
@@ -174,6 +178,7 @@ async function jvSendAudio(b64, mime){
   if(jvBusy) return;
   jvBusy=true;
   document.getElementById('jvSend').disabled=true;
+  document.getElementById('jvMic').disabled=true;
   const userBubble=jvAdd('user','🎙️ …');
   const think=jvAdd('bot','…','thinking');
   try{
@@ -192,11 +197,15 @@ async function jvSendAudio(b64, mime){
   }
   jvBusy=false;
   document.getElementById('jvSend').disabled=false;
+  document.getElementById('jvMic').disabled=false;
   document.getElementById('jvMsgs').scrollTop=document.getElementById('jvMsgs').scrollHeight;
 }
 
 document.getElementById('jvInput').addEventListener('keydown',e=>{ if(e.key==='Enter') jvSend(); });
-jvLoadHistory();
+document.addEventListener('DOMContentLoaded',async()=>{
+  try{ if(window.gamenfyAuthReady) await window.gamenfyAuthReady; }catch(e){}
+  jvLoadHistory();
+});
 </script>
 </body>
 </html>
