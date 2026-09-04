@@ -55,7 +55,9 @@ function series(endDate){
   assert.ok(current.every(item=>/bron vandaag/.test(item.meta)),'current insights label today as the source');
 }
 
-assert.match(source,/Health Trail Lab prototype v1\.26/,'source version records stale-source hardening');
+// Lock the behavior, not a specific prototype version number. Otherwise every
+// healthy Health Trail iteration would create a false-negative regression run.
+assert.match(source,/key:'stale_source'/,'source retains an explicit stale-source state');
 assert.match(source,/sourceDate<previousDayKey\(today\)/,'older-than-yesterday gate is explicit');
 assert.doesNotMatch(source,/localStorage\.setItem/,'stale-source hardening remains read-only');
 console.log('Health Trail stale-source smoke passed: older Fitbit data cannot produce current-sounding advice.');
