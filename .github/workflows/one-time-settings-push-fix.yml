@@ -1,0 +1,127 @@
+name: One-time Settings real push fix
+on:
+  push:
+    paths:
+      - '.github/workflows/one-time-settings-push-fix.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Patch Settings to real push client
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          p=Path('settings.html')
+          s=p.read_text()
+
+          anchor='<script src="xp.js?v=10.98" defer></script>'
+          if '<script src="push.js?v=10.98" defer></script>' not in s:
+              assert anchor in s
+              s=s.replace(anchor, anchor+'\n<script src="push.js?v=10.98" defer></script>', 1)
+
+          s=s.replace('Daily reminder</div>\n        <div class="toggle-sub">Get a push notification when it\'s time for check-in</div>',
+                      'Push on this device</div>\n        <div class="toggle-sub">Register or remove this device for real Gamenfy push notifications</div>', 1)
+
+          s=re.sub(r"function requestNotificationPermission\(\) \{.*?\n\}\n\nfunction scheduleReminder\(\) \{.*?\n\}\n\nfunction updateNotifUI\(enabled\) \{.*?\n\}\n\nwindow\.toggleNotifications = function\(checked\) \{.*?\n\};",
+          """async function requestNotificationPermission() {
+  if (!window.GamenfyPush) {
+    showToast('Push client is not ready yet', true);
+    updateNotifUI(false, 'not-ready');
+    return false;
+  }
+  const result = await window.GamenfyPush.enable();
+  if (result && result.ok) {
+    const s = loadNotifSettings();
+    s.enabled = true;
+    saveNotifSettings(s);
+    updateNotifUI(true, 'enabled');
+    showToast('✓ Push enabled on this device');
+    return true;
+  }
+  const reason = (result && result.reason) || 'failed';
+  updateNotifUI(false, reason);
+  showToast(reason === 'denied' ? 'Permission denied — check browser settings' : 'Push could not be enabled', true);
+  return false;
+}
+
+// Legacy local in-page reminder scheduling was removed in v2.1. Background
+// delivery is owned by the real service-worker push subscription + server job.
+function updateNotifUI(enabled, state) {
+  const toggle = document.getElementById('notifToggle');
+  const timeRow = document.getElementById('notifTimeRow');
+  const status  = document.getElementById('notifStatus');
+  if (toggle) toggle.checked = !!enabled;
+  if (timeRow) timeRow.style.display = 'none';
+  if (status) {
+    const label = state === 'needs-standalone' ? 'Add Gamenfy to your Home Screen to enable iPhone push' :
+      state === 'denied' ? 'Push permission is blocked in browser settings' :
+      enabled ? '✓ This device is subscribed to Gamenfy push' : 'Push is off on this device';
+    status.textContent = label;
+  }
+}
+
+window.toggleNotifications = async function(checked) {
+  const toggle = document.getElementById('notifToggle');
+  if (toggle) toggle.disabled = true;
+  try {
+    if (checked) {
+      await requestNotificationPermission();
+      return;
+    }
+    if (!window.GamenfyPush || !window.GamenfyPush.disable) {
+      updateNotifUI(true, 'not-ready');
+      showToast('Push client is not ready yet', true);
+      return;
+    }
+    const result = await window.GamenfyPush.disable();
+    if (!result || !result.ok) {
+      updateNotifUI(true, (result && result.reason) || 'failed');
+      showToast('Could not remove this device from push', true);
+      return;
+    }
+    const s = loadNotifSettings();
+    s.enabled = false;
+    saveNotifSettings(s);
+    updateNotifUI(false, 'ready');
+    showToast('Push disabled on this device');
+  } finally {
+    if (toggle) toggle.disabled = false;
+  }
+};""", s, count=1, flags=re.S)
+
+          s=re.sub(r"function initNotifUI\(\) \{.*?\n\}",
+          """async function initNotifUI() {
+  const timeRow = document.getElementById('notifTimeRow');
+  if (timeRow) timeRow.style.display = 'none';
+  if (!window.GamenfyPush) { updateNotifUI(false, 'not-ready'); return; }
+  try {
+    const state = await window.GamenfyPush.status();
+    updateNotifUI(state === 'enabled', state);
+    const s = loadNotifSettings();
+    if (s.enabled !== (state === 'enabled')) {
+      s.enabled = (state === 'enabled');
+      saveNotifSettings(s);
+    }
+  } catch (e) {
+    updateNotifUI(false, 'failed');
+  }
+}""", s, count=1, flags=re.S)
+
+          assert 'window.GamenfyPush.enable()' in s
+          assert 'window.GamenfyPush.disable()' in s
+          assert 'scheduleReminder()' not in s
+          assert '<script src="push.js?v=10.98" defer></script>' in s
+          p.write_text(s)
+      - name: Remove one-time workflow
+        run: rm .github/workflows/one-time-settings-push-fix.yml
+      - name: Commit exact patch
+        run: |
+          git config user.name 'ChatGPT (OpenAI)'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add settings.html .github/workflows/one-time-settings-push-fix.yml
+          git commit -m 'ChatGPT: connect Settings to real push subscription'
+          git push
