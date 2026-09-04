@@ -1,5 +1,5 @@
-/* Legacy active-quest reference audit — ChatGPT (OpenAI)
-   Current public Daily Missions come from RPG_DEFAULT_SKILLS; this key is legacy. */
+/* Legacy active-quest retirement regression — ChatGPT (OpenAI)
+   Current public Daily Missions come from RPG_DEFAULT_SKILLS; rpg_active_quests_v1 remains compatibility data only. */
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -20,6 +20,16 @@ walk(ROOT);
 const allowed=new Set(['xp.js','settings.html','character.html']);
 const unexpected=refs.filter(x=>!allowed.has(x));
 assert.deepEqual(unexpected,[],'unexpected active consumer(s) of legacy rpg_active_quests_v1: '+unexpected.join(', '));
-assert.ok(refs.includes('settings.html'),'legacy Settings control is still inventoried until deliberately retired');
-assert.ok(refs.includes('character.html'),'Character should retain the explicit legacy-only boundary comment');
-console.log('Legacy active-quest audit: refs='+refs.join(', ')+'; no unexpected active consumer exists.');
+
+const settings=fs.readFileSync(path.join(ROOT,'settings.html'),'utf8');
+assert.match(settings,/Legacy daily quest selection · inactive/,'Settings must clearly mark the old selector inactive');
+assert.match(settings,/This older quest selector is no longer used by the current Daily Missions/,'Settings must explain the canonical replacement');
+assert.doesNotMatch(settings,/\n\s*renderDailyQuestToggles\(\);/,'Settings boot must not render the legacy selector');
+const toggle=(settings.match(/window\.toggleQuest = function\([^)]*\) \{[\s\S]*?\n\};/)||[])[0]||'';
+assert.ok(toggle,'legacy toggleQuest compatibility function should remain explicit');
+assert.match(toggle,/Legacy quest selection is inactive/,'legacy toggle function must fail safe');
+assert.doesNotMatch(toggle,/saveActiveQuests\(/,'inactive selector must not mutate legacy selection state');
+
+const character=fs.readFileSync(path.join(ROOT,'character.html'),'utf8');
+assert.match(character,/The old rpg_active_quests_v1 selection is legacy only/,'Character should retain the explicit legacy-only boundary');
+console.log('Legacy active-quest audit: compatibility data remains, but Settings can no longer present or mutate it as current Daily Missions.');
