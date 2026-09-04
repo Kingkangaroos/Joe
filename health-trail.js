@@ -1,4 +1,4 @@
-/* Health Trail Lab prototype v1.22 — ChatGPT (OpenAI)
+/* Health Trail Lab prototype v1.23 — ChatGPT (OpenAI)
    Read-only: public Daily Mission levels + Fitbit recovery signals + cautious
    personal-baseline insights. This is a wearable trend experiment, not diagnosis.
 */
@@ -7,6 +7,7 @@
   var ART_VERSION='1.13';
   var SB_URL='https://ttxjsoahmtennnufgeqx.supabase.co';
   var refreshInFlight=null;
+  var lastFitbit=null;
 
   function clamp(value,min,max){return Math.max(min,Math.min(max,value));}
   function number(value){value=Number(value);return Number.isFinite(value)?value:null;}
@@ -244,9 +245,15 @@
     }catch(e){return null;}
   }
   function refresh(){
-    render(null);
+    // Preserve the last good read-only snapshot while a newer one is fetched.
+    // First load still renders honestly without Fitbit; later focus/minute refreshes
+    // no longer flash recovery away or temporarily change the combined Trail score.
+    render(lastFitbit);
     if(refreshInFlight)return refreshInFlight;
-    refreshInFlight=loadFitbit().then(function(fitbit){if(fitbit)render(fitbit);return fitbit;}).finally(function(){refreshInFlight=null;});
+    refreshInFlight=loadFitbit().then(function(fitbit){
+      if(fitbit){lastFitbit=fitbit;render(lastFitbit);}
+      return fitbit;
+    }).finally(function(){refreshInFlight=null;});
     return refreshInFlight;
   }
   function start(){
