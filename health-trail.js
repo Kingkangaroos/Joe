@@ -1,4 +1,4 @@
-/* Health Trail Lab prototype v1.21 — ChatGPT (OpenAI)
+/* Health Trail Lab prototype v1.22 — ChatGPT (OpenAI)
    Read-only: public Daily Mission levels + Fitbit recovery signals + cautious
    personal-baseline insights. This is a wearable trend experiment, not diagnosis.
 */
@@ -35,8 +35,11 @@
   }
   function recoveryScore(data,today){
     data=data||{};today=today||dateKey();
-    var dates=Object.keys(data).sort(),day=data[today],sourceDate=today;
-    if(!day&&dates.length){sourceDate=dates[dates.length-1];day=data[sourceDate];}
+    // Reuse the same real-calendar source contract as Health Insights. Fitbit
+    // rows also contain metadata keys such as `source` and `updated`; sorting all
+    // object keys can otherwise make `updated` look like the latest "day" during
+    // the first minutes after midnight before today's Fitbit row exists.
+    var source=sourceFor(data,today),dates=source.dates,day=source.day,sourceDate=source.date;
     if(!day)return {score:null,components:[],date:null};
     var history=dates.filter(function(key){return key<sourceDate;}).slice(-14).map(function(key){return data[key]||{};});
     var components=[];
