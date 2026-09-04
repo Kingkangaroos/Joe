@@ -1,0 +1,121 @@
+/* Authenticated cross-surface Fitbit reconciler loader smoke — ChatGPT (OpenAI) */
+'use strict';
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+
+const source = fs.readFileSync(path.join(__dirname, '..', 'auth.js'), 'utf8');
+
+function tick() { return new Promise((resolve) => setImmediate(resolve)); }
+
+async function runScenario(opts) {
+  opts = opts || {};
+  const appended = [];
+  const windowListeners = {};
+  const documentListeners = {};
+  const session = { user: { id: 'owner-1', email: 'owner@example.test' }, access_token: 'session-token' };
+
+  const client = {
+    auth: {
+      onAuthStateChange() {},
+      getSession() { return Promise.resolve({ data: { session }, error: null }); },
+      signOut() { return Promise.resolve(); },
+      signUp() { return Promise.resolve({ data: {}, error: null }); },
+      signInWithPassword() { return Promise.resolve({ data: { session }, error: null }); }
+    }
+  };
+
+  function createElement(tag) {
+    return {
+      tagName: String(tag || '').toUpperCase(),
+      id: '', dataset: {}, style: {}, textContent: '', innerHTML: '',
+      addEventListener() {}, setAttribute() {}, appendChild() {}
+    };
+  }
+
+  const sandboxWindow = {
+    supabase: { createClient: () => client },
+    __cloudSyncRegistry: opts.rpgSync ? { rpg: true } : {},
+    __gamenfyAutohabitLoaderInstalled: !!opts.mainOwnsLoader,
+    addEventListener(type, fn) { windowListeners[type] = fn; },
+    dispatchEvent(event) {
+      const fn = windowListeners[event.type];
+      if (fn) fn(event);
+      return true;
+    },
+    location: { reload() {} }
+  };
+  if (opts.engine) {
+    sandboxWindow.recomputeHabitFromLog = () => {};
+    sandboxWindow.getCharacter = () => ({ xpLog: [] });
+    sandboxWindow.addXP = () => {};
+  }
+
+  const document = {
+    body: null,
+    documentElement: { style: {} },
+    head: { appendChild(el) { appended.push(el); return el; } },
+    getElementById() { return null; },
+    createElement,
+    querySelector() { return null; },
+    addEventListener(type, fn) { documentListeners[type] = fn; }
+  };
+
+  class CustomEventStub {
+    constructor(type, init) { this.type = type; this.detail = (init && init.detail) || {}; }
+  }
+
+  const sandbox = {
+    window: sandboxWindow,
+    document,
+    CustomEvent: CustomEventStub,
+    Promise,
+    Object,
+    String,
+    Error,
+    console,
+    fetch: () => Promise.resolve({}),
+    confirm: () => false,
+    setTimeout: () => 1,
+    clearTimeout: () => {}
+  };
+
+  vm.runInNewContext(source, sandbox, { filename: 'auth.js' });
+  await tick();
+  await tick();
+  return { appended, windowListeners, window: sandboxWindow };
+}
+
+(async () => {
+  {
+    const state = await runScenario({ rpgSync: true, engine: true });
+    const scripts = state.appended.filter((el) => el.tagName === 'SCRIPT');
+    assert.equal(scripts.length, 1, 'authenticated RPG surfaces load exactly one retrospective reconciler');
+    assert.equal(scripts[0].src, 'autohabit-reconcile.js?v=11.6');
+    assert.equal(scripts[0].dataset.gamenfyAutohabitReconcile, '1');
+    assert.equal(state.window.__gamenfyAutohabitSessionLoaderLoaded, true, 'session loader records ownership after injection');
+
+    state.windowListeners['gamenfy:cloud-sync-ready']({ detail: { appKey: 'rpg' } });
+    assert.equal(state.appended.filter((el) => el.tagName === 'SCRIPT').length, 1, 'later cloud-ready events cannot double-inject');
+  }
+
+  {
+    const state = await runScenario({ rpgSync: false, engine: false });
+    assert.equal(state.appended.filter((el) => el.tagName === 'SCRIPT').length, 0, 'utility/non-RPG pages never become Daily Mission writers');
+  }
+
+  {
+    const state = await runScenario({ rpgSync: true, engine: true, mainOwnsLoader: true });
+    assert.equal(state.appended.filter((el) => el.tagName === 'SCRIPT').length, 0, 'Main synchronous blocker remains sole loader owner on Main');
+  }
+
+  assert.match(source, /__cloudSyncRegistry && window\.__cloudSyncRegistry\.rpg/, 'loader requires RPG cloud sync registration');
+  assert.match(source, /typeof window\.recomputeHabitFromLog === 'function'/, 'loader requires authoritative replay engine');
+  assert.match(source, /typeof window\.getCharacter === 'function'/, 'loader requires character audit engine');
+  assert.match(source, /typeof window\.addXP === 'function'/, 'loader requires XP writer before reconciliation');
+  console.log('Authenticated Fitbit reconciliation loader smoke passed: cross-surface load, utility-page block and Main dedupe.');
+})().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
