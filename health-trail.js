@@ -1,4 +1,4 @@
-/* Health Trail Lab prototype v1.27 — ChatGPT (OpenAI)
+/* Health Trail Lab prototype v1.28 — ChatGPT (OpenAI)
    Read-only: public Daily Mission levels + Fitbit recovery signals + cautious
    personal-baseline insights. This is a wearable trend experiment, not diagnosis.
 */
@@ -30,11 +30,12 @@
     value=Math.round(value||0);
     return (value>0?'+':'')+value+(suffix||'');
   }
-  function previousDayKey(day){
+  function offsetDayKey(day,offset){
     var p=String(day||'').split('-').map(Number);
     if(p.length!==3||!p[0]||!p[1]||!p[2])return null;
-    return dateKey(new Date(p[0],p[1]-1,p[2]-1));
+    return dateKey(new Date(p[0],p[1]-1,p[2]+Number(offset||0)));
   }
+  function previousDayKey(day){return offsetDayKey(day,-1);}
   function recoverySourceLabel(sourceDate,today){
     if(!sourceDate)return 'geen Fitbit-bron';
     today=today||dateKey();
@@ -56,7 +57,11 @@
     // the first minutes after midnight before today's Fitbit row exists.
     var source=sourceFor(data,today),dates=source.dates,day=source.day,sourceDate=source.date;
     if(!day)return {score:null,components:[],date:null};
-    var history=dates.filter(function(key){return key<sourceDate;}).slice(-14).map(function(key){return data[key]||{};});
+    // Personal recovery baselines must be recent in calendar time, not merely the
+    // last fourteen available records. A long sync gap therefore reduces evidence
+    // instead of silently comparing today with weeks-old physiology.
+    var historyFloor=offsetDayKey(sourceDate,-14);
+    var history=dates.filter(function(key){return key<sourceDate&&key>=historyFloor;}).map(function(key){return data[key]||{};});
     var components=[];
     var sleep=number(day.sleepMinutes);
     if(sleep!==null)components.push({key:'sleep',score:clamp((sleep-300)/18,0,10),value:sleep});
@@ -90,7 +95,8 @@
   // ── Read-only Fitbit insight engine ────────────────────────────────
   // Principles:
   // - compare to Joey's own recent wearable baseline, not population cut-offs;
-  // - require >=5 historical values before calling a personal-baseline change;
+  // - require >=5 historical values within a real recent calendar window before
+  //   calling a personal-baseline change;
   // - a recovery warning requires HRV + resting HR to move together;
   // - sleep uses the exact 7h mission as a goal, but a <=15 minute miss alone is
   //   neutral advice rather than a recovery warning;
@@ -122,7 +128,8 @@
         meta:'Read-only · bron '+sourceDate+' · geen actuele actie'
       }];
     }
-    var historyDates=dates.filter(function(d){return d<sourceDate;}).slice(-14);
+    var historyFloor=offsetDayKey(sourceDate,-14);
+    var historyDates=dates.filter(function(d){return d<sourceDate&&d>=historyFloor;});
     var hrvHistory=valuesFor(data,historyDates,'hrvMs');
     var rhrHistory=valuesFor(data,historyDates,'restingHR');
     var stepsHistory=valuesFor(data,historyDates,'steps');
@@ -156,10 +163,13 @@
     // Separate a real decline versus personal baseline from merely being under
     // the app's exact 7h mission. The mission remains 420 minutes; the 15-minute
     // margin only prevents a tiny miss from becoming a standalone warning.
-    var recentSleepDates=dates.slice(-3);
+    // "Recent" means the latest three calendar days, not three old available rows.
+    var recentSleepFloor=offsetDayKey(sourceDate,-2);
+    var recentSleepDates=dates.filter(function(d){return d>=recentSleepFloor&&d<=sourceDate;});
     var recentSleep=valuesFor(data,recentSleepDates,'sleepMinutes');
-    var baselineEnd=recentSleepDates.length?recentSleepDates[0]:sourceDate;
-    var sleepBaseDates=dates.filter(function(d){return d<baselineEnd;}).slice(-14);
+    var baselineEnd=recentSleepFloor;
+    var sleepBaseFloor=offsetDayKey(baselineEnd,-14);
+    var sleepBaseDates=dates.filter(function(d){return d<baselineEnd&&d>=sleepBaseFloor;});
     var sleepBaseValues=valuesFor(data,sleepBaseDates,'sleepMinutes');
     var sleepBase=sleepBaseValues.length>=5?median(sleepBaseValues):null;
     var recentSleepAvg=recentSleep.length>=2?average(recentSleep):null;

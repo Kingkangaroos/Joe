@@ -57,7 +57,9 @@ function sleepSeries(baseline,recent){
   assert.match(insights[0].body,/persoonlijke mediaan/);
 }
 
-assert.match(source,/Health Trail Lab prototype v1\.27/,'source version records sleep-advice nuance');
+// Lock behavior rather than prototype version so future safe Health Trail
+// iterations do not create false-negative CI failures.
+assert.match(source,/key:'sleep_near_goal'/,'source retains the neutral near-goal state');
 assert.match(source,/SLEEP_MISSION_MINUTES=420/,'the exact mission reference remains 420 minutes');
 assert.match(source,/SLEEP_ADVICE_MARGIN=15/,'the advice-only margin is explicit');
 assert.doesNotMatch(source,/localStorage\.setItem/,'sleep nuance remains read-only');
