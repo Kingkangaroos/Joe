@@ -764,11 +764,11 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="sec-title" style="margin-top:24px">Engine &amp; nudges</div>
   <div style="background:var(--surface,rgba(255,255,255,0.04));border:1px solid var(--border,rgba(255,255,255,0.08));border-radius:14px;padding:4px 14px">
     <div class="toggle-row">
-      <div><div class="toggle-label">Morning push (08:30)</div><div class="toggle-sub">Daily notification with your next move</div></div>
+      <div><div class="toggle-label">Morning push</div><div class="toggle-sub">One daily notification in the server-selected morning window</div></div>
       <label class="toggle-sw"><input type="checkbox" id="pfMorningPush"><span class="toggle-sw-track"></span><span class="toggle-sw-thumb"></span></label>
     </div>
     <div class="toggle-row">
-      <div><div class="toggle-label">Evening push (19:30)</div><div class="toggle-sub">Skips automatically when your day is closed</div></div>
+      <div><div class="toggle-label">Evening push</div><div class="toggle-sub">One server-selected evening notification · skips when your day is closed</div></div>
       <label class="toggle-sw"><input type="checkbox" id="pfEveningPush"><span class="toggle-sw-track"></span><span class="toggle-sw-thumb"></span></label>
     </div>
     <div class="toggle-row">
@@ -822,20 +822,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   refreshWorkspaceLabel();
   window.saveWorkspace = function(){
-    const input=document.getElementById('wsNameInput');
-    if(!input) return;
-    const newVal=(input.value||'').trim();
-    const current = window.getGamenfyWorkspaceId ? window.getGamenfyWorkspaceId() : null;
-    if(newVal === (current||'')) return; // no change
-    if(!newVal){
-      if(!confirm('Switch this device back to the MAIN/shared workspace? It will then sync the same data as your primary device \u2014 only do this if that\u2019s really what you want.')) return;
-    } else {
-      if(!confirm('Set this device to the "'+newVal+'" workspace? It gets its own separate, empty data \u2014 nothing from your main workspace will show up here unless this name was already used before.')) return;
-    }
-    alert('Separate cloud workspaces are not active yet.'); return false;
-    refreshWorkspaceLabel();
-    input.value='';
-    alert('Workspace set. Reload the page for it to fully take effect everywhere.');
+    alert('Separate cloud workspaces are not active yet.');
+    return false;
   };
 })();
 </script>
