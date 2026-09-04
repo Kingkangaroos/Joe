@@ -1,4 +1,4 @@
-/* Health Trail Lab prototype v1.24 — ChatGPT (OpenAI)
+/* Health Trail Lab prototype v1.25 — ChatGPT (OpenAI)
    Read-only: public Daily Mission levels + Fitbit recovery signals + cautious
    personal-baseline insights. This is a wearable trend experiment, not diagnosis.
 */
@@ -27,6 +27,18 @@
   function signed(value,suffix){
     value=Math.round(value||0);
     return (value>0?'+':'')+value+(suffix||'');
+  }
+  function previousDayKey(day){
+    var p=String(day||'').split('-').map(Number);
+    if(p.length!==3||!p[0]||!p[1]||!p[2])return null;
+    return dateKey(new Date(p[0],p[1]-1,p[2]-1));
+  }
+  function recoverySourceLabel(sourceDate,today){
+    if(!sourceDate)return 'geen Fitbit-bron';
+    today=today||dateKey();
+    if(sourceDate===today)return 'vandaag';
+    if(sourceDate===previousDayKey(today))return 'gisteren';
+    return sourceDate;
   }
   function missionScore(defs,habits){
     defs=defs||{};habits=habits||{};
@@ -222,8 +234,9 @@
   }
   function render(fitbit){
     var root=document.getElementById('healthTrail');if(!root)return;
+    var today=dateKey();
     var missions=missionScore(window.RPG_DEFAULT_SKILLS,getHabits());
-    var recovery=recoveryScore(fitbit||{},dateKey());
+    var recovery=recoveryScore(fitbit||{},today);
     var total=totalScore(missions.score,recovery.score),state=band(total);
     var visual=total===null?0:clamp(total,0,10),level=Math.round(visual),art=Math.max(1,level);
     root.dataset.band=state.key;
@@ -238,7 +251,7 @@
     document.getElementById('htMissions').textContent=formatScore(missions.score);
     document.getElementById('htMissionMeta').textContent=missions.count+' missies geladen';
     document.getElementById('htRecovery').textContent=formatScore(recovery.score);
-    document.getElementById('htRecoveryMeta').textContent=recovery.score===null?'Fitbit nog niet geladen':recovery.components.length+' herstelsignalen';
+    document.getElementById('htRecoveryMeta').textContent=recovery.score===null?'Fitbit nog niet geladen':recovery.components.length+' herstelsignalen · '+recoverySourceLabel(recovery.date,today);
     document.getElementById('htMessage').textContent=state.label+' — '+state.message;
     renderInsights(root,fitbit||{});
   }
@@ -273,6 +286,6 @@
     document.addEventListener('visibilitychange',function(){if(!document.hidden)refresh();});
     setInterval(refresh,60000);
   }
-  window.GamenfyHealthTrail={missionScore:missionScore,recoveryScore:recoveryScore,totalScore:totalScore,band:band,healthInsights:healthInsights,render:render,refresh:refresh};
+  window.GamenfyHealthTrail={missionScore:missionScore,recoveryScore:recoveryScore,totalScore:totalScore,band:band,healthInsights:healthInsights,recoverySourceLabel:recoverySourceLabel,render:render,refresh:refresh};
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',start):start();
 })();
