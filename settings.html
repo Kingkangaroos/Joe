@@ -255,7 +255,7 @@ body::before {
     <div style="font-size:11px;color:var(--t3);margin-bottom:10px">Connects your workout data from Hevy</div>
     <div style="display:flex;gap:8px;margin-top:8px">
       <input type="password" id="hevyKeyInput"
-        placeholder="a4d43526-..."
+        placeholder="Paste your Hevy API key"
         style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;color:var(--t1);font-size:14px;outline:none"
         value="">
       <button onclick="saveHevyKey()"
@@ -707,11 +707,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDailyQuestToggles();
     renderQuotes();
   }, 50);
-
-  // Pre-fill Hevy key
-  if (!localStorage.getItem(HEVY_KEY)) {
-    localStorage.setItem(HEVY_KEY, 'a4d43526-b1ea-4a5f-9c69-ca543e6afee0');
-  }
+  // Existing device Hevy key, if configured manually. No embedded fallback.
   const inp = document.getElementById('hevyKeyInput');
   if (inp) inp.value = localStorage.getItem(HEVY_KEY) || '';
 
