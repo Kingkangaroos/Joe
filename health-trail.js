@@ -1,4 +1,4 @@
-/* Health Trail Lab prototype v1.23 — ChatGPT (OpenAI)
+/* Health Trail Lab prototype v1.24 — ChatGPT (OpenAI)
    Read-only: public Daily Mission levels + Fitbit recovery signals + cautious
    personal-baseline insights. This is a wearable trend experiment, not diagnosis.
 */
@@ -46,9 +46,15 @@
     var components=[];
     var sleep=number(day.sleepMinutes);
     if(sleep!==null)components.push({key:'sleep',score:clamp((sleep-300)/18,0,10),value:sleep});
-    var hrv=number(day.hrvMs),hrvBase=median(history.map(function(item){return number(item.hrvMs);}));
+
+    // HRV/RHR are useful relative signals, but one or two prior nights are not a
+    // meaningful personal baseline. Until five valid historical measurements are
+    // available, keep that component neutral at 5 rather than overreacting.
+    var hrv=number(day.hrvMs),hrvValues=history.map(function(item){return number(item.hrvMs);}).filter(function(value){return value!==null;});
+    var hrvBase=hrvValues.length>=5?median(hrvValues):null;
     if(hrv!==null)components.push({key:'hrv',score:hrvBase?clamp(5+((hrv/hrvBase)-1)*20,0,10):5,value:hrv,baseline:hrvBase});
-    var rhr=number(day.restingHR),rhrBase=median(history.map(function(item){return number(item.restingHR);}));
+    var rhr=number(day.restingHR),rhrValues=history.map(function(item){return number(item.restingHR);}).filter(function(value){return value!==null;});
+    var rhrBase=rhrValues.length>=5?median(rhrValues):null;
     if(rhr!==null)components.push({key:'rhr',score:rhrBase?clamp(5+((rhrBase-rhr)/rhrBase)*25,0,10):5,value:rhr,baseline:rhrBase});
     return {score:average(components.map(function(item){return item.score;})),components:components,date:sourceDate};
   }
