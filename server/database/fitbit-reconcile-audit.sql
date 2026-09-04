@@ -15,12 +15,10 @@
 
 with state as (
   select
-    max(updated_at) filter (where key = 'health_fitbit') as health_updated_at,
-    max(updated_at) filter (where key = 'rpg') as rpg_updated_at,
-    max(data) filter (where key = 'health_fitbit') as health,
-    max(data) filter (where key = 'rpg') as rpg
-  from public.app_state
-  where key in ('health_fitbit', 'rpg')
+    (select updated_at from public.app_state where key = 'health_fitbit' limit 1) as health_updated_at,
+    (select updated_at from public.app_state where key = 'rpg' limit 1) as rpg_updated_at,
+    (select data from public.app_state where key = 'health_fitbit' limit 1) as health,
+    (select data from public.app_state where key = 'rpg' limit 1) as rpg
 ),
 health_days as (
   select day.key as activity_date, day.value as payload
