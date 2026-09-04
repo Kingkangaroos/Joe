@@ -33,6 +33,29 @@ Required next safe Jarvis deployment must derive or mirror the canonical active/
 
 Do not redeploy merely to fix this map while the credential-hardening item below is unresolved: the current source also contains a server-only provider credential, and copying/re-embedding it would perpetuate the security problem.
 
+## Database action boundary — LIVE
+
+As defense in depth while the Edge Function deployment is stale, `public.app_state` now has a narrow BEFORE trigger for `key='jarvis_actions'`.
+
+`public.gamenfy_filter_jarvis_actions()`:
+- is `SECURITY INVOKER`, never `SECURITY DEFINER`;
+- leaves the existing owner RLS policies fully in force;
+- only filters `NEW.data.queue` for the `jarvis_actions` row;
+- preserves queue order;
+- allows `checkHabit` only for the canonical public 11 above;
+- rejects Grounding and private No Porn / Weed actions across habit, XP, quest and agenda action shapes;
+- rejects an explicitly supplied invalid habit date instead of silently converting it to today;
+- leaves unrelated/forward-compatible action types unchanged.
+
+The live trigger was tested on a temporary `app_state` clone, not by injecting fake actions into the real queue. A mixed probe retained valid Budgeting, Good Deed and ordinary Tennis XP while removing Grounding, private No Porn and an invalid Sleep date.
+
+Live queue audit after installation: three historical records exist, all are already consumed `addXP` records; there are zero unconsumed actions waiting to execute.
+
+Durable SQL: `server/database/jarvis-action-guard.sql`.
+Regression: `tests/server-boundary-hardening-smoke.js`.
+
+This guard mitigates unsafe stale actions. It does **not** fix the opposite problem where the old server map fails to create a valid Budgeting/Good Deed action. The Edge Function still needs the safe redeploy described below.
+
 ## Security hardening — OPEN
 
 The currently deployed Jarvis source still embeds an AI-provider credential directly in the Edge Function source. **Never copy that credential value into this repository, issues, logs, handoffs or chat summaries.**
