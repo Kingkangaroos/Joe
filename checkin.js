@@ -272,9 +272,11 @@
   if (typeof setTimeout === 'function') setTimeout(function(){ refreshVisibleRpg(); }, 0);
 })();
 
-// v11.5: keep the Fitbit -> Daily Mission reconciliation separate from xp.js,
+// v11.7: keep the Fitbit -> Daily Mission reconciliation separate from xp.js,
 // but replace xp.js' legacy today+yesterday checker SYNCHRONOUSLY before Main
 // can call it. Calls made while the safer module is still loading are queued.
+// The Main loader owns this path, so it also retries its own script download;
+// auth.js deliberately stands down while __gamenfyAutohabitLoaderInstalled is set.
 (function () {
   'use strict';
   if (window.__gamenfyAutohabitLoaderInstalled) return;
@@ -287,11 +289,31 @@
     return Promise.resolve(0);
   };
 
-  if (document.querySelector('script[data-gamenfy-autohabit-reconcile]')) return;
-  const script = document.createElement('script');
-  script.src = 'autohabit-reconcile.js?v=11.5';
-  script.dataset.gamenfyAutohabitReconcile = '1';
-  document.head.appendChild(script);
+  let failures = 0;
+  let loading = false;
+  function inject() {
+    if (window.__gamenfyAutohabitSessionLoaderLoaded || loading) return;
+    if (document.querySelector('script[data-gamenfy-autohabit-reconcile]')) return;
+    loading = true;
+    const script = document.createElement('script');
+    script.src = 'autohabit-reconcile.js?v=11.7';
+    script.dataset.gamenfyAutohabitReconcile = '1';
+    script.onload = function () {
+      loading = false;
+      failures = 0;
+      window.__gamenfyAutohabitSessionLoaderLoaded = true;
+    };
+    script.onerror = function () {
+      loading = false;
+      failures += 1;
+      try { script.remove(); } catch (e) {}
+      if (failures > 5) return;
+      const retryDelay = Math.min(4000, 250 * Math.pow(2, failures - 1));
+      setTimeout(inject, retryDelay);
+    };
+    document.head.appendChild(script);
+  }
+  inject();
 })();
 
 // v11.6: Main's existing Reset & start fresh marker only filtered the detail
