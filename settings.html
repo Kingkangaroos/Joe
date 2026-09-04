@@ -11,6 +11,7 @@
 <script src="sync.js?v=11.0" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
 <script src="xp.js?v=10.98" defer></script>
+<script src="push.js?v=10.98" defer></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
@@ -219,8 +220,8 @@ body::before {
   <div class="card">
     <div class="toggle-row">
       <div>
-        <div class="toggle-label">Daily reminder</div>
-        <div class="toggle-sub">Get a push notification when it's time for check-in</div>
+        <div class="toggle-label">Push on this device</div>
+        <div class="toggle-sub">Register or remove this device for real Gamenfy push notifications</div>
       </div>
       <label class="toggle-sw">
         <input type="checkbox" id="notifToggle" onchange="toggleNotifications(this.checked)">
@@ -605,65 +606,72 @@ function saveNotifSettings(obj) {
   try { localStorage.setItem(NOTIF_KEY, JSON.stringify(obj)); } catch {}
 }
 
-function requestNotificationPermission() {
-  if (!('Notification' in window)) {
-    showToast('Notifications not supported in this browser', true);
-    return;
+async function requestNotificationPermission() {
+  if (!window.GamenfyPush) {
+    showToast('Push client is not ready yet', true);
+    updateNotifUI(false, 'not-ready');
+    return false;
   }
-  Notification.requestPermission().then(perm => {
-    if (perm === 'granted') {
-      const s = loadNotifSettings();
-      s.enabled = true;
-      saveNotifSettings(s);
-      updateNotifUI(true);
-      showToast('✓ Notifications enabled');
-      scheduleReminder();
-    } else {
-      showToast('Permission denied — check browser settings', true);
-      document.getElementById('notifToggle').checked = false;
-    }
-  });
+  const result = await window.GamenfyPush.enable();
+  if (result && result.ok) {
+    const settings = loadNotifSettings();
+    settings.enabled = true;
+    saveNotifSettings(settings);
+    updateNotifUI(true, 'enabled');
+    showToast('✓ Push enabled on this device');
+    return true;
+  }
+  const reason = (result && result.reason) || 'failed';
+  updateNotifUI(false, reason);
+  showToast(reason === 'denied' ? 'Permission denied — check browser settings' : 'Push could not be enabled', true);
+  return false;
 }
 
-function scheduleReminder() {
-  const s = loadNotifSettings();
-  const timeStr = s.time || '21:00';
-  const [hours] = timeStr.split(':').map(Number);
-  const now = new Date();
-  const lastReminder = localStorage.getItem(LAST_REMIND);
-  const today = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0'); // v9.2: local day
-  if (lastReminder !== today && now.getHours() >= hours) {
-    new Notification('King Joey', {
-      body: 'Time for your daily check-in. Build the kingdom.',
-      icon: '/icon.png'
-    });
-    localStorage.setItem(LAST_REMIND, today);
-  }
-}
-
-function updateNotifUI(enabled) {
+// v2.1: the old in-page clock reminder was not background push. Real delivery
+// now belongs to the service-worker subscription + server push job.
+function updateNotifUI(enabled, state) {
   const toggle = document.getElementById('notifToggle');
   const timeRow = document.getElementById('notifTimeRow');
   const status  = document.getElementById('notifStatus');
   if (toggle) toggle.checked = !!enabled;
-  if (timeRow) timeRow.style.display = enabled ? 'flex' : 'none';
+  if (timeRow) timeRow.style.display = 'none';
   if (status) {
-    const perm = 'Notification' in window ? Notification.permission : 'unsupported';
-    status.textContent = enabled
-      ? (perm === 'granted' ? '✓ Notifications active' : 'Permission: ' + perm)
-      : '';
+    status.textContent = state === 'needs-standalone'
+      ? 'Add Gamenfy to your Home Screen to enable iPhone push'
+      : state === 'denied'
+        ? 'Push permission is blocked in browser settings'
+        : enabled
+          ? '✓ This device is subscribed to Gamenfy push'
+          : 'Push is off on this device';
   }
 }
 
-window.toggleNotifications = function(checked) {
-  if (checked) {
-    requestNotificationPermission();
-  } else {
-    const s = loadNotifSettings();
-    s.enabled = false;
-    saveNotifSettings(s);
-    updateNotifUI(false);
-    showToast('Notifications disabled');
+window.toggleNotifications = async function(checked) {
+  const toggle = document.getElementById('notifToggle');
+  if (toggle) toggle.disabled = true;
+  try {
+    if (checked) {
+      await requestNotificationPermission();
+      return;
+    }
+    if (!window.GamenfyPush || !window.GamenfyPush.disable) {
+      updateNotifUI(true, 'not-ready');
+      showToast('Push client is not ready yet', true);
+      return;
+    }
+    const result = await window.GamenfyPush.disable();
+    if (!result || !result.ok) {
+      updateNotifUI(true, (result && result.reason) || 'failed');
+      showToast('Could not remove this device from push', true);
+      return;
+    }
+    const settings = loadNotifSettings();
+    settings.enabled = false;
+    saveNotifSettings(settings);
+    updateNotifUI(false, 'ready');
+    showToast('Push disabled on this device');
+  } finally {
+    if (toggle) toggle.disabled = false;
   }
 };
 
@@ -674,13 +682,22 @@ window.saveNotifTime = function(val) {
   showToast('✓ Reminder time saved');
 };
 
-function initNotifUI() {
-  const s = loadNotifSettings();
-  const timeInput = document.getElementById('notifTime');
-  if (timeInput && s.time) timeInput.value = s.time;
-  const isEnabled = s.enabled && 'Notification' in window && Notification.permission === 'granted';
-  updateNotifUI(isEnabled);
-  if (isEnabled) scheduleReminder();
+async function initNotifUI() {
+  const timeRow = document.getElementById('notifTimeRow');
+  if (timeRow) timeRow.style.display = 'none';
+  if (!window.GamenfyPush) { updateNotifUI(false, 'not-ready'); return; }
+  try {
+    const state = await window.GamenfyPush.status();
+    const enabled = state === 'enabled';
+    updateNotifUI(enabled, state);
+    const settings = loadNotifSettings();
+    if (settings.enabled !== enabled) {
+      settings.enabled = enabled;
+      saveNotifSettings(settings);
+    }
+  } catch (e) {
+    updateNotifUI(false, 'failed');
+  }
 }
 
 // ── Boot ───────────────────────────────────────────────────────
