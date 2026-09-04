@@ -1,4 +1,4 @@
-/* Health Trail Lab prototype v1.25 — ChatGPT (OpenAI)
+/* Health Trail Lab prototype v1.26 — ChatGPT (OpenAI)
    Read-only: public Daily Mission levels + Fitbit recovery signals + cautious
    personal-baseline insights. This is a wearable trend experiment, not diagnosis.
 */
@@ -109,6 +109,16 @@
     if(!source.day)return [{key:'waiting',tone:'neutral',priority:0,title:'Nog geen Fitbit-trend',body:'Zodra er genoeg dagen binnen zijn, vergelijkt dit experiment je herstel met je eigen recente baseline.',meta:'Read-only · geen diagnose'}];
 
     var day=source.day,sourceDate=source.date,dates=source.dates;
+    // Yesterday is still a valid pre-sync fallback (sleep is assigned to wake day),
+    // but older Fitbit data must not produce advice that sounds current.
+    if(sourceDate<previousDayKey(today)){
+      return [{
+        key:'stale_source',tone:'neutral',priority:5,
+        title:'Fitbit-data is niet actueel',
+        body:'De laatste bruikbare wearabledata is van '+sourceDate+'. Ik geef geen herstel- of activiteitsadvies alsof dit over vandaag gaat; na een nieuwere sync komen de normale inzichten terug.',
+        meta:'Read-only · bron '+sourceDate+' · geen actuele actie'
+      }];
+    }
     var historyDates=dates.filter(function(d){return d<sourceDate;}).slice(-14);
     var hrvHistory=valuesFor(data,historyDates,'hrvMs');
     var rhrHistory=valuesFor(data,historyDates,'restingHR');
@@ -201,6 +211,8 @@
       });
     }
 
+    var sourceLabel=recoverySourceLabel(sourceDate,today);
+    insights.forEach(function(item){item.meta=(item.meta||'')+' · bron '+sourceLabel;});
     insights.sort(function(a,b){return b.priority-a.priority;});
     return insights.slice(0,3);
   }
