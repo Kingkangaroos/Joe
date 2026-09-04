@@ -12,6 +12,8 @@ assert.ok(!settings.includes('The PIN protects your private skills'),'old overcl
 // Preserve the existing convenience lock behavior while keeping its boundary honest.
 assert.match(settings,/const\s+PIN_STORE\s*=\s*['"]rpg_pin_v1['"]/,'PIN storage contract must stay intact');
 assert.ok(settings.includes('window.changePin = function'),'PIN change UI must remain available');
-assert.ok(settings.includes("localStorage.setItem(PIN_STORE, newPin)"),'changing the PIN must still persist the local UI lock');
+const changePin=settings.match(/window\.changePin\s*=\s*function\s*\([^)]*\)\s*\{([\s\S]*?)\n\};/);
+assert.ok(changePin,'PIN change function must remain parseable');
+assert.match(changePin[1],/localStorage\.setItem\(PIN_STORE\s*,\s*[A-Za-z_$][\w$]*\)/,'changing the PIN must still persist the local UI lock');
 
 console.log('PIN privacy smoke: convenience lock remains functional and is no longer described as encryption/security of synced data.');
