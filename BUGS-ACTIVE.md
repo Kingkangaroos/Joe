@@ -7,14 +7,14 @@ Last refreshed: 2026-09-04 by ChatGPT (OpenAI)
 ## Current production baseline
 
 Latest verified functional code checkpoint:
-- `c6d61411c7d85a7ddf0fdd7023b2c1c69c6a380f`
-- GitHub smoke suite: `completed/success` (run 110)
-- exact Vercel production deployment: `dpl_GUQqKZDBg8AmXr6T5vnHPkny9TJ8`
+- `5a90524969592319ee88ab9a3e2d2c0b58e35223`
+- GitHub smoke suite: `completed/success` (run 114)
+- exact Vercel production deployment: `dpl_CN7CT6UqZ3NaxH18wbxsGmNh9e8E`
 - deployment state: `READY`
 
-This checkpoint includes Health Trail v1.28 recent-calendar evidence hardening on top of v1.27 sleep-advice nuance. The Sleep Daily Mission remains exactly 420 minutes / 7 hours; only Health Insights treats a miss of at most 15 minutes as neutral unless a clear personal-baseline decline exists. HRV/RHR/steps personal baselines now require enough observations inside a real recent 14-calendar-day window, and sleep "recent nights" means actual recent calendar days rather than merely the last available rows. It also retains v1.26 stale-source gating, stable refresh behavior and real Fitbit-calendar filtering.
+This checkpoint adds retry-safe cross-surface loading for the Fitbit retrospective reconciler: `auth.js` now marks the session loader successful only after the reconciler script actually fires `onload`. A temporary script/network failure removes the failed node and permits bounded retry instead of falsely recording the reconciler as loaded for the rest of the session. The requested reconciler URL is aligned to v11.7. It retains Health Trail v1.28 recent-calendar evidence hardening, the exact 420-minute / 7-hour Sleep Daily Mission, stale-source gating, stable refresh behavior and the full Daily Mission/Fitbit correctness chain underneath it.
 
-Documentation may have later commits; do not confuse a docs-only head with the latest functional checkpoint.
+Later commits may be read-only audit/test/documentation work; do not confuse those with the latest functional checkpoint.
 
 ---
 
@@ -56,21 +56,29 @@ Locked behavior:
 
 Current reconciler: `autohabit-reconcile.js` v11.7.
 
-v11.7 also snapshots the retained Walking/Sleep XP audit **once per reconcile pass** instead of rescanning the near-cap XP log for every Fitbit date. Regression explicitly locks one `getCharacter()` audit read per pass.
+v11.7 snapshots the retained Walking/Sleep XP audit **once per reconcile pass** instead of rescanning the near-cap XP log for every Fitbit date. Regression explicitly locks one `getCharacter()` audit read per pass.
 
 ### Authenticated surfaces
 
 The reconciler is not Main-only anymore. It may run on an authenticated surface once RPG sync + required XP engine functions exist. Pages without the RPG engine cannot activate it. Main retains the synchronous legacy-check blocker so the old today/yesterday checker cannot race the modern module.
 
+Cross-surface loader hardening at functional checkpoint `5a905249...`:
+- session ownership is set only after successful script `onload`;
+- a failed script node is removed on `onerror`;
+- the same authenticated session may retry after a temporary network/script failure;
+- loading-state dedupe prevents a concurrent cloud-ready event from double-injecting the script;
+- Main's existing synchronous loader ownership remains untouched.
+
 ### Live read-only proof on 4 Sep 2026
 
 No history has been force-written through SQL.
 
-Latest observed rows at the 16:15 Amsterdam audit:
+Latest observed rows at the 16:15 Amsterdam Fitbit audit remain:
 - `health_fitbit.updated_at = 2026-09-04 14:15:08.02+00` (16:15 Amsterdam);
 - `rpg.updated_at = 2026-09-03 22:32:45.196+00`;
 - Fitbit data exists through 4 Sep;
-- exactly **12** Fitbit-qualified canonical completions are still absent.
+- exactly **12** Fitbit-qualified canonical completions are still absent;
+- retrospective and XP-ledger migration markers are still unset.
 
 Missing Walking — 7:
 - 2026-07-18
@@ -96,6 +104,10 @@ Expected first natural current authenticated RPG reconciliation against this sta
 - Sleep authoritative score **0 → 1**, streak **0 → 1**, latest check 3 Sep;
 - +180 total habit audit XP;
 - retrospective + XP-ledger migration markers set.
+
+### Durable read-only audit
+
+Use `server/database/fitbit-reconcile-audit.sql` for future cloud proof. It is regression-locked by `tests/fitbit-reconcile-audit-smoke.js` and explicitly follows the real canonical JSON orientation `rpg_habitlog_v1[habit_id][YYYY-MM-DD]`. It reports qualified source value, canonical presence, `manual-off`, XP-ledger state, migration markers and cloud timestamps without writing anything.
 
 ### XP-log capacity audit
 
@@ -251,6 +263,7 @@ The following are not current blockers unless a regression is demonstrated:
 - **JS/PWA stale own-script cache after deploy** — `no-cache, must-revalidate`; SW push-only; CI locked.
 - **Local civil-day keys** — active writers audited; repo contract locked.
 - **Cross-surface Fitbit reconciler loading / Main boot race** — CI locked.
+- **Cross-surface reconciler script-load false-positive** — fixed at `5a905249...`; session ownership waits for real `onload`, failed nodes are removed and bounded retry remains possible.
 - **Health Trail metadata key selected as a fake recovery day** — fixed; only real `YYYY-MM-DD` Fitbit keys are eligible.
 - **Health Trail recovery flicker during focus/minute refetch** — fixed with in-memory last-good Fitbit snapshot; failed fetch preserves last visible recovery.
 - **Health Trail HRV/RHR overreaction with thin history** — fixed; personal recovery baseline requires at least five valid historical values, otherwise component stays neutral.
@@ -259,6 +272,7 @@ The following are not current blockers unless a regression is demonstrated:
 - **Health Insights near-7h sleep over-warning** — fixed in v1.27; a miss of at most 15 minutes can be neutral advice, while the actual Sleep Daily Mission remains exactly 420 minutes and a clear personal-baseline decline still wins.
 - **Health Trail stale historical baseline across data gaps** — fixed in v1.28; HRV/RHR/steps need enough measurements in a real recent calendar window, and sleep recent/baseline windows are calendar-bounded rather than "last available rows".
 - **Brittle Health Trail version-pinned smoke assertions** — fixed; stale-source and sleep-nuance tests lock behavior/invariants rather than a prototype version number.
+- **Fitbit cloud-audit JSON orientation ambiguity** — durable read-only audit + regression test now lock `habitlog[habit][date]` and prevent future date-first audit mistakes.
 
 ---
 
