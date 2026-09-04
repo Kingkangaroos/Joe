@@ -7,9 +7,47 @@
 
   let resolveReady;
   let readyResolved = false;
+  let autoHabitLoaderTimer = null;
+  let autoHabitLoaderAttempts = 0;
   window.gamenfyAuthReady = new Promise((resolve) => { resolveReady = resolve; });
   window.gamenfyAccessToken = null;
   window.gamenfyUserId = null;
+
+  // Fitbit-backed Daily Missions must not depend on Joey opening Main specifically.
+  // Main still owns the synchronous legacy-checker blocker in checkin.js. On other
+  // authenticated RPG surfaces (Character/Lab), load the same reconciler only once
+  // the RPG cloud sync and XP engine are both present. Pages without the RPG engine
+  // never qualify, so this cannot turn Finance/utility pages into mission writers.
+  function maybeLoadAutoHabitReconciler() {
+    if (!window.gamenfyUserId) return false;
+    if (window.__gamenfyAutohabitLoaderInstalled || window.__gamenfyAutohabitSessionLoaderLoaded) return true;
+    if (document.querySelector('script[data-gamenfy-autohabit-reconcile]')) return true;
+
+    const rpgSyncStarted = !!(window.__cloudSyncRegistry && window.__cloudSyncRegistry.rpg);
+    const rpgEngineReady = typeof window.recomputeHabitFromLog === 'function' &&
+      typeof window.getCharacter === 'function' && typeof window.addXP === 'function';
+    if (!rpgSyncStarted || !rpgEngineReady) {
+      autoHabitLoaderAttempts += 1;
+      if (autoHabitLoaderAttempts <= 300) {
+        clearTimeout(autoHabitLoaderTimer);
+        autoHabitLoaderTimer = setTimeout(maybeLoadAutoHabitReconciler, 50);
+      }
+      return false;
+    }
+
+    clearTimeout(autoHabitLoaderTimer);
+    autoHabitLoaderTimer = null;
+    window.__gamenfyAutohabitSessionLoaderLoaded = true;
+    const script = document.createElement('script');
+    script.src = 'autohabit-reconcile.js?v=11.6';
+    script.dataset.gamenfyAutohabitReconcile = '1';
+    document.head.appendChild(script);
+    return true;
+  }
+
+  window.addEventListener('gamenfy:cloud-sync-ready', (event) => {
+    if (event && event.detail && event.detail.appKey === 'rpg') maybeLoadAutoHabitReconciler();
+  });
 
   function failClosed(message) {
     window.gamenfyAuthError = message;
@@ -142,6 +180,7 @@
     }
     window.gamenfyAccessToken = session.access_token;
     window.gamenfyUserId = session.user.id;
+    maybeLoadAutoHabitReconciler();
     const reveal = () => {
       const gate = document.getElementById('gamenfy-auth-gate');
       if (gate) gate.hidden = true;
