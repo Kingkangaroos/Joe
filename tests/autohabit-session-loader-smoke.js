@@ -114,7 +114,22 @@ async function runScenario(opts) {
   assert.match(source, /typeof window\.recomputeHabitFromLog === 'function'/, 'loader requires authoritative replay engine');
   assert.match(source, /typeof window\.getCharacter === 'function'/, 'loader requires character audit engine');
   assert.match(source, /typeof window\.addXP === 'function'/, 'loader requires XP writer before reconciliation');
-  console.log('Authenticated Fitbit reconciliation loader smoke passed: cross-surface load, utility-page block and Main dedupe.');
+
+  // Main boot race contract: all three are deferred, xp.js waits for DOMContentLoaded
+  // before starting RPG sync, while checkin.js executes as a deferred script before
+  // that event and installs __gamenfyAutohabitLoaderInstalled synchronously.
+  const index = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+  const xp = fs.readFileSync(path.join(__dirname, '..', 'xp.js'), 'utf8');
+  const authTag = index.match(/<script src="auth\.js[^>]*><\/script>/)[0];
+  const xpTag = index.match(/<script src="xp\.js[^>]*><\/script>/)[0];
+  const checkinTag = index.match(/<script src="checkin\.js[^>]*><\/script>/)[0];
+  assert.match(authTag, /\bdefer\b/, 'Main auth loader stays deferred');
+  assert.match(xpTag, /\bdefer\b/, 'Main RPG engine stays deferred');
+  assert.match(checkinTag, /\bdefer\b/, 'Main synchronous legacy blocker stays deferred');
+  assert.ok(index.indexOf(authTag) < index.indexOf(xpTag) && index.indexOf(xpTag) < index.indexOf(checkinTag), 'Main keeps auth -> xp -> checkin deferred execution order');
+  assert.match(xp, /document\.readyState==='loading'\) document\.addEventListener\('DOMContentLoaded', initRPGSync\)/, 'RPG sync cannot start before deferred checkin.js installs Main loader ownership');
+
+  console.log('Authenticated Fitbit reconciliation loader smoke passed: cross-surface load, utility-page block, Main dedupe and boot ordering.');
 })().catch((error) => {
   console.error(error);
   process.exitCode = 1;
