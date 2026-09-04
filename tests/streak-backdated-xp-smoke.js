@@ -29,7 +29,10 @@ const window={getCharacter:()=>({xpLog})};
 // synchronous streak reconciliation while still providing the browser API shape.
 const sandbox={window,localStorage,Date,String,JSON,Number,Object,Math,console,setTimeout:()=>0,clearTimeout:()=>{}};
 const source=fs.readFileSync(path.join(__dirname,'..','checkin.js'),'utf8');
-const streakSource=source.split('// v11.5:')[0];
+const loaderFlag=source.indexOf('if (window.__gamenfyAutohabitLoaderInstalled) return;');
+const loaderStart=source.lastIndexOf('(function () {',loaderFlag);
+assert.ok(loaderFlag>=0&&loaderStart>=0,'Main autohabit loader boundary must remain discoverable structurally');
+const streakSource=source.slice(0,loaderStart);
 vm.runInNewContext(streakSource,sandbox,{filename:'checkin-streak.js'});
 
 const result=window.Streak.refresh();
