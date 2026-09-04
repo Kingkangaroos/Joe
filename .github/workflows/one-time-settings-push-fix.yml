@@ -11,8 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Patch Settings to real push client
-        shell: python
         run: |
+          python <<'PY'
           from pathlib import Path
           import re
           p=Path('settings.html')
@@ -23,11 +23,11 @@ jobs:
               assert anchor in s
               s=s.replace(anchor, anchor+'\n<script src="push.js?v=10.98" defer></script>', 1)
 
-          s=s.replace('Daily reminder</div>\n        <div class="toggle-sub">Get a push notification when it\'s time for check-in</div>',
+          s=s.replace("Daily reminder</div>\n        <div class=\"toggle-sub\">Get a push notification when it's time for check-in</div>",
                       'Push on this device</div>\n        <div class="toggle-sub">Register or remove this device for real Gamenfy push notifications</div>', 1)
 
-          s=re.sub(r"function requestNotificationPermission\(\) \{.*?\n\}\n\nfunction scheduleReminder\(\) \{.*?\n\}\n\nfunction updateNotifUI\(enabled\) \{.*?\n\}\n\nwindow\.toggleNotifications = function\(checked\) \{.*?\n\};",
-          """async function requestNotificationPermission() {
+          pattern=r"function requestNotificationPermission\(\) \{.*?\n\}\n\nfunction scheduleReminder\(\) \{.*?\n\}\n\nfunction updateNotifUI\(enabled\) \{.*?\n\}\n\nwindow\.toggleNotifications = function\(checked\) \{.*?\n\};"
+          replacement="""async function requestNotificationPermission() {
   if (!window.GamenfyPush) {
     showToast('Push client is not ready yet', true);
     updateNotifUI(false, 'not-ready');
@@ -91,10 +91,12 @@ window.toggleNotifications = async function(checked) {
   } finally {
     if (toggle) toggle.disabled = false;
   }
-};""", s, count=1, flags=re.S)
+};"""
+          s,n=re.subn(pattern,replacement,s,count=1,flags=re.S)
+          assert n == 1
 
-          s=re.sub(r"function initNotifUI\(\) \{.*?\n\}",
-          """async function initNotifUI() {
+          pattern2=r"function initNotifUI\(\) \{.*?\n\}"
+          replacement2="""async function initNotifUI() {
   const timeRow = document.getElementById('notifTimeRow');
   if (timeRow) timeRow.style.display = 'none';
   if (!window.GamenfyPush) { updateNotifUI(false, 'not-ready'); return; }
@@ -109,13 +111,16 @@ window.toggleNotifications = async function(checked) {
   } catch (e) {
     updateNotifUI(false, 'failed');
   }
-}""", s, count=1, flags=re.S)
+}"""
+          s,n=re.subn(pattern2,replacement2,s,count=1,flags=re.S)
+          assert n == 1
 
           assert 'window.GamenfyPush.enable()' in s
           assert 'window.GamenfyPush.disable()' in s
           assert 'scheduleReminder()' not in s
           assert '<script src="push.js?v=10.98" defer></script>' in s
           p.write_text(s)
+          PY
       - name: Remove one-time workflow
         run: rm .github/workflows/one-time-settings-push-fix.yml
       - name: Commit exact patch
