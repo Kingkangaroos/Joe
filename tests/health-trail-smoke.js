@@ -42,6 +42,19 @@ assert.equal(api.totalScore(8,null),8,'missing Fitbit data never drags the score
 assert.equal(api.band(2.9).label,'Noodstand');
 assert.equal(api.band(9).label,'King mode');
 
+// Before the first Fitbit sync after Amsterdam midnight, metadata keys must not
+// displace yesterday as the latest real recovery date.
+{
+  const preSync=api.recoveryScore({
+    '2026-09-02':{hrvMs:62,restingHR:63},
+    '2026-09-03':{sleepMinutes:456,hrvMs:64,restingHR:61},
+    source:'google-health-v13-secure',
+    updated:'2026-09-03T22:15:00.000Z'
+  },'2026-09-04');
+  assert.equal(preSync.date,'2026-09-03','pre-sync midnight fallback uses the latest real Fitbit calendar date');
+  assert.equal(preSync.components.length,3,'yesterday recovery remains visible before today Fitbit row exists');
+}
+
 function datedSeries(startDay,count,make){
   const out={};
   for(let i=0;i<count;i++){
@@ -124,4 +137,4 @@ assert.doesNotMatch(section,/href=/,'Health Trail is built directly in Lab, not 
 assert.doesNotMatch(chatgptPanel,/<a class="chatgpt-lab-card"/,'ChatGPT Lab creation cards are status cards, not preview links');
 assert.match(lab,/health-trail\.js\?v=1\.0/,'existing Lab loader remains valid; Vercel revalidates the updated file at the same path');
 assert.match(lab,/health-trail\.css\?v=1\.0/);
-console.log('Health Trail smoke test passed: scoring, cautious personal-baseline insights, sleep distinction, Fitbit fallback, refresh and direct Lab mount.');
+console.log('Health Trail smoke test passed: scoring, cautious personal-baseline insights, midnight fallback, sleep distinction, Fitbit refresh and direct Lab mount.');
