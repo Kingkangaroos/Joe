@@ -1,5 +1,27 @@
 # Fitbit Air → Gamenfy via de Google Health API
 
+## Huidige productie — 4 september 2026
+
+De actieve health-bron is uitsluitend `app_state.health_fitbit`, gevuld door de gedeployde `fitbit-sync` Edge Function via Google Health API v4.
+
+Actief contract:
+- `fitbit-sync` = huidige ingest;
+- Europe/Amsterdam kalenderdagen;
+- Walking Daily Mission = 10.000 stappen;
+- Sleep Daily Mission = 420 minuten / 7 uur;
+- Daily Mission-thresholds worden niet door ingest geschreven maar door `autohabit-reconcile.js` toegepast na veilige RPG cloud/local convergentie;
+- `health_fitbit` blijft health-source authority; Fitbit-cron herschrijft nooit direct de whole-row `app_state.rpg`.
+
+Legacy/inert:
+- `fitbit-intraday` bestaat nog als JWT-protected Edge Function-object maar retourneert alleen HTTP 410;
+- `health-sync` bestaat nog als JWT-protected Edge Function-object maar retourneert alleen HTTP 410;
+- de oude `app_state.health_fitbit_intraday`-rij is historische data en wordt niet door actieve clientcode, cronjobs of databasefuncties gebruikt;
+- die legacy-row hoeft niet destructief verwijderd te worden om de huidige integratie correct te laten werken.
+
+Regression: actieve `.js`, `.html` en `.ts` broncode mag de legacy app-state key of oude function-routes niet opnieuw introduceren; zie `tests/deprecated-health-source-smoke.js`.
+
+## Oorspronkelijke Google Health setup
+
 **Status juli 2026:** dev.fitbit.com accepteert geen nieuwe app-registraties
 meer (Joey bevestigde dit; nieuwe integraties moeten naar de Google Health
 API, live sinds eind mei op health.googleapis.com/v4). Joey's setup — vers
