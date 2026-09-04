@@ -47,7 +47,15 @@ const api=window.GamenfyHealthTrail;
   assert.ok(rhr.score<5,'higher-than-baseline resting HR can affect recovery only after baseline maturity');
 }
 
+// The visible readout can disclose whether recovery is current, yesterday's
+// pre-sync fallback, or older — without treating metadata keys as Fitbit days.
+assert.equal(api.recoverySourceLabel('2026-09-04','2026-09-04'),'vandaag');
+assert.equal(api.recoverySourceLabel('2026-09-03','2026-09-04'),'gisteren');
+assert.equal(api.recoverySourceLabel('2026-08-31','2026-09-04'),'2026-08-31');
+assert.equal(api.recoverySourceLabel(null,'2026-09-04'),'geen Fitbit-bron');
+
 assert.match(source,/hrvValues\.length>=5/,'source locks five-value HRV baseline threshold');
 assert.match(source,/rhrValues\.length>=5/,'source locks five-value resting-HR baseline threshold');
-assert.doesNotMatch(source,/localStorage\.setItem/,'baseline hardening remains read-only');
-console.log('Health Trail baseline smoke passed: HRV/RHR stay neutral until five historical measurements exist.');
+assert.match(source,/herstelsignalen ·.*recoverySourceLabel/,'visible recovery metadata includes the source-day label');
+assert.doesNotMatch(source,/localStorage\.setItem/,'baseline/source-date hardening remains read-only');
+console.log('Health Trail baseline smoke passed: mature HRV/RHR baselines and transparent recovery source day.');
