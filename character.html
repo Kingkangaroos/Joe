@@ -4534,7 +4534,9 @@ window.exportBackup = async function(){
       // should prefer domains[*].data, which preserves parsed cloud values.
       Object.entries(state).forEach(([k, v]) => {
         if(sensitive.has(k)) return;
-        dump.keys[k] = (typeof v === 'string') ? v : JSON.stringify(v);
+        // Mirror the raw localStorage representation exactly. sync.js applies
+        // every parsed cloud value with JSON.stringify(), including strings.
+        dump.keys[k] = JSON.stringify(v);
       });
     }
 

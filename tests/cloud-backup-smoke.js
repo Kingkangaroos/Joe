@@ -17,6 +17,10 @@ assert.ok(src.includes('(item.ts || 0) <= remoteMs'),
   'stale local journal entries must not override newer cloud data');
 assert.ok(src.includes('pendingLocalApplied: pendingApplied'),
   'backup must record whether newer local pending edits were included');
+assert.ok(src.includes('dump.keys[k] = JSON.stringify(v)'),
+  'flat compatibility keys must preserve the exact raw localStorage JSON representation');
+assert.ok(!src.includes("(typeof v === 'string') ? v : JSON.stringify(v)"),
+  'string cloud values must not lose their JSON-string layer in the flat compatibility view');
 assert.ok(src.includes('deviceOnly: {}'),
   'non-authoritative local remnants must be separated from cloud-authoritative data');
 assert.ok(src.includes("credentialsExcluded: ['rpg_pin_v1','hevy_api_key']"),
