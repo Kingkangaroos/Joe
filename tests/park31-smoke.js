@@ -31,7 +31,7 @@ class Element{
     if(mission){const node=new Element('slot-'+mission[1]);node.dataset.mission=mission[1];return node;}
     return null;
   }
-  closest(selector){return selector==='[data-mission]'&&this.dataset.mission?this:null;}
+  closest(selector){if(selector==='[data-mission]'&&this.dataset.mission)return this;if(selector==='[data-p31-toggle]'&&this.dataset.p31Toggle)return this;return null;}
   setPointerCapture(){}
   releasePointerCapture(){}
   focus(){this.focused=true;}
@@ -94,7 +94,7 @@ assert.deepEqual(Array.from(sandboxWindow.GamenfyPark31Registry.privateKeys),['w
 
 assert.equal(ids.p31Stage.dataset.liveLevel,'7','live walking score is shown');
 assert.equal(ids.p31Stage.dataset.artLevel,'7','walking level selects matching artwork');
-assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.14$/,'level 7 loads current l07 artwork');
+assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.15$/,'level 7 loads current l07 artwork');
 assert.equal(ids.p31State.textContent,'EXPERT','level 7 uses canonical Expert band');
 assert.equal(levelNodes[6].attributes['aria-current'],'step','live evolution dot is selected');
 ids.p31Companion.listeners.click();
@@ -108,7 +108,7 @@ for(const [score,label] of expectedBands){
 }
 storage.rpg_habits_v1=JSON.stringify({walking:{score:0}});intervalTimers[0]();
 assert.equal(ids.p31Stage.dataset.liveLevel,'0');assert.equal(ids.p31Stage.dataset.artLevel,'1');
-assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.14$/);assert.equal(ids.p31Progress.style.width,'0%');
+assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.15$/);assert.equal(ids.p31Progress.style.width,'0%');
 
 // Eleven native Park 3.1 sets remain intact: nine public missions plus two private companions.
 const nativeDirs=['steps','nutrition','teeth','household','gratitude','good-deed','screen-time','cold-shower','no-weed','discipline','sleep'];
@@ -147,29 +147,31 @@ assert.equal(typeof parentListeners['gamenfy:auto-habits-changed'],'function');
 assert.ok(source.includes("var KEY='walking'"));
 assert.ok(!source.includes('recomputeHabitFromLog'),'display layer cannot independently mutate a level');
 assert.ok(!source.includes("localStorage.setItem('rpg_habitlog_v1'"),'display layer never writes canonical completion log');
-assert.match(source,/var HOLD_MS=560/);
+assert.doesNotMatch(source,/HOLD_MS/,'long-press completion is retired');
+assert.match(source,/data-p31-toggle/,'each mission exposes a dedicated tap completion control');
 assert.match(source,/mission\.private&&typeof w\.togglePrivateQuest/,'private companions retain PIN-backed host route');
 
 const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
 assert.match(lab,/park31-lab\.js\?v=1\.1/);assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.12"/);
-const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');assert.doesNotMatch(home,/park31\.html\?embed=1&amp;mode=missions/);
+const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');assert.match(home,/park31\.html\?embed=1&amp;mode=missions&amp;privacy=public/,'Home uses the approved public-only Daily Missions 2.0 surface');
 const page=fs.readFileSync(path.join(__dirname,'..','park31.html'),'utf8');
-assert.match(page,/park31\.js\?v=1\.14/);assert.match(page,/11 public · 2 private/);assert.match(page,/Budgeting en Meditation.*Park 2 fallback/);
+assert.match(page,/park31\.js\?v=1\.15/);assert.match(page,/11 public · 2 private/);assert.match(page,/Budgeting en Meditation.*Park 2 fallback/);
 
 const walkingSlot=new Element('walking-slot');walkingSlot.dataset.mission='walking';
-const pointerEvent={target:walkingSlot,pointerType:'touch',button:0,pointerId:7,clientX:20,clientY:30,preventDefault(){this.prevented=true;}};
-ids.p31Roster.listeners.pointerdown(pointerEvent);ids.p31Roster.listeners.pointerup(pointerEvent);
+const openEvent={target:walkingSlot,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
+ids.p31Roster.listeners.click(openEvent);
 assert.equal(ids.p31Modal.hidden,false);assert.equal(ids.p31ModalTitle.textContent,'Steps');assert.equal(ids.p31ModalLevel.textContent,'Level 0');assert.equal(ids.p31ModalState.textContent,'STARTER');assert.equal(ids.p31ModalProgress.style.width,'0%');assert.equal(missionToggles.length,0);
 
 const liveStorage=storage.rpg_habits_v1;ids.p31Next.listeners.click();
-assert.equal(ids.p31ModalMeta.textContent,'PREVIEW 2 · LIVE 0');assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.14$/);assert.equal(ids.p31MissionToggle.disabled,true);assert.equal(storage.rpg_habits_v1,liveStorage);closeNodes[0].listeners.click();
+assert.equal(ids.p31ModalMeta.textContent,'PREVIEW 2 · LIVE 0');assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.15$/);assert.equal(ids.p31MissionToggle.disabled,true);assert.equal(storage.rpg_habits_v1,liveStorage);closeNodes[0].listeners.click();
 
-const holdEvent={target:walkingSlot,pointerType:'touch',button:0,pointerId:8,clientX:20,clientY:30,preventDefault(){this.prevented=true;}};
-ids.p31Roster.listeners.pointerdown(holdEvent);runTimeoutsAtLeast(560);ids.p31Roster.listeners.pointerup(holdEvent);runImmediateTimeouts();
-assert.deepEqual(missionToggles,['walking'],'holding completes exactly one public mission through host controller');assert.equal(ids.p31Celebration.hidden,false);assert.equal(ids.p31CelebrationMeta.textContent,'LEVEL 1');
+const walkingCheck=new Element('walking-check');walkingCheck.dataset.p31Toggle='walking';
+const checkEvent={target:walkingCheck,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
+ids.p31Roster.listeners.click(checkEvent);runImmediateTimeouts();
+assert.deepEqual(missionToggles,['walking'],'circle tap completes exactly one public mission through host controller');assert.equal(ids.p31Celebration.hidden,false);assert.equal(ids.p31CelebrationMeta.textContent,'LEVEL 1');
 
 const nutritionSlot=new Element('nutrition-slot');nutritionSlot.dataset.mission='nutrition';
-const nutritionTap={target:nutritionSlot,pointerType:'touch',button:0,pointerId:10,clientX:20,clientY:30,preventDefault(){this.prevented=true;}};
-ids.p31Roster.listeners.pointerdown(nutritionTap);ids.p31Roster.listeners.pointerup(nutritionTap);assert.equal(ids.p31ModalTitle.textContent,'Nutrition');ids.p31MissionToggle.listeners.click();runImmediateTimeouts();assert.deepEqual(missionToggles,['walking','nutrition']);
+const nutritionTap={target:nutritionSlot,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
+ids.p31Roster.listeners.click(nutritionTap);assert.equal(ids.p31ModalTitle.textContent,'Nutrition');ids.p31MissionToggle.listeners.click();runImmediateTimeouts();assert.deepEqual(missionToggles,['walking','nutrition']);
 
 console.log('Park 3.1 smoke test passed: canonical public 11, separate private 2, fallbacks, assets and interactions.');

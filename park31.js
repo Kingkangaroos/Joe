@@ -7,8 +7,7 @@
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.14';
-  var HOLD_MS=560;
+  var VERSION='1.15';
   var PUBLIC_MISSIONS=[
     {key:'budgeting',label:'Budgeting',emoji:'💰',fallback:'budgeting'},
     {key:'sleep',label:'Sleep',emoji:'😴',dir:'sleep'},
@@ -33,7 +32,7 @@
   var current={raw:0,art:1,source:'empty'};
   var artworkReady={budgeting:true,sleep:true,nutrition:true,walking:true,teeth:true,household:true,meditation:true,gratitude:true,good_deed:true,screen_time:true,cold_shower:true,weed_control:true,no_porn:true};
   var litUntil={};
-  var tries=0,pollId=null,missionMode=false,selected=null,preview=null,pointerPress=null,keyPress=null;
+  var tries=0,pollId=null,missionMode=false,publicOnlyMode=false,homeSurface=false,selected=null,preview=null;
 
   function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
   function hostWindow(){
@@ -115,11 +114,15 @@
     var neglected=missionMode&&!done&&inactivityDays(mission)>=3;
     var lit=(litUntil[mission.key]||0)>Date.now();
     var selectedNow=!!(selected&&selected.key===mission.key);
-    var instruction=done?'Vandaag voltooid · Houd vast om terug te draaien':(neglected?'HELP · Tik om te openen':'Tik om te openen · Houd vast om te voltooien');
-    return '<button class="p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(neglected?' is-neglected':'')+(lit?' is-lit':'')+(selectedNow?' is-selected':'')+(mission.private?' is-private':'')+(mission.fallback?' is-fallback':'')+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+' aria-pressed="'+(done?'true':'false')+'"'+(selectedNow?' aria-current="true"':'')+'>'
+    var instruction=done?'Vandaag voltooid':(neglected?'HELP · Tik om te openen':'Tik om te openen');
+    var slotClass='p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(neglected?' is-neglected':'')+(lit?' is-lit':'')+(selectedNow?' is-selected':'')+(mission.private?' is-private':'')+(mission.fallback?' is-fallback':'');
+    return '<div class="p31-slot-wrap'+(done?' is-done':'')+(mission.private?' is-private':'')+'">'
+      +'<button class="'+slotClass+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+' aria-pressed="'+(done?'true':'false')+'"'+(selectedNow?' aria-current="true"':'')+'>'
       +'<span class="p31-slot-art">'+(ready?'<img src="'+assetUrl(info.art,mission)+'" alt="" draggable="false">':mission.emoji)+(neglected?'<span class="p31-help" aria-hidden="true">HELP</span>':'')+'</span>'
       +'<span class="p31-slot-copy"><strong>'+mission.label+'</strong><small>'+artworkLabel(mission)+'</small><em>'+(missionMode?instruction:(ready?'Tik om te openen':'artwork pending'))+'</em></span>'
-      +'<span class="p31-slot-level">L'+info.raw+'</span></button>';
+      +'<span class="p31-slot-level">L'+info.raw+'</span></button>'
+      +(missionMode?'<button class="p31-check'+(done?' is-done':'')+'" type="button" data-p31-toggle="'+mission.key+'" aria-label="'+(done?'Maak '+mission.label+' ongedaan':'Voltooi '+mission.label+' vandaag')+'" aria-pressed="'+(done?'true':'false')+'">'+(done?'✓':'')+'</button>':'')
+      +'</div>';
   }
   function viewedDay(){
     var w=hostWindow();
@@ -207,7 +210,7 @@
     var fallbackNote=selected.fallback?' Park 3.1 native artwork voor deze missie staat nog apart op de asset-todo; dit is de bestaande Park 2 fallback.':'';
     modalStatus.textContent=preview!==null
       ?'Alleen preview — je live level blijft '+info.raw+'.'+fallbackNote
-      :(missionMode?(done?'Vandaag voltooid · Houd de kaart vast om terug te draaien.':'Nog niet voltooid · Houd de kaart vast om te voltooien.'):'Live level uit Daily Missions.')+fallbackNote;
+      :(missionMode?(done?'Vandaag voltooid · tik het ronde vinkje om ongedaan te maken.':'Nog niet voltooid · tik het ronde vinkje op de kaart om af te ronden.'):'Live level uit Daily Missions.')+fallbackNote;
     liveResetEl.disabled=preview===null;
     missionToggleEl.hidden=!missionMode;
     missionToggleEl.disabled=preview!==null;
@@ -224,78 +227,37 @@
   }
   function resetPreview(){preview=null;updateModal();}
   function slotFrom(target){return target&&typeof target.closest==='function'?target.closest('[data-mission]'):null;}
-  function missionFromSlot(slot){return slot?MISSIONS.find(function(item){return item.key===slot.dataset.mission;})||null:null;}
-  function clearPointerPress(){
-    var active=pointerPress;
-    if(!active)return null;
-    clearTimeout(active.timer);
-    if(active.slot)active.slot.classList.remove('is-holding');
-    pointerPress=null;
-    return active;
-  }
-  function startPointerPress(event){
+  function toggleFrom(target){return target&&typeof target.closest==='function'?target.closest('[data-p31-toggle]'):null;}
+  function missionByKey(key){return MISSIONS.find(function(item){return item.key===key;})||null;}
+  function onRosterClick(event){
+    var toggle=toggleFrom(event.target);
+    if(toggle){
+      if(typeof event.preventDefault==='function')event.preventDefault();
+      if(typeof event.stopPropagation==='function')event.stopPropagation();
+      var toggleMissionDef=missionByKey(toggle.dataset.p31Toggle);
+      if(toggleMissionDef&&missionMode)toggleMission(toggleMissionDef);
+      return;
+    }
     var slot=slotFrom(event.target);
-    if(!slot||slot.disabled||(event.pointerType==='mouse'&&event.button!==0))return;
-    clearPointerPress();
-    var active={slot:slot,mission:missionFromSlot(slot),x:event.clientX||0,y:event.clientY||0,held:false,pointerId:event.pointerId};
-    if(!active.mission)return;
-    pointerPress=active;
-    slot.classList.add('is-holding');
-    try{rosterEl.setPointerCapture(event.pointerId);}catch(e){}
-    active.timer=setTimeout(function(){
-      if(pointerPress!==active)return;
-      active.held=true;
-      active.slot.classList.remove('is-holding');
-      active.slot.classList.add('is-held');
-      selected=active.mission;
-      if(missionMode)toggleMission(active.mission);else openMission(active.mission.key);
-      try{if(navigator.vibrate)navigator.vibrate(18);}catch(e){}
-      setTimeout(function(){try{active.slot.classList.remove('is-held');}catch(e){}},360);
-    },HOLD_MS);
-  }
-  function movePointerPress(event){
-    if(!pointerPress||pointerPress.pointerId!==event.pointerId)return;
-    if(Math.abs((event.clientX||0)-pointerPress.x)>12||Math.abs((event.clientY||0)-pointerPress.y)>12)clearPointerPress();
-  }
-  function endPointerPress(event){
-    if(!pointerPress||pointerPress.pointerId!==event.pointerId)return;
-    var active=clearPointerPress();
-    try{rosterEl.releasePointerCapture(event.pointerId);}catch(e){}
-    if(active&&!active.held)openMission(active.mission.key);
-    if(active&&typeof event.preventDefault==='function')event.preventDefault();
-  }
-  function cancelPointerPress(event){if(pointerPress&&(!event||pointerPress.pointerId===event.pointerId))clearPointerPress();}
-  function startKeyPress(event){
-    if((event.key!=='Enter'&&event.key!==' ')||event.repeat||keyPress)return;
-    var slot=slotFrom(event.target),selectedMission=missionFromSlot(slot);
-    if(!slot||slot.disabled||!selectedMission)return;
-    event.preventDefault();
-    keyPress={slot:slot,mission:selectedMission,held:false};
-    slot.classList.add('is-holding');
-    keyPress.timer=setTimeout(function(){
-      if(!keyPress)return;
-      keyPress.held=true;keyPress.slot.classList.remove('is-holding');
-      if(missionMode)toggleMission(keyPress.mission);else openMission(keyPress.mission.key);
-    },HOLD_MS);
-  }
-  function endKeyPress(event){
-    if(!keyPress||(event.key!=='Enter'&&event.key!==' '))return;
-    event.preventDefault();
-    var active=keyPress;keyPress=null;clearTimeout(active.timer);active.slot.classList.remove('is-holding');
-    if(!active.held)openMission(active.mission.key);
+    if(!slot||slot.disabled)return;
+    var mission=missionByKey(slot.dataset.mission);
+    if(mission)openMission(mission.key);
   }
   function renderRoster(){
     if(!rosterEl)return;
-    rosterEl.innerHTML=PUBLIC_MISSIONS.map(rosterCard).join('')
-      +'<div class="p31-roster-divider"><strong>Private dailies</strong><span>PIN-backed · apart van de publieke 11</span></div>'
-      +PRIVATE_MISSIONS.map(rosterCard).join('');
-    rosterCountEl.textContent=PUBLIC_MISSIONS.length+' public · '+PRIVATE_MISSIONS.length+' private';
+    var markup=PUBLIC_MISSIONS.map(rosterCard).join('');
+    if(!publicOnlyMode){
+      markup+='<div class="p31-roster-divider"><strong>Private dailies</strong><span>PIN-backed · apart van de publieke 11</span></div>'
+        +PRIVATE_MISSIONS.map(rosterCard).join('');
+    }
+    if(rosterEl.innerHTML!==markup)rosterEl.innerHTML=markup;
+    rosterCountEl.textContent=publicOnlyMode?(PUBLIC_MISSIONS.length+' public'):(PUBLIC_MISSIONS.length+' public · '+PRIVATE_MISSIONS.length+' private');
   }
   function probeRoster(){
     MISSIONS.filter(function(mission){return mission.key!==KEY;}).forEach(function(mission){
       var image=new Image(),info=levelInfo(mission);
-      image.onload=function(){artworkReady[mission.key]=true;renderRoster();};
-      image.onerror=function(){artworkReady[mission.key]=false;renderRoster();};
+      image.onload=function(){if(artworkReady[mission.key]!==true){artworkReady[mission.key]=true;renderRoster();}};
+      image.onerror=function(){if(artworkReady[mission.key]!==false){artworkReady[mission.key]=false;renderRoster();}};
       image.src=assetUrl(info.art,mission);
     });
   }
@@ -326,10 +288,17 @@
     renderRoster();
   }
   function preload(){
-    var stepsMission=PUBLIC_MISSIONS.find(function(item){return item.key===KEY;});
-    for(var level=1;level<=10;level++){
-      var image=new Image();image.src=assetUrl(level,stepsMission);
-    }
+    MISSIONS.forEach(function(mission){
+      var info=levelInfo(mission),levels=[info.art,info.art-1,info.art+1];
+      var seen={};
+      levels.forEach(function(level){
+        level=clamp(level,1,10);
+        var url=assetUrl(level,mission);
+        if(seen[url])return;
+        seen[url]=true;
+        var image=new Image();image.src=url;
+      });
+    });
   }
   function toggleLight(){
     var lit=!stage.classList.contains('is-lit');
@@ -341,13 +310,7 @@
   function refresh(){render();if(selected&&modal&&!modal.hidden)updateModal();}
   function bind(){
     button.addEventListener('click',toggleLight);
-    rosterEl.addEventListener('pointerdown',startPointerPress);
-    rosterEl.addEventListener('pointermove',movePointerPress);
-    rosterEl.addEventListener('pointerup',endPointerPress);
-    rosterEl.addEventListener('pointercancel',cancelPointerPress);
-    rosterEl.addEventListener('contextmenu',function(event){if(slotFrom(event.target))event.preventDefault();});
-    rosterEl.addEventListener('keydown',startKeyPress);
-    rosterEl.addEventListener('keyup',endKeyPress);
+    rosterEl.addEventListener('click',onRosterClick);
     document.querySelectorAll('[data-p31-close]').forEach(function(node){node.addEventListener('click',closeModal);});
     prevEl.addEventListener('click',function(){stepPreview(-1);});
     nextEl.addEventListener('click',function(){stepPreview(1);});
@@ -369,7 +332,7 @@
     }catch(e){}
     window.addEventListener('focus',refresh);
     document.addEventListener('visibilitychange',function(){if(!document.hidden)refresh();});
-    pollId=setInterval(function(){if(!document.hidden)refresh();},1200);
+    pollId=setInterval(function(){if(!document.hidden)refresh();},5000);
   }
   function init(){
     tries++;
@@ -377,8 +340,11 @@
     if(typeof w.getHabits!=='function'&&tries<100){setTimeout(init,75);return;}
     var params=new URLSearchParams(location.search);
     missionMode=params.get('mode')==='missions';
+    publicOnlyMode=params.get('privacy')==='public';
+    homeSurface=params.get('surface')==='home';
     if(params.get('embed')==='1')document.body.classList.add('p31-embedded');
     if(missionMode)document.body.classList.add('p31-mission-mode');
+    if(homeSurface)document.body.classList.add('p31-home');
     stage=document.getElementById('p31Stage');button=document.getElementById('p31Companion');art=document.getElementById('p31Art');
     levelEl=document.getElementById('p31LiveLevel');stateEl=document.getElementById('p31State');sourceEl=document.getElementById('p31Source');
     copyEl=document.getElementById('p31EvolutionCopy');levelsEl=document.getElementById('p31Levels');progressEl=document.getElementById('p31Progress');
