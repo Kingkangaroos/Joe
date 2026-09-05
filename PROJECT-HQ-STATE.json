@@ -11,9 +11,9 @@
   },
   "now": [
     "Verify Daily Missions 2.0 feel and smoothness naturally on installed iPhone",
+    "Verify the goal-first WHY layer against Joey's real active Goals and add explicit linkedSkills where links are genuinely intended",
     "Locate/import the approved Budgeting owl level assets when available",
     "Add Meditation native level set when Joey supplies it",
-    "Design the WHY-chain data model that links actions and skills to real life goals",
     "Design safe horizontal swipe navigation between major app sections",
     "Decide the final top-level life/dashboard taxonomy without losing the 100-year-plan WHY"
   ],
@@ -24,7 +24,10 @@
     "Daily Challenge difficulty bound to the selected skill's own level",
     "Your Skills and Core Tracker removed from Home",
     "Persistent Gratitude word-cloud board with count/date detail",
-    "In-app Project HQ with cloud-synced Joey feedback inbox"
+    "In-app Project HQ with cloud-synced Joey feedback inbox",
+    "Goal-first WHY layer shipped: active Goals can drive the Home reminder and Daily Challenge context through explicit linkedSkills",
+    "Canonical character.html#goals deep-link fixed and covered by regression tests",
+    "Full browserless regression suite passed before the WHY release was merged to main"
   ],
   "assetsNeeded": [
     "Budgeting owl native level set import",
@@ -39,6 +42,12 @@
     "dailyChallenge": "keep, but constrain to the selected skill's current level",
     "gratitude": "persistent concept word cloud; repeated concepts grow",
     "projectMemory": "chat is never the sole source of truth",
-    "skillsWorld": "later, separate from Daily Missions 2.0"
+    "skillsWorld": "later, separate from Daily Missions 2.0",
+    "whySource": "active rpg_goals_v1 Goals first; explicit linkedSkills only; do not invent a competing life taxonomy"
+  },
+  "release": {
+    "goalFirstWhyMainSha": "849c119f481f53c0dd477ddad80d96a00e2263b0",
+    "goalFirstWhyProductionDeployment": "dpl_3hUiKkptRddroLxnjBeyT7Un2LxR",
+    "goalFirstWhyProductionState": "READY"
   }
 }
