@@ -25,6 +25,11 @@ const settings=fs.readFileSync(path.join(ROOT,'settings.html'),'utf8');
 assert.match(settings,/Legacy daily quest selection · inactive/,'Settings must clearly mark the old selector inactive');
 assert.match(settings,/This older quest selector is no longer used by the current Daily Missions/,'Settings must explain the canonical replacement');
 assert.doesNotMatch(settings,/\n\s*renderDailyQuestToggles\(\);/,'Settings boot must not render the legacy selector');
+assert.doesNotMatch(settings,/DAILY_QUEST_DEFS/,'Settings must not retain a stale duplicate Daily Mission membership map');
+assert.doesNotMatch(settings,/function\s+saveActiveQuests/,'Settings must not retain a dormant legacy selection writer');
+assert.doesNotMatch(settings,/function\s+getActiveQuests/,'Settings must not retain a dormant legacy selection reader');
+assert.match(settings,/\.filter\(\(\[,s\]\)\s*=>\s*s\.parentSkill\s*===\s*cat\s*&&\s*!s\.private\)/,
+  'general Settings skill grid must exclude private skills');
 const toggle=(settings.match(/window\.toggleQuest\s*=\s*function\([^)]*\)\s*\{[\s\S]*?\n\};/)||[])[0]||'';
 assert.ok(toggle,'legacy toggleQuest compatibility function should remain explicit');
 assert.match(toggle,/Legacy quest selection is inactive/,'legacy toggle function must fail safe');
@@ -32,4 +37,4 @@ assert.doesNotMatch(toggle,/saveActiveQuests\(/,'inactive selector must not muta
 
 const character=fs.readFileSync(path.join(ROOT,'character.html'),'utf8');
 assert.match(character,/The old rpg_active_quests_v1 selection is legacy only/,'Character should retain the explicit legacy-only boundary');
-console.log('Legacy active-quest audit: compatibility data remains, but Settings can no longer present or mutate it as current Daily Missions.');
+console.log('Legacy active-quest audit: compatibility data remains inert; Settings has no duplicate mission map/writer and hides private skills.');
