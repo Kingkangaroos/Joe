@@ -9,7 +9,7 @@ Last refreshed: 2026-09-05 by ChatGPT (OpenAI)
 1. **Installed-iPhone verification of Daily Missions 2.0** — confirm the new Home surface feels smooth, the tap-circle interaction is natural, and the detail sheet behaves well inside the embedded surface.
 2. **Budgeting owl asset import** — the owl is the locked Budgeting direction, but its native 10-level asset set is not present in the current repo tree yet. Do not fabricate it.
 3. **Meditation native level set** — waiting for Joey's approved art. Current fallback remains temporary.
-4. **WHY-chain model** — design the durable link `action / skill -> intermediate reason -> concrete life goal / direction`, so Gamenfy and Jarvis can explain why today's move matters.
+4. **WHY layer verification + linking** — the goal-first foundation is shipped. Verify it against Joey's real active Goals and add `linkedSkills` only where Joey genuinely intends a connection; do not infer a competing taxonomy.
 5. **Major-section swipe architecture** — design horizontal swiping between main app sections while preserving vertical page scrolling and bottom navigation; avoid gesture conflicts on iPhone.
 6. **Life/dashboard taxonomy** — the old Love / Money / Freedom / Happiness / Exploration labels are not sacred as app navigation. Consolidate only if it makes the whole system clearer while preserving the underlying 100-year-plan WHY.
 
@@ -27,6 +27,9 @@ Last refreshed: 2026-09-05 by ChatGPT (OpenAI)
 - [x] In-app **Project HQ** added with separate Gamenfy / Website Ventures state and a Joey feedback inbox.
 - [x] Project HQ feedback inbox added to canonical RPG cloud-sync scope (`rpg_project_hq_notes_v1`).
 - [x] Full guarded browserless smoke suite passed on the actual product patch in workflow run `33979142333` before the product commit was created.
+- [x] **Goal-first WHY foundation shipped**: active `rpg_goals_v1` Goals can drive the Home reminder and Daily Challenge context through explicit `linkedSkills`.
+- [x] `character.html#goals` now opens the canonical Goals view on initial load and hash changes; regression coverage added.
+- [x] WHY release merged to `main` as `849c119f481f53c0dd477ddad80d96a00e2263b0`; production deployment `dpl_3hUiKkptRddroLxnjBeyT7Un2LxR` verified READY.
 
 ## JOEY FEEDBACK INBOX — DURABLE DECISIONS FROM THE SPARRING SESSION
 
@@ -71,9 +74,11 @@ Last refreshed: 2026-09-05 by ChatGPT (OpenAI)
 - Long-term direction: vertical scroll within a main section + horizontal swipe between major sections/tabs, while bottom navigation remains available.
 
 ### WHY graph
-- Gamenfy should show why an action matters, e.g. `20 min Dance -> Social confidence -> easier dating/going out -> Love / Happiness direction`.
+- **Foundation shipped:** active unfinished Goals in `rpg_goals_v1` are the primary WHY source. Skill-to-goal links are explicit through `linkedSkills`; Gamenfy must not silently invent links or a competing life taxonomy.
+- Home can surface a compact priority-goal reminder; Daily Challenge can show `WHY → <goal>` when its selected skill is explicitly linked.
+- The canonical Goals deep-link is `character.html#goals`.
+- Next: validate Joey's real links, then extend the graph toward actions/seasons/tasks and eventually Jarvis reasoning so advice reflects real priorities and trade-offs rather than generic motivation.
 - Existing 100-year categories do not have to remain the final app-navigation taxonomy. Preserve the essence of the goals, not old labels for their own sake.
-- Jarvis should eventually reason from this graph so advice reflects real priorities and trade-offs rather than generic motivation.
 
 ### Gratitude Board
 - Persistent concept-based word cloud.
@@ -93,7 +98,7 @@ Last refreshed: 2026-09-05 by ChatGPT (OpenAI)
 
 ### Product / UX
 - [ ] Natural installed-iPhone verification of Daily Missions 2.0 performance and feel.
-- [ ] WHY-chain data model + UI.
+- [ ] Verify the shipped goal-first WHY layer with Joey's real active Goals; add explicit `linkedSkills` and extend beyond Home/Daily Challenge only where useful.
 - [ ] Horizontal swipe navigation architecture across major sections.
 - [ ] Decide final top-level life/app domain taxonomy after WHY-chain mapping.
 - [ ] Final overall Health avatar direction.
@@ -129,6 +134,16 @@ Last refreshed: 2026-09-05 by ChatGPT (OpenAI)
 - Restore/import UI after backup/export remains proven stable.
 
 ## HUMAN CHANGELOG
+
+### 2026-09-05 — goal-first WHY release
+- Recovered the unfinished WHY pass from PR #22 after chat loading became unreliable.
+- Active unfinished Goals (`rpg_goals_v1`) are now the primary reminder source; skill links require explicit `linkedSkills`.
+- Home receives a compact goal-first WHY reminder and Daily Challenge can display the linked goal.
+- Found and fixed an integration bug before merge: `character.html#goals` previously did not route to the Goals view.
+- Full browserless regression suite passed with the deep-link guard.
+- PR #22 squash-merged to `main` as `849c119f481f53c0dd477ddad80d96a00e2263b0`.
+- Vercel production deployment `dpl_3hUiKkptRddroLxnjBeyT7Un2LxR` verified `READY`.
+
 
 ### 2026-09-05 — sparring implementation pass
 - Daily Missions 2.0 integrated on Home as a public-only Park 3.1 surface.
