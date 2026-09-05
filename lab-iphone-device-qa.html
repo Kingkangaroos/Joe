@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#F4F3EF">
+  <title>iPhone Device QA Lab — Gamenfy</title>
+  <style>
+    :root{--bg:#F4F3EF;--card:#fff;--ink:#15140F;--muted:#6F6C63;--line:#E2E0D8;--ok:#2E8B5F;--warn:#C58A19;--bad:#C6533C;--accent:#5E5A91}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-text-size-adjust:100%}
+    body{padding:calc(14px + env(safe-area-inset-top)) 14px calc(112px + env(safe-area-inset-bottom))}
+    main{max-width:620px;margin:0 auto}
+    a{color:inherit}
+    .top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .back{display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--line);border-radius:13px;background:var(--card);text-decoration:none;font-size:19px}
+    h1{font-size:25px;letter-spacing:-.035em;margin:0;font-weight:800}
+    .sub{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+    .notice{margin:12px 0 14px;padding:12px 13px;border:1px solid #D9D5EA;border-radius:14px;background:#F8F6FF;color:#4B466D;font-size:11px;line-height:1.55}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .card{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:13px;box-shadow:0 12px 26px -26px rgba(0,0,0,.55)}
+    .wide{grid-column:1/-1}
+    .label{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+    .value{margin-top:4px;font-size:17px;font-weight:800;letter-spacing:-.02em;overflow-wrap:anywhere}
+    .meta{margin-top:4px;color:var(--muted);font-size:10px;line-height:1.45}
+    .pill{display:inline-flex;align-items:center;gap:6px;margin-top:7px;padding:5px 8px;border-radius:999px;background:#F1F0EB;font-size:9px;font-weight:800}
+    .pill i{display:block;width:7px;height:7px;border-radius:50%;background:#AAA}
+    .pill.ok i{background:var(--ok)}.pill.warn i{background:var(--warn)}.pill.bad i{background:var(--bad)}
+    .section-title{margin:22px 0 8px;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+    .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+    .metric{padding:10px;border:1px solid var(--line);border-radius:13px;background:#FAF9F6;min-width:0}
+    .metric span{display:block;font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+    .metric b{display:block;margin-top:3px;font-size:13px;overflow-wrap:anywhere}
+    .qa-stage{position:relative;height:1120px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(#fff,#F7F5EF);overflow:hidden}
+    .qa-stage:before{content:"Scroll rustig helemaal omlaag en weer omhoog";position:sticky;top:10px;display:block;width:max-content;max-width:calc(100% - 24px);margin:12px auto;padding:8px 11px;border-radius:999px;background:#15140F;color:#fff;font-size:10px;font-weight:800;z-index:2}
+    .marker{position:absolute;left:14px;right:14px;height:1px;background:#DDD9D0}
+    .marker:after{content:attr(data-label);position:absolute;right:0;top:-13px;color:#98958B;font-size:8px}
+    .m1{top:25%}.m2{top:50%}.m3{top:75%}.m4{top:calc(100% - 20px)}
+    .fixed-probe{position:fixed;left:12px;right:12px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:9999;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:14px;background:rgba(21,20,15,.94);color:#fff;box-shadow:0 16px 34px -18px rgba(0,0,0,.7);font-size:10px;backdrop-filter:blur(12px)}
+    .fixed-probe b{font-size:11px}.fixed-probe small{opacity:.72}
+    .drift-good{color:#79E3AD}.drift-warn{color:#F4C86B}.drift-bad{color:#FF8B78}
+    .safe-probes{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .safe-box{border:1px solid var(--line);border-radius:13px;background:var(--card);padding:10px;font-size:10px}
+    .safe-top{padding-top:calc(10px + env(safe-area-inset-top))}.safe-bottom{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    button,.action{min-height:44px;border:1px solid var(--line);border-radius:13px;background:var(--card);color:var(--ink);font:700 11px inherit;padding:10px;text-align:center;text-decoration:none;cursor:pointer}
+    button.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .log{max-height:230px;overflow:auto;margin-top:8px;padding:10px;border-radius:12px;background:#171713;color:#D8D6CC;font:9px ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+    .test-list{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+    .test-list li{display:flex;align-items:flex-start;gap:8px;padding:9px 10px;border:1px solid var(--line);border-radius:12px;background:var(--card);font-size:10px;line-height:1.45}
+    .test-list input{margin-top:1px;accent-color:#15140F}
+    @media(max-width:430px){.grid{grid-template-columns:1fr 1fr}.metrics{grid-template-columns:1fr 1fr}.metrics .metric:last-child{grid-column:1/-1}.actions{grid-template-columns:1fr}.value{font-size:15px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <a class="back" href="lab.html#chatgpt-lab" aria-label="Terug naar Lab">←</a>
+    <div><h1>iPhone Device QA</h1><p class="sub">Meet standalone PWA, safe-area, Visual Viewport en bottom-nav drift — zonder Gamenfy-data te wijzigen.</p></div>
+  </div>
+
+  <div class="notice"><strong>Alleen meten.</strong> Deze pagina laadt geen Auth, Supabase, sync, topbar of swipe-engine en schrijft niets naar localStorage. Voor de echte device-proof: open deze pagina vanuit je geïnstalleerde Gamenfy-app, niet alleen Safari.</div>
+
+  <div class="grid">
+    <section class="card"><div class="label">App mode</div><div class="value" id="modeValue">—</div><div class="meta" id="modeMeta">detecteren…</div><span class="pill" id="modePill"><i></i><span>—</span></span></section>
+    <section class="card"><div class="label">iOS / touch</div><div class="value" id="deviceValue">—</div><div class="meta" id="deviceMeta">detecteren…</div></section>
+    <section class="card wide"><div class="label">Viewport live</div><div class="metrics">
+      <div class="metric"><span>window</span><b id="windowViewport">—</b></div>
+      <div class="metric"><span>visualViewport</span><b id="visualViewport">—</b></div>
+      <div class="metric"><span>offset / scale</span><b id="visualOffset">—</b></div>
+    </div></section>
+  </div>
+
+  <div class="section-title">Safe-area probes</div>
+  <div class="safe-probes">
+    <div class="safe-box safe-top"><strong>Top inset</strong><div class="meta" id="safeTop">—</div></div>
+    <div class="safe-box safe-bottom"><strong>Bottom inset</strong><div class="meta" id="safeBottom">—</div></div>
+  </div>
+
+  <div class="section-title">Bottom-nav drift test</div>
+  <section class="card">
+    <div class="meta">De zwarte probe onderin gebruikt dezelfde kern: <code>position: fixed</code> + <code>env(safe-area-inset-bottom)</code>. Scroll deze lange strook. Als iOS hem visueel omhoog duwt, wordt de maximale afwijking hieronder vastgelegd.</div>
+    <div class="metrics" style="margin-top:10px">
+      <div class="metric"><span>huidige drift</span><b id="driftNow">0 px</b></div>
+      <div class="metric"><span>max drift</span><b id="driftMax">0 px</b></div>
+      <div class="metric"><span>scroll Y</span><b id="scrollY">0</b></div>
+    </div>
+    <div class="qa-stage" id="qaStage" aria-label="lange scrolltest voor fixed bottom probe">
+      <div class="marker m1" data-label="25%"></div><div class="marker m2" data-label="50%"></div><div class="marker m3" data-label="75%"></div><div class="marker m4" data-label="bottom"></div>
+    </div>
+  </section>
+
+  <div class="section-title">Real-device checklist</div>
+  <ul class="test-list">
+    <li><input type="checkbox"><span><strong>Standalone:</strong> App mode hierboven zegt “Installed PWA”.</span></li>
+    <li><input type="checkbox"><span><strong>Scroll:</strong> zwarte bottom probe blijft fysiek aan de onderrand tijdens langzaam én snel scrollen.</span></li>
+    <li><input type="checkbox"><span><strong>Rotate:</strong> draai portrait → landscape → portrait; viewportwaarden herstellen zonder probe-drift.</span></li>
+    <li><input type="checkbox"><span><strong>Keyboard:</strong> tik in een echt formulier elders; bottom-nav mag niet permanent verschoven terugkomen na keyboard sluiten.</span></li>
+    <li><input type="checkbox"><span><strong>Swipe Lab:</strong> horizontale swipe voelt duidelijk maar verticale scroll wint vanzelf.</span></li>
+    <li><input type="checkbox"><span><strong>Daily Missions:</strong> Park 3.1 scroll/tap voelt soepel in de geïnstalleerde app.</span></li>
+  </ul>
+
+  <div class="section-title">Open echte tests</div>
+  <div class="actions">
+    <a class="action" href="lab-swipe-nav.html">↔️ Swipe Navigation Lab</a>
+    <a class="action" href="park31.html?mode=missions&amp;surface=device-qa">✨ Park 3.1 direct</a>
+    <a class="action" href="index.html">🏠 Main met echte bottom-nav</a>
+    <a class="action" href="character.html#goals">🎯 Goals deep-link</a>
+    <button class="primary" id="copyButton" type="button">Kopieer diagnostics</button>
+    <button id="resetButton" type="button">Reset max drift</button>
+  </div>
+
+  <div class="section-title">Event log</div>
+  <div class="log" id="eventLog" aria-live="polite"></div>
+</main>
+
+<div class="fixed-probe" id="fixedProbe" aria-hidden="true">
+  <span><b>Bottom probe</b><br><small id="probeMeta">meten…</small></span>
+  <strong id="probeDrift" class="drift-good">0 px</strong>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var maxDrift=0;
+  var logLines=[];
+  var cssProbe=document.createElement('div');
+  cssProbe.style.cssText='position:absolute;visibility:hidden;pointer-events:none;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)';
+  document.body.appendChild(cssProbe);
+
+  function px(value){var n=parseFloat(value||'0');return Number.isFinite(n)?n:0;}
+  function standalone(){
+    var iosStandalone=window.navigator.standalone===true;
+    var mediaStandalone=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches;
+    return {ios:iosStandalone,media:!!mediaStandalone,yes:iosStandalone||!!mediaStandalone};
+  }
+  function deviceInfo(){
+    var ua=navigator.userAgent||'';
+    var ios=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/i.test(ua)&&navigator.maxTouchPoints>1);
+    return {ios:ios,touch:navigator.maxTouchPoints||0,ua:ua};
+  }
+  function log(kind,detail){
+    var t=new Date().toLocaleTimeString('nl-NL',{hour12:false});
+    logLines.push(t+'  '+kind+(detail?'  '+detail:''));
+    if(logLines.length>28)logLines.shift();
+    $('eventLog').textContent=logLines.join('\n');
+    $('eventLog').scrollTop=$('eventLog').scrollHeight;
+  }
+  function measure(){
+    var vv=window.visualViewport;
+    var rect=$('fixedProbe').getBoundingClientRect();
+    var visualBottom=vv?(vv.offsetTop+vv.height):window.innerHeight;
+    var drift=rect.bottom-visualBottom;
+    var abs=Math.abs(drift);
+    if(abs>maxDrift)maxDrift=abs;
+    $('driftNow').textContent=drift.toFixed(1)+' px';
+    $('driftMax').textContent=maxDrift.toFixed(1)+' px';
+    $('scrollY').textContent=Math.round(window.scrollY||0);
+    $('probeDrift').textContent=drift.toFixed(1)+' px';
+    $('probeDrift').className=abs<=2?'drift-good':abs<=8?'drift-warn':'drift-bad';
+    $('probeMeta').textContent='visual bottom '+Math.round(visualBottom)+' · rect '+Math.round(rect.bottom);
+    $('windowViewport').textContent=Math.round(innerWidth)+'×'+Math.round(innerHeight);
+    $('visualViewport').textContent=vv?Math.round(vv.width)+'×'+Math.round(vv.height):'niet beschikbaar';
+    $('visualOffset').textContent=vv?vv.offsetTop.toFixed(1)+' / '+vv.offsetLeft.toFixed(1)+' · '+vv.scale.toFixed(2):'—';
+    var cs=getComputedStyle(cssProbe);
+    $('safeTop').textContent=px(cs.paddingTop).toFixed(1)+' px gemeten';
+    $('safeBottom').textContent=px(cs.paddingBottom).toFixed(1)+' px gemeten';
+  }
+  function renderEnvironment(){
+    var st=standalone(),d=deviceInfo();
+    $('modeValue').textContent=st.yes?'Installed PWA':'Browser tab';
+    $('modeMeta').textContent='navigator.standalone '+String(st.ios)+' · display-mode '+String(st.media);
+    var pill=$('modePill');pill.className='pill '+(st.yes?'ok':'warn');pill.querySelector('span').textContent=st.yes?'device-proof geldig':'open ook vanuit homescreen';
+    $('deviceValue').textContent=d.ios?'iOS / iPadOS':'ander platform';
+    $('deviceMeta').textContent='touch points '+d.touch+' · DPR '+(devicePixelRatio||1)+' · orientation '+((screen.orientation&&screen.orientation.type)||window.orientation||'—');
+    measure();
+  }
+  function diagnostics(){
+    var st=standalone(),d=deviceInfo(),vv=window.visualViewport,cs=getComputedStyle(cssProbe);
+    return [
+      'Gamenfy iPhone Device QA',
+      'timestamp='+new Date().toISOString(),
+      'standalone='+st.yes+' (navigator='+st.ios+', media='+st.media+')',
+      'ios='+d.ios+', touchPoints='+d.touch+', dpr='+(devicePixelRatio||1),
+      'window='+innerWidth+'x'+innerHeight+', scrollY='+(window.scrollY||0),
+      'visualViewport='+(vv?(vv.width+'x'+vv.height+', offset='+vv.offsetTop+'/'+vv.offsetLeft+', scale='+vv.scale):'unavailable'),
+      'safeAreaTop='+px(cs.paddingTop)+'px, safeAreaBottom='+px(cs.paddingBottom)+'px',
+      'maxFixedProbeDrift='+maxDrift.toFixed(1)+'px',
+      'orientation='+((screen.orientation&&screen.orientation.type)||window.orientation||'unknown'),
+      'visibility='+document.visibilityState,
+      'userAgent='+d.ua
+    ].join('\n');
+  }
+  function onScroll(){measure();}
+  function onResize(){measure();log('resize',innerWidth+'×'+innerHeight);}
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onResize,{passive:true});
+  window.addEventListener('orientationchange',function(){log('orientationchange');setTimeout(measure,180);});
+  document.addEventListener('visibilitychange',function(){log('visibility',document.visibilityState);measure();});
+  if(window.visualViewport){
+    visualViewport.addEventListener('resize',function(){measure();log('visualViewport.resize',Math.round(visualViewport.width)+'×'+Math.round(visualViewport.height));},{passive:true});
+    visualViewport.addEventListener('scroll',function(){measure();},{passive:true});
+  }
+  $('resetButton').addEventListener('click',function(){maxDrift=0;measure();log('max drift reset');});
+  $('copyButton').addEventListener('click',async function(){
+    var text=diagnostics();
+    try{await navigator.clipboard.writeText(text);this.textContent='Gekopieerd ✓';log('diagnostics copied');}
+    catch(e){log('clipboard blocked');window.prompt('Kopieer diagnostics:',text);}
+    var self=this;setTimeout(function(){self.textContent='Kopieer diagnostics';},1400);
+  });
+  renderEnvironment();
+  log('QA loaded',standalone().yes?'standalone':'browser');
+})();
+</script>
+</body>
+</html>
