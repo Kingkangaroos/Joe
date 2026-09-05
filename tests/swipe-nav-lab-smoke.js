@@ -5,6 +5,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const root=path.join(__dirname,'..');
 const src=fs.readFileSync(path.join(root,'lab-swipe-nav.html'),'utf8');
+const lab=fs.readFileSync(path.join(root,'lab.html'),'utf8');
 
 assert.match(src,/touch-action:pan-y/,'vertical browser scrolling must remain the default gesture owner');
 assert.match(src,/H_RATIO=1\.28/,'horizontal intent needs a meaningful axis ratio');
@@ -22,4 +23,5 @@ assert.match(src,/index===slides\.length-1&&dx<0/,'right boundary has rubber-ban
 assert.match(src,/data-index="0"[\s\S]*data-index="4"/,'all five current major bottom tabs are represented');
 assert.match(src,/Main[\s\S]*Body[\s\S]*Skills[\s\S]*Finance[\s\S]*Jarvis/,'prototype mirrors current topbar.js navigation order');
 assert.doesNotMatch(src,/localStorage\.setItem|supabase|fetch\(/,'Lab prototype must remain read-only and disconnected from user data');
+assert.match(lab,/href="lab-swipe-nav\.html"/,'normal ChatGPT Lab must expose the Swipe Navigation prototype');
 console.log('Swipe Navigation Lab smoke: vertical-first axis lock, control safety, nested horizontal opt-out, boundaries and five-tab parity are guarded.');
