@@ -2,22 +2,19 @@
 
 > Shared current-state handoff for Claude + ChatGPT. Keep this file focused on real open blockers / proof still needed. Historical implementation detail belongs in `BUILDER-NOW.md`, `BUILDER-CHECKPOINT-2026-09-05.md`, `HEALTH-INSIGHTS.md`, and git history.
 
-Last refreshed: **2026-09-05** by ChatGPT (OpenAI)
+Last refreshed: **2026-09-06** by ChatGPT (OpenAI)
 
 ## Current verified production baseline
 
-Latest verified head:
-- `5c85c8d0cf5856bf8c5f3aa31e6183bcb36897d0`
-- GitHub smoke suite: **run 169 — completed/success**
-- exact Vercel production deployment: `dpl_HHMkv8YyNUBYVu9YVpXdTZHKNLYT`
-- deployment state: **READY**, target `production`
+Latest verified functional head:
+- `e56dd3eb8b9ba084de90dd3389003e54dc791abc` — corrected iPhone Device QA fixed-bottom zero baseline; no production navigation behavior changed.
+- GitHub smoke suite: **run 229 — completed/success** on the PR merge combination.
+- exact Vercel production deployment: `dpl_81g6BRyafi8ssPpnZes6BPV94XUY`.
+- deployment state: **READY**, target `production`.
 
-Important functional commit directly underneath it:
-- `8a3cc696d662c1afbd9259373a896e8bbfd1eda6` — unfinished Goals no longer disappear after three overdue days; overdue only changes urgency copy, while manual 100%/archive remains authoritative.
+This baseline also contains Daily Missions 2.0, the goal-first WHY foundation, Swipe Navigation Lab + dormant engine, WHY Link Audit, Restore Dry Run, Fitbit audit owner-pairing hardening and Edge Function secret-cutover guard.
 
-This head also includes the earlier non-health durability pass: Goals/Ventures source-of-truth guard, manual Body-weight cloud durability, real push subscribe/unsubscribe Settings behavior, truthful PIN boundary, truthful push-window copy, disabled fake workspace isolation, and complete credential-free backup export.
-
-Do not confuse an older handoff checkpoint with current functional production if the commit/run/deployment above is newer.
+Do not confuse older checkpoints with current functional production.
 
 ---
 
@@ -152,11 +149,21 @@ Never copy endpoints/tokens into handoffs or logs.
 
 ## 5. iOS standalone PWA bottom navigation drift
 
-**Status:** **OPEN — DEVICE-DEPENDENT.**
+**Status:** **OPEN — DEVICE-DEPENDENT; OFFICIAL READ-ONLY QA PATH NOW SHIPPED.**
 
 Observed on iOS 26 standalone PWA: fixed bottom navigation can visually drift upward while scrolling.
 
-Do not stack speculative transforms / `!important` patches. If still reproducible, test an iOS-standalone-only shell/internal-scroller architecture and verify on Joey's installed PWA.
+Use `lab-iphone-device-qa.html` from the **installed Gamenfy PWA** before changing production CSS. The QA page is isolated from Auth/sync/topbar/swipe and measures:
+- installed-PWA mode;
+- safe-area top/bottom;
+- window + Visual Viewport dimensions/offsets;
+- fixed-bottom probe actual-vs-expected position and maximum drift;
+- orientation/background transitions;
+- copyable diagnostics.
+
+The diagnostic zero baseline was corrected in `e56dd3eb8b9ba084de90dd3389003e54dc791abc`: the intentional `8px + safe-area-inset-bottom` offset is not counted as drift.
+
+Do not stack speculative transforms / `!important` patches. Only if the installed-device diagnostic reproduces real drift should we test an iOS-standalone shell/internal-scroller architecture.
 
 ---
 
@@ -237,6 +244,24 @@ Current `app_state` ownership + RLS is healthy for Joey's one-account Gamenfy.
 The table still uses a globally unique key rather than `(user_id,key)`. A genuine second account/test user therefore requires coordinated schema + client/server changes, backup and regression proof. Do not perform a casual index tweak.
 
 Separate cloud workspaces are not active; Settings truthfully keeps that UI disabled.
+
+---
+
+## 12. Goal / WHY canonical cloud population
+
+**Status:** **OPEN DATA-POPULATION PROOF; NO EVIDENCE OF RECENT GOAL-STORE LOSS.**
+
+Canonical Goal store = `rpg_goals_v1`, which is already included in `RPG_SYNC_KEYS` and is the only Goal source used by the shipped WHY layer.
+
+Read-only cloud audit on 6 Sep 2026:
+- current `app_state.key='rpg'` does **not** contain `rpg_goals_v1`;
+- private backup `app_state_backup_20260829_phase1` also did **not** contain `rpg_goals_v1`;
+- legacy standalone `app_state.key='goals'` only contains June-era keys and is not the canonical Goal schema/source.
+
+Therefore do **not** auto-import the legacy row or call this a recent deletion. Next proof is device-local:
+1. open `character.html#goals` on Joey's real installed app;
+2. if current Goals are present locally, allow normal RPG sync to populate cloud and re-audit;
+3. if local Goals are empty too, enter Joey's current Goals deliberately and then add explicit `linkedSkills` — never infer links or taxonomy automatically.
 
 ---
 

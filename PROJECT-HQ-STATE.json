@@ -47,7 +47,8 @@
     "Edge Function secret cutover contract and repo regression guard shipped so server credential/owner literals cannot be casually committed",
     "Supabase advisors reviewed: integration_tokens/private backup/pg_net findings are intentional architecture constraints; leaked-password protection remains the actionable platform setting",
     "iPhone Device QA Lab shipped read-only in the normal Lab with standalone-PWA detection, safe-area probes, Visual Viewport telemetry, fixed-bottom drift measurement, orientation/background logging and copyable diagnostics",
-    "iPhone Device QA integration passed the full browserless suite twice (guarded branch integration and PR merge test); no production navigation behavior was changed"
+    "iPhone Device QA integration passed the full browserless suite twice (guarded branch integration and PR merge test); no production navigation behavior was changed",
+    "iPhone Device QA zero-baseline corrected: intentional 8px + safe-area offset is excluded before fixed-bottom drift is reported; PR smoke run 229 passed and production is READY"
   ],
   "assetsNeeded": [
     "Budgeting owl native level set import",
@@ -109,8 +110,19 @@
     "restoreDryRunMainSha": "523477e77184680b0ee245c6d6f7f402bd84af8d",
     "fitbitAuditOwnerPairingMainSha": "c027770c9214159fcdb83628930c20e721d8c68e",
     "edgeFunctionSecurityContractMainSha": "e43d57f4f21544f397fbf61d62453fa738db853d",
-    "iphoneDeviceQaMainSha": "6615587dcac2be05872229914f5b0d99b4cd38f0",
-    "iphoneDeviceQaProductionDeployment": "dpl_2xMBDmBMoo9jyCWuNGRJQ39Cexzy",
-    "iphoneDeviceQaProductionState": "READY"
+    "iphoneDeviceQaMainSha": "e56dd3eb8b9ba084de90dd3389003e54dc791abc",
+    "iphoneDeviceQaProductionDeployment": "dpl_81g6BRyafi8ssPpnZes6BPV94XUY",
+    "iphoneDeviceQaProductionState": "READY",
+    "iphoneDeviceQaBaselineFixMainSha": "e56dd3eb8b9ba084de90dd3389003e54dc791abc"
+  },
+  "whyGoalsAudit": {
+    "verifiedAt": "2026-09-06",
+    "canonicalKey": "rpg_goals_v1",
+    "currentRpgCloudHasCanonicalGoals": false,
+    "backup20260829HasCanonicalGoals": false,
+    "legacyStandaloneGoalsRowExists": true,
+    "legacyStandaloneGoalsRowScope": "June-era data only; not canonical WHY source",
+    "evidenceOfRecentCanonicalGoalLoss": false,
+    "nextProof": "Open canonical Goals on Joey device. If local Goals exist, allow normal RPG sync and re-audit; if local is empty too, enter current Goals deliberately."
   }
 }
