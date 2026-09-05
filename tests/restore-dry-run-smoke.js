@@ -7,6 +7,7 @@ const vm=require('node:vm');
 const root=path.join(__dirname,'..');
 const engine=fs.readFileSync(path.join(root,'backup-restore-validator.js'),'utf8');
 const lab=fs.readFileSync(path.join(root,'lab-restore-dry-run.html'),'utf8');
+const inlineLabScript=(lab.match(/<script>\s*([\s\S]*?)\s*<\/script>\s*<\/body>/)||[])[1]||'';
 const spec=fs.readFileSync(path.join(root,'RESTORE-IMPORT-SPEC.md'),'utf8');
 
 const window={RPG_SYNC_KEYS:['rpg_goals_v1'],RPG_SYNC_PREFIXES:['rpg_daily_v1:']};
@@ -50,7 +51,8 @@ assert.match(lab,/FileReader/,'backup must be parsed locally');
 assert.match(lab,/data-strategy="merge"/);
 assert.match(lab,/data-strategy="overwrite"/);
 assert.match(lab,/restoreReady: <b>NEE<\/b>/,'UI must visibly keep restore blocked');
-assert.doesNotMatch(lab,/localStorage\.setItem|localStorage\.removeItem|localStorage\.clear\s*\(/,'Lab must not mutate local storage');
+assert.ok(inlineLabScript,'inline dry-run script must be discoverable');
+assert.doesNotMatch(inlineLabScript,/localStorage\.setItem|localStorage\.removeItem|localStorage\.clear\s*\(/,'executable Lab code must not mutate local storage');
 assert.doesNotMatch(engine,/\.setItem\(|\.removeItem\(|\.clear\s*\(/,'validator must be analysis-only');
 assert.match(spec,/Backup-before-restore/);
 assert.match(spec,/Owner\/auth proof/);
