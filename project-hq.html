@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F3EF">
+<title>Project HQ — Gamenfy</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=11.0" defer></script>
+<script src="sync.js?v=11.0" defer></script>
+<script src="topbar.js?v=11.0" defer></script>
+<script src="xp.js?v=10.98" defer></script>
+<style>
+:root{--bg:#F4F3EF;--card:#fff;--ink:#15140F;--muted:#6F6C63;--faint:#A6A399;--line:#E8E6DF;--ember:#D4633E;--green:#2E8B5F;--gold:#C9A227;--display:'Schibsted Grotesk',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body)}body{min-height:100vh;padding:14px 14px 92px}.shell{width:min(720px,100%);margin:auto}.head{padding:8px 2px 18px}.back{display:inline-block;margin-bottom:14px;color:var(--muted);text-decoration:none;font-size:12px;font-weight:700}.kicker{font:800 10px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--ember)}h1{margin:4px 0 6px;font:800 34px/1 var(--display);letter-spacing:-.04em}.sub{margin:0;color:var(--muted);font-size:12px;line-height:1.5}.tabs{display:flex;gap:8px;overflow:auto;margin:0 0 14px;padding-bottom:2px}.tab{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;background:var(--card);padding:9px 13px;font:700 11px var(--display);color:var(--muted);cursor:pointer}.tab.active{background:var(--ink);border-color:var(--ink);color:white}.status{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px 14px;background:#171611;color:white;border-radius:16px;margin-bottom:12px}.status strong{font:800 13px var(--display)}.status span{font-size:10px;color:rgba(255,255,255,.58)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px}.card.wide{grid-column:1/-1}.label{font:800 10px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}.item{padding:9px 0;border-top:1px solid var(--line);font-size:12px;line-height:1.45}.item:first-of-type{border-top:0;padding-top:0}.decision{display:grid;grid-template-columns:minmax(90px,.75fr) 1.4fr;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:11px;line-height:1.4}.decision:first-of-type{border-top:0;padding-top:0}.decision b{font-family:var(--display)}.decision span{color:var(--muted)}.inbox{margin-top:12px}.inbox textarea{width:100%;min-height:76px;resize:vertical;border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:11px 12px;font:13px var(--body);color:var(--ink);outline:none}.add{width:100%;margin-top:8px;border:0;border-radius:11px;background:var(--ink);color:white;padding:11px;font:800 12px var(--display);cursor:pointer}.note{padding:10px 0;border-top:1px solid var(--line)}.note:first-child{border-top:0}.note p{margin:0;font-size:12px;line-height:1.45}.note time{display:block;margin-top:4px;color:var(--faint);font-size:9px}.empty{color:var(--faint);font-size:11px}.foot{margin-top:12px;color:var(--faint);font-size:10px;line-height:1.5}.toast{position:fixed;left:16px;right:16px;bottom:84px;max-width:360px;margin:auto;background:var(--ink);color:white;border-radius:12px;padding:10px 14px;text-align:center;font-size:12px;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:none}@media(max-width:560px){.grid{grid-template-columns:1fr}.card.wide{grid-column:auto}h1{font-size:30px}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <header class="head"><a class="back" href="character.html#skills">‹ Character</a><div class="kicker">ChatGPT + Joey · durable memory</div><h1>Project HQ</h1><p class="sub">One place for what we are doing, what is locked, what still needs an asset, and anything you want the builders to remember.</p></header>
+  <div class="tabs"><button class="tab active" data-project="gamenfy">Gamenfy</button><button class="tab" data-project="website">Website Ventures</button></div>
+  <div class="status"><strong id="projectName">Loading…</strong><span id="updatedAt"></span></div>
+  <section class="grid">
+    <article class="card"><div class="label">Now</div><div id="nowList"></div></article>
+    <article class="card"><div class="label">Assets / waiting</div><div id="assetList"></div></article>
+    <article class="card wide"><div class="label">Locked decisions</div><div id="decisions"></div></article>
+    <article class="card wide"><div class="label">Joey feedback inbox</div><div id="notes"></div><div class="inbox"><textarea id="noteInput" maxlength="500" placeholder="Drop a thought here if ChatGPT credits/chat disappear…"></textarea><button class="add" id="addNote">Add to HQ inbox</button></div><div class="foot">Your inbox entries are stored in Gamenfy state. The builder-maintained roadmap remains in the repository files, so the chat is not the only memory.</div></article>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  'use strict';
+  const NOTE_KEY='rpg_project_hq_notes_v1';
+  const PROJECTS={gamenfy:'PROJECT-HQ-STATE.json',website:'WEBSITE-VENTURES-HQ-STATE.json'};
+  let active='gamenfy';
+  const escText=v=>String(v==null?'':v);
+  function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+  function loadNotes(){try{return JSON.parse(localStorage.getItem(NOTE_KEY))||{}}catch(e){return {}}}
+  function saveNotes(all){try{localStorage.setItem(NOTE_KEY,JSON.stringify(all));window.dispatchEvent(new Event('gamenfy:project-hq-change'))}catch(e){}}
+  function renderNotes(){const box=document.getElementById('notes');const all=loadNotes();const list=Array.isArray(all[active])?all[active]:[];box.textContent='';if(!list.length){const e=document.createElement('div');e.className='empty';e.textContent='Nothing waiting from you right now.';box.appendChild(e);return}list.slice().reverse().forEach(n=>{const d=document.createElement('div');d.className='note';const p=document.createElement('p');p.textContent=escText(n.text);const tm=document.createElement('time');tm.textContent=escText(n.at);d.append(p,tm);box.appendChild(d)})}
+  async function renderProject(){const res=await fetch(PROJECTS[active],{cache:'no-store'});if(!res.ok)throw new Error('HQ state unavailable');const s=await res.json();document.getElementById('projectName').textContent=s.project||active;document.getElementById('updatedAt').textContent='Updated '+(s.updatedAt||'');const now=document.getElementById('nowList');now.textContent='';(s.now||[]).forEach(x=>{const d=document.createElement('div');d.className='item';d.textContent=x;now.appendChild(d)});const assets=document.getElementById('assetList');assets.textContent='';(s.assetsNeeded||[]).forEach(x=>{const d=document.createElement('div');d.className='item';d.textContent=x;assets.appendChild(d)});const dec=document.getElementById('decisions');dec.textContent='';Object.entries(s.lockedDecisions||{}).forEach(([k,v])=>{const d=document.createElement('div');d.className='decision';const b=document.createElement('b');b.textContent=k.replace(/([A-Z])/g,' $1');const sp=document.createElement('span');sp.textContent=v;d.append(b,sp);dec.appendChild(d)});renderNotes()}
+  document.querySelectorAll('[data-project]').forEach(btn=>btn.addEventListener('click',()=>{active=btn.dataset.project;document.querySelectorAll('[data-project]').forEach(b=>b.classList.toggle('active',b===btn));renderProject().catch(()=>toast('Could not load project state'))}));
+  document.getElementById('addNote').addEventListener('click',()=>{const inp=document.getElementById('noteInput');const text=inp.value.trim();if(!text)return;const all=loadNotes();all[active]=Array.isArray(all[active])?all[active]:[];all[active].push({text,at:new Date().toLocaleString('nl-NL')});saveNotes(all);inp.value='';renderNotes();toast('Saved to Project HQ')});
+  window.addEventListener('storage',e=>{if(e.key===NOTE_KEY)renderNotes()});
+  window.addEventListener('gamenfy:remote-state-applied',renderNotes);
+  renderProject().catch(()=>toast('Could not load project state'));
+})();
+</script>
+</body>
+</html>
