@@ -1,0 +1,41 @@
+name: One-time ChatGPT goal-first WHY pass
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  implement-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout WHY builder branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: chatgpt/builder-2026-09-05-why
+
+      - name: Apply exact guarded WHY patch
+        run: python3 scripts/one-time-why-pass.py
+
+      - name: Run all browserless smoke tests
+        run: |
+          set -euo pipefail
+          for f in tests/*smoke.js; do
+            echo "==> $f"
+            node "$f"
+          done
+
+      - name: Commit tested WHY implementation and remove one-time helpers
+        run: |
+          set -euo pipefail
+          rm -f scripts/one-time-why-pass.py .github/workflows/one-time-why-pass.yml
+          git config user.name "ChatGPT (OpenAI)"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "ChatGPT: add goal-first WHY layer"
+          git push origin HEAD:chatgpt/builder-2026-09-05-why
