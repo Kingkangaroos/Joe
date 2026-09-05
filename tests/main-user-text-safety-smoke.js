@@ -31,6 +31,8 @@ assert.ok(src.includes("'<div class=\"ci-row-title\">' + escapeHtml(nx.step.titl
   'check-in venture step titles must be escaped');
 assert.ok(src.includes("<div class=\"ci-row-kind\">' + escapeHtml(v.name) + '</div>'"),
   'check-in venture names must be escaped');
+assert.ok(!src.includes("<div class=\"ci-row-kind\">' + v.name + '</div>'"),
+  'raw venture names must not return to check-in HTML');
 assert.ok(src.includes("'<div class=\"ci-row-title\">' + escapeHtml(m.label) + '</div>'"),
   'check-in mission labels must be inert text');
 assert.ok(src.includes("'<div class=\"ci-row-why\">' + escapeHtml(whyShort) + '</div>'"),
@@ -39,9 +41,11 @@ assert.ok(src.includes("<div class=\"ci-row-kind\">'+escapeHtml(nx.v.name)+'</di
   'choice gate venture names must be escaped');
 assert.ok(src.includes("<div class=\"ci-row-title\">'+escapeHtml(nx.nx.step.title)+'</div>'"),
   'choice gate venture step titles must be escaped');
+assert.ok(!src.includes("<div class=\"ci-row-title\">'+nx.nx.step.title+'</div>'"),
+  'raw choice-gate step titles must not be injected');
 assert.ok(src.includes("'<div class=\"todo-text\">'+escapeHtml(t.text)+'</div>'"),
   'existing To-Do escaping must remain intact');
 assert.ok(src.includes("words.map(w=>'<span class=\"grat-tag\">'+escapeHtml(w)+'</span>')"),
   'existing Gratitude escaping must remain intact');
 
-console.log('Main user-text safety smoke: agenda, Next Move, focus, To-Do and Gratitude render stored free text inertly.');
+console.log('Main user-text safety smoke: agenda, Next Move, focus, check-in, choice gate, To-Do and Gratitude render stored free text inertly.');
