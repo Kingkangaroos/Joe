@@ -1,11 +1,10 @@
 name: One-time ChatGPT spar implementation
 
 on:
-  push:
+  pull_request:
     branches:
-      - chatgpt/builder-2026-09-05-afternoon
-    paths:
-      - '.github/workflows/one-time-spar-implementation.yml'
+      - main
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: write
