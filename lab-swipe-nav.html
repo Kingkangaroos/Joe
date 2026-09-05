@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#F4F3EF">
+<title>Swipe Navigation Lab — Gamenfy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Schibsted+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F3EF;--card:#fff;--ink:#15140F;--muted:#6F6C63;--faint:#A6A399;
+  --line:#E8E6DF;--ember:#D4633E;--green:#2E8B5F;--gold:#C9A227;
+  --display:'Schibsted Grotesk',-apple-system,sans-serif;--body:'Inter',-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-text-size-adjust:100%}
+body{padding:0 0 24px;overscroll-behavior-y:auto}
+.lab-head{position:sticky;top:0;z-index:20;padding:max(12px,env(safe-area-inset-top)) 14px 10px;background:rgba(244,243,239,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}
+.lab-head-row{max-width:620px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.back{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);text-decoration:none;font-weight:800}
+.lab-title{min-width:0;flex:1}.lab-title strong{display:block;font:800 17px var(--display);letter-spacing:-.02em}.lab-title span{display:block;margin-top:2px;color:var(--muted);font-size:10px}
+.status{padding:6px 9px;border-radius:999px;background:#EAF5EF;color:#256A49;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.wrap{max-width:620px;margin:0 auto;padding:14px}
+.intro{background:linear-gradient(135deg,#fff,#F7F4EA);border:1px solid #DED8C6;border-radius:18px;padding:15px;margin-bottom:12px}
+.kicker{font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--gold)}
+.intro h1{margin:4px 0 6px;font:800 24px/1.05 var(--display);letter-spacing:-.04em}.intro p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:10px 0 14px}.rule{background:#fff;border:1px solid var(--line);border-radius:13px;padding:10px}.rule strong{display:block;font:700 11px var(--display)}.rule small{display:block;margin-top:3px;color:var(--muted);font-size:9px;line-height:1.35}
+.phone{position:relative;height:min(690px,calc(100vh - 170px));min-height:560px;border:1px solid #D9D6CD;border-radius:26px;background:#fff;overflow:hidden;box-shadow:0 26px 60px -38px rgba(21,20,15,.45)}
+.phone-top{position:absolute;left:0;right:0;top:0;z-index:8;height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+.phone-top strong{font:800 13px var(--display)}.gesture-state{font-size:9px;font-weight:800;color:var(--muted);padding:5px 8px;border-radius:999px;background:#F4F3EF}.gesture-state.horizontal{color:#7A4C1F;background:#FFF1DE}.gesture-state.vertical{color:#256A49;background:#EAF5EF}.gesture-state.blocked{color:#725B88;background:#F2ECFA}
+.viewport{position:absolute;inset:48px 0 68px;overflow:hidden;touch-action:pan-y;background:var(--bg)}
+.track{height:100%;display:flex;transform:translate3d(0,0,0);transition:transform .34s cubic-bezier(.22,.78,.22,1);will-change:transform}
+.track.dragging{transition:none}
+.slide{flex:0 0 100%;height:100%;overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:15px 14px 28px}.slide::-webkit-scrollbar{display:none}
+.hero{border-radius:18px;padding:17px;margin-bottom:10px;background:#181712;color:#fff;min-height:126px;display:flex;flex-direction:column;justify-content:flex-end}.hero.light{background:#fff;color:var(--ink);border:1px solid var(--line)}.hero .eyebrow{font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.62}.hero h2{margin:4px 0 0;font:800 25px var(--display);letter-spacing:-.04em}.hero p{margin:5px 0 0;font-size:10px;line-height:1.4;opacity:.72}
+.card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px;margin-bottom:8px}.card-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.card strong{font:700 12px var(--display)}.card small{color:var(--muted);font-size:9px}.bar{height:6px;border-radius:4px;background:#EEECE5;overflow:hidden;margin-top:9px}.bar i{display:block;height:100%;background:var(--green);border-radius:4px}.row{display:flex;gap:7px}.row>.card{flex:1}.big{font:800 22px var(--display);margin-top:5px}.muted{color:var(--muted)}
+.hscroll{display:flex;gap:7px;overflow-x:auto;padding:2px 0 8px;touch-action:pan-x;-webkit-overflow-scrolling:touch;scrollbar-width:none}.hscroll::-webkit-scrollbar{display:none}.chip{flex:0 0 auto;padding:9px 12px;border:1px solid var(--line);background:#fff;border-radius:999px;font-size:10px;font-weight:700;white-space:nowrap}
+.test-control{display:flex;gap:8px;align-items:center;margin-top:8px}.test-control input{min-width:0;flex:1;border:1px solid var(--line);border-radius:10px;padding:10px;font:500 11px var(--body);background:#fff}.test-control button{border:0;border-radius:10px;padding:10px 12px;background:var(--ink);color:#fff;font:700 10px var(--display)}
+.bottom{position:absolute;left:0;right:0;bottom:0;z-index:10;height:68px;padding:6px 3px calc(6px + env(safe-area-inset-bottom));display:flex;background:#fff;border-top:1px solid var(--line)}
+.navbtn{flex:1;border:0;background:transparent;color:var(--faint);font:600 8px var(--body);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer}.navbtn span{font-size:18px;line-height:1;opacity:.45}.navbtn.on{color:var(--ink)}.navbtn.on span{opacity:1;transform:translateY(-1px)}
+.debug{margin-top:12px;background:#15140F;color:#F4F3EF;border-radius:15px;padding:12px 13px;font:500 10px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}.debug strong{color:#E5C85D}.debug-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.debug-cell{padding:7px;border:1px solid rgba(255,255,255,.1);border-radius:9px}.debug-cell span{display:block;color:#9C9A91;font-size:8px}.debug-cell b{display:block;margin-top:2px;font-size:10px}
+.axis{position:absolute;left:50%;top:58px;z-index:15;pointer-events:none;transform:translateX(-50%);opacity:0;transition:opacity .15s;padding:5px 8px;border-radius:999px;background:rgba(21,20,15,.88);color:#fff;font:800 8px var(--body);letter-spacing:.08em}.axis.show{opacity:1}
+@media(max-width:390px){.wrap{padding:10px}.intro h1{font-size:21px}.rules{grid-template-columns:1fr 1fr}.phone{border-radius:20px}.slide{padding-left:11px;padding-right:11px}}
+@media(prefers-reduced-motion:reduce){.track{transition:none!important}.navbtn.on span{transform:none}}
+</style>
+</head>
+<body>
+<header class="lab-head">
+  <div class="lab-head-row">
+    <a class="back" href="lab.html#chatgpt-lab" aria-label="Terug naar Lab">←</a>
+    <div class="lab-title"><strong>Swipe Navigation Lab</strong><span>ChatGPT · interaction prototype · read-only</span></div>
+    <span class="status">Lab only</span>
+  </div>
+</header>
+<main class="wrap">
+  <section class="intro">
+    <div class="kicker">Major-section gesture architecture</div>
+    <h1>Horizontaal wisselen zonder verticaal scrollen kapot te maken.</h1>
+    <p>Deze test verandert geen echte pagina's of data. Hij bootst de huidige vijf bottom-tabs na en laat zien wanneer een gesture horizontaal, verticaal of bewust geblokkeerd wordt.</p>
+  </section>
+  <div class="rules">
+    <div class="rule"><strong>Vertical wins</strong><small>Pas na duidelijke horizontale intentie wordt de swipe gelockt.</small></div>
+    <div class="rule"><strong>Controls safe</strong><small>Start op input, button, link of horizontale carousel = geen page swipe.</small></div>
+    <div class="rule"><strong>Threshold</strong><small>Minimaal 72px / 18% breedte, of een duidelijke snelle flick.</small></div>
+    <div class="rule"><strong>Bottom nav blijft</strong><small>Elke tab blijft direct tappable; swipe is alleen een extra route.</small></div>
+  </div>
+
+  <section class="phone" id="phone" aria-label="Swipe navigation interaction prototype">
+    <div class="phone-top"><strong id="pageTitle">Main</strong><span class="gesture-state" id="gestureState">READY</span></div>
+    <div class="axis" id="axis">HORIZONTAL LOCK</div>
+    <div class="viewport" id="viewport">
+      <div class="track" id="track">
+        <article class="slide" data-title="Main">
+          <div class="hero"><div class="eyebrow">Overview cockpit</div><h2>Main</h2><p>Vertical scroll moet hier altijd natuurlijk blijven voelen.</p></div>
+          <div class="card"><div class="card-head"><strong>Daily Missions</strong><small>7 / 11</small></div><div class="bar"><i style="width:64%"></i></div></div>
+          <div class="row"><div class="card"><small>Day score</small><div class="big">78</div></div><div class="card"><small>Season</small><div class="big">L4</div></div></div>
+          <div class="card"><strong>Horizontale carousel test</strong><small>Deze chips moeten zélf horizontaal kunnen scrollen zonder de hele pagina te wisselen.</small><div class="hscroll" data-swipe-exempt><span class="chip">Morning</span><span class="chip">Focus</span><span class="chip">Workout</span><span class="chip">Walk</span><span class="chip">Evening</span><span class="chip">Review</span></div></div>
+          <div class="card"><strong>Control safety test</strong><small>Swipen vanaf deze input of knop mag nooit van tab wisselen.</small><div class="test-control"><input placeholder="Typ hier en swipe…"><button type="button">Save</button></div></div>
+          <div class="card"><strong>Meer verticale content</strong><p class="muted" style="font-size:10px;line-height:1.55">Scroll naar beneden, terug omhoog en probeer vervolgens diagonaal te swipen. Een licht diagonale verticale beweging hoort native scroll te blijven.</p></div>
+          <div class="card"><strong>Waarom dit Lab bestaat</strong><p class="muted" style="font-size:10px;line-height:1.55">De echte app gebruikt losse HTML-pagina's. Eerst moet de gesture zelf bewezen zijn voordat we navigatie tussen echte documenten gaan onderscheppen.</p></div>
+        </article>
+        <article class="slide" data-title="Body">
+          <div class="hero light"><div class="eyebrow">Character</div><h2>Body</h2><p>Simuleert de huidige Character/Body bottom-tab.</p></div>
+          <div class="row"><div class="card"><small>Strength</small><div class="big">31</div></div><div class="card"><small>Recovery</small><div class="big">24</div></div></div>
+          <div class="card"><div class="card-head"><strong>Gym</strong><small>Level 22</small></div><div class="bar"><i style="width:44%"></i></div></div>
+          <div class="card"><div class="card-head"><strong>Tennis</strong><small>Level 11</small></div><div class="bar"><i style="width:27%"></i></div></div>
+          <div class="card"><strong>Gesture target</strong><p class="muted" style="font-size:10px;line-height:1.55">Probeer langzaam horizontaal, snel horizontaal, verticaal en diagonaal. Alleen duidelijke horizontale intentie hoort te wisselen.</p></div>
+          <div class="card"><strong>Scroll depth</strong><p class="muted" style="font-size:10px;line-height:1.55">Extra content om verticaal scrollgedrag te testen zonder dat een kleine zijwaartse vingerbeweging een tabwissel veroorzaakt.</p></div>
+        </article>
+        <article class="slide" data-title="Skills">
+          <div class="hero"><div class="eyebrow">Progression</div><h2>Skills</h2><p>De toekomstige open Skills-wereld blijft een eigen major section.</p></div>
+          <div class="hscroll" data-swipe-exempt><span class="chip">Money</span><span class="chip">Physical</span><span class="chip">Mental</span><span class="chip">Business</span><span class="chip">Lifestyle</span><span class="chip">Knowledge</span></div>
+          <div class="row"><div class="card"><small>Chess</small><div class="big">8</div></div><div class="card"><small>AI Tools</small><div class="big">19</div></div></div>
+          <div class="row"><div class="card"><small>Dance</small><div class="big">6</div></div><div class="card"><small>Sales</small><div class="big">13</div></div></div>
+          <div class="card"><strong>Nested horizontal safety</strong><p class="muted" style="font-size:10px;line-height:1.55">De category chips hierboven zijn gemarkeerd als swipe-exempt. De parent navigator mag hun horizontale gesture niet stelen.</p></div>
+        </article>
+        <article class="slide" data-title="Finance">
+          <div class="hero light"><div class="eyebrow">Money cockpit</div><h2>Finance</h2><p>Financiële data blijft in deze demo nep en read-only.</p></div>
+          <div class="card"><small>Liquid target</small><div class="big">€50k</div><div class="bar"><i style="width:26%;background:var(--gold)"></i></div></div>
+          <div class="row"><div class="card"><small>Saving</small><div class="big">L18</div></div><div class="card"><small>Investing</small><div class="big">L12</div></div></div>
+          <div class="card"><strong>Document-boundary note</strong><p class="muted" style="font-size:10px;line-height:1.55">Als deze gesture later echt live gaat, moet de transition tussen losse HTML-pagina's anders worden opgelost dan deze in-document track. Deze Lab-test valideert alleen intentie-detectie en conflictregels.</p></div>
+        </article>
+        <article class="slide" data-title="Jarvis">
+          <div class="hero"><div class="eyebrow">Coach</div><h2>Jarvis</h2><p>Interactieve chat controls moeten altijd buiten de swipe-navigator blijven.</p></div>
+          <div class="card"><strong>Chat input safety</strong><small>Start je gesture hier, dan moet page swipe geblokkeerd blijven.</small><div class="test-control"><input placeholder="Vraag Jarvis iets…"><button type="button">Send</button></div></div>
+          <div class="card"><strong>WHY context</strong><p class="muted" style="font-size:10px;line-height:1.55">Later kan Jarvis dezelfde goal-first WHY-koppelingen gebruiken die nu al op Home en Daily Challenge bestaan.</p></div>
+          <div class="card"><strong>End boundary</strong><p class="muted" style="font-size:10px;line-height:1.55">Verder naar rechts swipen op de laatste tab geeft alleen een lichte rubber-band en blijft op Jarvis.</p></div>
+        </article>
+      </div>
+    </div>
+    <nav class="bottom" aria-label="Prototype major sections">
+      <button class="navbtn on" type="button" data-index="0"><span>🏠</span>Main</button>
+      <button class="navbtn" type="button" data-index="1"><span>💪</span>Body</button>
+      <button class="navbtn" type="button" data-index="2"><span>⚔️</span>Skills</button>
+      <button class="navbtn" type="button" data-index="3"><span>💰</span>Finance</button>
+      <button class="navbtn" type="button" data-index="4"><span>🤖</span>Jarvis</button>
+    </nav>
+  </section>
+
+  <section class="debug" aria-live="polite">
+    <strong>GESTURE TELEMETRY</strong> · <span id="debugLine">nog geen gesture</span>
+    <div class="debug-grid">
+      <div class="debug-cell"><span>Axis lock</span><b id="dbgAxis">none</b></div>
+      <div class="debug-cell"><span>dx / dy</span><b id="dbgDelta">0 / 0</b></div>
+      <div class="debug-cell"><span>Result</span><b id="dbgResult">ready</b></div>
+    </div>
+  </section>
+</main>
+<script>
+(function(){
+  'use strict';
+  var viewport=document.getElementById('viewport');
+  var track=document.getElementById('track');
+  var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var nav=Array.prototype.slice.call(document.querySelectorAll('.navbtn'));
+  var title=document.getElementById('pageTitle');
+  var stateEl=document.getElementById('gestureState');
+  var axisEl=document.getElementById('axis');
+  var debugLine=document.getElementById('debugLine');
+  var dbgAxis=document.getElementById('dbgAxis');
+  var dbgDelta=document.getElementById('dbgDelta');
+  var dbgResult=document.getElementById('dbgResult');
+
+  var index=0;
+  var gesture=null;
+  var AXIS_START=10;
+  var H_RATIO=1.28;
+  var COMMIT_PX=72;
+  var COMMIT_RATIO=.18;
+  var FLICK_MIN_PX=38;
+  var FLICK_VELOCITY=.55;
+
+  function width(){return viewport.getBoundingClientRect().width||1;}
+  function baseX(){return -index*width();}
+  function setTrack(x,dragging){
+    track.classList.toggle('dragging',!!dragging);
+    track.style.transform='translate3d('+Math.round(x)+'px,0,0)';
+  }
+  function setState(text,kind){
+    stateEl.textContent=text;
+    stateEl.className='gesture-state'+(kind?' '+kind:'');
+  }
+  function updateUi(){
+    title.textContent=slides[index].dataset.title;
+    nav.forEach(function(btn,i){btn.classList.toggle('on',i===index);});
+    setTrack(baseX(),false);
+  }
+  function go(next,source){
+    var prev=index;
+    index=Math.max(0,Math.min(slides.length-1,next));
+    updateUi();
+    dbgResult.textContent=index===prev?'boundary':source;
+    debugLine.textContent=(source||'nav')+' · '+slides[prev].dataset.title+' → '+slides[index].dataset.title;
+  }
+  function blockedTarget(target){
+    if(!target||typeof target.closest!=='function')return false;
+    return !!target.closest('input,textarea,select,button,a,[contenteditable="true"],[data-swipe-exempt],.hscroll');
+  }
+  function resetGesture(){
+    gesture=null;
+    axisEl.classList.remove('show');
+    setTrack(baseX(),false);
+  }
+  function down(event){
+    if(event.pointerType==='mouse'&&event.button!==0)return;
+    if(blockedTarget(event.target)){
+      setState('CONTROL SAFE','blocked');dbgAxis.textContent='blocked';dbgResult.textContent='native control';
+      debugLine.textContent='gesture start geblokkeerd op interactief element';
+      return;
+    }
+    gesture={id:event.pointerId,x:event.clientX,y:event.clientY,lastX:event.clientX,lastT:performance.now(),startT:performance.now(),axis:null,dx:0,dy:0,velocityX:0};
+    try{viewport.setPointerCapture(event.pointerId);}catch(e){}
+    setState('TRACKING','');dbgAxis.textContent='pending';dbgResult.textContent='tracking';
+  }
+  function move(event){
+    if(!gesture||event.pointerId!==gesture.id)return;
+    var now=performance.now();
+    var dx=event.clientX-gesture.x;
+    var dy=event.clientY-gesture.y;
+    var adx=Math.abs(dx),ady=Math.abs(dy);
+    var dt=Math.max(1,now-gesture.lastT);
+    gesture.velocityX=(event.clientX-gesture.lastX)/dt;
+    gesture.lastX=event.clientX;gesture.lastT=now;gesture.dx=dx;gesture.dy=dy;
+    dbgDelta.textContent=Math.round(dx)+' / '+Math.round(dy);
+
+    if(!gesture.axis&&Math.max(adx,ady)>=AXIS_START){
+      if(adx>ady*H_RATIO){
+        gesture.axis='x';
+        setState('HORIZONTAL','horizontal');dbgAxis.textContent='horizontal';axisEl.classList.add('show');
+      }else if(ady>adx){
+        gesture.axis='y';
+        setState('VERTICAL','vertical');dbgAxis.textContent='vertical';dbgResult.textContent='native scroll';
+      }
+    }
+    if(gesture.axis==='y')return;
+    if(gesture.axis!=='x')return;
+
+    event.preventDefault();
+    var drag=dx;
+    if((index===0&&dx>0)||(index===slides.length-1&&dx<0))drag*=.28;
+    setTrack(baseX()+drag,true);
+  }
+  function up(event){
+    if(!gesture||event.pointerId!==gesture.id)return;
+    var g=gesture;
+    if(g.axis==='x'){
+      var threshold=Math.max(COMMIT_PX,width()*COMMIT_RATIO);
+      var direction=g.dx<0?1:-1;
+      var enough=Math.abs(g.dx)>=threshold;
+      var flick=Math.abs(g.dx)>=FLICK_MIN_PX&&Math.abs(g.velocityX)>=FLICK_VELOCITY;
+      if(enough||flick){
+        var next=Math.max(0,Math.min(slides.length-1,index+direction));
+        var result=(next===index)?'edge rubber-band':(flick&&!enough?'fast flick':'distance');
+        index=next;updateUi();dbgResult.textContent=result;
+        debugLine.textContent=result+' · dx '+Math.round(g.dx)+'px · v '+g.velocityX.toFixed(2)+'px/ms · '+slides[index].dataset.title;
+      }else{
+        setTrack(baseX(),false);dbgResult.textContent='snap back';
+        debugLine.textContent='snap back · horizontaal maar onder threshold ('+Math.round(Math.abs(g.dx))+'px)';
+      }
+    }else if(g.axis==='y'){
+      dbgResult.textContent='native scroll';debugLine.textContent='vertical wins · browser scroll blijft eigenaar';
+    }else{
+      dbgResult.textContent='tap/no lock';debugLine.textContent='te weinig beweging voor axis lock';
+    }
+    setTimeout(function(){setState('READY','');axisEl.classList.remove('show');},260);
+    gesture=null;
+  }
+  function cancel(event){if(gesture&&event.pointerId===gesture.id){dbgResult.textContent='cancelled';resetGesture();setState('READY','');}}
+
+  viewport.addEventListener('pointerdown',down);
+  viewport.addEventListener('pointermove',move,{passive:false});
+  viewport.addEventListener('pointerup',up);
+  viewport.addEventListener('pointercancel',cancel);
+  nav.forEach(function(btn){btn.addEventListener('click',function(){go(Number(btn.dataset.index),'bottom nav');});});
+  window.addEventListener('resize',function(){setTrack(baseX(),false);});
+  updateUi();
+})();
+</script>
+</body>
+</html>
