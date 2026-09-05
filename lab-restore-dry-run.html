@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F3EF">
+<title>Restore Dry Run — Gamenfy Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Schibsted+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="xp.js?v=10.100" defer></script>
+<script src="backup-restore-validator.js?v=1" defer></script>
+<style>
+:root{--bg:#F4F3EF;--card:#fff;--ink:#15140F;--muted:#6F6C63;--faint:#A6A399;--line:#E8E6DF;--gold:#C9A227;--green:#2E8B5F;--ember:#D4633E;--red:#B54831;--display:'Schibsted Grotesk',-apple-system,sans-serif;--body:'Inter',-apple-system,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-text-size-adjust:100%}.top{position:sticky;top:0;z-index:20;background:rgba(244,243,239,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(14px);padding:max(11px,env(safe-area-inset-top)) 14px 10px}.topin{max-width:650px;margin:auto;display:flex;align-items:center;gap:10px}.back{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);text-decoration:none;font-weight:800}.topcopy{flex:1}.topcopy strong{display:block;font:800 16px var(--display)}.topcopy span{display:block;color:var(--muted);font-size:9px;margin-top:2px}.badge{padding:6px 8px;border-radius:999px;background:#FFF0EC;color:#A64A2D;font-size:8px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.wrap{max-width:650px;margin:auto;padding:14px 14px 32px}.hero{padding:16px;border:1px solid #DED8C6;border-radius:18px;background:linear-gradient(135deg,#fff,#F8F5E9);margin-bottom:10px}.kicker{color:var(--gold);font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}.hero h1{font:800 24px/1.08 var(--display);letter-spacing:-.04em;margin:4px 0 7px}.hero p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px;margin-bottom:9px}.upload{display:block;width:100%;border:1.5px dashed #D5D1C5;border-radius:14px;padding:18px;text-align:center;cursor:pointer;background:#FBFAF6}.upload strong{display:block;font:800 13px var(--display)}.upload span{display:block;margin-top:4px;color:var(--muted);font-size:9px}.upload input{display:none}.filemeta{margin-top:8px;color:var(--muted);font-size:9px}.strategy{display:flex;gap:7px;margin-top:10px}.strategy button{flex:1;border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px;font:700 10px var(--display);color:var(--muted);cursor:pointer}.strategy button.on{border-color:var(--ink);color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}.strategy button small{display:block;font:500 8px var(--body);color:var(--muted);margin-top:3px;line-height:1.3}.gate{padding:12px;border-radius:14px;border:1px solid var(--line);margin-bottom:9px}.gate.blocked{background:#FFF3EF;border-color:#E9C3B8}.gate.good{background:#EEF8F2;border-color:#C5E1D0}.gate strong{display:block;font:800 12px var(--display)}.gate p{margin:4px 0 0;color:var(--muted);font-size:9px;line-height:1.45}.alerts{display:flex;flex-direction:column;gap:5px;margin-top:8px}.alert{padding:8px 9px;border-radius:10px;background:#F5F3ED;color:var(--muted);font-size:8.5px;line-height:1.4}.alert.err{background:#FFF0EC;color:#A64A2D}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:9px}.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px;text-align:center}.stat b{display:block;font:800 18px var(--display)}.stat span{display:block;margin-top:2px;color:var(--muted);font-size:7.5px}.stat.new b{color:var(--green)}.stat.change b{color:var(--gold)}.stat.missing b{color:var(--ember)}.domains{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:9px}.domain{background:#fff;border:1px solid var(--line);border-radius:13px;padding:10px}.domain strong{font:800 11px var(--display)}.domain div{margin-top:5px;color:var(--muted);font-size:8px;line-height:1.5}.rows{display:flex;flex-direction:column;gap:5px}.row{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:11px;padding:9px}.row code{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:8.5px;color:var(--ink)}.tag{flex:0 0 auto;border-radius:999px;padding:4px 6px;font-size:7.5px;font-weight:800;text-transform:uppercase}.tag.new{background:#EAF5EF;color:#256A49}.tag.change{background:#FFF6DF;color:#866516}.tag.same{background:#F2F1ED;color:#77736B}.tag.missing{background:#FFF0EC;color:#A64A2D}.domain-tag{color:var(--faint);font-size:7px;flex:0 0 auto}.section-title{font:800 10px var(--display);margin:13px 2px 7px}.empty{padding:20px;text-align:center;color:var(--muted);font-size:10px;background:#fff;border:1px solid var(--line);border-radius:14px}.hard-stop{margin-top:12px;padding:12px 13px;border:1px solid #E9C3B8;background:#FFF3EF;border-radius:14px;color:#8D3E2B;font-size:9px;line-height:1.5}.hard-stop strong{font:800 11px var(--display);display:block;margin-bottom:3px}.foot{margin-top:10px;color:var(--faint);font-size:8px;line-height:1.5}@media(max-width:390px){.wrap{padding:10px}.summary{grid-template-columns:1fr 1fr}.domains{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top"><div class="topin"><a class="back" href="lab.html#chatgpt-lab">←</a><div class="topcopy"><strong>Restore Dry Run</strong><span>Backup analyseren zonder data te wijzigen</span></div><span class="badge">no apply</span></div></header>
+<main class="wrap">
+<section class="hero"><div class="kicker">Safe restore design · phase 1</div><h1>Eerst bewijzen wat er zou veranderen. Pas veel later herstellen.</h1><p>Upload een Gamenfy JSON-backup. Deze Lab-tool valideert het bestand en vergelijkt alleen sleutelstatussen met je huidige device. Waarden worden niet op het scherm getoond en er bestaat hier bewust geen restore-knop.</p></section>
+<section class="card"><label class="upload"><strong>📄 Kies een Gamenfy backup</strong><span>Alleen lokaal gelezen met FileReader · niets wordt geüpload</span><input id="fileInput" type="file" accept="application/json,.json"></label><div class="filemeta" id="fileMeta">Nog geen bestand gekozen.</div><div class="strategy"><button type="button" class="on" data-strategy="merge">Merge preview<small>Backup zet aanwezige keys; huidige extra keys blijven.</small></button><button type="button" data-strategy="overwrite">Overwrite preview<small>Laat óók zien welke huidige in-scope keys zouden verdwijnen.</small></button></div></section>
+<div id="result"><div class="empty">Kies een backup om de dry-run te starten.</div></div>
+<div class="hard-stop"><strong>🔒 Restore blijft bewust geblokkeerd</strong>Backup v2 bevat geen verifieerbare owner/auth-manifest. Een echte restore mag pas bestaan nadat owner-check, pre-restore backup, expliciete bevestiging én cloud-convergence bescherming technisch bewezen zijn.</div>
+<div class="foot">Deze pagina gebruikt geen <code>localStorage.setItem</code>, <code>removeItem</code> of <code>clear</code>. Het huidige device wordt alleen gelezen om verschillen te berekenen.</div>
+</main>
+<script>
+(function(){
+  'use strict';
+  var input=document.getElementById('fileInput'),meta=document.getElementById('fileMeta'),result=document.getElementById('result');
+  var strategy='merge',validation=null;
+  function esc(v){var d=document.createElement('div');d.textContent=String(v==null?'':v);return d.innerHTML;}
+  function stat(v,label,cls){return '<div class="stat '+cls+'"><b>'+v+'</b><span>'+label+'</span></div>';}
+  function domainCard(name,d){return '<div class="domain"><strong>'+name+'</strong><div>'+d.new+' nieuw · '+d.change+' gewijzigd<br>'+d.same+' gelijk · '+d.missing+' ontbrekend</div></div>';}
+  function tag(status){var label={new:'nieuw',change:'wijzigt',same:'gelijk',missing:'zou weggaan'}[status]||status;return '<span class="tag '+status+'">'+label+'</span>';}
+  function render(){
+    if(!validation)return;
+    var V=window.GamenfyRestoreValidator;
+    var plan=V.analyzeAgainstStorage(validation,localStorage,strategy);
+    var alerts=(validation.errors||[]).map(function(x){return '<div class="alert err">✕ '+esc(x)+'</div>';}).concat((validation.warnings||[]).map(function(x){return '<div class="alert">! '+esc(x)+'</div>'; })).join('');
+    var gateClass=validation.valid?'good':'blocked';
+    var gateTitle=validation.valid?'Bestand syntactisch bruikbaar voor analyse':'Bestand faalt veiligheidsvalidatie';
+    var manifest=validation.manifest||{};
+    var gate='<div class="gate '+gateClass+'"><strong>'+gateTitle+'</strong><p>app: '+esc(manifest.app||'—')+' · versie: '+esc(manifest.version||'—')+' · owner proof: '+(manifest.ownerProof?'aanwezig':'ontbreekt')+' · restoreReady: <b>NEE</b></p><div class="alerts">'+alerts+'</div></div>';
+    var counts=plan.counts;
+    var sums='<div class="summary">'+stat(counts.new,'nieuwe keys','new')+stat(counts.change,'wijzigingen','change')+stat(counts.same,'ongewijzigd','same')+stat(counts.missing,'zou verdwijnen','missing')+'</div>';
+    var domains='<div class="domains">'+domainCard('RPG',plan.domains.rpg)+domainCard('Finance',plan.domains.finance)+domainCard('Health',plan.domains.health)+'</div>';
+    var special='';
+    if(validation.blocked.length)special+='<div class="section-title">Geblokkeerde gevoelige keys</div><div class="rows">'+validation.blocked.map(function(r){return '<div class="row"><code>'+esc(r.key)+'</code><span class="tag missing">geblokkeerd</span></div>';}).join('')+'</div>';
+    if(validation.unknown.length)special+='<div class="section-title">Onbekende keys · uitgesloten</div><div class="rows">'+validation.unknown.map(function(r){return '<div class="row"><code>'+esc(r.key)+'</code><span class="tag same">uitsluiten</span></div>';}).join('')+'</div>';
+    var rows=plan.rows.length?'<div class="section-title">Key-plan · '+esc(strategy)+'</div><div class="rows">'+plan.rows.map(function(r){return '<div class="row"><span class="domain-tag">'+esc(r.domain)+'</span><code>'+esc(r.key)+'</code>'+tag(r.status)+'</div>';}).join('')+'</div>':'<div class="empty">Geen vertrouwde in-scope keys gevonden in dit bestand.</div>';
+    result.innerHTML=gate+sums+domains+special+rows;
+  }
+  function parseFile(file){
+    meta.textContent=file.name+' · '+Math.round(file.size/1024)+' KB';
+    var reader=new FileReader();
+    reader.onload=function(){
+      try{
+        var data=JSON.parse(String(reader.result||''));
+        validation=window.GamenfyRestoreValidator.validateBackup(data);
+        render();
+      }catch(e){
+        validation=null;
+        result.innerHTML='<div class="gate blocked"><strong>Geen geldige JSON</strong><p>'+esc(e&&e.message?e.message:'Parse error')+'</p></div>';
+      }
+    };
+    reader.onerror=function(){validation=null;result.innerHTML='<div class="gate blocked"><strong>Bestand kon niet lokaal gelezen worden</strong></div>';};
+    reader.readAsText(file);
+  }
+  input.addEventListener('change',function(){if(input.files&&input.files[0])parseFile(input.files[0]);});
+  document.querySelectorAll('[data-strategy]').forEach(function(btn){btn.addEventListener('click',function(){strategy=btn.dataset.strategy;document.querySelectorAll('[data-strategy]').forEach(function(b){b.classList.toggle('on',b===btn);});render();});});
+})();
+</script>
+</body>
+</html>
