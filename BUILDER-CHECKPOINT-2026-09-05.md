@@ -7,14 +7,14 @@ This checkpoint records the exact state reached during the autonomous 4→5 Sep 
 
 ## Verified production baseline
 
-Latest verified non-health + general regression checkpoint:
+Latest verified non-health + general regression checkpoint before the later Goals-retention patch:
 - commit: `5919f9c63f4922dd0145aa7ae0f9d8e75fe07206`
 - commit message: `ChatGPT: lock non-health durability and truthful Settings`
 - GitHub smoke suite: run **165**, `completed/success`
 - exact Vercel production deployment: `dpl_1b1T2f1LahbTNuYoQrZwJEjWQXji`
 - deployment state: `READY`, target `production`
 
-The exact production deployment was fetched directly and confirmed to serve the updated Settings copy/behavior.
+The exact production deployment was fetched directly and confirmed to serve the updated Settings copy/behavior. Later commits in this overnight pass must receive their own CI/deployment proof before replacing this checkpoint as the verified functional baseline.
 
 ## Non-health durability work now locked
 
@@ -50,12 +50,14 @@ Do not log or copy endpoints/tokens into handoffs.
 
 ### PIN / private UI boundary
 
-- The PIN remains a local convenience/UI lock for private skills.
-- Settings now explicitly says it is **not encryption of synced data**.
+- The PIN is a **convenience/UI lock**, not cryptographic protection.
+- `rpg_pin_v1` is currently part of `RPG_SYNC_KEYS`, so the PIN is synchronized inside Joey's owner-scoped RPG cloud row rather than being purely device-local.
+- Settings explicitly says it is **not encryption of synced data**.
 - Existing PIN change/persistence behavior remains intact.
+- The backup exporter explicitly excludes `rpg_pin_v1` even though the normal RPG sync includes it.
 - Regression: `tests/pin-privacy-copy-smoke.js`.
 
-Do not describe the PIN as cryptographic storage protection unless actual encrypted-at-rest/client-side encryption is deliberately designed later.
+Do not describe the PIN as cryptographic storage protection. Whether Joey wants one synced PIN everywhere or a deliberately device-local PIN is a future product/security choice; do not silently change that behavior during unrelated work.
 
 ### Backup export
 
@@ -126,8 +128,10 @@ Walking threshold remains 10,000 steps. Sleep threshold remains exactly 420 minu
 ## Builder rule for next session
 
 Tomorrow's sparring should focus on product/visual choices, not re-open the regression-locked infrastructure unless a real symptom appears. Highest-value discussion candidates:
+- overdue Goals visibility / whether completed goals need a richer archive flow;
 - restore/import UX and safety semantics;
 - real Gamenfy PWA/app icon direction;
+- whether the convenience PIN should stay synced across Joey's devices or deliberately become device-local;
 - iOS installed-PWA nav reproduction if Joey can show it;
 - Jarvis XP category-definition choice;
 - Health Trail/Home rollout only if Joey explicitly wants to discuss moving Lab work toward Home;
