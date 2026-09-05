@@ -28,11 +28,23 @@ for(const target of ['lab-swipe-nav.html','park31.html?mode=missions','index.htm
   assert.ok(html.includes(target),'device QA links to '+target);
 }
 
-// Isolation contract: diagnostics must not mutate app data or start app engines.
+// Canonical local-state proof: one shared read helper, counts/flags only, never Goal content.
+assert.match(html,/function\s+readJsonKey\(key\)[\s\S]*localStorage\.getItem\(key\)/,'QA centralizes read-only localStorage access');
+for(const key of ['rpg_goals_v1','rpg_autohabit_v1','rpg_habitlog_v1']){
+  assert.match(html,new RegExp("readJsonKey\\(['\\\"]"+key+"['\\\"]\\)"),'QA reads canonical key through helper: '+key);
+}
+assert.match(html,/__retrospective_v2_migrated/,'QA reports retrospective migration marker');
+assert.match(html,/__xp_ledger_v1_migrated/,'QA reports XP-ledger migration marker');
+assert.match(html,/localGoalsCount/,'copyable diagnostics contain Goal count, not Goal text');
+assert.match(html,/localWalkingDays/,'copyable diagnostics contain canonical Walking count');
+assert.match(html,/localSleepDays/,'copyable diagnostics contain canonical Sleep count');
+
+// Isolation contract: diagnostics may read local canonical state but must never mutate it or start app engines.
 assert.doesNotMatch(html,/localStorage\.setItem|localStorage\.removeItem|localStorage\.clear\s*\(/,'QA Lab must not mutate local app state');
 assert.doesNotMatch(html,/supabase-js|auth\.js|sync\.js|topbar\.js|swipe-nav\.js/i,'QA Lab stays isolated from Auth, sync, topbar and swipe engine');
 assert.doesNotMatch(html,/gamenfySupabase|gamenfyAuthedFetch|fetch\s*\(/,'QA Lab must not call cloud APIs');
+assert.doesNotMatch(html,/goal\.title|goal\.why|linkedSkills|JSON\.stringify\(.*goals/s,'QA diagnostics must not copy Goal content or links');
 
 assert.match(html,/navigator\.clipboard\.writeText/,'diagnostics can be copied without writing app state');
 assert.match(html,/Real-device checklist/,'page includes explicit device verification checklist');
-console.log('iPhone Device QA smoke passed: standalone, safe-area, Visual Viewport and zero-baseline fixed-bottom drift diagnostics stay isolated/read-only.');
+console.log('iPhone Device QA smoke passed: device geometry plus read-only canonical Goal/Fitbit state diagnostics stay isolated and privacy-minimal.');
