@@ -22,13 +22,18 @@ jobs:
       - name: Apply exact guarded patch
         run: python3 scripts/one-time-spar-implementation.py
 
-      - name: Align Park smoke cache-bust version with v1.15
+      - name: Align Park smoke contracts with Daily Missions 2.0
         run: |
           python3 - <<'PY'
           from pathlib import Path
           p = Path('tests/park31-smoke.js')
           s = p.read_text(encoding='utf-8')
           s = s.replace(r'1\.14', r'1\.15').replace('v=1.14', 'v=1.15')
+          old = r"assert.doesNotMatch(home,/park31\.html\?embed=1&amp;mode=missions/);"
+          new = r"assert.match(home,/park31\.html\?embed=1&amp;mode=missions&amp;privacy=public/,'Home uses the approved public-only Daily Missions 2.0 surface');"
+          if old not in s:
+              raise SystemExit('Park Home guard anchor missing')
+          s = s.replace(old, new, 1)
           p.write_text(s, encoding='utf-8')
           PY
 
