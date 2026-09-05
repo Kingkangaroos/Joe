@@ -1,7 +1,7 @@
 /* Main synced free-text rendering safety — ChatGPT (OpenAI) */
 'use strict';
 const assert = require('node:assert/strict');
-const fs = require('node:path') && require('node:fs');
+const fs = require('node:fs');
 const path = require('node:path');
 const src = fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 
