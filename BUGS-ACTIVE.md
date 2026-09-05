@@ -1,91 +1,70 @@
 # Gamenfy — Active Bugs / Verification Needed
 
-> Shared current-state handoff for Claude + ChatGPT. This file intentionally contains only real open verification/blockers plus a compact regression-locked section. Historical implementation detail belongs in `BUILDER-NOW.md` and git history.
+> Shared current-state handoff for Claude + ChatGPT. Keep this file focused on real open blockers / proof still needed. Historical implementation detail belongs in `BUILDER-NOW.md`, `BUILDER-CHECKPOINT-2026-09-05.md`, `HEALTH-INSIGHTS.md`, and git history.
 
-Last refreshed: 2026-09-04 by ChatGPT (OpenAI)
+Last refreshed: **2026-09-05** by ChatGPT (OpenAI)
 
-## Current production baseline
+## Current verified production baseline
 
-Latest verified functional production head:
-- `54b24ba73879f04df3805c4e93d688b77c8d9d9e`
-- functional Main loader change introduced at `cca192c10723b629943b38adedcf3f1964b2eadb`
-- GitHub smoke suite: `completed/success` (run 125)
-- exact Vercel production deployment: `dpl_2mDncLGhBWHjAstPnKnFeTEY3gm5`
-- deployment state: `READY`, target `production`
+Latest verified head:
+- `5c85c8d0cf5856bf8c5f3aa31e6183bcb36897d0`
+- GitHub smoke suite: **run 169 — completed/success**
+- exact Vercel production deployment: `dpl_HHMkv8YyNUBYVu9YVpXdTZHKNLYT`
+- deployment state: **READY**, target `production`
 
-This production head closes both dynamic Fitbit reconciler loader failure modes. Cross-surface loading in `auth.js` and Main's synchronous loader in `checkin.js` now record success only after the reconciler script actually fires `onload`; failed script nodes are removed and bounded retries remain possible. Main still disables the legacy today/yesterday writer synchronously before the network request, so retry hardening does not reopen the old writer race. Both loaders request `autohabit-reconcile.js` v11.7. It retains Health Trail v1.28 recent-calendar evidence hardening, the exact 420-minute / 7-hour Sleep Daily Mission, stale-source gating, stable refresh behavior and the full Daily Mission/Fitbit correctness chain underneath it.
+Important functional commit directly underneath it:
+- `8a3cc696d662c1afbd9259373a896e8bbfd1eda6` — unfinished Goals no longer disappear after three overdue days; overdue only changes urgency copy, while manual 100%/archive remains authoritative.
 
-Later commits may be read-only audit/test/documentation work; do not confuse a docs-only head with the latest functional behavior unless the full production gates are reverified.
+This head also includes the earlier non-health durability pass: Goals/Ventures source-of-truth guard, manual Body-weight cloud durability, real push subscribe/unsubscribe Settings behavior, truthful PIN boundary, truthful push-window copy, disabled fake workspace isolation, and complete credential-free backup export.
+
+Do not confuse an older handoff checkpoint with current functional production if the commit/run/deployment above is newer.
 
 ---
 
-## 1. Daily Missions — real-device rollback confirmation
+## 1. Daily Missions — installed-iPhone rollback confirmation
 
-**Reported:** 30 Aug 2026  
-**Status:** **TECHNICALLY FIXED + CI-LOCKED; installed-iPhone confirmation still useful.**
+**Status:** **TECHNICALLY FIXED + CI-LOCKED; real-device confirmation still useful.**
 
 Original symptom: a backdated mission could appear checked and later return unchecked after navigation/reopen.
 
-Current `sync.js` protects:
+Current sync protections cover:
 - local edits before Auth/initial cloud pull;
 - stale initial remote snapshots;
 - stale realtime echoes;
 - pre-auth deletions;
-- whole-row healing through persistent dirty journal + monotone high-water mark.
+- persistent dirty journal + monotone high-water healing.
 
-**Remaining device proof:** edit a previous-day mission → Skills → Main → background/reopen installed PWA. If stable on Joey's real device, this can move fully to resolved history.
+**Remaining device proof:** edit a previous-day mission → Skills → Main → background/reopen installed PWA. If stable on Joey's real device, move this fully to resolved history.
 
-Do not stack another sync writer or speculative workaround unless this still reproduces.
+Do not stack another sync writer or speculative workaround unless the bug reproduces.
 
 ---
 
 ## 2. Fitbit → Daily Missions retrospective migration
 
-**Reported/clarified:** 3 Sep 2026  
-**Status:** **TECHNICAL CHAIN FIXED + CI/PRODUCTION VERIFIED; natural live cloud migration proof still pending.**
+**Status:** **TECHNICAL CHAIN FIXED + CI/PRODUCTION VERIFIED; natural live cloud migration still pending.**
 
-Locked behavior:
-- Walking threshold = 10,000 steps;
-- Sleep threshold = 420 minutes / 7 hours;
-- later Fitbit finalization/correction repairs older qualified days;
-- `rpg_habitlog_v1` is authoritative;
-- 0–10 score replays from full canonical history;
+Locked rules:
+- Walking threshold = **10,000 steps**;
+- Sleep threshold = **420 minutes / 7h**;
+- canonical history = `rpg_habitlog_v1`;
+- completed day +1 / missed completed day −1, 0–10 clamp;
 - no weekly reset;
-- deliberate manual undo stays undone via `manual-off`;
-- deliberate manual recheck clears suppression;
-- retry/crash paths cannot duplicate +15 XP.
+- later Fitbit finalization can repair old qualified days;
+- `manual-off` suppression is respected;
+- XP migration is exactly-once via durable ledger.
 
-Current reconciler: `autohabit-reconcile.js` v11.7.
+Current reconciler remains `autohabit-reconcile.js` v11.7. Never force migration proof with SQL.
 
-v11.7 snapshots the retained Walking/Sleep XP audit **once per reconcile pass** instead of rescanning the near-cap XP log for every Fitbit date. Regression explicitly locks one `getCharacter()` audit read per pass.
+### Latest live read-only audit — 5 Sep 2026
 
-### Authenticated surfaces
+Cloud timestamps:
+- `health_fitbit.updated_at = 2026-09-05 02:15:07.126+00` (**04:15 Amsterdam**);
+- `rpg.updated_at = 2026-09-04 18:00:54.187+00` (**20:00 Amsterdam, 4 Sep**).
 
-The reconciler is not Main-only anymore. Any authenticated surface loading `xp.js` registers the canonical `rpg` sync on DOM-ready; the loader may activate once RPG sync + required XP engine functions exist. Pages without the RPG engine cannot activate it.
+Despite the newer RPG write, the same **12 Fitbit-qualified canonical completions are still missing**.
 
-Main retains the synchronous legacy-check blocker so the old today/yesterday checker cannot race the modern module. Loader reliability is now symmetric:
-- cross-surface `auth.js` ownership is set only after successful script `onload`;
-- Main `checkin.js` also keeps ownership synchronous but records successful session loading only after `onload`;
-- failed script nodes are removed on `onerror`;
-- temporary download/network failures receive bounded retry with capped backoff;
-- loading-state dedupe prevents concurrent ready events from double-injecting;
-- neither path restores the obsolete legacy writer after a modern script failure.
-
-Regression coverage includes `tests/autohabit-session-loader-smoke.js` and `tests/main-autohabit-loader-retry-smoke.js`. The streak-only tests discover the Main loader boundary structurally rather than pinning a loader version comment.
-
-### Live read-only proof on 4 Sep 2026
-
-No history has been force-written through SQL.
-
-Latest observed cloud state during the 4 Sep audit:
-- `health_fitbit.updated_at = 2026-09-04 14:15:08.02+00` (16:15 Amsterdam);
-- `rpg.updated_at = 2026-09-03 22:32:45.196+00`;
-- Fitbit data exists through 4 Sep;
-- exactly **12** Fitbit-qualified canonical completions are still absent;
-- retrospective and XP-ledger migration markers are still unset;
-- there is no evidence of a half-finished XP-ledger migration.
-
-Missing Walking — 7:
+Walking — 7 missing:
 - 2026-07-18
 - 2026-07-20
 - 2026-07-21
@@ -94,79 +73,56 @@ Missing Walking — 7:
 - 2026-08-02
 - 2026-08-31
 
-Missing Sleep — 5:
+Sleep — 5 missing:
 - 2026-07-19
 - 2026-07-22
 - 2026-07-23
 - 2026-07-30
 - 2026-09-03
 
-Expected first natural current authenticated RPG reconciliation against this state:
+Current migration state remains untouched:
+- `__retrospective_v2_migrated` = unset;
+- `__xp_ledger_v1_migrated` = unset;
+- Walking score 9, streak 0, lastChecked 2026-09-02;
+- Sleep score 0, streak 0, lastChecked 2026-08-30;
+- retained XP log = 194/200.
+
+There is no evidence of a half-finished migration.
+
+Expected first successful natural reconciliation against this historical state remains:
 - +12 canonical dates;
 - Walking +105 audit XP;
-- Walking authoritative score remains **9** on 4 Sep because 3 Sep becomes a completed missed Walking day; current streak remains 0;
 - Sleep +75 audit XP;
-- Sleep authoritative score **0 → 1**, streak **0 → 1**, latest check 3 Sep;
 - +180 total habit audit XP;
-- retrospective + XP-ledger migration markers set.
+- migration markers set;
+- authoritative scores replayed from the full canonical log.
 
-### Durable read-only audit
-
-Use `server/database/fitbit-reconcile-audit.sql` for future cloud proof. It is regression-locked by `tests/fitbit-reconcile-audit-smoke.js` and explicitly follows the real canonical JSON orientation `rpg_habitlog_v1[habit_id][YYYY-MM-DD]`. It reports qualified source value, canonical presence, `manual-off`, XP-ledger state, migration markers and cloud timestamps without writing anything.
-
-### XP-log capacity audit
-
-Current retained XP log at that audit = 194/200. Twelve awards would evict six oldest rows. Read-only inspection showed those six are ordinary positive Walking/Sleep/Good Deed records, not undo/manual-off evidence. Existing canonical history + durable XP-ledger protect correctness.
-
-**Decision:** do not raise `MAX_LOG` just for this migration; it would enlarge the hot whole-RPG sync row with little correctness benefit.
-
-### Remaining proof
-
-After Joey naturally opens a current authenticated RPG surface, inspect Supabase read-only with the durable audit for the 12 additions + migration markers. Never manufacture proof with SQL.
+Use `server/database/fitbit-reconcile-audit.sql` for future read-only proof. Do not manufacture the result.
 
 ---
 
 ## 3. Jarvis Edge Function membership + credential migration
 
-**Status:** **OPEN DEPLOY BLOCKER; unsafe output is mitigated at database boundary.**
+**Status:** **OPEN DEPLOY BLOCKER; unsafe stale actions are mitigated at the database boundary.**
 
-Current deployed Jarvis membership drift:
-- Budgeting is not marked as a habit;
-- Good Deed is missing from the deployed skill map;
-- Grounding is still marked as a habit.
+Current deployed membership drift:
+- Budgeting not marked as a habit;
+- Good Deed missing from deployed skill map;
+- Grounding still marked as a habit.
 
 The deployed function also still embeds a server-only AI-provider credential in source.
 
-Do **not** redeploy merely to fix membership while re-embedding the same credential.
+Required safe cutover:
+1. create dedicated Edge Function environment secret(s);
+2. read them via `Deno.env.get(...)` and fail closed if absent;
+3. fix canonical Daily Mission membership in the same deployment;
+4. preserve JWT/owner validation;
+5. verify Budgeting + Good Deed and Grounding/private rejection;
+6. rotate the old credential only after the secret-backed version is proven.
 
-Required safe deployment:
-1. create dedicated Supabase Edge Function environment secret;
-2. switch provider credential access to `Deno.env.get(...)` and fail closed if absent;
-3. simultaneously fix canonical Daily Mission membership;
-4. deploy with `verify_jwt=true` + owner validation intact;
-5. verify Budgeting + Good Deed generation and Grounding/private rejection;
-6. rotate old credential only after env-secret version works.
+Current Supabase connector still exposes no Edge Function secret-management operation. Do **not** redeploy merely to fix membership while re-embedding the same credential.
 
-Current Supabase connector exposes Edge Function deployment but **no secret-management operation**. Plugin discovery on 4 Sep found no additional connected Supabase secrets capability. This remains genuinely blocked until a secure secret-management path exists.
-
-### Database defense-in-depth — LIVE
-
-`public.gamenfy_filter_jarvis_actions()`:
-- BEFORE trigger on `app_state` `jarvis_actions` row;
-- `SECURITY INVOKER`, never `SECURITY DEFINER`;
-- existing owner RLS remains authoritative;
-- allows public `checkHabit` only for canonical public 11;
-- rejects Grounding/private Daily routes and invalid explicit habit dates;
-- preserves queue order and unrelated action types.
-
-Real queue audit found 0 unconsumed executable actions.
-
-This guard blocks unsafe stale actions but cannot make the old function create missing valid Budgeting/Good Deed actions.
-
-Durable references:
-- `server/jarvis/README.md`
-- `server/database/jarvis-action-guard.sql`
-- `tests/server-boundary-hardening-smoke.js`
+Database defense-in-depth remains live via `public.gamenfy_filter_jarvis_actions()` and owner RLS.
 
 ---
 
@@ -175,25 +131,27 @@ Durable references:
 **Status:** **PARTLY HARDENED; Edge Function source secret migration still open.**
 
 Completed:
-- both morning/evening cron commands now read request auth from Supabase Vault;
-- read-only verification found 0 literal request-secret copies in cron command text;
-- first natural post-migration cron execution succeeded.
+- morning/evening pg_cron request auth is resolved from Supabase Vault;
+- no literal request-secret copies remain in cron command text;
+- natural post-migration cron execution succeeded.
 
 Still open:
-- deployed `send-daily-push` source contains server-only credential material that must move to Edge Function environment secrets;
-- rotate old value only after env-secret deployment is verified.
+- deployed function source still contains server-only credential material;
+- move to Edge Function environment secrets, verify, then rotate old values.
 
-Same tooling blocker as Jarvis: current connector has no Supabase Edge Function secret-management operation.
+Same tool blocker as Jarvis: no supported connected secret-management operation yet.
 
-Durable reference:
-- `server/send-daily-push/README.md`
-- `server/database/push-cron-vault.sql`
+Read-only push-subscription audit on 5 Sep:
+- owner-bound row;
+- **2** registered device subscriptions;
+- **0** duplicate endpoints.
+
+Never copy endpoints/tokens into handoffs or logs.
 
 ---
 
-## 5. iOS/PWA bottom navigation drifts into content
+## 5. iOS standalone PWA bottom navigation drift
 
-**Reported:** 30 Aug 2026  
 **Status:** **OPEN — DEVICE-DEPENDENT.**
 
 Observed on iOS 26 standalone PWA: fixed bottom navigation can visually drift upward while scrolling.
@@ -202,125 +160,126 @@ Do not stack speculative transforms / `!important` patches. If still reproducibl
 
 ---
 
-## 6. Park 3.1 native asset gap
+## 6. PWA / Apple app icon asset
 
-**Status:** **OPEN CREATOR TASK, NOT A LOGIC BUG.**
+**Status:** **OPEN ASSET / BRANDING TASK, NOT A LOGIC BUG.**
 
-Native Park 3.1 inventory:
-- 110 WebPs = 9 public sets ×10 + 2 private sets ×10.
+The repo currently has no dedicated Gamenfy app icon suitable for manifest + Apple home-screen identity. Existing images are content/Lab/skill assets and must not be reused arbitrarily.
 
-Missing native public ten-level sets:
-- Budgeting — currently labelled Park 2 fallback;
-- Meditation — currently labelled staged Park 2 fallback.
-
-Do not fabricate replacements. See `img/lab/park31/ASSET-MAP.md`.
+Once Joey approves an icon direction, integrate the required icon sizes / Apple touch metadata and regression-check all local targets.
 
 ---
 
-## 7. Jarvis habit XP audit consistency
+## 7. Park 3.1 native asset gap
+
+**Status:** **OPEN CREATOR TASK.**
+
+Missing native public ten-level sets:
+- Budgeting;
+- Meditation.
+
+Current fallbacks remain intentional. Do not fabricate replacements. See `img/lab/park31/ASSET-MAP.md`.
+
+---
+
+## 8. Backup restore/import
+
+**Status:** **OPEN PRODUCT + DATA-SAFETY FEATURE; export itself is fixed.**
+
+Backup export is now complete across canonical RPG + Finance + Health user-data scopes while explicitly excluding `rpg_pin_v1` and `hevy_api_key`.
+
+There is currently **no restore/import path**. Do not add a blind importer.
+
+A safe future restore must include at minimum:
+- schema/format validation;
+- domain/key preview;
+- backup-before-restore;
+- explicit merge vs overwrite semantics;
+- owner/auth validation;
+- protection against stale cloud convergence resurrecting overwritten data;
+- regression proof before production use.
+
+---
+
+## 9. PIN product/security choice
+
+**Status:** **CURRENT BEHAVIOR IS TRUTHFULLY DOCUMENTED; future choice only.**
+
+`rpg_pin_v1` is a convenience UI lock, not encryption. It is currently in `RPG_SYNC_KEYS`, so the same PIN can synchronize inside Joey's owner-scoped RPG cloud row.
+
+Settings now says this explicitly enough to avoid presenting it as cryptographic protection. Backup export deliberately excludes the PIN.
+
+Future discussion only: keep one synced PIN across devices vs deliberately make PIN device-local. Do not silently change this during unrelated work.
+
+---
+
+## 10. Jarvis habit XP audit consistency
 
 **Status:** **NON-BLOCKING PRODUCT DECISION.**
 
-Jarvis canonical `checkHabit` currently does not manufacture the same +15 habit audit XP event as some other writers.
+Jarvis canonical `checkHabit` writes canonical completion/replay but does not manufacture the same +15 habit audit XP event as some other writers.
 
 This does **not** affect:
-- Daily Mission visible 0–10 level;
+- visible Daily Mission 0–10 level;
 - Character/Total Level (habits excluded);
-- global streak (canonical habitlog is independent activity evidence).
+- global streak (canonical habitlog is independent evidence).
 
-One legacy category-XP statistic can still differ by writer. Decide later whether:
-- Jarvis should emit optional +15 habit audit XP; or
-- category-XP should exclude habit XP entirely.
-
-Do not silently change this product definition during unrelated bug work.
+One legacy category-XP statistic can differ by writer. Decide later whether Jarvis should emit optional +15 audit XP or category-XP should exclude habit XP entirely.
 
 ---
 
-## 8. Supabase account ownership + admin/security follow-ups
+## 11. Single-owner architecture / future multi-user
 
-**Status:** **CURRENT SINGLE-OWNER DATA IS HEALTHY; low/admin follow-ups remain.**
+**Status:** **CURRENT OWNER DATA HEALTHY; TRUE MULTI-USER REMAINS A DELIBERATE MIGRATION.**
 
-Read-only owner audit on 4 Sep 2026:
-- `public.app_state` has 14 rows;
-- 14/14 have a non-null `user_id`;
-- exactly one distinct owner exists across those rows;
-- RLS is enabled on `app_state`;
-- authenticated SELECT/INSERT/UPDATE policies require `auth.uid() = user_id`;
-- `sync.js` normal upserts and unload/keepalive writes both attach `window.gamenfyUserId` and fail closed without the authenticated owner/token;
-- `tests/sync-owner-contract-smoke.js` locks the client owner contract.
+Current `app_state` ownership + RLS is healthy for Joey's one-account Gamenfy.
 
-Current interpretation of other admin findings:
-- `public.integration_tokens` RLS/no client policy is intentional service-role-only token storage;
-- private backup table RLS/no policy is informational;
-- `pg_net` is in `public`, but dependency audit confirmed Fitbit + both push scheduler routes currently use it — do not move/drop it merely to silence advisor;
-- Auth leaked-password protection is disabled — enable later through an authorized Auth configuration capability.
+The table still uses a globally unique key rather than `(user_id,key)`. A genuine second account/test user therefore requires coordinated schema + client/server changes, backup and regression proof. Do not perform a casual index tweak.
 
-Never introduce permissive RLS or `SECURITY DEFINER` as a shortcut.
-
-### Future multi-user blocker — do not migrate casually
-
-`app_state` currently has a globally unique primary key/index on `key`, not `(user_id, key)`. This is correct for Joey's current one-account Gamenfy, but a true second account/test user could not independently own its own `rpg`, `health`, `finance`, etc. rows without colliding on those global keys.
-
-A real multi-user migration would require coordinated schema + client/server changes so every fetch/upsert/conflict target is owner-scoped. Treat that as a deliberate architecture migration with backup/regression proof, not as a quick index tweak. Current single-owner correctness does **not** require this migration.
-
----
-
-## 9. Legacy health routes / rows
-
-**Status:** **INERT + REGRESSION-LOCKED; no destructive cleanup needed.**
-
-The active wearable source is `app_state.health_fitbit` via `fitbit-sync`. Read-only audit found:
-- zero active repo references to `health_fitbit_intraday`, `/functions/v1/fitbit-intraday`, or `/functions/v1/health-sync`;
-- deployed `fitbit-intraday` and `health-sync` objects are JWT-protected HTTP 410 stubs;
-- zero cron references to those routes;
-- zero database-function references to those routes/old intraday key.
-
-The historical `app_state.health_fitbit_intraday` row is therefore inert and may remain as historical data. Do not delete it merely for tidiness. `tests/deprecated-health-source-smoke.js` prevents active `.js/.html/.ts` source from reviving those deprecated paths. See `FITBIT-SETUP.md`.
-
-Note: `app_state.health` is **not** legacy; `health.html` uses it for the synced supplement stack/water state.
+Separate cloud workspaces are not active; Settings truthfully keeps that UI disabled.
 
 ---
 
 # Regression-locked / resolved technical classes
 
-The following are not current blockers unless a regression is demonstrated:
+Do not reopen these without a reproduced regression:
 
-- **Main legacy `lastChecked` → habitlog resurrection** — fixed/CI locked.
-- **Character dated Daily Quest bypass** — fixed/CI locked.
-- **Character legacy v9.1 `rpg_daily_v1` backfill** — retired/CI locked.
-- **Global streak +15/−15 ghost days** — fixed/CI locked.
-- **Backdated XP counted on write day instead of activity day** — fixed/CI locked.
-- **Venture completion around Amsterdam midnight counted as UTC yesterday** — fixed in `checkin.js` v7.8; CI/production verified.
-- **Park 3.0 legacy mutation route** — blocked at Lab host boundary; source frozen.
-- **Daily Mission reset resurrecting old history** — fixed/CI locked.
-- **Daily Mission public/private membership drift in client surfaces** — canonical client contract locked.
-- **Habit XP double-count in Character/Total Level** — audited absent.
-- **Fitbit sleep calendar mapping** — audited healthy; sleep uses wake/end civil date.
-- **JS/PWA stale own-script cache after deploy** — `no-cache, must-revalidate`; SW push-only; CI locked.
-- **Local civil-day keys** — active writers audited; repo contract locked.
-- **Cross-surface Fitbit reconciler loading / Main boot race** — CI locked.
-- **Cross-surface reconciler script-load false-positive** — fixed; session ownership waits for real `onload`, failed nodes are removed and bounded retry remains possible.
-- **Main reconciler script-download dead session** — fixed at production head `54b24ba...`; Main keeps its synchronous legacy blocker but now retries failed v11.7 script downloads without reopening the old writer.
-- **Version-pinned streak test boundary** — fixed; streak tests discover the Main loader structurally rather than splitting on a `// v11.x:` comment.
-- **Cloud sync ownerless-row regression** — live state 14/14 owned + RLS healthy; normal and unload writers are CI-locked to attach `gamenfyUserId`.
-- **Deprecated intraday/health-sync route revival** — active source contract locked; old routes remain inert 410 stubs and historical row remains non-destructively untouched.
-- **Health Trail metadata key selected as a fake recovery day** — fixed; only real `YYYY-MM-DD` Fitbit keys are eligible.
-- **Health Trail recovery flicker during focus/minute refetch** — fixed with in-memory last-good Fitbit snapshot; failed fetch preserves last visible recovery.
-- **Health Trail HRV/RHR overreaction with thin history** — fixed; personal recovery baseline requires at least five valid historical values, otherwise component stays neutral.
-- **Health Trail stale-source ambiguity** — fixed in v1.25; recovery readout labels `vandaag`, `gisteren`, or the exact older source date.
-- **Health Insights stale data sounding current** — fixed in v1.26; data older than yesterday yields one neutral stale-source state, while current/yesterday cards disclose their source day.
-- **Health Insights near-7h sleep over-warning** — fixed in v1.27; a miss of at most 15 minutes can be neutral advice, while the actual Sleep Daily Mission remains exactly 420 minutes and a clear personal-baseline decline still wins.
-- **Health Trail stale historical baseline across data gaps** — fixed in v1.28; HRV/RHR/steps need enough measurements in a real recent calendar window, and sleep recent/baseline windows are calendar-bounded rather than "last available rows".
-- **Brittle Health Trail version-pinned smoke assertions** — fixed; stale-source and sleep-nuance tests lock behavior/invariants rather than a prototype version number.
-- **Fitbit cloud-audit JSON orientation ambiguity** — durable read-only audit + regression test lock `habitlog[habit][date]` and prevent future date-first audit mistakes.
+- Daily Mission authoritative `rpg_habitlog_v1` replay and 0–10 no-week-reset logic.
+- Main stale `lastChecked` → habitlog resurrection.
+- Character dated public Daily Mission bypass / old `rpg_daily_v1` backfill.
+- Global streak ghost days and backdated XP activity-date attribution.
+- Venture Amsterdam-midnight date attribution.
+- Park 3.0 mutation path; source remains frozen.
+- Daily Mission reset resurrecting old history.
+- Public/private Daily Mission membership drift in client surfaces.
+- Habit XP double-count in Character/Total Level.
+- Fitbit sleep wake-day mapping.
+- JS/PWA own-script stale caching (`no-cache, must-revalidate`; SW push-only).
+- Local civil-day key contract across active writers.
+- Cross-surface Fitbit reconciler boot/load retry failures.
+- Cloud sync ownerless writes / stale realtime rollback class.
+- Deprecated health/intraday routes revival.
+- Health Trail stale metadata dates, refresh flicker, thin baseline overreaction, stale-source wording, near-7h over-warning and calendar-gap baseline manufacturing (Health Trail v1.28 remains mature/Lab-only).
+- Goals/Ventures competing standalone goals cloud source.
+- **Overdue Goals auto-disappearing after 3 days** — fixed at `8a3cc696...`; unfinished goals stay active until deliberate completion/archive.
+- Manual Body-weight history device-only gap — `po_coach_weights` is in RPG cloud scope; derived Hevy volume remains local cache.
+- Water Coach durability — `po_water_v1` already in Health cloud scope.
+- Finance canonical sync scope coverage.
+- Settings fake push toggle — now uses real `GamenfyPush` subscribe/unsubscribe.
+- Push opt-out false success — cloud removal precedes local unsubscribe success.
+- Settings fake exact push times — copy now matches server-selected morning/evening windows.
+- Settings fake workspace isolation promise — disabled + dead success path removed.
+- PIN copy overclaim — explicitly convenience UI lock, not encryption.
+- Backup prefix bug / credential leak risk — canonical RPG + Finance + Health data exported; PIN + Hevy API key excluded.
+- Goals linked XP wording — retained XP log is described as **recent activity**, while manual percentage remains progress source of truth.
 
 ---
 
 ## Definition of technical completion
 
-Do not call a change complete until applicable gates pass:
+Do not call a new change complete until applicable gates pass:
 1. newest relevant GitHub Actions run = `completed/success`;
 2. exact/latest functional Vercel production deployment = `READY`;
-3. live cloud data is checked read-only when behavior depends on real state;
+3. live cloud data checked read-only when behavior depends on real state;
 4. device-specific behavior stays open until real iPhone/PWA confirmation;
 5. user history is never force-written merely to make verification look green.
