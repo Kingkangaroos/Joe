@@ -1,0 +1,77 @@
+name: ChatGPT WHY goals deeplink fix
+
+on:
+  push:
+    branches:
+      - chatgpt/builder-2026-09-05-why
+
+permissions:
+  contents: write
+
+jobs:
+  patch-test-commit:
+    if: ${{ !contains(github.event.head_commit.message, '[why-goals-deeplink-fixed]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v7
+        with:
+          ref: chatgpt/builder-2026-09-05-why
+          fetch-depth: 0
+
+      - name: Patch Goals deep-link and regression guard
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('character.html')
+          s = p.read_text()
+
+          old1 = "if (hash === 'skills') showTab('skills');\n    else if (hash === 'ventures') { showTab('skills'); setSkillsView('ventures'); }"
+          new1 = "if (hash === 'skills') showTab('skills');\n    else if (hash === 'goals') { showTab('skills'); setSkillsView('goals'); }\n    else if (hash === 'ventures') { showTab('skills'); setSkillsView('ventures'); }"
+          if old1 not in s:
+              raise SystemExit('DOMContentLoaded hash router anchor not found')
+          s = s.replace(old1, new1, 1)
+
+          old2 = "if(hash==='skills') showTab('skills');\n  else if(hash.indexOf('skill=')===0){"
+          new2 = "if(hash==='skills') showTab('skills');\n  else if(hash==='goals'){ showTab('skills'); setSkillsView('goals'); }\n  else if(hash.indexOf('skill=')===0){"
+          if old2 not in s:
+              raise SystemExit('hashchange router anchor not found')
+          s = s.replace(old2, new2, 1)
+          p.write_text(s)
+
+          t = Path('tests/why-chain-smoke.js')
+          q = t.read_text()
+          if "const character=fs.readFileSync(path.join(root,'character.html'),'utf8');" not in q:
+              q = q.replace("const home=fs.readFileSync(path.join(root,'index.html'),'utf8');", "const home=fs.readFileSync(path.join(root,'index.html'),'utf8');\nconst character=fs.readFileSync(path.join(root,'character.html'),'utf8');")
+          guard = "assert.match(character,/hash === 'goals'[\\s\\S]*setSkillsView\\('goals'\\)/,'WHY card target opens the canonical Goals view on initial load');\nassert.match(character,/hash==='goals'[\\s\\S]*setSkillsView\\('goals'\\)/,'Goals deep-link remains correct after hash changes');"
+          if guard not in q:
+              q = q.replace("console.log('WHY-chain smoke: real Goals are the primary reminder source; skill links are explicit and safely rendered.');", guard + "\nconsole.log('WHY-chain smoke: real Goals are the primary reminder source; skill links are explicit and safely rendered.');")
+          t.write_text(q)
+          PY
+
+      - name: Run full browserless regression suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/*-smoke.js; do
+            echo "::group::$test"
+            node "$test"
+            echo "::endgroup::"
+          done
+
+      - name: Commit verified fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "ChatGPT (OpenAI)"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add character.html tests/why-chain-smoke.js
+          if git diff --cached --quiet; then
+            echo "No product changes needed"
+            exit 0
+          fi
+          git commit -m "ChatGPT: fix WHY Goals deeplink [why-goals-deeplink-fixed]"
+          git push origin HEAD:chatgpt/builder-2026-09-05-why
