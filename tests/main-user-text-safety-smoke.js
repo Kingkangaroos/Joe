@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const src = fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 
-assert.match(src,/agenda-block-hint[^`]*`[^`]*\$\{escapeHtml\(it\.hint\)\}/,
+assert.ok(src.includes('const hint = it.hint ? ` <span class="agenda-block-hint">· ${escapeHtml(it.hint)}</span>` : \'\';'),
   'agenda custom hints must be escaped before innerHTML');
 assert.ok(src.includes('${escapeHtml(it.icon||\'•\')}'),
   'agenda icon text must be inert');
