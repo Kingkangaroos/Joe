@@ -316,36 +316,6 @@ const DEFAULT_QUOTES = [
   'Build the kingdom. One rep, one page, one decision at a time.',
 ];
 
-const DAILY_QUEST_DEFS = [
-  { id:'workout',      icon:'💪', label:'Workout',        skill:'gym',          xp:50 },
-  { id:'meditation',   icon:'🧘', label:'Meditation',     skill:'meditation',   xp:20 },
-  { id:'no_porn',      icon:'🔒', label:'Private quest',  skill:'no_porn',      xp:45, private:true },
-  { id:'weed_control', icon:'🔒', label:'Private quest 2',skill:'weed_control', xp:40, private:true },
-  { id:'reading',      icon:'📖', label:'Reading',        skill:'reading',      xp:15 },
-  { id:'outreach',     icon:'📈', label:'Outreach',       skill:'sales',        xp:35 },
-  { id:'gratitude',    icon:'🙏', label:'Gratitude',      skill:'gratitude',    xp:10 },
-  { id:'nutrition',    icon:'🥗', label:'Protein',        skill:'nutrition',    xp:20 },
-  { id:'grounding',    icon:'🌱', label:'Grounding',      skill:'grounding',    xp:15 },
-  { id:'teeth',        icon:'🦷', label:'Brush Teeth 2×', skill:'teeth',        xp:10 },
-  { id:'household',    icon:'🧹', label:'Household',      skill:'household',    xp:15 },
-  { id:'good_deed',    icon:'🤲', label:'Good Deed',      skill:'good_deed',    xp:15 },
-  { id:'planning',     icon:'📅', label:'Plan the day',   skill:'planning',     xp:15 },
-];
-
-const ACTIVE_QUESTS_KEY = 'rpg_active_quests_v1';
-const DEFAULT_ACTIVE_QUESTS = ['workout','meditation','no_porn','weed_control','reading','outreach','gratitude','nutrition'];
-
-function getActiveQuests() {
-  try {
-    const s = JSON.parse(localStorage.getItem(ACTIVE_QUESTS_KEY));
-    if (Array.isArray(s)) return s;
-  } catch {}
-  return [...DEFAULT_ACTIVE_QUESTS];
-}
-function saveActiveQuests(arr) {
-  try { localStorage.setItem(ACTIVE_QUESTS_KEY, JSON.stringify(arr)); } catch {}
-}
-
 function showToast(msg, isError) {
   const t = document.getElementById('settingsToast');
   t.textContent = msg || '✓ Saved';
@@ -375,7 +345,7 @@ function renderSkillPills() {
   order.forEach(cat => {
     const catMeta = meta[cat] || { label: cat, color: '#fff' };
     const catSkills = Object.entries(defaults)
-      .filter(([,s]) => s.parentSkill === cat)
+      .filter(([,s]) => s.parentSkill === cat && !s.private)
       .sort((a,b) => a[1].label.localeCompare(b[1].label));
 
     if (!catSkills.length) return;
@@ -411,29 +381,7 @@ function renderSkillPills() {
   });
 }
 
-// ── Daily quest toggles ────────────────────────────────────────
-function renderDailyQuestToggles() {
-  const container = document.getElementById('dailyQuestToggles');
-  const active = getActiveQuests();
-  let html = '<div style="font-size:11px;color:var(--t3);margin-bottom:12px">Toggle quests on or off. Active quests appear in your Daily check-in.</div>';
-  DAILY_QUEST_DEFS.forEach(q => {
-    const isOn = active.includes(q.id);
-    const uid = 'dqt_' + q.id;
-    html += `<div class="toggle-row">
-      <div>
-        <div class="toggle-label">${q.icon} ${q.label}</div>
-        <div class="toggle-sub">+${q.xp} XP → ${q.skill}${q.private?' · Private quest':''}</div>
-      </div>
-      <label class="toggle-sw">
-        <input type="checkbox" id="${uid}" ${isOn?'checked':''} onchange="toggleQuest('${q.id}',this.checked)">
-        <span class="toggle-sw-track"></span>
-        <span class="toggle-sw-thumb"></span>
-      </label>
-    </div>`;
-  });
-  container.innerHTML = html;
-}
-
+// ── Legacy Daily Mission compatibility guard ───────────────────
 window.toggleQuest = function(){
   showToast('Legacy quest selection is inactive');
   return false;
