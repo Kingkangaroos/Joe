@@ -1,7 +1,7 @@
 /* Main synced free-text rendering safety — ChatGPT (OpenAI) */
 'use strict';
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
+const fs = require('node:path') && require('node:fs');
 const path = require('node:path');
 const src = fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 
@@ -45,7 +45,9 @@ assert.ok(!src.includes("<div class=\"ci-row-title\">'+nx.nx.step.title+'</div>'
   'raw choice-gate step titles must not be injected');
 assert.ok(src.includes("'<div class=\"todo-text\">'+escapeHtml(t.text)+'</div>'"),
   'existing To-Do escaping must remain intact');
-assert.ok(src.includes("words.map(w=>'<span class=\"grat-tag\">'+escapeHtml(w)+'</span>')"),
-  'existing Gratitude escaping must remain intact');
+assert.ok(src.includes("btn.textContent=d.label||key;"),
+  'Gratitude cloud labels must render through textContent, never raw innerHTML');
+assert.ok(src.includes("word.textContent=d.label||key;"),
+  'Gratitude detail labels must render through textContent, never raw innerHTML');
 
 console.log('Main user-text safety smoke: agenda, Next Move, focus, check-in, choice gate, To-Do and Gratitude render stored free text inertly.');
