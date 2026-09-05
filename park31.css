@@ -43,3 +43,27 @@ body.p31-embedded{min-height:0;padding:0;overflow:hidden;background:#05091f}
 .p31-embedded.p31-mission-mode .p31-slot.is-done .p31-slot-art img{filter:saturate(1.08) brightness(1.08)}
 .p31-embedded.p31-mission-mode .p31-slot.is-done .p31-slot-copy em{color:#8ff0c5}
 @media(min-width:480px){.p31-embedded .p31-roster-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* v1.15 — Daily Missions 2.0: iPhone-safe tap completion + Home surface */
+.p31-slot-wrap{position:relative;min-width:0}
+.p31-slot{width:100%;padding-right:34px;touch-action:manipulation;-webkit-touch-callout:none}
+.p31-check{position:absolute;z-index:12;right:7px;bottom:8px;width:25px;height:25px;padding:0;border:1.5px solid rgba(166,184,219,.72);border-radius:50%;background:rgba(7,10,34,.9);color:#fff;font:900 14px/1 var(--display);display:grid;place-items:center;cursor:pointer;touch-action:manipulation;-webkit-touch-callout:none;box-shadow:0 2px 8px rgba(0,0,0,.22)}
+.p31-check:active{transform:scale(.9)}
+.p31-check.is-done{border-color:#61dfa5;background:#2e9f70;box-shadow:0 0 14px rgba(70,220,158,.28)}
+.p31-embedded .p31-slot-wrap{min-width:0}
+.p31-embedded .p31-slot{height:100%;padding-right:6px;padding-bottom:34px}
+.p31-embedded .p31-check{right:9px;bottom:8px;width:24px;height:24px}
+.p31-embedded.p31-home{background:transparent;color:#15140F}
+.p31-embedded.p31-home .p31-roster{background:#fff;border:1px solid #E8E6DF;border-radius:16px}
+.p31-embedded.p31-home .p31-roster-head strong{color:#15140F}
+.p31-embedded.p31-home .p31-roster-head small,.p31-embedded.p31-home .p31-roster-head>span:last-child{color:#6F6C63}
+.p31-embedded.p31-home .p31-slot{border-color:#E8E6DF;background:linear-gradient(145deg,#fff,#F7F6F2);color:#15140F;box-shadow:none}
+.p31-embedded.p31-home .p31-slot.is-ready{border-color:#DBD8CF}
+.p31-embedded.p31-home .p31-slot.is-done{border-color:rgba(46,139,95,.46);background:linear-gradient(145deg,#F4FBF7,#EDF8F2)}
+.p31-embedded.p31-home .p31-slot-copy strong{color:#15140F}
+.p31-embedded.p31-home .p31-slot-copy em{color:#6F6C63}
+.p31-embedded.p31-home .p31-slot.is-ready .p31-slot-copy em{color:#2E8B5F}
+.p31-embedded.p31-home .p31-slot-art{background:#F4F3EF}
+.p31-embedded.p31-home .p31-slot-level{background:rgba(255,255,255,.88);color:#57544B;border:1px solid rgba(0,0,0,.06)}
+.p31-embedded.p31-home .p31-check{background:#fff;color:#15140F;border-color:#C9C6BC;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.p31-embedded.p31-home .p31-check.is-done{background:#2E8B5F;border-color:#2E8B5F;color:#fff}

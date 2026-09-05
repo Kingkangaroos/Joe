@@ -1,0 +1,28 @@
+{
+  "project": "Website Ventures",
+  "owner": "Joey",
+  "updatedAt": "2026-09-05",
+  "managedBy": ["ChatGPT (OpenAI)"],
+  "workflow": {
+    "chatIsSourceOfTruth": false,
+    "feedbackAutoCaptured": true,
+    "builderManaged": true,
+    "userEditable": true
+  },
+  "now": [
+    "Define the first offer in one sentence",
+    "Choose the first narrow prospect segment",
+    "Define the first ten-customer sales and production loop",
+    "Validate pricing and recurring revenue before scaling",
+    "Decide the minimum demo/proof needed before cold outreach"
+  ],
+  "assetsNeeded": [
+    "Proof/demo site after offer and niche are locked"
+  ],
+  "lockedDecisions": {
+    "relationshipToGamenfy": "separate commercial venture, surfaced in one cockpit",
+    "scaleRule": "prove customers 1-10 before optimizing for mass scale",
+    "designRule": "animation and visual polish serve the offer, not replace validation",
+    "higgsfieldRole": "production tool, not business model"
+  }
+}
