@@ -9,6 +9,7 @@ const engine=fs.readFileSync(path.join(root,'backup-restore-validator.js'),'utf8
 const lab=fs.readFileSync(path.join(root,'lab-restore-dry-run.html'),'utf8');
 const inlineLabScript=(lab.match(/<script>\s*([\s\S]*?)\s*<\/script>\s*<\/body>/)||[])[1]||'';
 const spec=fs.readFileSync(path.join(root,'RESTORE-IMPORT-SPEC.md'),'utf8');
+const labIndex=fs.readFileSync(path.join(root,'lab.html'),'utf8');
 
 const window={RPG_SYNC_KEYS:['rpg_goals_v1'],RPG_SYNC_PREFIXES:['rpg_daily_v1:']};
 vm.runInNewContext(engine,{window,Set,Array,Object,Number,JSON,String,Math});
@@ -58,4 +59,5 @@ assert.match(spec,/Backup-before-restore/);
 assert.match(spec,/Owner\/auth proof/);
 assert.match(spec,/Cloud convergence protection/);
 assert.match(spec,/Do not ship Phase 2 until executable regression coverage proves stale cloud state cannot resurrect pre-restore data/);
+assert.match(labIndex,/href="lab-restore-dry-run\.html"/,'normal ChatGPT Lab must expose the Restore Dry Run');
 console.log('Restore Dry Run smoke: local parse, credential block, canonical scopes, merge/overwrite preview and hard no-apply gate passed.');
