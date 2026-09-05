@@ -59,9 +59,10 @@ new_quotes = '''  quotes.forEach((q, i) => {
 assert old_quotes in s, 'quote renderer anchor changed'
 s = s.replace(old_quotes, new_quotes, 1)
 
-# updateNotifUI no longer needs to know about a permanently-hidden old picker.
-s = s.replace("  const timeRow = document.getElementById('notifTimeRow');\n", '', 1)
-s = s.replace("  if (timeRow) timeRow.style.display = 'none';\n", '', 1)
+# updateNotifUI + initNotifUI both carried a permanently-hidden old picker.
+# Remove every exact legacy row lookup/hide occurrence, not just the first.
+s = s.replace("  const timeRow = document.getElementById('notifTimeRow');\n", '')
+s = s.replace("  if (timeRow) timeRow.style.display = 'none';\n", '')
 
 # Retire obsolete saveNotifTime function entirely.
 legacy_fn = '''window.saveNotifTime = function(val) {
@@ -75,7 +76,6 @@ legacy_fn = '''window.saveNotifTime = function(val) {
 assert legacy_fn in s, 'legacy saveNotifTime anchor changed'
 s = s.replace(legacy_fn, '', 1)
 
-# initNotifUI had its own old time-row hide too; previous replacements remove both.
 assert 'notifTimeRow' not in s
 assert 'saveNotifTime' not in s
 assert "const LAST_REMIND" not in s
