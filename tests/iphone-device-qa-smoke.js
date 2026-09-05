@@ -28,10 +28,11 @@ for(const target of ['lab-swipe-nav.html','park31.html?mode=missions','index.htm
   assert.ok(html.includes(target),'device QA links to '+target);
 }
 
-// Canonical local-state proof: read counts/flags only, never goal content.
-assert.match(html,/localStorage\.getItem\(['"]rpg_goals_v1['"]\)/,'QA reads the canonical local Goal store');
-assert.match(html,/localStorage\.getItem\(['"]rpg_autohabit_v1['"]\)/,'QA reads local Fitbit reconciliation state');
-assert.match(html,/localStorage\.getItem\(['"]rpg_habitlog_v1['"]\)/,'QA reads canonical habit history for counts');
+// Canonical local-state proof: one shared read helper, counts/flags only, never Goal content.
+assert.match(html,/function\s+readJsonKey\(key\)[\s\S]*localStorage\.getItem\(key\)/,'QA centralizes read-only localStorage access');
+for(const key of ['rpg_goals_v1','rpg_autohabit_v1','rpg_habitlog_v1']){
+  assert.match(html,new RegExp("readJsonKey\\(['\\\"]"+key+"['\\\"]\\)"),'QA reads canonical key through helper: '+key);
+}
 assert.match(html,/__retrospective_v2_migrated/,'QA reports retrospective migration marker');
 assert.match(html,/__xp_ledger_v1_migrated/,'QA reports XP-ledger migration marker');
 assert.match(html,/localGoalsCount/,'copyable diagnostics contain Goal count, not Goal text');
