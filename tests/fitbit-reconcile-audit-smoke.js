@@ -20,7 +20,11 @@ assert.match(sql, /__xp_ledger_v1_migrated/, 'audit exposes XP-ledger migration 
 assert.match(normalized, /join\s+public\.app_state\s+h[\s\S]*on\s+h\.user_id\s*=\s*r\.user_id[\s\S]*h\.key\s*=\s*'health_fitbit'[\s\S]*where\s+r\.key\s*=\s*'rpg'/, 'audit must pair health_fitbit and rpg by the same user_id');
 assert.doesNotMatch(normalized, /select\s+data\s+from\s+public\.app_state\s+where\s+key\s*=\s*'health_fitbit'[\s\S]*limit\s+1/, 'independent Fitbit LIMIT 1 lookup is unsafe for multiple owners');
 assert.doesNotMatch(normalized, /select\s+data\s+from\s+public\.app_state\s+where\s+key\s*=\s*'rpg'[\s\S]*limit\s+1/, 'independent RPG LIMIT 1 lookup is unsafe for multiple owners');
-assert.doesNotMatch(normalized, /select[\s\S]*user_id[\s\S]*from\s+detail/, 'owner id must not be exposed in the audit output');
+const finalSelectStart = normalized.lastIndexOf('\nselect\n');
+const finalFromDetail = normalized.indexOf('\nfrom detail', finalSelectStart);
+assert.ok(finalSelectStart >= 0 && finalFromDetail > finalSelectStart, 'final audit projection must be discoverable');
+const finalProjection = normalized.slice(finalSelectStart, finalFromDetail);
+assert.doesNotMatch(finalProjection, /\buser_id\b/, 'owner id must not be exposed in the final audit output');
 
 for (const forbidden of ['insert ', 'update ', 'delete ', 'merge ', 'alter ', 'drop ', 'truncate ', 'create ', 'grant ', 'revoke ']) {
   assert.equal(normalized.includes(forbidden), false, `audit SQL must remain read-only: no ${forbidden.trim().toUpperCase()}`);
