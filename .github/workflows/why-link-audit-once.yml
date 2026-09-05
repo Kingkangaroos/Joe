@@ -1,0 +1,70 @@
+name: ChatGPT guarded WHY Link Audit integration
+
+on:
+  push:
+    branches: [chatgpt/why-link-audit-lab]
+
+permissions:
+  contents: write
+
+jobs:
+  integrate-test-clean:
+    if: ${{ !contains(github.event.head_commit.message, '[why-audit-integrated]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout Lab branch
+        uses: actions/checkout@v7
+        with:
+          ref: chatgpt/why-link-audit-lab
+          fetch-depth: 0
+
+      - name: Add WHY Link Audit card to ChatGPT Lab
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('lab.html')
+          s=p.read_text()
+          if 'href="lab-why-audit.html"' not in s:
+              anchor='''      <a href="lab-swipe-nav.html" class="chatgpt-lab-card" aria-label="Open Swipe Navigation Lab">\n        <span class="chatgpt-lab-icon">↔️</span>\n        <span><strong>Swipe Navigation</strong><small>Vertical-first iPhone gesture test</small></span>\n        <em>Nieuw</em>\n      </a>'''
+              card='''      <a href="lab-why-audit.html" class="chatgpt-lab-card" aria-label="Open WHY Link Audit Lab">\n        <span class="chatgpt-lab-icon">🎯</span>\n        <span><strong>WHY Link Audit</strong><small>Check Goals, WHY en expliciete skill-links</small></span>\n        <em>Nieuw</em>\n      </a>'''
+              if anchor not in s:
+                  raise SystemExit('Swipe Navigation Lab card anchor not found')
+              s=s.replace(anchor,anchor+'\n'+card,1)
+          p.write_text(s)
+
+          t=Path('tests/why-link-audit-smoke.js')
+          q=t.read_text()
+          line="const lab=fs.readFileSync(path.join(root,'lab.html'),'utf8');"
+          if line not in q:
+              q=q.replace("const src=fs.readFileSync(path.join(root,'lab-why-audit.html'),'utf8');", "const src=fs.readFileSync(path.join(root,'lab-why-audit.html'),'utf8');\n"+line)
+          guard="assert.match(lab,/href=\"lab-why-audit\\.html\"/,'normal ChatGPT Lab must expose the WHY Link Audit');"
+          if guard not in q:
+              q=q.replace("console.log('WHY Link Audit smoke:", guard+"\nconsole.log('WHY Link Audit smoke:")
+          t.write_text(q)
+          PY
+
+      - name: Run complete browserless regression suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/*-smoke.js; do
+            echo "::group::$test"
+            node "$test"
+            echo "::endgroup::"
+          done
+
+      - name: Remove one-time workflow
+        shell: bash
+        run: git rm .github/workflows/why-link-audit-once.yml
+
+      - name: Commit verified Lab integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "ChatGPT (OpenAI)"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "ChatGPT: integrate WHY Link Audit Lab [why-audit-integrated]"
+          git push origin HEAD:chatgpt/why-link-audit-lab
