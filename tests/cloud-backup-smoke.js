@@ -23,6 +23,10 @@ assert.ok(!src.includes("(typeof v === 'string') ? v : JSON.stringify(v)"),
   'string cloud values must not lose their JSON-string layer in the flat compatibility view');
 assert.ok(src.includes('deviceOnly: {}'),
   'non-authoritative local remnants must be separated from cloud-authoritative data');
+assert.ok(src.includes("const sensitive = new Set(['hevy_api_key','rpg_pin_v1'])"),
+  'backup must centrally classify the local credential/PIN exclusions');
+assert.ok(src.includes('sensitive.forEach(k => { delete state[k]; })'),
+  'sensitive keys must be removed from each fetched cloud domain before serialization');
 assert.ok(src.includes("credentialsExcluded: ['rpg_pin_v1','hevy_api_key']"),
   'backup must document excluded local secrets/convenience PIN');
 assert.ok(src.includes("return fail('Cloud backup failed — no incomplete file downloaded')"),
@@ -30,4 +34,4 @@ assert.ok(src.includes("return fail('Cloud backup failed — no incomplete file 
 assert.ok(!src.includes("if(inScope(k)) dump.keys[k]=localStorage.getItem(k)"),
   'legacy localStorage-only backup loop must stay retired');
 
-console.log('Cloud backup smoke: owner cloud is authoritative, newer dirty edits are preserved, stale device cache cannot masquerade as a complete backup.');
+console.log('Cloud backup smoke: owner cloud is authoritative, newer dirty edits are preserved, sensitive keys are stripped, and stale device cache cannot masquerade as a complete backup.');
