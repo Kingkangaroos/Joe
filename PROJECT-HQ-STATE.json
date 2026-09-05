@@ -10,14 +10,24 @@
     "userEditable": true
   },
   "now": [
-    "Daily Missions 2.0 Home integration",
-    "Park 3.1 iPhone performance",
-    "Tap-circle mission completion",
-    "Level-aware Daily Challenge",
-    "Gratitude word-cloud board",
-    "Project HQ in-app surface"
+    "Verify Daily Missions 2.0 feel and smoothness naturally on installed iPhone",
+    "Locate/import the approved Budgeting owl level assets when available",
+    "Add Meditation native level set when Joey supplies it",
+    "Design the WHY-chain data model that links actions and skills to real life goals",
+    "Design safe horizontal swipe navigation between major app sections",
+    "Decide the final top-level life/dashboard taxonomy without losing the 100-year-plan WHY"
+  ],
+  "completedThisPass": [
+    "Daily Missions 2.0 public-only Home integration",
+    "Tap-circle Daily Mission completion; long-press retired",
+    "Park 3.1 render/preload/poll performance hardening",
+    "Daily Challenge difficulty bound to the selected skill's own level",
+    "Your Skills and Core Tracker removed from Home",
+    "Persistent Gratitude word-cloud board with count/date detail",
+    "In-app Project HQ with cloud-synced Joey feedback inbox"
   ],
   "assetsNeeded": [
+    "Budgeting owl native level set import",
     "Meditation native level set",
     "Dedicated Gamenfy app icon"
   ],
@@ -26,7 +36,9 @@
     "dailyMissionsVisualFramework": "Park 3.1 / Daily Missions 2.0",
     "dailyCompletionInteraction": "tap-circle",
     "homeRole": "overview cockpit",
-    "dailyChallenge": "keep, but constrain to current skill level",
+    "dailyChallenge": "keep, but constrain to the selected skill's current level",
+    "gratitude": "persistent concept word cloud; repeated concepts grow",
+    "projectMemory": "chat is never the sole source of truth",
     "skillsWorld": "later, separate from Daily Missions 2.0"
   }
 }
