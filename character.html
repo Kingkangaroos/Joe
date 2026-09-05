@@ -2001,9 +2001,10 @@ window.toggleOptionalQuest=function(skillKey,lvl,xp,el){
 // the whole app), matched against the goal's linked skills. Safer than
 // hooking into addXP itself (a core, heavily-used function): this only
 // READS existing data, never touches the XP-award path.
-// Note: xpLog caps at 200 entries app-wide, so a goal running for many
-// months on a very active account could miss its earliest related entries
-// once they roll off — acceptable v1 tradeoff for not touching addXP.
+// Note: xpLog caps at 200 entries app-wide. This panel therefore shows
+// RECENT linked activity only; it is not the goal's progress source of truth.
+// Goal progress remains Joey's explicit manual percentage, so log retention
+// can never make a goal move backwards or auto-complete it.
 // =============================================================
 const GOALS_KEY = 'rpg_goals_v1';
 function loadGoals(){ try{ return JSON.parse(localStorage.getItem(GOALS_KEY))||[]; }catch(e){ return []; } }
@@ -2034,12 +2035,13 @@ function escapeHtmlG(s){ const d=document.createElement('div'); d.textContent=s|
 function renderGoalsView(){
   const goals = loadGoals();
   const defaults = window.RPG_DEFAULT_SKILLS||{};
-  // active = not archived, not yet 100%, and not more than 3 days overdue
-  // (a small grace period before a missed deadline quietly drops off).
-  // Reaching 100% is Joey's own deliberate "I did this" signal, so it moves
-  // to Past immediately regardless of the deadline date.
-  const activeList = goals.filter(g => !g.archived && (g.pct||0) < 100 && daysUntil(g.deadline) >= -3);
-  const pastList = goals.filter(g => g.archived || (g.pct||0) >= 100 || daysUntil(g.deadline) < -3);
+  // v10.99: overdue goals stay active until Joey deliberately closes them.
+  // Auto-hiding a missed goal after three days worked directly against the
+  // feature's purpose: keep important goals visible instead of silently
+  // drifting to the next one. Deadline only changes urgency copy; it never
+  // archives a goal by itself. Reaching 100% or an explicit archive does.
+  const activeList = goals.filter(g => !g.archived && (g.pct||0) < 100);
+  const pastList = goals.filter(g => g.archived || (g.pct||0) >= 100);
 
   const listEl = document.getElementById('goalsList');
   const emptyEl = document.getElementById('goalsEmpty');
@@ -2101,7 +2103,7 @@ window.openGoalEditor = function(idx){
     '<textarea class="ge-textarea" id="geWhy" rows="2" placeholder="Optional \u2014 your own reminder of why">'+escapeHtmlG(g.why)+'</textarea>'+
     '<div class="sec-head">Deadline</div>'+
     '<input class="ge-date-input" id="geDeadline" type="date" value="'+(g.deadline||'')+'">'+
-    '<div class="sec-head">Link skills (activity here logs automatically)</div>'+
+    '<div class="sec-head">Link skills (recent activity appears automatically)</div>'+
     '<div class="ge-skill-grid" id="geSkillGrid">'+
       skillKeys.map(k => '<div class="ge-skill-chip'+(editingGoalSkills.includes(k)?' sel':'')+'" data-k="'+k+'" onclick="toggleGoalSkill(\''+k+'\')">'+defaults[k].icon+' '+defaults[k].label+'</div>').join('')+
     '</div>'+
