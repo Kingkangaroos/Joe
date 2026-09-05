@@ -1,7 +1,7 @@
 {
   "project": "Gamenfy",
   "owner": "Joey",
-  "updatedAt": "2026-09-05",
+  "updatedAt": "2026-09-06",
   "managedBy": ["ChatGPT (OpenAI)", "Claude"],
   "workflow": {
     "chatIsSourceOfTruth": false,
@@ -11,10 +11,10 @@
   },
   "now": [
     "Verify Daily Missions 2.0 feel and smoothness naturally on installed iPhone",
+    "Test the new Swipe Navigation Lab on installed iPhone before wiring gestures into real page navigation",
     "Verify the goal-first WHY layer against Joey's real active Goals and add explicit linkedSkills where links are genuinely intended",
     "Locate/import the approved Budgeting owl level assets when available",
     "Add Meditation native level set when Joey supplies it",
-    "Design safe horizontal swipe navigation between major app sections",
     "Decide the final top-level life/dashboard taxonomy without losing the 100-year-plan WHY"
   ],
   "completedThisPass": [
@@ -27,7 +27,9 @@
     "In-app Project HQ with cloud-synced Joey feedback inbox",
     "Goal-first WHY layer shipped: active Goals can drive the Home reminder and Daily Challenge context through explicit linkedSkills",
     "Canonical character.html#goals deep-link fixed and covered by regression tests",
-    "Full browserless regression suite passed before the WHY release was merged to main"
+    "Full browserless regression suite passed before the WHY release was merged to main",
+    "Swipe Navigation Lab shipped read-only in the normal Lab with vertical-first axis lock, control/carousel exclusions, thresholds, rubber-band edges, bottom-nav parity and gesture telemetry",
+    "Swipe Navigation Lab full regression suite passed and Vercel preview returned HTTP 200 before merge"
   ],
   "assetsNeeded": [
     "Budgeting owl native level set import",
@@ -43,11 +45,13 @@
     "gratitude": "persistent concept word cloud; repeated concepts grow",
     "projectMemory": "chat is never the sole source of truth",
     "skillsWorld": "later, separate from Daily Missions 2.0",
-    "whySource": "active rpg_goals_v1 Goals first; explicit linkedSkills only; do not invent a competing life taxonomy"
+    "whySource": "active rpg_goals_v1 Goals first; explicit linkedSkills only; do not invent a competing life taxonomy",
+    "swipeNavigation": "Lab-first; vertical scroll wins; interactive controls and nested horizontal surfaces are excluded; bottom navigation stays available; do not enable cross-page gestures until installed-iPhone feel is approved"
   },
   "release": {
     "goalFirstWhyMainSha": "849c119f481f53c0dd477ddad80d96a00e2263b0",
     "goalFirstWhyProductionDeployment": "dpl_3hUiKkptRddroLxnjBeyT7Un2LxR",
-    "goalFirstWhyProductionState": "READY"
+    "goalFirstWhyProductionState": "READY",
+    "swipeNavigationLabMainSha": "2366a5ba9d5872c5aecf2159d36aadcef22680b7"
   }
 }
