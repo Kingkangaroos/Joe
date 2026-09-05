@@ -11,16 +11,22 @@ assert.ok(src.includes('${escapeHtml(it.icon||\'•\')}'),
   'agenda icon text must be inert');
 assert.ok(src.includes('${escapeHtml(it.label)}${hint}'),
   'agenda custom labels must be escaped before innerHTML');
+assert.ok(!src.includes('${it.label}${hint}'),
+  'raw stored agenda labels must never return to an innerHTML template');
 assert.ok(src.includes("'<div><div class=\"nextmove-venture\">' + escapeHtml(v.name) + '</div>'"),
   'venture names must be escaped in Next Move');
 assert.ok(src.includes("'<div class=\"nextmove-title\">' + escapeHtml(nx.step.title) + '</div>'"),
   'venture step titles must be escaped in Next Move');
 assert.ok(src.includes("'<div class=\"nextmove-title\">' + escapeHtml(m.title) + '</div>'"),
   'custom Next Move titles must be escaped');
+assert.ok(!src.includes("'<div class=\"nextmove-title\">' + m.title + '</div>'"),
+  'raw custom move titles must not be injected into Main HTML');
 assert.ok(src.includes("'<div class=\"focus-kicker\">'+escapeHtml(s.ventureName)+'</div>'"),
   'focus overlay venture text must be escaped');
 assert.ok(src.includes("'<div class=\"focus-title\">'+escapeHtml(s.title)+'</div>'"),
   'focus overlay title must be escaped');
+assert.ok(!src.includes("'<div class=\"focus-title\">'+s.title+'</div>'"),
+  'raw focus titles must not be injected into overlay HTML');
 assert.ok(src.includes("'<div class=\"todo-text\">'+escapeHtml(t.text)+'</div>'"),
   'existing To-Do escaping must remain intact');
 assert.ok(src.includes("words.map(w=>'<span class=\"grat-tag\">'+escapeHtml(w)+'</span>')"),
