@@ -11,6 +11,7 @@
   },
   "now": [
     "Verify Daily Missions 2.0 feel and smoothness naturally on installed iPhone",
+    "Natural authenticated Gamenfy session after the latest Fitbit health_fitbit update, then re-run the read-only reconciliation audit: 12 historical qualified completions are still pending (7 Walking, 5 Sleep); do not force them with SQL",
     "Test Swipe Navigation Lab on installed iPhone; real cross-page engine already exists but remains dormant until approved",
     "Open WHY Link Audit on Joey's device and deliberately add explicit linkedSkills only where a real Goal relationship is intended",
     "Try Restore Dry Run with a real exported backup; Phase 1 remains analysis-only and cannot apply data",
@@ -34,7 +35,10 @@
     "WHY Link Audit shipped read-only in Lab; it scores active Goals on own WHY, deadline and explicit skill links without inventing mappings",
     "Restore Dry Run Phase 1 shipped in Lab: local JSON validation, credential blocks, canonical domain classification and merge/overwrite preview with no apply path",
     "Restore/import safety contract documented: owner proof, pre-restore backup, explicit semantics, two-step confirmation and cloud-convergence proof are mandatory before Phase 2",
-    "All new Swipe, WHY Audit and Restore Dry Run regression suites passed before merge"
+    "All new Swipe, WHY Audit and Restore Dry Run regression suites passed before merge",
+    "Fitbit reconciliation SQL audit hardened for multi-user safety: rpg and health_fitbit are now paired by the same app_state owner without exposing owner ID",
+    "Live same-owner Supabase audit reconfirmed exactly 12 pending historical Fitbit-qualified completions: 7 Walking and 5 Sleep; none are manual-off and none have XP-awarded ledger state",
+    "Verified autohabit-reconcile.js already processes all historical Fitbit dates, not only today/yesterday; no forced database repair is needed or allowed for proof"
   ],
   "assetsNeeded": [
     "Budgeting owl native level set import",
@@ -52,7 +56,24 @@
     "skillsWorld": "later, separate from Daily Missions 2.0",
     "whySource": "active rpg_goals_v1 Goals first; explicit linkedSkills only; do not invent a competing life taxonomy",
     "swipeNavigation": "Lab-first; vertical scroll wins; interactive controls and nested horizontal surfaces are excluded; bottom navigation stays available; dormant engine must not be activated until installed-iPhone feel is approved",
-    "restoreImport": "Phase 1 is dry-run only; backup v2 cannot prove owner identity; never add blind bulk import; no write path until owner/auth, pre-restore backup and stale-cloud convergence are proven"
+    "restoreImport": "Phase 1 is dry-run only; backup v2 cannot prove owner identity; never add blind bulk import; no write path until owner/auth, pre-restore backup and stale-cloud convergence are proven",
+    "fitbitHistoricalReconcile": "Use normal authenticated autohabit-reconcile.js only. It replays all historical health dates against canonical habitlog, respects manual-off and retry-safe XP ledger. Never force historical proof with direct SQL writes."
+  },
+  "fitbitReconcileAudit": {
+    "verifiedAt": "2026-09-06",
+    "walkingQualified": 28,
+    "walkingCanonical": 21,
+    "walkingPending": 7,
+    "sleepQualified": 10,
+    "sleepCanonical": 5,
+    "sleepPending": 5,
+    "totalPending": 12,
+    "manualOffAmongPending": 0,
+    "xpAwardedAmongPending": 0,
+    "cloudRetrospectiveMigrationFlag": false,
+    "cloudXpLedgerMigrationFlag": false,
+    "rpgCloudOlderThanLatestHealthCloud": true,
+    "nextProof": "Run a natural authenticated Gamenfy surface after latest Fitbit update, then repeat read-only same-owner audit."
   },
   "release": {
     "goalFirstWhyMainSha": "849c119f481f53c0dd477ddad80d96a00e2263b0",
@@ -61,6 +82,7 @@
     "swipeNavigationLabMainSha": "2366a5ba9d5872c5aecf2159d36aadcef22680b7",
     "swipeNavigationDormantEngineMainSha": "380d5da7ec1c457d484c4a52e4c3d81ccf945bd9",
     "whyLinkAuditMainSha": "055dada15f7b85236ea27aefe4b6168a2cdb573e",
-    "restoreDryRunMainSha": "523477e77184680b0ee245c6d6f7f402bd84af8d"
+    "restoreDryRunMainSha": "523477e77184680b0ee245c6d6f7f402bd84af8d",
+    "fitbitAuditOwnerPairingMainSha": "c027770c9214159fcdb83628930c20e721d8c68e"
   }
 }
