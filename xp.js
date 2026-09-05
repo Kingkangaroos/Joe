@@ -1039,6 +1039,55 @@
     love: { icon: '❤️', label: 'Love' }, happiness: { icon: '😊', label: 'Happiness' },
     exploration: { icon: '🌎', label: 'Exploration' },
   };
+  // v10.100 — goal-first WHY graph foundation.
+  // Joey's manually created Goals are the strongest source of truth because
+  // they already carry his own `why`, deadline, progress and linkedSkills.
+  // LIFE_GOAL_MAP remains a legacy/fallback direction map; these helpers do
+  // not manufacture new life categories or silently infer links.
+  function whyGoalDaysLeft(deadline) {
+    if(!deadline) return null;
+    var p=String(deadline).split('-').map(Number);
+    if(p.length!==3||!p[0]||!p[1]||!p[2]) return null;
+    var now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    var target=new Date(p[0],p[1]-1,p[2]);
+    return Math.round((target-today)/86400000);
+  }
+  function activeWhyGoals() {
+    var goals=[];
+    try{ goals=JSON.parse(localStorage.getItem('rpg_goals_v1'))||[]; }catch(e){ goals=[]; }
+    if(!Array.isArray(goals)) return [];
+    return goals.filter(function(g){ return g && !g.archived && Number(g.pct||0)<100; });
+  }
+  function compareWhyGoals(a,b) {
+    var ad=whyGoalDaysLeft(a.deadline), bd=whyGoalDaysLeft(b.deadline);
+    if(ad===null&&bd!==null) return 1;
+    if(ad!==null&&bd===null) return -1;
+    if(ad!==null&&bd!==null&&ad!==bd) return ad-bd;
+    return String(a.createdDate||'').localeCompare(String(b.createdDate||''));
+  }
+  window.getGoalLinksForSkill = function(skillKey) {
+    return activeWhyGoals()
+      .filter(function(g){ return Array.isArray(g.linkedSkills)&&g.linkedSkills.includes(skillKey); })
+      .sort(compareWhyGoals)
+      .map(function(g){
+        return {
+          title:String(g.title||''), why:String(g.why||''), deadline:g.deadline||null,
+          daysLeft:whyGoalDaysLeft(g.deadline), pct:Math.max(0,Math.min(100,Number(g.pct)||0)),
+          linkedSkills:Array.isArray(g.linkedSkills)?g.linkedSkills.slice():[]
+        };
+      });
+  };
+  window.getPriorityGoalReminder = function() {
+    var goals=activeWhyGoals().slice().sort(compareWhyGoals);
+    if(!goals.length) return null;
+    var g=goals[0];
+    return {
+      title:String(g.title||''), why:String(g.why||''), deadline:g.deadline||null,
+      daysLeft:whyGoalDaysLeft(g.deadline), pct:Math.max(0,Math.min(100,Number(g.pct)||0)),
+      linkedSkills:Array.isArray(g.linkedSkills)?g.linkedSkills.slice():[]
+    };
+  };
+
   // Picks the mapped skill closest to its next unclaimed SKILL_LADDERS tier
   // (a real, close breakthrough) — not the lowest level, which would just
   // point at whatever's most neglected regardless of how far off it is.

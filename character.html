@@ -4934,6 +4934,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     // new "Your Skills" row on Main (index.html), which links each chip here.
     const hash = (window.location.hash || '').replace('#','');
     if (hash === 'skills') showTab('skills');
+    else if (hash === 'goals') { showTab('skills'); setSkillsView('goals'); }
     else if (hash === 'ventures') { showTab('skills'); setSkillsView('ventures'); }
     else if (hash.indexOf('skill=') === 0) {
       showTab('skills');
@@ -4957,6 +4958,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 window.addEventListener('hashchange',()=>{
   const hash=(window.location.hash||'').replace('#','');
   if(hash==='skills') showTab('skills');
+  else if(hash==='goals'){ showTab('skills'); setSkillsView('goals'); }
   else if(hash.indexOf('skill=')===0){
     showTab('skills');
     const key=hash.slice('skill='.length);

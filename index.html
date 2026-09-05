@@ -328,6 +328,26 @@ body {
   border-radius: 7px; white-space: nowrap;
 }
 
+/* ── WHY today (v10.100) ─────────────────────────── */
+.life-why-card{
+  background:linear-gradient(135deg,#FBF9F3 0%,#F2EFE6 100%);
+  border:1px solid rgba(201,162,39,.38);border-radius:18px;padding:15px 16px;
+  margin-bottom:20px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  box-shadow:0 8px 24px -20px rgba(21,20,15,.32);
+}
+.life-why-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.life-why-kicker{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.life-why-title{font-family:var(--font-display);font-weight:800;font-size:16px;line-height:1.25;color:var(--ink)}
+.life-why-deadline{font-size:10px;font-weight:800;color:var(--muted);white-space:nowrap;padding-top:2px}
+.life-why-deadline.overdue{color:var(--ember-deep)}
+.life-why-copy{font-size:12px;line-height:1.5;color:#57544B;margin-top:7px}
+.life-why-chain{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:9px;font-size:10px;color:var(--muted)}
+.life-why-chip{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:999px;padding:3px 7px;font-weight:700;color:var(--ink)}
+.life-why-arrow{color:var(--gold);font-weight:800}
+.life-why-bar{height:4px;background:rgba(21,20,15,.08);border-radius:3px;overflow:hidden;margin-top:11px}
+.life-why-fill{height:100%;background:var(--gold);border-radius:3px}
+.wc-goal-why{font-size:10.5px;color:var(--gold);font-weight:700;margin-top:4px;line-height:1.35}
+
 /* ── Day Arc ─────────────────────────────────────── */
 .day-arc-card {
   background: var(--ink-card);
@@ -1144,6 +1164,11 @@ body {
     <div class="season-banner" id="seasonBanner"></div>
   </div>
 
+  <!-- WHY today (goal-first; no invented life taxonomy) -->
+  <div id="lifeWhyWrap" style="display:none">
+    <div class="life-why-card" id="lifeWhyCard" onclick="location.href='character.html#goals'"></div>
+  </div>
+
   <!-- Day Arc -->
   <div class="sec-head">Day Score</div>
   <div class="day-arc-card" id="dayArcCard">
@@ -1902,6 +1927,36 @@ function renderSeasonBanner() {
     <div class="season-banner-bar-track"><div class="season-banner-bar-fill" style="width:${pct}%"></div></div>`;
 }
 
+// v10.100: compact daily reminder of Joey's own active goal WHY.
+// No category inference here: this reads rpg_goals_v1 through xp.js helpers.
+function renderLifeWhy(){
+  const wrap=document.getElementById('lifeWhyWrap');
+  const card=document.getElementById('lifeWhyCard');
+  if(!wrap||!card||typeof window.getPriorityGoalReminder!=='function') return;
+  const goal=window.getPriorityGoalReminder();
+  if(!goal||!goal.title){ wrap.style.display='none'; card.textContent=''; return; }
+  const defaults=window.RPG_DEFAULT_SKILLS||{};
+  const skillChips=(goal.linkedSkills||[]).slice(0,4).map(k=>{
+    const d=defaults[k]||{}; return '<span class="life-why-chip">'+escapeHtml((d.icon||'')+' '+(d.label||k))+'</span>';
+  }).join('');
+  let deadline='No deadline', cls='';
+  if(goal.daysLeft!==null){
+    if(goal.daysLeft<0){ deadline=Math.abs(goal.daysLeft)+'d overdue'; cls=' overdue'; }
+    else if(goal.daysLeft===0) deadline='due today';
+    else deadline=goal.daysLeft+'d left';
+  }
+  const why=goal.why ? '<div class="life-why-copy">'+escapeHtml(goal.why)+'</div>' : '';
+  const chain=skillChips
+    ? '<div class="life-why-chain">'+skillChips+'<span class="life-why-arrow">→</span><span class="life-why-chip">🎯 '+escapeHtml(goal.title)+'</span></div>'
+    : '<div class="life-why-chain"><span class="life-why-chip">TODAY</span><span class="life-why-arrow">→</span><span class="life-why-chip">🎯 '+escapeHtml(goal.title)+'</span></div>';
+  card.innerHTML='<div class="life-why-top"><div><div class="life-why-kicker">Why you’re doing this</div><div class="life-why-title">'+escapeHtml(goal.title)+'</div></div>'+
+    '<div class="life-why-deadline'+cls+'">'+escapeHtml(deadline)+'</div></div>'+why+chain+
+    '<div class="life-why-bar"><div class="life-why-fill" style="width:'+Math.max(0,Math.min(100,goal.pct||0))+'%"></div></div>';
+  wrap.style.display='';
+}
+window.addEventListener('storage',e=>{ if(!e.key||e.key==='rpg_goals_v1') renderLifeWhy(); });
+window.addEventListener('gamenfy:remote-state-applied',renderLifeWhy);
+
 // v10.31: "Your Skills" row — was a curated 6-skill Focus grid, now shows
 // every active non-habit skill, most-recently-active first (derived from
 // xpLog, which is already newest-first — first occurrence per skill while
@@ -2169,12 +2224,14 @@ function renderWorkoutChallenge(){
   const c=todaysWorkoutChallenge(); const done=workoutChallengeDone(todayStr());
   const streak=workoutChallengeStreak();
   const streakBadge = streak>0 ? '<span style="font-size:12px;font-weight:700;color:var(--ember,#c8622a);margin-left:8px">\uD83D\uDD25 '+streak+'d</span>' : '';
+  const goalLink=(typeof window.getGoalLinksForSkill==='function' ? window.getGoalLinksForSkill(c.skill)[0] : null);
+  const goalWhy=goalLink&&goalLink.title ? '<div class="wc-goal-why">WHY → '+escapeHtml(goalLink.title)+'</div>' : '';
   card.innerHTML=
     '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">'
     +'<div>'
       +'<div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--text-tertiary,#8a8a8a);margin-bottom:2px">DAILY CHALLENGE'+streakBadge+'</div>'
       +'<div style="font-size:15px;font-weight:700;color:var(--text-primary,#1a1a1a)">'+c.icon+' '+c.name+'</div>'
-      +'<div style="font-size:13px;color:var(--text-secondary,#666)">'+c.target+' \u00b7 +'+c.xp+' XP</div>'
+      +'<div style="font-size:13px;color:var(--text-secondary,#666)">'+c.target+' \u00b7 +'+c.xp+' XP</div>'+goalWhy
     +'</div>'
     +'<button onclick="toggleWorkoutChallenge()" style="border:none;border-radius:12px;padding:10px 14px;font-weight:700;font-size:13px;cursor:pointer;color:#fff;background:'+(done?'var(--green,#3a9)':'var(--ink,#1a1a1a)')+'">'+(done?'\u2713 Done':'Complete')+'</button>'
     +'</div>';
@@ -3441,6 +3498,7 @@ function boot() {
   renderNextMove();
   renderMissions();
   renderSeasonBanner();
+  renderLifeWhy();
   try{renderWorkoutChallenge();}catch(e){}
   renderFocusGrid();
   renderCoreTracker();
