@@ -14,6 +14,12 @@ assert.match(html,/display-mode:\s*standalone/,'standalone media mode is measure
 assert.match(html,/window\.visualViewport/,'Visual Viewport API is measured');
 assert.match(html,/getBoundingClientRect\(\)/,'fixed bottom probe position is measured');
 assert.match(html,/position:fixed[^}]*bottom:calc\(8px \+ env\(safe-area-inset-bottom\)\)/s,'probe mirrors fixed + safe-area bottom behavior');
+
+// Zero-baseline contract: the intentional CSS offset (8px + safe-area) is not drift.
+assert.match(html,/var\s+safeBottom\s*=\s*px\(cs\.paddingBottom\)/,'safe-area bottom is part of the expected probe position');
+assert.match(html,/var\s+expectedBottom\s*=\s*visualBottom\s*-\s*\(8\s*\+\s*safeBottom\)/,'expected bottom subtracts the intentional probe offset');
+assert.match(html,/var\s+drift\s*=\s*rect\.bottom\s*-\s*expectedBottom/,'drift is measured against the expected fixed position');
+assert.doesNotMatch(html,/var\s+drift\s*=\s*rect\.bottom\s*-\s*visualBottom/,'raw visual-bottom delta would falsely count safe-area as drift');
 assert.match(html,/maxFixedProbeDrift/,'diagnostics expose maximum fixed-probe drift');
 assert.match(html,/orientationchange/,'orientation transitions are observed');
 assert.match(html,/visibilitychange/,'background\/foreground transitions are observed');
@@ -29,4 +35,4 @@ assert.doesNotMatch(html,/gamenfySupabase|gamenfyAuthedFetch|fetch\s*\(/,'QA Lab
 
 assert.match(html,/navigator\.clipboard\.writeText/,'diagnostics can be copied without writing app state');
 assert.match(html,/Real-device checklist/,'page includes explicit device verification checklist');
-console.log('iPhone Device QA smoke passed: standalone, safe-area, Visual Viewport and fixed-bottom drift diagnostics stay isolated/read-only.');
+console.log('iPhone Device QA smoke passed: standalone, safe-area, Visual Viewport and zero-baseline fixed-bottom drift diagnostics stay isolated/read-only.');
