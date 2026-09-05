@@ -174,17 +174,6 @@ body::before {
 }
 .toast-s.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-/* ── Notification time picker ────────────────────── */
-.notif-time {
-  display:flex; align-items:center; gap:8px; margin-top:10px;
-}
-.notif-time input[type="time"] {
-  background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1);
-  border-radius:10px; color:var(--t1); font-family:var(--mono);
-  font-size:14px; padding:8px 12px; outline:none;
-  -webkit-appearance:none;
-}
-.notif-time input[type="time"]:focus { border-color:rgba(245,200,66,0.4); }
 </style>
 </head>
 <body>
@@ -228,11 +217,6 @@ body::before {
         <span class="toggle-sw-track"></span>
         <span class="toggle-sw-thumb"></span>
       </label>
-    </div>
-    <div class="notif-time" id="notifTimeRow" style="display:none">
-      <span style="font-size:11px;color:var(--t3)">Remind me at</span>
-      <input type="time" id="notifTime" value="21:00" onchange="saveNotifTime(this.value)">
-      <span style="font-size:11px;color:var(--t3)">local time</span>
     </div>
     <div style="font-size:10px;color:var(--t3);margin-top:8px" id="notifStatus"></div>
   </div>
@@ -320,7 +304,6 @@ const STORAGE_KEY  = 'rpg_character_v1';
 const QUOTES_KEY   = 'rpg_quotes_v1';
 const PIN_STORE    = 'rpg_pin_v1';
 const NOTIF_KEY    = 'rpg_notif_v1';
-const LAST_REMIND  = 'rpg_last_reminder';
 
 const DEFAULT_QUOTES = [
   'Discipline is the bridge between goals and accomplishment.',
@@ -478,9 +461,15 @@ function renderQuotes() {
   quotes.forEach((q, i) => {
     const row = document.createElement('div');
     row.className = 'quote-item';
-    row.innerHTML =
-      '<div class="quote-text">' + q + '</div>' +
-      '<button class="quote-del" onclick="deleteQuote(' + i + ')">×</button>';
+    const text = document.createElement('div');
+    text.className = 'quote-text';
+    text.textContent = String(q || '');
+    const del = document.createElement('button');
+    del.className = 'quote-del';
+    del.type = 'button';
+    del.textContent = '×';
+    del.addEventListener('click', () => window.deleteQuote(i));
+    row.append(text, del);
     list.appendChild(row);
   });
 }
@@ -631,10 +620,8 @@ async function requestNotificationPermission() {
 // now belongs to the service-worker subscription + server push job.
 function updateNotifUI(enabled, state) {
   const toggle = document.getElementById('notifToggle');
-  const timeRow = document.getElementById('notifTimeRow');
   const status  = document.getElementById('notifStatus');
   if (toggle) toggle.checked = !!enabled;
-  if (timeRow) timeRow.style.display = 'none';
   if (status) {
     status.textContent = state === 'needs-standalone'
       ? 'Add Gamenfy to your Home Screen to enable iPhone push'
@@ -675,16 +662,7 @@ window.toggleNotifications = async function(checked) {
   }
 };
 
-window.saveNotifTime = function(val) {
-  const s = loadNotifSettings();
-  s.time = val;
-  saveNotifSettings(s);
-  showToast('✓ Reminder time saved');
-};
-
 async function initNotifUI() {
-  const timeRow = document.getElementById('notifTimeRow');
-  if (timeRow) timeRow.style.display = 'none';
   if (!window.GamenfyPush) { updateNotifUI(false, 'not-ready'); return; }
   try {
     const state = await window.GamenfyPush.status();
