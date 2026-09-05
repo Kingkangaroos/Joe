@@ -1,0 +1,70 @@
+name: ChatGPT guarded Swipe Navigation Lab integration
+
+on:
+  push:
+    branches: [chatgpt/swipe-nav-lab]
+
+permissions:
+  contents: write
+
+jobs:
+  integrate-test-clean:
+    if: ${{ !contains(github.event.head_commit.message, '[swipe-lab-integrated]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout Lab branch
+        uses: actions/checkout@v7
+        with:
+          ref: chatgpt/swipe-nav-lab
+          fetch-depth: 0
+
+      - name: Add Swipe Navigation card to ChatGPT Lab
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('lab.html')
+          s=p.read_text()
+          if 'href="lab-swipe-nav.html"' not in s:
+              anchor='''      <div class="chatgpt-lab-card">\n        <span class="chatgpt-lab-icon">✨</span>\n        <span><strong>Park 3.1</strong><small>11 Daily Mission-evoluties</small></span>\n        <em>Live Lab</em>\n      </div>'''
+              card='''      <a href="lab-swipe-nav.html" class="chatgpt-lab-card" aria-label="Open Swipe Navigation Lab">\n        <span class="chatgpt-lab-icon">↔️</span>\n        <span><strong>Swipe Navigation</strong><small>Vertical-first iPhone gesture test</small></span>\n        <em>Nieuw</em>\n      </a>'''
+              if anchor not in s:
+                  raise SystemExit('Park 3.1 Lab card anchor not found')
+              s=s.replace(anchor,anchor+'\n'+card,1)
+          p.write_text(s)
+
+          t=Path('tests/swipe-nav-lab-smoke.js')
+          q=t.read_text()
+          line="const lab=fs.readFileSync(path.join(root,'lab.html'),'utf8');"
+          if line not in q:
+              q=q.replace("const src=fs.readFileSync(path.join(root,'lab-swipe-nav.html'),'utf8');", "const src=fs.readFileSync(path.join(root,'lab-swipe-nav.html'),'utf8');\n"+line)
+          guard="assert.match(lab,/href=\"lab-swipe-nav\\.html\"/,'normal ChatGPT Lab must expose the Swipe Navigation prototype');"
+          if guard not in q:
+              q=q.replace("console.log('Swipe Navigation Lab smoke:", guard+"\nconsole.log('Swipe Navigation Lab smoke:")
+          t.write_text(q)
+          PY
+
+      - name: Run complete browserless regression suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/*-smoke.js; do
+            echo "::group::$test"
+            node "$test"
+            echo "::endgroup::"
+          done
+
+      - name: Remove one-time workflow
+        shell: bash
+        run: git rm .github/workflows/swipe-nav-lab-once.yml
+
+      - name: Commit verified Lab integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "ChatGPT (OpenAI)"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "ChatGPT: integrate Swipe Navigation Lab [swipe-lab-integrated]"
+          git push origin HEAD:chatgpt/swipe-nav-lab
