@@ -40,6 +40,8 @@
     .fixed-probe b{font-size:11px}.fixed-probe small{opacity:.72}
     .drift-good{color:#79E3AD}.drift-warn{color:#F4C86B}.drift-bad{color:#FF8B78}
     .safe-probes{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .canonical-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+    .canonical-actions{display:flex;justify-content:flex-end;margin-top:9px}.canonical-actions button{min-height:36px;padding:7px 10px;font-size:9px}
     .safe-box{border:1px solid var(--line);border-radius:13px;background:var(--card);padding:10px;font-size:10px}
     .safe-top{padding-top:calc(10px + env(safe-area-inset-top))}.safe-bottom{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
     .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -60,7 +62,7 @@
     <div><h1>iPhone Device QA</h1><p class="sub">Meet standalone PWA, safe-area, Visual Viewport en bottom-nav drift — zonder Gamenfy-data te wijzigen.</p></div>
   </div>
 
-  <div class="notice"><strong>Alleen meten.</strong> Deze pagina laadt geen Auth, Supabase, sync, topbar of swipe-engine en schrijft niets naar localStorage. Voor de echte device-proof: open deze pagina vanuit je geïnstalleerde Gamenfy-app, niet alleen Safari.</div>
+  <div class="notice"><strong>Alleen meten.</strong> Deze pagina laadt geen Auth, Supabase, sync, topbar of swipe-engine en schrijft niets naar localStorage. Hij leest alleen privacy-minimale counts/flags uit drie canonical keys (Goals, Fitbit reconcile state en habit history). Voor de echte device-proof: open deze pagina vanuit je geïnstalleerde Gamenfy-app, niet alleen Safari.</div>
 
   <div class="grid">
     <section class="card"><div class="label">App mode</div><div class="value" id="modeValue">—</div><div class="meta" id="modeMeta">detecteren…</div><span class="pill" id="modePill"><i></i><span>—</span></span></section>
@@ -77,6 +79,18 @@
     <div class="safe-box safe-top"><strong>Top inset</strong><div class="meta" id="safeTop">—</div></div>
     <div class="safe-box safe-bottom"><strong>Bottom inset</strong><div class="meta" id="safeBottom">—</div></div>
   </div>
+
+  <div class="section-title">Canonical local state</div>
+  <section class="card">
+    <div class="meta">Alleen read-only bewijs op dit device. Geen Goal-titels, WHY-tekst of skill-links worden getoond of gekopieerd. Handig na <strong>Main</strong> openen: herlees daarna deze kaart om te zien of canonical Goals en Fitbit-migratiemarkers lokaal aanwezig zijn.</div>
+    <div class="canonical-grid">
+      <div class="metric"><span>Goals store</span><b id="localGoals">—</b><small class="meta" id="localGoalsMeta">—</small></div>
+      <div class="metric"><span>Fitbit retrospective</span><b id="localRetrospective">—</b><small class="meta">historische replay-marker</small></div>
+      <div class="metric"><span>XP ledger</span><b id="localXpLedger">—</b><small class="meta">exactly-once marker</small></div>
+      <div class="metric"><span>Canonical history</span><b id="localHabitCounts">—</b><small class="meta">Walking / Sleep dagen</small></div>
+    </div>
+    <div class="canonical-actions"><button id="refreshLocalButton" type="button">Herlees local state</button></div>
+  </section>
 
   <div class="section-title">Bottom-nav drift test</div>
   <section class="card">
@@ -141,6 +155,46 @@
     var ios=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/i.test(ua)&&navigator.maxTouchPoints>1);
     return {ios:ios,touch:navigator.maxTouchPoints||0,ua:ua};
   }
+  function readJsonKey(key){
+    try{
+      var raw=localStorage.getItem(key);
+      if(raw===null)return {exists:false,value:null,valid:true};
+      try{return {exists:true,value:JSON.parse(raw),valid:true};}
+      catch(e){return {exists:true,value:null,valid:false};}
+    }catch(e){return {exists:false,value:null,valid:false};}
+  }
+  function countTrueDays(log,key){
+    var days=log&&log[key]&&typeof log[key]==='object'?log[key]:{};
+    return Object.keys(days).filter(function(date){return !!days[date];}).length;
+  }
+  function readCanonicalLocalState(){
+    var goalsRec=readJsonKey('rpg_goals_v1');
+    var autoRec=readJsonKey('rpg_autohabit_v1');
+    var logRec=readJsonKey('rpg_habitlog_v1');
+    var goals=Array.isArray(goalsRec.value)?goalsRec.value:[];
+    var auto=autoRec.value&&typeof autoRec.value==='object'?autoRec.value:{};
+    var habitlog=logRec.value&&typeof logRec.value==='object'?logRec.value:{};
+    var activeGoals=goals.filter(function(g){return g&&!g.archived&&Number(g.pct||0)<100;}).length;
+    return {
+      goalsPresent:goalsRec.exists&&goalsRec.valid&&Array.isArray(goalsRec.value),
+      goalsValid:goalsRec.valid,
+      localGoalsCount:goals.length,
+      localActiveGoals:activeGoals,
+      retrospectiveMigrated:auto.__retrospective_v2_migrated===true,
+      xpLedgerMigrated:auto.__xp_ledger_v1_migrated===true,
+      localWalkingDays:countTrueDays(habitlog,'walking'),
+      localSleepDays:countTrueDays(habitlog,'sleep')
+    };
+  }
+  function renderCanonicalLocalState(){
+    var c=readCanonicalLocalState();
+    $('localGoals').textContent=c.goalsPresent?(c.localGoalsCount+' goal'+(c.localGoalsCount===1?'':'s')):(c.goalsValid?'afwezig':'onleesbaar');
+    $('localGoalsMeta').textContent=c.goalsPresent?(c.localActiveGoals+' actief/onafgerond'):'canonical rpg_goals_v1';
+    $('localRetrospective').textContent=c.retrospectiveMigrated?'gedraaid ✓':'nog niet';
+    $('localXpLedger').textContent=c.xpLedgerMigrated?'gedraaid ✓':'nog niet';
+    $('localHabitCounts').textContent=c.localWalkingDays+' / '+c.localSleepDays;
+    return c;
+  }
   function log(kind,detail){
     var t=new Date().toLocaleTimeString('nl-NL',{hour12:false});
     logLines.push(t+'  '+kind+(detail?'  '+detail:''));
@@ -178,9 +232,10 @@
     $('deviceValue').textContent=d.ios?'iOS / iPadOS':'ander platform';
     $('deviceMeta').textContent='touch points '+d.touch+' · DPR '+(devicePixelRatio||1)+' · orientation '+((screen.orientation&&screen.orientation.type)||window.orientation||'—');
     measure();
+    renderCanonicalLocalState();
   }
   function diagnostics(){
-    var st=standalone(),d=deviceInfo(),vv=window.visualViewport,cs=getComputedStyle(cssProbe);
+    var st=standalone(),d=deviceInfo(),vv=window.visualViewport,cs=getComputedStyle(cssProbe),local=readCanonicalLocalState();
     return [
       'Gamenfy iPhone Device QA',
       'timestamp='+new Date().toISOString(),
@@ -190,6 +245,9 @@
       'visualViewport='+(vv?(vv.width+'x'+vv.height+', offset='+vv.offsetTop+'/'+vv.offsetLeft+', scale='+vv.scale):'unavailable'),
       'safeAreaTop='+px(cs.paddingTop)+'px, safeAreaBottom='+px(cs.paddingBottom)+'px',
       'maxFixedProbeDrift='+maxDrift.toFixed(1)+'px',
+      'localGoalsPresent='+local.goalsPresent+', localGoalsCount='+local.localGoalsCount+', localActiveGoals='+local.localActiveGoals,
+      'localFitbitRetrospectiveMigrated='+local.retrospectiveMigrated+', localXpLedgerMigrated='+local.xpLedgerMigrated,
+      'localWalkingDays='+local.localWalkingDays+', localSleepDays='+local.localSleepDays,
       'orientation='+((screen.orientation&&screen.orientation.type)||window.orientation||'unknown'),
       'visibility='+document.visibilityState,
       'userAgent='+d.ua
@@ -200,11 +258,13 @@
   window.addEventListener('scroll',onScroll,{passive:true});
   window.addEventListener('resize',onResize,{passive:true});
   window.addEventListener('orientationchange',function(){log('orientationchange');setTimeout(measure,180);});
-  document.addEventListener('visibilitychange',function(){log('visibility',document.visibilityState);measure();});
+  document.addEventListener('visibilitychange',function(){log('visibility',document.visibilityState);measure();if(document.visibilityState==='visible')renderCanonicalLocalState();});
   if(window.visualViewport){
     visualViewport.addEventListener('resize',function(){measure();log('visualViewport.resize',Math.round(visualViewport.width)+'×'+Math.round(visualViewport.height));},{passive:true});
     visualViewport.addEventListener('scroll',function(){measure();},{passive:true});
   }
+  $('refreshLocalButton').addEventListener('click',function(){renderCanonicalLocalState();log('local canonical state reread');});
+  window.addEventListener('pageshow',function(){renderCanonicalLocalState();});
   $('resetButton').addEventListener('click',function(){maxDrift=0;measure();log('max drift reset');});
   $('copyButton').addEventListener('click',async function(){
     var text=diagnostics();
