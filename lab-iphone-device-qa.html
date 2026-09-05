@@ -152,7 +152,10 @@
     var vv=window.visualViewport;
     var rect=$('fixedProbe').getBoundingClientRect();
     var visualBottom=vv?(vv.offsetTop+vv.height):window.innerHeight;
-    var drift=rect.bottom-visualBottom;
+    var cs=getComputedStyle(cssProbe);
+    var safeBottom=px(cs.paddingBottom);
+    var expectedBottom=visualBottom-(8+safeBottom);
+    var drift=rect.bottom-expectedBottom;
     var abs=Math.abs(drift);
     if(abs>maxDrift)maxDrift=abs;
     $('driftNow').textContent=drift.toFixed(1)+' px';
@@ -160,13 +163,12 @@
     $('scrollY').textContent=Math.round(window.scrollY||0);
     $('probeDrift').textContent=drift.toFixed(1)+' px';
     $('probeDrift').className=abs<=2?'drift-good':abs<=8?'drift-warn':'drift-bad';
-    $('probeMeta').textContent='visual bottom '+Math.round(visualBottom)+' · rect '+Math.round(rect.bottom);
+    $('probeMeta').textContent='expected '+Math.round(expectedBottom)+' · rect '+Math.round(rect.bottom)+' · safe '+safeBottom.toFixed(0);
     $('windowViewport').textContent=Math.round(innerWidth)+'×'+Math.round(innerHeight);
     $('visualViewport').textContent=vv?Math.round(vv.width)+'×'+Math.round(vv.height):'niet beschikbaar';
     $('visualOffset').textContent=vv?vv.offsetTop.toFixed(1)+' / '+vv.offsetLeft.toFixed(1)+' · '+vv.scale.toFixed(2):'—';
-    var cs=getComputedStyle(cssProbe);
     $('safeTop').textContent=px(cs.paddingTop).toFixed(1)+' px gemeten';
-    $('safeBottom').textContent=px(cs.paddingBottom).toFixed(1)+' px gemeten';
+    $('safeBottom').textContent=safeBottom.toFixed(1)+' px gemeten';
   }
   function renderEnvironment(){
     var st=standalone(),d=deviceInfo();
