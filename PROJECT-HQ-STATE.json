@@ -1,0 +1,32 @@
+{
+  "project": "Gamenfy",
+  "owner": "Joey",
+  "updatedAt": "2026-09-05",
+  "managedBy": ["ChatGPT (OpenAI)", "Claude"],
+  "workflow": {
+    "chatIsSourceOfTruth": false,
+    "feedbackAutoCaptured": true,
+    "builderManaged": true,
+    "userEditable": true
+  },
+  "now": [
+    "Daily Missions 2.0 Home integration",
+    "Park 3.1 iPhone performance",
+    "Tap-circle mission completion",
+    "Level-aware Daily Challenge",
+    "Gratitude word-cloud board",
+    "Project HQ in-app surface"
+  ],
+  "assetsNeeded": [
+    "Meditation native level set",
+    "Dedicated Gamenfy app icon"
+  ],
+  "lockedDecisions": {
+    "budgetingCharacter": "owl",
+    "dailyMissionsVisualFramework": "Park 3.1 / Daily Missions 2.0",
+    "dailyCompletionInteraction": "tap-circle",
+    "homeRole": "overview cockpit",
+    "dailyChallenge": "keep, but constrain to current skill level",
+    "skillsWorld": "later, separate from Daily Missions 2.0"
+  }
+}
