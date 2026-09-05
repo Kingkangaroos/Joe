@@ -5,6 +5,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const root=path.join(__dirname,'..');
 const src=fs.readFileSync(path.join(root,'swipe-nav.js'),'utf8');
+const codeOnly=src.replace(/\/\/.*$/gm,'');
 const arch=fs.readFileSync(path.join(root,'SWIPE-NAV-ARCHITECTURE.md'),'utf8');
 
 assert.match(src,/\{key:'main',href:'index\.html'\}[\s\S]*\{key:'character',href:'character\.html'\}[\s\S]*\{key:'skills',href:'character\.html#skills'\}[\s\S]*\{key:'finance',href:'finance\.html'\}[\s\S]*\{key:'jarvis',href:'jarvis\.html'\}/,'route order must mirror topbar.js');
@@ -21,7 +22,7 @@ assert.match(src,/horizontallyScrollable\(target,root\)/,'nested horizontal surf
 assert.match(src,/isModalOpen\(doc\)/,'modal state blocks swipe starts');
 assert.match(src,/location\.assign\(href\)/,'cross-document navigation happens only after a committed gesture');
 assert.match(src,/window\.GamenfySwipeNav=\{[\s\S]*mount:mount/,'engine is exposed as an explicit API');
-assert.doesNotMatch(src,/GamenfySwipeNav\.mount\(\)/,'engine must never self-mount');
+assert.doesNotMatch(codeOnly,/GamenfySwipeNav\.mount\s*\(/,'engine must never self-mount');
 assert.doesNotMatch(src,/localStorage\.setItem|supabase|fetch\(/i,'engine must not own app data or remote state');
 assert.match(arch,/engine built, dormant, not loaded by any production page/i);
 assert.match(arch,/Do not load or mount it globally until Joey approves the installed-iPhone feel/i);
