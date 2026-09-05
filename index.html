@@ -2417,11 +2417,11 @@ function renderAgenda() {
     const slotItems = items.filter(it => Math.floor(it.time) === h).sort((a,b) => a.time - b.time);
     const blocks = slotItems.map((it, idx) => {
       const color = it.type === 'mission' ? 'var(--green)' : it.type === 'skill' ? 'var(--ember)' : 'var(--ink-card)';
-      const hint = it.hint ? ` <span class="agenda-block-hint">· ${it.hint}</span>` : '';
+      const hint = it.hint ? ` <span class="agenda-block-hint">· ${escapeHtml(it.hint)}</span>` : '';
       const half = (it.time % 1) ? `<span class="agenda-block-half">:30</span>` : '';
       return `<div class="agenda-block${it.done?' done':''}" style="background:${color}" data-hour="${h}" data-idx="${idx}" onclick="toggleAgendaBlock('${key}',${h},${idx},event)">
-        ${half}<span class="agenda-block-icon">${it.icon||'•'}</span>
-        <span class="agenda-block-text">${it.label}${hint}</span>
+        ${half}<span class="agenda-block-icon">${escapeHtml(it.icon||'•')}</span>
+        <span class="agenda-block-text">${escapeHtml(it.label)}${hint}</span>
         <span class="agenda-block-x" onclick="removeAgendaBlock('${key}',${h},${idx},event)">×</span>
       </div>`;
     }).join('');
@@ -3338,8 +3338,8 @@ function openFocusOverlay(){
   const ov=document.createElement('div');
   ov.className='focus-overlay'; ov.setAttribute('data-focus','1');
   ov.innerHTML='<div class="focus-inner">'+
-    '<div class="focus-kicker">'+s.ventureName+'</div>'+
-    '<div class="focus-title">'+s.title+'</div>'+
+    '<div class="focus-kicker">'+escapeHtml(s.ventureName)+'</div>'+
+    '<div class="focus-title">'+escapeHtml(s.title)+'</div>'+
     '<div class="focus-time" id="focusTime">--:--</div>'+
     '<div class="focus-hint" id="focusHint">Focus. The clock is running.</div>'+
     '<button class="focus-done" onclick="focusComplete(this)">Done \u2014 complete step</button>'+
@@ -3408,15 +3408,15 @@ function renderNextMove() {
   }
   card.innerHTML = rows.map(({ v, nx }) =>
     '<div class="nextmove-row" onclick="location.href=\'character.html#ventures\'">' +
-      '<div><div class="nextmove-venture">' + v.name + '</div>' +
-      '<div class="nextmove-title">' + nx.step.title + '</div>' +
+      '<div><div class="nextmove-venture">' + escapeHtml(v.name) + '</div>' +
+      '<div class="nextmove-title">' + escapeHtml(nx.step.title) + '</div>' +
       (nx.step.minutes ? '<div class="nextmove-min" style="display:inline-block;margin-top:4px">~' + nx.step.minutes + ' min</div>' : '') + '</div>' +
       '<button class="nextmove-start" onclick="event.stopPropagation();startFocus(\'' + v.id + '\',\'' + nx.step.id + '\')">Start</button>' +
     '</div>'
   ).join('') + custom.map(m =>
     '<div class="nextmove-row" onclick="if(confirm(\'Remove this move?\')) removeCustomMove(\'' + m.id + '\')">' +
       '<div><div class="nextmove-venture">Your move</div>' +
-      '<div class="nextmove-title">' + m.title + '</div>' +
+      '<div class="nextmove-title">' + escapeHtml(m.title) + '</div>' +
       '<div class="nextmove-min" style="display:inline-block;margin-top:4px">~' + m.minutes + ' min</div></div>' +
       '<button class="nextmove-start" onclick="event.stopPropagation();startFocusCustom(\'' + m.id + '\')">Start</button>' +
     '</div>'
