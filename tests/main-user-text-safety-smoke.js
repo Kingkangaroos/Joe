@@ -27,6 +27,18 @@ assert.ok(src.includes("'<div class=\"focus-title\">'+escapeHtml(s.title)+'</div
   'focus overlay title must be escaped');
 assert.ok(!src.includes("'<div class=\"focus-title\">'+s.title+'</div>'"),
   'raw focus titles must not be injected into overlay HTML');
+assert.ok(src.includes("'<div class=\"ci-row-title\">' + escapeHtml(nx.step.title) + '</div>'"),
+  'check-in venture step titles must be escaped');
+assert.ok(src.includes("<div class=\"ci-row-kind\">' + escapeHtml(v.name) + '</div>'"),
+  'check-in venture names must be escaped');
+assert.ok(src.includes("'<div class=\"ci-row-title\">' + escapeHtml(m.label) + '</div>'"),
+  'check-in mission labels must be inert text');
+assert.ok(src.includes("'<div class=\"ci-row-why\">' + escapeHtml(whyShort) + '</div>'"),
+  'check-in mission why copy must be inert text');
+assert.ok(src.includes("<div class=\"ci-row-kind\">'+escapeHtml(nx.v.name)+'</div>'"),
+  'choice gate venture names must be escaped');
+assert.ok(src.includes("<div class=\"ci-row-title\">'+escapeHtml(nx.nx.step.title)+'</div>'"),
+  'choice gate venture step titles must be escaped');
 assert.ok(src.includes("'<div class=\"todo-text\">'+escapeHtml(t.text)+'</div>'"),
   'existing To-Do escaping must remain intact');
 assert.ok(src.includes("words.map(w=>'<span class=\"grat-tag\">'+escapeHtml(w)+'</span>')"),

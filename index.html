@@ -2987,8 +2987,8 @@ function renderCheckinSheet(sheet) {
 
   let rows = '';
   ventureRows.slice(0, 2).forEach(({ v, nx }) => {
-    rows += '<div class="ci-row"><div><div class="ci-row-kind">' + v.name + '</div>' +
-      '<div class="ci-row-title">' + nx.step.title + '</div>' +
+    rows += '<div class="ci-row"><div><div class="ci-row-kind">' + escapeHtml(v.name) + '</div>' +
+      '<div class="ci-row-title">' + escapeHtml(nx.step.title) + '</div>' +
       (nx.step.minutes ? '<div class="ci-row-sub">~' + nx.step.minutes + ' min</div>' : '') + '</div>' +
       '<button class="ci-do" onclick="ciVenture(\'' + v.id + '\',\'' + nx.step.id + '\',this)">Complete</button></div>';
   });
@@ -2997,8 +2997,8 @@ function renderCheckinSheet(sheet) {
     const why = (defs2[m.key] || {}).why || '';
     const whyShort = why.length > 92 ? why.slice(0, 90).replace(/\s+\S*$/, '') + '\u2026' : why;
     rows += '<div class="ci-row"><div><div class="ci-row-kind">Mission</div>' +
-      '<div class="ci-row-title">' + m.label + '</div>' +
-      (whyShort ? '<div class="ci-row-why">' + whyShort + '</div>' : '') + '</div>' +
+      '<div class="ci-row-title">' + escapeHtml(m.label) + '</div>' +
+      (whyShort ? '<div class="ci-row-why">' + escapeHtml(whyShort) + '</div>' : '') + '</div>' +
       '<button class="ci-do" onclick="ciMission(\'' + m.key + '\',this)">Done</button></div>';
   });
 
@@ -3281,8 +3281,8 @@ window.openChoiceGate=function(){
     Object.keys(LEISURE).map(k=>'<button class="cg-opt" onclick="cgPick(\''+k+'\',this)">'+LEISURE[k].label+'</button>').join('')+
     '<div id="cgDetail"></div>'+
     '<div class="ci-sec" style="margin-top:16px">The better hour is ready</div>'+
-    (nx ? '<div class="ci-row"><div><div class="ci-row-kind">'+nx.v.name+'</div>'+
-      '<div class="ci-row-title">'+nx.nx.step.title+'</div>'+
+    (nx ? '<div class="ci-row"><div><div class="ci-row-kind">'+escapeHtml(nx.v.name)+'</div>'+
+      '<div class="ci-row-title">'+escapeHtml(nx.nx.step.title)+'</div>'+
       (nx.nx.step.minutes?'<div class="ci-row-sub">~'+nx.nx.step.minutes+' min</div>':'')+'</div>'+
       '<button class="ci-do" onclick="this.closest(\'[data-checkin]\').remove();startFocus(\''+nx.v.id+'\',\''+nx.nx.step.id+'\')">Start</button></div>' : '')+
     (openM ? '<div class="ci-row" onclick="this.closest(\'[data-checkin]\').remove()"><div><div class="ci-row-kind">Missions</div>'+
