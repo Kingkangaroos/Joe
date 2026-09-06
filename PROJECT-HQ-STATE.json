@@ -17,7 +17,7 @@
     "From the same installed-iPhone pass, test Swipe Navigation Lab and Daily Missions 2.0 feel/smoothness; the real cross-page swipe engine remains dormant until approved",
     "Run a natural authenticated Gamenfy session after the latest Fitbit health_fitbit update, then repeat the read-only same-owner reconciliation audit: 12 historical qualified completions remain pending (7 Walking, 5 Sleep); never force them with SQL",
     "Open WHY Link Audit on Joey's device and deliberately add explicit linkedSkills only where a real Goal relationship is intended",
-    "Try Restore Dry Run with a real exported backup; Phase 1 remains analysis-only and cannot apply data",
+    "Try Restore Dry Run with a real exported backup v4 and verify binding presence; restore/apply remains blocked until an authenticated owner-match, atomic server-side restore generation and generation-aware sync are implemented and regression-proven",
     "Create Supabase Edge Function environment secrets through a supported secure secret-management path before any Jarvis/send-daily-push credential cutover; current connector cannot create secrets",
     "Enable Supabase Auth leaked-password protection through a supported Auth configuration path",
     "Locate/import the approved Budgeting owl level assets when available",
@@ -48,7 +48,11 @@
     "Supabase advisors reviewed: integration_tokens/private backup/pg_net findings are intentional architecture constraints; leaked-password protection remains the actionable platform setting",
     "iPhone Device QA Lab shipped read-only in the normal Lab with standalone-PWA detection, safe-area probes, Visual Viewport telemetry, fixed-bottom drift measurement, orientation/background logging and copyable diagnostics",
     "iPhone Device QA integration passed the full browserless suite twice (guarded branch integration and PR merge test); no production navigation behavior was changed",
-    "iPhone Device QA zero-baseline corrected: intentional 8px + safe-area offset is excluded before fixed-bottom drift is reported; PR smoke run 229 passed and production is READY"
+    "iPhone Device QA zero-baseline corrected: intentional 8px + safe-area offset is excluded before fixed-bottom drift is reported; PR smoke run 229 passed and production is READY",
+    "Backup v4 safety foundation shipped: Character export now includes a pseudonymous SHA-256 same-account binding derived from the authenticated Supabase owner; raw user ID is never serialized",
+    "Restore validator recognizes v4 binding presence but never grants offline owner proof; v2/v3 remain dry-run only and restoreReady stays false",
+    "Analysis-only restore-generation model shipped and regression-locked: dirty edits may replay only in the exact current cloud generation and only when newer than the remote baseline; old/offline generations cannot resurrect pre-restore state",
+    "Backup v4 release passed guarded full regression run 34001862091 and normal PR smoke run 34001954554; PR #33 merged to main as 00e60dc5cfe65819662cadab3694ac06a7875695"
   ],
   "assetsNeeded": [
     "Budgeting owl native level set import",
@@ -66,7 +70,7 @@
     "skillsWorld": "later, separate from Daily Missions 2.0",
     "whySource": "active rpg_goals_v1 Goals first; explicit linkedSkills only; do not invent a competing life taxonomy",
     "swipeNavigation": "Lab-first; vertical scroll wins; interactive controls and nested horizontal surfaces are excluded; bottom navigation stays available; dormant engine must not be activated until installed-iPhone feel is approved",
-    "restoreImport": "Phase 1 is dry-run only; backup v2 cannot prove owner identity; never add blind bulk import; no write path until owner/auth, pre-restore backup and stale-cloud convergence are proven",
+    "restoreImport": "Phase 1.5 only: backup v4 has a pseudonymous same-account binding but it is not a signature or integrity proof. No apply/write path until authenticated owner-match, fresh three-domain cloud baselines, zero unresolved dirty state, pre-restore backup, explicit merge/overwrite confirmation, atomic cloud-first restore generation and generation-aware sync are all implemented and regression-proven.",
     "fitbitHistoricalReconcile": "Use normal authenticated autohabit-reconcile.js only. It replays all historical health dates against canonical habitlog, respects manual-off and retry-safe XP ledger. Never force historical proof with direct SQL writes.",
     "iphoneBottomNav": "Device-proof first. Use the isolated iPhone Device QA Lab to measure fixed-bottom drift, safe-area and Visual Viewport behavior before any production shell/internal-scroller patch.",
     "edgeFunctionSecrets": "Env-first cutover only. Never redeploy Jarvis or send-daily-push while re-embedding existing source literals; create environment secrets first, verify, then rotate exposed credentials."
@@ -113,7 +117,12 @@
     "iphoneDeviceQaMainSha": "e56dd3eb8b9ba084de90dd3389003e54dc791abc",
     "iphoneDeviceQaProductionDeployment": "dpl_81g6BRyafi8ssPpnZes6BPV94XUY",
     "iphoneDeviceQaProductionState": "READY",
-    "iphoneDeviceQaBaselineFixMainSha": "e56dd3eb8b9ba084de90dd3389003e54dc791abc"
+    "iphoneDeviceQaBaselineFixMainSha": "e56dd3eb8b9ba084de90dd3389003e54dc791abc",
+    "backupV4SafetyMainSha": "00e60dc5cfe65819662cadab3694ac06a7875695",
+    "backupV4GuardedRegressionRun": "34001862091",
+    "backupV4PrSmokeRun": "34001954554",
+    "backupV4ProductionDeployment": null,
+    "backupV4ProductionState": "PENDING_VERIFICATION"
   },
   "whyGoalsAudit": {
     "verifiedAt": "2026-09-06",
@@ -124,5 +133,18 @@
     "legacyStandaloneGoalsRowScope": "June-era data only; not canonical WHY source",
     "evidenceOfRecentCanonicalGoalLoss": false,
     "nextProof": "Open canonical Goals on Joey device. If local Goals exist, allow normal RPG sync and re-audit; if local is empty too, enter current Goals deliberately."
+  },
+  "restoreSafety": {
+    "phase": "1.5",
+    "backupFormat": 4,
+    "ownerBindingType": "supabase-user-sha256-v1",
+    "rawOwnerIdSerialized": false,
+    "ownerBindingIsSignature": false,
+    "restoreReady": false,
+    "applyPathExists": false,
+    "generationModelExists": true,
+    "syncIsGenerationAware": false,
+    "atomicServerRestoreExists": false,
+    "nextGate": "Design and test database restore-generation storage/atomic RPC, then make sync.js generation-aware before any Lab apply path."
   }
 }

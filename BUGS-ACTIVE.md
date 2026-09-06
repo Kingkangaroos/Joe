@@ -191,20 +191,27 @@ Current fallbacks remain intentional. Do not fabricate replacements. See `img/la
 
 ## 8. Backup restore/import
 
-**Status:** **OPEN PRODUCT + DATA-SAFETY FEATURE; export itself is fixed.**
+**Status:** **PHASE 1.5 SHIPPED; APPLY/RESTORE STILL BLOCKED.**
 
-Backup export is now complete across canonical RPG + Finance + Health user-data scopes while explicitly excluding `rpg_pin_v1` and `hevy_api_key`.
+Backup export v4 is complete across canonical RPG + Finance + Health user-data scopes while explicitly excluding `rpg_pin_v1` and `hevy_api_key`. New v4 exports also carry a pseudonymous SHA-256 same-account binding derived from the authenticated Supabase owner; the raw owner ID is never serialized.
 
-There is currently **no restore/import path**. Do not add a blind importer.
+Important: that owner binding is **not a digital signature or file-integrity proof**. Restore Dry Run may inspect binding presence, but an actual account match must be recomputed from the currently authenticated session immediately before any future apply. Legacy v2/v3 files remain dry-run only.
 
-A safe future restore must include at minimum:
-- schema/format validation;
-- domain/key preview;
-- backup-before-restore;
-- explicit merge vs overwrite semantics;
-- owner/auth validation;
-- protection against stale cloud convergence resurrecting overwritten data;
-- regression proof before production use.
+There is still **no restore/import apply path** and `restoreReady` remains false. Do not add a blind importer.
+
+The analysis-only restore-generation model is now regression-locked: a dirty edit may replay only if its generation exactly equals the current cloud restore generation and its timestamp is newer than the remote baseline. That prevents old/offline generations from resurrecting pre-restore state after a future generation bump.
+
+Remaining blockers before Phase 2 can mutate anything:
+- authenticated v4 owner match;
+- fresh RPG + Finance + Health cloud baselines;
+- zero unresolved local dirty state;
+- successful backup-before-restore;
+- explicit merge vs overwrite + two-step confirmation;
+- atomic server-side three-domain restore-generation transaction/RPC;
+- generation-aware `sync.js`;
+- executable race regression proof before any Lab apply path.
+
+Backup v4 release proof: guarded full suite `34001862091`, normal PR smoke `34001954554`, main release `00e60dc5cfe65819662cadab3694ac06a7875695`.
 
 ---
 

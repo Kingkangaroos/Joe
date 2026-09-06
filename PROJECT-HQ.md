@@ -10,7 +10,7 @@ Last refreshed: 2026-09-06 by ChatGPT (OpenAI)
 2. **Fitbit retrospective natural proof** — live same-owner audit still shows 12 historical qualifying completions missing from canonical history (7 Walking, 5 Sleep), none `manual-off` and none marked XP-paid. Run a normal authenticated Gamenfy session, then re-audit read-only. Never manufacture proof with SQL writes.
 3. **Goal/WHY source verification on device** — the live RPG cloud row currently has no `rpg_goals_v1`; the 29 Aug private backup also had no `rpg_goals_v1`, so there is no evidence of a recent Goal-store deletion. Open Goals on Joey's device: if local Goals exist, canonical RPG sync should populate cloud; if local is also empty, enter current Goals deliberately rather than restoring the unrelated legacy June `goals` row.
 4. **WHY linking** — once the actual Goal store is present, add `linkedSkills` only where Joey genuinely intends a relationship. Do not infer a competing taxonomy.
-5. **Restore Dry Run real-file test** — Phase 1 can validate and preview a real export but still has no apply/write path.
+5. **Restore Dry Run v4 real-file test** — backup v4 now carries a pseudonymous same-account binding. Dry Run can inspect binding presence, but account match is intentionally not trusted offline and there is still no apply/write path. Next engineering gate is an atomic cloud restore-generation protocol plus generation-aware sync.
 6. **Edge Function secret cutover** — Jarvis and `send-daily-push` require environment-secret creation through a supported secure path before redeploy/rotation. The current connector cannot create Edge Function secrets.
 7. **Budgeting owl asset import** — locked direction; native 10-level set still not present. Do not fabricate it.
 8. **Meditation native level set** — waiting for Joey's approved art; fallback remains temporary.
@@ -36,6 +36,9 @@ Last refreshed: 2026-09-06 by ChatGPT (OpenAI)
 - [x] **Swipe Navigation Lab** shipped read-only with vertical-first axis lock and interaction exclusions; the reusable cross-page engine exists but remains dormant.
 - [x] **WHY Link Audit** shipped read-only; it scores local active Goals on WHY, deadline and explicit skill links without inventing mappings.
 - [x] **Restore Dry Run Phase 1** shipped read-only with local backup validation and merge/overwrite preview; there is no apply path.
+- [x] **Backup v4 safety foundation shipped**: authenticated Character export adds a pseudonymous SHA-256 same-account binding without serializing the raw owner ID. The binding is explicitly not a digital signature or file-integrity proof.
+- [x] **Restore-generation safety model shipped analysis-only**: stale/offline dirty state cannot replay across a future restore generation. No restore mutation method exists.
+- [x] Backup v4 guarded full suite `34001862091` + normal PR smoke `34001954554` passed; PR #33 merged to `main` as `00e60dc5cfe65819662cadab3694ac06a7875695`.
 - [x] Fitbit reconciliation audit hardened to pair `health_fitbit` + `rpg` by the same owner; live audit reconfirmed 12 pending qualified historical completions.
 - [x] Edge Function security audit + durable cutover contract shipped; repo regression guards reject server credential/owner literals.
 - [x] **iPhone Device QA Lab** shipped read-only in normal Lab: installed-PWA detection, safe-area probes, Visual Viewport telemetry, fixed-bottom drift, orientation/background logging and copyable diagnostics.
@@ -128,7 +131,7 @@ Last refreshed: 2026-09-06 by ChatGPT (OpenAI)
 - [ ] Jarvis Edge Function server-secret migration.
 - [ ] `send-daily-push` Edge Function server-secret migration.
 - [ ] Use iPhone Device QA to reproduce/capture standalone bottom-nav drift before any production shell/internal-scroller patch.
-- [ ] Safe restore/import design and implementation.
+- [ ] Restore Phase 2 remains blocked: design database restore-generation storage + atomic three-domain RPC, make `sync.js` generation-aware, prove stale/offline resurrection impossible, then add any apply path in Lab only.
 
 ## IDEA TANK
 
@@ -144,9 +147,17 @@ Last refreshed: 2026-09-06 by ChatGPT (OpenAI)
 - Full Skills Park / game-world for roughly 50 skills.
 - Rigged/sprite/WebGL/3D character-system research once static scene artwork becomes the limiting factor.
 - Deeper Jarvis intervention/trade-off reasoning after WHY graph exists.
-- Restore/import UI after backup/export remains proven stable.
+- Restore/import apply UI only after v4 owner-match, atomic restore-generation and generation-aware sync are proven; normal Settings exposure comes last.
 
 ## HUMAN CHANGELOG
+
+### 2026-09-06 — backup v4 safety foundation
+- Backup export advanced to **v4** with a pseudonymous `supabase-user-sha256-v1` same-account binding derived only while authenticated; raw owner ID is not written to the backup.
+- This binding is only an account-match guard, **not** a signature and not proof that the JSON file was not edited.
+- Restore Dry Run remains read-only and `restoreReady=false`; v2/v3 remain inspection-only and v4 account match must still be checked against the current authenticated session before any future apply.
+- Added an analysis-only restore-generation model: dirty state can replay only inside the exact current cloud generation and only when newer than that generation's remote baseline.
+- Phase 2 is still blocked on an atomic server-side three-domain restore-generation transaction/RPC and generation-aware `sync.js` regression coverage.
+- Guarded full regression run `34001862091` and normal PR smoke `34001954554` passed; PR #33 squash-merged as `00e60dc5cfe65819662cadab3694ac06a7875695`.
 
 ### 2026-09-06 — device QA, WHY data audit and security continuation
 - Shipped read-only iPhone Device QA into normal Lab and corrected its fixed-bottom zero baseline before using it as proof.
