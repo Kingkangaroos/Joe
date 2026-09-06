@@ -29,13 +29,23 @@ jobs:
           p=Path('tests/autohabit-session-loader-smoke.js')
           s=p.read_text().replace('autohabit-reconcile.js?v=11.7','autohabit-reconcile.js?v=11.8')
           p.write_text(s)
+
           p=Path('tests/park31-smoke.js')
           s=p.read_text()
           old="assert.match(home,/park31\\.html\\?embed=1&amp;mode=missions&amp;privacy=public/,'Home uses the approved public-only Daily Missions 2.0 surface');"
           new="assert.match(home,/park31\\.html\\?embed=1&amp;mode=missions&amp;privacy=all/,'Personal Home includes public and PIN-backed private Daily Missions 2.0 companions');"
-          if old not in s: raise SystemExit('old public-only Home contract missing')
+          if old not in s: raise SystemExit('old park31 public-only Home contract missing')
           s=s.replace(old,new,1)
           s=s.replace("assert.match(page,/park31\\.js\\?v=1\\.15/);","assert.match(page,/park31\\.js\\?v=1\\.16/);",1)
+          p.write_text(s)
+
+          p=Path('tests/spar-product-pass-smoke.js')
+          s=p.read_text()
+          old="assert.match(home,/park31\\.html\\?embed=1&amp;mode=missions&amp;privacy=public&amp;surface=home/,'Home embeds public-only Daily Missions 2.0');"
+          new="assert.match(home,/park31\\.html\\?embed=1&amp;mode=missions&amp;privacy=all&amp;surface=home/,'Personal Home embeds public plus PIN-backed private Daily Missions 2.0');"
+          if old not in s: raise SystemExit('old spar public-only Home contract missing')
+          s=s.replace(old,new,1)
+          s=s.replace("assert.match(parkPage,/park31\\.js\\?v=1\\.15/,'Park page loads the new interaction version');","assert.match(parkPage,/park31\\.js\\?v=1\\.16/,'Park page loads the current interaction runtime');",1)
           p.write_text(s)
           PY
       - name: Harden Park embed scheduler and cache boundaries
