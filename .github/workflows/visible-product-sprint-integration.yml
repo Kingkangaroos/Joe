@@ -46,6 +46,10 @@ jobs:
           if old not in s: raise SystemExit('old spar public-only Home contract missing')
           s=s.replace(old,new,1)
           s=s.replace("assert.match(parkPage,/park31\\.js\\?v=1\\.15/,'Park page loads the new interaction version');","assert.match(parkPage,/park31\\.js\\?v=1\\.16/,'Park page loads the current interaction runtime');",1)
+          old_hq="assert.match(character,/project-hq\\.html/,'Project HQ is reachable from the Skills\\/Ventures cockpit');"
+          new_hq="const jarvis=fs.readFileSync(path.join(root,'jarvis.html'),'utf8'); assert.match(jarvis,/project-hq\\.html/,'Project HQ is reachable from the Jarvis workspace hub');"
+          if old_hq not in s: raise SystemExit('old Skills HQ reachability contract missing')
+          s=s.replace(old_hq,new_hq,1)
           p.write_text(s)
           PY
       - name: Harden Park embed scheduler and cache boundaries
