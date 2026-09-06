@@ -1,0 +1,52 @@
+name: Backup v4 integration once
+
+on:
+  push:
+    branches:
+      - chatgpt/backup-v4-restore-generation
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v7
+        with:
+          ref: chatgpt/backup-v4-restore-generation
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - name: Apply guarded v4 patch
+        run: python .github/scripts/backup_v4_patch.py
+
+      - name: Run complete browserless regression suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/*-smoke.js; do
+            echo "::group::$test"
+            node "$test"
+            echo "::endgroup::"
+          done
+
+      - name: Remove one-time integration files
+        run: |
+          rm .github/scripts/backup_v4_patch.py
+          rm .github/workflows/backup-v4-integration-once.yml
+
+      - name: Commit verified integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "ChatGPT (OpenAI)"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "ChatGPT: integrate backup v4 owner binding [restore-v4-guarded]"
+          git push origin HEAD:chatgpt/backup-v4-restore-generation
