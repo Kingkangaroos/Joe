@@ -6,20 +6,27 @@ Last refreshed: 2026-09-06 by ChatGPT (OpenAI)
 
 ## NOW
 
-1. **Installed-iPhone Device QA pass** — open `iPhone Device QA` from the normal Lab inside the installed Gamenfy PWA. Capture standalone mode, safe-area, Visual Viewport and max fixed-bottom drift. In the same pass test Daily Missions 2.0 and Swipe Navigation. Do not patch production bottom navigation or activate the dormant swipe engine before this real-device proof.
-2. **Fitbit retrospective natural proof** — live same-owner audit still shows 12 historical qualifying completions missing from canonical history (7 Walking, 5 Sleep), none `manual-off` and none marked XP-paid. Run a normal authenticated Gamenfy session, then re-audit read-only. Never manufacture proof with SQL writes.
-3. **Goal/WHY source verification on device** — the live RPG cloud row currently has no `rpg_goals_v1`; the 29 Aug private backup also had no `rpg_goals_v1`, so there is no evidence of a recent Goal-store deletion. Open Goals on Joey's device: if local Goals exist, canonical RPG sync should populate cloud; if local is also empty, enter current Goals deliberately rather than restoring the unrelated legacy June `goals` row.
-4. **WHY linking** — once the actual Goal store is present, add `linkedSkills` only where Joey genuinely intends a relationship. Do not infer a competing taxonomy.
-5. **Restore Dry Run v4 real-file test** — backup v4 carries a pseudonymous same-account binding, browser sync is now owner-scoped + generation-aware, and backups reject dirty state from another restore generation. Dry Run remains read-only. Next engineering gate is an authenticated atomic three-domain restore RPC plus owner-scoping of active service-role `app_state` paths before the legacy global `PRIMARY KEY(key)` can be replaced.
-6. **Edge Function secret cutover** — Jarvis and `send-daily-push` require environment-secret creation through a supported secure path before redeploy/rotation. The current connector cannot create Edge Function secrets.
-7. **Budgeting owl asset import** — locked direction; native 10-level set still not present. Do not fabricate it.
-8. **Meditation native level set** — waiting for Joey's approved art; fallback remains temporary.
-9. **Life/dashboard taxonomy** — decide only after real WHY links are visible; preserve the underlying 100-year-plan WHY even if old labels change.
-
+1. **Real-device Body/Fitbit confirmation after v11.9** — backend owner data is healthy and the production client read path has been replaced. Reopen the installed PWA and verify Body renders Fitbit data. If it still says Waiting for Fitbit, capture it as an iPhone/runtime-only bug rather than repeating backend repair.
+2. **Visual follow-up check** — confirm the personal Daily Missions roster feels like one set, Daily Level reads clearly, Finance → Ventures shows the four boxed ventures, and General/Venture Lab returns land in the correct workspace.
+3. **Installed-iPhone Device QA pass** — open `iPhone Device QA` from the normal Lab inside the installed Gamenfy PWA. Capture standalone mode, safe-area, Visual Viewport and max fixed-bottom drift. In the same pass test Daily Missions 2.0 and Swipe Navigation. Do not patch production bottom navigation or activate the dormant swipe engine before this real-device proof.
+4. **Fitbit retrospective natural proof** — live same-owner audit still shows 12 historical qualifying completions missing from canonical history (7 Walking, 5 Sleep), none `manual-off` and none marked XP-paid. Run a normal authenticated Gamenfy session, then re-audit read-only. Never manufacture proof with SQL writes.
+5. **Goal/WHY source verification on device** — the live RPG cloud row currently has no `rpg_goals_v1`; the 29 Aug private backup also had no `rpg_goals_v1`, so there is no evidence of a recent Goal-store deletion. Open Goals on Joey's device: if local Goals exist, canonical RPG sync should populate cloud; if local is also empty, enter current Goals deliberately rather than restoring the unrelated legacy June `goals` row.
+6. **WHY linking** — once the actual Goal store is present, add `linkedSkills` only where Joey genuinely intends a relationship. Do not infer a competing taxonomy.
+7. **Restore Dry Run v4 real-file test** — backup v4 carries a pseudonymous same-account binding, browser sync is now owner-scoped + generation-aware, and backups reject dirty state from another restore generation. Dry Run remains read-only. Next engineering gate is an authenticated atomic three-domain restore RPC plus owner-scoping of active service-role `app_state` paths before the legacy global `PRIMARY KEY(key)` can be replaced.
+8. **Edge Function secret cutover** — Jarvis and `send-daily-push` require environment-secret creation through a supported secure path before redeploy/rotation. The current connector cannot create Edge Function secrets.
+9. **Budgeting owl asset import** — locked direction; native 10-level set still not present. Do not fabricate it.
+10. **Meditation native level set** — waiting for Joey's approved art; fallback remains temporary.
+11. **Life/dashboard taxonomy** — decide only after real WHY links are visible; preserve the underlying 100-year-plan WHY even if old labels change.
 ## COMPLETED THIS PASS
 
+- [x] **2026-09-06 visible follow-up release shipped:** PR #46 merged to `main` as `745fbc8a2602eebe2501f122fbf53b135651c85b`; Vercel production `dpl_B8kk35VfjQDmNF71XuY5AHJFtqNY` verified READY.
+- [x] Daily Missions personal roster unified: the two anonymized private quests sit visually among the other missions while their existing private/PIN-backed route remains intact internally.
+- [x] Added a mission-only **Daily Level 0–10** aggregate placeholder on Home; do not spend time on ten temporary characters before Joey has approved the final level-character asset direction.
+- [x] Body + Walking/Sleep retrospective reads now use the already-authenticated Supabase client with explicit owner scoping instead of the fragile raw REST read path. Production serves `autohabit-reconcile.js` v11.9.
+- [x] Ventures boxed overview restored with Grip, Websites Verkopen, Gamenfy Public and Gamenfy Build visible as separate ventures. Finance → Ventures is split into Ventures / Venture Lab / Productielijn.
+- [x] General Lab is a Jarvis workspace by default; explicit return tokens send Venture-launched Lab back to Finance → Ventures instead of Character/Body.
 - [x] Park 3.1 promoted into **Daily Missions 2.0** on Home.
-- [x] Home embed is **public-only**: canonical 11 public Daily Missions; private dailies do not leak into Home.
+- [x] Personal Home now presents **all 13 Joey Daily Missions in one visual roster**. The two anonymized private quests keep their existing PIN/private storage route internally but no longer receive a separate attention-grabbing section.
 - [x] Long-press completion retired; each mission now has a dedicated **tap-circle** completion control.
 - [x] Scene/card tap remains separate and opens mission detail/preview.
 - [x] Park performance hardened: unnecessary roster rewrites reduced, artwork readiness probes no longer redraw on unchanged state, nearby/current mission art is preloaded, fallback polling throttled from 1.2s to 5s while explicit state events remain immediate.
@@ -70,7 +77,7 @@ Last refreshed: 2026-09-06 by ChatGPT (OpenAI)
 - Public mission logic remains canonical: complete +1, miss -1, clamp 0–10, no weekly reset, `rpg_habitlog_v1` authoritative.
 - Completion interaction = **tap-circle**, not long-press.
 - Scene tap is separate from completion.
-- Home shows only the canonical 11 public missions. PIN-backed private dailies remain separate outside that public Home surface.
+- Joey's personal Home shows the full 13-mission visual roster. The two anonymized private quests remain separate internally for PIN/private storage and public-export safety, but must not be presented as a separate attention-grabbing product section.
 - Reward animation should stay brief. Ordinary completion = small reaction; larger celebration should eventually be reserved for genuinely notable progression.
 - Budgeting = owl asset direction.
 - Meditation = native level set still needed from Joey.
@@ -150,6 +157,14 @@ Last refreshed: 2026-09-06 by ChatGPT (OpenAI)
 - Restore/import apply UI only after v4 owner-match, atomic restore-generation and generation-aware sync are proven; normal Settings exposure comes last.
 
 ## HUMAN CHANGELOG
+
+### 2026-09-06 — visible product follow-up from Joey device test
+- Personal Daily Missions presentation is one 13-mission roster; anonymized private quests retain their internal PIN/private route but no longer get a separate visible section.
+- Added mission-only Daily Level 0–10 placeholder; final level 1–10 character art is intentionally deferred until the asset direction is approved.
+- Verified live Supabase owner data exists and switched Body plus retrospective Fitbit reads to the authenticated owner-scoped client. No direct SQL/cloud-write repair path was introduced.
+- Restored the boxed Ventures overview and separated Finance → Ventures into Ventures / Venture Lab / Productielijn. General Lab remains distinct and belongs to Jarvis by default.
+- Lab return navigation is explicit and deterministic: Jarvis by default, Finance → Ventures when launched from Ventures; it no longer falls through Character's last active Body tab.
+- Full guarded suite run `34056084188` and normal PR smoke `34056168809` passed. PR #46 merged as `745fbc8a2602eebe2501f122fbf53b135651c85b`; production `dpl_B8kk35VfjQDmNF71XuY5AHJFtqNY` READY.
 
 ### 2026-09-06 — owner/generation production hardening
 - Applied additive Supabase `app_state` Phase 0: `restore_generation BIGINT NOT NULL DEFAULT 0` plus `UNIQUE(user_id,key)`. Existing rows remained generation 0; the old global `PRIMARY KEY(key)` deliberately remains for compatibility.
