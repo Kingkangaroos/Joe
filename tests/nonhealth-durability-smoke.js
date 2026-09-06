@@ -14,7 +14,9 @@ const backup=character.match(/window\.exportBackup\s*=\s*async\s+function\(\)\{(
 assert.ok(backup,'cloud-aware backup export function must stay parseable');
 const b=backup[1];
 assert.ok(b.includes("const domains = ['rpg','finance','health']"),'backup must cover all durable app_state domains');
-assert.ok(b.includes(".from('app_state')") && b.includes(".select('key,data,updated_at')"),'backup must read owner cloud state + timestamps');
+assert.ok(b.includes(".from('app_state')") && b.includes(".select('key,data,updated_at,restore_generation')"),'backup must read owner cloud state + timestamps + restore generation');
+assert.ok(b.includes(".eq('user_id', window.gamenfyUserId)"),'backup must explicitly filter durable cloud rows to the authenticated owner');
+assert.ok(b.includes('cloudRestoreGeneration:'),'backup metadata must preserve the observed per-domain restore generation');
 assert.ok(b.includes('window.RPG_SYNC_KEYS'),'RPG pending-local matching must still use the canonical registry');
 for(const marker of ['vk_paid_v1','nw:history','po_water_v1','stack:items']) {
   assert.ok(b.includes(marker),'backup must understand independent durable state: '+marker);
@@ -35,4 +37,4 @@ assert.ok(!settings.includes('Evening push (19:30)'),'obsolete exact evening tim
 assert.ok(!settings.includes('It gets its own separate, empty data'),'inactive workspace handler must not retain a false isolation promise');
 assert.match(settings,/window\.saveWorkspace\s*=\s*function\(\)\{\s*alert\('Separate cloud workspaces are not active yet\.'\);\s*return false;\s*\};/,'workspace handler must fail closed while multi-user isolation is unavailable');
 
-console.log('Non-health durability smoke: backup is owner-cloud complete/credential-free and Settings stays aligned with live backend boundaries.');
+console.log('Non-health durability smoke: backup is explicit-owner, generation-aware, cloud-complete/credential-free and Settings stays aligned with live backend boundaries.');
