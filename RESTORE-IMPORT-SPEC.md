@@ -1,48 +1,55 @@
 # Gamenfy Restore / Import Safety Contract
 
-Status: **Phase 1 only — dry-run analysis exists. No restore/apply path exists.**
+Status: **Phase 1.5 — dry-run + backup v4 owner binding + restore-generation model. No restore/apply path exists.**
 
-The current backup exporter writes Gamenfy backup version 2 and excludes `hevy_api_key` and `rpg_pin_v1`. A restore flow must never be implemented as a blind `for (...) localStorage.setItem(...)` loop.
+A restore flow must never be implemented as a blind `for (...) localStorage.setItem(...)` loop. Current work remains analysis-only.
 
-## Phase 1 — shipped by this work
+## What exists now
 
-Read-only analysis only:
+1. `lab-restore-dry-run.html` parses backup JSON locally with `FileReader`;
+2. `backup-restore-validator.js` validates canonical RPG / Finance / Health keys and rejects sensitive credentials/PINs;
+3. merge and overwrite semantics are previewed without writing data;
+4. `backup-owner-binding.js` provides a pseudonymous SHA-256 same-account binding for backup v4;
+5. `restore-generation-model.js` defines executable safety semantics for stale/offline dirty data;
+6. `restoreReady=false` remains unconditional.
 
-1. parse JSON locally with `FileReader`;
-2. require root object, `app: "gamenfy"`, version >= 2, object-shaped `keys`;
-3. reject sensitive credential/PIN keys;
-4. exclude unknown non-canonical keys;
-5. classify canonical RPG / Finance / Health state;
-6. compare against current device without exposing values on-screen;
-7. preview `merge` semantics;
-8. preview `overwrite` semantics including which current in-scope keys would be removed;
-9. keep `restoreReady=false` unconditionally.
+## Backup generations
 
-`lab-restore-dry-run.html` is a product/UX proof, not an importer.
+### v2 / v3
+Legacy backups remain useful for dry-run inspection, but they have no trusted same-account binding. They must never become directly restorable.
 
-## Blocking gap in backup v2
+### v4
+New exports are created only for an authenticated owner and include:
 
-Backup v2 has no signed-in owner manifest. Therefore a v2 file cannot prove that it belongs to the currently authenticated owner.
+- `owner.bindingType = "supabase-user-sha256-v1"`;
+- a SHA-256 fingerprint derived from the authenticated Supabase user id plus a fixed namespace prefix;
+- **no raw user id**.
 
-Dry-run may inspect it, but a real restore must remain blocked.
+This binding is only a privacy-minimal *same-account guard*. It is **not a digital signature and does not prove file integrity or authenticity**. A manually edited v4 file can still alter its JSON. Therefore a future restore must compare the backup fingerprint against the *currently authenticated* owner immediately before apply and must still perform all remaining gates below.
 
-A future backup v3 should add a non-secret owner binding that can be checked against the authenticated session at restore time. Do not include tokens, passwords, API keys, PINs, push endpoints or secret material in that manifest.
+## Mandatory gates before Phase 2 can write anything
 
-## Required gates before Phase 2 can write anything
-
-All gates below are mandatory:
-
-### A. Owner/auth proof
+### A. Owner/auth proof — authenticated owner match
 - authenticated user exists;
-- backup owner binding matches the authenticated owner;
-- mismatch hard-fails before any local/cloud mutation.
+- current owner fingerprint is derived at restore time;
+- backup v4 binding matches exactly;
+- v2/v3, malformed binding, raw-owner-id manifest or mismatch hard-fails before mutation.
 
-### B. Backup-before-restore
-- create a fresh credential-free export of the current state immediately before applying;
-- surface its timestamp and success to the user;
-- if pre-restore backup creation fails, restore does not start.
+### B. Fresh cloud baseline
+Before planning a restore, re-read owner-scoped `app_state` rows for all three durable domains:
+- RPG;
+- Finance;
+- Health.
 
-### C. Explicit semantics
+Capture each row's `updated_at` and current restore generation in the same planning session. Missing or changed baselines invalidate the plan.
+
+### C. No unresolved local dirty state
+A real restore must not begin while there are unresolved local dirty-journal entries. First flush them successfully or explicitly abort the restore. Never silently discard them.
+
+### D. Backup-before-restore
+Create a fresh credential-free backup of the current authoritative state immediately before applying. Surface its timestamp and success. If this export fails, restore does not start.
+
+### E. Explicit semantics
 User must choose one:
 
 - **Merge:** incoming trusted keys replace same-name keys; current keys absent from backup remain untouched.
@@ -50,32 +57,30 @@ User must choose one:
 
 Never infer overwrite from file contents.
 
-### D. Domain preview
-Before confirmation, show per-domain counts for:
-- new;
-- changed;
-- unchanged;
-- removed (overwrite only);
-- blocked sensitive keys;
-- excluded unknown keys.
+### F. Domain preview + two-step confirmation
+Before confirmation show per-domain counts for new, changed, unchanged and removed (overwrite only), plus blocked sensitive and excluded unknown keys. Do not require raw personal values on-screen. A destructive restore requires a review screen and a second explicit final confirmation naming the chosen strategy and affected domains.
 
-Do not require showing raw personal values in the preview.
+### G. Cloud convergence protection — atomic cloud-first restore generation
+This is the central convergence gate. A future server-side transaction/RPC must atomically:
 
-### E. Two-step confirmation
-A destructive restore should require:
-1. explicit review screen;
-2. explicit final confirmation that names the chosen strategy and affected domains.
+1. verify expected owner and current generation;
+2. compare the expected `updated_at` baseline for RPG, Finance and Health;
+3. apply all selected domain states;
+4. increment one shared restore generation;
+5. commit the three domain rows as one restore event or fail the entire operation.
 
-### F. Cloud convergence protection
-This is the hardest technical gate.
+Do **not** mutate local storage first and hope cloud sync catches up. Cloud must become the authoritative restored generation first; devices then converge from that committed generation.
 
-The app's owner-scoped cloud rows can re-apply older state after local mutation if dirty/version ordering is mishandled. A real restore must use a coordinated restore transaction/version marker so that:
-- restored state becomes the authoritative next revision;
-- pre-restore cloud snapshots cannot win a later race;
-- all relevant scopes (RPG, Finance, Health) converge to the same restore generation;
-- a crash between local apply and cloud commit can be detected/recovered without silently mixing generations.
+## Dirty-journal generation rule
 
-Do not ship Phase 2 until executable regression coverage proves stale cloud state cannot resurrect pre-restore data.
+Every future generation-aware dirty entry must carry the restore generation in which it was created. Replay is permitted only when:
+
+- `dirty.generation === cloud.restore_generation`, **and**
+- `dirty.ts > remote.updated_at`.
+
+Legacy dirty entries are generation `0`. Once a restore commits generation `1+`, those legacy/offline entries can never resurrect pre-restore state, even if their device clock timestamp is later.
+
+`restore-generation-model.js` is deliberately analysis-only: it exposes precondition assessment and a commit envelope but **no mutation method**.
 
 ## Sensitive and unknown keys
 
@@ -83,13 +88,16 @@ Sensitive keys remain blocked even if present in a manually edited backup:
 - `hevy_api_key`
 - `rpg_pin_v1`
 
-Unknown non-canonical keys are excluded by default. Future migrations may explicitly whitelist old keys after their meaning is reviewed; never import unknown keys merely because they are present in JSON.
+Unknown non-canonical keys are excluded by default. Future migrations may explicitly whitelist reviewed legacy keys; never import unknown keys merely because they are present in JSON.
 
 ## Rollout order
 
-1. Dry-run Lab on real backups.
-2. Backup v3 owner manifest design.
-3. Cloud restore-generation protocol + tests.
-4. Phase 2 behind Lab/explicit opt-in.
-5. Natural multi-device verification.
-6. Only then consider exposing Restore in normal Settings/Character UI.
+1. Ship backup v4 same-account binding.
+2. Keep Restore Dry Run read-only and verify v2/v3/v4 real files.
+3. Design database restore-generation storage + atomic RPC.
+4. Make `sync.js` generation-aware with executable race regression coverage.
+5. Add Phase 2 apply behind Lab/explicit opt-in only.
+6. Verify multi-device/offline resurrection scenarios naturally.
+7. Only then consider exposing Restore in normal Settings/Character UI.
+
+**Do not ship Phase 2 until executable regression coverage proves stale cloud state cannot resurrect pre-restore data, including from offline devices.**

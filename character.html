@@ -12,6 +12,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=11.0" defer></script>
 <script src="sync.js?v=11.0" defer></script>
+<script src="backup-owner-binding.js?v=1" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
 <script src="xp.js?v=10.98" defer></script>
 <script src="quests.js?v=10.98" defer></script>
@@ -4481,6 +4482,10 @@ window.exportBackup = async function(){
     if(!window.gamenfySupabase || !window.gamenfyUserId) {
       return fail('Cloud backup unavailable — sign in first');
     }
+    if(!window.GamenfyOwnerBinding || typeof window.GamenfyOwnerBinding.fingerprintUserId !== 'function') {
+      return fail('Cloud backup unavailable — owner binding helper failed to load');
+    }
+    const ownerFingerprint = await window.GamenfyOwnerBinding.fingerprintUserId(window.gamenfyUserId);
 
     const { data: rows, error } = await window.gamenfySupabase
       .from('app_state')
@@ -4494,7 +4499,8 @@ window.exportBackup = async function(){
     const dump = {
       exportedAt: new Date().toISOString(),
       app: 'gamenfy',
-      version: 3,
+      version: 4,
+      owner: window.GamenfyOwnerBinding.createManifest(ownerFingerprint),
       source: 'owner-cloud-plus-newer-local-dirty',
       credentialsExcluded: ['rpg_pin_v1','hevy_api_key'],
       domains: {},

@@ -11,6 +11,15 @@ assert.ok(src.includes(".from('app_state')"), 'backup must read durable app_stat
 assert.ok(src.includes(".select('key,data,updated_at')"), 'backup must read cloud timestamps for dirty ordering');
 assert.ok(src.includes(".in('key', domains)"), 'backup must request RPG, Finance and Health rows together');
 assert.ok(src.includes("const domains = ['rpg','finance','health']"), 'backup must cover all three durable user domains');
+assert.match(src,/<script src="backup-owner-binding\.js\?v=[^"]+" defer><\/script>/,
+  'Character must load the shared pseudonymous owner-binding helper without pinning a cache version in the test');
+assert.ok(src.includes('const ownerFingerprint = await window.GamenfyOwnerBinding.fingerprintUserId(window.gamenfyUserId)'),
+  'backup must derive a same-account binding from the authenticated owner');
+assert.ok(src.includes('version: 4'), 'new cloud backups must use backup format v4');
+assert.ok(src.includes('owner: window.GamenfyOwnerBinding.createManifest(ownerFingerprint)'),
+  'backup v4 must store only the pseudonymous owner manifest');
+assert.ok(!/owner:\s*\{[^}]*userId\s*:/s.test(src),
+  'backup JSON must never serialize the raw authenticated user id');
 assert.ok(src.includes("const dirtyPrefix = '__gamenfy_sync_dirty_v1:'"),
   'backup must understand pending sync journals');
 assert.ok(src.includes('(item.ts || 0) <= remoteMs'),

@@ -8,6 +8,7 @@
   var FINANCE_PREFIXES=['nw:'];
   var HEALTH_KEYS=new Set(['stack:items','stack:version','stack:low','po_water_v1']);
   var HEALTH_PREFIXES=['stack:taken:'];
+  var OWNER_BINDING_TYPE='supabase-user-sha256-v1';
 
   function startsAny(key,prefixes){return prefixes.some(function(p){return key.indexOf(p)===0;});}
   function registry(){
@@ -26,6 +27,15 @@
   }
   function isPlainObject(v){return !!v&&typeof v==='object'&&!Array.isArray(v);}
   function stable(v){return typeof v==='string'?v:JSON.stringify(v);}
+  function validFingerprint(v){return /^[0-9a-f]{64}$/i.test(String(v||''));}
+  function inspectOwner(owner){
+    var present=isPlainObject(owner);
+    var rawIdPresent=present&&typeof owner.userId==='string'&&owner.userId.length>0;
+    var bindingType=present?String(owner.bindingType||''):'';
+    var fingerprint=present?String(owner.fingerprint||'').toLowerCase():'';
+    var valid=present&&!rawIdPresent&&bindingType===OWNER_BINDING_TYPE&&validFingerprint(fingerprint);
+    return {present:present,rawIdPresent:rawIdPresent,valid:valid,bindingType:bindingType||null,fingerprint:valid?fingerprint:null};
+  }
 
   function validateBackup(input){
     var errors=[],warnings=[];
@@ -50,21 +60,45 @@
     if(unknown.length)warnings.push(unknown.length+' unknown key(s) are excluded from any future restore plan.');
     if(!input.exportedAt)warnings.push('Backup has no exportedAt timestamp.');
 
-    // v2 exports predate an owner/auth manifest. A future real restore must not
-    // become executable until the importing signed-in owner can be proven.
-    var ownerProof=isPlainObject(input.owner)&&typeof input.owner.userId==='string'&&input.owner.userId.length>0;
-    if(!ownerProof)warnings.push('Owner/auth proof is missing. Version 2 backups are dry-run only.');
+    var owner=inspectOwner(input.owner);
+    if(owner.rawIdPresent){
+      if(version>=4)errors.push('Backup v4 owner manifest must not contain a raw user ID.');
+      else warnings.push('Legacy raw owner ID is ignored and does not count as owner proof.');
+    }
+    if(version>=4&&!owner.valid)errors.push('Backup v4 requires a valid pseudonymous same-account owner binding.');
+    if(version<4&&!owner.valid)warnings.push('Owner/auth proof is missing. Version 2/3 backups remain dry-run only.');
+    if(owner.valid)warnings.push('Same-account binding is present but is not authenticated by this offline dry-run.');
 
     return {
       valid:errors.length===0,
       errors:errors,
       warnings:warnings,
-      manifest:{app:input.app||null,version:version||null,exportedAt:input.exportedAt||null,ownerProof:ownerProof},
+      manifest:{
+        app:input.app||null,
+        version:version||null,
+        exportedAt:input.exportedAt||null,
+        ownerBindingPresent:owner.valid,
+        ownerBindingType:owner.valid?owner.bindingType:null,
+        ownerFingerprint:owner.valid?owner.fingerprint:null,
+        // Offline parsing alone never proves who is currently authenticated.
+        ownerProof:false
+      },
       entries:entries,
       blocked:blocked,
       unknown:unknown,
       restoreReady:false
     };
+  }
+
+  function compareOwnerFingerprint(validation,currentFingerprint){
+    var manifest=validation&&validation.manifest||{};
+    var expected=String(manifest.ownerFingerprint||'').toLowerCase();
+    var current=String(currentFingerprint||'').toLowerCase();
+    if(!manifest.ownerBindingPresent||!validFingerprint(expected))return {verified:false,match:false,reason:'backup-owner-binding-missing'};
+    if(!validFingerprint(current))return {verified:false,match:false,reason:'current-owner-fingerprint-missing'};
+    var diff=0;
+    for(var i=0;i<expected.length;i++)diff|=expected.charCodeAt(i)^current.charCodeAt(i);
+    return {verified:true,match:diff===0,reason:diff===0?'same-account':'different-account'};
   }
 
   function currentKeys(storage){
@@ -104,8 +138,10 @@
 
   window.GamenfyRestoreValidator={
     validateBackup:validateBackup,
+    compareOwnerFingerprint:compareOwnerFingerprint,
     analyzeAgainstStorage:analyzeAgainstStorage,
     domainForKey:domainForKey,
-    sensitiveKeys:Array.from(SENSITIVE)
+    sensitiveKeys:Array.from(SENSITIVE),
+    ownerBindingType:OWNER_BINDING_TYPE
   };
 })();
