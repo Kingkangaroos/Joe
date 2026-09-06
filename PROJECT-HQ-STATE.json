@@ -64,7 +64,8 @@
     "Mission-only Daily Level 0-10 aggregate placeholder shipped; temporary ten-character asset production is deliberately deferred",
     "Body and Walking/Sleep retrospective Fitbit reads now use the authenticated explicit-owner Supabase client; production reconciler is v11.9 and no direct cloud-write repair path was added",
     "Ventures boxed overview restored with Grip, Websites Verkopen, Gamenfy Public and Gamenfy Build; Finance Ventures now separates Ventures, Venture Lab and Productielijn",
-    "General Lab belongs to Jarvis by default and explicit return tokens route Venture-launched Lab back to Finance Ventures instead of Character Body"
+    "General Lab belongs to Jarvis by default and explicit return tokens route Venture-launched Lab back to Finance Ventures instead of Character Body",
+    "2026-09-06 Website Ventures consolidation: rich four-flagship/Higgsfield/visual-production HQ was ported into the restored Ventures/Venture Lab/Productielijn shell; PR #48 merged as bf848821695bed98a229273eacfb7c707a98c595 and production dpl_WruV9vzjJ7ZYxWyrPcPrccY2Tkpy is READY"
   ],
   "assetsNeeded": [
     "Budgeting owl native level set import",
@@ -156,7 +157,12 @@
     "visibleFollowupPrSmokeRun": "34056168809",
     "visibleFollowupProductionDeployment": "dpl_B8kk35VfjQDmNF71XuY5AHJFtqNY",
     "visibleFollowupProductionState": "READY",
-    "fitbitReconcilerProductionVersion": "11.9"
+    "fitbitReconcilerProductionVersion": "11.9",
+    "websiteVenturesPortMainSha": "bf848821695bed98a229273eacfb7c707a98c595",
+    "websiteVenturesPortGuardedRun": "34056812291",
+    "websiteVenturesPortPrSmokeRun": "34056844197",
+    "websiteVenturesPortProductionDeployment": "dpl_WruV9vzjJ7ZYxWyrPcPrccY2Tkpy",
+    "websiteVenturesPortProductionState": "READY"
   },
   "whyGoalsAudit": {
     "verifiedAt": "2026-09-06",
