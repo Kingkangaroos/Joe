@@ -1,0 +1,44 @@
+name: Stage 2B guarded sync integration
+
+on:
+  push:
+    branches:
+      - chatgpt/app-state-rpc-sync-stage2b
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: chatgpt/app-state-rpc-sync-stage2b
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Apply guarded patch
+        run: node scripts/stage2b-sync-patch.js
+      - name: Run all smoke tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/*-smoke.js; do
+            echo "::group::$test"
+            node "$test"
+            echo "::endgroup::"
+          done
+      - name: Remove one-shot integration files
+        run: |
+          rm scripts/stage2b-sync-patch.js
+          rm .github/workflows/stage2b-sync-integration.yml
+      - name: Commit proven integration
+        run: |
+          git config user.name "ChatGPT (OpenAI)"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "sync: move browser app_state writes behind CAS RPC"
+          git push origin HEAD:chatgpt/app-state-rpc-sync-stage2b
