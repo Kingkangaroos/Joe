@@ -13,7 +13,7 @@
 <script src="ventures.js?v=11.1" defer></script>
 <style>
 :root{--bg:#F4F3EF;--card:#fff;--ink:#15140F;--muted:#6F6C63;--faint:#A6A399;--line:#E8E6DF;--strong:#DBD8CF;--gold:#C9A227;--ember:#D4633E;--green:#2E8B5F;--violet:#7567C9;--font:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;--display:"Schibsted Grotesk",var(--font)}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}body{padding:18px 16px 36px}.vw-shell{max-width:760px;margin:0 auto}.vw-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}.vw-kicker{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--violet)}.vw-title{font-family:var(--display);font-size:25px;font-weight:800;letter-spacing:-.025em;margin-top:3px}.vw-sub{font-size:12px;line-height:1.45;color:var(--muted);margin-top:4px}.vw-back{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:12px;padding:8px 11px;text-decoration:none;font-weight:700;font-size:12px}.vw-scope{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}.vw-chip{font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--muted)}.vw-chip.personal{color:var(--violet);border-color:rgba(117,103,201,.28);background:rgba(117,103,201,.08)}.vw-card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px 16px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.025)}.vw-card-title{font-family:var(--display);font-weight:800;font-size:15px}.vw-card-sub{font-size:11px;color:var(--muted);line-height:1.5;margin-top:3px}.vw-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.vw-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:11px;padding:10px 13px;text-decoration:none;font-size:12px;font-weight:800;border:1px solid var(--strong);background:var(--bg);color:var(--ink);cursor:pointer}.vw-btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}.vw-tabs{display:flex;gap:7px;overflow-x:auto;margin:16px 0 12px;scrollbar-width:none}.vw-tabs::-webkit-scrollbar{display:none}.vw-tab{flex-shrink:0;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:8px 13px;font-size:11px;font-weight:800;cursor:pointer}.vw-tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}.vw-venture{cursor:pointer}.vw-venture-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.vw-venture-name{font-family:var(--display);font-size:17px;font-weight:800}.vw-progress{height:6px;background:var(--bg);border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:11px}.vw-progress i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--gold));border-radius:99px}.vw-next{font-size:11px;color:var(--ink);font-weight:700;margin-top:8px}.vw-count{font-size:10px;color:var(--muted);font-family:ui-monospace,monospace;white-space:nowrap}.vw-detail-head{display:flex;align-items:center;gap:9px;margin-bottom:12px}.vw-detail-head button{border:none;background:none;color:var(--muted);font-size:20px;cursor:pointer}.vw-note-tabs{display:flex;gap:6px;margin-bottom:8px}.vw-note-tabs button{flex:1;padding:8px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--muted);font-size:11px;font-weight:800;cursor:pointer}.vw-note-tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}.vw-note{width:100%;min-height:110px;border:1px solid var(--strong);border-radius:12px;padding:11px 12px;background:var(--bg);color:var(--ink);font:13px/1.5 var(--font);resize:vertical;outline:none}.vw-note:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(117,103,201,.1);min-height:200px}.vw-phase{font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:18px 2px 8px}.vw-step{display:grid;grid-template-columns:25px 1fr auto;gap:9px;align-items:start;padding:10px 0;border-bottom:1px solid var(--line)}.vw-step:last-child{border-bottom:none}.vw-step-dot{width:22px;height:22px;border-radius:50%;border:1px solid var(--strong);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--faint)}.vw-step.done .vw-step-dot{background:var(--green);border-color:var(--green);color:#fff}.vw-step-title{font-size:13px;font-weight:800}.vw-step-desc{font-size:11px;color:var(--muted);line-height:1.45;margin-top:2px}.vw-step button{border:1px solid var(--strong);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 9px;font-size:10px;font-weight:800;cursor:pointer}.vw-step.done button{display:none}.vw-pipeline{display:grid;gap:8px;margin-top:11px}.vw-pipe{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:linear-gradient(135deg,rgba(117,103,201,.05),rgba(201,162,39,.04))}.vw-pipe strong{font-size:12px;display:block}.vw-pipe span{font-size:10.5px;line-height:1.45;color:var(--muted);display:block;margin-top:3px}.vw-handoff{font:11px/1.55 ui-monospace,"SF Mono",monospace;background:#171712;color:#F4F3EF;border-radius:13px;padding:12px 13px;margin-top:10px;white-space:pre-wrap}.vw-empty{padding:28px 12px;text-align:center;color:var(--muted);font-size:12px}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}body{padding:18px 16px 36px}.vw-shell{max-width:760px;margin:0 auto}.vw-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}.vw-kicker{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--violet)}.vw-title{font-family:var(--display);font-size:25px;font-weight:800;letter-spacing:-.025em;margin-top:3px}.vw-sub{font-size:12px;line-height:1.45;color:var(--muted);margin-top:4px}.vw-back{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:12px;padding:8px 11px;text-decoration:none;font-weight:700;font-size:12px}.vw-scope{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}.vw-chip{font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--muted)}.vw-chip.personal{color:var(--violet);border-color:rgba(117,103,201,.28);background:rgba(117,103,201,.08)}.vw-card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px 16px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.025)}.vw-card-title{font-family:var(--display);font-weight:800;font-size:15px}.vw-card-sub{font-size:11px;color:var(--muted);line-height:1.5;margin-top:3px}.vw-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.vw-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:11px;padding:10px 13px;text-decoration:none;font-size:12px;font-weight:800;border:1px solid var(--strong);background:var(--bg);color:var(--ink);cursor:pointer}.vw-btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}.vw-tabs{display:flex;gap:7px;overflow-x:auto;margin:16px 0 12px;scrollbar-width:none}.vw-tabs::-webkit-scrollbar{display:none}.vw-tab{flex-shrink:0;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:8px 13px;font-size:11px;font-weight:800;cursor:pointer}.vw-tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}.vw-venture-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.vw-venture-name{font-family:var(--display);font-size:17px;font-weight:800}.vw-note-tabs{display:flex;gap:6px;margin-bottom:8px}.vw-note-tabs button{flex:1;padding:8px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--muted);font-size:11px;font-weight:800;cursor:pointer}.vw-note-tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}.vw-note{width:100%;min-height:110px;border:1px solid var(--strong);border-radius:12px;padding:11px 12px;background:var(--bg);color:var(--ink);font:13px/1.5 var(--font);resize:vertical;outline:none}.vw-note:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(117,103,201,.1);min-height:200px}.vw-phase{font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:18px 2px 8px}.vw-step{display:grid;grid-template-columns:25px 1fr auto;gap:9px;align-items:start;padding:10px 0;border-bottom:1px solid var(--line)}.vw-step:last-child{border-bottom:none}.vw-step-dot{width:22px;height:22px;border-radius:50%;border:1px solid var(--strong);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--faint)}.vw-step.done .vw-step-dot{background:var(--green);border-color:var(--green);color:#fff}.vw-step-title{font-size:13px;font-weight:800}.vw-step-desc{font-size:11px;color:var(--muted);line-height:1.45;margin-top:2px}.vw-step button{border:1px solid var(--strong);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 9px;font-size:10px;font-weight:800;cursor:pointer}.vw-step.done button{display:none}.vw-pipeline{display:grid;gap:8px;margin-top:11px}.vw-pipe{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:linear-gradient(135deg,rgba(117,103,201,.05),rgba(201,162,39,.04))}.vw-pipe-head{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.vw-pipe strong{font-size:12px;display:block}.vw-pipe span{font-size:10.5px;line-height:1.45;color:var(--muted);display:block;margin-top:3px}.vw-pipe code{font:700 9px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--violet)}.vw-prio{font-size:8px!important;font-weight:900!important;line-height:1!important;color:#fff!important;background:var(--ink);border-radius:6px;padding:4px 5px;margin:0!important}.vw-pipe-meta{font-size:9px!important;color:var(--faint)!important}.vw-handoff{font:11px/1.55 ui-monospace,"SF Mono",monospace;background:#171712;color:#F4F3EF;border-radius:13px;padding:12px 13px;margin-top:10px;white-space:pre-wrap}.vw-empty{padding:28px 12px;text-align:center;color:var(--muted);font-size:12px}
 body.is-embedded{padding:4px 4px 28px}body.is-embedded .vw-head .vw-back{display:none}body.is-embedded .vw-head{margin-top:4px}
 </style>
 </head>
@@ -23,7 +23,7 @@ body.is-embedded{padding:4px 4px 28px}body.is-embedded .vw-head .vw-back{display
     <div>
       <div class="vw-kicker">Finance · Personal workspace</div>
       <div class="vw-title">Ventures</div>
-      <div class="vw-sub">Business execution, website production and Gamenfy build work live here — in the same app, not a separate repo.</div>
+      <div class="vw-sub">Business execution, website production and venture memory live inside Gamenfy. Website Ventures is commercial work; Project Headquarters keeps the durable plan.</div>
     </div>
     <a class="vw-back" href="finance.html">Finance</a>
   </div>
@@ -36,17 +36,17 @@ body.is-embedded{padding:4px 4px 28px}body.is-embedded .vw-head .vw-back{display
 
   <div class="vw-card">
     <div class="vw-card-title">Website Ventures workspace</div>
-    <div class="vw-card-sub">The other ChatGPT project may build directly in this repository/app. Gamenfy is the working OS; public deployments can omit personal modules later.</div>
+    <div class="vw-card-sub">Build the commercial venture directly inside Gamenfy. Headquarters is the source of truth for decisions, backlog, ideas, flagships and the visual-production queue.</div>
     <div class="vw-actions">
       <a class="vw-btn primary" href="project-hq.html">Open Headquarters</a>
       <a class="vw-btn" href="lab.html">Open Lab</a>
     </div>
-    <div class="vw-handoff">Builder handoff: work inside Kingkangaroos/Joe and treat Ventures as the website-business workspace. You may add/edit venture tools, prototypes and production flows here. Do not create a separate repo just to avoid touching Gamenfy; keep personal-only surfaces marked data-gamenfy-scope="personal" so they can be excluded from a future public build.</div>
+    <div class="vw-handoff">Builder handoff: work inside Kingkangaroos/Joe → Finance → Ventures. Add venture tools, prototypes and production flows here. Do not create a separate repo just to avoid touching Gamenfy. Personal-only surfaces can use data-gamenfy-scope="personal". Workflow: branch → test → PR → main/production.</div>
   </div>
 
   <div class="vw-card" id="pipelineCard">
-    <div class="vw-card-title">Visual production line</div>
-    <div class="vw-card-sub">The queue that decides what Joey should generate — so characters/assets are not produced in bulk before the direction is locked.</div>
+    <div class="vw-card-title">Website visual production line</div>
+    <div class="vw-card-sub">Live from Website Ventures Project HQ. P0 locks the Plumbing world first; motion waits until the winning stills and technician are approved.</div>
     <div class="vw-pipeline" id="pipelineList"></div>
   </div>
 
@@ -59,6 +59,7 @@ body.is-embedded{padding:4px 4px 28px}body.is-embedded .vw-head .vw-back{display
   const NOTES_KEY='rpg_venture_notes_v1';
   let activeId='sell_websites';
   let notePane='venture';
+  let websiteHQ=null;
   const qs=new URLSearchParams(location.search);
   if(qs.get('embed')==='1') document.body.classList.add('is-embedded');
 
@@ -68,15 +69,20 @@ body.is-embedded{padding:4px 4px 28px}body.is-embedded .vw-head .vw-back{display
   function saveNote(id,pane,value){ const all=loadNotes(); const pair=notePair(id); pair[pane]=value; all[id]=pair; try{localStorage.setItem(NOTES_KEY,JSON.stringify(all));}catch(e){} }
   function data(){ return window.Ventures&&window.Ventures.load?window.Ventures.load():{ventures:[]}; }
 
+  async function loadWebsiteHQ(){
+    try{
+      const res=await fetch('WEBSITE-VENTURES-HQ-STATE.json',{cache:'no-store'});
+      if(!res.ok) throw new Error('Website HQ state unavailable');
+      websiteHQ=await res.json();
+    }catch(e){websiteHQ=null;}
+  }
+
   function renderPipeline(){
-    const build=data().ventures.find(v=>v.id==='app_vormgeving');
-    const phases=(build&&build.phases)||[];
-    const wanted=['vp','pipe'];
-    const steps=[];
-    phases.filter(p=>wanted.includes(p.id)).forEach(p=>(p.steps||[]).forEach(s=>steps.push({phase:p.name,step:s})));
     const box=document.getElementById('pipelineList');
-    if(!steps.length){ box.innerHTML='<div class="vw-empty">Production queue not loaded yet.</div>'; return; }
-    box.innerHTML=steps.map(x=>'<div class="vw-pipe"><strong>'+(x.step.done?'✓ ':'')+esc(x.step.title)+'</strong><span>'+esc(x.step.detail)+'</span></div>').join('');
+    const items=websiteHQ&&Array.isArray(websiteHQ.visualProduction)?websiteHQ.visualProduction:[];
+    if(!items.length){ box.innerHTML='<div class="vw-empty">Website production queue not loaded yet.</div>'; return; }
+    const ordered=items.slice().sort((a,b)=>String(a.priority||'').localeCompare(String(b.priority||'')));
+    box.innerHTML=ordered.map(x=>'<div class="vw-pipe"><div class="vw-pipe-head"><span class="vw-prio">'+esc(x.priority||'')+'</span><code>'+esc(x.id||'')+'</code><strong>'+esc(x.asset||'')+'</strong></div><span>'+esc(x.purpose||'')+'</span><span class="vw-pipe-meta">'+esc([x.group,x.status].filter(Boolean).join(' · '))+'</span></div>').join('');
   }
 
   function renderTabs(){
@@ -117,6 +123,7 @@ body.is-embedded{padding:4px 4px 28px}body.is-embedded .vw-head .vw-back{display
 
   async function boot(){
     try{ if(window.gamenfyAuthReady) await window.gamenfyAuthReady; }catch(e){}
+    await loadWebsiteHQ();
     for(let i=0;i<80&&!window.Ventures;i++) await new Promise(r=>setTimeout(r,50));
     render();
     try{ if(window.initCloudSync&&window.supabase) window.initCloudSync({appKey:'rpg',syncedKeys:window.RPG_SYNC_KEYS,syncedPrefixes:window.RPG_SYNC_PREFIXES,onApplied:render}); }catch(e){}
