@@ -151,17 +151,75 @@
   window.GamenfyPush = { enable, disable, status, isStandalone };
 })();
 
-// v7.4 — Home Daily Score presentation.
+// v7.4 — Home Daily Score presentation + Joey evolution character.
 // Park 3.1 owns the canonical completion summary and posts it to Main.
 // Joey wants the Home score to be the number he actually checked today —
 // not the average 0–10 habit level and not `done / all missions` as the headline.
-// Keep the progress bar proportional for visual feedback, but the big number is
-// only completedToday. Registered after Main's inline listener so this is the
-// final presentation layer without changing Park's canonical summary contract.
+// The character art follows that checked count: 0/1 -> L1, 2 -> L2 ... 10+ -> L10.
+// The image files are intentionally externalized under img/lab/daily-score/joey/
+// so the approved transparent character set from the project chat can be dropped
+// in without changing score logic again. Until an asset is present, the existing
+// star badge remains visible instead of showing a broken image.
 (function installHomeDailyCheckedScore () {
   'use strict';
   if (window.__gamenfyHomeDailyCheckedScoreInstalled) return;
   window.__gamenfyHomeDailyCheckedScoreInstalled = true;
+
+  function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+  function scoreArtLevel(done) { return clamp(Math.floor(Number(done) || 0) || 1, 1, 10); }
+  function scoreArtUrl(done) {
+    return 'img/lab/daily-score/joey/l' + String(scoreArtLevel(done)).padStart(2, '0') + '.webp?v=1';
+  }
+
+  function ensureCharacterHolder() {
+    const card = document.getElementById('dailyLevelCard');
+    if (!card) return null;
+    const holder = card.firstElementChild;
+    if (!holder) return null;
+    let img = document.getElementById('dailyScoreCharacter');
+    if (!img) {
+      img = document.createElement('img');
+      img.id = 'dailyScoreCharacter';
+      img.alt = 'Joey Daily Score character';
+      img.draggable = false;
+      img.style.cssText = 'display:none;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 7px 10px rgba(0,0,0,.28));';
+      holder.appendChild(img);
+    }
+    return { holder, img, fallback: holder.querySelector('span') };
+  }
+
+  function renderCharacter(done) {
+    const parts = ensureCharacterHolder();
+    if (!parts) return;
+    const url = scoreArtUrl(done);
+    if (parts.img.dataset.requested === url && parts.img.dataset.loaded === '1') return;
+    parts.img.dataset.requested = url;
+    parts.img.dataset.loaded = '0';
+    const probe = new Image();
+    probe.onload = function () {
+      if (parts.img.dataset.requested !== url) return;
+      parts.img.src = url;
+      parts.img.dataset.loaded = '1';
+      parts.img.style.display = 'block';
+      if (parts.fallback) parts.fallback.style.display = 'none';
+      parts.holder.style.background = 'transparent';
+      parts.holder.style.borderColor = 'transparent';
+      parts.holder.style.boxShadow = 'none';
+    };
+    probe.onerror = function () {
+      if (parts.img.dataset.requested !== url) return;
+      parts.img.dataset.loaded = '0';
+      parts.img.style.display = 'none';
+      if (parts.fallback) parts.fallback.style.display = '';
+    };
+    probe.src = url;
+  }
+
+  window.GamenfyDailyScoreCharacter = {
+    artLevel: scoreArtLevel,
+    artUrl: scoreArtUrl,
+    render: renderCharacter
+  };
 
   window.addEventListener('message', function (event) {
     const data = event && event.data;
@@ -182,5 +240,6 @@
     }
     if (fill) fill.style.width = (count ? Math.min(100, (done / count) * 100) : 0) + '%';
     if (meta) meta.textContent = done + (done === 1 ? ' daily mission gecheckt vandaag' : ' daily missions gecheckt vandaag');
+    renderCharacter(done);
   });
 })();
