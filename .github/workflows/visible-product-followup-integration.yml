@@ -21,7 +21,9 @@ jobs:
         with:
           node-version: '22'
       - name: Apply follow-up patch
-        run: python3 scripts/visible-product-followup-sept6.py
+        run: |
+          python3 scripts/visible-product-followup-sept6.py
+          python3 scripts/followup-test-adapter.py
       - name: Run all smoke tests
         shell: bash
         run: |
@@ -34,6 +36,7 @@ jobs:
       - name: Remove one-shot files
         run: |
           rm scripts/visible-product-followup-sept6.py
+          rm scripts/followup-test-adapter.py
           rm .github/workflows/visible-product-followup-integration.yml
       - name: Commit proven follow-up
         run: |
