@@ -20,8 +20,23 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
-      - name: Apply guarded patch
-        run: node scripts/stage2b-sync-patch.js
+      - name: Repair generator escaping and apply guarded patch
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/stage2b-sync-patch.js')
+          lines = p.read_text().splitlines()
+          found = False
+          for i, line in enumerate(lines):
+              if 'assert.match(plan,/Do ' in line:
+                  lines[i] = r"assert.match(plan,/Do \\*\\*not\\*\\* drop/i);"
+                  found = True
+          if not found:
+              raise SystemExit('owner-plan assertion marker not found')
+          p.write_text('\n'.join(lines) + '\n')
+          PY
+          node scripts/stage2b-sync-patch.js
       - name: Run all smoke tests
         shell: bash
         run: |
