@@ -4619,11 +4619,18 @@ async function hmFetchAll(force){
   // is nu de enige bron — geen fallback-merge meer nodig, `cur` start
   // gewoon op de standaardwaarden.
   try{
-    const r2 = await window.gamenfyAuthedFetch(HM_SB_URL+'/rest/v1/app_state?key=eq.health_fitbit&select=data');
-    if(r2.ok){
+    const cloudClient = window.gamenfySupabase;
+    const ownerId = window.gamenfyUserId;
+    if(!cloudClient || !ownerId) throw new Error('Authenticated Fitbit client not ready');
+    const read = await cloudClient
+      .from('app_state')
+      .select('data')
+      .eq('user_id', ownerId)
+      .eq('key', 'health_fitbit')
+      .maybeSingle();
+    if(read && !read.error && read.data){
       fitbitReadSucceeded = true;
-      const rows2 = await r2.json();
-      const fb = (rows2[0]||{}).data || {};
+      const fb = read.data.data || {};
       for(const [k,v] of Object.entries(fb)){
         if(!/^\d{4}-\d{2}-\d{2}$/.test(k) || !v || typeof v!=='object') continue;
         const cur = { steps:0, energy:0, weight:0, sleep:0, rhr:0, hrv:0, breathing:0, spo2:0, distance:0 };
@@ -4660,8 +4667,8 @@ async function hmFetchAll(force){
       }
     }
   }catch(e){}
-  // Cache only after the authenticated Fitbit read actually completed. A
-  // transient auth/network failure must be retryable on the next view/focus.
+  // Cache only after the authenticated owner-scoped Supabase read completed.
+  // A transient auth/network failure remains retryable on the next view/focus.
   if(fitbitReadSucceeded) hmData = out;
   return out;
 }

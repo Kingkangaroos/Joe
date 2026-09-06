@@ -1992,8 +1992,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }
   tabs.forEach(b => b.addEventListener('click', () => setActiveTab(b.dataset.tab)));
+  const validTabs = ['net','subs','wish','ventures','debts'];
+  const requestedTab = new URLSearchParams(location.search).get('tab');
   const savedTab = storeGet(TAB_KEY);
-  setActiveTab(savedTab && ['net','subs','wish','ventures','debts'].includes(savedTab) ? savedTab : 'net');
+  setActiveTab(validTabs.includes(requestedTab) ? requestedTab : (validTabs.includes(savedTab) ? savedTab : 'net'));
 
   // ============================================================
   // NET WORTH (copied from the main dashboard, verbatim logic)

@@ -46,23 +46,27 @@ const window={
   addEventListener:addListener,
   dispatchEvent:dispatch,
   gamenfyAuthReady:Promise.resolve(),
+  gamenfyUserId:'owner-1',
+  gamenfySupabase:{
+    from(table){return{
+      select(){return this;},
+      eq(){return this;},
+      in(){return Promise.resolve({data:[
+        {key:'health_fitbit',data:{[DAY]:{steps:12000,sleepMinutes:0}},updated_at:new Date().toISOString()},
+        {key:'rpg',data:{
+          rpg_autohabit_v1:JSON.parse(localStorage.getItem('rpg_autohabit_v1')||'{}'),
+          rpg_habitlog_v1:JSON.parse(localStorage.getItem('rpg_habitlog_v1')||'{}'),
+          rpg_streak_v1:JSON.parse(localStorage.getItem('rpg_streak_v1')||'{"days":{}}')
+        },updated_at:new Date(Date.now()-1000).toISOString()}
+      ],error:null});}
+    };}
+  },
   getCharacter:()=>({xpLog:xpRows}),
   recomputeHabitFromLog(){},
   renderMissions(){},renderCharStrip(){},renderStreakPill(){},renderCheckinCard(){},renderArc(){},
   Streak:{},
   toggleMission(){},
-  addXP(key,amount,reason){xpCalls.push({key,amount,reason});xpRows.unshift({skill:key,amount,reason,date:DAY});},
-  gamenfyAuthedFetch:async()=>({
-    ok:true,
-    json:async()=>[
-      {key:'health_fitbit',data:{[DAY]:{steps:12000,sleepMinutes:0}},updated_at:new Date().toISOString()},
-      {key:'rpg',data:{
-        rpg_autohabit_v1:JSON.parse(localStorage.getItem('rpg_autohabit_v1')||'{}'),
-        rpg_habitlog_v1:JSON.parse(localStorage.getItem('rpg_habitlog_v1')||'{}'),
-        rpg_streak_v1:JSON.parse(localStorage.getItem('rpg_streak_v1')||'{"days":{}}')
-      },updated_at:new Date(Date.now()-1000).toISOString()}
-    ]
-  })
+  addXP(key,amount,reason){xpCalls.push({key,amount,reason});xpRows.unshift({skill:key,amount,reason,date:DAY});}
 };
 const document={readyState:'complete',hidden:false,addEventListener(type,fn){addListener('document:'+type,fn);}};
 const context={

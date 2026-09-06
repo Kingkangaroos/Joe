@@ -37,11 +37,18 @@ function makeHarness({state={},habitlog={},xpLog=[],health={steps:12000,sleepMin
   const window={
     localStorage,
     gamenfyAuthReady:Promise.resolve(),
+    gamenfyUserId:'owner-1',
+    gamenfySupabase:{
+      from(table){return{
+        select(){return this;},
+        eq(){return this;},
+        in(){return Promise.resolve({data:[
+          {key:'health_fitbit',data:{[DAY]:health},updated_at:'2026-09-03T11:15:15.789Z'},
+          {key:'rpg',data:remoteRpg(),updated_at:'2026-09-03T11:12:10.174Z'}
+        ],error:null});}
+      };}
+    },
     getCharacter:()=>({xpLog:xpRows}),
-    gamenfyAuthedFetch:async()=>({ok:true,json:async()=>[
-      {key:'health_fitbit',data:{[DAY]:health},updated_at:'2026-09-03T11:15:15.789Z'},
-      {key:'rpg',data:remoteRpg(),updated_at:'2026-09-03T11:12:10.174Z'}
-    ]}),
     recomputeHabitFromLog(){},
     addXP(key,amount,reason){
       xpCalls.push({key,amount,reason});
