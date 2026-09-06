@@ -1,0 +1,34 @@
+name: Canonical app_state route audit
+
+on:
+  push:
+    branches:
+      - chatgpt/canonical-write-audit
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Runtime app_state routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '=== DIRECT APP_STATE / UPSERT REFERENCES ==='
+          rg -n "\.from\(['\" ]*app_state['\" ]*\)|/rest/v1/app_state|\.upsert\(" \
+            --glob '!GAMENFY-HISTORY-ARCHIVE.md' \
+            --glob '!_archive/**' \
+            --glob '!tests/**' \
+            --glob '!server/database/**' \
+            --glob '!*.md' || true
+          echo '=== AUTH/HISTORY RECONCILER REFERENCES ==='
+          rg -n "autohabit-reconcile|initCloudSync|gamenfy_write_app_state" \
+            --glob '!GAMENFY-HISTORY-ARCHIVE.md' \
+            --glob '!_archive/**' \
+            --glob '!tests/**' \
+            --glob '!server/database/**' || true
+          echo '=== SCRIPT TAGS FOR RECONCILER ==='
+          rg -n "<script[^>]+autohabit-reconcile" --glob '*.html' || true
