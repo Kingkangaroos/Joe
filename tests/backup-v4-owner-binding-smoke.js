@@ -25,7 +25,10 @@ assert.ok(B&&typeof B.fingerprintUserId==='function');
   const manifest=B.createManifest(a);
   assert.equal(manifest.bindingType,'supabase-user-sha256-v1');
   assert.equal(B.inspectManifest(manifest).valid,true);
-  assert.deepEqual(B.compareFingerprint(manifest,a),{verified:true,match:true,reason:'same-account'});
+  const same=B.compareFingerprint(manifest,a);
+  assert.equal(same.verified,true);
+  assert.equal(same.match,true);
+  assert.equal(same.reason,'same-account');
   assert.equal(B.compareFingerprint(manifest,b).match,false);
   assert.equal(B.inspectManifest({userId:'raw-owner-id'}).rawIdPresent,true,'raw user IDs are rejected as owner manifests');
 
