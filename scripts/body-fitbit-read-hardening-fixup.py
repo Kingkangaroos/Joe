@@ -56,7 +56,7 @@ assert.ok(authMatch,'auth loader must pin the reconciler');
 assert.ok(mainMatch,'Main synchronous loader must pin the reconciler');
 assert.equal(mainMatch[1],authMatch[1],'Main and auth must request exactly the same reconciler cache version');
 assert.equal(mainMatch[1],'11.9','current reconciler cache version is v11.9');
-assert.match(moduleSource,/Fitbit Daily Mission auto-completion v11\.9/,'pinned URL matches the deployed reconciler generation');
+assert.match(moduleSource,/v11\.9 keeps the retry-safe ledger/,'pinned URL matches a source file that explicitly documents its v11.9 generation');
 console.log('autohabit loader version smoke passed: Main and auth request the same v11.9 reconciler, preventing a stale Home cache from suppressing the current loader.');
 ''')
 print('Body Fitbit fixup staged: async fixture + Main reconciler v11.9 consistency.')
