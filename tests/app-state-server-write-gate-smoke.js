@@ -110,6 +110,17 @@ assert.throws(() => model.restoreRows({
   payloads: { rpg: {}, finance: {}, health: {} },
 }), /finance:generation-conflict/, 'one domain in another restore epoch must abort the complete restore');
 
+assert.throws(() => model.restoreRows({
+  rpg: row('rpg', {}, 0, 1),
+  finance: null,
+  health: row('health', {}, 0, 1),
+}, {
+  strategy: 'merge',
+  expectedGeneration: 0,
+  expectedVersions: { rpg: 1, finance: 0, health: 1 },
+  payloads: { rpg: {}, finance: {}, health: {} },
+}), /finance:baseline-missing/, 'restore must reject a missing canonical row instead of racing an insert');
+
 assert.throws(() => model.restoreRows(baseline, {
   strategy: 'merge',
   expectedGeneration: 5,
@@ -158,16 +169,24 @@ assert.match(sql, /where s\.user_id = v_uid and s\.key = p_key[\s\S]*?for update
 assert.match(sql, /v_generation <> p_expected_generation/i);
 assert.match(sql, /v_version <> p_expected_version/i);
 assert.match(sql, /state_version = s\.state_version \+ 1/i);
+assert.match(sql, /Plain INSERT is deliberate[\s\S]*?insert into public\.app_state/i,
+  'missing-row normal writes must fail on a concurrent unique collision rather than blindly upsert');
 
 assert.match(sql, /s\.key in \('finance', 'health', 'rpg'\)[\s\S]*?order by s\.key[\s\S]*?for update/i,
   'restore must lock canonical rows in deterministic order');
+assert.match(sql, /rpg restore baseline missing/i);
+assert.match(sql, /finance restore baseline missing/i);
+assert.match(sql, /health restore baseline missing/i);
 assert.match(sql, /v_new_generation := p_expected_generation \+ 1/i);
-assert.match(sql, /on conflict \(user_id, key\) do update/ig);
-assert.ok((sql.match(/on conflict \(user_id, key\) do update/ig) || []).length >= 3,
-  'restore must use composite owner/key conflict target for all canonical domains');
+assert.doesNotMatch(sql, /on conflict \(user_id, key\) do update/i,
+  'restore must not blind-upsert a canonical row after validating a supposedly existing baseline');
 for (const key of ['rpg', 'finance', 'health']) {
-  assert.match(sql, new RegExp("values \\('" + key + "', v_uid,"), 'restore must write ' + key + ' owner row');
+  assert.match(sql, new RegExp("where s\\.user_id = v_uid and s\\.key = '" + key + "';"), 'restore must owner-scope update ' + key);
 }
+assert.ok((sql.match(/restore_generation = v_new_generation/gi) || []).length === 3,
+  'restore must advance exactly all three canonical rows to the same generation');
+assert.ok((sql.match(/updated_at = v_now/gi) || []).length >= 4,
+  'normal write plus three restore updates must use server timestamps; restore updates share v_now');
 assert.match(sql, /p_rpg \? 'hevy_api_key'/i);
 assert.match(sql, /p_rpg \? 'rpg_pin_v1'/i);
 
@@ -183,4 +202,4 @@ assert.match(sql, /revoke insert, update, delete on table public\.app_state from
 assert.match(sql, /grant select on table public\.app_state to authenticated;/i);
 assert.doesNotMatch(sql, /revoke[^;]*service_role/i, 'design must not casually change service-role grants');
 
-console.log('app_state server write-gate smoke passed: executable model rejects stale generations/versions and the SQL contract is auth-bound, CAS-gated, atomic, rollback-only and staged to close direct browser writes.');
+console.log('app_state server write-gate smoke passed: executable model rejects stale generations/versions and missing restore baselines; SQL contract is auth-bound, CAS-gated, atomic, rollback-only and staged to close direct browser writes.');
