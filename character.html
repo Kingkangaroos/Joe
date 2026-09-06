@@ -4517,15 +4517,20 @@ window.exportBackup = async function(){
       // Never place convenience PIN/API credentials in a downloadable backup.
       sensitive.forEach(k => { delete state[k]; });
 
-      // Preserve only pending local changes newer than the exact cloud baseline.
-      // sync.js stores raw localStorage values + timestamps in this journal.
+      // Preserve only pending local changes from the exact cloud generation and
+      // newer than that cloud baseline. Legacy journal entries intentionally map
+      // to generation 0; after the first restore generation bump they can no
+      // longer leak pre-restore device state into a fresh backup.
+      const remoteGeneration = Math.max(0, Math.floor(Number(row.restore_generation) || 0));
       let pendingApplied = 0;
       try {
         const rawJournal = localStorage.getItem(dirtyPrefix + domain);
         const journal = rawJournal ? JSON.parse(rawJournal) : null;
         const items = journal && journal.items && typeof journal.items === 'object' ? journal.items : {};
         Object.entries(items).forEach(([k, item]) => {
-          if(!localBelongsTo(domain, k) || !item || (item.ts || 0) <= remoteMs) return;
+          if(!localBelongsTo(domain, k) || !item) return;
+          const itemGeneration = Math.max(0, Math.floor(Number(item.generation) || 0));
+          if(itemGeneration !== remoteGeneration || (item.ts || 0) <= remoteMs) return;
           if(item.removed) delete state[k];
           else state[k] = parseRaw(item.value);
           pendingApplied++;
@@ -4534,7 +4539,7 @@ window.exportBackup = async function(){
 
       dump.domains[domain] = {
         cloudUpdatedAt: row.updated_at || null,
-        cloudRestoreGeneration: Math.max(0, Math.floor(Number(row.restore_generation) || 0)),
+        cloudRestoreGeneration: remoteGeneration,
         pendingLocalApplied: pendingApplied,
         data: state
       };
