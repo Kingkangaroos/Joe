@@ -37,6 +37,14 @@ jobs:
           p.write_text('\n'.join(lines) + '\n')
           PY
           node scripts/stage2b-sync-patch.js
+          python3 - <<'PY'
+          from pathlib import Path
+          for name in ('tests/app-state-owner-generation-smoke.js', 'tests/app-state-rpc-sync-smoke.js'):
+              p = Path(name)
+              s = p.read_text()
+              s = s.replace('\\\\', '\\')
+              p.write_text(s)
+          PY
       - name: Run all smoke tests
         shell: bash
         run: |
