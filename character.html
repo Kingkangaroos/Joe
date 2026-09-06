@@ -4489,8 +4489,9 @@ window.exportBackup = async function(){
 
     const { data: rows, error } = await window.gamenfySupabase
       .from('app_state')
-      .select('key,data,updated_at')
-      .in('key', domains);
+      .select('key,data,updated_at,restore_generation')
+      .in('key', domains)
+      .eq('user_id', window.gamenfyUserId);
     if(error) throw error;
 
     const byKey = {};
@@ -4533,6 +4534,7 @@ window.exportBackup = async function(){
 
       dump.domains[domain] = {
         cloudUpdatedAt: row.updated_at || null,
+        cloudRestoreGeneration: Math.max(0, Math.floor(Number(row.restore_generation) || 0)),
         pendingLocalApplied: pendingApplied,
         data: state
       };

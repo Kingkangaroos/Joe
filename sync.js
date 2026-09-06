@@ -74,6 +74,7 @@
     let ready = false;
     let highWaterMs = 0;
     let forcePush = false;
+    let restoreGeneration = 0;
 
     const origSet = localStorage.setItem.bind(localStorage);
     const origRemove = localStorage.removeItem.bind(localStorage);
@@ -105,7 +106,7 @@
     function markDirty(k, rawValue, removed) {
       if (!matches(k)) return;
       const j = loadDirty();
-      j.items[k] = { value: rawValue == null ? null : String(rawValue), removed: !!removed, ts: Date.now() };
+      j.items[k] = { value: rawValue == null ? null : String(rawValue), removed: !!removed, ts: Date.now(), generation: restoreGeneration };
       saveDirty(j);
     }
     function dirtyEntry(k) {
@@ -119,11 +120,18 @@
       });
       if (changed) saveDirty(j);
     }
-    function discardDirtyNotNewerThan(remoteMs) {
+    function dirtyGeneration(entry) {
+      const n = Number(entry && entry.generation);
+      return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;
+    }
+    function discardDirtyNotReplayable(remoteMs, remoteGeneration) {
       const j = loadDirty();
       let changed = false;
       Object.keys(j.items || {}).forEach((k) => {
-        if ((j.items[k].ts || 0) <= remoteMs) { delete j.items[k]; changed = true; }
+        const item = j.items[k];
+        if (dirtyGeneration(item) !== remoteGeneration || (item.ts || 0) <= remoteMs) {
+          delete j.items[k]; changed = true;
+        }
       });
       if (changed) saveDirty(j);
     }
@@ -165,9 +173,11 @@
       return out;
     }
 
-    function remoteMayTouchKey(k, remoteMs) {
+    function remoteMayTouchKey(k, remoteMs, remoteGeneration) {
       const d = dirtyEntry(k);
-      return !(d && (d.ts || 0) > remoteMs);
+      if (!d) return true;
+      if (dirtyGeneration(d) !== remoteGeneration) return true;
+      return !((d.ts || 0) > remoteMs);
     }
 
     function notifyApplied(source) {
@@ -198,13 +208,13 @@
       } catch (e) {}
     }
 
-    function applyRemote(remote, allowDelete, remoteMs) {
+    function applyRemote(remote, allowDelete, remoteMs, remoteGeneration) {
       if (!remote || typeof remote !== 'object') return false;
       suppressSync = true;
       let changed = false;
       try {
         for (const k of Object.keys(remote)) {
-          if (!matches(k) || !remoteMayTouchKey(k, remoteMs)) continue;
+          if (!matches(k) || !remoteMayTouchKey(k, remoteMs, remoteGeneration)) continue;
           const incoming = JSON.stringify(remote[k]);
           const local = localStorage.getItem(k);
           if (local !== incoming) {
@@ -212,7 +222,7 @@
           }
         }
         if (allowDelete) {
-          const missing = listAllKeys().filter((k) => !(k in remote) && remoteMayTouchKey(k, remoteMs));
+          const missing = listAllKeys().filter((k) => !(k in remote) && remoteMayTouchKey(k, remoteMs, remoteGeneration));
           if (missing.length > 3) {
             schedulePush();
           } else {
@@ -226,14 +236,14 @@
       return changed;
     }
 
-    function replayNewerDirty(remoteMs) {
+    function replayNewerDirty(remoteMs, remoteGeneration) {
       const j = loadDirty();
       let replayed = false;
       suppressSync = true;
       try {
         Object.keys(j.items || {}).forEach((k) => {
           const d = j.items[k];
-          if (!matches(k) || (d.ts || 0) <= remoteMs) return;
+          if (!matches(k) || dirtyGeneration(d) !== remoteGeneration || (d.ts || 0) <= remoteMs) return;
           if (d.removed) {
             if (localStorage.getItem(k) != null) { origRemove(k); replayed = true; }
           } else if (localStorage.getItem(k) !== d.value) {
@@ -242,7 +252,7 @@
           }
         });
       } finally { suppressSync = false; }
-      discardDirtyNotNewerThan(remoteMs);
+      discardDirtyNotReplayable(remoteMs, remoteGeneration);
       if (replayed) notifyApplied('replay-newer-local');
       return replayed;
     }
@@ -259,8 +269,8 @@
       highWaterMs = cutoff;
       try {
         const { error } = await supa.from('app_state').upsert(
-          { key: cloudKey, user_id: window.gamenfyUserId, data: state, updated_at: new Date(cutoff).toISOString() },
-          { onConflict: 'key' }
+          { key: cloudKey, user_id: window.gamenfyUserId, data: state, updated_at: new Date(cutoff).toISOString(), restore_generation: restoreGeneration },
+          { onConflict: 'user_id,key' }
         );
         if (!error) {
           lastSyncedJson = json;
@@ -281,7 +291,7 @@
       const json = JSON.stringify(state);
       if (json === lastSyncedJson && !Object.keys(loadDirty().items || {}).length) return;
       try {
-        fetch(SUPABASE_URL + '/rest/v1/app_state?on_conflict=key', {
+        fetch(SUPABASE_URL + '/rest/v1/app_state?on_conflict=user_id,key', {
           method: 'POST',
           headers: {
             'apikey': SUPABASE_KEY,
@@ -293,7 +303,8 @@
             key: cloudKey,
             user_id: window.gamenfyUserId,
             data: state,
-            updated_at: new Date(Math.max(Date.now(), highWaterMs + 1)).toISOString()
+            updated_at: new Date(Math.max(Date.now(), highWaterMs + 1)).toISOString(),
+            restore_generation: restoreGeneration
           }),
           keepalive: true,
         }).catch(() => {});
@@ -313,18 +324,21 @@
       try {
         const { data, error } = await supa
           .from('app_state')
-          .select('data,updated_at')
+          .select('data,updated_at,restore_generation')
           .eq('key', cloudKey)
+          .eq('user_id', window.gamenfyUserId)
           .maybeSingle();
 
         const remote = (!error && data && data.data && typeof data.data === 'object') ? data.data : null;
         const remoteMs = data && data.updated_at ? (Date.parse(data.updated_at) || 0) : 0;
+        const remoteGeneration = Math.max(0, Math.floor(Number(data && data.restore_generation) || 0));
+        restoreGeneration = remoteGeneration;
         highWaterMs = Math.max(highWaterMs, remoteMs);
 
         if (remote && Object.keys(remote).length > 0) {
           lastSyncedJson = JSON.stringify(remote);
-          applyRemote(remote, false, remoteMs);
-          const replayed = replayNewerDirty(remoteMs);
+          applyRemote(remote, false, remoteMs, remoteGeneration);
+          const replayed = replayNewerDirty(remoteMs, remoteGeneration);
           ready = true;
 
           let hasLocalOnly = false;
@@ -349,17 +363,28 @@
         }, (payload) => {
           if (!payload.new || !payload.new.data) return;
           const remoteMs = payload.new.updated_at ? (Date.parse(payload.new.updated_at) || 0) : 0;
-          if (remoteMs && remoteMs < highWaterMs) {
+          const remoteGeneration = Math.max(0, Math.floor(Number(payload.new.restore_generation) || 0));
+          if (remoteGeneration < restoreGeneration) {
             forcePush = true;
             schedulePush();
             return;
           }
-          highWaterMs = Math.max(highWaterMs, remoteMs);
+          if (remoteGeneration === restoreGeneration && remoteMs && remoteMs < highWaterMs) {
+            forcePush = true;
+            schedulePush();
+            return;
+          }
+          if (remoteGeneration > restoreGeneration) {
+            restoreGeneration = remoteGeneration;
+            highWaterMs = remoteMs;
+          } else {
+            highWaterMs = Math.max(highWaterMs, remoteMs);
+          }
           const incoming = JSON.stringify(payload.new.data);
           if (incoming === lastSyncedJson && !Object.keys(loadDirty().items || {}).length) return;
           lastSyncedJson = incoming;
-          applyRemote(payload.new.data, true, remoteMs);
-          if (replayNewerDirty(remoteMs) || Object.keys(loadDirty().items || {}).length) schedulePush();
+          applyRemote(payload.new.data, true, remoteMs, remoteGeneration);
+          if (replayNewerDirty(remoteMs, remoteGeneration) || Object.keys(loadDirty().items || {}).length) schedulePush();
         })
         .subscribe();
     })();
