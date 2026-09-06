@@ -1,6 +1,6 @@
 # Gamenfy `app_state` Owner-Scope Cutover
 
-Status: **Phase 0 + browser Phase 1 live; service-role owner-scope cutover remains open.**
+Status: **Phase 0 live + browser Phase 1 live; service-role owner-scope cutover remains open.**
 
 ## Why this exists
 
