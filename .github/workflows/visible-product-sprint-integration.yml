@@ -21,8 +21,23 @@ jobs:
           node-version: '22'
       - name: Apply product patch
         run: python3 scripts/visible-product-sprint-sept6.py
-      - name: Align loader version contract
-        run: sed -i "s/autohabit-reconcile.js?v=11.7/autohabit-reconcile.js?v=11.8/g" tests/autohabit-session-loader-smoke.js
+      - name: Align changed product contracts
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('tests/autohabit-session-loader-smoke.js')
+          s=p.read_text().replace('autohabit-reconcile.js?v=11.7','autohabit-reconcile.js?v=11.8')
+          p.write_text(s)
+          p=Path('tests/park31-smoke.js')
+          s=p.read_text()
+          old="assert.match(home,/park31\\.html\\?embed=1&amp;mode=missions&amp;privacy=public/,'Home uses the approved public-only Daily Missions 2.0 surface');"
+          new="assert.match(home,/park31\\.html\\?embed=1&amp;mode=missions&amp;privacy=all/,'Personal Home includes public and PIN-backed private Daily Missions 2.0 companions');"
+          if old not in s: raise SystemExit('old public-only Home contract missing')
+          s=s.replace(old,new,1)
+          s=s.replace("assert.match(page,/park31\\.js\\?v=1\\.15/);","assert.match(page,/park31\\.js\\?v=1\\.16/);",1)
+          p.write_text(s)
+          PY
       - name: Harden Park embed scheduler and cache boundaries
         shell: bash
         run: |
