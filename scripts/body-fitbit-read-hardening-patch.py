@@ -275,12 +275,14 @@ s=s.replace("  release(responseFor(firstData));",
             "  release({data:{data:firstData},error:null});",1)
 s=s.replace("  window.gamenfyAuthedFetch=async()=>({ok:false,json:async()=>[]});",
             "  readImpl=async()=>({data:null,error:{message:'offline'}});",1)
-# Stronger contract assertions.
+# Stronger contract assertions. The refresh fixture calls api.refresh() directly
+# and intentionally does not boot start(); lifecycle registration is verified by
+# health-trail-smoke, while this harness checks the source contract statically.
 s=s.replace("  assert.match(source,/var lastFitbit=null/,'Health Trail maintains only an in-memory last-good Fitbit snapshot');",
 """  assert.match(source,/var lastFitbit=null/,'Health Trail maintains only an in-memory last-good Fitbit snapshot');
   assert.ok(source.includes(".eq('user_id',window.gamenfyUserId)"),'Health Trail Fitbit read is explicitly owner-scoped');
   assert.ok(source.includes(".eq('key','health_fitbit')"),'Health Trail reads only the Fitbit row');
-  assert.equal(typeof listeners['gamenfy-auth-ready'],'function','auth readiness triggers a Fitbit retry');""",1)
+  assert.ok(source.includes("window.addEventListener('gamenfy-auth-ready',refresh)"),'Health Trail source retries when auth becomes ready');""",1)
 p.write_text(s)
 
 # Existing Health Trail smoke should expect the new cache pin and auth listener.
