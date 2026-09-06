@@ -7,12 +7,12 @@ Last refreshed: **2026-09-06** by ChatGPT (OpenAI)
 ## Current verified production baseline
 
 Latest verified functional head:
-- `e56dd3eb8b9ba084de90dd3389003e54dc791abc` — corrected iPhone Device QA fixed-bottom zero baseline; no production navigation behavior changed.
-- GitHub smoke suite: **run 229 — completed/success** on the PR merge combination.
-- exact Vercel production deployment: `dpl_81g6BRyafi8ssPpnZes6BPV94XUY`.
-- deployment state: **READY**, target `production`.
+- `2bb05f746da0e684b0eb64560f05131d2d128341` — backup v4 dirty overlay is generation-safe on top of owner-scoped + generation-aware browser sync.
+- GitHub guarded regression: `34027899310` — completed/success; normal PR smoke: `34027932770` — completed/success.
+- exact Vercel production deployment: `dpl_5HNzU6VXciwQNgsLN97WJH4wxLKU`.
+- deployment state: **READY**, target `production`; public production source was also verified.
 
-This baseline also contains Daily Missions 2.0, the goal-first WHY foundation, Swipe Navigation Lab + dormant engine, WHY Link Audit, Restore Dry Run, Fitbit audit owner-pairing hardening and Edge Function secret-cutover guard.
+This baseline also contains Daily Missions 2.0, the goal-first WHY foundation, Swipe Navigation Lab + dormant engine, WHY Link Audit, Restore Dry Run, Fitbit audit owner-pairing hardening, Edge Function secret-cutover guard, additive `app_state.restore_generation`, `UNIQUE(user_id,key)`, and owner/generation-aware browser sync.
 
 Do not confuse older checkpoints with current functional production.
 
@@ -199,7 +199,9 @@ Important: that owner binding is **not a digital signature or file-integrity pro
 
 There is still **no restore/import apply path** and `restoreReady` remains false. Do not add a blind importer.
 
-The analysis-only restore-generation model is now regression-locked: a dirty edit may replay only if its generation exactly equals the current cloud restore generation and its timestamp is newer than the remote baseline. That prevents old/offline generations from resurrecting pre-restore state after a future generation bump.
+Restore-generation safety is now active in production browser sync: owner-scoped rows carry `restore_generation`, local dirty entries are tagged with that generation, and dirty replay only occurs inside the exact current cloud generation when newer than its baseline. Backup v4 applies the same generation rule, so an old/offline journal cannot contaminate a post-restore backup.
+
+Supabase Phase 0 is also live and additive: `app_state.restore_generation BIGINT NOT NULL DEFAULT 0` plus `UNIQUE(user_id,key)`. The legacy global `PRIMARY KEY(key)` intentionally remains until every active service-role `app_state` path is explicitly owner-scoped.
 
 Remaining blockers before Phase 2 can mutate anything:
 - authenticated v4 owner match;
@@ -207,11 +209,12 @@ Remaining blockers before Phase 2 can mutate anything:
 - zero unresolved local dirty state;
 - successful backup-before-restore;
 - explicit merge vs overwrite + two-step confirmation;
-- atomic server-side three-domain restore-generation transaction/RPC;
-- generation-aware `sync.js`;
+- atomic authenticated server-side three-domain restore-generation transaction/RPC with compare-and-swap behavior;
+- owner-scope active service-role `app_state` readers/writers (including Fitbit/Jarvis/push paths where applicable);
+- final composite owner/key primary-key cutover only after those server paths are safe;
 - executable race regression proof before any Lab apply path.
 
-Backup v4 release proof: guarded full suite `34001862091`, normal PR smoke `34001954554`, main release `00e60dc5cfe65819662cadab3694ac06a7875695`.
+Backup v4 foundation proof: guarded full suite `34001862091`, normal PR smoke `34001954554`, main `00e60dc5cfe65819662cadab3694ac06a7875695`. Owner/generation sync production: `b6062198250c77a65e1a461ebe63424e782531de` / `dpl_H9Bfpwixfz7ptRCNQZAEDWckyyWV` READY. Generation-safe backup overlay proof: guarded `34027899310`, PR smoke `34027932770`, main `2bb05f746da0e684b0eb64560f05131d2d128341`, production `dpl_5HNzU6VXciwQNgsLN97WJH4wxLKU` READY.
 
 ---
 
@@ -244,11 +247,13 @@ One legacy category-XP statistic can differ by writer. Decide later whether Jarv
 
 ## 11. Single-owner architecture / future multi-user
 
-**Status:** **CURRENT OWNER DATA HEALTHY; TRUE MULTI-USER REMAINS A DELIBERATE MIGRATION.**
+**Status:** **PHASE 0 SHIPPED; LEGACY GLOBAL PK STILL BLOCKS TRUE MULTI-USER UNTIL SERVER CUTOVER.**
 
-Current `app_state` ownership + RLS is healthy for Joey's one-account Gamenfy.
+Current `app_state` ownership + RLS remains healthy for Joey's one-account Gamenfy. Browser reads/writes now explicitly scope canonical sync by authenticated `(user_id,key)`.
 
-The table still uses a globally unique key rather than `(user_id,key)`. A genuine second account/test user therefore requires coordinated schema + client/server changes, backup and regression proof. Do not perform a casual index tweak.
+Additive database Phase 0 is live: `restore_generation` exists and `UNIQUE(user_id,key)` is available for composite conflict targets. However the legacy `PRIMARY KEY(key)` still makes `key` globally unique, so a genuine second account cannot yet own its own `rpg`/`finance`/`health` rows.
+
+Do **not** drop that legacy PK casually: active service-role functions historically contain key-only `app_state` reads/upserts and service-role privileges bypass normal RLS protection. Owner-scope those paths first, regression-prove the cutover, then replace the global key PK with owner/key identity.
 
 Separate cloud workspaces are not active; Settings truthfully keeps that UI disabled.
 

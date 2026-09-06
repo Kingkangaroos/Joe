@@ -17,7 +17,7 @@
     "From the same installed-iPhone pass, test Swipe Navigation Lab and Daily Missions 2.0 feel/smoothness; the real cross-page swipe engine remains dormant until approved",
     "Run a natural authenticated Gamenfy session after the latest Fitbit health_fitbit update, then repeat the read-only same-owner reconciliation audit: 12 historical qualified completions remain pending (7 Walking, 5 Sleep); never force them with SQL",
     "Open WHY Link Audit on Joey's device and deliberately add explicit linkedSkills only where a real Goal relationship is intended",
-    "Try Restore Dry Run with a real exported backup v4 and verify binding presence; restore/apply remains blocked until an authenticated owner-match, atomic server-side restore generation and generation-aware sync are implemented and regression-proven",
+    "Try Restore Dry Run with a real exported backup v4 and verify binding presence; browser sync and backups are now owner/generation-aware, but restore/apply remains blocked until authenticated owner-match, an atomic three-domain server restore RPC, service-role owner scoping and the final composite-primary-key cutover are regression-proven",
     "Create Supabase Edge Function environment secrets through a supported secure secret-management path before any Jarvis/send-daily-push credential cutover; current connector cannot create secrets",
     "Enable Supabase Auth leaked-password protection through a supported Auth configuration path",
     "Locate/import the approved Budgeting owl level assets when available",
@@ -52,7 +52,11 @@
     "Backup v4 safety foundation shipped: Character export now includes a pseudonymous SHA-256 same-account binding derived from the authenticated Supabase owner; raw user ID is never serialized",
     "Restore validator recognizes v4 binding presence but never grants offline owner proof; v2/v3 remain dry-run only and restoreReady stays false",
     "Analysis-only restore-generation model shipped and regression-locked: dirty edits may replay only in the exact current cloud generation and only when newer than the remote baseline; old/offline generations cannot resurrect pre-restore state",
-    "Backup v4 release passed guarded full regression run 34001862091 and normal PR smoke run 34001954554; PR #33 merged to main as 00e60dc5cfe65819662cadab3694ac06a7875695"
+    "Backup v4 release passed guarded full regression run 34001862091 and normal PR smoke run 34001954554; PR #33 merged to main as 00e60dc5cfe65819662cadab3694ac06a7875695",
+    "Supabase app_state Phase 0 applied additively: restore_generation BIGINT NOT NULL DEFAULT 0 plus UNIQUE(user_id,key); all existing rows stayed generation 0 and legacy PRIMARY KEY(key) was deliberately retained for compatibility",
+    "Browser cloud sync shipped owner-scoped and generation-aware: reads filter by authenticated user_id+key, upserts use onConflict user_id,key, writes carry restore_generation and dirty replay is limited to the exact current generation",
+    "Backup v4 dirty-overlay guard shipped: pending local edits are included only when newer than cloud AND from the exact same restore generation; legacy dirty entries map to generation 0 only",
+    "Vercel preview budget guard shipped: chatgpt work branches skip automatic preview builds while main retains production deploys"
   ],
   "assetsNeeded": [
     "Budgeting owl native level set import",
@@ -73,7 +77,8 @@
     "restoreImport": "Phase 1.5 only: backup v4 has a pseudonymous same-account binding but it is not a signature or integrity proof. No apply/write path until authenticated owner-match, fresh three-domain cloud baselines, zero unresolved dirty state, pre-restore backup, explicit merge/overwrite confirmation, atomic cloud-first restore generation and generation-aware sync are all implemented and regression-proven.",
     "fitbitHistoricalReconcile": "Use normal authenticated autohabit-reconcile.js only. It replays all historical health dates against canonical habitlog, respects manual-off and retry-safe XP ledger. Never force historical proof with direct SQL writes.",
     "iphoneBottomNav": "Device-proof first. Use the isolated iPhone Device QA Lab to measure fixed-bottom drift, safe-area and Visual Viewport behavior before any production shell/internal-scroller patch.",
-    "edgeFunctionSecrets": "Env-first cutover only. Never redeploy Jarvis or send-daily-push while re-embedding existing source literals; create environment secrets first, verify, then rotate exposed credentials."
+    "edgeFunctionSecrets": "Env-first cutover only. Never redeploy Jarvis or send-daily-push while re-embedding existing source literals; create environment secrets first, verify, then rotate exposed credentials.",
+    "appStateOwnershipCutover": "Do not drop legacy PRIMARY KEY(key) until every service-role app_state reader/writer (including active Fitbit/Jarvis/push paths) is explicitly owner-scoped. Phase 0 UNIQUE(user_id,key) is additive compatibility only; final target is per-owner key identity."
   },
   "fitbitReconcileAudit": {
     "verifiedAt": "2026-09-06",
@@ -121,8 +126,16 @@
     "backupV4SafetyMainSha": "00e60dc5cfe65819662cadab3694ac06a7875695",
     "backupV4GuardedRegressionRun": "34001862091",
     "backupV4PrSmokeRun": "34001954554",
-    "backupV4ProductionDeployment": null,
-    "backupV4ProductionState": "PENDING_VERIFICATION"
+    "backupV4ProductionDeployment": "dpl_H9Bfpwixfz7ptRCNQZAEDWckyyWV",
+    "backupV4ProductionState": "READY",
+    "ownerGenerationSyncMainSha": "b6062198250c77a65e1a461ebe63424e782531de",
+    "ownerGenerationSyncProductionDeployment": "dpl_H9Bfpwixfz7ptRCNQZAEDWckyyWV",
+    "ownerGenerationSyncProductionState": "READY",
+    "backupGenerationOverlayGuardMainSha": "2bb05f746da0e684b0eb64560f05131d2d128341",
+    "backupGenerationOverlayGuardGuardedRun": "34027899310",
+    "backupGenerationOverlayGuardPrSmokeRun": "34027932770",
+    "backupGenerationOverlayGuardProductionDeployment": "dpl_5HNzU6VXciwQNgsLN97WJH4wxLKU",
+    "backupGenerationOverlayGuardProductionState": "READY"
   },
   "whyGoalsAudit": {
     "verifiedAt": "2026-09-06",
@@ -143,8 +156,13 @@
     "restoreReady": false,
     "applyPathExists": false,
     "generationModelExists": true,
-    "syncIsGenerationAware": false,
+    "syncIsGenerationAware": true,
     "atomicServerRestoreExists": false,
-    "nextGate": "Design and test database restore-generation storage/atomic RPC, then make sync.js generation-aware before any Lab apply path."
+    "nextGate": "Design and regression-test an authenticated atomic three-domain restore RPC with generation compare-and-swap; then owner-scope all active service-role app_state paths before dropping legacy PRIMARY KEY(key). Only after those gates may a Lab apply path exist.",
+    "databasePhase0Exists": true,
+    "restoreGenerationColumnExists": true,
+    "ownerKeyUniqueConstraintExists": true,
+    "legacyGlobalKeyPrimaryKeyStillPresent": true,
+    "serviceRoleOwnerScopeCutoverComplete": false
   }
 }
