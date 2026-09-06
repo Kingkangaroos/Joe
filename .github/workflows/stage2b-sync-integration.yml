@@ -20,23 +20,45 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
-      - name: Apply guarded patch
+      - name: Repair patch scope and apply guarded patch
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           p = Path('scripts/stage2b-sync-patch.js')
-          lines = p.read_text().splitlines()
-          found = False
+          s = p.read_text()
+
+          # Keep the generated plan assertion simple; backticks inside the JS
+          # template literal are not part of the product contract.
+          lines = s.splitlines()
+          found_plan = False
           for i, line in enumerate(lines):
               if 'assert.match(plan,/Do ' in line:
                   lines[i] = r"assert.match(plan,/Do \\*\\*not\\*\\* drop/i);"
-                  found = True
-          if not found:
+                  found_plan = True
+          if not found_plan:
               raise SystemExit('owner-plan assertion marker not found')
-          p.write_text('\n'.join(lines) + '\n')
+          s = '\n'.join(lines) + '\n'
+
+          # Critical Stage 2B fix: the original init regex started at any
+          # `await supa...`, so after inserting pushNow it could start at the new
+          # RPC call and delete the writer again. Anchor the match to the exact
+          # legacy initial pull that exists on main.
+          old = r"const \{ data, error \} = await supa[\s\S]*?"
+          new = r"const \{ data, error \} = await supa\n          \.from\('app_state'\)\n          \.select\('data,updated_at,restore_generation'\)[\s\S]*?"
+          if old not in s:
+              raise SystemExit('broad init-pull regex marker not found')
+          s = s.replace(old, new, 1)
+          p.write_text(s)
           PY
           node scripts/stage2b-sync-patch.js
+
+          grep -F "supa.rpc('gamenfy_write_app_state'" sync.js
+          grep -F "/rest/v1/rpc/gamenfy_write_app_state" sync.js
+          if grep -F ".from('app_state').upsert(" sync.js; then
+            echo 'direct app_state upsert survived Stage 2B patch' >&2
+            exit 1
+          fi
       - name: Install literal Stage 2B contract tests
         shell: bash
         run: |
