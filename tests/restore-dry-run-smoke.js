@@ -29,6 +29,20 @@ assert.equal(good.unknown.length,1,'unknown key is excluded and surfaced');
 assert.equal(good.manifest.ownerProof,false,'v2 backup has no owner proof');
 assert.ok(good.warnings.some(x=>/Owner\/auth proof is missing/.test(x)));
 
+const fp='a'.repeat(64);
+const v4=V.validateBackup({app:'gamenfy',version:4,exportedAt:'2026-09-06T00:00:00Z',owner:{bindingType:'supabase-user-sha256-v1',fingerprint:fp},keys:{rpg_goals_v1:'[]'}});
+assert.equal(v4.valid,true,'credential-free v4 backup with pseudonymous owner binding should be analyzable');
+assert.equal(v4.manifest.ownerBindingPresent,true);
+assert.equal(v4.manifest.ownerProof,false,'offline parsing alone must never claim authenticated owner proof');
+const ownerMatch=V.compareOwnerFingerprint(v4,fp);
+assert.equal(ownerMatch.verified,true);
+assert.equal(ownerMatch.match,true);
+assert.equal(ownerMatch.reason,'same-account');
+assert.equal(V.compareOwnerFingerprint(v4,'b'.repeat(64)).match,false);
+const rawV4=V.validateBackup({app:'gamenfy',version:4,owner:{userId:'raw-owner-id'},keys:{rpg_goals_v1:'[]'}});
+assert.equal(rawV4.valid,false,'v4 raw owner ids must hard-fail validation');
+assert.ok(rawV4.errors.some(x=>/raw user ID/i.test(x)));
+
 const bad=V.validateBackup({app:'gamenfy',version:2,keys:{hevy_api_key:'secret',rpg_pin_v1:'1234'}});
 assert.equal(bad.valid,false,'sensitive keys hard-fail safety validation');
 assert.equal(bad.blocked.length,2);
