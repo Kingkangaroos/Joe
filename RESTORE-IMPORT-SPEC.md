@@ -67,7 +67,7 @@ Never infer overwrite from file contents.
 ### F. Domain preview + two-step confirmation
 Before confirmation show per-domain counts for new, changed, unchanged and removed (overwrite only), plus blocked sensitive and excluded unknown keys. Do not require raw personal values on-screen. A destructive restore requires a review screen and a second explicit final confirmation naming the chosen strategy and affected domains.
 
-### G. Server-side write gate — normal writes and restore must share the same epoch rules
+### G. Cloud convergence protection — server-side write gate for normal writes and restore
 A restore-only RPC is not sufficient while authenticated browsers can still mutate `app_state` directly. An old pre-cutover PWA could otherwise write after a restore and bypass generation validation.
 
 The safe target therefore has two server paths:
@@ -194,4 +194,4 @@ Unknown non-canonical keys are excluded by default. Future migrations may explic
 13. Verify multi-device/offline resurrection scenarios naturally.
 14. Only then consider exposing Restore in normal Settings/Character UI.
 
-**Do not ship Phase 2 until executable regression coverage and live server-gate verification prove stale cloud state cannot resurrect pre-restore data, including from offline devices, old PWAs and privileged service-role callers.**
+**Do not ship Phase 2 until executable regression coverage proves stale cloud state cannot resurrect pre-restore data. Live server-gate verification must additionally cover offline devices, old PWAs and privileged service-role callers.**
