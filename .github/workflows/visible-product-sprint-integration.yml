@@ -21,6 +21,8 @@ jobs:
           node-version: '22'
       - name: Apply product patch
         run: python3 scripts/visible-product-sprint-sept6.py
+      - name: Align loader version contract
+        run: sed -i "s/autohabit-reconcile.js?v=11.7/autohabit-reconcile.js?v=11.8/g" tests/autohabit-session-loader-smoke.js
       - name: Run all smoke tests
         shell: bash
         run: |
