@@ -8,7 +8,7 @@ const character=fs.readFileSync(path.join(ROOT,'character.html'),'utf8');
 const xp=fs.readFileSync(path.join(ROOT,'xp.js'),'utf8');
 
 assert.match(character,/const\s+WTB_KEY\s*=\s*['"]po_coach_weights['"]/,'Body tab must keep one canonical manual-weight key');
-assert.ok(character.includes('<script src="sync.js?v=11.0" defer></script>'),'Character must load cloud sync');
+assert.ok(character.includes('<script src="sync.js?v=11.9" defer></script>'),'Character must load cloud sync');
 assert.ok(xp.includes("'po_coach_weights'"),'manual Body weight history must remain in canonical RPG sync scope');
 
 // This is a derived Hevy summary/cache and can be rebuilt; keeping it out of

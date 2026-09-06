@@ -1,37 +1,4 @@
-from pathlib import Path
-import re
-
-CURRENT='11.9'
-# Park 3.0 is a deliberate read-only rollback/reference surface. Keep its
-# historical dependency URL untouched; every other top-level consumer is active.
-FROZEN={'park3.html'}
-changed=[]
-seen=[]
-pat=re.compile(r'(src=["\'](?:\./)?sync\.js\?v=)([^"\']+)(["\'])')
-for p in sorted(Path('.').glob('*.html')):
-    text=p.read_text()
-    matches=list(pat.finditer(text))
-    if not matches:
-        continue
-    seen.append(p.name)
-    if p.name in FROZEN:
-        continue
-    new=pat.sub(lambda m:m.group(1)+CURRENT+m.group(3),text)
-    if new!=text:
-        p.write_text(new)
-        changed.append(p.name)
-
-if not seen:
-    raise SystemExit('No top-level sync.js consumers found')
-print('sync consumers:', ', '.join(seen))
-print('frozen/reference exclusions:', ', '.join(sorted(FROZEN)))
-print('updated stale cache pins:', ', '.join(changed) if changed else 'none')
-
-# Durable regression guard: every ACTIVE top-level HTML consumer must request
-# the current sync implementation URL. Frozen rollback/reference pages are
-# explicit named exclusions rather than silently tolerated stale pins.
-t=Path('tests/sync-cache-pin-smoke.js')
-t.write_text(r'''/* Current sync cache-key audit — ChatGPT (OpenAI), 2026-09-06 */
+/* Current sync cache-key audit — ChatGPT (OpenAI), 2026-09-06 */
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -57,4 +24,3 @@ assert.ok(active.includes('project-hq.html'),'Project HQ remains an audited acti
 assert.ok(consumers.includes('park3.html')&&frozen.has('park3.html'),'Park 3.0 stays an explicit frozen rollback/reference exclusion');
 assert.deepEqual(stale,[],`stale active sync cache pins: ${stale.join(', ')}`);
 console.log(`Sync cache pin smoke passed: ${active.length} active top-level consumers request sync.js?v=${version}; Park 3.0 remains frozen.`);
-''')
