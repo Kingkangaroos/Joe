@@ -1,7 +1,8 @@
 /* Park 3.1 — Daily Mission companion HQ integration
    Performed-by: ChatGPT (OpenAI), 2026-08-31; membership pass 2026-09-03.
-   Public roster follows the canonical 11 Daily Missions. Private dailies remain
-   available as a separate companion group and never replace public missions.
+   Public membership remains canonical under the hood. On Joey's personal Home,
+   the two anonymized private quests are presented in the same roster as every
+   other Daily Mission so they do not receive a separate attention-grabbing block.
 */
 (function(){
   'use strict';
@@ -26,6 +27,10 @@
     {key:'no_porn',label:'Discipline',emoji:'⚡',dir:'discipline',private:true}
   ];
   var MISSIONS=PUBLIC_MISSIONS.concat(PRIVATE_MISSIONS);
+  var DISPLAY_MISSIONS=[
+    'budgeting','sleep','nutrition','walking','teeth','household','weed_control',
+    'meditation','gratitude','good_deed','screen_time','no_porn','cold_shower'
+  ].map(function(key){return MISSIONS.find(function(item){return item.key===key;});}).filter(Boolean);
   var stage,button,art,levelEl,stateEl,sourceEl,copyEl,levelsEl,progressEl,lightEl,errorEl,rosterEl,rosterCountEl;
   var modal,modalArt,modalTitle,modalMeta,modalLevel,modalState,modalProgress,modalStatus,prevEl,nextEl,liveResetEl,missionToggleEl;
   var celebration,celebrationTitle,celebrationMeta,celebrationTimer=null;
@@ -106,7 +111,7 @@
   function artworkLabel(mission){
     if(mission.fallback==='budgeting')return 'Park 2 fallback · native evolution pending';
     if(mission.fallback==='meditation')return 'Park 2 3-stage fallback · native evolution pending';
-    if(mission.private)return 'Private daily · 10 companion stages';
+    if(mission.private)return '10 evolution levels';
     return '10 evolution levels';
   }
   function missionCopy(mission){
@@ -144,8 +149,8 @@
     var lit=(litUntil[mission.key]||0)>Date.now();
     var selectedNow=!!(selected&&selected.key===mission.key);
     var instruction=done?'Vandaag voltooid':(neglected?'HELP · Tik om te openen':'Tik om te openen');
-    var slotClass='p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(neglected?' is-neglected':'')+(lit?' is-lit':'')+(selectedNow?' is-selected':'')+(mission.private?' is-private':'')+(mission.fallback?' is-fallback':'');
-    return '<div class="p31-slot-wrap'+(done?' is-done':'')+(mission.private?' is-private':'')+'">'
+    var slotClass='p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(neglected?' is-neglected':'')+(lit?' is-lit':'')+(selectedNow?' is-selected':'')+(mission.fallback?' is-fallback':'');
+    return '<div class="p31-slot-wrap'+(done?' is-done':'')+'">'
       +'<button class="'+slotClass+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+' aria-pressed="'+(done?'true':'false')+'"'+(selectedNow?' aria-current="true"':'')+'>'
       +'<span class="p31-slot-art">'+(ready?'<img src="'+assetUrl(info.art,mission)+'" alt="" draggable="false">':mission.emoji)+(neglected?'<span class="p31-help" aria-hidden="true">HELP</span>':'')+'</span>'
       +'<span class="p31-slot-copy"><strong>'+mission.label+'</strong><small title="'+artworkLabel(mission)+'">'+missionCopy(mission)+'</small><em>'+(missionMode?instruction:(ready?'Tik om te openen':'artwork pending'))+'</em></span>'
@@ -232,7 +237,7 @@
     if(modalArt.getAttribute('src')!==url)modalArt.setAttribute('src',url);
     modalArt.alt=selected.label+' companion preview at level '+shown;
     modalTitle.textContent=selected.label;
-    modalMeta.textContent=(preview===null?'LIVE LEVEL · '+info.raw:'PREVIEW '+shown+' · LIVE '+info.raw)+(selected.private?' · PRIVATE':'');
+    modalMeta.textContent=(preview===null?'LIVE LEVEL · '+info.raw:'PREVIEW '+shown+' · LIVE '+info.raw);
     modalLevel.textContent='Level '+displayLevel;
     modalState.textContent=state(displayLevel);
     modalProgress.style.width=(clamp(displayLevel,0,10)*10)+'%';
@@ -272,15 +277,22 @@
     var mission=missionByKey(slot.dataset.mission);
     if(mission)openMission(mission.key);
   }
+  function notifyMissionSummary(){
+    if(window.parent===window||!window.parent||typeof window.parent.postMessage!=='function')return;
+    var shown=publicOnlyMode?PUBLIC_MISSIONS:DISPLAY_MISSIONS;
+    var levels=shown.map(function(mission){return levelInfo(mission).raw;});
+    var total=levels.reduce(function(sum,value){return sum+Number(value||0);},0);
+    var overall=levels.length?Math.round((total/levels.length)*10)/10:0;
+    var completed=missionMode?shown.filter(function(mission){return isDone(mission);}).length:0;
+    try{window.parent.postMessage({type:'gamenfy:park31-summary',overallLevel:overall,missionCount:shown.length,completedToday:completed},location.origin);}catch(e){}
+  }
   function renderRoster(){
     if(!rosterEl)return;
-    var markup=PUBLIC_MISSIONS.map(rosterCard).join('');
-    if(!publicOnlyMode){
-      markup+='<div class="p31-roster-divider"><strong>Private dailies</strong><span>PIN-backed · apart van de publieke 11</span></div>'
-        +PRIVATE_MISSIONS.map(rosterCard).join('');
-    }
+    var shown=publicOnlyMode?PUBLIC_MISSIONS:DISPLAY_MISSIONS;
+    var markup=shown.map(rosterCard).join('');
     if(rosterEl.innerHTML!==markup)rosterEl.innerHTML=markup;
-    rosterCountEl.textContent=publicOnlyMode?(PUBLIC_MISSIONS.length+' public'):(PUBLIC_MISSIONS.length+' public · '+PRIVATE_MISSIONS.length+' private');
+    rosterCountEl.textContent=shown.length+' missions';
+    notifyMissionSummary();
     notifyEmbedHeight();
   }
   function probeRoster(){

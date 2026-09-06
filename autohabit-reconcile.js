@@ -1,10 +1,10 @@
 /* Gamenfy retrospective Fitbit -> Daily Mission reconciler
    ChatGPT (OpenAI), 2026-09-03.
    Fixes late Fitbit finalization without fighting deliberate manual unchecks.
-   v11.8 keeps the retry-safe v11.6 XP ledger but indexes the retained XP audit
-   once per reconciliation pass. Manual-off inference and crash-after-addXP
-   evidence therefore share one consistent snapshot instead of repeatedly
-   parsing/scanning the near-cap character log for every Fitbit day. */
+   v11.9 keeps the retry-safe ledger and reads health_fitbit + rpg through the
+   authenticated Supabase client, explicitly scoped to the current owner. This
+   avoids the PWA raw-REST read path that could leave Body and auto-completion
+   waiting even while the owner row was healthy in the cloud. */
 (function () {
   'use strict';
 
@@ -17,7 +17,7 @@
   var MIGRATION_KEY = '__retrospective_v2_migrated';
   var XP_MIGRATION_KEY = '__xp_ledger_v1_migrated';
   var XP_LEDGER_PREFIX = '__xp_awarded_v1:';
-  var STATE_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co/rest/v1/app_state?key=in.(health_fitbit,rpg)&select=key,data,updated_at';
+  var CLOUD_KEYS = ['health_fitbit', 'rpg'];
   var AUTO_HABITS = {
     walking: { field: 'steps', min: 10000, label: '10k stappen' },
     sleep: { field: 'sleepMinutes', min: 420, label: '7 uur slaap' }
@@ -230,16 +230,23 @@
     if (inFlight) return inFlight;
 
     inFlight = (async function () {
-      if (typeof window.gamenfyAuthedFetch !== 'function') return 0;
-      try { if (window.gamenfyAuthReady) await window.gamenfyAuthReady; } catch (e) { return 0; }
+      try { if(window.gamenfyAuthReady) await window.gamenfyAuthReady; } catch (e) { return 0; }
+      if(!window.gamenfySupabase || !window.gamenfyUserId) return 0;
 
-      var response, rows, healthRow, rpgRow, byDate, remoteRpg, remoteMs;
+      var rows, healthRow, rpgRow, byDate, remoteRpg, remoteMs;
       try {
-        response = await window.gamenfyAuthedFetch(STATE_URL);
-        if (!response || !response.ok) return 0;
-        rows = await response.json();
-        healthRow = (rows || []).find(function (row) { return row && row.key === 'health_fitbit'; });
-        rpgRow = (rows || []).find(function (row) { return row && row.key === 'rpg'; });
+        var cloudClient = window.gamenfySupabase;
+        var ownerId = window.gamenfyUserId;
+        if (!cloudClient || !ownerId) return 0;
+        var cloudResult = await cloudClient
+          .from('app_state')
+          .select('key,data,updated_at')
+          .eq('user_id', ownerId)
+          .in('key', CLOUD_KEYS);
+        if (!cloudResult || cloudResult.error) return 0;
+        rows = cloudResult.data || [];
+        healthRow = rows.find(function (row) { return row && row.key === 'health_fitbit'; });
+        rpgRow = rows.find(function (row) { return row && row.key === 'rpg'; });
         byDate = healthRow && healthRow.data;
         remoteRpg = rpgRow && rpgRow.data;
         remoteMs = rpgRow && rpgRow.updated_at ? (Date.parse(rpgRow.updated_at) || 0) : 0;

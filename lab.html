@@ -239,7 +239,16 @@ body.at1-paused .at1-speedline,body.at1-paused .at1-shadow{animation-play-state:
 </head>
 <body>
 <div class="wrap">
-  <a href="character.html" style="display:inline-block;font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:10px">‹ Terug naar Skills</a>
+  <a id="labBackLink" href="jarvis.html" style="display:inline-block;font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;margin-bottom:10px">‹ Terug naar Jarvis</a>
+  <script>
+  (function(){
+    var from=new URLSearchParams(location.search).get('from');
+    var routes={jarvis:{href:'jarvis.html',label:'‹ Terug naar Jarvis'},ventures:{href:'finance.html?tab=ventures',label:'‹ Terug naar Ventures'}};
+    var target=routes[from]||routes.jarvis;
+    var link=document.getElementById('labBackLink');
+    if(link){link.href=target.href;link.textContent=target.label;}
+  })();
+  </script>
   <div class="page-title">🧪 Lab</div>
   <div class="page-sub">Experimenten en werk-in-uitvoering. Nog niet af — dat is het punt.</div>
 

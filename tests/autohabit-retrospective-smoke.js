@@ -20,7 +20,7 @@ const store = {
 const xpCalls = [];
 const recomputes = [];
 const scheduled = [];
-const fetchUrls = [];
+const cloudQueries = [];
 let characterReads = 0;
 const localStorage = {
   getItem: key => Object.prototype.hasOwnProperty.call(store, key) ? store[key] : null,
@@ -48,15 +48,23 @@ const window = {
   gamenfyAuthReady: Promise.resolve(),
   getCharacter: () => { characterReads++; return { xpLog: [] }; },
   viewedDateStr: () => '2026-09-03',
-  gamenfyAuthedFetch: async url => {
-    fetchUrls.push(url);
-    return {
-      ok: true,
-      json: async () => [
-        { key: 'health_fitbit', data: healthData, updated_at: '2026-09-03T11:15:15.789Z' },
-        { key: 'rpg', data: currentRemoteRpg(), updated_at: '2026-09-03T11:12:10.174Z' }
-      ]
-    };
+  gamenfyUserId: 'owner-1',
+  gamenfySupabase: {
+    from(table) {
+      const query = {
+        table, selected: null, owner: null,
+        select(cols) { this.selected = cols; return this; },
+        eq(col, value) { if (col === 'user_id') this.owner = value; return this; },
+        in(col, values) {
+          cloudQueries.push({ table: this.table, selected: this.selected, owner: this.owner, col, values: Array.from(values) });
+          return Promise.resolve({ data: [
+            { key: 'health_fitbit', data: healthData, updated_at: '2026-09-03T11:15:15.789Z' },
+            { key: 'rpg', data: currentRemoteRpg(), updated_at: '2026-09-03T11:12:10.174Z' }
+          ], error: null });
+        }
+      };
+      return query;
+    }
   },
   recomputeHabitFromLog: key => recomputes.push(key),
   addXP: (key, amount, reason) => xpCalls.push({ key, amount, reason }),
@@ -83,7 +91,7 @@ vm.runInContext(code, context);
   let log = JSON.parse(store.rpg_habitlog_v1);
   let state = JSON.parse(store.rpg_autohabit_v1);
 
-  assert.ok(fetchUrls[0].includes('key=in.(health_fitbit,rpg)'), 'health and current RPG cloud baseline are fetched together');
+  assert.deepEqual(cloudQueries[0], { table:'app_state', selected:'key,data,updated_at', owner:'owner-1', col:'key', values:['health_fitbit','rpg'] }, 'health and RPG baseline are read together through an explicit-owner Supabase query');
   assert.equal(characterReads, 1, 'one reconcile pass snapshots the retained XP audit only once');
   assert.equal(log.walking['2026-08-31'], true, 'late finalized steps should backfill during legacy migration');
   assert.equal(log.sleep['2026-09-03'], true, 'today sleep should auto-complete');

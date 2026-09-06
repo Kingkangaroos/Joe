@@ -135,11 +135,11 @@ assert.equal((ids.p31Roster.innerHTML.match(/<button class="p31-slot/g)||[]).len
 for(const label of ['Budgeting','Sleep','Nutrition','Steps','Brush Teeth','Household','Meditation','Gratitude','Good Deed','Screen Time','Cold Shower']){
   assert.match(ids.p31Roster.innerHTML,new RegExp(label+'[\\s\\S]*Tik om te openen'),'public '+label+' is present and interactive');
 }
-for(const label of ['Gardening','Discipline'])assert.match(ids.p31Roster.innerHTML,new RegExp(label+'[\\s\\S]*Private daily'),'private '+label+' stays available but explicitly private');
-assert.match(ids.p31Roster.innerHTML,/Private dailies[\s\S]*apart van de publieke 11/,'private cards are visually separated from public membership');
+for(const label of ['Gardening','Discipline'])assert.match(ids.p31Roster.innerHTML,new RegExp(label+'[\\s\\S]*10 evolution levels'),'anonymized '+label+' is available in the unified personal roster');
+assert.doesNotMatch(ids.p31Roster.innerHTML,/Private dailies|apart van de publieke 11|is-private/,'personal roster does not visually separate private quests');
 assert.match(ids.p31Roster.innerHTML,/Budgeting[\s\S]*Park 2 fallback/,'Budgeting fallback is explicit rather than pretending to be a 10-level native set');
 assert.match(ids.p31Roster.innerHTML,/Meditation[\s\S]*3-stage fallback/,'Meditation fallback is explicit');
-assert.equal(ids.p31RosterCount.textContent,'11 public · 2 private');
+assert.equal(ids.p31RosterCount.textContent,'13 missions');
 assert.match(ids.p31Roster.innerHTML,/class="p31-help"[^>]*>HELP<\/span>/,'inactive mission can show HELP');
 assert.equal(typeof windowListeners['gamenfy:auto-habits-changed'],'function');
 assert.equal(typeof parentListeners['gamenfy:auto-habits-changed'],'function');
@@ -155,7 +155,7 @@ const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
 assert.match(lab,/park31-lab\.js\?v=1\.1/);assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.12"/);
 const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');assert.match(home,/park31\.html\?embed=1&amp;mode=missions&amp;privacy=all/,'Personal Home includes public and PIN-backed private Daily Missions 2.0 companions');
 const page=fs.readFileSync(path.join(__dirname,'..','park31.html'),'utf8');
-assert.match(page,/park31\.js\?v=1\.16/);assert.match(page,/11 public · 2 private/);assert.match(page,/Budgeting en Meditation.*Park 2 fallback/);
+assert.match(page,/park31\.js\?v=1\.17/);assert.match(page,/13 missions/);assert.match(page,/Budgeting en Meditation.*Park 2 fallback/);
 
 const walkingSlot=new Element('walking-slot');walkingSlot.dataset.mission='walking';
 const openEvent={target:walkingSlot,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
@@ -174,4 +174,4 @@ const nutritionSlot=new Element('nutrition-slot');nutritionSlot.dataset.mission=
 const nutritionTap={target:nutritionSlot,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
 ids.p31Roster.listeners.click(nutritionTap);assert.equal(ids.p31ModalTitle.textContent,'Nutrition');ids.p31MissionToggle.listeners.click();runImmediateTimeouts();assert.deepEqual(missionToggles,['walking','nutrition']);
 
-console.log('Park 3.1 smoke test passed: canonical public 11, separate private 2, fallbacks, assets and interactions.');
+console.log('Park 3.1 smoke test passed: canonical membership stays separate internally while Joey personal roster is visually unified.');

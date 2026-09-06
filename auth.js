@@ -42,7 +42,7 @@
     autoHabitLoaderTimer = null;
     autoHabitLoaderLoading = true;
     const script = document.createElement('script');
-    script.src = 'autohabit-reconcile.js?v=11.8';
+    script.src = 'autohabit-reconcile.js?v=11.9';
     script.dataset.gamenfyAutohabitReconcile = '1';
     script.onload = () => {
       autoHabitLoaderLoading = false;
