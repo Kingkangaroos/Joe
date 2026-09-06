@@ -1847,6 +1847,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 </div>
 
+<!-- ===== VENTURES — personal business workspace ===== -->
+<div class="section" data-section="ventures" hidden data-gamenfy-scope="personal">
+  <div class="section-title">
+    <span class="section-title-text">VENTURES</span>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden;background:var(--bg);border-color:var(--glass-border)">
+    <iframe src="ventures-workspace.html?embed=1" title="Ventures workspace" id="venturesWorkspaceFrame"
+      style="display:block;width:100%;height:calc(100dvh - 205px);min-height:720px;border:0;background:#F4F3EF" loading="eager"></iframe>
+  </div>
+</div>
+
 <!-- ===== DEBTS (v10.64) ===== -->
 <div class="section" data-section="debts" hidden>
   <div class="section-title">
@@ -1927,9 +1938,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <span class="bot-tab-label">Wishlist</span>
   </button>
 
-  <button class="bot-tab" data-tab="portfolio">
-    <span class="bot-tab-icon">📈</span>
-    <span class="bot-tab-label">Portfolio</span>
+  <button class="bot-tab" data-tab="ventures">
+    <span class="bot-tab-icon">🚀</span>
+    <span class="bot-tab-label">Ventures</span>
   </button>
 
   <button class="bot-tab" data-tab="debts">
@@ -1982,7 +1993,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   tabs.forEach(b => b.addEventListener('click', () => setActiveTab(b.dataset.tab)));
   const savedTab = storeGet(TAB_KEY);
-  setActiveTab(savedTab && ['net','subs','wish','portfolio','debts'].includes(savedTab) ? savedTab : 'net');
+  setActiveTab(savedTab && ['net','subs','wish','ventures','debts'].includes(savedTab) ? savedTab : 'net');
 
   // ============================================================
   // NET WORTH (copied from the main dashboard, verbatim logic)

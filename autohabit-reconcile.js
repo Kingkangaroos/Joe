@@ -1,7 +1,7 @@
 /* Gamenfy retrospective Fitbit -> Daily Mission reconciler
    ChatGPT (OpenAI), 2026-09-03.
    Fixes late Fitbit finalization without fighting deliberate manual unchecks.
-   v11.7 keeps the retry-safe v11.6 XP ledger but indexes the retained XP audit
+   v11.8 keeps the retry-safe v11.6 XP ledger but indexes the retained XP audit
    once per reconciliation pass. Manual-off inference and crash-after-addXP
    evidence therefore share one consistent snapshot instead of repeatedly
    parsing/scanning the near-cap character log for every Fitbit day. */
@@ -57,9 +57,19 @@
     var entry = dirtyJournal()[key];
     return !!(entry && Number(entry.ts || 0) > Number(remoteMs || 0));
   }
+  function stableJson(value) {
+    if(Array.isArray(value)) return value.map(stableJson);
+    if(value && typeof value==='object'){
+      var out={}; Object.keys(value).sort().forEach(function(k){out[k]=stableJson(value[k]);}); return out;
+    }
+    return value;
+  }
   function localMatchesRemote(key, value) {
-    try { return localStorage.getItem(key) === JSON.stringify(value); }
-    catch (e) { return false; }
+    try {
+      var raw=localStorage.getItem(key);
+      if(raw===null)return false;
+      return JSON.stringify(stableJson(JSON.parse(raw))) === JSON.stringify(stableJson(value));
+    } catch (e) { return false; }
   }
 
   // sync.js owns the cloud pull. The reconciler never force-applies a remote RPG
@@ -237,9 +247,10 @@
       if (!byDate || typeof byDate !== 'object') return 0;
 
       if (!(await waitForCloudBaseline(remoteRpg, remoteMs))) {
-        if (baselineRetryCount < 2) {
+        if (baselineRetryCount < 8) {
           baselineRetryCount++;
-          setTimeout(function () { window.autoCheckHealthHabits(refreshKnownMissionUI); }, 700 * baselineRetryCount);
+          var retryDelay=Math.min(5000, 450 * baselineRetryCount);
+          setTimeout(function () { window.autoCheckHealthHabits(refreshKnownMissionUI); }, retryDelay);
         }
         return 0;
       }
@@ -394,6 +405,12 @@
     window.autoCheckHealthHabits(refreshKnownMissionUI);
   }
   window.addEventListener('focus', rerunFromFocus);
+  window.addEventListener('gamenfy:cloud-sync-ready', function(event){
+    if(event && event.detail && event.detail.appKey==='rpg') window.autoCheckHealthHabits(refreshKnownMissionUI);
+  });
+  window.addEventListener('gamenfy:remote-state-applied', function(event){
+    if(!event || !event.detail || !event.detail.appKey || event.detail.appKey==='rpg') window.autoCheckHealthHabits(refreshKnownMissionUI);
+  });
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden) rerunFromFocus();
   });

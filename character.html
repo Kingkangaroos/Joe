@@ -1473,12 +1473,9 @@ textarea {
 
 <!-- ===== SKILLS ===== -->
 <div class="char-screen" id="tab-skills">
-  <div class="skills-toolbar">
+  <div class="skills-toolbar" aria-label="Skill views">
     <button class="skills-tab-btn active" id="skillsViewBtn" onclick="setSkillsView('skills')">⚔️ Skills</button>
     <button class="skills-tab-btn" id="goalsViewBtn" onclick="setSkillsView('goals')">🎯 Goals</button>
-    <button class="skills-tab-btn" id="venturesViewBtn" onclick="setSkillsView('ventures')">💼 Ventures</button>
-    <button class="skills-tab-btn" id="labViewBtn" onclick="location.href='lab.html'">🧪 Lab</button>
-    <button class="skills-tab-btn" id="hqViewBtn" onclick="location.href='project-hq.html'">🗂 HQ</button>
   </div>
 
   <!-- SKILLS VIEW -->
@@ -3347,7 +3344,8 @@ window.setSkillsView = function(view){
   document.getElementById('venturesView').style.display = view==='ventures'?'':'none';
   document.getElementById('skillsViewBtn').classList.toggle('active', view==='skills');
   document.getElementById('goalsViewBtn').classList.toggle('active', view==='goals');
-  document.getElementById('venturesViewBtn').classList.toggle('active', view==='ventures');
+  const venturesBtn = document.getElementById('venturesViewBtn');
+  if(venturesBtn) venturesBtn.classList.toggle('active', view==='ventures');
   if(view==='skills') renderRSGrid();
   else if(view==='ventures') renderVenturesView();
   else if(view==='goals') renderGoalsView();
@@ -4608,9 +4606,14 @@ function hmDateStr(offset){
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 
-async function hmFetchAll(){
-  if(hmData) return hmData;
+async function hmFetchAll(force){
+  if(hmData && !force) return hmData;
+  // Character used to call the authed Fitbit endpoint before auth.js had
+  // restored the session, swallow that failure, then cache the empty object
+  // forever. That made a healthy Fitbit feed look "paused" until a reload.
+  try { if(window.gamenfyAuthReady) await window.gamenfyAuthReady; } catch(e) { return hmData || { byDate:{}, hevy:{}, lastHealthDate:null }; }
   const out = { byDate:{}, hevy:{}, lastHealthDate:null };
+  let fitbitReadSucceeded = false;
   // v10.96: Apple Health-shortcut officieel afgeschreven (Joey bevestigde:
   // "die mag gewoon inderdaad opruimen want ik heb nu die Fitbit"). Fitbit
   // is nu de enige bron — geen fallback-merge meer nodig, `cur` start
@@ -4618,6 +4621,7 @@ async function hmFetchAll(){
   try{
     const r2 = await window.gamenfyAuthedFetch(HM_SB_URL+'/rest/v1/app_state?key=eq.health_fitbit&select=data');
     if(r2.ok){
+      fitbitReadSucceeded = true;
       const rows2 = await r2.json();
       const fb = (rows2[0]||{}).data || {};
       for(const [k,v] of Object.entries(fb)){
@@ -4656,7 +4660,9 @@ async function hmFetchAll(){
       }
     }
   }catch(e){}
-  hmData = out;
+  // Cache only after the authenticated Fitbit read actually completed. A
+  // transient auth/network failure must be retryable on the next view/focus.
+  if(fitbitReadSucceeded) hmData = out;
   return out;
 }
 
@@ -4732,14 +4738,13 @@ function hmMetricDefs(d){
 // moving. Two-day threshold: tolerates a normal sync hiccup, catches an outage.
 function hmStaleBanner(d){
   const last = d && d.lastHealthDate;
-  if(!last) return '<div class="hm-stale">Nog geen gezondheidsdata binnen. '
-    + 'Fitbit koppelen is tijdelijk gepauzeerd tijdens de accountbeveiliging.</div>';
+  if(!last) return '<div class="hm-stale"><b>Nog geen Fitbit-data geladen.</b> Open Body opnieuw of trek even omlaag nadat je bent ingelogd; de app probeert de cloudfeed opnieuw.</div>';
   const p = last.split('-').map(Number);
   const days = Math.round((new Date(hmDateStr(0)) - new Date(p[0], p[1]-1, p[2])) / 86400000);
   if(days < 2) return '';
   return '<div class="hm-stale"><b>Gezondheidsdata staat stil.</b> Laatste meting: '+last
     + ' (' + days + ' dagen geleden) \u2014 de cijfers hieronder zijn dus verouderd. '
-    + 'Opnieuw koppelen is tijdelijk gepauzeerd tijdens de accountbeveiliging.</div>';
+    + 'Gamenfy probeert Fitbit automatisch opnieuw te lezen zodra je de app opent.</div>';
 }
 
 async function loadHealthMetrics(){
@@ -4760,6 +4765,20 @@ async function loadHealthMetrics(){
     '</div>';
   }).join('');
 }
+
+// Auth may become ready after Body's first render. Always invalidate an empty
+// pre-auth view and fetch the real Fitbit row without requiring a manual reload.
+window.addEventListener('gamenfy-auth-ready', function(){
+  hmData = null;
+  loadHealthMetrics();
+  renderBodyComposition();
+});
+window.addEventListener('focus', function(){
+  const body = document.getElementById('tab-body');
+  if(body && body.classList.contains('active') && (!hmData || !hmData.lastHealthDate)){
+    hmData = null; loadHealthMetrics();
+  }
+});
 
 // v9.18: Google Health-stijl metric detail (gekloond layout, Daylight-skin)
 let hmSheetPeriod = 7;

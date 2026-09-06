@@ -153,9 +153,9 @@ assert.match(source,/mission\.private&&typeof w\.togglePrivateQuest/,'private co
 
 const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
 assert.match(lab,/park31-lab\.js\?v=1\.1/);assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.12"/);
-const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');assert.match(home,/park31\.html\?embed=1&amp;mode=missions&amp;privacy=public/,'Home uses the approved public-only Daily Missions 2.0 surface');
+const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');assert.match(home,/park31\.html\?embed=1&amp;mode=missions&amp;privacy=all/,'Personal Home includes public and PIN-backed private Daily Missions 2.0 companions');
 const page=fs.readFileSync(path.join(__dirname,'..','park31.html'),'utf8');
-assert.match(page,/park31\.js\?v=1\.15/);assert.match(page,/11 public · 2 private/);assert.match(page,/Budgeting en Meditation.*Park 2 fallback/);
+assert.match(page,/park31\.js\?v=1\.16/);assert.match(page,/11 public · 2 private/);assert.match(page,/Budgeting en Meditation.*Park 2 fallback/);
 
 const walkingSlot=new Element('walking-slot');walkingSlot.dataset.mission='walking';
 const openEvent={target:walkingSlot,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
