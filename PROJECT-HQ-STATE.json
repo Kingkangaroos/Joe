@@ -13,6 +13,8 @@
     "userEditable": true
   },
   "now": [
+    "Reopen Body in the installed PWA and confirm the production v11.9 owner-scoped Fitbit read renders health data; backend owner data is already verified healthy, so any remaining Waiting for Fitbit symptom is a client/PWA runtime reproduction",
+    "Visually confirm the unified 13-mission personal roster, mission-only Daily Level, restored four-box Ventures overview, Venture Lab separation and deterministic Lab return navigation on Joey device",
     "Run iPhone Device QA Lab from the installed Gamenfy PWA and capture standalone mode, safe-area, Visual Viewport and max fixed-bottom drift diagnostics; do not patch production bottom navigation until this real-device proof exists",
     "From the same installed-iPhone pass, test Swipe Navigation Lab and Daily Missions 2.0 feel/smoothness; the real cross-page swipe engine remains dormant until approved",
     "Run a natural authenticated Gamenfy session after the latest Fitbit health_fitbit update, then repeat the read-only same-owner reconciliation audit: 12 historical qualified completions remain pending (7 Walking, 5 Sleep); never force them with SQL",
@@ -56,7 +58,13 @@
     "Supabase app_state Phase 0 applied additively: restore_generation BIGINT NOT NULL DEFAULT 0 plus UNIQUE(user_id,key); all existing rows stayed generation 0 and legacy PRIMARY KEY(key) was deliberately retained for compatibility",
     "Browser cloud sync shipped owner-scoped and generation-aware: reads filter by authenticated user_id+key, upserts use onConflict user_id,key, writes carry restore_generation and dirty replay is limited to the exact current generation",
     "Backup v4 dirty-overlay guard shipped: pending local edits are included only when newer than cloud AND from the exact same restore generation; legacy dirty entries map to generation 0 only",
-    "Vercel preview budget guard shipped: chatgpt work branches skip automatic preview builds while main retains production deploys"
+    "Vercel preview budget guard shipped: chatgpt work branches skip automatic preview builds while main retains production deploys",
+    "2026-09-06 visible follow-up release passed guarded full regression run 34056084188 and normal PR smoke 34056168809; PR #46 merged to main as 745fbc8a2602eebe2501f122fbf53b135651c85b and production deployment dpl_B8kk35VfjQDmNF71XuY5AHJFtqNY is READY",
+    "Personal Home now presents all 13 Joey Daily Missions in one visual roster; anonymized private quests keep their internal private/PIN-backed storage route without a separate attention-grabbing section",
+    "Mission-only Daily Level 0-10 aggregate placeholder shipped; temporary ten-character asset production is deliberately deferred",
+    "Body and Walking/Sleep retrospective Fitbit reads now use the authenticated explicit-owner Supabase client; production reconciler is v11.9 and no direct cloud-write repair path was added",
+    "Ventures boxed overview restored with Grip, Websites Verkopen, Gamenfy Public and Gamenfy Build; Finance Ventures now separates Ventures, Venture Lab and Productielijn",
+    "General Lab belongs to Jarvis by default and explicit return tokens route Venture-launched Lab back to Finance Ventures instead of Character Body"
   ],
   "assetsNeeded": [
     "Budgeting owl native level set import",
@@ -78,7 +86,11 @@
     "fitbitHistoricalReconcile": "Use normal authenticated autohabit-reconcile.js only. It replays all historical health dates against canonical habitlog, respects manual-off and retry-safe XP ledger. Never force historical proof with direct SQL writes.",
     "iphoneBottomNav": "Device-proof first. Use the isolated iPhone Device QA Lab to measure fixed-bottom drift, safe-area and Visual Viewport behavior before any production shell/internal-scroller patch.",
     "edgeFunctionSecrets": "Env-first cutover only. Never redeploy Jarvis or send-daily-push while re-embedding existing source literals; create environment secrets first, verify, then rotate exposed credentials.",
-    "appStateOwnershipCutover": "Do not drop legacy PRIMARY KEY(key) until every service-role app_state reader/writer (including active Fitbit/Jarvis/push paths) is explicitly owner-scoped. Phase 0 UNIQUE(user_id,key) is additive compatibility only; final target is per-owner key identity."
+    "appStateOwnershipCutover": "Do not drop legacy PRIMARY KEY(key) until every service-role app_state reader/writer (including active Fitbit/Jarvis/push paths) is explicitly owner-scoped. Phase 0 UNIQUE(user_id,key) is additive compatibility only; final target is per-owner key identity.",
+    "privateDailyPresentation": "On Joey personal Home, all 13 missions are one visual roster. The two anonymized private quests remain separate internally for PIN/private storage and public-export safety, but do not get a separate attention-grabbing section.",
+    "dailyMissionAggregate": "Use a mission-only Daily Level 0-10 aggregate placeholder now. Do not spend asset time on ten temporary characters; replace with Joey-approved level 1-10 character art later.",
+    "ventureStructure": "Finance Ventures keeps the boxed venture overview (Grip, Websites Verkopen, Gamenfy Public, Gamenfy Build) and separates Ventures / Venture Lab / Productielijn. General Lab remains distinct.",
+    "labReturnNavigation": "General Lab defaults back to Jarvis; Venture-launched Lab returns to Finance Ventures through explicit return tokens and must never fall through Character/Body last-tab state."
   },
   "fitbitReconcileAudit": {
     "verifiedAt": "2026-09-06",
@@ -94,7 +106,10 @@
     "cloudRetrospectiveMigrationFlag": false,
     "cloudXpLedgerMigrationFlag": false,
     "rpgCloudOlderThanLatestHealthCloud": true,
-    "nextProof": "Run a natural authenticated Gamenfy surface after latest Fitbit update, then repeat read-only same-owner audit."
+    "nextProof": "Reopen installed PWA Body and run a natural authenticated session. Confirm Fitbit data renders and then repeat the read-only same-owner reconciliation audit; never force history with SQL.",
+    "clientReadPathVerifiedAt": "2026-09-06",
+    "clientReadPath": "authenticated Supabase client, explicit owner user_id scope, autohabit-reconcile.js v11.9",
+    "backendOwnerDataHealthy": true
   },
   "securityAudit": {
     "verifiedAt": "2026-09-06",
@@ -135,7 +150,13 @@
     "backupGenerationOverlayGuardGuardedRun": "34027899310",
     "backupGenerationOverlayGuardPrSmokeRun": "34027932770",
     "backupGenerationOverlayGuardProductionDeployment": "dpl_5HNzU6VXciwQNgsLN97WJH4wxLKU",
-    "backupGenerationOverlayGuardProductionState": "READY"
+    "backupGenerationOverlayGuardProductionState": "READY",
+    "visibleFollowupMainSha": "745fbc8a2602eebe2501f122fbf53b135651c85b",
+    "visibleFollowupGuardedRegressionRun": "34056084188",
+    "visibleFollowupPrSmokeRun": "34056168809",
+    "visibleFollowupProductionDeployment": "dpl_B8kk35VfjQDmNF71XuY5AHJFtqNY",
+    "visibleFollowupProductionState": "READY",
+    "fitbitReconcilerProductionVersion": "11.9"
   },
   "whyGoalsAudit": {
     "verifiedAt": "2026-09-06",

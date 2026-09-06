@@ -7,10 +7,10 @@ Last refreshed: **2026-09-06** by ChatGPT (OpenAI)
 ## Current verified production baseline
 
 Latest verified functional head:
-- `2bb05f746da0e684b0eb64560f05131d2d128341` — backup v4 dirty overlay is generation-safe on top of owner-scoped + generation-aware browser sync.
-- GitHub guarded regression: `34027899310` — completed/success; normal PR smoke: `34027932770` — completed/success.
-- exact Vercel production deployment: `dpl_5HNzU6VXciwQNgsLN97WJH4wxLKU`.
-- deployment state: **READY**, target `production`; public production source was also verified.
+- `745fbc8a2602eebe2501f122fbf53b135651c85b` — Joey follow-up release: unified personal Daily Missions roster + Daily Level, owner-scoped Fitbit reads, restored Ventures/Venture Lab structure and deterministic Lab returns.
+- GitHub guarded regression: `34056084188` — completed/success; normal PR smoke: `34056168809` — completed/success.
+- exact Vercel production deployment: `dpl_B8kk35VfjQDmNF71XuY5AHJFtqNY`.
+- deployment state: **READY**, target `production`; production source for the v11.9 reconciler was directly verified.
 
 This baseline also contains Daily Missions 2.0, the goal-first WHY foundation, Swipe Navigation Lab + dormant engine, WHY Link Audit, Restore Dry Run, Fitbit audit owner-pairing hardening, Edge Function secret-cutover guard, additive `app_state.restore_generation`, `UNIQUE(user_id,key)`, and owner/generation-aware browser sync.
 
@@ -51,7 +51,9 @@ Locked rules:
 - `manual-off` suppression is respected;
 - XP migration is exactly-once via durable ledger.
 
-Current reconciler remains `autohabit-reconcile.js` v11.7. Never force migration proof with SQL.
+Current reconciler is `autohabit-reconcile.js` **v11.9**. On 6 Sep the live backend owner row was verified healthy/readable; Body and the reconciler were then moved off the fragile raw REST read path onto the already-authenticated owner-scoped Supabase client. Never force migration proof with SQL.
+
+**Remaining proof is now device/runtime-specific:** reopen the installed PWA and confirm Body renders the owner Fitbit row and a natural authenticated session performs retrospective reconciliation. If Body still says `Waiting for Fitbit`, capture that as a client/PWA runtime reproduction rather than treating it as missing backend data.
 
 ### Latest live read-only audit — 5 Sep 2026
 
@@ -279,6 +281,11 @@ Therefore do **not** auto-import the legacy row or call this a recent deletion. 
 
 # Regression-locked / resolved technical classes
 
+- Personal Daily Missions presentation regression (private quests separated visually) — resolved in PR #46; all 13 are one personal roster while private storage/public-export boundaries remain intact.
+- Missing Daily Missions aggregate after Day Score retirement — mission-only Daily Level 0–10 placeholder shipped in PR #46.
+- Ventures flattened into one Personal Module / missing Grip + Gamenfy venture boxes — restored in PR #46 with Ventures / Venture Lab / Productielijn separation.
+- Lab back navigation falling through Skills/Body — explicit Jarvis/Ventures return tokens shipped in PR #46.
+- Body/Fitbit raw REST read path despite healthy owner cloud data — replaced by authenticated explicit-owner Supabase reads in production v11.9; real-device display confirmation remains open under Fitbit verification.
 Do not reopen these without a reproduced regression:
 
 - Daily Mission authoritative `rpg_habitlog_v1` replay and 0–10 no-week-reset logic.
