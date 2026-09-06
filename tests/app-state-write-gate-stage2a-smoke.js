@@ -31,7 +31,7 @@ assert.match(fn, /v_generation <> p_expected_generation/i);
 assert.match(fn, /v_version <> p_expected_version/i);
 assert.match(fn, /state_version = s\.state_version \+ 1/i);
 assert.match(fn, /insert into public\.app_state/i);
-assert.doesNotMatch(fn, /on\s+conflict/i,
+assert.doesNotMatch(fn, /\bon\s+conflict\b/i,
   'missing-baseline creation must not silently upsert over a concurrent creator');
 
 assert.match(sql, /revoke execute on function public\.gamenfy_write_app_state[\s\S]*?from public;/i);
