@@ -17,18 +17,44 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          echo '=== DIRECT APP_STATE / UPSERT REFERENCES ==='
-          rg -n "\.from\(['\" ]*app_state['\" ]*\)|/rest/v1/app_state|\.upsert\(" \
-            --glob '!GAMENFY-HISTORY-ARCHIVE.md' \
-            --glob '!_archive/**' \
-            --glob '!tests/**' \
-            --glob '!server/database/**' \
-            --glob '!*.md' || true
-          echo '=== AUTH/HISTORY RECONCILER REFERENCES ==='
-          rg -n "autohabit-reconcile|initCloudSync|gamenfy_write_app_state" \
-            --glob '!GAMENFY-HISTORY-ARCHIVE.md' \
-            --glob '!_archive/**' \
-            --glob '!tests/**' \
-            --glob '!server/database/**' || true
-          echo '=== SCRIPT TAGS FOR RECONCILER ==='
-          rg -n "<script[^>]+autohabit-reconcile" --glob '*.html' || true
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path('.')
+          skip_parts = {'_archive', 'tests', '.git', 'node_modules'}
+          skip_names = {'GAMENFY-HISTORY-ARCHIVE.md'}
+          runtime_ext = {'.js', '.html', '.ts'}
+
+          files = []
+          for p in root.rglob('*'):
+              if not p.is_file():
+                  continue
+              if p.name in skip_names or any(part in skip_parts for part in p.parts):
+                  continue
+              if 'server' in p.parts and 'database' in p.parts:
+                  continue
+              if p.suffix.lower() not in runtime_ext:
+                  continue
+              files.append(p)
+
+          patterns = {
+              'DIRECT APP_STATE / UPSERT REFERENCES': re.compile(r"\.from\(\s*['\"]app_state['\"]\s*\)|/rest/v1/app_state|\.upsert\("),
+              'AUTH/HISTORY RECONCILER REFERENCES': re.compile(r"autohabit-reconcile|initCloudSync|gamenfy_write_app_state"),
+              'SCRIPT TAGS FOR RECONCILER': re.compile(r"<script[^>]+autohabit-reconcile", re.I),
+          }
+
+          for title, pattern in patterns.items():
+              print(f'=== {title} ===')
+              hits = 0
+              for p in sorted(files):
+                  try:
+                      lines = p.read_text(errors='replace').splitlines()
+                  except Exception:
+                      continue
+                  for i, line in enumerate(lines, 1):
+                      if pattern.search(line):
+                          print(f'{p}:{i}:{line.strip()}')
+                          hits += 1
+              print(f'COUNT={hits}')
+          PY
