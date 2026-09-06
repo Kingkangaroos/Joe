@@ -89,6 +89,9 @@ begin
      where s.user_id = v_uid and s.key = p_key
      returning s.key, s.restore_generation, s.state_version, s.updated_at;
   else
+    -- Plain INSERT is deliberate. If another transaction creates the same
+    -- owner/key after our missing-row read, the unique constraint makes this
+    -- transaction fail instead of silently overwriting that newer baseline.
     if p_expected_generation <> 0 or p_expected_version <> 0 then
       raise exception 'missing baseline conflict' using errcode = '40001';
     end if;
@@ -107,9 +110,11 @@ grant execute on function public.gamenfy_write_app_state(text,jsonb,bigint,bigin
 
 -- ---------------------------------------------------------------------------
 -- Atomic canonical restore RPC.
--- One call = one PostgreSQL transaction. It always advances ALL three durable
--- canonical domains to the same new restore generation, even when a domain's
--- incoming payload is empty/unchanged, so generation never diverges by domain.
+-- One call = one PostgreSQL transaction. A restore is valid ONLY against three
+-- concrete fresh cloud baselines. Missing canonical rows are rejected instead
+-- of inserted here: an absent row cannot be row-locked and would create an
+-- insert-vs-restore race. Initialize missing rows through the normal write gate,
+-- then re-read, re-preview and reconfirm the restore.
 -- ---------------------------------------------------------------------------
 create or replace function public.gamenfy_restore_app_state_v1(
   p_strategy text,
@@ -138,19 +143,19 @@ declare
   v_new_generation bigint;
 
   v_rpg_exists boolean := false;
-  v_rpg_data jsonb := '{}'::jsonb;
-  v_rpg_generation bigint := 0;
-  v_rpg_version bigint := 0;
+  v_rpg_data jsonb;
+  v_rpg_generation bigint;
+  v_rpg_version bigint;
 
   v_finance_exists boolean := false;
-  v_finance_data jsonb := '{}'::jsonb;
-  v_finance_generation bigint := 0;
-  v_finance_version bigint := 0;
+  v_finance_data jsonb;
+  v_finance_generation bigint;
+  v_finance_version bigint;
 
   v_health_exists boolean := false;
-  v_health_data jsonb := '{}'::jsonb;
-  v_health_generation bigint := 0;
-  v_health_version bigint := 0;
+  v_health_data jsonb;
+  v_health_generation bigint;
+  v_health_version bigint;
 
   v_target_rpg jsonb;
   v_target_finance jsonb;
@@ -182,8 +187,8 @@ begin
     raise exception 'sensitive restore key blocked' using errcode = '22023';
   end if;
 
-  -- Lock all existing owner/canonical rows in one deterministic order. If any
-  -- later assertion fails PostgreSQL rolls the complete RPC transaction back.
+  -- Lock all existing owner/canonical rows in one deterministic order. Every
+  -- required row must already exist; otherwise the plan is stale/incomplete.
   perform 1
   from public.app_state as s
   where s.user_id = v_uid and s.key in ('finance', 'health', 'rpg')
@@ -205,32 +210,23 @@ begin
   from public.app_state as s
   where s.user_id = v_uid and s.key = 'health';
 
-  -- Missing canonical rows are accepted only before the first restore epoch.
-  -- After generation 1+ all three rows must exist and share the same generation.
   if not coalesce(v_rpg_exists, false) then
-    if p_expected_generation <> 0 or p_expected_rpg_version <> 0 then
-      raise exception 'rpg baseline missing/conflicted' using errcode = '40001';
-    end if;
-    v_rpg_data := '{}'::jsonb; v_rpg_generation := 0; v_rpg_version := 0;
-  elsif v_rpg_generation <> p_expected_generation or v_rpg_version <> p_expected_rpg_version then
+    raise exception 'rpg restore baseline missing' using errcode = '40001';
+  end if;
+  if not coalesce(v_finance_exists, false) then
+    raise exception 'finance restore baseline missing' using errcode = '40001';
+  end if;
+  if not coalesce(v_health_exists, false) then
+    raise exception 'health restore baseline missing' using errcode = '40001';
+  end if;
+
+  if v_rpg_generation <> p_expected_generation or v_rpg_version <> p_expected_rpg_version then
     raise exception 'rpg restore baseline conflict' using errcode = '40001';
   end if;
-
-  if not coalesce(v_finance_exists, false) then
-    if p_expected_generation <> 0 or p_expected_finance_version <> 0 then
-      raise exception 'finance baseline missing/conflicted' using errcode = '40001';
-    end if;
-    v_finance_data := '{}'::jsonb; v_finance_generation := 0; v_finance_version := 0;
-  elsif v_finance_generation <> p_expected_generation or v_finance_version <> p_expected_finance_version then
+  if v_finance_generation <> p_expected_generation or v_finance_version <> p_expected_finance_version then
     raise exception 'finance restore baseline conflict' using errcode = '40001';
   end if;
-
-  if not coalesce(v_health_exists, false) then
-    if p_expected_generation <> 0 or p_expected_health_version <> 0 then
-      raise exception 'health baseline missing/conflicted' using errcode = '40001';
-    end if;
-    v_health_data := '{}'::jsonb; v_health_generation := 0; v_health_version := 0;
-  elsif v_health_generation <> p_expected_generation or v_health_version <> p_expected_health_version then
+  if v_health_generation <> p_expected_generation or v_health_version <> p_expected_health_version then
     raise exception 'health restore baseline conflict' using errcode = '40001';
   end if;
 
@@ -246,29 +242,29 @@ begin
 
   v_new_generation := p_expected_generation + 1;
 
-  insert into public.app_state (key, user_id, data, updated_at, restore_generation, state_version)
-  values ('rpg', v_uid, v_target_rpg, v_now, v_new_generation, v_rpg_version + 1)
-  on conflict (user_id, key) do update
-    set data = excluded.data,
-        updated_at = excluded.updated_at,
-        restore_generation = excluded.restore_generation,
-        state_version = excluded.state_version;
+  -- UPDATE-only is deliberate because all three locked baselines are mandatory.
+  -- There is no blind upsert path that could convert a missing-row race into an
+  -- overwrite. All three mutations share one timestamp and one new generation.
+  update public.app_state as s
+     set data = v_target_rpg,
+         updated_at = v_now,
+         restore_generation = v_new_generation,
+         state_version = s.state_version + 1
+   where s.user_id = v_uid and s.key = 'rpg';
 
-  insert into public.app_state (key, user_id, data, updated_at, restore_generation, state_version)
-  values ('finance', v_uid, v_target_finance, v_now, v_new_generation, v_finance_version + 1)
-  on conflict (user_id, key) do update
-    set data = excluded.data,
-        updated_at = excluded.updated_at,
-        restore_generation = excluded.restore_generation,
-        state_version = excluded.state_version;
+  update public.app_state as s
+     set data = v_target_finance,
+         updated_at = v_now,
+         restore_generation = v_new_generation,
+         state_version = s.state_version + 1
+   where s.user_id = v_uid and s.key = 'finance';
 
-  insert into public.app_state (key, user_id, data, updated_at, restore_generation, state_version)
-  values ('health', v_uid, v_target_health, v_now, v_new_generation, v_health_version + 1)
-  on conflict (user_id, key) do update
-    set data = excluded.data,
-        updated_at = excluded.updated_at,
-        restore_generation = excluded.restore_generation,
-        state_version = excluded.state_version;
+  update public.app_state as s
+     set data = v_target_health,
+         updated_at = v_now,
+         restore_generation = v_new_generation,
+         state_version = s.state_version + 1
+   where s.user_id = v_uid and s.key = 'health';
 
   return query select
     v_new_generation,
