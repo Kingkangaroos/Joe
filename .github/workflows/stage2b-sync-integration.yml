@@ -20,7 +20,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
-      - name: Repair generator escaping and apply guarded patch
+      - name: Apply guarded patch
         shell: bash
         run: |
           python3 - <<'PY'
@@ -37,14 +37,89 @@ jobs:
           p.write_text('\n'.join(lines) + '\n')
           PY
           node scripts/stage2b-sync-patch.js
-          python3 - <<'PY'
-          from pathlib import Path
-          for name in ('tests/app-state-owner-generation-smoke.js', 'tests/app-state-rpc-sync-smoke.js'):
-              p = Path(name)
-              s = p.read_text()
-              s = s.replace('\\\\', '\\')
-              p.write_text(s)
-          PY
+      - name: Install literal Stage 2B contract tests
+        shell: bash
+        run: |
+          cat > tests/app-state-owner-generation-smoke.js <<'EOF'
+          /* app_state owner + generation/version client contract — ChatGPT (OpenAI), 2026-09-06 */
+          'use strict';
+          const assert=require('node:assert/strict');
+          const fs=require('node:fs');
+          const path=require('node:path');
+          const root=path.join(__dirname,'..');
+          const sync=fs.readFileSync(path.join(root,'sync.js'),'utf8');
+          const phase0=fs.readFileSync(path.join(root,'server','database','app-state-owner-scope-phase0.sql'),'utf8');
+          const plan=fs.readFileSync(path.join(root,'APP-STATE-OWNER-SCOPE-CUTOVER.md'),'utf8');
+          function has(text, needle, label){ assert.ok(text.includes(needle), label || ('missing: '+needle)); }
+          function lacks(text, needle, label){ assert.ok(!text.includes(needle), label || ('must not contain: '+needle)); }
+
+          has(phase0,'add column if not exists restore_generation bigint not null default 0');
+          has(phase0,'unique (user_id, key)');
+          lacks(phase0,'drop constraint app_state_pkey','Phase 0 must retain the legacy PK');
+          has(plan,'Phase 0 live');
+          has(plan,'Do **not** drop');
+
+          has(sync,'let restoreGeneration = 0;');
+          has(sync,'let stateVersion = 0;');
+          has(sync,'generation: restoreGeneration');
+          has(sync,'dirtyGeneration(d) !== remoteGeneration');
+          has(sync,'remoteGeneration < restoreGeneration');
+          has(sync,'remoteVersion < stateVersion');
+          has(sync,'remoteGeneration > restoreGeneration');
+          has(sync,".select('data,updated_at,restore_generation,state_version')");
+          has(sync,".eq('user_id', window.gamenfyUserId)");
+          has(sync,"supa.rpc('gamenfy_write_app_state'");
+          has(sync,'p_expected_generation: expectedGeneration');
+          has(sync,'p_expected_version: expectedVersion');
+          has(sync,"/rest/v1/rpc/gamenfy_write_app_state");
+          lacks(sync,".from('app_state').upsert(",'modern sync must not directly upsert app_state');
+          lacks(sync,'/rest/v1/app_state?on_conflict=','modern unload must not bypass the RPC');
+          lacks(sync,"onConflict: 'key'");
+          console.log('app_state owner/generation/version smoke passed: browser reads are explicit-owner and writes use the generation+state_version CAS RPC, including unload.');
+          EOF
+
+          cat > tests/app-state-rpc-sync-smoke.js <<'EOF'
+          /* Stage 2B RPC sync regression — ChatGPT (OpenAI), 2026-09-06 */
+          'use strict';
+          const assert=require('node:assert/strict');
+          const fs=require('node:fs');
+          const path=require('node:path');
+          const sync=fs.readFileSync(path.join(__dirname,'..','sync.js'),'utf8');
+          function has(needle,label){ assert.ok(sync.includes(needle), label || ('missing: '+needle)); }
+          function lacks(needle,label){ assert.ok(!sync.includes(needle), label || ('must not contain: '+needle)); }
+
+          has('v11.9 server CAS write gate');
+          has('let stateVersion = 0;');
+          has('let reconcileInFlight = null;');
+          has('function reconcileRemoteRow(');
+          has('remoteGeneration === restoreGeneration && remoteVersion < stateVersion');
+          has('remoteGeneration === restoreGeneration && remoteVersion === stateVersion && remoteMs && remoteMs < highWaterMs');
+          has('stateVersion = Math.max(stateVersion, remoteVersion);');
+          has("supa.rpc('gamenfy_write_app_state'");
+          has('p_expected_generation: expectedGeneration');
+          has('p_expected_version: expectedVersion');
+          has('ackVersion !== expectedVersion + 1','RPC acknowledgement must advance exactly one CAS version');
+          has('newerAlreadyKnown','late ACK must not roll local watermark behind newer realtime state');
+          has('clearDirtyThrough(cutoff);','only pre-call dirty entries may clear after ACK');
+          has('isCasConflict(error)');
+          has("pullAndReconcile(true, 'cas-conflict')");
+          has("fetch(SUPABASE_URL + '/rest/v1/rpc/gamenfy_write_app_state'");
+
+          const start=sync.indexOf('function flushOnUnload()');
+          const end=sync.indexOf('(async function init()',start);
+          assert.ok(start>=0 && end>start,'flushOnUnload block must be discoverable');
+          const unload=sync.slice(start,end);
+          assert.ok(unload.includes('p_expected_generation: restoreGeneration'));
+          assert.ok(unload.includes('p_expected_version: stateVersion'));
+          assert.ok(unload.includes('keepalive: true'));
+          assert.ok(!unload.includes('clearDirtyThrough'),'fire-and-forget unload may not clear dirty state');
+          assert.ok(!unload.includes('user_id:'),'RPC owner must come from auth context');
+
+          lacks(".from('app_state').upsert(");
+          lacks('/rest/v1/app_state?on_conflict=');
+          lacks('gamenfy_restore_app_state','Stage 2B must not expose restore');
+          console.log('Stage 2B RPC sync smoke passed: CAS versioning, stale-event rejection, conflict fresh-pull, safe late ACK and keepalive RPC are locked.');
+          EOF
       - name: Run all smoke tests
         shell: bash
         run: |
