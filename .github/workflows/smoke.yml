@@ -30,9 +30,26 @@ jobs:
       - name: Run all smoke tests
         shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          : > smoke-results.txt
+          status=0
           for test in tests/*-smoke.js; do
-            echo "::group::$test"
-            node "$test"
-            echo "::endgroup::"
+            echo "=== $test ===" | tee -a smoke-results.txt
+            if node "$test" 2>&1 | tee -a smoke-results.txt; then
+              echo "PASS $test" | tee -a smoke-results.txt
+            else
+              echo "FAIL $test" | tee -a smoke-results.txt
+              status=1
+            fi
+            echo | tee -a smoke-results.txt
           done
+          exit "$status"
+
+      - name: Upload smoke diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-results-${{ github.run_id }}
+          path: smoke-results.txt
+          if-no-files-found: error
+          retention-days: 3
