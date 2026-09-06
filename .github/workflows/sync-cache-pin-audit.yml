@@ -17,7 +17,9 @@ jobs:
         with:
           node-version: 22
       - name: Align active top-level sync consumers
-        run: python3 scripts/sync-cache-pin-audit.py
+        run: |
+          python3 scripts/sync-cache-pin-audit.py
+          python3 scripts/sync-cache-pin-test-adapter.py
       - name: Full regression suite
         run: |
           set -euo pipefail
@@ -25,6 +27,7 @@ jobs:
       - name: Remove one-shot files
         run: |
           rm scripts/sync-cache-pin-audit.py
+          rm scripts/sync-cache-pin-test-adapter.py
           rm .github/workflows/sync-cache-pin-audit.yml
       - name: Commit proven cache-key alignment
         run: |
