@@ -98,17 +98,18 @@
       const incoming = asObject(payloads[key], 'restore.' + key + '.payload');
       assertNoSensitive(incoming, 'restore.' + key);
 
+      // A restore plan is valid only against three concrete cloud baselines.
+      // Allowing an absent row creates an insert-vs-restore race because there is
+      // no row to lock. Missing canonical rows must first be initialized through
+      // the normal write gate, then the user re-previews/reconfirms the restore.
       if (current.missing) {
-        if (expectedGeneration !== 0 || expectedVersion !== 0) {
-          throw new Error('restore:' + key + ':missing-baseline-mismatch');
-        }
-      } else {
-        if (current.restore_generation !== expectedGeneration) {
-          throw new Error('restore:' + key + ':generation-conflict');
-        }
-        if (current.state_version !== expectedVersion) {
-          throw new Error('restore:' + key + ':version-conflict');
-        }
+        throw new Error('restore:' + key + ':baseline-missing');
+      }
+      if (current.restore_generation !== expectedGeneration) {
+        throw new Error('restore:' + key + ':generation-conflict');
+      }
+      if (current.state_version !== expectedVersion) {
+        throw new Error('restore:' + key + ':version-conflict');
       }
 
       desired[key] = strategy === 'merge'
