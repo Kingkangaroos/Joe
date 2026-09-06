@@ -158,6 +158,13 @@ Last refreshed: 2026-09-06 by ChatGPT (OpenAI)
 
 ## HUMAN CHANGELOG
 
+### 2026-09-06 — Website Ventures HQ consolidated onto restored shell
+- Superseded Website Ventures PR #45 was **not merged** because its workspace shell predated Joey's restored Ventures / Venture Lab / Productielijn structure.
+- Its useful commercial strategy was ported forward instead: four flagships, plumbing first-niche hypothesis, premium/authentic operator principle, Visual Vault, Higgsfield still-first sprint and the structured visual-production backlog.
+- Finance → Ventures remains the authoritative three-space shell; Productielijn now reads the Website Ventures HQ production queue with a safe local fallback.
+- Project HQ now renders Flagships, Venture Backlog, Idea Bank, Visual Production Backlog, Production Rules and Higgsfield Sprint, with Jarvis default return and Ventures-origin return preserved.
+- Guarded full suite `34056812291` and PR smoke `34056844197` passed. PR #48 merged as `bf848821695bed98a229273eacfb7c707a98c595`; Vercel production `dpl_WruV9vzjJ7ZYxWyrPcPrccY2Tkpy` verified READY.
+
 ### 2026-09-06 — visible product follow-up from Joey device test
 - Personal Daily Missions presentation is one 13-mission roster; anonymized private quests retain their internal PIN/private route but no longer get a separate visible section.
 - Added mission-only Daily Level 0–10 placeholder; final level 1–10 character art is intentionally deferred until the asset direction is approved.

@@ -19,6 +19,7 @@ assert.ok(workspace.includes('websiteHQ.visualProduction'));
 assert.ok(workspace.includes('project-hq.html?from=ventures&amp;project=website'));
 assert.ok(workspace.includes('lab.html?from=ventures'));
 const hq=read('project-hq.html');
+assert.ok(hq.includes('sync.js?v=11.9'),'Project HQ must request the current generation-aware sync cache key');
 assert.ok(hq.includes('Venture Backlog'));
 assert.ok(hq.includes('Idea Bank'));
 assert.ok(hq.includes('Visual Production Backlog'));
