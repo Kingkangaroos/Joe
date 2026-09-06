@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Normalize cross-realm validator assertion
+      - name: Normalize generated safety contract/tests
         shell: bash
         run: |
           python - <<'PY'
@@ -34,7 +34,17 @@ jobs:
           new="const ownerMatch=V.compareOwnerFingerprint(v4,fp);\\nassert.equal(ownerMatch.verified,true);\\nassert.equal(ownerMatch.match,true);\\nassert.equal(ownerMatch.reason,'same-account');"
           if old not in s:
               raise SystemExit('validator assertion target missing')
-          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          s=s.replace(old,new,1)
+          required={
+            '### A. Authenticated owner match':'### A. Owner/auth proof — authenticated owner match',
+            '### G. Atomic cloud-first restore generation':'### G. Cloud convergence protection — atomic cloud-first restore generation',
+            '**Do not ship Phase 2 until executable regression coverage proves stale cloud or offline device state cannot resurrect pre-restore data.**':'**Do not ship Phase 2 until executable regression coverage proves stale cloud state cannot resurrect pre-restore data, including from offline devices.**'
+          }
+          for a,b in required.items():
+              if a not in s:
+                  raise SystemExit(f'safety phrase target missing: {a}')
+              s=s.replace(a,b,1)
+          p.write_text(s,encoding='utf-8')
           PY
 
       - name: Apply guarded v4 patch
