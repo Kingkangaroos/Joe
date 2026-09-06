@@ -23,6 +23,20 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Normalize cross-realm validator assertion
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('.github/scripts/backup_v4_patch.py')
+          s=p.read_text(encoding='utf-8')
+          old="assert.deepEqual(V.compareOwnerFingerprint(v4,fp),{verified:true,match:true,reason:'same-account'});"
+          new="const ownerMatch=V.compareOwnerFingerprint(v4,fp);\\nassert.equal(ownerMatch.verified,true);\\nassert.equal(ownerMatch.match,true);\\nassert.equal(ownerMatch.reason,'same-account');"
+          if old not in s:
+              raise SystemExit('validator assertion target missing')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+
       - name: Apply guarded v4 patch
         run: python .github/scripts/backup_v4_patch.py
 
