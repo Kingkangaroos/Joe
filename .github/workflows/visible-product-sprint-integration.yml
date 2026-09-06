@@ -23,7 +23,7 @@ jobs:
         run: python3 scripts/visible-product-sprint-sept6.py
       - name: Align loader version contract
         run: sed -i "s/autohabit-reconcile.js?v=11.7/autohabit-reconcile.js?v=11.8/g" tests/autohabit-session-loader-smoke.js
-      - name: Harden Park embed scheduler
+      - name: Harden Park embed scheduler and cache boundaries
         shell: bash
         run: |
           python3 - <<'PY'
@@ -33,7 +33,13 @@ jobs:
           old='requestAnimationFrame(function(){'
           new="(typeof requestAnimationFrame==='function'?requestAnimationFrame:function(fn){fn();})(function(){"
           if s.count(old)!=1: raise SystemExit(f'expected one Park height scheduler, found {s.count(old)}')
-          p.write_text(s.replace(old,new,1))
+          s=s.replace(old,new,1)
+          s=s.replace("var VERSION='1.16';","var VERSION='1.15';",1)
+          p.write_text(s)
+          h=Path('park31.html')
+          hs=h.read_text()
+          if 'park31.js?v=1.15' not in hs: raise SystemExit('Park runtime cache marker missing')
+          h.write_text(hs.replace('park31.js?v=1.15','park31.js?v=1.16',1))
           PY
       - name: Run all smoke tests
         shell: bash
