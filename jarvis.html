@@ -62,6 +62,8 @@ body {
 @keyframes jvPulse { 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.12); } }
 .jv-empty { text-align:center; color:var(--muted); font-size:13px; line-height:1.6; margin:auto; padding:30px; }
 .jv-empty b { font-family:var(--font-display); font-size:16px; color:var(--ink); display:block; margin-bottom:6px; }
+.jv-hubnav{display:flex;gap:7px;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--bg);overflow-x:auto;scrollbar-width:none}
+.jv-hubnav::-webkit-scrollbar{display:none}.jv-hub{flex-shrink:0;text-decoration:none;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:7px 12px;font-size:11px;font-weight:800}.jv-hub.active{background:var(--ink);border-color:var(--ink);color:#F4F3EF}
 </style>
 </head>
 <body>
@@ -73,6 +75,11 @@ body {
     </div>
     <div class="jv-dot"></div>
   </div>
+  <nav class="jv-hubnav" aria-label="Jarvis workspace">
+    <a class="jv-hub active" href="jarvis.html">🤖 Jarvis</a>
+    <a class="jv-hub" href="lab.html">🧪 Lab</a>
+    <a class="jv-hub" href="project-hq.html">🗂 Headquarters</a>
+  </nav>
   <div class="jv-msgs" id="jvMsgs">
     <div class="jv-empty" id="jvEmpty"><b>Evening, Joey.</b>Ask me anything — what to start tonight, how your week looks, or what your next move should be. I remember our conversations.</div>
   </div>

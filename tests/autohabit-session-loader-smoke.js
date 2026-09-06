@@ -93,7 +93,7 @@ async function runScenario(opts) {
     const state = await runScenario({ rpgSync: true, engine: true });
     let scripts = state.appended.filter((el) => el.tagName === 'SCRIPT');
     assert.equal(scripts.length, 1, 'authenticated RPG surfaces load exactly one retrospective reconciler');
-    assert.equal(scripts[0].src, 'autohabit-reconcile.js?v=11.7');
+    assert.equal(scripts[0].src, 'autohabit-reconcile.js?v=11.8');
     assert.equal(scripts[0].dataset.gamenfyAutohabitReconcile, '1');
     assert.equal(state.window.__gamenfyAutohabitSessionLoaderLoaded, undefined, 'loader does not claim success before script.onload');
 

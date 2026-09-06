@@ -42,12 +42,13 @@
     autoHabitLoaderTimer = null;
     autoHabitLoaderLoading = true;
     const script = document.createElement('script');
-    script.src = 'autohabit-reconcile.js?v=11.7';
+    script.src = 'autohabit-reconcile.js?v=11.8';
     script.dataset.gamenfyAutohabitReconcile = '1';
     script.onload = () => {
       autoHabitLoaderLoading = false;
       autoHabitScriptFailures = 0;
       window.__gamenfyAutohabitSessionLoaderLoaded = true;
+      try { if(typeof window.autoCheckHealthHabits === 'function') window.autoCheckHealthHabits(); } catch (_error) {}
     };
     script.onerror = () => {
       autoHabitLoaderLoading = false;

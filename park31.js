@@ -109,6 +109,35 @@
     if(mission.private)return 'Private daily · 10 companion stages';
     return '10 evolution levels';
   }
+  function missionCopy(mission){
+    var w=hostWindow(),def={};
+    try{def=(w.RPG_DEFAULT_SKILLS||{})[mission.key]||{};}catch(e){}
+    var text=String(def.habitDesc||def.why||'').trim();
+    if(text)return text;
+    var fallback={
+      budgeting:'Blijf bewust binnen je budget en houd je geldplan actueel.',
+      nutrition:'Eet vandaag zoals je toekomstige lichaam nodig heeft.',
+      teeth:'Poets je tanden en houd je mondroutine op orde.',
+      household:'Doe vandaag één echte reset van je huis.',
+      meditation:'Neem bewust tijd om je aandacht stil te zetten.',
+      gratitude:'Schrijf vandaag minimaal één ding op waar je dankbaar voor bent.',
+      good_deed:'Doe vandaag bewust iets goeds voor iemand anders.',
+      screen_time:'Houd gedachteloos schermgebruik vandaag onder controle.',
+      cold_shower:'Pak vandaag je afgesproken koude douche/rinse.',
+      weed_control:'Blijf vandaag binnen je afgesproken gardening-grens.',
+      no_porn:'Houd vandaag je discipline-afspraak.'
+    };
+    return fallback[mission.key]||artworkLabel(mission);
+  }
+  function notifyEmbedHeight(){
+    if(window.parent===window)return;
+    (typeof requestAnimationFrame==='function'?requestAnimationFrame:function(fn){fn();})(function(){
+      try{
+        var h=Math.ceil(Math.max(document.body.scrollHeight,document.documentElement.scrollHeight));
+        window.parent.postMessage({type:'gamenfy:park31-height',height:h},location.origin);
+      }catch(e){}
+    });
+  }
   function rosterCard(mission){
     var info=levelInfo(mission),ready=!!artworkReady[mission.key],done=missionMode&&isDone(mission);
     var neglected=missionMode&&!done&&inactivityDays(mission)>=3;
@@ -119,7 +148,7 @@
     return '<div class="p31-slot-wrap'+(done?' is-done':'')+(mission.private?' is-private':'')+'">'
       +'<button class="'+slotClass+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+' aria-pressed="'+(done?'true':'false')+'"'+(selectedNow?' aria-current="true"':'')+'>'
       +'<span class="p31-slot-art">'+(ready?'<img src="'+assetUrl(info.art,mission)+'" alt="" draggable="false">':mission.emoji)+(neglected?'<span class="p31-help" aria-hidden="true">HELP</span>':'')+'</span>'
-      +'<span class="p31-slot-copy"><strong>'+mission.label+'</strong><small>'+artworkLabel(mission)+'</small><em>'+(missionMode?instruction:(ready?'Tik om te openen':'artwork pending'))+'</em></span>'
+      +'<span class="p31-slot-copy"><strong>'+mission.label+'</strong><small title="'+artworkLabel(mission)+'">'+missionCopy(mission)+'</small><em>'+(missionMode?instruction:(ready?'Tik om te openen':'artwork pending'))+'</em></span>'
       +'<span class="p31-slot-level">L'+info.raw+'</span></button>'
       +(missionMode?'<button class="p31-check'+(done?' is-done':'')+'" type="button" data-p31-toggle="'+mission.key+'" aria-label="'+(done?'Maak '+mission.label+' ongedaan':'Voltooi '+mission.label+' vandaag')+'" aria-pressed="'+(done?'true':'false')+'">'+(done?'✓':'')+'</button>':'')
       +'</div>';
@@ -252,6 +281,7 @@
     }
     if(rosterEl.innerHTML!==markup)rosterEl.innerHTML=markup;
     rosterCountEl.textContent=publicOnlyMode?(PUBLIC_MISSIONS.length+' public'):(PUBLIC_MISSIONS.length+' public · '+PRIVATE_MISSIONS.length+' private');
+    notifyEmbedHeight();
   }
   function probeRoster(){
     MISSIONS.filter(function(mission){return mission.key!==KEY;}).forEach(function(mission){
@@ -345,6 +375,8 @@
     if(params.get('embed')==='1')document.body.classList.add('p31-embedded');
     if(missionMode)document.body.classList.add('p31-mission-mode');
     if(homeSurface)document.body.classList.add('p31-home');
+    if(window.parent!==window)window.addEventListener('load',notifyEmbedHeight,{once:true});
+    window.addEventListener('resize',notifyEmbedHeight);
     stage=document.getElementById('p31Stage');button=document.getElementById('p31Companion');art=document.getElementById('p31Art');
     levelEl=document.getElementById('p31LiveLevel');stateEl=document.getElementById('p31State');sourceEl=document.getElementById('p31Source');
     copyEl=document.getElementById('p31EvolutionCopy');levelsEl=document.getElementById('p31Levels');progressEl=document.getElementById('p31Progress');

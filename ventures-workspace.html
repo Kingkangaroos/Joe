@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F3EF">
+<title>Ventures Workspace — Gamenfy</title>
+<link rel="manifest" href="manifest.json">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=11.0" defer></script>
+<script src="sync.js?v=11.9" defer></script>
+<script src="xp.js?v=10.98" defer></script>
+<script src="ventures.js?v=11.1" defer></script>
+<style>
+:root{--bg:#F4F3EF;--card:#fff;--ink:#15140F;--muted:#6F6C63;--faint:#A6A399;--line:#E8E6DF;--strong:#DBD8CF;--gold:#C9A227;--ember:#D4633E;--green:#2E8B5F;--violet:#7567C9;--font:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;--display:"Schibsted Grotesk",var(--font)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}body{padding:18px 16px 36px}.vw-shell{max-width:760px;margin:0 auto}.vw-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}.vw-kicker{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--violet)}.vw-title{font-family:var(--display);font-size:25px;font-weight:800;letter-spacing:-.025em;margin-top:3px}.vw-sub{font-size:12px;line-height:1.45;color:var(--muted);margin-top:4px}.vw-back{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:12px;padding:8px 11px;text-decoration:none;font-weight:700;font-size:12px}.vw-scope{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}.vw-chip{font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--muted)}.vw-chip.personal{color:var(--violet);border-color:rgba(117,103,201,.28);background:rgba(117,103,201,.08)}.vw-card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px 16px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.025)}.vw-card-title{font-family:var(--display);font-weight:800;font-size:15px}.vw-card-sub{font-size:11px;color:var(--muted);line-height:1.5;margin-top:3px}.vw-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.vw-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:11px;padding:10px 13px;text-decoration:none;font-size:12px;font-weight:800;border:1px solid var(--strong);background:var(--bg);color:var(--ink);cursor:pointer}.vw-btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}.vw-tabs{display:flex;gap:7px;overflow-x:auto;margin:16px 0 12px;scrollbar-width:none}.vw-tabs::-webkit-scrollbar{display:none}.vw-tab{flex-shrink:0;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:8px 13px;font-size:11px;font-weight:800;cursor:pointer}.vw-tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}.vw-venture{cursor:pointer}.vw-venture-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.vw-venture-name{font-family:var(--display);font-size:17px;font-weight:800}.vw-progress{height:6px;background:var(--bg);border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:11px}.vw-progress i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--gold));border-radius:99px}.vw-next{font-size:11px;color:var(--ink);font-weight:700;margin-top:8px}.vw-count{font-size:10px;color:var(--muted);font-family:ui-monospace,monospace;white-space:nowrap}.vw-detail-head{display:flex;align-items:center;gap:9px;margin-bottom:12px}.vw-detail-head button{border:none;background:none;color:var(--muted);font-size:20px;cursor:pointer}.vw-note-tabs{display:flex;gap:6px;margin-bottom:8px}.vw-note-tabs button{flex:1;padding:8px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--muted);font-size:11px;font-weight:800;cursor:pointer}.vw-note-tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}.vw-note{width:100%;min-height:110px;border:1px solid var(--strong);border-radius:12px;padding:11px 12px;background:var(--bg);color:var(--ink);font:13px/1.5 var(--font);resize:vertical;outline:none}.vw-note:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(117,103,201,.1);min-height:200px}.vw-phase{font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:18px 2px 8px}.vw-step{display:grid;grid-template-columns:25px 1fr auto;gap:9px;align-items:start;padding:10px 0;border-bottom:1px solid var(--line)}.vw-step:last-child{border-bottom:none}.vw-step-dot{width:22px;height:22px;border-radius:50%;border:1px solid var(--strong);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--faint)}.vw-step.done .vw-step-dot{background:var(--green);border-color:var(--green);color:#fff}.vw-step-title{font-size:13px;font-weight:800}.vw-step-desc{font-size:11px;color:var(--muted);line-height:1.45;margin-top:2px}.vw-step button{border:1px solid var(--strong);background:var(--bg);color:var(--ink);border-radius:9px;padding:7px 9px;font-size:10px;font-weight:800;cursor:pointer}.vw-step.done button{display:none}.vw-pipeline{display:grid;gap:8px;margin-top:11px}.vw-pipe{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:linear-gradient(135deg,rgba(117,103,201,.05),rgba(201,162,39,.04))}.vw-pipe strong{font-size:12px;display:block}.vw-pipe span{font-size:10.5px;line-height:1.45;color:var(--muted);display:block;margin-top:3px}.vw-handoff{font:11px/1.55 ui-monospace,"SF Mono",monospace;background:#171712;color:#F4F3EF;border-radius:13px;padding:12px 13px;margin-top:10px;white-space:pre-wrap}.vw-empty{padding:28px 12px;text-align:center;color:var(--muted);font-size:12px}
+body.is-embedded{padding:4px 4px 28px}body.is-embedded .vw-head .vw-back{display:none}body.is-embedded .vw-head{margin-top:4px}
+</style>
+</head>
+<body data-gamenfy-scope="personal">
+<div class="vw-shell">
+  <div class="vw-head">
+    <div>
+      <div class="vw-kicker">Finance · Personal workspace</div>
+      <div class="vw-title">Ventures</div>
+      <div class="vw-sub">Business execution, website production and Gamenfy build work live here — in the same app, not a separate repo.</div>
+    </div>
+    <a class="vw-back" href="finance.html">Finance</a>
+  </div>
+
+  <div class="vw-scope">
+    <span class="vw-chip personal">Personal module</span>
+    <span class="vw-chip">Public export: exclude</span>
+    <span class="vw-chip">Shared Gamenfy data</span>
+  </div>
+
+  <div class="vw-card">
+    <div class="vw-card-title">Website Ventures workspace</div>
+    <div class="vw-card-sub">The other ChatGPT project may build directly in this repository/app. Gamenfy is the working OS; public deployments can omit personal modules later.</div>
+    <div class="vw-actions">
+      <a class="vw-btn primary" href="project-hq.html">Open Headquarters</a>
+      <a class="vw-btn" href="lab.html">Open Lab</a>
+    </div>
+    <div class="vw-handoff">Builder handoff: work inside Kingkangaroos/Joe and treat Ventures as the website-business workspace. You may add/edit venture tools, prototypes and production flows here. Do not create a separate repo just to avoid touching Gamenfy; keep personal-only surfaces marked data-gamenfy-scope="personal" so they can be excluded from a future public build.</div>
+  </div>
+
+  <div class="vw-card" id="pipelineCard">
+    <div class="vw-card-title">Visual production line</div>
+    <div class="vw-card-sub">The queue that decides what Joey should generate — so characters/assets are not produced in bulk before the direction is locked.</div>
+    <div class="vw-pipeline" id="pipelineList"></div>
+  </div>
+
+  <div class="vw-tabs" id="ventureTabs"></div>
+  <div id="ventureBody"><div class="vw-empty">Loading ventures…</div></div>
+</div>
+<script>
+(function(){
+  'use strict';
+  const NOTES_KEY='rpg_venture_notes_v1';
+  let activeId='sell_websites';
+  let notePane='venture';
+  const qs=new URLSearchParams(location.search);
+  if(qs.get('embed')==='1') document.body.classList.add('is-embedded');
+
+  function esc(v){ return String(v==null?'':v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  function loadNotes(){ try{return JSON.parse(localStorage.getItem(NOTES_KEY))||{};}catch(e){return{};} }
+  function notePair(id){ const raw=loadNotes()[id]; if(raw&&typeof raw==='object') return {personal:raw.personal||'',venture:raw.venture||''}; return {personal:'',venture:typeof raw==='string'?raw:''}; }
+  function saveNote(id,pane,value){ const all=loadNotes(); const pair=notePair(id); pair[pane]=value; all[id]=pair; try{localStorage.setItem(NOTES_KEY,JSON.stringify(all));}catch(e){} }
+  function data(){ return window.Ventures&&window.Ventures.load?window.Ventures.load():{ventures:[]}; }
+
+  function renderPipeline(){
+    const build=data().ventures.find(v=>v.id==='app_vormgeving');
+    const phases=(build&&build.phases)||[];
+    const wanted=['vp','pipe'];
+    const steps=[];
+    phases.filter(p=>wanted.includes(p.id)).forEach(p=>(p.steps||[]).forEach(s=>steps.push({phase:p.name,step:s})));
+    const box=document.getElementById('pipelineList');
+    if(!steps.length){ box.innerHTML='<div class="vw-empty">Production queue not loaded yet.</div>'; return; }
+    box.innerHTML=steps.map(x=>'<div class="vw-pipe"><strong>'+(x.step.done?'✓ ':'')+esc(x.step.title)+'</strong><span>'+esc(x.step.detail)+'</span></div>').join('');
+  }
+
+  function renderTabs(){
+    const ventures=data().ventures.filter(v=>v.status!=='archived');
+    const tabs=document.getElementById('ventureTabs');
+    tabs.innerHTML=ventures.map(v=>'<button class="vw-tab'+(v.id===activeId?' on':'')+'" data-id="'+esc(v.id)+'">'+esc(v.name)+'</button>').join('');
+    tabs.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{activeId=b.dataset.id;notePane='venture';render();}));
+  }
+
+  function renderDetail(v){
+    const box=document.getElementById('ventureBody');
+    const pair=notePair(v.id);
+    let html='<div class="vw-card">'
+      +'<div class="vw-venture-top"><div><div class="vw-venture-name">'+esc(v.name)+'</div><div class="vw-card-sub">'+esc(v.tagline||'')+'</div></div></div>'
+      +'<div class="vw-note-tabs"><button class="'+(notePane==='personal'?'on':'')+'" data-pane="personal">🙂 Personal</button><button class="'+(notePane==='venture'?'on':'')+'" data-pane="venture">💼 Venture</button></div>'
+      +'<textarea class="vw-note" id="ventureNote" placeholder="'+(notePane==='personal'?'Thoughts for yourself…':'Prospects, ideas, build notes, next actions…')+'">'+esc(pair[notePane])+'</textarea>'
+      +'</div>';
+    (v.phases||[]).forEach(ph=>{
+      html+='<div class="vw-phase">'+esc(ph.name)+'</div><div class="vw-card">';
+      (ph.steps||[]).forEach(s=>{
+        html+='<div class="vw-step'+(s.done?' done':'')+'"><div class="vw-step-dot">'+(s.done?'✓':'')+'</div><div><div class="vw-step-title">'+esc(s.title)+'</div><div class="vw-step-desc">'+esc(s.detail||'')+'</div></div><button data-step="'+esc(s.id)+'">Done</button></div>';
+      });
+      html+='</div>';
+    });
+    box.innerHTML=html;
+    box.querySelectorAll('[data-pane]').forEach(b=>b.addEventListener('click',()=>{notePane=b.dataset.pane;renderDetail(v);}));
+    const area=document.getElementById('ventureNote'); if(area) area.addEventListener('input',()=>saveNote(v.id,notePane,area.value));
+    box.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{ if(window.Ventures&&window.Ventures.completeStep){window.Ventures.completeStep(v.id,b.dataset.step);render();} }));
+  }
+
+  function render(){
+    const ventures=data().ventures||[];
+    if(!ventures.some(v=>v.id===activeId)) activeId=ventures[0]&&ventures[0].id;
+    renderTabs(); renderPipeline();
+    const v=ventures.find(x=>x.id===activeId);
+    if(v) renderDetail(v); else document.getElementById('ventureBody').innerHTML='<div class="vw-empty">No ventures yet.</div>';
+  }
+
+  async function boot(){
+    try{ if(window.gamenfyAuthReady) await window.gamenfyAuthReady; }catch(e){}
+    for(let i=0;i<80&&!window.Ventures;i++) await new Promise(r=>setTimeout(r,50));
+    render();
+    try{ if(window.initCloudSync&&window.supabase) window.initCloudSync({appKey:'rpg',syncedKeys:window.RPG_SYNC_KEYS,syncedPrefixes:window.RPG_SYNC_PREFIXES,onApplied:render}); }catch(e){}
+  }
+  window.addEventListener('storage',e=>{if(!e.key||e.key==='rpg_ventures_v1'||e.key===NOTES_KEY)render();});
+  document.addEventListener('DOMContentLoaded',boot,{once:true});
+})();
+</script>
+</body>
+</html>
