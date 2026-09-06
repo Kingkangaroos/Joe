@@ -1997,6 +1997,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   const savedTab = storeGet(TAB_KEY);
   setActiveTab(validTabs.includes(requestedTab) ? requestedTab : (validTabs.includes(savedTab) ? savedTab : 'net'));
 
+  // Finance owns the shell; the embedded Ventures workspace owns its own
+  // sub-space. Preserve Venture Lab deep links when returning from prototypes.
+  const pageParams = new URLSearchParams(location.search);
+  const venturesFrame = document.getElementById('venturesWorkspaceFrame');
+  if (venturesFrame && requestedTab === 'ventures') {
+    const requestedSpace = pageParams.get('space');
+    const requestedVenture = pageParams.get('venture');
+    const params = new URLSearchParams('embed=1');
+    if (['overview','lab','pipeline'].includes(requestedSpace)) params.set('space', requestedSpace);
+    if (/^[a-z0-9_-]{1,64}$/i.test(requestedVenture || '')) params.set('venture', requestedVenture);
+    venturesFrame.src = 'ventures-workspace.html?' + params.toString();
+  }
+
   // ============================================================
   // NET WORTH (copied from the main dashboard, verbatim logic)
   // ============================================================
