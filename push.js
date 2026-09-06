@@ -150,3 +150,37 @@
 
   window.GamenfyPush = { enable, disable, status, isStandalone };
 })();
+
+// v7.4 — Home Daily Score presentation.
+// Park 3.1 owns the canonical completion summary and posts it to Main.
+// Joey wants the Home score to be the number he actually checked today —
+// not the average 0–10 habit level and not `done / all missions` as the headline.
+// Keep the progress bar proportional for visual feedback, but the big number is
+// only completedToday. Registered after Main's inline listener so this is the
+// final presentation layer without changing Park's canonical summary contract.
+(function installHomeDailyCheckedScore () {
+  'use strict';
+  if (window.__gamenfyHomeDailyCheckedScoreInstalled) return;
+  window.__gamenfyHomeDailyCheckedScoreInstalled = true;
+
+  window.addEventListener('message', function (event) {
+    const data = event && event.data;
+    if (!data || data.type !== 'gamenfy:park31-summary') return;
+
+    const done = Math.max(0, Math.floor(Number(data.completedToday) || 0));
+    const count = Math.max(0, Math.floor(Number(data.missionCount) || 0));
+    const value = document.getElementById('dailyLevelValue');
+    const fill = document.getElementById('dailyLevelFill');
+    const meta = document.getElementById('dailyLevelMeta');
+
+    if (value) {
+      value.textContent = String(done);
+      const suffix = value.nextElementSibling;
+      if (suffix && suffix.tagName === 'SPAN') suffix.style.display = 'none';
+      const label = value.parentElement && value.parentElement.previousElementSibling;
+      if (label) label.textContent = 'Daily Score';
+    }
+    if (fill) fill.style.width = (count ? Math.min(100, (done / count) * 100) : 0) + '%';
+    if (meta) meta.textContent = done + (done === 1 ? ' daily mission gecheckt vandaag' : ' daily missions gecheckt vandaag');
+  });
+})();
