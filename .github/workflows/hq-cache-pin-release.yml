@@ -1,0 +1,36 @@
+name: HQ cache pin and release sync
+on:
+  push:
+    branches:
+      - chatgpt/hq-cache-pin-and-release
+permissions:
+  contents: write
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: chatgpt/hq-cache-pin-and-release
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Apply focused HQ patch
+        run: python3 scripts/hq-cache-pin-release.py
+      - name: Validate state and full regression suite
+        run: |
+          python3 -m json.tool PROJECT-HQ-STATE.json >/dev/null
+          set -euo pipefail
+          for test in tests/*-smoke.js; do node "$test"; done
+      - name: Remove one-shot files
+        run: |
+          rm scripts/hq-cache-pin-release.py
+          rm .github/workflows/hq-cache-pin-release.yml
+      - name: Commit proven patch
+        run: |
+          git config user.name "ChatGPT (OpenAI)"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "docs: pin Project HQ sync and record Ventures release"
+          git push origin HEAD:chatgpt/hq-cache-pin-and-release
