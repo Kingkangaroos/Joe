@@ -11,8 +11,8 @@ assert.ok(src.includes(".from('app_state')"), 'backup must read durable app_stat
 assert.ok(src.includes(".select('key,data,updated_at')"), 'backup must read cloud timestamps for dirty ordering');
 assert.ok(src.includes(".in('key', domains)"), 'backup must request RPG, Finance and Health rows together');
 assert.ok(src.includes("const domains = ['rpg','finance','health']"), 'backup must cover all three durable user domains');
-assert.ok(src.includes('<script src="backup-owner-binding.js?v=1" defer></script>'),
-  'Character must load the shared pseudonymous owner-binding helper');
+assert.match(src,/<script src="backup-owner-binding\.js\?v=[^"]+" defer><\/script>/,
+  'Character must load the shared pseudonymous owner-binding helper without pinning a cache version in the test');
 assert.ok(src.includes('const ownerFingerprint = await window.GamenfyOwnerBinding.fingerprintUserId(window.gamenfyUserId)'),
   'backup must derive a same-account binding from the authenticated owner');
 assert.ok(src.includes('version: 4'), 'new cloud backups must use backup format v4');
