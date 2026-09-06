@@ -8,8 +8,10 @@ const src = fs.readFileSync(path.join(__dirname,'..','character.html'),'utf8');
 assert.match(src,/window\.exportBackup\s*=\s*async\s+function/,
   'backup must be async so it can read owner-scoped cloud rows');
 assert.ok(src.includes(".from('app_state')"), 'backup must read durable app_state cloud data');
-assert.ok(src.includes(".select('key,data,updated_at')"), 'backup must read cloud timestamps for dirty ordering');
+assert.ok(src.includes(".select('key,data,updated_at,restore_generation')"), 'backup must read cloud timestamps for dirty ordering');
 assert.ok(src.includes(".in('key', domains)"), 'backup must request RPG, Finance and Health rows together');
+assert.ok(src.includes(".eq('user_id', window.gamenfyUserId)"), 'backup must explicitly scope cloud rows to the authenticated owner');
+assert.ok(src.includes('cloudRestoreGeneration:'), 'backup v4 must preserve per-domain cloud generation as metadata');
 assert.ok(src.includes("const domains = ['rpg','finance','health']"), 'backup must cover all three durable user domains');
 assert.match(src,/<script src="backup-owner-binding\.js\?v=[^"]+" defer><\/script>/,
   'Character must load the shared pseudonymous owner-binding helper without pinning a cache version in the test');

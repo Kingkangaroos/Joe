@@ -71,6 +71,12 @@ This is the central convergence gate. A future server-side transaction/RPC must 
 
 Do **not** mutate local storage first and hope cloud sync catches up. Cloud must become the authoritative restored generation first; devices then converge from that committed generation.
 
+## Live app_state owner/generation foundation
+
+On 2026-09-06 production Supabase received an additive Phase 0 schema change: `restore_generation BIGINT NOT NULL DEFAULT 0` plus `UNIQUE(user_id,key)`. The legacy `PRIMARY KEY(key)` is intentionally still present while older production/browser/Edge Function writers exist. See `APP-STATE-OWNER-SCOPE-CUTOVER.md`.
+
+The next browser client stamps dirty journal entries with the current generation, explicitly reads `(user_id,key)`, and writes through the composite conflict target. This makes the client generation-aware, but **does not yet make restore safe**: before any restore apply path, server-side write gating must prevent stale/old clients from bypassing the generation rule.
+
 ## Dirty-journal generation rule
 
 Every future generation-aware dirty entry must carry the restore generation in which it was created. Replay is permitted only when:
