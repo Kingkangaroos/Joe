@@ -1,7 +1,8 @@
 from pathlib import Path
 
 # The new Health Trail loader awaits auth before entering the mocked Supabase
-# query. Give the test one microtask so its deferred read hook is installed.
+# query. Wait until the mocked read has actually started before releasing it;
+# this tests the real in-flight state instead of JavaScript microtask ordering.
 p=Path('tests/health-trail-refresh-smoke.js')
 s=p.read_text()
 old="""  readImpl=()=>new Promise(resolve=>{release=resolve;});
@@ -11,7 +12,8 @@ old="""  readImpl=()=>new Promise(resolve=>{release=resolve;});
 """
 new="""  readImpl=()=>new Promise(resolve=>{release=resolve;});
   const pending=api.refresh();
-  await Promise.resolve();
+  for(let turn=0;turn<8 && typeof release!=='function';turn++) await Promise.resolve();
+  assert.equal(typeof release,'function','mocked owner-scoped Fitbit read is actually in flight before release');
 
   assert.equal(ids.htRecovery.textContent,recoveryBefore,'a delayed refresh keeps the last good recovery visible');
 """
@@ -59,4 +61,4 @@ assert.equal(mainMatch[1],'11.9','current reconciler cache version is v11.9');
 assert.match(moduleSource,/v11\.9 keeps the retry-safe ledger/,'pinned URL matches a source file that explicitly documents its v11.9 generation');
 console.log('autohabit loader version smoke passed: Main and auth request the same v11.9 reconciler, preventing a stale Home cache from suppressing the current loader.');
 ''')
-print('Body Fitbit fixup staged: async fixture + Main reconciler v11.9 consistency.')
+print('Body Fitbit fixup staged: in-flight fixture + Main reconciler v11.9 consistency.')
