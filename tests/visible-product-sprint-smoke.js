@@ -14,8 +14,25 @@ const workspace=read('ventures-workspace.html');
 assert.ok(workspace.includes('data-gamenfy-scope="personal"'));
 assert.ok(workspace.includes('Public export: exclude'));
 assert.ok(workspace.includes('Do not create a separate repo'));
-assert.ok(workspace.includes('Visual production line'));
+assert.ok(workspace.includes('Website visual production line'));
+assert.ok(workspace.includes('WEBSITE-VENTURES-HQ-STATE.json'));
 assert.ok(workspace.includes("rpg_venture_notes_v1"));
+
+const websiteHQ=JSON.parse(read('WEBSITE-VENTURES-HQ-STATE.json'));
+assert.equal(websiteHQ.workflow.repository,'Kingkangaroos/Joe');
+assert.equal(websiteHQ.workflow.workspace,'Finance → Ventures');
+assert.equal(websiteHQ.flagships.length,4);
+assert.ok(websiteHQ.visualProduction.some(x=>x.id==='PL-CHAR-001'&&x.priority==='P0'));
+assert.ok(websiteHQ.visualProduction.some(x=>x.id==='PL-HERO-001'));
+assert.ok(websiteHQ.lockedDecisions.plumbingPositioning.includes('premium allround'));
+assert.ok(websiteHQ.lockedDecisions.operatorPrinciple.includes('Porsche treatment'));
+assert.ok(Array.isArray(websiteHQ.higgsfieldPlan)&&websiteHQ.higgsfieldPlan.length>=5);
+
+const hq=read('project-hq.html');
+assert.ok(hq.includes('Venture Backlog'));
+assert.ok(hq.includes('Idea Bank'));
+assert.ok(hq.includes('Visual Production Backlog'));
+assert.ok(hq.includes('Higgsfield sprint'));
 
 const character=read('character.html');
 const toolbar=character.slice(character.indexOf('<div class="skills-toolbar"'),character.indexOf('<!-- SKILLS VIEW -->'));
