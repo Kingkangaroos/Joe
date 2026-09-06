@@ -1,0 +1,24 @@
+/* Quick Water canonical Health write gate — ChatGPT (OpenAI), 2026-09-06 */
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const source=fs.readFileSync(path.join(__dirname,'..','topbar.js'),'utf8');
+const start=source.indexOf('function normalizeCloudCounter(');
+const end=source.indexOf('function addWater()',start);
+assert.ok(start>=0 && end>start,'Quick Water CAS block must be discoverable');
+const block=source.slice(start,end);
+assert.ok(block.includes(".select('data,restore_generation,state_version')"),'Quick Water must read CAS watermarks');
+assert.ok(block.includes(".eq('key', 'health')"),'Quick Water read must target canonical Health');
+assert.ok(block.includes(".eq('user_id', window.gamenfyUserId)"),'Quick Water read must be explicitly owner-scoped');
+assert.ok(block.includes("supa.rpc('gamenfy_write_app_state'"),'Quick Water must use canonical server writer');
+assert.ok(block.includes("p_key: 'health'"));
+assert.ok(block.includes('p_expected_generation: normalizeCloudCounter(data.restore_generation)'));
+assert.ok(block.includes('p_expected_version: normalizeCloudCounter(data.state_version)'));
+assert.ok(block.includes('for (let attempt = 0; attempt < 3; attempt++)'),'CAS conflict must get bounded retries');
+assert.ok(block.includes('if (!isCloudCasConflict(writeError)) return;'),'only CAS conflicts are retried');
+assert.ok(block.includes('Math.max('),'Quick Water counter merge must be monotone across concurrent writers');
+assert.ok(block.includes('Object.assign({}, remoteWater)'),'remote Health water settings must be preserved');
+assert.ok(!block.includes(".from('app_state').upsert("),'Quick Water must not bypass CAS with a direct upsert');
+assert.ok(!block.includes('user_id:'),'RPC write payload must derive owner from auth context');
+console.log('topbar Health CAS smoke passed: Quick Water is owner-scoped, conflict-safe and cannot lower a concurrent water count.');
