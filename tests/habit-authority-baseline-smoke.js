@@ -1,5 +1,5 @@
 /* Canonical Daily Mission baseline replay regression
-   Performed-by: ChatGPT (OpenAI), 2026-09-03
+   Performed-by: ChatGPT (OpenAI), 2026-09-06
    Run with: node tests/habit-authority-baseline-smoke.js */
 'use strict';
 
@@ -54,6 +54,7 @@ function after(d){return shiftDay(d,1);}
   const timers=[];
   const writes=[];
   let realtime=null;
+  let serverVersion=0;
   function on(type,fn){(listeners[type]=listeners[type]||[]).push(fn);}
   function dispatch(event){events.push(event);(listeners[event.type]||[]).slice().forEach(fn=>fn(event));return true;}
 
@@ -62,8 +63,37 @@ function after(d){return shiftDay(d,1);}
       assert.equal(table,'app_state');
       return {
         select(){return this;},eq(){return this;},
-        async maybeSingle(){return {data:{data:remote,updated_at:new Date(Date.now()-1000).toISOString()},error:null};},
-        async upsert(row){writes.push(JSON.parse(JSON.stringify(row)));return {error:null};}
+        async maybeSingle(){
+          return {
+            data:{
+              data:remote,
+              updated_at:new Date(Date.now()-1000).toISOString(),
+              restore_generation:0,
+              state_version:serverVersion
+            },
+            error:null
+          };
+        }
+      };
+    },
+    async rpc(name,args){
+      assert.equal(name,'gamenfy_write_app_state','healed state must use the canonical CAS writer');
+      assert.equal(args.p_key,'rpg');
+      assert.equal(args.p_expected_generation,0);
+      assert.equal(args.p_expected_version,serverVersion);
+      serverVersion+=1;
+      writes.push({
+        data:JSON.parse(JSON.stringify(args.p_data)),
+        restore_generation:0,
+        state_version:serverVersion
+      });
+      return {
+        data:{
+          restore_generation:0,
+          state_version:serverVersion,
+          updated_at:new Date().toISOString()
+        },
+        error:null
       };
     },
     channel(){return {on(event,filter,fn){realtime=fn;return this;},subscribe(){return this;}};}
@@ -129,14 +159,18 @@ function after(d){return shiftDay(d,1);}
   assert.equal(healed.sleep.lastChecked,yesterday);
   assert.equal(healed.gardening.score,8,'private Daily Mission state is not touched by the public replay guard');
 
-  // Run the coalesced push created by the healed rpg_habits_v1 write.
+  // Run the coalesced push created by the healed rpg_habits_v1 write. The
+  // product now converges through gamenfy_write_app_state rather than a direct
+  // browser upsert, but the semantic requirement is unchanged.
   for(const timer of timers.filter(t=>!t.cancelled&&!t.ran)){timer.ran=true;await timer.fn();await settle(3);}
-  assert.ok(writes.length>=1,'healed materialized habit state converges back to cloud');
+  assert.ok(writes.length>=1,'healed materialized habit state converges back to cloud through CAS RPC');
   assert.equal(writes.at(-1).data.rpg_habits_v1.walking.score,2,'cloud healing snapshot contains canonical Walking score');
+  assert.equal(writes.at(-1).state_version,1,'healing write advances the server CAS version exactly once');
   assert.equal(typeof realtime,'function','realtime subscription remains installed after baseline replay');
 
   const source=fs.readFileSync(path.join(__dirname,'..','sync.js'),'utf8');
   assert.match(source,/gamenfy:cloud-sync-ready/,'sync exposes a baseline-ready contract');
   assert.match(source,/replayPublicHabits/,'sync owns the canonical public habit replay guard');
-  console.log('habit authority baseline smoke: canonical day log heals stale materialized scores after safe cloud baseline.');
+  assert.match(source,/supa\.rpc\('gamenfy_write_app_state'/,'healed baseline uses the server CAS writer');
+  console.log('habit authority baseline smoke: canonical day log heals stale materialized scores and converges through CAS RPC.');
 })().catch(err=>{console.error(err);process.exitCode=1;});

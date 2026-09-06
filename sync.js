@@ -1,5 +1,5 @@
 // =============================================================
-// Shared cloud-sync helper — Gamenfy v11.8 dated Character Daily guard
+// Shared cloud-sync helper — Gamenfy v11.9 server CAS write gate
 // Performed-by: ChatGPT (OpenAI)
 //
 // v11.2 hardens navigation/realtime races:
@@ -28,6 +28,10 @@
 // keeps manual-off symmetric and XP audit events retain their actual activity day.
 // The obsolete v9.1 rpg_daily_v1 -> habitlog migration is retired before its
 // delayed Character callback can run; canonical habitlog is already cloud-synced.
+// v11.9 moves the current browser writer to the authenticated server CAS RPC.
+// restore_generation protects restore epochs; state_version protects concurrent
+// writes inside an epoch. Legacy installed PWAs remain supported by the DB bridge.
+// Unload uses the same RPC with keepalive and never clears dirty state optimistically.
 // =============================================================
 (function () {
   'use strict';
@@ -75,6 +79,8 @@
     let highWaterMs = 0;
     let forcePush = false;
     let restoreGeneration = 0;
+    let stateVersion = 0;
+    let reconcileInFlight = null;
 
     const origSet = localStorage.setItem.bind(localStorage);
     const origRemove = localStorage.removeItem.bind(localStorage);
@@ -257,6 +263,79 @@
       return replayed;
     }
 
+    function normalizeCounter(value) {
+      const n = Number(value);
+      return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;
+    }
+
+    function isCasConflict(error) {
+      if (!error) return false;
+      const code = String(error.code || '');
+      const message = String(error.message || '');
+      return code === '40001' || code === '23505' || /conflict|duplicate/i.test(message);
+    }
+
+    function reconcileRemoteRow(row, allowDelete, source) {
+      if (!row) return { found: false, ignored: false, replayed: false, remote: null };
+      const remote = row.data && typeof row.data === 'object' ? row.data : {};
+      const remoteMs = row.updated_at ? (Date.parse(row.updated_at) || 0) : 0;
+      const remoteGeneration = normalizeCounter(row.restore_generation);
+      const remoteVersion = normalizeCounter(row.state_version);
+
+      if (remoteGeneration < restoreGeneration) {
+        return { found: true, ignored: true, replayed: false, remote };
+      }
+      if (remoteGeneration === restoreGeneration && remoteVersion < stateVersion) {
+        return { found: true, ignored: true, replayed: false, remote };
+      }
+      // During the compatibility phase an out-of-order duplicate can share the
+      // same version. Keep the server timestamp as the tie-breaker until direct
+      // browser writes are finally revoked.
+      if (remoteGeneration === restoreGeneration && remoteVersion === stateVersion && remoteMs && remoteMs < highWaterMs) {
+        return { found: true, ignored: true, replayed: false, remote };
+      }
+
+      if (remoteGeneration > restoreGeneration) {
+        restoreGeneration = remoteGeneration;
+        stateVersion = remoteVersion;
+        highWaterMs = remoteMs;
+      } else {
+        stateVersion = Math.max(stateVersion, remoteVersion);
+        highWaterMs = Math.max(highWaterMs, remoteMs);
+      }
+
+      const incoming = JSON.stringify(remote);
+      const hasDirty = Object.keys(loadDirty().items || {}).length > 0;
+      if (incoming === lastSyncedJson && !hasDirty) {
+        return { found: true, ignored: false, replayed: false, remote, remoteMs, remoteGeneration, remoteVersion };
+      }
+
+      lastSyncedJson = incoming;
+      applyRemote(remote, !!allowDelete, remoteMs, remoteGeneration);
+      const replayed = replayNewerDirty(remoteMs, remoteGeneration);
+      return { found: true, ignored: false, replayed, remote, remoteMs, remoteGeneration, remoteVersion, source: source || 'remote' };
+    }
+
+    async function pullAndReconcile(allowDelete, source) {
+      if (!supa || !window.gamenfyUserId) return { found: false, ignored: false, replayed: false, remote: null };
+      if (reconcileInFlight) return reconcileInFlight;
+      reconcileInFlight = (async function () {
+        const { data, error } = await supa
+          .from('app_state')
+          .select('data,updated_at,restore_generation,state_version')
+          .eq('key', cloudKey)
+          .eq('user_id', window.gamenfyUserId)
+          .maybeSingle();
+        if (error) throw error;
+        return reconcileRemoteRow(data || null, !!allowDelete, source || 'pull');
+      })();
+      try {
+        return await reconcileInFlight;
+      } finally {
+        reconcileInFlight = null;
+      }
+    }
+
     async function pushNow() {
       if (!supa || !ready || !window.gamenfyUserId) return;
       const state = collect();
@@ -265,18 +344,53 @@
       const hasDirty = Object.keys(dirty.items || {}).length > 0;
       if (json === lastSyncedJson && !hasDirty && !forcePush) return;
 
-      const cutoff = Math.max(Date.now(), highWaterMs + 1);
-      highWaterMs = cutoff;
+      const cutoff = Date.now();
+      const expectedGeneration = restoreGeneration;
+      const expectedVersion = stateVersion;
       try {
-        const { error } = await supa.from('app_state').upsert(
-          { key: cloudKey, user_id: window.gamenfyUserId, data: state, updated_at: new Date(cutoff).toISOString(), restore_generation: restoreGeneration },
-          { onConflict: 'user_id,key' }
-        );
-        if (!error) {
-          lastSyncedJson = json;
-          forcePush = false;
-          clearDirtyThrough(cutoff);
+        const { data, error } = await supa.rpc('gamenfy_write_app_state', {
+          p_key: cloudKey,
+          p_data: state,
+          p_expected_generation: expectedGeneration,
+          p_expected_version: expectedVersion,
+        });
+
+        if (error) {
+          if (isCasConflict(error)) {
+            try {
+              const result = await pullAndReconcile(true, 'cas-conflict');
+              if (result && Object.keys(loadDirty().items || {}).length) schedulePush();
+            } catch (e) {}
+          }
+          return;
         }
+
+        const ack = Array.isArray(data) ? data[0] : data;
+        const ackGeneration = normalizeCounter(ack && ack.restore_generation);
+        const ackVersion = normalizeCounter(ack && ack.state_version);
+        const ackMs = ack && ack.updated_at ? (Date.parse(ack.updated_at) || 0) : 0;
+
+        if (!ack || ackGeneration !== expectedGeneration || ackVersion !== expectedVersion + 1) {
+          try { await pullAndReconcile(true, 'unexpected-write-ack'); } catch (e) {}
+          return;
+        }
+
+        const newerAlreadyKnown = restoreGeneration > ackGeneration ||
+          (restoreGeneration === ackGeneration && stateVersion > ackVersion);
+        if (!newerAlreadyKnown) lastSyncedJson = json;
+
+        if (ackGeneration > restoreGeneration) {
+          restoreGeneration = ackGeneration;
+          stateVersion = ackVersion;
+          highWaterMs = ackMs;
+        } else if (ackGeneration === restoreGeneration) {
+          stateVersion = Math.max(stateVersion, ackVersion);
+          highWaterMs = Math.max(highWaterMs, ackMs);
+        }
+
+        clearDirtyThrough(cutoff);
+        forcePush = false;
+        if (Object.keys(loadDirty().items || {}).length) schedulePush();
       } catch (e) {}
     }
 
@@ -291,23 +405,24 @@
       const json = JSON.stringify(state);
       if (json === lastSyncedJson && !Object.keys(loadDirty().items || {}).length) return;
       try {
-        fetch(SUPABASE_URL + '/rest/v1/app_state?on_conflict=user_id,key', {
+        fetch(SUPABASE_URL + '/rest/v1/rpc/gamenfy_write_app_state', {
           method: 'POST',
           headers: {
             'apikey': SUPABASE_KEY,
             'Authorization': 'Bearer ' + window.gamenfyAccessToken,
             'Content-Type': 'application/json',
-            'Prefer': 'resolution=merge-duplicates',
           },
           body: JSON.stringify({
-            key: cloudKey,
-            user_id: window.gamenfyUserId,
-            data: state,
-            updated_at: new Date(Math.max(Date.now(), highWaterMs + 1)).toISOString(),
-            restore_generation: restoreGeneration
+            p_key: cloudKey,
+            p_data: state,
+            p_expected_generation: restoreGeneration,
+            p_expected_version: stateVersion,
           }),
           keepalive: true,
         }).catch(() => {});
+        // Fire-and-forget unload writes are never treated as acknowledged here.
+        // The dirty journal remains until a later visible session observes cloud
+        // state or a normal RPC response and can clear it safely.
       } catch (e) {}
     }
 
@@ -322,33 +437,18 @@
       supa = window.gamenfySupabase;
 
       try {
-        const { data, error } = await supa
-          .from('app_state')
-          .select('data,updated_at,restore_generation')
-          .eq('key', cloudKey)
-          .eq('user_id', window.gamenfyUserId)
-          .maybeSingle();
+        const result = await pullAndReconcile(false, 'initial');
+        ready = true;
+        const remote = result && result.found ? result.remote : null;
 
-        const remote = (!error && data && data.data && typeof data.data === 'object') ? data.data : null;
-        const remoteMs = data && data.updated_at ? (Date.parse(data.updated_at) || 0) : 0;
-        const remoteGeneration = Math.max(0, Math.floor(Number(data && data.restore_generation) || 0));
-        restoreGeneration = remoteGeneration;
-        highWaterMs = Math.max(highWaterMs, remoteMs);
-
-        if (remote && Object.keys(remote).length > 0) {
-          lastSyncedJson = JSON.stringify(remote);
-          applyRemote(remote, false, remoteMs, remoteGeneration);
-          const replayed = replayNewerDirty(remoteMs, remoteGeneration);
-          ready = true;
-
+        if (remote) {
           let hasLocalOnly = false;
           for (const k of listAllKeys()) {
             if (!(k in remote)) { hasLocalOnly = true; break; }
           }
-          if (hasLocalOnly || replayed || Object.keys(loadDirty().items || {}).length) schedulePush();
-        } else {
-          ready = true;
-          if (Object.keys(collect()).length > 0 || Object.keys(loadDirty().items || {}).length) schedulePush();
+          if (hasLocalOnly || result.replayed || Object.keys(loadDirty().items || {}).length) schedulePush();
+        } else if (Object.keys(collect()).length > 0 || Object.keys(loadDirty().items || {}).length) {
+          schedulePush();
         }
       } catch (e) {
         ready = true;
@@ -362,29 +462,9 @@
           event: '*', schema: 'public', table: 'app_state', filter: 'key=eq.' + cloudKey,
         }, (payload) => {
           if (!payload.new || !payload.new.data) return;
-          const remoteMs = payload.new.updated_at ? (Date.parse(payload.new.updated_at) || 0) : 0;
-          const remoteGeneration = Math.max(0, Math.floor(Number(payload.new.restore_generation) || 0));
-          if (remoteGeneration < restoreGeneration) {
-            forcePush = true;
-            schedulePush();
-            return;
-          }
-          if (remoteGeneration === restoreGeneration && remoteMs && remoteMs < highWaterMs) {
-            forcePush = true;
-            schedulePush();
-            return;
-          }
-          if (remoteGeneration > restoreGeneration) {
-            restoreGeneration = remoteGeneration;
-            highWaterMs = remoteMs;
-          } else {
-            highWaterMs = Math.max(highWaterMs, remoteMs);
-          }
-          const incoming = JSON.stringify(payload.new.data);
-          if (incoming === lastSyncedJson && !Object.keys(loadDirty().items || {}).length) return;
-          lastSyncedJson = incoming;
-          applyRemote(payload.new.data, true, remoteMs, remoteGeneration);
-          if (replayNewerDirty(remoteMs, remoteGeneration) || Object.keys(loadDirty().items || {}).length) schedulePush();
+          const result = reconcileRemoteRow(payload.new, true, 'realtime');
+          if (!result || result.ignored) return;
+          if (result.replayed || Object.keys(loadDirty().items || {}).length) schedulePush();
         })
         .subscribe();
     })();
