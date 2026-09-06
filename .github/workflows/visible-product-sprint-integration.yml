@@ -1,0 +1,43 @@
+name: Visible product sprint integration
+
+on:
+  push:
+    branches:
+      - chatgpt/visible-product-sprint-sept6
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: chatgpt/visible-product-sprint-sept6
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Apply product patch
+        run: python3 scripts/visible-product-sprint-sept6.py
+      - name: Run all smoke tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/*-smoke.js; do
+            echo "::group::$test"
+            node "$test"
+            echo "::endgroup::"
+          done
+      - name: Remove one-shot files
+        run: |
+          rm scripts/visible-product-sprint-sept6.py
+          rm .github/workflows/visible-product-sprint-integration.yml
+      - name: Commit proven sprint
+        run: |
+          git config user.name "ChatGPT (OpenAI)"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "product: move Ventures and simplify daily surfaces"
+          git push origin HEAD:chatgpt/visible-product-sprint-sept6
