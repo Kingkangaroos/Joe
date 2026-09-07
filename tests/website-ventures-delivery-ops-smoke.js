@@ -19,6 +19,15 @@ assert.ok(delivery.includes('maximaal 3 kernpagina’s'),'Founding scope guardra
 assert.ok(delivery.includes('één gebundelde revisieronde'),'Revision scope must stay bounded');
 assert.ok(delivery.includes('10 founding slots'),'First-ten delivery capacity must remain explicit');
 
+assert.ok(delivery.includes("SALES_KEY='rpg_venture_sales_v1'"),'Delivery import must read the active Sales local state');
+assert.ok(delivery.includes("sales.clients.filter(x=>x&&x.stage==='Gewonnen'"),'Only explicitly won sales may enter Delivery');
+assert.ok(delivery.includes("state.clients.findIndex(x=>!String(x.company||'').trim())"),'Sales import may fill only empty Delivery slots');
+assert.ok(delivery.includes("slot.status='Waiting intake'"),'Imported wins must start at Waiting intake');
+assert.ok(delivery.includes('slot.intake={};slot.qa={};'),'Import must never fabricate intake or QA completion');
+assert.ok(delivery.includes('Bestaande Delivery-klanten worden niet overschreven'),'UI must state the no-overwrite rule');
+assert.ok(delivery.includes('navigator.clipboard.writeText(text)'),'Intake helper must copy text only');
+assert.ok(delivery.includes('er wordt niets verzonden')||delivery.includes('niets automatisch verstuurd'),'Intake helper must explicitly state that nothing is sent');
+
 assert.ok(sales.includes("APP_KEY_PREFIX='venture_sales:'"),'Sales must keep its isolated namespaced prefix');
 assert.ok(!sales.includes("APP_KEY_PREFIX='venture_delivery:'"),'Sales and delivery cloud channels must stay separate');
 assert.ok(lab.includes('venture_sales')&&lab.includes('venture_delivery'),'Website Lab must explain the state separation');
