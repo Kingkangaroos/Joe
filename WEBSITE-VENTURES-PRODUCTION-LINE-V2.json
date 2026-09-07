@@ -1,0 +1,159 @@
+{
+  "name": "Website Ventures Production Line v2",
+  "version": 2,
+  "updatedAt": "2026-09-07",
+  "managedBy": "ChatGPT (OpenAI)",
+  "goal": "Pre-plan every valuable Higgsfield/AI generation before paid production so one subscription sprint produces reusable website and Gamenfy assets instead of isolated pretty outputs.",
+  "hardRules": [
+    "No paid generation without an asset ID, exact destination slot and acceptance criterion.",
+    "Create master still/reference first; animate only approved masters.",
+    "One coherent world/character beats many unrelated variants.",
+    "Use reusable Elements for recurring characters, environments and props after their reference image is approved.",
+    "Website proof remains real-source-only; AI demo imagery may never masquerade as completed client work.",
+    "Gamenfy public/private membership comes from live app data, never from concept art.",
+    "Existing approved Park 3.1 evolution art is preserved; new spend targets animation, props, environments and missing higher-level systems rather than recreating 130 existing WebPs.",
+    "Draft cheaply/fast where possible, then spend premium credits only on selected masters.",
+    "Archive prompt, model, references, crop, score, defects and final app/site usage for every attempt."
+  ],
+  "productionStages": [
+    {"id":"S0","name":"Slot lock","output":"asset ID + destination + aspect ratio + acceptance gate","spend":"none"},
+    {"id":"S1","name":"Reference/master","output":"1 selected still/reference image","spend":"low-medium"},
+    {"id":"S2","name":"Consistency test","output":"same character/object/world in one second context","spend":"low-medium"},
+    {"id":"S3","name":"Production stills","output":"exact crops/poses/states required by site/app","spend":"medium"},
+    {"id":"S4","name":"Cutout/sprite prep","output":"transparent PNG/WebP or game-ready sprite sheet","spend":"low-medium"},
+    {"id":"S5","name":"Motion","output":"short approved loops/transitions only","spend":"high"},
+    {"id":"S6","name":"Integration + QA","output":"real website/app implementation, mobile/performance check","spend":"none"},
+    {"id":"S7","name":"Vault","output":"winner + rejected history + prompt/model/reference metadata","spend":"none"}
+  ],
+  "modelMatrix": [
+    {"task":"Website master technician / realistic recurring person","primary":"Higgsfield Soul 2.0 or Cinema Studio Image 2.5","production":"Lock one winning portrait, then create reusable Element; subsequent stills via Element-compatible Nano Banana Pro / Cinema Studio Image 2.5 / Seedream 4.5.","reason":"Strong realistic/editorial person creation followed by explicit identity reuse."},
+    {"task":"Website premium environment / hero still","primary":"Cinema Studio Image 2.5","fallback":"Nano Banana Pro","reason":"Cinematic 4K composition first; Nano Banana Pro when text-space/crop/instruction fidelity matters more."},
+    {"task":"Precise image edit / composition repair","primary":"Nano Banana 2 or Seedream 5.0 Pro","reason":"Instruction-based editing; Seedream 5 Pro can also remove backgrounds."},
+    {"task":"Transparent props / Gamenfy object cutouts","primary":"Seedream 5.0 Pro remove_bg=true","fallback":"Image Background Remover after Nano Banana Pro","reason":"Build reusable isolated objects rather than baking props into scenes."},
+    {"task":"Gamenfy character walk/idle/run/jump","primary":"AutoSprite Animation","reason":"Outputs game-ready sprite sheet from one approved character image; preserves app-native animation workflow better than embedding video."},
+    {"task":"Gamenfy non-humanoid object animation","primary":"AutoSprite custom with is_humanoid=false","fallback":"Short Seedance 2.0 loop + background removal where sprite output fails","reason":"Allows flame, leaf, water, sparkle or object motions to remain reusable game assets."},
+    {"task":"Website hero/story motion","primary":"Seedance 2.0","premium":"Cinema Studio Video 3.0","reason":"Seedance for reference/identity consistency; Cinema Studio only for selected hero payoff."},
+    {"task":"Motion transfer from a reference performance","primary":"Genjutsu motion control","reason":"Useful only when a specific walk/gesture/camera motion is already approved and should be transferred."},
+    {"task":"Video object replacement","primary":"Genjutsu replace object","reason":"Use only after a source clip is working and one prop/product needs swapping; not a first-generation workflow."},
+    {"task":"Upscale final still/video","primary":"Topaz / Bytedance upscale","reason":"Final polish only; never upscale rejected work."}
+  ],
+  "websiteBatches": [
+    {
+      "id":"WEB-A","name":"Premium Plumbing identity + world lock","priority":"P0","dependency":"none","definitionOfDone":"One master technician Element candidate and one approved visual-world board that both pass consistency/credibility checks.",
+      "assets":[
+        {"id":"PL-CHAR-001","type":"character","destination":"Premium Plumbing recurring technician","input":"text brief only for first candidate; winner becomes Element","draftModel":"Soul 2.0","masterModel":"Cinema Studio Image 2.5 or Nano Banana Pro","format":"4:5 master + 3:2 environmental test","variants":4,"gate":"Same identity can be reproduced in second pose; authentic tradesperson; no fashion-model look; usable hands/workwear.","next":"Create Higgsfield Element only after winner."},
+        {"id":"PL-STYLE-001","type":"environment/style","destination":"all Plumbing visuals","input":"white + deep red + stone/marble + chrome/glass/water","draftModel":"Nano Banana Pro","masterModel":"Cinema Studio Image 2.5","format":"16:9 reference board + mobile crop sample","variants":3,"gate":"Premium but credible in Dutch local-service context; text areas remain calm; red is accent not discount aesthetic.","next":"Lock as environment/style reference."},
+        {"id":"PL-PROP-VAN-001","type":"prop","destination":"arrival scenes + future client variants","input":"modern realistic Dutch service van, clean generic deep-red branding zones, no fake plate/company claims","draftModel":"Nano Banana Pro","masterModel":"Seedream 5 Pro remove_bg","format":"3:2 master + transparent side/three-quarter cutout","variants":3,"gate":"Plausible commercial van; brand panel editable; perspective usable; no malformed wheels/text.","next":"Create prop Element after approval."},
+        {"id":"PL-PROP-TOOLS-001","type":"prop-set","destination":"repair/detail scenes","input":"compact realistic plumbing toolkit: adjustable wrench, grips, fitting tools, inspection light, protective cloth/case","draftModel":"Nano Banana Pro","masterModel":"Seedream 5 Pro remove_bg","format":"1:1 transparent object board + individual cutouts","variants":2,"gate":"Every tool physically plausible and recognizable; no fantasy tools.","next":"Vault as prop reference set."}
+      ]
+    },
+    {
+      "id":"WEB-B","name":"Premium Plumbing critical story stills","priority":"P0","dependency":"WEB-A","definitionOfDone":"Six coherent stills make the urgency→trust story understandable without motion.",
+      "assets":[
+        {"id":"PL-HERO-001","type":"hero-still","destination":"above-fold hero","input":"approved bathroom world; controlled obvious leak; no technician required","model":"Cinema Studio Image 2.5","format":"16:9/16:10 desktop + 4:5 mobile-safe","variants":4,"gate":"Problem understood <2 sec; premium; large stable headline/CTA negative space; no catastrophic flood."},
+        {"id":"PL-STORY-001","type":"story-still","destination":"contact bridge","input":"same bathroom; phone/reach-for-phone bridge","model":"Nano Banana Pro","format":"3:2 + 4:5","variants":2,"gate":"Reads in 1–2 seconds; generic/no fake phone UI; same lighting/world."},
+        {"id":"PL-STORY-002","type":"story-still","destination":"arrival stage","input":"PL-CHAR-001 Element + PL-PROP-VAN-001","model":"Nano Banana Pro or Cinema Studio Image 2.5","format":"16:9 + 3:2","variants":3,"gate":"Same face/workwear; realistic Dutch residential context; vehicle geometry sound."},
+        {"id":"PL-STORY-003","type":"story-still","destination":"diagnosis stage","input":"PL-CHAR-001 Element + approved bathroom","model":"Nano Banana Pro","format":"3:2 + 4:5","variants":3,"gate":"Natural crouch/inspection; believable tool orientation; calm competence."},
+        {"id":"PL-STORY-004","type":"story-still","destination":"repair stage","input":"PL-CHAR-001 Element + tool refs","model":"Nano Banana Pro / Seedream 4.5","format":"3:2 + 4:5","variants":4,"gate":"Hands/tools/fittings believable; organized work area; no sparks/construction theatrics."},
+        {"id":"PL-STORY-005","type":"story-still","destination":"clean handover","input":"PL-CHAR-001 Element + same world","model":"Nano Banana Pro","format":"3:2 + 4:5","variants":2,"gate":"Space visibly dry/neat; service promise visible without cheesy thumbs-up."},
+        {"id":"PL-END-001","type":"cta-still","destination":"final CTA","input":"resolved same bathroom / technician leaving","model":"Cinema Studio Image 2.5","format":"16:9 + 4:5","variants":3,"gate":"Clear relief/result; clean CTA space; no invented testimonial/customer claim."}
+      ]
+    },
+    {
+      "id":"WEB-C","name":"Reusable support system","priority":"P1","dependency":"WEB-B winner selection","definitionOfDone":"Website can be adapted to real prospects without re-generating the whole art direction.",
+      "assets":[
+        {"id":"PL-DETAIL-001","type":"macro-pack","destination":"section transitions","model":"Cinema Studio Image 2.5 / Nano Banana Pro","format":"1:1 + 4:5 + crop-safe wide","variants":6,"gate":"Chrome/water/fittings/tools all believable and from same material world."},
+        {"id":"PL-SVC-001","type":"service-pack","destination":"allround services section","model":"Nano Banana Pro","format":"3:2 + 4:5","variants":5,"gate":"Emergency is no longer the only story; every shown service remains generic until mapped to a real client's offer."},
+        {"id":"PL-PROOF-001","type":"layout-object","destination":"real project proof","model":"GPT Image 2 or OpenAI Hazel only for visual concept; final should be coded UI","format":"4:3 source-flexible + 1:1 card + 16:9 gallery","variants":2,"gate":"Frame enhances real photos but never generates the evidence itself."},
+        {"id":"SALES-MOCK-001","type":"sales-mockup","destination":"outreach/demo presentation","model":"GPT Image 2 / Nano Banana Pro","format":"16:9 presentation + 9:16 phone-story","variants":3,"gate":"Prospect can instantly understand desktop/mobile transformation; company-specific facts remain editable."}
+      ]
+    },
+    {
+      "id":"WEB-D","name":"Motion only after still gates","priority":"P1","dependency":"selected WEB-B stills score >=10/12","definitionOfDone":"Motion improves comprehension/premium feel and remains optional progressive enhancement.",
+      "assets":[
+        {"id":"PL-MOTION-001","type":"hero-motion","model":"Seedance 2.0","input":"selected PL-HERO-001 as start image","format":"16:9 4–5s silent loop","variants":2,"gate":"Subtle water/reflection/camera drift; headline region stable; first frame already sells."},
+        {"id":"PL-MOTION-002","type":"story-motion","model":"Seedance 2.0","input":"selected arrival/inspection/repair stills","format":"3–5s clips","variants":3,"gate":"Identity/hands/tools stay consistent; natural speed; no music-video camera moves."},
+        {"id":"PL-MOTION-003","type":"macro-motion","model":"Cinema Studio Video or Seedance 2.0 Mini","input":"selected detail macro","format":"2–4s loop","variants":2,"gate":"Seamless light/water movement and lightweight enough to justify use."}
+      ]
+    }
+  ],
+  "gamenfyStrategy": {
+    "existingInventory": "Park 3.1 already has 13 evolution sets x 10 levels = 130 committed WebPs. Do not recreate these by default.",
+    "newSpendFocus": ["reusable props","environments","sprite animations","effects","Daily Score/walker system","skills props","interaction objects"],
+    "assetArchitecture": "Separate character, prop, environment and FX layers so CSS/JS can combine/reuse them instead of embedding everything in a single video.",
+    "preferredGameFormat": "transparent PNG/WebP for static props; AutoSprite PNG sprite sheets for movement; video only for rare hero/background moments where sprite/CSS cannot achieve the effect."
+  },
+  "gamenfyBatches": [
+    {
+      "id":"GF-A","name":"Core park object kit","priority":"P0","definitionOfDone":"One coherent reusable park kit can decorate Daily Score, Park 3.1 and future skill scenes without being baked into character art.",
+      "assets":[
+        {"id":"GF-ENV-PARK-001","category":"environment","asset":"Master park world","use":"Daily Score walker + future park backgrounds","model":"Nano Banana Pro then Element(environment)","format":"21:9 master with 16:9 and 9:16 safe zones","variants":3,"gate":"Bright premium-cartoon world; clear path; layers leave room for characters/UI; no embedded text."},
+        {"id":"GF-PROP-PATH-001","category":"prop","asset":"Path/grass strip","use":"walking progress line / D-score replacement","model":"Seedream 5 Pro remove_bg","format":"wide transparent tileable strip","variants":2,"gate":"Tileable/extendable; character feet can make convincing contact."},
+        {"id":"GF-PROP-TREE-001","category":"prop","asset":"Tree family","use":"park depth / level scenery","model":"Seedream 5 Pro remove_bg","format":"transparent 1:1/4:5","variants":3,"gate":"Same art language; distinct silhouettes; no baked ground rectangle."},
+        {"id":"GF-PROP-BENCH-001","category":"prop","asset":"Park bench","use":"rest/scene interactions","model":"Seedream 5 Pro remove_bg","format":"transparent 3:2","variants":2,"gate":"Correct perspective and seat depth for character interaction."},
+        {"id":"GF-PROP-LAMP-001","category":"prop","asset":"Park lamp","use":"time-of-day / ambience","model":"Seedream 5 Pro remove_bg","format":"transparent 2:3","variants":2,"gate":"Works unlit and lit; no surrounding background halo unless separate FX."},
+        {"id":"GF-PROP-SIGN-001","category":"prop","asset":"Blank park sign","use":"level/season/status labels","model":"Seedream 5 Pro remove_bg","format":"transparent 3:2","variants":2,"gate":"Blank readable face so real app text remains HTML/CSS, not AI-generated."},
+        {"id":"GF-PROP-FOUNTAIN-001","category":"prop","asset":"Fountain/water feature","use":"high-level park reward scenery","model":"Seedream 5 Pro remove_bg","format":"transparent 1:1","variants":2,"gate":"Static base usable without animation; water FX separable."}
+      ]
+    },
+    {
+      "id":"GF-B","name":"Daily Score / walking system","priority":"P0","definitionOfDone":"The current D-score can be visually replaced by a character that genuinely walks through a reusable environment and responds to score/health state.",
+      "assets":[
+        {"id":"GF-DS-CHAR-001","category":"character","asset":"Daily Score walker master","use":"overall health/daily mission score avatar","input":"reuse an approved compatible Gamenfy character rather than inventing a new species unless required","model":"existing art + optional Nano Banana edit","format":"single clean transparent source image","variants":1,"gate":"Recognizable at small mobile size; neutral pose suitable for sprite animation."},
+        {"id":"GF-DS-SPRITE-WALK-001","category":"sprite","asset":"Walker walk cycle","use":"continuous walking above score path","model":"AutoSprite walk","format":"25-frame 256px transparent sprite sheet","variants":2,"gate":"Feet contact stable; no body morphing; loop seam invisible at app size."},
+        {"id":"GF-DS-SPRITE-IDLE-001","category":"sprite","asset":"Walker idle cycle","use":"pause/low motion/reduced-motion state","model":"AutoSprite idle","format":"16–25 frame transparent sprite sheet","variants":1,"gate":"Subtle breathing/weight shift only; recognizably same character."},
+        {"id":"GF-DS-FX-LEVELUP-001","category":"fx","asset":"Level-up burst/confetti","use":"room/park expansion or level-up moment","model":"AutoSprite custom non-humanoid or CSS-first","format":"transparent sprite sheet","variants":2,"gate":"Short celebratory effect; never blocks UI; can be disabled for reduced motion."},
+        {"id":"GF-DS-FX-LOW-001","category":"fx","asset":"Low-score ambience","use":"subtle wilt/cloud/slow state","model":"CSS-first; AI only for texture object if needed","format":"transparent layer","variants":1,"gate":"Motivating not punishing; does not distort health meaning."}
+      ]
+    },
+    {
+      "id":"GF-C","name":"Daily Mission interaction props","priority":"P1","definitionOfDone":"Each public Daily Mission has at least one reusable prop that can interact with existing 10-level art without recreating the character progression.",
+      "assets":[
+        {"id":"GF-DM-BUDGET-001","mission":"budgeting","asset":"coin stack + tiny ledger","model":"Seedream 5 Pro remove_bg","animation":"optional custom sprite coin sparkle","gate":"Readable at icon scale; no currency claim beyond generic euro-style visual if used."},
+        {"id":"GF-DM-SLEEP-001","mission":"sleep","asset":"pillow + moon/star sleep object","model":"Seedream 5 Pro remove_bg","animation":"subtle star/zzz CSS or sprite","gate":"No text required; works beside existing sleep character."},
+        {"id":"GF-DM-NUTRITION-001","mission":"nutrition","asset":"healthy plate / fruit bowl","model":"Seedream 5 Pro remove_bg","animation":"optional steam/sparkle","gate":"Generic food, not medical/weight-loss messaging."},
+        {"id":"GF-DM-STEPS-001","mission":"walking","asset":"walking trail marker + shoe/step token","model":"Seedream 5 Pro remove_bg","animation":"footprint appear/disappear custom sprite","gate":"Supports 10k steps identity without needing text baked into image."},
+        {"id":"GF-DM-TEETH-001","mission":"teeth","asset":"toothbrush + toothpaste cup","model":"Seedream 5 Pro remove_bg","animation":"tiny foam/sparkle sprite","gate":"Clean transparent edges; fixes the old cutout problem rather than reintroducing it."},
+        {"id":"GF-DM-HOUSE-001","mission":"household","asset":"broom + cleaning bucket / mess pile states","model":"Seedream 5 Pro remove_bg","animation":"dust puff custom sprite","gate":"Can show before/after cleanliness while existing character stays unchanged."},
+        {"id":"GF-DM-MEDITATE-001","mission":"meditation","asset":"cushion + tiny calm aura object","model":"Seedream 5 Pro remove_bg","animation":"breathing halo CSS/sprite","gate":"Does not modify approved panda art."},
+        {"id":"GF-DM-GRATITUDE-001","mission":"gratitude","asset":"journal + small star/heart token","model":"Seedream 5 Pro remove_bg","animation":"page/star float sprite","gate":"No baked writing required."},
+        {"id":"GF-DM-GOOD-001","mission":"good_deed","asset":"gift/heart/helping-hand token","model":"Seedream 5 Pro remove_bg","animation":"heart pop sprite","gate":"Positive but not childish clutter."},
+        {"id":"GF-DM-SCREEN-001","mission":"screen_time","asset":"phone + timer/lock object","model":"Seedream 5 Pro remove_bg","animation":"screen dim/lock sprite or CSS","gate":"Phone remains generic; no third-party UI/logo."},
+        {"id":"GF-DM-COLD-001","mission":"cold_shower","asset":"showerhead + ice/water object","model":"Seedream 5 Pro remove_bg","animation":"water/ice custom sprite","gate":"True transparent edge; no amusement-park background."}
+      ]
+    },
+    {
+      "id":"GF-D","name":"Private quest + skill props","priority":"P1","privacy":"personal; must stay out of public asset grid when applicable","definitionOfDone":"Existing private/skill characters can receive strong interactions without confusing Daily Mission membership.",
+      "assets":[
+        {"id":"GF-PRIV-WEED-001","scope":"private","asset":"weed leaf / temptation object","use":"weed_control private scene","model":"Seedream 5 Pro remove_bg","animation":"leaf drift/custom sprite","gate":"Only private/PIN surface."},
+        {"id":"GF-PRIV-DISCIPLINE-001","scope":"private","asset":"devil/fire temptation FX","use":"no_porn Level-0 pressure scene","model":"Seedream 5 Pro + AutoSprite custom non-humanoid","animation":"small fire/devil idle","gate":"Private only; dramatic at low level but does not cover controls."},
+        {"id":"GF-FX-HELP-001","scope":"personal","asset":"HELP window/sign state","use":"long-neglected habit scene","model":"coded text + AI window/prop only","animation":"subtle shake/blink CSS","gate":"The word HELP remains real HTML/CSS or deterministic graphic, not unreliable generated text."},
+        {"id":"GF-SK-TENNIS-001","scope":"skill","asset":"racket + ball","use":"tennis character interaction","model":"Seedream 5 Pro remove_bg","animation":"ball bounce custom sprite / CSS","gate":"Correct racket/ball geometry; reusable independent of character."},
+        {"id":"GF-SK-CHESS-001","scope":"skill","asset":"chess board + pieces","use":"new Chess skill","model":"Nano Banana Pro then transparent object pass","animation":"piece move via CSS/individual cutouts","gate":"Correct 8x8 board; piece identities consistent; avoid generated board errors before approval."},
+        {"id":"GF-SK-READ-001","scope":"skill","asset":"book + page turn object","use":"reading skill","model":"Seedream 5 Pro remove_bg","animation":"page-turn sprite optional","gate":"No fake readable book text."},
+        {"id":"GF-SK-WHISTLE-001","scope":"skill","asset":"air/sound-wave FX","use":"finger whistling skill","model":"CSS-first / transparent FX sprite","animation":"wave/pulse","gate":"Character mouth/hand pose remains character asset; prop only supplies readable sound response."},
+        {"id":"GF-SK-STRENGTH-001","scope":"skill","asset":"dumbbell/barbell set","use":"strength/gym skill","model":"Seedream 5 Pro remove_bg","animation":"small lift interaction only after character pose exists","gate":"Plausible weights/perspective; reusable across levels."},
+        {"id":"GF-SK-PIANO-001","scope":"skill","asset":"keyboard/piano prop","use":"piano skill","model":"Seedream 5 Pro remove_bg","animation":"key-light/pulse CSS","gate":"Correct keyboard pattern enough at app scale; no baked room."}
+      ]
+    }
+  ],
+  "recommendedSubscriptionSprintOrder": [
+    "1. Do zero-spend prep: confirm all asset IDs, final app/site slots and crops.",
+    "2. Produce PL-CHAR-001 candidates and lock exactly one master technician.",
+    "3. Produce PL-STYLE-001 + service-van/tool props; create Elements only for approved references.",
+    "4. Produce Plumbing critical stills WEB-B; score and reject aggressively.",
+    "5. In parallel, create Gamenfy Core Park object kit GF-A using transparent cutouts.",
+    "6. Use an existing approved Gamenfy character to test AutoSprite walk + idle before producing many sprites.",
+    "7. If AutoSprite test passes in-app, batch GF-C Daily Mission props and selected custom FX.",
+    "8. Produce Website support pack WEB-C after the core story works.",
+    "9. Animate only selected Website stills and selected Gamenfy interactions; motion is the last spend category.",
+    "10. Upscale/compress/export winners, integrate into repo, run mobile/performance QA, then archive exact prompts/models/references in the Vault."
+  ],
+  "stopConditions": [
+    "If recurring identity changes materially between two stills, stop story generation and fix the reference/Element workflow.",
+    "If a transparent object still needs manual cleanup in more than two variants, switch model or use deterministic SVG/CSS instead of burning credits.",
+    "If AutoSprite produces morphing feet/body at app scale, do not batch more characters until the source character or frame settings are fixed.",
+    "If a motion clip is not clearly better than the still after compression/mobile playback, keep the still and save credits.",
+    "If a generated object embeds essential text, recreate the text in HTML/CSS and treat the generated object as decorative only."
+  ]
+}

@@ -1,0 +1,282 @@
+{
+  "name":"Higgsfield P0 Generation Manifest",
+  "version":1,
+  "updatedAt":"2026-09-07",
+  "managedBy":"ChatGPT (OpenAI)",
+  "status":"prepared-not-submitted",
+  "purpose":"Exact first production queue so a future Higgsfield sprint can execute asset-by-asset without inventing prompts or settings during paid work.",
+  "globalRules":[
+    "Never submit this whole manifest blindly. Run dependency groups in order and select/reject before the next group.",
+    "Element placeholders are inserted only after Higgsfield returns a real completed element_id; never invent one.",
+    "No fake logos, license plates, phone numbers, reviews, certificates or client proof.",
+    "Website people/objects must preserve enough negative space and crop safety for responsive UI.",
+    "Gamenfy props should be isolated from background whenever possible and contain no essential generated text.",
+    "AutoSprite inputs must be visually inspected before animation; use one clean character source image only."
+  ],
+  "groups":[
+    {
+      "id":"P0-WEB-IDENTITY",
+      "runOrder":1,
+      "stopAfterSelection":true,
+      "assets":[
+        {
+          "assetId":"PL-CHAR-001",
+          "jobType":"image-candidates",
+          "model":"soul_2",
+          "params":{"aspect_ratio":"3:4","quality":"2k","count":4},
+          "basePrompt":"Premium commercial campaign portrait of one authentic plumbing and installation technician for a high-end Dutch local service brand. Male adult around 30–40, calm competent approachable face, normal athletic working build, short practical hair, natural light stubble optional, charcoal professional workwear with one restrained deep-red detail, clothing genuinely suitable for plumbing work, three-quarter body pose with hands naturally visible, bright contemporary bathroom/installations context, white stone, chrome and glass, clean daylight with subtle cinematic polish, Porsche-level art direction applied to a real tradesperson rather than a fashion model, realistic skin and fabric, believable proportions, no readable company branding, room around the body for future website crops.",
+          "candidateDeltas":[
+            "A: slightly warmer/friendlier expression, clean-shaven or very light stubble, understated premium uniform.",
+            "B: more nuchter/experienced expression, light stubble, slightly more work-worn fabric while remaining neat.",
+            "C: younger energetic professional look, still credible and not influencer-like, crisp but practical uniform.",
+            "D: more senior calm craftsman presence, subtle smile only, premium but unmistakably hands-on technician."
+          ],
+          "avoid":"fashion pose, luxury suit, sales representative polo, oversized logos, orange safety vest, hard hat by default, influencer teeth, hyper-muscular body, dirty/grimy stereotype, fantasy tools, distorted fingers, random text, fake business identity",
+          "selectionGate":"Choose exactly one identity. Score face authenticity, workwear credibility, hand quality, small-screen recognizability and whether the person could plausibly represent both an affordable plumber and a premium installation company.",
+          "next":"Run PL-CHAR-001-CONSISTENCY before creating a Higgsfield character Element."
+        },
+        {
+          "assetId":"PL-CHAR-001-CONSISTENCY",
+          "jobType":"image-reference-test",
+          "model":"nano_banana_pro",
+          "params":{"aspect_ratio":"3:2","resolution":"2k","count":2},
+          "dependency":"selected PL-CHAR-001 candidate as image reference",
+          "prompt":"Preserve exactly the same technician identity, age, hair, facial structure, skin, workwear design and deep-red accent from the supplied reference. Show him naturally crouching beside an under-sink plumbing installation in a bright premium bathroom, calmly inspecting a realistic pipe/fitting with a compact inspection light. Hands, knees, tool orientation and plumbing geometry must be physically plausible. Commercial photography, clean daylight, white stone/chrome/glass environment, no company logo or readable text.",
+          "avoid":"identity drift, different haircut, different uniform, extra fingers, implausible tool use, fashion pose, fake branding",
+          "selectionGate":"If either test stops looking unmistakably like the same person, do not create the Element and do not proceed to story generation; fix reference/model workflow first."
+        },
+        {
+          "assetId":"PL-STYLE-001",
+          "jobType":"image-candidates",
+          "model":"cinematic_studio_2_5",
+          "params":{"aspect_ratio":"16:9","resolution":"2k","count":3},
+          "basePrompt":"Premium visual-world reference for a Dutch plumbing and installation website. Bright white architectural canvas, deep signature red used only as a precise accent, sophisticated white/cream stone and restrained marble, polished chrome, glass and clear water, impeccable contemporary bathroom architecture, abundant negative space, clean premium daylight, subtle automotive/consumer-tech level art direction, realistic materials and plumbing fixtures, refined rather than sterile, expensive feeling without becoming a luxury-hotel fantasy, no people, no logos, no readable text.",
+          "candidateDeltas":[
+            "A — White Precision: coolest/cleanest version, crisp chrome and glass, signature red only in tiny controlled details.",
+            "B — Warm Material: slightly warmer limestone/travertine tones while the interface world remains predominantly white; deep red remains precise.",
+            "C — Hybrid: white precision base with richer stone/marble hero moments, balancing technical trust and residential luxury."
+          ],
+          "avoid":"beige-everything, discount red, medical clinic sterility, black nightclub look, impossible plumbing, excessive marble, embedded text/logo",
+          "selectionGate":"Winner must feel expensive in one second, remain credible for a real Dutch trades company, and provide quiet left/right regions for website copy."
+        },
+        {
+          "assetId":"PL-PROP-VAN-001",
+          "jobType":"image-cutout-candidates",
+          "model":"seedream_v5_pro",
+          "params":{"aspect_ratio":"3:2","resolution":"2k","remove_bg":true,"count":3},
+          "prompt":"Isolated realistic modern European medium service van suitable for a Dutch plumbing/installations company, three-quarter front-side view, clean white body with a restrained deep-red accent panel intentionally blank for later real branding, realistic wheels, mirrors, doors and proportions, commercial fleet photography, no driver, no license plate text, no company name, no fake phone number, transparent background, neutral consistent daylight, enough body side surface for editable branding.",
+          "avoid":"concept car, oversized sports rims, malformed wheels, unreadable pseudo-text, emergency-services styling, luxury limousine, American-only truck styling, background rectangle",
+          "selectionGate":"Vehicle must look street-legal/plausible, cutout edges clean, perspective reusable and blank branding panel easy to customize."
+        },
+        {
+          "assetId":"PL-PROP-TOOLS-001",
+          "jobType":"image-cutout-candidates",
+          "model":"seedream_v5_pro",
+          "params":{"aspect_ratio":"1:1","resolution":"2k","remove_bg":true,"count":2},
+          "prompt":"Isolated premium-but-realistic compact plumbing technician tool set arranged neatly for a commercial reference board: adjustable wrench, water-pump pliers, compact pipe/fitting tools, flashlight/inspection light, measuring tape, protective cloth and sturdy small tool case. Realistic metal/rubber wear, correct proportions, no fantasy gadgets, no hands, no logos or readable brand text, transparent background, soft neutral product lighting.",
+          "avoid":"random power tools unrelated to plumbing, impossible multi-tools, duplicate malformed tools, pseudo labels, floating shadows baked into a rectangle",
+          "selectionGate":"Every visible tool should be physically plausible and usable as an independent scene reference/cutout."
+        }
+      ]
+    },
+    {
+      "id":"P0-WEB-STORY",
+      "runOrder":2,
+      "dependency":"PL-CHAR-001 + PL-STYLE-001 locked; character/environment Elements created where useful",
+      "stopAfterSelection":true,
+      "assets":[
+        {
+          "assetId":"PL-HERO-001",
+          "jobType":"image-candidates",
+          "model":"cinematic_studio_2_5",
+          "params":{"aspect_ratio":"16:9","resolution":"2k","count":4},
+          "prompt":"Hero photograph for an ultra-premium plumbing service website in the locked bright white/deep-red/stone/chrome visual world. Beautiful contemporary bathroom, controlled but unmistakable water leak at a visible sink/pipe/fitting area, enough water/reflection to create urgency but no catastrophic flood, nobody screaming, no technician yet, photorealistic fixtures and water physics, calm premium daylight, composition weighted to the right with a large quiet clean region on the left for headline and CTA, sophisticated expensive commercial campaign quality, no text or logo.",
+          "avoid":"burst pipe disaster, ankle-deep flood, crying person, insurance-stock-photo drama, fake red emergency labels, impossible water source, clutter in text zone",
+          "selectionGate":"Problem understood in under 2 seconds; premium first; left text region stable; believable water source; mobile-safe center crop also understandable."
+        },
+        {
+          "assetId":"PL-STORY-001",
+          "jobType":"image-candidates",
+          "model":"nano_banana_pro",
+          "params":{"aspect_ratio":"3:2","resolution":"2k","count":2},
+          "prompt":"In the exact same premium bathroom world as the approved plumbing hero, create a fast visual bridge from problem to action: close foreground of a natural adult hand reaching for or holding a generic smartphone while the controlled leaking fitting remains softly visible in context. No readable fake phone UI, no company name or phone number. The image should communicate 'call for help' in one second, with consistent white stone, chrome, daylight and deep-red accent language.",
+          "avoid":"phone screen as main hero, fake app UI, oversized red emergency text, panic face, unrelated bathroom design",
+          "selectionGate":"Reads instantly as contact/action and visually belongs to PL-HERO-001 without requiring text."
+        },
+        {
+          "assetId":"PL-STORY-002",
+          "jobType":"image-candidates",
+          "model":"nano_banana_pro",
+          "params":{"aspect_ratio":"16:9","resolution":"2k","count":3},
+          "dependency":"real technician Element placeholder + service van reference/Element",
+          "promptTemplate":"Use <<<TECHNICIAN_ELEMENT_ID>>> as exactly the same master technician and <<<VAN_ELEMENT_ID>>> as the approved service van. Contemporary Dutch residential street/home arrival scene, technician opening the side/rear door or taking a compact tool case, calm purposeful movement, realistic parking/road scale, clean daylight, white/deep-red premium brand language, sophisticated commercial photography, no readable company details or plate number.",
+          "avoid":"different technician, fake emergency lights, action-movie running, impossible van scale, random text",
+          "selectionGate":"Same identity/workwear, van geometry correct, Dutch context credible, communicates rapid professional arrival without emergency-service cosplay."
+        },
+        {
+          "assetId":"PL-STORY-003",
+          "jobType":"image-candidates",
+          "model":"nano_banana_pro",
+          "params":{"aspect_ratio":"3:2","resolution":"2k","count":3},
+          "dependency":"technician Element + locked bathroom world",
+          "promptTemplate":"Use <<<TECHNICIAN_ELEMENT_ID>>> as the exact master technician in the locked premium bathroom world. Natural crouched/leaning inspection beside the affected plumbing under or beside the sink, one compact inspection light or appropriate diagnostic tool, relaxed professional posture, hands and tool orientation physically correct, homeowner absent or only indistinct background presence, white stone/chrome/glass, calm daylight, no text/logo.",
+          "avoid":"different face, impossible crouch, stethoscope-like fake tool, extra arms/fingers, theatrical sparks",
+          "selectionGate":"Moves story emotion from urgency to competence; anatomy/tool geometry must survive close viewing."
+        },
+        {
+          "assetId":"PL-STORY-004",
+          "jobType":"image-candidates",
+          "model":"seedream_v4_5",
+          "params":{"aspect_ratio":"3:2","quality":"basic","count":4},
+          "dependency":"technician Element/reference + tool reference + locked bathroom",
+          "promptTemplate":"Preserve <<<TECHNICIAN_ELEMENT_ID>>> exactly. Real plumbing repair in action inside the same premium bathroom: technician naturally replacing or tightening a realistic under-sink fitting/valve/pipe connection with an appropriate hand tool, protective cloth and organized tool case nearby, believable minor work mess only, strong craftsmanship close-mid framing, physically correct hands, fittings and wrench contact, premium daylight and material palette, no fake branding.",
+          "avoid":"sparks, welding unless technically necessary, power-drill drama, impossible pipe layout, tool floating, extra fingers, pristine showroom with no work contact",
+          "selectionGate":"Hands, wrench and fitting relationship must be technically believable; same technician; visual remains premium but clearly real work."
+        },
+        {
+          "assetId":"PL-STORY-005",
+          "jobType":"image-candidates",
+          "model":"nano_banana_pro",
+          "params":{"aspect_ratio":"3:2","resolution":"2k","count":2},
+          "dependency":"technician Element + locked bathroom",
+          "promptTemplate":"Use <<<TECHNICIAN_ELEMENT_ID>>> as the exact recurring technician. Same bathroom after repair, visibly dry and orderly. Technician wiping the work surface or neatly packing tools, restrained calm satisfaction rather than thumbs-up, soft daylight, white stone/chrome/glass, subtle deep-red workwear detail, the quality of cleanup and handover is the point, no customer testimonial pose or text.",
+          "avoid":"cheesy thumbs-up, giant smile to camera, different room, wet floor, fake review graphics",
+          "selectionGate":"Viewer can see 'netjes achtergelaten' without reading copy; same world/identity."
+        },
+        {
+          "assetId":"PL-END-001",
+          "jobType":"image-candidates",
+          "model":"cinematic_studio_2_5",
+          "params":{"aspect_ratio":"16:9","resolution":"2k","count":3},
+          "dependency":"locked story world",
+          "prompt":"Resolved final-state image in the exact premium plumbing campaign world: beautifully functioning dry bathroom detail with clean controlled water flow at the fixture and/or the recurring technician naturally leaving the edge of frame after the job, calm relief, generous negative space for final CTA, white stone/chrome/glass and restrained deep-red accent, expensive commercial photography, no testimonial, no customer quote, no readable text.",
+          "avoid":"new unrelated bathroom, staged handshake, five-star review graphic, exaggerated luxury, wet floor",
+          "selectionGate":"Feels like the emotional payoff to PL-HERO-001 and leaves a clean CTA area."
+        }
+      ]
+    },
+    {
+      "id":"P0-GF-PARK",
+      "runOrder":3,
+      "stopAfterSelection":true,
+      "assets":[
+        {
+          "assetId":"GF-ENV-PARK-001",
+          "jobType":"image-candidates",
+          "model":"nano_banana_pro",
+          "params":{"aspect_ratio":"21:9","resolution":"2k","count":3},
+          "prompt":"Wide master environment for the Gamenfy life-RPG park. Premium playful cartoon world compatible with existing Park 3.1 characters: bright inviting grass, gently curved walkable path with clear foreground contact plane, layered trees/soft hills and atmospheric depth, enough open zones for app cards/characters, polished mobile-game illustration rather than generic children's clipart, soft natural light, warm optimistic but not sugary, no people/characters, no text, no UI, no embedded mission icons. Composition must survive 16:9 and vertical 9:16 crops by keeping a useful central path area.",
+          "avoid":"photorealism, Disney imitation, busy theme park, embedded signage text, baked characters, hard rectangular stage, extreme perspective",
+          "selectionGate":"Path supports walking character contact; environment works behind UI; style does not clash with existing Park 3.1 art; central vertical crop still usable.",
+          "next":"If approved and repeated generative scenes need it, create environment Element HF-GF-PARK-001."
+        },
+        {
+          "assetId":"GF-PROP-PATH-001",
+          "jobType":"transparent-prop",
+          "model":"seedream_v5_pro",
+          "params":{"aspect_ratio":"16:9","resolution":"2k","remove_bg":true,"count":2},
+          "prompt":"Isolated long gently curved cartoon park path/grass strip matching the Gamenfy premium playful park style, designed as a reusable horizontal game layer for a walking character, clear ground-contact surface, extendable/tileable ends, no characters, no signs, no text, transparent background, no rectangular baked scenery.",
+          "avoid":"floating path, strong perspective that prevents tiling, background sky, embedded footprints, text",
+          "selectionGate":"Can be layered over/under environment, repeated horizontally without obvious seam, and character feet can visibly contact it."
+        },
+        {
+          "assetId":"GF-PROP-TREE-001",
+          "jobType":"transparent-prop-candidates",
+          "model":"seedream_v5_pro",
+          "params":{"aspect_ratio":"1:1","resolution":"2k","remove_bg":true,"count":3},
+          "prompt":"Three-quarter single stylized park tree object matching Gamenfy Park 3.1's premium playful cartoon language, chunky clean silhouette, attractive foliage clusters, enough trunk visibility for layering, no face/personality, neutral daylight, isolated transparent background, no ground rectangle or text. Each generation should vary silhouette modestly while staying in the same family.",
+          "avoid":"photorealistic tree, children's sticker outline, face/eyes, complex thin branches, baked scenery rectangle",
+          "selectionGate":"Clean alpha, readable silhouette at small mobile scale, same family across selected variants."
+        },
+        {
+          "assetId":"GF-PROP-BENCH-001",
+          "jobType":"transparent-prop",
+          "model":"seedream_v5_pro",
+          "params":{"aspect_ratio":"3:2","resolution":"2k","remove_bg":true,"count":2},
+          "prompt":"Isolated Gamenfy park bench in the same premium playful cartoon style, slightly three-quarter angle, believable seat/back depth sized so a small character can later sit or lean against it, warm wood or softly colored slats with simple supports, no logo or text, transparent background, clean contact feet.",
+          "avoid":"front-flat icon, impossible seat depth, photorealism, ornate Victorian clutter, baked grass rectangle",
+          "selectionGate":"Perspective supports a real character interaction and alpha edges are clean."
+        },
+        {
+          "assetId":"GF-PROP-LAMP-001",
+          "jobType":"transparent-prop",
+          "model":"seedream_v5_pro",
+          "params":{"aspect_ratio":"2:3","resolution":"2k","remove_bg":true,"count":2},
+          "prompt":"Isolated compact park lamp for Gamenfy, premium playful cartoon style matching the park objects, simple elegant pole and lantern/head, designed to work both unlit in daytime and with a separate glow FX layer at night, no baked glow halo, no text, transparent background.",
+          "avoid":"real photo, ornate gothic lamp, baked nighttime square, logo, giant glow halo",
+          "selectionGate":"Clean silhouette, separate lighting effect possible, matches bench/tree family."
+        },
+        {
+          "assetId":"GF-PROP-SIGN-001",
+          "jobType":"transparent-prop",
+          "model":"seedream_v5_pro",
+          "params":{"aspect_ratio":"3:2","resolution":"2k","remove_bg":true,"count":2},
+          "prompt":"Isolated blank park sign object for Gamenfy, premium playful cartoon style, sturdy small signboard on one/two posts, completely blank clean front face with no generated letters or symbols, enough flat area for real HTML/CSS overlay labels, transparent background, same visual family as park bench/tree/path.",
+          "avoid":"any generated words, arrows, icons, weathered unreadable scribble, baked scenery rectangle",
+          "selectionGate":"Front face is clean enough for deterministic app text and perspective remains readable on mobile."
+        },
+        {
+          "assetId":"GF-PROP-FOUNTAIN-001",
+          "jobType":"transparent-prop",
+          "model":"seedream_v5_pro",
+          "params":{"aspect_ratio":"1:1","resolution":"2k","remove_bg":true,"count":2},
+          "prompt":"Isolated small reward-tier park fountain/water feature for Gamenfy, premium playful cartoon style, attractive simple basin and central water source, static object must still look complete if the animated water layer is removed, no characters, no text, transparent background, water visually separable from stone/base where possible.",
+          "avoid":"huge palace fountain, photorealism, baked park background, complex transparent mist that destroys alpha edges",
+          "selectionGate":"Works as static reward object and can accept a separate water-motion FX layer later."
+        }
+      ]
+    },
+    {
+      "id":"P0-GF-DAILY-SCORE",
+      "runOrder":4,
+      "dependency":"existing Daily Score artwork visually inspected; GF-ENV-PARK-001 selected",
+      "stopAfterSelection":true,
+      "assets":[
+        {
+          "assetId":"GF-DS-CHAR-001",
+          "jobType":"source-selection-not-generation",
+          "model":"none unless deterministic prep/edit is needed",
+          "sourceCandidates":"Existing `img/lab/daily-score/joey/l01.webp` … `l10.webp`; do not reinterpret/replace approved Daily Score evolution artwork.",
+          "instruction":"Visually inspect the existing Daily Score character levels and choose one neutral, clear full-body source that can act as an animation pilot without redefining the character. If no level is suitable for AutoSprite because limbs/pose are obscured, make a reversible preparation copy only; never overwrite the approved l01–l10 files.",
+          "selectionGate":"Small-screen recognizability, isolated silhouette, visible limbs/feet, neutral enough for walking; approved source remains untouched."
+        },
+        {
+          "assetId":"GF-DS-SPRITE-WALK-001",
+          "jobType":"autosprite-pilot",
+          "model":"autosprite",
+          "params":{"kind":"walk","video_tier":"turbo","frame_count":25,"frame_size":256,"remove_bg":"ultra","with_sound":false,"is_humanoid":true},
+          "dependency":"one approved GF-DS-CHAR-001 source image",
+          "instruction":"Generate a natural relaxed forward walk cycle. Preserve exact character design, outfit, proportions and facial identity. Moderate stride, gentle arm swing, stable torso/head, consistent foot size and ground plane, seamless loop; no camera movement.",
+          "selectionGate":"At actual app render size, feet do not skate/morph, face/outfit do not change, loop seam is not noticeable and the sprite can run smoothly in CSS/JS.",
+          "next":"Only after this passes should more Gamenfy character sprites be produced."
+        },
+        {
+          "assetId":"GF-DS-SPRITE-IDLE-001",
+          "jobType":"autosprite-pilot",
+          "model":"autosprite",
+          "params":{"kind":"idle","video_tier":"turbo","frame_count":18,"frame_size":256,"remove_bg":"ultra","with_sound":false,"is_humanoid":true},
+          "dependency":"same source as walk pilot",
+          "instruction":"Subtle idle loop only: tiny breathing, gentle weight shift, minimal natural blink/head movement. Preserve exact character identity and proportions. No waving, dancing or large gestures.",
+          "selectionGate":"Looks alive without distracting from score/UI; same character as walk; seamless loop."
+        },
+        {
+          "assetId":"GF-DS-FX-LEVELUP-001",
+          "jobType":"sprite-or-css-effect",
+          "preferred":"CSS/JS first; AutoSprite custom non-humanoid only if a richer transparent effect is truly useful",
+          "autospriteParams":{"kind":"custom","name":"level-up-burst","video_tier":"turbo","frame_count":18,"frame_size":256,"remove_bg":"ultra","with_sound":false,"is_humanoid":false},
+          "prompt":"Short celebratory burst of a few premium cartoon confetti pieces, small sparkles and a soft expanding ring, clean transparent effect centered around a character, energetic but not casino-like, no text or numbers, resolves fully back to transparent for a seamless one-shot/retrigger.",
+          "selectionGate":"Does not cover controls/text, stays tasteful, alpha edges clean, and can be disabled under reduced-motion."
+        },
+        {
+          "assetId":"GF-DS-FX-LOW-001",
+          "jobType":"deterministic-first",
+          "model":"CSS/JS; no Higgsfield generation by default",
+          "instruction":"Implement low-score ambience with existing compositing: slightly slower walk/idle, subtly desaturated/wilted nearby prop state or a small soft cloud layer. Do not generate a sad/ill character and do not imply medical diagnosis from health metrics.",
+          "selectionGate":"Communicates lower overall state without punishment/shame, keeps the character recognizable and adds zero generation spend unless CSS/object reuse clearly fails."
+        }
+      ]
+    }
+  ],
+  "firstPaidActionWhenAuthorized":"Run P0-WEB-IDENTITY only. Do not start P0-WEB-STORY or any motion until Joey/ChatGPT has selected the identity/style winners and recorded them in the Vault.",
+  "firstGamenfyPaidActionWhenAuthorized":"After visually selecting an existing Daily Score source, run exactly one walk and one idle AutoSprite pilot before batching any other Gamenfy animation."
+}

@@ -1,0 +1,21 @@
+{
+  "registry":"Higgsfield reusable Elements registry",
+  "updatedAt":"2026-09-07",
+  "managedBy":"ChatGPT (OpenAI)",
+  "currentHiggsfieldState":"No reusable Elements currently exist in the connected Higgsfield workspace; all rows below are planned and must only be created after their source reference is approved.",
+  "rules":[
+    "Never create an Element from a merely acceptable draft; the source image becomes a consistency anchor.",
+    "Keep Website Ventures and Gamenfy naming explicit even though Higgsfield Elements share one workspace.",
+    "Characters, environments and props are separate Elements when independent reuse adds value.",
+    "Do not create Elements for one-off FX, generic textures or proof images.",
+    "Store the eventual Higgsfield element_id back into this registry and the Visual Vault."
+  ],
+  "planned":[
+    {"id":"HF-WEB-PL-TECH-001","sourceAsset":"PL-CHAR-001","name":"web-plumbing-technician","category":"character","status":"blocked-on-approved-reference","usedBy":["PL-STORY-002","PL-STORY-003","PL-STORY-004","PL-STORY-005","PL-END-001"],"createWhen":"Master identity passes second-pose consistency test."},
+    {"id":"HF-WEB-PL-BATH-001","sourceAsset":"PL-STYLE-001 / winning bathroom world","name":"web-plumbing-bathroom","category":"environment","status":"blocked-on-style-lock","usedBy":["PL-HERO-001","PL-STORY-001","PL-STORY-003","PL-STORY-004","PL-STORY-005","PL-END-001"],"createWhen":"White/red/material world is approved and remains credible."},
+    {"id":"HF-WEB-PL-VAN-001","sourceAsset":"PL-PROP-VAN-001","name":"web-plumbing-service-van","category":"prop","status":"blocked-on-approved-reference","usedBy":["PL-STORY-002","future prospect-specific arrival variants"],"createWhen":"Vehicle geometry and editable generic brand zones are approved."},
+    {"id":"HF-GF-PARK-001","sourceAsset":"GF-ENV-PARK-001","name":"gamenfy-park-world","category":"environment","status":"blocked-on-approved-reference","usedBy":["Daily Score walker","future Daily Mission/skill park scenes"],"createWhen":"Master environment has UI-safe zones and matches Park 3.1 character language."},
+    {"id":"HF-GF-DS-CHAR-001","sourceAsset":"GF-DS-CHAR-001","name":"gamenfy-daily-score-walker","category":"character","status":"blocked-on-character-choice","usedBy":["GF-DS-SPRITE-WALK-001","GF-DS-SPRITE-IDLE-001","future score states"],"createWhen":"Only if cross-model consistency is needed beyond AutoSprite; AutoSprite itself can use the source image directly."},
+    {"id":"HF-GF-CHESS-001","sourceAsset":"GF-SK-CHESS-001","name":"gamenfy-chess-board","category":"prop","status":"optional","usedBy":["Chess skill scenes"],"createWhen":"Only if repeated generative scenes need the same board; ordinary app implementation should prefer deterministic board/piece assets."}
+  ]
+}

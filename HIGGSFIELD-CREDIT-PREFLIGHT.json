@@ -1,0 +1,23 @@
+{
+  "name":"Higgsfield Credit Preflight — Website Ventures + Gamenfy",
+  "updatedAt":"2026-09-07",
+  "managedBy":"ChatGPT (OpenAI)",
+  "status":"read-only-estimates; no generation jobs submitted",
+  "purpose":"Keep cost differences visible so cheap still exploration is not confused with expensive motion production.",
+  "estimates":[
+    {"workflow":"PL-CHAR-001 candidate batch","model":"Higgsfield Soul 2.0","machine":"soul_2","request":"4 images, 2K, requested 4:5; service coerced to supported 3:4","creditsExact":0.12,"creditsDisplayed":1,"note":"Very cheap identity exploration anchor; cost can change with plan/model pricing."},
+    {"workflow":"Premium hero/world candidate batch","model":"Cinema Studio Image 2.5","machine":"cinematic_studio_2_5","request":"4 images, 2K, 16:9","creditsExact":2,"creditsDisplayed":2,"note":"Good premium still benchmark."},
+    {"workflow":"Instruction-precise website still batch","model":"Nano Banana Pro","machine":"nano_banana_pro","request":"4 images, 2K, 16:9","creditsExact":2,"creditsDisplayed":2,"note":"Good still benchmark for exact layout/reference work."},
+    {"workflow":"Transparent prop batch","model":"Seedream 5.0 Pro","machine":"seedream_v5_pro","request":"4 images, 2K, 1:1, remove_bg=true","creditsExact":3,"creditsDisplayed":3,"note":"Useful benchmark for Gamenfy/Website isolated props."},
+    {"workflow":"Website motion pair","model":"Seedance 2.0","machine":"seedance_2_0","request":"2 videos, 5 sec, 720p, 16:9, silent, standard mode","creditsExact":22.5,"creditsDisplayed":22.5,"note":"Motion is an order of magnitude more expensive than still exploration."},
+    {"workflow":"Budget website motion pair","model":"Seedance 2.0 Mini","machine":"seedance_2_0_mini","request":"2 videos, 5 sec, 720p, 16:9, silent","creditsExact":12.5,"creditsDisplayed":12.5,"note":"Use only after still approval when a cheaper motion test is sufficient."},
+    {"workflow":"Premium hero motion single","model":"Cinema Studio Video 3.0","machine":"cinematic_studio_3_0","request":"1 video, 5 sec, 720p, 16:9, silent","creditsExact":25,"creditsDisplayed":25,"note":"Reserve for a selected flagship payoff, not exploration."}
+  ],
+  "policy":[
+    "These are point-in-time read-only estimates, not guaranteed future pricing.",
+    "Do not extrapolate a subscription total until Joey chooses a plan and current allowances/credits are known.",
+    "Still exploration may use cheap/unlimited-compatible models when quality is sufficient, but an allowance choice is never made silently on Joey's behalf.",
+    "Motion starts only after the source still passes its quality gate.",
+    "If a premium motion test is not materially better on mobile than a still/CSS/sprite version, reject the motion and keep the cheaper implementation."
+  ]
+}
