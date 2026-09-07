@@ -1,4 +1,4 @@
-/* Higgsfield Creative Direction Round 01 — ChatGPT (OpenAI), 2026-09-07 */
+/* Higgsfield Generation Queue — ChatGPT (OpenAI), 2026-09-08 */
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -7,7 +7,16 @@ const line=fs.readFileSync('website-ventures-production-line-v3.html','utf8');
 for(const label of ['White Precision','Warm Architectural','Hybrid Precision Luxury','Dark Tech']) assert.ok(board.includes(label),label+' direction exists');
 for(const concept of ['Transformation Sculpture','Website as Luxury Product','Material Performance']) assert.ok(board.includes(concept),concept+' hero concept exists');
 assert.ok(board.includes('50% HARD STOP'),'credit half-way review gate is explicit');
-assert.ok(board.includes('Work + Unlimited verification'),'Work browser unlimited proof test is documented');
+assert.ok(board.includes('ChatGPT Work + Unlimited verification'),'Work browser unlimited proof test is documented');
 assert.ok(board.includes('real experienced European plumbing/service technician'),'technician prompt is concrete');
+assert.ok(board.includes('Higgsfield Soul 2.0'),'model is shown on generation cards');
+assert.ok(board.includes("modelId:'soul_2'"),'canonical Soul 2.0 model id is stored');
+assert.ok(board.includes("aspect:'16:9'"),'hero/direction aspect ratio is stored');
+assert.ok(board.includes("aspect:'3:4'"),'technician candidate aspect ratio is stored');
+assert.ok(board.includes("quality:'2K'"),'generation quality is stored');
+assert.ok(board.includes('Copy full setup'),'one-tap full setup copy exists');
+assert.ok(board.includes('Copy prompt only'),'prompt-only copy exists');
+assert.ok(board.includes('navigator.clipboard.writeText'),'clipboard implementation exists');
+assert.ok(board.includes('winning candidate as the reference image'),'recurring technician reference step exists');
 assert.ok(line.includes('website-ventures-higgsfield-prompt-board.html'),'Production Line v3 links the prompt board');
-console.log('Higgsfield creative direction board smoke passed.');
+console.log('Higgsfield generation queue smoke passed.');
