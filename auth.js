@@ -244,3 +244,51 @@
     })
     .catch(() => failClosed('De beveiligde sessie kon niet worden gecontroleerd.'));
 })();
+
+// ChatGPT/OpenAI — Public Beta isolation guard.
+// Keep the historical private app single-owner while allowing normal accounts on /public/.
+(function installPrivateAccessGuard() {
+  'use strict';
+  const unguardedReady = window.gamenfyAuthReady;
+  if (!unguardedReady || !window.gamenfySupabase) return;
+
+  function showDenied() {
+    const run = () => {
+      document.documentElement.style.overflow = 'hidden';
+      const oldChip = document.getElementById('gamenfy-account-chip');
+      if (oldChip) oldChip.remove();
+      let gate = document.getElementById('gamenfy-private-access-denied');
+      if (!gate) {
+        gate = document.createElement('div');
+        gate.id = 'gamenfy-private-access-denied';
+        gate.style.cssText = 'position:fixed;inset:0;z-index:2147483646;display:grid;place-items:center;padding:20px;background:#f4f3ef;color:#15140f;font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif';
+        gate.innerHTML = '<div style="width:min(100%,420px);background:#fff;border:1px solid #e8e6df;border-radius:22px;padding:26px;box-shadow:0 18px 60px rgba(21,20,15,.12)"><div style="font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#d4633e;margin-bottom:10px">Gamenfy · privé</div><h1 style="font-size:25px;line-height:1.15;margin:0 0 8px">Dit account hoort bij Gamenfy Public.</h1><p style="font-size:14px;line-height:1.5;color:#6f6c63;margin:0 0 18px">Deze pagina is de afgeschermde persoonlijke versie. Je Public Beta-account heeft hier bewust geen toegang.</p><button id="gamenfy-go-public" type="button" style="width:100%;padding:13px;border:0;border-radius:12px;background:#15140f;color:#fff;font-weight:850;cursor:pointer">Open Gamenfy Public</button></div>';
+        document.body.appendChild(gate);
+        document.getElementById('gamenfy-go-public').addEventListener('click', () => { window.location.href = '/public/'; });
+      }
+    };
+    if (document.body) run();
+    else document.addEventListener('DOMContentLoaded', run, { once: true });
+  }
+
+  const guardedReady = unguardedReady.then(async (session) => {
+    if (!session || !session.user) throw new Error('Geen geldige Gamenfy-sessie');
+    const result = await window.gamenfySupabase
+      .from('gamenfy_private_access')
+      .select('user_id')
+      .eq('user_id', session.user.id)
+      .maybeSingle();
+    if (result.error || !result.data) {
+      window.gamenfyPrivateAccessDenied = true;
+      window.gamenfyAccessToken = null;
+      window.gamenfyUserId = null;
+      showDenied();
+      throw new Error(result.error ? 'Privétoegang kon niet veilig worden gecontroleerd.' : 'Dit account heeft alleen toegang tot Gamenfy Public.');
+    }
+    window.gamenfyPrivateAccessDenied = false;
+    return session;
+  });
+
+  guardedReady.catch(() => {});
+  window.gamenfyAuthReady = guardedReady;
+})();
