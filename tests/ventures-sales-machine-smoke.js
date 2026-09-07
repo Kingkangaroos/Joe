@@ -7,6 +7,7 @@ const sales=read('ventures-sales.html');
 const lab=read('sites.html');
 const playbook=read('WEBSITE-VENTURES-SALES-PLAYBOOK.md');
 const production=read('PLUMBING-FLAGSHIP-PRODUCTION-PACK.md');
+const prospects=read('WEBSITE-VENTURES-PROSPECT-WAVE-01.md');
 
 assert.ok(sales.includes('data-gamenfy-scope="personal"'),'Sales Machine must remain personal-only');
 assert.ok(sales.includes("const KEY='rpg_venture_sales_v1'"),'Sales state needs a stable RPG key');
@@ -29,5 +30,10 @@ assert.ok(production.includes('PL-CHAR-001'),'Production pack must start from ma
 assert.ok(production.includes('Animate only 10/12+ stills'),'Motion must remain gated behind still quality');
 assert.ok(production.includes('Never generate fake project proof'),'Proof integrity must remain explicit');
 assert.ok(production.includes('site-plumbing-flagship-v1.html'),'Production pack must map back to actual flagship');
+
+assert.ok(prospects.includes('research only — nobody contacted'),'Prospect wave must never imply outreach happened');
+assert.ok(prospects.includes('### 10. Service & Klusbedrijf Zeewolde'),'Wave 01 should retain ten researched prospects');
+assert.ok(prospects.includes('No-contact guardrail'),'Research and outreach must remain separate actions');
+assert.ok(prospects.includes('Premium Plumbing flagship'),'Prospecting should stay tied to the actual sales demo');
 
 console.log('ventures sales machine smoke passed');
