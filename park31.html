@@ -18,8 +18,9 @@
 .p31-slot.is-private .p31-slot-copy small{color:#bd9de6}
 .p31-slot.is-fallback{border-style:dashed;border-color:rgba(240,196,92,.48)}
 .p31-slot.is-fallback .p31-slot-copy small{color:#d7bb73}
-.p31-slot.is-native-character{border-style:solid;border-color:rgba(185,211,255,.26)}
-.p31-slot.is-native-character .p31-slot-art img{object-fit:contain}
+.p31-slot.is-native-character,.p31-slot[data-mission="budgeting"],.p31-slot[data-mission="meditation"]{border-style:solid;border-color:rgba(185,211,255,.26)}
+.p31-slot.is-native-character .p31-slot-art img,.p31-slot[data-mission="budgeting"] .p31-slot-art img,.p31-slot[data-mission="meditation"] .p31-slot-art img{object-fit:contain;padding:2px}
+.p31-modal-art img[alt^="Budgeting companion"],.p31-modal-art img[alt^="Meditation companion"]{object-fit:contain;padding:6px}
 body.p31-embedded .p31-slot.is-fallback .p31-slot-copy small{display:block;margin-top:3px;color:#d7bb73;font-size:5px;line-height:1.25}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
