@@ -1,1 +1,1 @@
-Use Git Data blob API for binary WebP assets; this note is temporary staging metadata.
+Character binary import completed on 2026-09-07. This file is retained only as harmless history; live Budgeting art is now levels.webp.
