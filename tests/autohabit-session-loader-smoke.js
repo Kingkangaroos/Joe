@@ -6,6 +6,9 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const source = fs.readFileSync(path.join(__dirname, '..', 'auth.js'), 'utf8');
+const privateOwnerMatch = source.match(/const PRIVATE_OWNER_ID = '([^']+)'/);
+const PRIVATE_OWNER_ID = privateOwnerMatch && privateOwnerMatch[1];
+assert.ok(PRIVATE_OWNER_ID, 'auth.js must expose the deterministic private owner constant used by this fixture');
 
 function tick() { return new Promise((resolve) => setImmediate(resolve)); }
 
@@ -14,7 +17,7 @@ async function runScenario(opts) {
   const appended = [];
   const windowListeners = {};
   const documentListeners = {};
-  const session = { user: { id: 'owner-1', email: 'owner@example.test' }, access_token: 'session-token' };
+  const session = { user: { id: PRIVATE_OWNER_ID, email: 'owner@example.test' }, access_token: 'session-token' };
 
   const client = {
     auth: {
@@ -139,9 +142,6 @@ async function runScenario(opts) {
   assert.match(source, /script\.onerror = \(\) =>/, 'loader handles script network failure explicitly');
   assert.match(source, /script\.onload = \(\) =>/, 'loader marks success only after script load');
 
-  // Main boot race contract: all three are deferred, xp.js waits for DOMContentLoaded
-  // before starting RPG sync, while checkin.js executes as a deferred script before
-  // that event and installs __gamenfyAutohabitLoaderInstalled synchronously.
   const index = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
   const xp = fs.readFileSync(path.join(__dirname, '..', 'xp.js'), 'utf8');
   const authTag = index.match(/<script src="auth\.js[^>]*><\/script>/)[0];

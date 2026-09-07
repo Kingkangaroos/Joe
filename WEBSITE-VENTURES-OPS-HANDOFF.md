@@ -2,6 +2,18 @@
 
 Performed-by: ChatGPT (OpenAI)
 
+## READ FIRST — active priority override (2026-09-07)
+
+`INCOME-HANDOFF-2026-09-07.md` is the current cross-project commercial handoff and supersedes older priority assumptions in this file.
+
+1. Website Ventures remains priority #1 / near-term income engine.
+2. **Joey's own agency/showroom website is P0 and must be built before further Plumbing polish.**
+3. Plumbing remains the first commercial niche/customer system and becomes the first major showcase inside the agency site.
+4. Active paid-production planning source is now `WEBSITE-VENTURES-PRODUCTION-LINE-V3.json`.
+5. `WEBSITE-VENTURES-PRODUCTION-LINE-V2.json` is retained as useful planning history, but its detailed Plumbing scene list and broad Gamenfy park/object queue are **concepts, not approved production requirements**.
+6. Gamenfy production is reduced to one approved-character animation technology pilot before any broad object/park/skill batching.
+7. Internal production prompts, registries and playbooks are competitive IP; public sites may show outputs/capabilities but not the factory.
+
 ## Active operational surfaces
 
 - `ventures-sales-v2.html` — active first-ten sales cockpit.
@@ -14,49 +26,66 @@ Performed-by: ChatGPT (OpenAI)
 - `website-ventures-prospect-lab.html` — research only; no implied outreach.
 - `website-ventures-chatgpt-lab.html` — hypotheses only; not a source of proven customer facts.
 - `website-ventures-visual-vault.html` — asset-production inventory and still-before-motion gate.
-- `website-ventures-production-line-v2.html` — detailed visual production factory for Website Ventures **and** Gamenfy reusable objects/animation assets.
-  - data source: `WEBSITE-VENTURES-PRODUCTION-LINE-V2.json`
-  - includes exact asset IDs, models/workflows, formats, variants, dependencies, acceptance gates, sprint order and stop conditions.
+- `site-agency-showroom-v0.html` — current Lab prototype for Joey's own P0 agency/showroom site. Brand name, headline, exact offer, final price and visual art direction remain prototype choices.
+- `WEBSITE-VENTURES-PRODUCTION-LINE-V3.json` — active planning source for agency P0, Plumbing showcase and the bounded Gamenfy animation pilot.
+- `website-ventures-production-line-v2.html` / `WEBSITE-VENTURES-PRODUCTION-LINE-V2.json` — archived/secondary planning reference only until reconciled with v3.
 - `HIGGSFIELD-ELEMENTS-REGISTRY.json` — planned reusable Higgsfield characters/environments/props. Elements are created only after their source reference is approved.
 
-## Production Line v2 — source-of-truth rule
-
-The old HQ `visualProduction` queue remains a high-level summary. The detailed paid-production specification is now `WEBSITE-VENTURES-PRODUCTION-LINE-V2.json`.
+## Active production sequence — v3
 
 Every paid image/video generation must have, before spend:
 
 1. stable asset ID;
 2. exact website/app destination;
-3. reference/dependency state;
-4. chosen draft/master model or deterministic alternative;
-5. required aspect/transparent/sprite output;
-6. bounded variant count;
-7. explicit rejection/approval gate;
-8. follow-up step (Element, sprite, motion, integration or Vault).
+3. exact crop/aspect/use state;
+4. approved dependency/reference state;
+5. bounded variant count;
+6. explicit rejection/approval gate;
+7. clear follow-up step (integration, consistency test, Element, sprite, motion or Vault).
 
-### Website Ventures production focus
+### P0A — Agency showroom
 
-- First lock `PL-CHAR-001`, `PL-STYLE-001`, the service van and tool props.
-- Then make the Premium Plumbing story sell as **stills** before motion.
-- Create reusable Elements only from approved master references.
-- Motion is last and only for stills that already score high enough.
-- Real customer/project proof is never AI-generated as proof.
+First prove the agency site in code before generating visuals:
 
-### Gamenfy production focus
+- narrative and section jobs;
+- premium spacing/type/system;
+- first-scroll interaction payoff;
+- Plumbing showcase frame;
+- interactive transformation demo;
+- reusable premium interaction R&D slot;
+- offer/starting-price slot;
+- real-proof-only credibility slot;
+- mobile behavior for every wow interaction.
 
-Park 3.1 already contains 13 native evolution sets × 10 levels = **130 WebPs**. Do not spend Higgsfield credits recreating those by default.
+External visuals are generated only after these slots/crops are locked.
 
-New production spend should target reusable layers:
+### P0B — Plumbing showcase/customer system
 
-- park environments and transparent props;
-- Daily Score walker system;
-- AutoSprite idle/walk/run/custom sprite sheets from approved characters;
-- Daily Mission interaction props;
-- private-quest FX kept on personal/PIN surfaces;
-- skill props such as tennis, chess, reading, strength and piano;
-- reusable effects such as level-up/confetti, dust, water/ice, fire and sound waves.
+Fixed principles:
 
-Prefer transparent PNG/WebP + sprite sheets + CSS/JS layering over baking whole Gamenfy scenes into video. Video is reserved for rare cases where it genuinely adds more than a sprite/CSS loop.
+- one strong recurring technician;
+- authentic Dutch tradesperson, not fashion-model styling;
+- website shell may feel extremely premium;
+- real customer/project proof remains real;
+- template/system reusability is mandatory.
+
+Older concepts such as leaking-bathroom hero, white/deep-red/chrome/water palette, service van, tool pack, contact bridge and arrival/inspection/repair/handover sequence are **proposals only** until reviewed against the agency showcase slot.
+
+### P0C — Gamenfy animation technology pilot
+
+Park 3.1 already contains 13 native evolution sets × 10 levels = **130 WebPs**. Do not regenerate those by default.
+
+Use one existing approved character and test only:
+
+1. real walk cycle — legs/arms genuinely change frame by frame;
+2. natural idle cycle;
+3. jump / expressive movement;
+4. one character + prop/FX interaction;
+5. only after Joey defines the Home feeling/world: one environment concept.
+
+AutoSprite is the first bounded technology test. If results still feel like a sliding/morphing cutout, stop broad animation spend and prototype a rigged 2D architecture (Rive/Spine-style limb/joint system) before producing more animations.
+
+Deferred/P2: full park object family, 11 Daily Mission prop batch, skill-specific packs, new skill characters, chess/piano/book/weights/whistle/tennis packs.
 
 ## Cloud-state architecture
 
@@ -66,34 +95,46 @@ Sales and Delivery deliberately do not share the broad `rpg` row. Each page wait
 
 These boundaries are intentional and must not be replaced by silent automation:
 
-1. **Prospect Lab → Sales Machine:** only after an explicit click/action. Wave 01 may fill empty Sales slots, but every imported company remains `Prospect`. Importing research must not increment attempts, conversations, demos, proposals or wins.
-2. **Sales Machine → Delivery OS:** only Sales records explicitly marked `Gewonnen` may be imported. They may fill empty Delivery slots only and begin as `Waiting intake`.
-3. **Delivery intake/QA:** importing a win never checks intake or QA items. Completion must reflect real supplied information and real testing.
+1. **Prospect Lab → Sales Machine:** only after an explicit click/action. Imported research remains `Prospect`; no funnel evidence is fabricated.
+2. **Sales Machine → Delivery OS:** only records explicitly marked `Gewonnen` may be imported. They begin `Waiting intake`.
+3. **Delivery intake/QA:** importing a win never checks intake or QA items. Completion must reflect real supplied information/testing.
 4. **Client communication:** Delivery may prepare/copy an intake request, but no page sends it automatically.
 
 ## Founding workflow
 
-1. Research candidates in Prospect Lab.
-2. Explicitly load/select candidates into Sales while preserving `Prospect` status.
-3. Record actual attempts, conversations, demos, proposals and wins in Sales Machine.
-4. Explicitly import only `Gewonnen` clients to Delivery OS.
-5. Build is gated on complete intake.
-6. Founding scope remains max 3 core pages + one bundled revision round unless separately priced.
-7. QA is mandatory before launch; fake proof is never acceptable.
-8. Record real production hours. Students/salespeople/province scaling remain blocked until delivery and sales are repeatable.
+1. Finish the agency/showroom proof layer enough to confidently demonstrate capability.
+2. Keep Plumbing as the first major showroom demo and reusable customer system.
+3. Research candidates in Almere first; Bussum is a practical secondary geography.
+4. Explicitly load/select candidates into Sales while preserving `Prospect` status.
+5. Record actual attempts, conversations, demos, proposals and wins in Sales Machine.
+6. Explicitly import only `Gewonnen` clients to Delivery OS.
+7. Build is gated on complete intake.
+8. QA is mandatory before launch; fake proof is never acceptable.
+9. Record real production + communication + revision + domain-handoff time before claiming ultra-fast fulfilment.
+10. Students/salespeople/province scaling remain blocked until delivery and sales are repeatable.
 
-## Current commercial hypothesis — not proven fact
+## Current commercial hypotheses — not proven facts
 
-- customers 1–3: €995 setup + €49/month
-- leading wedge: plumbing / installations
-- production goal after complete intake: ≤6 hours
-- evidence gates: 30 meaningful owner contacts, 10 demos, 3 paid customers
+- first niche: plumbing / trades / handyman;
+- starting geography: Almere, optionally Bussum;
+- founding-price working hypothesis: **€349** for early proof customers;
+- later regular-price working hypothesis: **€499–€699** once delivery/system is proven;
+- possible Website Control Session add-on: ~**€59**;
+- customer remains owner of domain; Joey may manage DNS/hosting/domain operations for them;
+- exact hosting/maintenance, revision boundaries, scope and fulfilment flow remain open and must be locked before public commercial launch.
+
+## Acquisition guardrails
+
+- Do not rely on illegal cold calling or generic spam.
+- Prioritize active buyer-intent platforms, referrals, warm/local contacts and legally compliant outreach experiments that fit around Joey's full-time job.
+- Do not fabricate contact outcomes, demos or interest.
 
 ## Critical guardrails
 
 - No automatic prospect outreach from Lab pages.
-- No fake reviews, certifications, client work or team claims.
+- No fake reviews, certifications, client work, team claims or measured outcomes.
 - No autonomous paid Higgsfield/video credit spend.
 - Accepted Website Lab variants stay additive; do not overwrite history.
 - Sales and Delivery cloud channels stay isolated from the broad `rpg` app-state.
-- Approved Park 3.1 Daily Mission evolution art is preserved; new Gamenfy production should add reusable interaction/object layers rather than silently reinterpret membership or replace approved assets.
+- Approved Park 3.1 Daily Mission evolution art is preserved.
+- Agency public launch must not expose internal prompts, production manifests, registries or backend process; reassess repo/backend exposure before commercial launch.
