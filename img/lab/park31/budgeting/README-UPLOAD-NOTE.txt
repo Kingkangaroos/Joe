@@ -1,0 +1,1 @@
+Binary assets are being imported from Joey's approved transparent source set. Temporary staging note; safe to remove after image commit.
