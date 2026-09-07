@@ -1,0 +1,168 @@
+{
+  "name": "Agency Showroom Slot Contract v1",
+  "version": 1,
+  "updatedAt": "2026-09-07",
+  "managedBy": "ChatGPT (OpenAI)",
+  "sourceOfTruth": "INCOME-HANDOFF-2026-09-07.md",
+  "page": "site-agency-showroom-v0.html",
+  "status": "slot-locked-content-direction-not-yet-approved",
+  "purpose": "Define exactly where external visuals are allowed to enter Joey's P0 agency showroom before any paid generation is considered.",
+  "globalRules": [
+    "Every slot must work on mobile and desktop; no desktop-only wow proof.",
+    "First frame/static state must already communicate premium quality; motion is optional enhancement.",
+    "Do not generate public proof, reviews, customer results or certifications.",
+    "Do not expose internal prompts, model recipes or asset registries on a public agency build.",
+    "Prefer coded UI/screenshots for interface proof and interaction sections; use generated media only where it adds visual value that code cannot provide cheaply.",
+    "One visual system beats many unrelated hero concepts. Once art direction is approved, every external visual must share material, light, contrast and red-accent logic.",
+    "Keep all source masters crop-safe so customer/showcase derivatives do not require a full regeneration.",
+    "No paid generation from this contract until the visual-content hypothesis for that slot is explicitly approved or becomes an implementation necessity."
+  ],
+  "artDirectionHypotheses": [
+    {
+      "id": "AD-A",
+      "name": "White Precision",
+      "status": "candidate",
+      "palette": "near-white + graphite + controlled deep red",
+      "materials": "glass, chrome, clean technical surfaces",
+      "risk": "can become sterile or generic SaaS if there is no distinctive object/material story"
+    },
+    {
+      "id": "AD-B",
+      "name": "Warm Luxury",
+      "status": "candidate",
+      "palette": "warm white + stone/beige + restrained burgundy",
+      "materials": "marble/travertine, glass, soft directional light",
+      "risk": "can drift into generic interior/luxury branding and lose technical sharpness"
+    },
+    {
+      "id": "AD-C",
+      "name": "Hybrid Precision Luxury",
+      "status": "leading-candidate-not-locked",
+      "palette": "white canvas + deep red brand accent + warm stone/chrome imagery",
+      "materials": "marble/travertine + chrome + glass + water/light",
+      "risk": "requires strict restraint so materials do not become decorative noise"
+    }
+  ],
+  "slots": [
+    {
+      "id": "AG-HERO-001",
+      "section": "Hero / first viewport",
+      "role": "signature visual object that makes the agency feel expensive before the user reads supporting copy",
+      "currentState": "coded abstract placeholder",
+      "externalMediaNeed": "likely",
+      "contentDecision": "open",
+      "allowedContentHypotheses": [
+        "one premium material/technical sculptural object with controlled red accent",
+        "one abstract transformation object that visually changes as the first scroll begins",
+        "one close architectural/material composition that can become a motion master"
+      ],
+      "rejectContent": [
+        "generic laptop mockup as the hero",
+        "random business person portrait",
+        "AI collage of many website screens",
+        "embedded text/logos generated inside the image"
+      ],
+      "desktop": {"sourceRatio":"16:9","targetBox":"right-column visual, approx 4:5/1:1 crop inside hero","minimumSource":"1920x1080","safeZone":"central 70% must contain the recognizable subject"},
+      "mobile": {"sourceRatio":"4:5","targetBox":"full-width visual below hero copy","minimumSource":"1200x1500","safeZone":"subject readable at 390px width"},
+      "stillGate": [
+        "premium impression in under 2 seconds",
+        "distinctive enough to remember after leaving the page",
+        "works without generated typography",
+        "desktop and mobile crops feel intentionally composed",
+        "can support subtle motion without requiring motion to make sense"
+      ],
+      "motionGate": "Only animate after the still direction is approved; keep first frame saleable and avoid destabilizing surrounding copy/layout.",
+      "suggestedModelClass": "cinematic premium still model after art direction approval; use precise image editing for crop/repair rather than regenerating identity"
+    },
+    {
+      "id": "AG-FIRSTSCROLL-001",
+      "section": "Hero -> first content transition",
+      "role": "prove interaction craft immediately after the first viewport",
+      "currentState": "coded scroll response on hero placeholder",
+      "externalMediaNeed": "optional",
+      "contentDecision": "depends on AG-HERO-001",
+      "desktop": {"behavior":"hero visual changes position/lighting/state over first 0-1 viewport of scroll","fallback":"static AG-HERO-001"},
+      "mobile": {"behavior":"same narrative payoff with reduced travel; no horizontal choreography","fallback":"static AG-HERO-001"},
+      "gate": "User notices a deliberate premium response without losing scroll control or causing jank.",
+      "paidSpendRule": "No separate generation if CSS/JS transformation of AG-HERO-001 is enough."
+    },
+    {
+      "id": "AG-SHOWCASE-PL-001",
+      "section": "First major work/showcase section",
+      "role": "show Premium Plumbing as the first reusable customer system in a credible desktop + mobile presentation",
+      "currentState": "coded desktop/phone placeholder",
+      "externalMediaNeed": "no agency-specific AI media; source should be the actual Plumbing demo and later its approved visuals",
+      "desktop": {"capture":"real browser/screenshot of the current Plumbing demo after its showcase state is approved","frame":"16:10 browser frame"},
+      "mobile": {"capture":"real 390px Plumbing demo viewport/state","frame":"9:19.5 phone frame"},
+      "gate": "Both devices clearly belong to one site/system; demo status remains explicit until real client proof exists.",
+      "paidSpendRule": "Plumbing image generation belongs to the Plumbing asset plan, not a duplicate agency-showroom generation."
+    },
+    {
+      "id": "AG-TRANSFORM-001",
+      "section": "Ordinary -> premium transformation",
+      "role": "make the value proposition visually understandable in under five seconds",
+      "currentState": "coded side-by-side before/after placeholder",
+      "externalMediaNeed": "prefer code/screenshot first",
+      "contentDecision": "interaction pattern to be tested before visual generation",
+      "desktop": {"preferred":"scrub/slider or scroll-bound comparison with real coded mock states","minimumTouchTarget":"44px if slider handle exists"},
+      "mobile": {"preferred":"vertical/tap/scrub comparison; never a tiny desktop slider squeezed onto 390px"},
+      "gate": "Difference in perceived quality is immediate; no fabricated client success claim; keyboard/touch usable.",
+      "paidSpendRule": "Do not generate before/after imagery unless coded states fail to communicate the transformation."
+    },
+    {
+      "id": "AG-INTERACT-001",
+      "section": "Reusable interaction R&D",
+      "role": "demonstrate one interaction technology that could later be sold as a premium add-on",
+      "currentState": "pointer-reactive card prototype",
+      "externalMediaNeed": "not yet",
+      "contentDecision": "open; interaction utility must be defined before art",
+      "desktop": {"input":"pointer/scroll/hover with keyboard-safe equivalent"},
+      "mobile": {"input":"touch/scroll/tap; no hover dependency"},
+      "gate": "Interaction improves comprehension, trust or perceived quality and can be reused on a customer site; otherwise reject as decoration.",
+      "paidSpendRule": "Code first. Add generated asset only after the reusable interaction itself passes."
+    },
+    {
+      "id": "AG-OFFER-001",
+      "section": "Offer / starting price",
+      "role": "make the service simple enough to understand and buy",
+      "currentState": "coded hypothesis block",
+      "externalMediaNeed": "none",
+      "contentDecision": "final scope/hosting/revision rules open",
+      "gate": "Final public price language matches the actually deliverable scope; no visual generation required."
+    },
+    {
+      "id": "AG-PROOF-001",
+      "section": "Credibility",
+      "role": "hold real future client work/feedback/evidence",
+      "currentState": "intentionally empty coded component",
+      "externalMediaNeed": "real-source-only",
+      "contentDecision": "blocked until real evidence exists",
+      "desktop": {"acceptedSources":"real client website capture, real project result, real quoted feedback with permission"},
+      "mobile": {"acceptedSources":"same real evidence in mobile-safe card/crop"},
+      "gate": "Every claim/source can be traced to a real customer or measurable fact.",
+      "paidSpendRule": "Never generate the evidence itself."
+    },
+    {
+      "id": "AG-CTA-001",
+      "section": "Final CTA",
+      "role": "close the story with one low-friction next action",
+      "currentState": "coded red full-width closing panel",
+      "externalMediaNeed": "none unless future hero art can be reused cheaply",
+      "contentDecision": "contact mechanism and final brand/copy open",
+      "gate": "One obvious action; thumb-friendly mobile CTA; no decorative asset required to understand the next step."
+    }
+  ],
+  "generationPriorityAfterApproval": [
+    "1. AG-HERO-001 only — build/select the visual DNA master.",
+    "2. Test AG-HERO-001 desktop + mobile crop in the real coded page.",
+    "3. Decide whether AG-FIRSTSCROLL-001 can reuse the same master without a second generation.",
+    "4. Use real Plumbing page captures for AG-SHOWCASE-PL-001; do not duplicate generation spend.",
+    "5. Keep AG-TRANSFORM-001 and AG-INTERACT-001 code-first until they prove they need external media.",
+    "6. Never spend on AG-OFFER-001, AG-PROOF-001 or AG-CTA-001 merely to make them decorative."
+  ],
+  "estimatedAgencyPaidVisualCount": {
+    "minimum": 1,
+    "likely": "1-3 selected master/derivative visuals before any optional motion",
+    "reason": "The agency showroom should demonstrate design and interaction primarily through the actual coded site and real showcase screens, not by becoming an AI-image gallery."
+  }
+}
