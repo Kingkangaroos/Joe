@@ -1,0 +1,23 @@
+{
+  "wave": "Website Ventures Prospect Wave 01",
+  "updatedAt": "2026-09-07",
+  "region": "Flevoland",
+  "niche": "plumbing / installations / related trades",
+  "status": "research-only",
+  "managedBy": "ChatGPT (OpenAI)",
+  "guardrail": "No calls, emails, DMs or form submissions have been sent. Moving any company into active outreach requires Joey to explicitly request outreach.",
+  "purpose": "Keep the first researched prospect set visible and structured so discovery is not lost inside a document and can later feed the real Sales Machine deliberately.",
+  "prospects": [
+    {"rank":1,"tier":"A","name":"GoedMetSpoed Loodgieters","city":"Almere","domain":"goedmetspoedloodgieters.nl","status":"research","demoHypothesis":"Strong match for the urgency-to-trust Premium Plumbing story. Validate owner fit and current digital pain before any pitch."},
+    {"rank":2,"tier":"A","name":"Loodgietersbedrijf Peek","city":"Almere","domain":"loodgietersbedrijfpeek.nl","status":"research","demoHypothesis":"Use the flagship to test whether a more premium trust presentation creates enough contrast to justify a refresh conversation."},
+    {"rank":3,"tier":"A","name":"Loodgieter Almere","city":"Almere","domain":"loodgieters-bedrijf.nl","status":"research","demoHypothesis":"Local service positioning makes this useful for testing whether clearer premium brand hierarchy and contact flow resonate."},
+    {"rank":4,"tier":"A","name":"Loodgieter Dikkie Bos","city":"Marknesse","domain":"loodgieterdikkiebos.nl","status":"research","demoHypothesis":"Useful test of the Porsche-treatment/authentic-tradesperson principle: premium shell without erasing a recognisable local operator identity."},
+    {"rank":5,"tier":"A","name":"Kok Loodgieters & Dakdekkers","city":"Swifterbant","domain":"kok-diensten.nl","status":"research","demoHypothesis":"Multi-service company can test whether the flagship system communicates breadth after an urgency-led opening instead of reading emergency-only."},
+    {"rank":6,"tier":"A","name":"Van den Brink Bouw & Installatietechniek","city":"Emmeloord","domain":"vandenbrinkbouw.nl","status":"research","demoHypothesis":"Good bridge between plumbing/installations and the future renovation flagship; test premium craftsmanship and project-story positioning."},
+    {"rank":7,"tier":"B","name":"Loodgietersbedrijf Jan Regtop","city":"Lelystad","domain":"janregtop.nl","status":"research","demoHypothesis":"Secondary validation prospect for the same local-trade refresh thesis once the top wave has produced feedback."},
+    {"rank":8,"tier":"B","name":"Ruud Oosterhuis Installatietechniek","city":"Lelystad","domain":"ruudoosterhuis.nl","status":"research","demoHypothesis":"Secondary installation prospect for testing whether the premium system works beyond emergency plumbing language."},
+    {"rank":9,"tier":"B","name":"Loodgietersbedrijf van Rijn","city":"Emmeloord","domain":"van-rijn.net","status":"research","demoHypothesis":"Keep as comparison prospect; validate need and decision-maker access before investing in a personalised demo."},
+    {"rank":10,"tier":"B","name":"Loodgietersbedrijf Van de Heuvel","city":"Dronten","domain":"loodgietersbedrijfvandeheuvel.nl","status":"research","demoHypothesis":"Keep as comparison prospect for geographic spread and message consistency across Flevoland."}
+  ],
+  "promotionRule": "Research board -> Sales Machine only when Joey intentionally selects a company for outreach or records a real interaction. Research status must never imply contact, interest or consent."
+}
