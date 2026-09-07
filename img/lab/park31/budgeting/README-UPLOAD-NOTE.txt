@@ -1,1 +1,1 @@
-Binary assets are being imported from Joey's approved transparent source set. Temporary staging note; safe to remove after image commit.
+Approved transparent character assets are integrated. Live Budgeting art is levels.webp; this note is retained as import history.
