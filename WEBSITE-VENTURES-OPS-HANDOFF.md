@@ -6,14 +6,18 @@ Performed-by: ChatGPT (OpenAI)
 
 - `ventures-sales-v2.html` — active first-ten sales cockpit.
   - local state key: `rpg_venture_sales_v1`
-  - isolated cloud app-state: `venture_sales`
+  - isolated cloud app-state: `venture_sales:<authenticated-user-id>`
   - intentionally does **not** load `xp.js`, so it cannot start the broad RPG sync scope.
 - `website-ventures-delivery-os.html` — intake, delivery, QA, hours and launch gate for founding customers 1–10.
   - local state key: `venture_delivery_v1`
-  - isolated cloud app-state: `venture_delivery`
+  - isolated cloud app-state: `venture_delivery:<authenticated-user-id>`
 - `website-ventures-prospect-lab.html` — research only; no implied outreach.
 - `website-ventures-chatgpt-lab.html` — hypotheses only; not a source of proven customer facts.
 - `website-ventures-visual-vault.html` — asset-production inventory and still-before-motion gate.
+
+## Cloud-state architecture
+
+Sales and Delivery deliberately do not share the broad `rpg` row. Each page waits for Auth, derives its app-state key from `window.gamenfyUserId`, and calls the shared CAS sync with only its own local storage key. The database RPC `public.gamenfy_write_app_state` accepts the Venture key only when its suffix exactly equals the current `auth.uid()`. This preserves the existing global `app_state.key` primary-key compatibility while avoiding collisions between accounts.
 
 ## Founding workflow
 
