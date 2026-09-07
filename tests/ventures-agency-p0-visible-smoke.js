@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const s=fs.readFileSync('ventures-workspace.html','utf8');
+assert.ok(s.includes('P0 · Mijn eigen website'),'Finance → Ventures must surface Joey\'s own website as P0');
+assert.ok(s.includes('site-agency-showroom-v0.html'),'Agency Showroom must be directly reachable from Ventures');
+assert.ok(s.includes('website-ventures-production-line-v3.html'),'Active Production Line v3 must be directly reachable');
+assert.ok(s.includes('Premium Plumbing'),'Plumbing must remain visible as the first showcase/customer system');
+assert.ok(s.includes('website-ventures-production-line-v2.html'),'v2 idea archive must remain reachable');
+assert.ok(s.includes('18 Website-assets + 32 Gamenfy objects/sprites'),'legacy v2 inventory context must remain explicit');
+assert.ok(s.includes('130 evolution WebPs'),'existing Gamenfy evolution inventory warning must remain explicit');
+console.log('ventures agency P0 visibility smoke passed');
