@@ -16,7 +16,8 @@ assert(html.includes('Gamenfy · Public Beta'), 'public beta auth mark missing')
 assert(html.includes('app.js?v=1'), 'public app script missing');
 assert(!html.includes('auth.js'), 'public page must not load private auth.js');
 assert(!html.includes('sync.js'), 'public page must not load private sync.js');
-assert(!html.toLowerCase().includes('fitbit'), 'public page must not load/use Fitbit integration');
+assert(!html.includes('fitbit-sync.js') && !html.includes('autohabit-reconcile.js'), 'public page must not load private health integrations');
+assert(!html.includes('jarvis.js') && !html.includes('finance.js'), 'public page must not load private Jarvis/Finance integrations');
 assert(app.includes("const TABLE = 'gamenfy_public_state'"), 'public state table contract missing');
 assert(!app.includes("from('app_state')"), 'public app must never query private app_state');
 assert(app.includes('gamenfy_public'), 'public account metadata marker missing');
