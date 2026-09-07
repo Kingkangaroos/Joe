@@ -5,6 +5,20 @@ const assert = require('assert');
 const crypto = require('crypto');
 
 function read(path) { return fs.readFileSync(path, 'utf8'); }
+function verifyTransparentEvolutionSet(base, label) {
+  const digests = [];
+  for (let level = 1; level <= 10; level++) {
+    const file = base + '/l' + String(level).padStart(2, '0') + '.webp';
+    assert(fs.existsSync(file), file + ' must exist');
+    const bytes = fs.readFileSync(file);
+    assert(bytes.length > 1000, file + ' must contain real artwork');
+    assert.equal(bytes.subarray(0, 4).toString(), 'RIFF', file + ' is WebP');
+    assert.equal(bytes.subarray(8, 12).toString(), 'WEBP', file + ' has WebP signature');
+    assert(bytes.includes(Buffer.from('ALPH')), file + ' preserves transparency');
+    digests.push(crypto.createHash('sha256').update(bytes).digest('hex'));
+  }
+  assert.equal(new Set(digests).size, 10, label + ' has ten distinct approved evolutions');
+}
 
 const push = read('push.js');
 const sites = read('sites.html');
@@ -22,16 +36,11 @@ assert(push.includes("suffix.style.display = 'none'"), 'legacy /10 suffix must b
 assert(push.includes('done / count'), 'progress bar may still use checked/total ratio');
 assert(push.includes("img/lab/daily-score/joey/l"), 'Joey Daily Score evolution path missing');
 assert(push.includes('scoreArtLevel(done)'), 'Joey art must be derived from checked-count score');
-const joeyDigests = [];
-for (let level = 1; level <= 10; level++) {
-  const file = 'img/lab/daily-score/joey/l' + String(level).padStart(2, '0') + '.webp';
-  const bytes = fs.readFileSync(file);
-  assert.equal(bytes.subarray(0, 4).toString(), 'RIFF', file + ' is WebP');
-  assert.equal(bytes.subarray(8, 12).toString(), 'WEBP', file + ' has WebP signature');
-  assert(bytes.includes(Buffer.from('ALPH')), file + ' preserves transparency');
-  joeyDigests.push(crypto.createHash('sha256').update(bytes).digest('hex'));
-}
-assert.equal(new Set(joeyDigests).size, 10, 'Daily Score has ten distinct approved Joey evolutions');
+
+// All three approved Creator sets must remain complete, transparent and distinct.
+verifyTransparentEvolutionSet('img/lab/daily-score/joey', 'Daily Score Joey');
+verifyTransparentEvolutionSet('img/lab/park31/budgeting', 'Budgeting owl');
+verifyTransparentEvolutionSet('img/lab/park31/meditation', 'Meditation panda');
 
 // Accepted Website Lab history remains visibly available.
 assert(sites.includes('Bewaarde oude testwebsite'), 'old Website Lab test must be visibly called out');
@@ -49,6 +58,12 @@ assert(!art.includes("fallback:'budgeting'"), 'Budgeting fallback wiring must be
 assert(!art.includes("fallback:'meditation'"), 'Meditation fallback wiring must be retired');
 assert(importContract.includes('do **not** regenerate'), 'import contract must protect exact approved assets');
 
+// Transparent character framing: roster cards and modal must contain instead of crop.
+assert(park.includes('.p31-slot[data-mission="budgeting"] .p31-slot-art img'), 'Budgeting roster art must use transparent-character contain framing');
+assert(park.includes('.p31-slot[data-mission="meditation"] .p31-slot-art img'), 'Meditation roster art must use transparent-character contain framing');
+assert(park.includes('img[alt^="Budgeting companion"]'), 'Budgeting modal art must use contain framing');
+assert(park.includes('img[alt^="Meditation companion"]'), 'Meditation modal art must use contain framing');
+
 // HQ notes: rescue script must capture local state before xp.js starts RPG sync.
 const rescuePos = hq.indexOf('hq-note-resync.js?v=1.0');
 const xpPos = hq.indexOf('xp.js?v=10.98');
@@ -58,4 +73,4 @@ assert(rescue.includes("gamenfy:cloud-sync-ready"), 'HQ rescue must wait for can
 assert(rescue.includes('mergeNotes'), 'HQ rescue must merge instead of blindly replacing note arrays');
 assert(rescue.includes("localStorage.setItem(NOTE_KEY"), 'rescued note payload must re-enter normal sync journal');
 
-console.log('Daily Score + approved Last Horse characters + HQ note rescue smoke checks passed.');
+console.log('Daily Score + all approved Last Horse character sets + framing + HQ note rescue smoke checks passed.');
