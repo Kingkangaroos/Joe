@@ -1,11 +1,40 @@
 # Fitbit Air → Gamenfy via de Google Health API
 
-## Huidige productie — 4 september 2026
+## Huidige productie — 7 september 2026
 
-De actieve health-bron is uitsluitend `app_state.health_fitbit`, gevuld door de gedeployde `fitbit-sync` Edge Function via Google Health API v4.
+De actieve health-bron blijft uitsluitend `app_state.health_fitbit`, maar de geplande ingest loopt nu via `fitbit-sync-direct`.
+
+Waarom dit is gewijzigd:
+- de oude `fitbit-sync` Edge Function gebruikte Supabase PostgREST voor interne reads/writes;
+- op 7 september begon die route structureel HTTP 503 te geven met `PGRST002: Could not query the database for the schema cache`;
+- de Google refresh-token zelf is apart getest en gaf gewoon HTTP 200 + een nieuw access-token, dus opnieuw koppelen was niet nodig;
+- `fitbit-sync-direct` gebruikt de ingebouwde `SUPABASE_DB_URL` en een directe Postgres-verbinding voor `integration_tokens` en `app_state`, terwijl de Google Health API-pull inhoudelijk hetzelfde blijft.
 
 Actief contract:
-- `fitbit-sync` = huidige ingest;
+- `fitbit-sync-direct` = scheduled ingest;
+- cronjob `fitbit-sync-hourly` draait ieder uur op minuut 15 en roept `fitbit-sync-direct` aan;
+- Europe/Amsterdam kalenderdagen;
+- `app_state.health_fitbit` blijft de enige health-source authority;
+- Walking Daily Mission = 10.000 stappen;
+- Sleep Daily Mission = 420 minuten / 7 uur;
+- Daily Mission-thresholds worden niet door ingest geschreven maar door `autohabit-reconcile.js` toegepast na veilige RPG cloud/local convergentie;
+- Fitbit-ingest herschrijft nooit direct de whole-row `app_state.rpg`.
+
+Live validatie op 7 september:
+- handmatige productie-sync: `14` dagen bijgewerkt;
+- `errors: []`;
+- `integration_tokens.last_error = null`;
+- data voor 7 september is opnieuw aanwezig in `health_fitbit`;
+- source marker: `google-health-v14-direct-db`.
+
+De oude `fitbit-sync` blijft voorlopig bestaan voor de bestaande OAuth callback/reauthorisatie-route. De uur-cron gebruikt hem niet meer zolang de PostgREST-schema-cache fout speelt. De tijdelijke diagnosefunctie `fitbit-refresh-diagnose` is retired en JWT-protected (HTTP 410).
+
+## Vorige productie — 4 september 2026
+
+De actieve health-bron was uitsluitend `app_state.health_fitbit`, gevuld door de gedeployde `fitbit-sync` Edge Function via Google Health API v4.
+
+Actief contract toen:
+- `fitbit-sync` = ingest;
 - Europe/Amsterdam kalenderdagen;
 - Walking Daily Mission = 10.000 stappen;
 - Sleep Daily Mission = 420 minuten / 7 uur;
@@ -88,7 +117,7 @@ je logt daar in met je Google-account. Ons plan verandert dus niet.
 
 ## Wat Claudia daarna doet (voorbereid in `server/fitbit-sync/index.ts`)
 1. Vult client id/secret in, deployt de functie.
-2. Stuurt je één autorisatie-link → jij tikt "Toestaan" op je telefoon.
+2. Stuurt Joey één autorisatie-link → jij tikt "Toestaan" op je telefoon.
 3. Functie wisselt de code om, bewaart tokens in `app_state.fitbit_tokens`
    (server-side rij, buiten de device-sync), en ververst ze automatisch.
 4. Een dagelijkse cron (Supabase scheduled function, zelfde patroon als
