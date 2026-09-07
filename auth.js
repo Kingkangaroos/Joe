@@ -4,6 +4,7 @@
 
   const SUPABASE_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
+  const DIRECT_STATE_READ_URL = SUPABASE_URL + '/functions/v1/gamenfy-state-read';
 
   let resolveReady;
   let readyResolved = false;
@@ -94,13 +95,56 @@
     }, extra || {});
   };
 
+  // Direct owner-scoped state reader used only while PostgREST is unable to build
+  // its schema cache. The Edge Function validates the JWT and constrains its DB
+  // query to the caller's own user_id. Keep the surface deliberately tiny.
+  window.gamenfyReadState = async function (keys) {
+    const session = await window.gamenfyAuthReady;
+    if (!session || !session.user) throw new Error('Geen geldige Gamenfy-sessie');
+    const cleanKeys = (Array.isArray(keys) ? keys : [keys])
+      .map((value) => String(value || '').trim())
+      .filter(Boolean);
+    const response = await fetch(DIRECT_STATE_READ_URL + '?keys=' + encodeURIComponent(cleanKeys.join(',')), {
+      method: 'GET',
+      headers: window.gamenfyAuthHeaders(),
+      cache: 'no-store',
+    });
+    if (!response.ok) throw new Error('Directe Gamenfy state-read mislukt (' + response.status + ')');
+    const body = await response.json();
+    if (!body || body.ok !== true) throw new Error('Directe Gamenfy state-read gaf geen geldige payload');
+    return body.rows || {};
+  };
+
   window.gamenfyAuthedFetch = async function (url, init) {
     const session = await window.gamenfyAuthReady;
     const options = Object.assign({}, init || {});
     options.headers = window.gamenfyAuthHeaders(options.headers || {});
     if (!session || !session.user) throw new Error('Geen geldige Gamenfy-sessie');
+
+    // Health Trail + Body Composition still call the historical raw REST URL.
+    // Transparently answer that one read through the direct owner-scoped reader
+    // while PGRST002 is active, preserving the old [{data:...}] response shape.
+    const urlText = String(url || '');
+    if (urlText.includes('/rest/v1/app_state') && urlText.includes('key=eq.health_fitbit')) {
+      const rows = await window.gamenfyReadState(['health_fitbit']);
+      const row = rows && rows.health_fitbit;
+      return new Response(JSON.stringify(row ? [{ data: row.data, updated_at: row.updated_at }] : []), {
+        status: 200,
+        headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
+      });
+    }
+
     return fetch(url, options);
   };
+
+  function ensureFitbitClientBridge() {
+    if (document.querySelector('script[data-gamenfy-fitbit-direct]')) return;
+    const script = document.createElement('script');
+    script.src = 'fitbit-client-direct.js?v=1';
+    script.dataset.gamenfyFitbitDirect = '1';
+    document.head.appendChild(script);
+  }
+  ensureFitbitClientBridge();
 
   window.gamenfySignOut = async function () {
     await client.auth.signOut();
