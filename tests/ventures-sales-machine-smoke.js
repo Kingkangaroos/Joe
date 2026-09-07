@@ -9,6 +9,7 @@ const lab=read('sites.html');
 const playbook=read('WEBSITE-VENTURES-SALES-PLAYBOOK.md');
 const production=read('PLUMBING-FLAGSHIP-PRODUCTION-PACK.md');
 const prospects=read('WEBSITE-VENTURES-PROSPECT-WAVE-01.md');
+const prospectJson=read('WEBSITE-VENTURES-PROSPECT-WAVE-01.json');
 
 assert.ok(legacySales.includes("const KEY='rpg_venture_sales_v1'"),'Legacy Sales Machine must retain the original local key for migration history');
 assert.ok(sales.includes('data-gamenfy-scope="personal"'),'Sales Machine v2 must remain personal-only');
@@ -21,6 +22,15 @@ assert.ok(sales.includes('€995')&&sales.includes('€49/mnd'),'Founding offer 
 assert.ok(sales.includes('Klanten 1–10 pipeline'),'First-ten pipeline must remain visible');
 assert.ok(sales.includes('Funnel'),'Funnel evidence must remain visible');
 assert.ok(sales.includes('Geen automatische outreach'),'Outbound guardrail must remain explicit');
+
+assert.ok(sales.includes("fetch('WEBSITE-VENTURES-PROSPECT-WAVE-01.json'"),'Research import must use the durable Wave 01 source');
+assert.ok(sales.includes("stage:'Prospect'"),'Research import must keep imported candidates at Prospect');
+assert.ok(sales.includes('const funnelBefore=JSON.stringify(state.funnel)'),'Research import must snapshot funnel before import');
+assert.ok(sales.includes("throw new Error('funnel mutation blocked')"),'Research import must fail if it mutates funnel evidence');
+assert.ok(sales.includes("state.clients.findIndex(c=>!String(c.name||'').trim())"),'Research import may fill only empty Sales slots');
+assert.ok(sales.includes("researchSource:'Wave 01'"),'Imported research must retain its source metadata');
+assert.ok(prospectJson.includes('"status": "research-only"'),'Underlying wave must remain research-only');
+assert.ok(prospectJson.includes('Research board -> Sales Machine only when Joey intentionally selects'),'Promotion rule must stay explicit');
 
 assert.ok(lab.includes('href="ventures-sales-v2.html"'),'Website Lab must link to active Sales Machine v2');
 assert.ok(lab.includes('website-ventures-delivery-os.html'),'Website Lab must link to Delivery OS');
