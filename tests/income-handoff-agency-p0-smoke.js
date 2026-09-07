@@ -7,6 +7,8 @@ const ops=read('WEBSITE-VENTURES-OPS-HANDOFF.md');
 const line=JSON.parse(read('WEBSITE-VENTURES-PRODUCTION-LINE-V3.json'));
 const agency=read('site-agency-showroom-v0.html');
 const board=read('website-ventures-production-line-v3.html');
+const sites=read('sites.html');
+const oldBoard=read('website-ventures-production-line-v2.html');
 
 assert.ok(handoff.includes('Build Joey\'s own Website Ventures / agency website first'),'Income handoff must retain agency-site-first decision');
 assert.equal(line.sourceOfTruth,'INCOME-HANDOFF-2026-09-07.md');
@@ -39,5 +41,12 @@ assert.ok(ops.includes('€349'),'Ops must use current founding-price hypothesis
 assert.ok(ops.includes('V2')&&ops.includes('concepts, not approved production requirements'),'Ops must classify old v2 expansion as non-mandatory');
 assert.ok(board.includes("fetch('WEBSITE-VENTURES-PRODUCTION-LINE-V3.json'"),'Visual v3 board must read active durable state');
 assert.ok(board.includes('Agency P0')&&board.includes('Gamenfy pilot'),'Visual v3 board must expose corrected priorities');
+
+assert.ok(sites.indexOf('P0 · Agency showroom') < sites.indexOf('P0 · First commercial showcase'),'Website Lab must show agency P0 before Plumbing showcase');
+assert.ok(sites.includes('site-agency-showroom-v0.html'),'Website Lab must link to agency prototype');
+assert.ok(sites.includes('website-ventures-production-line-v3.html'),'Website Lab must link to active v3 factory');
+['site-klus-scroll-1-2.html','site-klus-scroll-1-1.html','site-klus-scroll.html','site-klus.html','site-pt.html','site-rijschool.html'].forEach(path=>assert.ok(sites.includes(path),'Website Lab must preserve old prototype/base link '+path));
+assert.ok(oldBoard.includes('Production Line v2 is no longer active.'),'Old v2 entry point must clearly show archive status');
+assert.ok(oldBoard.includes('website-ventures-production-line-v3.html'),'Old v2 entry point must route builders to v3');
 
 console.log('income handoff agency P0 smoke passed');
