@@ -5,6 +5,10 @@
       "chatgpt/**": false
     }
   },
+  "rewrites": [
+    { "source": "/public", "destination": "/gamenfy-public.html" },
+    { "source": "/public/", "destination": "/gamenfy-public.html" }
+  ],
   "headers": [
     {
       "source": "/",
