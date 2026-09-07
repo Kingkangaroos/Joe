@@ -1,0 +1,51 @@
+{
+  "page": "site-agency-showroom-v0.html",
+  "testedOn": "2026-09-07",
+  "productionAlias": "joe-silk.vercel.app",
+  "method": "headless Chromium layout/interaction inspection after deployment; no visual-aesthetic approval claimed",
+  "result": "technical-pass",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 1000,
+      "httpStatus": 200,
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "heroHeightPx": 1000,
+      "stickyStoryHeightPx": 3000,
+      "interactionHeightPx": 620,
+      "stickyStoryStatesVerified": [
+        {"progress":0,"active":"One system. One world."},
+        {"progress":0.45,"active":"Desktop is only half the job."},
+        {"progress":0.70,"active":"Demo first. Proof later."}
+      ],
+      "pointerInteractionVerified": true
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844,
+      "httpStatus": 200,
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "heroHeightPxApprox": 878,
+      "stickyStoryHeightPxApprox": 3038,
+      "interactionHeightPx": 520,
+      "stickyStoryStatesVerified": [
+        {"progress":0,"active":"One system. One world."},
+        {"progress":0.45,"active":"Desktop is only half the job."},
+        {"progress":0.70,"active":"Demo first. Proof later."}
+      ],
+      "pointerInteractionVerified": true,
+      "note": "Pointer-emulation proves JS response; final touch feel still needs real-device human review before public launch."
+    }
+  ],
+  "caveats": [
+    "This is a technical browser QA, not a claim that the art direction or copy is approved.",
+    "Visual polish must still be judged by Joey in the actual app/browser.",
+    "Real-device touch, perceived scroll feel and typography rendering should be checked again after final art/assets are integrated."
+  ]
+}
