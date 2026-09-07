@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gamenfy · Privé data herstellen</title>
+<meta name="theme-color" content="#F4F3EF">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#F4F3EF;--card:#fff;--ink:#15140F;--muted:#6F6C63;--line:#E8E6DF;--green:#2E8B5F;--ember:#D4633E}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif}.card{width:min(100%,430px);background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px;box-shadow:0 18px 60px rgba(21,20,15,.1)}.k{font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--ember);margin-bottom:10px}h1{font-size:25px;line-height:1.15;margin:0 0 9px}p{font-size:14px;line-height:1.5;color:var(--muted);margin:0 0 16px}.status{font-size:13px;font-weight:700;line-height:1.45;padding:13px 14px;border-radius:12px;background:#f7f6f2;border:1px solid var(--line)}.status.ok{color:var(--green)}.status.err{color:#B14E2E}.btn{width:100%;margin-top:12px;padding:13px;border:0;border-radius:12px;background:var(--ink);color:#fff;font-weight:800;font-size:14px;cursor:pointer}.note{font-size:11px;color:#8b887f;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="k">Gamenfy · privé recovery</div>
+  <h1>Je bestaande clouddata terugzetten op dit apparaat.</h1>
+  <p>Deze pagina verandert niets aan je clouddata. Hij haalt alleen jouw bestaande RPG-state opnieuw op en zet die terug in deze browser.</p>
+  <div id="status" class="status">Controleren…</div>
+  <button id="go" class="btn" type="button" hidden>Open Gamenfy Privé</button>
+  <div class="note">Alleen jouw vaste private account wordt geaccepteerd. De foutieve lokale sync-journal wordt gewist zodat lege defaults je clouddata niet opnieuw kunnen blokkeren.</div>
+</div>
+<script>
+(function(){
+  'use strict';
+  const SUPABASE_URL='https://ttxjsoahmtennnufgeqx.supabase.co';
+  const SUPABASE_KEY='sb_publishable_5lYXJme36ggS2dWTJbMSCA_Ir9Uogab';
+  const OWNER='dff21e4f-51fa-468b-9e0d-2344164efd79';
+  const DIRTY='__gamenfy_sync_dirty_v1:rpg';
+  const status=document.getElementById('status');
+  const go=document.getElementById('go');
+  function setStatus(text,ok){ status.textContent=text; status.className='status '+(ok===true?'ok':ok===false?'err':''); }
+  function openPrivate(){ location.replace('/?recovered='+Date.now()); }
+  go.addEventListener('click',openPrivate);
+
+  async function run(){
+    try{
+      if(!window.supabase||!window.supabase.createClient) throw new Error('Supabase kon niet laden.');
+      const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'gamenfy-private-auth-v1'}});
+      const {data:sessData,error:sessErr}=await client.auth.getSession();
+      if(sessErr) throw sessErr;
+      const session=sessData&&sessData.session;
+      if(!session||!session.user){
+        setStatus('Je bent niet ingelogd in Gamenfy Privé. Open eerst de gewone private app en log in.',false);
+        go.hidden=false; go.textContent='Naar private login'; go.onclick=()=>location.href='/';
+        return;
+      }
+      if(session.user.id!==OWNER){
+        setStatus('Dit is niet jouw private Gamenfy-account. Er is niets aangepast.',false);
+        return;
+      }
+      setStatus('Cloudstate ophalen…');
+      const {data:row,error}=await client.from('app_state').select('data,updated_at,restore_generation,state_version').eq('key','rpg').eq('user_id',OWNER).maybeSingle();
+      if(error) throw error;
+      if(!row||!row.data||typeof row.data!=='object') throw new Error('Geen geldige RPG-cloudstate gevonden.');
+      const remote=row.data;
+      const char=remote.rpg_character_v1;
+      const xpCount=char&&Array.isArray(char.xpLog)?char.xpLog.length:0;
+      const skillCount=char&&char.skills&&typeof char.skills==='object'?Object.keys(char.skills).length:0;
+      const habitCount=remote.rpg_habits_v1&&typeof remote.rpg_habits_v1==='object'?Object.keys(remote.rpg_habits_v1).length:0;
+      if(xpCount<20||skillCount<20) throw new Error('Cloudstate lijkt onverwacht leeg; recovery gestopt voor veiligheid.');
+
+      // Stop stale/empty local writes from replaying over the recovered cloud baseline.
+      try{ localStorage.removeItem(DIRTY); }catch(_e){}
+
+      // Overlay only the canonical server snapshot. Do not remove unrelated local-only keys.
+      Object.keys(remote).forEach((key)=>{
+        try{ localStorage.setItem(key,JSON.stringify(remote[key])); }catch(_e){}
+      });
+      try{
+        localStorage.setItem('gamenfy_private_recovery_v1',JSON.stringify({at:new Date().toISOString(),updated_at:row.updated_at||null,xpCount,skillCount,habitCount}));
+      }catch(_e){}
+
+      setStatus('Hersteld: '+skillCount+' skills, '+xpCount+' XP-logregels en '+habitCount+' Daily Missions geladen.',true);
+      go.hidden=false;
+      go.textContent='Open Gamenfy Privé';
+      setTimeout(openPrivate,900);
+    }catch(err){
+      console.error(err);
+      setStatus('Herstel kon niet veilig worden uitgevoerd: '+(err&&err.message?err.message:'onbekende fout'),false);
+      go.hidden=false; go.textContent='Terug naar Gamenfy';
+    }
+  }
+  run();
+})();
+</script>
+</body>
+</html>
