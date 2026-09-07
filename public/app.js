@@ -274,15 +274,15 @@
     authMessage(authMode === 'signup' ? 'Account wordt aangemaakt…' : 'Bezig met inloggen…', true);
     try {
       const result = authMode === 'signup'
-        ? await client.auth.signUp({ email, password, options: { data: { display_name: name, app: 'gamenfy_public' } } })
+        ? await client.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin + '/public/', data: { display_name: name, app: 'gamenfy_public' } } })
         : await client.auth.signInWithPassword({ email, password });
       if (result.error) throw result.error;
       if (result.data && result.data.session) {
         await enterApp(result.data.session);
       } else {
-        authMessage('Account gemaakt. Check één keer je e-mail om je account te bevestigen; daarna kun je hier direct inloggen.', true);
         setAuthMode('signin');
         $('email').value = email;
+        authMessage('Account gemaakt. Check één keer je e-mail om je account te bevestigen; daarna kom je terug in Gamenfy Public.', true);
       }
     } catch (error) {
       authMessage(error && error.message ? error.message : 'Dit lukte niet. Probeer opnieuw.');
