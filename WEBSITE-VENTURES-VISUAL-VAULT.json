@@ -1,0 +1,180 @@
+{
+  "vault": "Website Ventures Visual Vault",
+  "version": 1,
+  "updatedAt": "2026-09-07",
+  "managedBy": "ChatGPT (OpenAI)",
+  "purpose": "Store approved and rejected website visuals by exact commercial slot so premium quality becomes reusable instead of one-off generation spend.",
+  "rules": [
+    "Every generated asset must map to a website slot before credits are spent.",
+    "Master still first; motion only after the still scores at least 10/12.",
+    "One coherent recurring technician/world beats unrelated high-quality generations.",
+    "Real project proof remains real; AI atmosphere may never be labeled as completed client work.",
+    "Rejected assets remain archived with rejection reason so failed directions are not repeated.",
+    "A paying-client customization should start from an approved composition/system rather than from a blank prompt whenever possible."
+  ],
+  "ratingRubric": {
+    "maxScore": 12,
+    "dimensions": [
+      {"id": "slotFit", "max": 2, "question": "Does the image solve the exact website slot and crop cleanly?"},
+      {"id": "brandFit", "max": 2, "question": "Does it feel premium while still credible for the operator?"},
+      {"id": "consistency", "max": 2, "question": "Is recurring person/world identity consistent?"},
+      {"id": "realism", "max": 2, "question": "Are tools, hands, plumbing/material details and lighting believable?"},
+      {"id": "conversion", "max": 2, "question": "Does it make the service/problem/result easier to understand or trust?"},
+      {"id": "technical", "max": 2, "question": "Is resolution/composition strong enough for responsive desktop + mobile use?"}
+    ],
+    "motionGate": "10/12 or better and no critical realism/identity defect"
+  },
+  "metadataSchema": {
+    "required": ["id", "venture", "industry", "slot", "status", "purpose", "aspectTargets"],
+    "optional": ["model", "workflow", "prompt", "negativePrompt", "seed", "referenceAssets", "score", "scoreBreakdown", "motionReady", "customizable", "approvedCrop", "rejectionReason", "notes", "createdAt"]
+  },
+  "assets": [
+    {
+      "id": "PL-CHAR-001",
+      "venture": "Premium Plumbing",
+      "industry": "plumbing-installations",
+      "slot": "master-character",
+      "status": "next",
+      "purpose": "One authentic premium master technician reused across hero, arrival, diagnosis, repair and handover.",
+      "aspectTargets": ["4:5 character master", "3:2 environmental reuse"],
+      "motionReady": false,
+      "customizable": true,
+      "proofType": "illustrative-demo-person, never claimed as real client staff"
+    },
+    {
+      "id": "PL-STYLE-001",
+      "venture": "Premium Plumbing",
+      "industry": "plumbing-installations",
+      "slot": "visual-world",
+      "status": "next",
+      "purpose": "Lock white + deep red + stone/marble + chrome/glass/water material system before broad generation.",
+      "aspectTargets": ["design-token/reference-board"],
+      "motionReady": false,
+      "customizable": true
+    },
+    {
+      "id": "PL-HERO-001",
+      "venture": "Premium Plumbing",
+      "industry": "plumbing-installations",
+      "slot": "hero",
+      "status": "blocked-on-character",
+      "purpose": "Beautiful bathroom with immediately understandable but controlled leak/urgency and clean headline/CTA space.",
+      "aspectTargets": ["16:9 desktop", "4:5 mobile-safe crop"],
+      "motionReady": false,
+      "customizable": true
+    },
+    {
+      "id": "PL-STORY-001",
+      "venture": "Premium Plumbing",
+      "industry": "plumbing-installations",
+      "slot": "story-contact",
+      "status": "blocked-on-character",
+      "purpose": "Bridge problem to service response through contact/phone moment.",
+      "aspectTargets": ["3:2", "4:5"],
+      "motionReady": false,
+      "customizable": true
+    },
+    {
+      "id": "PL-STORY-002",
+      "venture": "Premium Plumbing",
+      "industry": "plumbing-installations",
+      "slot": "story-arrival",
+      "status": "blocked-on-character",
+      "purpose": "Service vehicle / technician arrival communicates speed and professionalism.",
+      "aspectTargets": ["16:9", "3:2"],
+      "motionReady": false,
+      "customizable": true
+    },
+    {
+      "id": "PL-STORY-003",
+      "venture": "Premium Plumbing",
+      "industry": "plumbing-installations",
+      "slot": "story-diagnosis",
+      "status": "blocked-on-character",
+      "purpose": "Calm inspection/diagnosis scene with the recurring technician.",
+      "aspectTargets": ["3:2", "4:5"],
+      "motionReady": false,
+      "customizable": true
+    },
+    {
+      "id": "PL-STORY-004",
+      "venture": "Premium Plumbing",
+      "industry": "plumbing-installations",
+      "slot": "story-repair",
+      "status": "blocked-on-character",
+      "purpose": "Primary craftsmanship scene with technically believable tool and body positioning.",
+      "aspectTargets": ["3:2", "4:5"],
+      "motionReady": false,
+      "customizable": true
+    },
+    {
+      "id": "PL-DETAIL-001",
+      "venture": "Premium Plumbing",
+      "industry": "plumbing-installations",
+      "slot": "technical-details",
+      "status": "queued",
+      "purpose": "Hands, fittings, water, chrome, tools, pipe and material macros for premium section transitions.",
+      "aspectTargets": ["1:1", "4:5", "16:9 crop-safe"],
+      "motionReady": false,
+      "customizable": true
+    },
+    {
+      "id": "PL-STORY-005",
+      "venture": "Premium Plumbing",
+      "industry": "plumbing-installations",
+      "slot": "story-handover",
+      "status": "blocked-on-character",
+      "purpose": "Clean-up and neat handover makes premium service tangible.",
+      "aspectTargets": ["3:2", "4:5"],
+      "motionReady": false,
+      "customizable": true
+    },
+    {
+      "id": "PL-END-001",
+      "venture": "Premium Plumbing",
+      "industry": "plumbing-installations",
+      "slot": "final-cta",
+      "status": "blocked-on-story-world",
+      "purpose": "Calm resolved end-state that closes problem-to-relief story and supports contact CTA.",
+      "aspectTargets": ["16:9", "4:5"],
+      "motionReady": false,
+      "customizable": true
+    },
+    {
+      "id": "PL-PROOF-001",
+      "venture": "Premium Plumbing",
+      "industry": "plumbing-installations",
+      "slot": "proof-frame",
+      "status": "design",
+      "purpose": "Reusable premium frame for genuine client before/after and completed-project photography.",
+      "aspectTargets": ["4:3 source-flexible", "1:1 card", "16:9 gallery"],
+      "motionReady": false,
+      "customizable": true,
+      "proofType": "real-source-only"
+    },
+    {
+      "id": "PL-MOTION-001",
+      "venture": "Premium Plumbing",
+      "industry": "plumbing-installations",
+      "slot": "hero-motion",
+      "status": "blocked-on-approved-still",
+      "purpose": "Minimal hero movement only if it improves urgency/premium feel without delaying comprehension.",
+      "aspectTargets": ["16:9", "4:5 derivative"],
+      "motionReady": false,
+      "customizable": true,
+      "gate": "PL-HERO-001 score >=10/12"
+    },
+    {
+      "id": "SALES-MOCK-001",
+      "venture": "Website Ventures",
+      "industry": "cross-industry",
+      "slot": "sales-demo-mockup",
+      "status": "design",
+      "purpose": "Reusable desktop/mobile frame that lets a prospect instantly see how a flagship would translate to their business.",
+      "aspectTargets": ["16:9 presentation", "9:16 phone-story"],
+      "motionReady": false,
+      "customizable": true
+    }
+  ],
+  "rejected": []
+}

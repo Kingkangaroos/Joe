@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#11110f">
+<title>ChatGPT Venture Lab — Website Ventures</title>
+<style>
+:root{--bg:#0e0e0c;--panel:#171713;--panel2:#20201b;--ink:#f5f2ea;--muted:#aaa69c;--line:#34342d;--acid:#dce67a;--red:#ff6d73;--purple:#aaa0e8;--green:#77d6a0;--gold:#e7c66d;--white:#fff;--font:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}body{padding:16px 14px 60px}.shell{max-width:900px;margin:auto}.back{display:inline-block;margin:1px 0 16px;color:var(--muted);font-size:12px;font-weight:800;text-decoration:none}.eyebrow{font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--acid)}h1{font-size:clamp(37px,8vw,72px);line-height:.92;letter-spacing:-.065em;margin:8px 0 12px;max-width:760px}.lead{max-width:690px;color:#c7c2b7;font-size:13px;line-height:1.65;margin:0 0 18px}.chips{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0 26px}.chip{padding:7px 9px;border:1px solid var(--line);border-radius:999px;font-size:8px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.chip.active{color:#15150f;background:var(--acid);border-color:var(--acid)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.card{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:17px;margin-bottom:11px}.wide{grid-column:1/-1}.label{font-size:9px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}.hero-card{background:linear-gradient(145deg,#f4f1e8,#ddd9cf);color:#15140f;border:0;padding:22px}.hero-card .label{color:#6c695f}.hero-card h2{font-size:clamp(27px,5vw,45px);line-height:1;letter-spacing:-.05em;margin:0;max-width:720px}.hero-card p{font-size:12px;line-height:1.6;color:#57544c;max-width:690px}.money{display:flex;gap:15px;flex-wrap:wrap;margin-top:17px}.money strong{font-size:27px;letter-spacing:-.04em}.money span{display:block;font-size:8px;color:#6c695f;margin-top:1px}.offer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.offer{padding:13px;border:1px solid var(--line);border-radius:15px;background:var(--panel2)}.offer.current{border-color:var(--acid);box-shadow:0 0 0 1px var(--acid) inset}.offer small{color:var(--muted);font-size:8px;text-transform:uppercase;font-weight:850;letter-spacing:.07em}.offer h3{font-size:17px;line-height:1.08;margin:7px 0}.offer b{font-size:19px}.offer p{font-size:9px;color:var(--muted);line-height:1.45;margin-bottom:0}.matrix{overflow-x:auto}.matrix table{width:100%;border-collapse:collapse;min-width:620px}.matrix th,.matrix td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:center;font-size:9px}.matrix th:first-child,.matrix td:first-child{text-align:left;font-weight:850}.matrix th{color:var(--muted);font-size:8px}.leader{color:var(--acid)}.note{font-size:9px;color:var(--muted);line-height:1.55;margin-top:10px}.sim{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.field label{display:block;color:var(--muted);font-size:8px;margin-bottom:5px}.field input{width:100%;border:1px solid var(--line);border-radius:11px;background:#0f0f0d;color:var(--ink);padding:10px;font:800 12px var(--font)}.outputs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.out{background:#0f0f0d;border:1px solid var(--line);border-radius:13px;padding:11px}.out b{display:block;font-size:21px;letter-spacing:-.04em}.out span{font-size:8px;color:var(--muted)}.gates{display:grid;gap:8px}.gate{display:grid;grid-template-columns:62px 1fr;gap:10px;align-items:start;padding:11px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}.gate strong{color:var(--acid);font-size:12px}.gate b{font-size:11px}.gate p{font-size:9px;line-height:1.45;color:var(--muted);margin:3px 0 0}.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.flow div{padding:12px 8px;border-radius:13px;border:1px solid var(--line);background:var(--panel2);text-align:center}.flow b{display:block;font-size:10px}.flow span{font-size:8px;color:var(--muted)}.guard{border-color:#624449;background:#201719}.guard .label{color:#d89599}.guard p{font-size:10px;line-height:1.55;color:#d5b6b8}.links{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.link{display:block;padding:13px;border-radius:14px;text-decoration:none;background:var(--panel2);border:1px solid var(--line);color:var(--ink)}.link b{font-size:11px}.link span{display:block;color:var(--muted);font-size:8px;margin-top:3px}.next-list{display:grid;gap:7px}.next{padding:11px;border-radius:13px;background:var(--panel2);border:1px solid var(--line);display:grid;grid-template-columns:26px 1fr;gap:9px}.next strong{color:var(--acid)}.next b{font-size:10px}.next span{display:block;color:var(--muted);font-size:9px;line-height:1.45;margin-top:2px}.footer{font-size:8px;color:#77746c;line-height:1.5;margin-top:13px}@media(max-width:720px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.offer-grid{grid-template-columns:1fr}.sim,.outputs{grid-template-columns:repeat(2,1fr)}.flow{grid-template-columns:1fr 1fr}.links{grid-template-columns:1fr}}@media(max-width:390px){.sim,.outputs{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="shell">
+<a class="back" href="sites.html">‹ Website Lab</a>
+<div class="eyebrow">✦ ChatGPT / OpenAI · experimental zone</div>
+<h1>Website Ventures<br>Venture Lab</h1>
+<p class="lead">Hier test ik de business vóórdat we hem als waarheid behandelen. Prijs, niche, economics en schaalregels mogen hier hard worden aangevallen. Geaccepteerde flagship-sites en het echte sales-cockpit blijven apart.</p>
+<div class="chips"><span class="chip active">Lab · niet definitief</span><span class="chip">Plumbing = leading wedge</span><span class="chip">Geen outreach vanuit Lab</span><span class="chip">Geen betaalde AI-credits</span></div>
+
+<section class="card hero-card">
+<div class="label">Huidige founding hypothese</div>
+<h2>Premium website voor lokale vakbedrijven, zonder dat de vakman zelf websitebureau hoeft te spelen.</h2>
+<p>We verkopen niet “een website”, maar een snelle commerciële upgrade die structuur, design, mobiel, contactflow en livegang uit handen neemt. Plumbing/installatie is de eerste wedge om te bewijzen — niet automatisch de eindniche.</p>
+<div class="money"><div><strong>€995</strong><span>setup · klanten 1–3</span></div><div><strong>€49/mnd</strong><span>hosting · beheer · kleine updates</span></div><div><strong>≤ 6u</strong><span>doel productie ná complete intake</span></div></div>
+</section>
+
+<div class="grid">
+<section class="card wide">
+<div class="label">Offer stress test · alleen A is actief</div>
+<div class="offer-grid">
+<div class="offer current"><small>A · current</small><h3>Premium Refresh</h3><b>€995 + €49/mnd</b><p>Max 3 kernpagina’s, 1 revisieronde, mobiel/desktop, contact, SEO/analytics-basis. Beste eerste test omdat prijs laag genoeg is om proof te krijgen, maar niet bodemprijs.</p></div>
+<div class="offer"><small>B · test later</small><h3>Premium Plus</h3><b>€1.250 + €59/mnd</b><p>Alleen testen zodra echte klanten A zonder veel prijsweerstand kopen én delivery structureel ≤6 uur blijft.</p></div>
+<div class="offer"><small>C · fallback experiment</small><h3>Fast Onepager</h3><b>€750 + €39/mnd</b><p>Geen standaard downgrade. Alleen inzetten als gesprekken aantonen dat de eerste niche structureel minder scope nodig heeft en snelheid meer waarde heeft dan pagina-aantal.</p></div>
+</div>
+</section>
+
+<section class="card wide matrix">
+<div class="label">Niche hypothesis matrix · interne werk-score, geen marktfeit</div>
+<table>
+<thead><tr><th>Niche</th><th>Urgentie</th><th>Betalingsruimte</th><th>Digitale gap</th><th>Herhaalbaar</th><th>Demo-impact</th><th>Totaal /25</th></tr></thead>
+<tbody>
+<tr><td class="leader">Plumbing / installatie</td><td>5</td><td>4</td><td>5</td><td>5</td><td>5</td><td class="leader"><b>24</b></td></tr>
+<tr><td>Renovatie / aannemer</td><td>3</td><td>5</td><td>4</td><td>4</td><td>5</td><td><b>21</b></td></tr>
+<tr><td>Beauty / aesthetics</td><td>2</td><td>4</td><td>3</td><td>5</td><td>5</td><td><b>19</b></td></tr>
+<tr><td>Coach / personal brand</td><td>2</td><td>3</td><td>3</td><td>4</td><td>4</td><td><b>16</b></td></tr>
+</tbody>
+</table>
+<p class="note">Deze score dwingt een keuze af, maar bewijst niets. Zodra echte gesprekken afwijken, wint gedrag van prospects van onze theorie. Beauty/coaches blijven bewust in de vergelijking omdat sales-fit voor Joey daar mogelijk makkelijker is.</p>
+</section>
+
+<section class="card wide">
+<div class="label">Unit economics simulator · verander de aannames</div>
+<div class="sim">
+<div class="field"><label>Setupprijs €</label><input id="setup" type="number" value="995" min="0" step="50"></div>
+<div class="field"><label>Maandfee €</label><input id="monthly" type="number" value="49" min="0" step="5"></div>
+<div class="field"><label>Productie-uren / klant</label><input id="hours" type="number" value="6" min="1" step="0.5"></div>
+<div class="field"><label>Betaalde klanten</label><input id="customers" type="number" value="10" min="0" step="1"></div>
+</div>
+<div class="outputs">
+<div class="out"><b id="hourly">€166</b><span>setup omzet / productie-uur</span></div>
+<div class="out"><b id="setupTotal">€9.950</b><span>setup omzet</span></div>
+<div class="out"><b id="mrr">€490</b><span>MRR</span></div>
+<div class="out"><b id="yearOne">€15.830</b><span>bruto jaar-1 contractwaarde*</span></div>
+</div>
+<p class="note">*Setup + 12 maanden fee; vóór belastingen, tools, supporttijd, acquisitiekosten en overige bedrijfskosten. Dit is dus omzetlogica, geen winstclaim.</p>
+</section>
+
+<section class="card">
+<div class="label">Evidence gates · vóór schaal</div>
+<div class="gates">
+<div class="gate"><strong>30×</strong><div><b>Betekenisvolle eigenaar-contacten</b><p>Als bijna niemand de pijn herkent: verander boodschap/ICP vóór je meer design maakt.</p></div></div>
+<div class="gate"><strong>10×</strong><div><b>Echte demo’s</b><p>Als demo’s niet naar serieuze gesprekken leiden: flagship/offer is nog niet overtuigend genoeg.</p></div></div>
+<div class="gate"><strong>3×</strong><div><b>Betaalde klanten</b><p>Pas hierna prijs verhogen, delivery componentiseren en een tweede niche serieus testen.</p></div></div>
+</div>
+</section>
+
+<section class="card">
+<div class="label">Scale gate</div>
+<div class="gates">
+<div class="gate"><strong>≤6u</strong><div><b>Delivery reproduceerbaar</b><p>Anders nog geen studenten; dan schaal je chaos.</p></div></div>
+<div class="gate"><strong>Proof</strong><div><b>3 echte cases / feedback</b><p>Pas echte bewijsstukken in de premium proof frames; nooit demo-assets als klantwerk presenteren.</p></div></div>
+<div class="gate"><strong>Sales</strong><div><b>Herhaalbare conversie</b><p>Provincies en salesmensen komen pas ná een proces dat Joey zelf bewezen heeft.</p></div></div>
+</div>
+</section>
+
+<section class="card wide">
+<div class="label">Plumbing production gate</div>
+<div class="flow"><div><b>1 · Character</b><span>PL-CHAR-001</span></div><div><b>2 · Hero still</b><span>begrijpelijk + premium</span></div><div><b>3 · Story stills</b><span>zelfde technician/world</span></div><div><b>4 · Proof frame</b><span>echte klantdata later</span></div><div><b>5 · Motion</b><span>alleen winnaars</span></div></div>
+<p class="note">Motion is expres de laatste stap. Een matige still wordt niet beter doordat hij beweegt; Higgsfield/video-credits gaan pas naar assets die eerst als stil beeld sterk genoeg zijn.</p>
+</section>
+
+<section class="card wide">
+<div class="label">Mijn volgende autonome moves</div>
+<div class="next-list">
+<div class="next"><strong>1</strong><div><b>Sales bewijs verzamelen in plaats van prijs verder theoreren</b><span>De Sales Machine is de meetlaag voor de eerste tien. Aannames blijven hypotheses tot echte gesprekken/klanten ze bevestigen.</span></div></div>
+<div class="next"><strong>2</strong><div><b>Premium Plumbing van shell → verkoopbare demo</b><span>Eerst master technician + hero/story slots. Daarna pas polish/motion.</span></div></div>
+<div class="next"><strong>3</strong><div><b>Reusable Visual Vault structureren</b><span>Winning hero’s, layouts, proof frames, CTA’s en motion-patronen opslaan zodat klant 4 niet opnieuw vanaf nul begint.</span></div></div>
+<div class="next"><strong>4</strong><div><b>Pas na bewijs: tweede flagship/niche</b><span>Renovatie is de logischste tweede productieproef omdat before/after en Apple-like scroll daar maximaal tot hun recht komen.</span></div></div>
+</div>
+</section>
+
+<section class="card wide guard">
+<div class="label">Lab guardrails</div>
+<p><b>Geen automatische outreach.</b> Dit Lab belt, mailt, DM’t en verstuurt geen formulieren naar prospects. <b>Geen fake proof.</b> Reviews, projecten, certificaten, teamidentiteit en resultaten die als echt worden gepresenteerd moeten echt zijn. <b>Geen betaalde AI-spend.</b> Higgsfield/video-credits blijven geblokkeerd tot een assetslot en still-richting goedgekeurd zijn.</p>
+</section>
+
+<section class="card wide">
+<div class="label">Open werkende onderdelen</div>
+<div class="links">
+<a class="link" href="ventures-sales.html"><b>📞 Sales Machine</b><span>Pipeline · ICP · funnel · omzet/MRR</span></a>
+<a class="link" href="site-plumbing-flagship-v1.html"><b>🔧 Premium Plumbing v1</b><span>Actieve production flagship</span></a>
+<a class="link" href="site-klus-scroll-1-2.html"><b>🧱 Accepted Test 1.2</b><span>Apple-like renovatie/story referentie</span></a>
+</div>
+</section>
+</div>
+<p class="footer">ChatGPT Venture Lab · Website Ventures. Businesshypotheses mogen hier veranderen; geaccepteerde assets en bewezen klantdata worden niet stilletjes overschreven.</p>
+</main>
+<script>
+(function(){
+'use strict';
+const ids=['setup','monthly','hours','customers'];
+const euro=n=>'€'+Math.round(Number(n)||0).toLocaleString('nl-NL');
+function render(){
+ const setup=+document.getElementById('setup').value||0;
+ const monthly=+document.getElementById('monthly').value||0;
+ const hours=Math.max(1,+document.getElementById('hours').value||1);
+ const customers=Math.max(0,+document.getElementById('customers').value||0);
+ document.getElementById('hourly').textContent=euro(setup/hours);
+ document.getElementById('setupTotal').textContent=euro(setup*customers);
+ document.getElementById('mrr').textContent=euro(monthly*customers);
+ document.getElementById('yearOne').textContent=euro((setup+monthly*12)*customers);
+}
+ids.forEach(id=>document.getElementById(id).addEventListener('input',render));
+render();
+})();
+</script>
+</body>
+</html>

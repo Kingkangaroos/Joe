@@ -1,0 +1,122 @@
+{
+  "project": "Website Ventures · ChatGPT Venture Lab",
+  "owner": "Joey",
+  "managedBy": "ChatGPT (OpenAI)",
+  "updatedAt": "2026-09-07",
+  "purpose": "Isolated experimental layer for testing business hypotheses without silently changing accepted Website Ventures decisions, assets or customer data.",
+  "sourceHierarchy": {
+    "confirmedDecisions": "WEBSITE-VENTURES-HQ-STATE.json",
+    "salesExecution": "ventures-sales.html + WEBSITE-VENTURES-SALES-PLAYBOOK.md",
+    "visualProduction": "PLUMBING-FLAGSHIP-PRODUCTION-PACK.md",
+    "experiments": "WEBSITE-VENTURES-CHATGPT-LAB-STATE.json",
+    "rule": "Evidence can promote a lab hypothesis into HQ; a lab hypothesis never overwrites HQ by itself."
+  },
+  "guardrails": [
+    "No prospect calls, emails, DMs or form submissions from the Lab without Joey explicitly requesting outreach.",
+    "No fake reviews, client projects, certifications, staff identity or performance claims.",
+    "No paid Higgsfield/video generation credits are spent from autonomous Lab work.",
+    "Accepted Website Lab variants are never overwritten; new variants are additive.",
+    "Do not scale to students, salespeople or provinces before the first delivery and sales loop is proven."
+  ],
+  "currentWorkingModel": {
+    "offer": "Premium website for local service/trade businesses without the owner having to manage a web agency project.",
+    "leadingWedge": "Plumbing / installations / trades",
+    "leadingWedgeStatus": "hypothesis, not permanent lock",
+    "foundingPrice": {
+      "customers": "1-3",
+      "setupExVat": 995,
+      "monthlyExVat": 49,
+      "status": "active test hypothesis"
+    },
+    "deliveryTargetHoursAfterCompleteIntake": 6,
+    "scope": "Up to 3 core pages, one bundled revision round, mobile + desktop, contact flow, basic technical SEO/analytics and launch after complete intake.",
+    "flagship": "site-plumbing-flagship-v1.html"
+  },
+  "offerExperiments": [
+    {
+      "id": "OFFER-A",
+      "name": "Premium Refresh",
+      "price": "€995 setup + €49/month",
+      "status": "active",
+      "promotionRule": "Keep until real conversations and first paid clients create evidence for changing it."
+    },
+    {
+      "id": "OFFER-B",
+      "name": "Premium Plus",
+      "price": "€1,250 setup + €59/month",
+      "status": "blocked-on-proof",
+      "promotionRule": "Test only if Offer A sells without major price resistance and delivery is consistently <=6 hours."
+    },
+    {
+      "id": "OFFER-C",
+      "name": "Fast Onepager",
+      "price": "€750 setup + €39/month",
+      "status": "fallback-experiment",
+      "promotionRule": "Use only if discovery shows the niche wants materially less scope and values speed more than page count."
+    }
+  ],
+  "nicheWorkingScores": {
+    "warning": "Internal decision scores, not market facts. Real prospect behavior overrides them.",
+    "criteria": ["urgency", "willingnessToPay", "digitalGap", "repeatability", "demoImpact"],
+    "scores": [
+      {"niche": "Plumbing / installations", "scoreOutOf25": 24, "rank": 1},
+      {"niche": "Renovation / contractor", "scoreOutOf25": 21, "rank": 2},
+      {"niche": "Beauty / aesthetics", "scoreOutOf25": 19, "rank": 3},
+      {"niche": "Coach / personal brand", "scoreOutOf25": 16, "rank": 4}
+    ]
+  },
+  "evidenceGates": [
+    {
+      "gate": "30 meaningful owner contacts",
+      "question": "Does the target recognize the problem and agree the current online presentation is costing trust/opportunity?",
+      "failureResponse": "Change ICP/message before investing further in design volume."
+    },
+    {
+      "gate": "10 real demos",
+      "question": "Does the flagship create enough desire to generate a serious commercial conversation?",
+      "failureResponse": "Fix demo/offer before adding more niches."
+    },
+    {
+      "gate": "3 paid customers",
+      "question": "Can Joey repeatedly close, deliver and support the founding offer?",
+      "failureResponse": "Do not hire or expand geography yet."
+    }
+  ],
+  "scaleGates": [
+    "Delivery repeatedly at or below roughly 6 hours after complete intake.",
+    "At least three genuine customers/cases with usable feedback or proof.",
+    "A sales process with enough repeated observations to estimate conversion rather than guess it.",
+    "A reusable component/visual system so another builder can follow a standard without degrading quality."
+  ],
+  "productionOrder": [
+    "PL-CHAR-001 consistent master technician",
+    "PL-HERO-001 approved premium hero still",
+    "PL-STORY still sequence with same technician/world",
+    "PL-PROOF reusable frame for genuine customer evidence",
+    "PL-MOTION only for approved winning stills"
+  ],
+  "completedAutonomousWork": [
+    "Built Sales Machine for customers 1-10 with ICP, funnel, pipeline, setup revenue, MRR and scripts.",
+    "Built Website Ventures sales playbook with scope/economics/objections/referrals/scale gates.",
+    "Built Premium Plumbing production pack with asset order and paid-credit discipline.",
+    "Prepared research-only Flevoland prospect wave; no outreach sent.",
+    "Built isolated ChatGPT Venture Lab with offer stress test, niche matrix, unit economics simulator and evidence gates.",
+    "Added Website Lab entry points while preserving all accepted prior website tests."
+  ],
+  "todo": [
+    {"priority": "P0", "task": "Use real sales conversations to test pain, wording and price instead of further theorizing the offer.", "blockedByUser": true, "reason": "External outreach requires Joey's explicit instruction."},
+    {"priority": "P0", "task": "Move Premium Plumbing from story shell toward a knockout sellable demo using the production pack.", "blockedByUser": false},
+    {"priority": "P0", "task": "Create the Visual Vault structure for reusable winners, proof frames, CTA patterns, prompt/model metadata and rejected alternatives.", "blockedByUser": false},
+    {"priority": "P1", "task": "After real evidence, promote or reject founding price ladder in HQ state.", "blockedByUser": false},
+    {"priority": "P1", "task": "Only after plumbing proof, build Luxury Renovation as second flagship and compare sales response.", "blockedByUser": false},
+    {"priority": "P2", "task": "Define student-builder handoff and QA only after first customer delivery is repeatable.", "blockedByUser": false}
+  ],
+  "ideaBank": [
+    "Before/after prospect demo mode that swaps a weak current-site structure for the premium component system without pretending it is already the client's site.",
+    "A reusable proof-frame system that makes ordinary real customer photos feel premium without altering what actually happened.",
+    "A niche starter kit: services taxonomy, page map, CTA patterns and visual slots, while preserving client-specific proof and personality.",
+    "A first-ten dashboard benchmark view that turns sales conversations and build hours into automatic go/no-go evidence for price changes.",
+    "Luxury Renovation as the second flagship because Apple-like scroll storytelling is naturally supported by transformation imagery.",
+    "Later: territory/province dashboard only after sales conversion and delivery capacity are measured."
+  ]
+}
