@@ -1,0 +1,209 @@
+{
+  "name": "Website Ventures Production Line v3",
+  "version": 3,
+  "updatedAt": "2026-09-07",
+  "managedBy": "ChatGPT (OpenAI)",
+  "sourceOfTruth": "INCOME-HANDOFF-2026-09-07.md",
+  "status": "active-planning-no-paid-spend",
+  "priorityOrder": [
+    "P0 Joey agency/showroom website",
+    "P0 Plumbing showcase system inside agency site",
+    "P0 one-character Gamenfy animation technology pilot",
+    "P1 Website commercial fulfilment system",
+    "P2 broad Gamenfy object/park/skill packs"
+  ],
+  "hardRules": [
+    "Do not spend paid generation credits until the exact page slot, crop, function and acceptance criterion are locked.",
+    "Joey's own agency website is built before further polishing the Plumbing flagship.",
+    "Agency site is the visual/technical ceiling; customer templates may intentionally be simpler and more reusable.",
+    "Plumbing remains first customer showcase, not the public top-level Website Ventures identity.",
+    "Generated demo visuals may never masquerade as completed client work, reviews, certifications or measured outcomes.",
+    "Internal prompts, model recipes, production logic and asset registries are competitive IP and must not be exposed on the public agency site.",
+    "Gamenfy Park 3.1 evolution inventory is preserved; do not regenerate existing 13 x 10 evolution sets by default.",
+    "For Gamenfy, prove real character movement with one approved source character before expanding to props, parks or skill packs.",
+    "If AutoSprite-style animation still feels like a moving cutout or morphs badly, evaluate rigged 2D architecture before batching more animations.",
+    "All unapproved v2 Plumbing scene concepts and full Gamenfy park/object concepts remain hypotheses, not production requirements."
+  ],
+  "agencyNarrativeHypothesis": {
+    "status": "prototype-not-approved-copy",
+    "principle": "The website itself demonstrates the quality and interaction Joey sells.",
+    "flow": [
+      "Hero: immediate premium visual/interaction proof with one clear promise hypothesis",
+      "First-scroll payoff: the shell visibly transforms or responds so capability is experienced, not described",
+      "Plumbing showcase: desktop + mobile demo world as first proof-of-craft",
+      "Transformation demo: before/after or ordinary-to-premium interactive comparison",
+      "Reusable premium interaction demo: a commercial add-on technology experiment",
+      "Offer/starting-price section: clear but still editable while pricing is tested",
+      "Credibility layer: real evidence only",
+      "CTA: low-friction contact/demo request"
+    ],
+    "mobileRule": "Every wow interaction must have a deliberate mobile version; no desktop-only proof."
+  },
+  "agencyBatches": [
+    {
+      "id": "AG-A",
+      "name": "Agency structure + design-system lock",
+      "priority": "P0",
+      "spend": "none",
+      "definitionOfDone": "One Lab prototype proves narrative, spacing, type hierarchy, motion rhythm and mobile structure before external visual generation.",
+      "assets": [
+        {
+          "id": "AG-SHELL-001",
+          "type": "coded-system",
+          "destination": "site-agency-showroom-v0.html",
+          "input": "calm premium shell, strong typography, controlled spacing, restrained palette, interaction-led sections",
+          "format": "responsive HTML/CSS/JS",
+          "variants": 1,
+          "gate": "Feels expensive without relying on stock imagery; mobile still feels intentional; sections can accept future generated assets without redesign."
+        },
+        {
+          "id": "AG-NARR-001",
+          "type": "storyboard",
+          "destination": "agency page section order",
+          "input": "hero -> first-scroll proof -> plumbing showcase -> transformation -> premium interaction -> offer -> credibility -> CTA",
+          "format": "section contract",
+          "variants": 1,
+          "gate": "Each section has one job and one visual slot; no duplicate agency-copy sections."
+        },
+        {
+          "id": "AG-MOBILE-001",
+          "type": "responsive-contract",
+          "destination": "all agency interactions",
+          "format": "390px reference + fluid tablet/desktop",
+          "variants": 1,
+          "gate": "No horizontal overflow; text remains readable; sticky/scroll experiences degrade gracefully and retain the intended payoff."
+        }
+      ]
+    },
+    {
+      "id": "AG-B",
+      "name": "Agency exact visual slots",
+      "priority": "P0",
+      "dependency": "AG-A",
+      "spend": "none until slot lock",
+      "definitionOfDone": "Every future generated visual has a named slot, crop and reason to exist before Higgsfield is purchased/used.",
+      "assets": [
+        {
+          "id": "AG-HERO-001",
+          "type": "hero-slot",
+          "destination": "agency above fold + first-scroll payoff",
+          "format": "desktop 16:9/16:10 safe composition + mobile 4:5/9:16 derivative",
+          "variants": 2,
+          "gate": "Strong without copy; stable negative space; first frame alone already sells premium quality; exact art direction still requires Joey review."
+        },
+        {
+          "id": "AG-SHOWCASE-PL-001",
+          "type": "showcase-slot",
+          "destination": "first major agency case/demo section",
+          "input": "existing Premium Plumbing prototype and future approved assets",
+          "format": "desktop browser frame + mobile device frame + live-link presentation",
+          "variants": 2,
+          "gate": "Clearly presented as a demo/showcase until a real customer exists; proves desktop and mobile craft."
+        },
+        {
+          "id": "AG-TRANSFORM-001",
+          "type": "interactive-demo-slot",
+          "destination": "ordinary-to-premium transformation section",
+          "format": "coded slider/scrub/scroll state with replaceable visual inputs",
+          "variants": 1,
+          "gate": "Interaction explains value in under 5 seconds; works with touch and keyboard; does not depend on fabricated client evidence."
+        },
+        {
+          "id": "AG-INTERACT-001",
+          "type": "premium-interaction-rnd",
+          "destination": "agency R&D showcase / future paid add-on",
+          "format": "coded interaction first; optional visual assets later",
+          "variants": 1,
+          "gate": "Feels meaningfully premium rather than decorative; reusable in a customer site; mobile fallback remains impressive."
+        },
+        {
+          "id": "AG-OFFER-001",
+          "type": "commercial-slot",
+          "destination": "offer + starting-price + CTA",
+          "input": "working hypothesis €349 founding / later €499-€699, not yet final",
+          "format": "coded content block",
+          "variants": 1,
+          "gate": "Price remains editable and labelled as working offer internally; public launch waits for exact scope/hosting/revision decision."
+        },
+        {
+          "id": "AG-PROOF-001",
+          "type": "credibility-slot",
+          "destination": "proof section",
+          "input": "real evidence only",
+          "format": "empty-ready coded component",
+          "variants": 1,
+          "gate": "No AI-generated case is presented as completed customer work; component can remain demo-labelled until proof exists."
+        }
+      ]
+    }
+  ],
+  "plumbingShowcase": {
+    "priority": "P0-after-agency-shell",
+    "role": "first major showroom demo and first commercial customer template system",
+    "fixed": [
+      "one strong recurring technician",
+      "authentic tradesperson rather than fashion model",
+      "extremely premium shell is allowed",
+      "real customer proof stays real",
+      "template/system reusability is mandatory"
+    ],
+    "proposedNotLocked": [
+      "leaking bathroom opening",
+      "white/deep-red/chrome/water art direction",
+      "service van",
+      "tool pack",
+      "phone bridge",
+      "arrival/inspection/repair/handover sequence",
+      "macro material pack",
+      "motion versions"
+    ],
+    "nextGate": "Review scene/art-direction hypotheses only after agency showcase slot and presentation framing are locked."
+  },
+  "gamenfyAnimationPilot": {
+    "priority": "P0-tech-test-only",
+    "sourceRule": "Use one existing approved character. Do not generate a new skill character for this test.",
+    "tests": [
+      {
+        "id": "GF-PILOT-WALK-001",
+        "type": "real-walk-cycle",
+        "target": "legs and arms change frame-by-frame; no sliding-flat-image illusion",
+        "preferredWorkflow": "AutoSprite walk from one approved character source",
+        "gate": "Feet contact stable, identity stable, body does not morph, loop reads as real walking at app size."
+      },
+      {
+        "id": "GF-PILOT-IDLE-001",
+        "type": "natural-idle-cycle",
+        "preferredWorkflow": "AutoSprite idle",
+        "gate": "Subtle breathing/weight shift/blink style motion without jitter or identity drift."
+      },
+      {
+        "id": "GF-PILOT-JUMP-001",
+        "type": "expressive-jump-cycle",
+        "preferredWorkflow": "AutoSprite jump",
+        "gate": "Clear anticipation, airborne pose and landing; not a vertical translation of a flat cutout."
+      },
+      {
+        "id": "GF-PILOT-INTERACT-001",
+        "type": "character-prop-fx-test",
+        "preferredWorkflow": "one simple existing/temporary prop + custom sprite/CSS/FX",
+        "gate": "Character appears to physically interact with the prop; proves layering architecture before object batching."
+      }
+    ],
+    "fallbackArchitectureGate": "If the above cannot feel genuinely alive after a bounded pilot, stop paid animation batching and prototype rigged 2D limbs/joints (Rive/Spine-style architecture) instead.",
+    "deferred": [
+      "full park world",
+      "11 Daily Mission prop pack",
+      "skill-specific object packs",
+      "new skill characters",
+      "chess/piano/book/weights/whistle/tennis asset packs"
+    ]
+  },
+  "beforeHiggsfieldPurchase": [
+    "Lock agency site narrative and exact visual slots/crops.",
+    "Review which Plumbing scene hypotheses are actually needed inside the agency showcase.",
+    "Choose one existing Gamenfy approved character source for the animation pilot.",
+    "Check checkout: monthly/annual term, amount due now, renewal, tax, credits and Unlimited model/day inclusions.",
+    "Run read-only cost preflight for only the final approved queue.",
+    "Then purchase/generate in dependency order; still/reference winners before motion."
+  ]
+}
