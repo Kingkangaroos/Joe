@@ -12,6 +12,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=11.0" defer></script>
 <script src="sync.js?v=11.9" defer></script>
+<script src="hq-note-resync.js?v=1.0" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
 <script src="xp.js?v=10.98" defer></script>
 <style>
@@ -79,6 +80,7 @@
   document.querySelectorAll('[data-project]').forEach(btn=>btn.addEventListener('click',()=>{active=btn.dataset.project;document.querySelectorAll('[data-project]').forEach(b=>b.classList.toggle('active',b===btn));renderProject().catch(()=>toast('Could not load project state'))}));
   document.getElementById('addNote').addEventListener('click',()=>{const inp=document.getElementById('noteInput');const text=inp.value.trim();if(!text)return;const all=loadNotes();all[active]=Array.isArray(all[active])?all[active]:[];all[active].push({text,at:new Date().toLocaleString('nl-NL')});saveNotes(all);inp.value='';renderNotes();toast('Saved to Project HQ')});
   window.addEventListener('storage',e=>{if(e.key===NOTE_KEY)renderNotes()});
+  window.addEventListener('gamenfy:project-hq-change',renderNotes);
   window.addEventListener('gamenfy:remote-state-applied',renderNotes);
   renderProject().catch(()=>toast('Could not load project state'));
 })();
