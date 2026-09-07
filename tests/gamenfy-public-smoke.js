@@ -28,7 +28,9 @@ assert(app.includes("const TABLE = 'gamenfy_public_state'"), 'public state table
 assert(!app.includes("from('app_state')"), 'public app must never query private app_state');
 assert(app.includes("emailRedirectTo: window.location.origin + '/public'"), 'signup confirmation must return to stable public route');
 assert(app.includes('gamenfy_public'), 'public account metadata marker missing');
-assert(auth.includes("from('gamenfy_private_access')"), 'private allowlist guard missing');
+assert(auth.includes('const PRIVATE_OWNER_ID = '), 'deterministic private owner gate missing');
+assert(auth.includes('session.user.id !== PRIVATE_OWNER_ID'), 'private owner gate must compare the authenticated user id deterministically');
+assert(!auth.includes("from('gamenfy_private_access')"), 'retired network allowlist lookup must not return');
 assert(auth.includes("window.location.href = '/public/'"), 'private-to-public redirect missing');
 
 assert(feedback.includes("const TABLE = 'gamenfy_public_feedback'"), 'feedback table contract missing');
@@ -53,4 +55,4 @@ for (const dir of dirs) {
 const missionKeys = ['budgeting','sleep','nutrition','walking','teeth','household','meditation','gratitude','good_deed','screen_time','cold_shower'];
 for (const key of missionKeys) assert(app.includes(`key: '${key}'`), `mission ${key} missing`);
 
-console.log('Gamenfy Public route, isolation, feedback, syntax, mission and asset smoke checks passed.');
+console.log('Gamenfy Public route, deterministic private gate, isolation, feedback, syntax, mission and asset smoke checks passed.');
