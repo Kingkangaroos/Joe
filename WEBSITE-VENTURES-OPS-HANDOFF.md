@@ -19,12 +19,21 @@ Performed-by: ChatGPT (OpenAI)
 
 Sales and Delivery deliberately do not share the broad `rpg` row. Each page waits for Auth, derives its app-state key from `window.gamenfyUserId`, and calls the shared CAS sync with only its own local storage key. The database RPC `public.gamenfy_write_app_state` accepts the Venture key only when its suffix exactly equals the current `auth.uid()`. This preserves the existing global `app_state.key` primary-key compatibility while avoiding collisions between accounts.
 
+## Explicit handoff boundaries
+
+These boundaries are intentional and must not be replaced by silent automation:
+
+1. **Prospect Lab → Sales Machine:** only after an explicit click/action. Wave 01 may fill empty Sales slots, but every imported company remains `Prospect`. Importing research must not increment attempts, conversations, demos, proposals or wins.
+2. **Sales Machine → Delivery OS:** only Sales records explicitly marked `Gewonnen` may be imported. They may fill empty Delivery slots only and begin as `Waiting intake`.
+3. **Delivery intake/QA:** importing a win never checks intake or QA items. Completion must reflect real supplied information and real testing.
+4. **Client communication:** Delivery may prepare/copy an intake request, but no page sends it automatically.
+
 ## Founding workflow
 
 1. Research candidates in Prospect Lab.
-2. A prospect only enters Sales Machine after a real decision to treat it as active outreach/pipeline work.
-3. Sales Machine records actual attempts, conversations, demos, proposals and wins.
-4. A win moves operationally to Delivery OS.
+2. Explicitly load/select candidates into Sales while preserving `Prospect` status.
+3. Record actual attempts, conversations, demos, proposals and wins in Sales Machine.
+4. Explicitly import only `Gewonnen` clients to Delivery OS.
 5. Build is gated on complete intake.
 6. Founding scope remains max 3 core pages + one bundled revision round unless separately priced.
 7. QA is mandatory before launch; fake proof is never acceptable.
