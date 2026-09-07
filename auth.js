@@ -82,6 +82,7 @@
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
+      storageKey: 'gamenfy-private-auth-v1',
     },
   });
   window.gamenfySupabase = client;
