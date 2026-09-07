@@ -2,13 +2,14 @@
 
 const fs = require('fs');
 const assert = require('assert');
+const crypto = require('crypto');
 
 function read(path) { return fs.readFileSync(path, 'utf8'); }
 
 const push = read('push.js');
 const sites = read('sites.html');
 const park = read('park31.html');
-const art = read('character-art-overrides.js');
+const art = read('park31.js');
 const hq = read('project-hq.html');
 const rescue = read('hq-note-resync.js');
 const importContract = read('img/lab/CHARACTER-IMPORTS-LAST-HORSE.md');
@@ -21,6 +22,16 @@ assert(push.includes("suffix.style.display = 'none'"), 'legacy /10 suffix must b
 assert(push.includes('done / count'), 'progress bar may still use checked/total ratio');
 assert(push.includes("img/lab/daily-score/joey/l"), 'Joey Daily Score evolution path missing');
 assert(push.includes('scoreArtLevel(done)'), 'Joey art must be derived from checked-count score');
+const joeyDigests = [];
+for (let level = 1; level <= 10; level++) {
+  const file = 'img/lab/daily-score/joey/l' + String(level).padStart(2, '0') + '.webp';
+  const bytes = fs.readFileSync(file);
+  assert.equal(bytes.subarray(0, 4).toString(), 'RIFF', file + ' is WebP');
+  assert.equal(bytes.subarray(8, 12).toString(), 'WEBP', file + ' has WebP signature');
+  assert(bytes.includes(Buffer.from('ALPH')), file + ' preserves transparency');
+  joeyDigests.push(crypto.createHash('sha256').update(bytes).digest('hex'));
+}
+assert.equal(new Set(joeyDigests).size, 10, 'Daily Score has ten distinct approved Joey evolutions');
 
 // Accepted Website Lab history remains visibly available.
 assert(sites.includes('Bewaarde oude testwebsite'), 'old Website Lab test must be visibly called out');
@@ -29,13 +40,13 @@ assert(sites.includes('site-klus-scroll-1-1.html'), 'Test 1.1 must remain in Web
 assert(sites.includes('site-klus-scroll.html'), 'original Test 1 must remain in Website Lab');
 assert(sites.includes('site-plumbing-flagship-v1.html'), 'new plumbing flagship must coexist with old tests');
 
-// The Last Horse character bridge: use current mission level, never a second level engine.
-assert(park.includes('character-art-overrides.js?v=1.0'), 'Park 3.1 must load native character bridge');
-assert(art.includes("character: 'owl'"), 'Budgeting must map to approved owl character');
-assert(art.includes("character: 'panda'"), 'Meditation must map to approved panda character');
-assert(art.includes('img/lab/park31/budgeting/'), 'Budgeting native evolution path missing');
-assert(art.includes('img/lab/park31/meditation/'), 'Meditation native evolution path missing');
-assert(art.includes("slot.querySelector('.p31-slot-level')"), 'native art must read Park 3.1 existing level output');
+// The Last Horse characters use Park 3.1's current mission level directly, never a second level engine.
+assert(!park.includes('character-art-overrides.js'), 'obsolete fallback bridge must not remain loaded');
+assert(art.includes("key:'budgeting',label:'Budgeting',emoji:'💰',dir:'budgeting'"), 'Budgeting must map directly to the approved owl evolution');
+assert(art.includes("key:'meditation',label:'Meditation',emoji:'🧘',dir:'meditation'"), 'Meditation must map directly to the approved panda evolution');
+assert(art.includes("'img/lab/park31/'+mission.dir"), 'native art must read Park 3.1 existing mission-level output');
+assert(!art.includes("fallback:'budgeting'"), 'Budgeting fallback wiring must be retired');
+assert(!art.includes("fallback:'meditation'"), 'Meditation fallback wiring must be retired');
 assert(importContract.includes('do **not** regenerate'), 'import contract must protect exact approved assets');
 
 // HQ notes: rescue script must capture local state before xp.js starts RPG sync.
@@ -47,4 +58,4 @@ assert(rescue.includes("gamenfy:cloud-sync-ready"), 'HQ rescue must wait for can
 assert(rescue.includes('mergeNotes'), 'HQ rescue must merge instead of blindly replacing note arrays');
 assert(rescue.includes("localStorage.setItem(NOTE_KEY"), 'rescued note payload must re-enter normal sync journal');
 
-console.log('Daily Score + Last Horse character bridge + HQ note rescue smoke checks passed.');
+console.log('Daily Score + approved Last Horse characters + HQ note rescue smoke checks passed.');

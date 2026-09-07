@@ -8,15 +8,15 @@
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.15';
+  var VERSION='1.16';
   var PUBLIC_MISSIONS=[
-    {key:'budgeting',label:'Budgeting',emoji:'💰',fallback:'budgeting'},
+    {key:'budgeting',label:'Budgeting',emoji:'💰',dir:'budgeting'},
     {key:'sleep',label:'Sleep',emoji:'😴',dir:'sleep'},
     {key:'nutrition',label:'Nutrition',emoji:'🥗',dir:'nutrition'},
     {key:'walking',label:'Steps',emoji:'👟',dir:'steps'},
     {key:'teeth',label:'Brush Teeth',emoji:'🦷',dir:'teeth'},
     {key:'household',label:'Household',emoji:'🧹',dir:'household'},
-    {key:'meditation',label:'Meditation',emoji:'🧘',fallback:'meditation'},
+    {key:'meditation',label:'Meditation',emoji:'🧘',dir:'meditation'},
     {key:'gratitude',label:'Gratitude',emoji:'🙏',dir:'gratitude'},
     {key:'good_deed',label:'Good Deed',emoji:'❤️',dir:'good-deed'},
     {key:'screen_time',label:'Screen Time',emoji:'📵',dir:'screen-time'},
@@ -84,12 +84,6 @@
   function assetUrl(level,mission){
     mission=mission||PUBLIC_MISSIONS.find(function(item){return item.key===KEY;})||PUBLIC_MISSIONS[0];
     level=clamp(Math.round(Number(level)||1),1,10);
-    if(mission.fallback==='budgeting')return 'img/lab/park2/budgeting.png?v='+VERSION;
-    if(mission.fallback==='meditation'){
-      if(level>=10)return 'img/lab/park2/meditation/mastery.png?v='+VERSION;
-      if(level>=5)return 'img/lab/park2/meditation/advanced.png?v='+VERSION;
-      return 'img/lab/park2/meditation.png?v='+VERSION;
-    }
     return 'img/lab/park31/'+mission.dir+'/l'+String(level).padStart(2,'0')+'.webp?v='+VERSION;
   }
   function state(level){
@@ -109,9 +103,6 @@
     }).join('');
   }
   function artworkLabel(mission){
-    if(mission.fallback==='budgeting')return 'Park 2 fallback · native evolution pending';
-    if(mission.fallback==='meditation')return 'Park 2 3-stage fallback · native evolution pending';
-    if(mission.private)return '10 evolution levels';
     return '10 evolution levels';
   }
   function missionCopy(mission){
@@ -149,7 +140,7 @@
     var lit=(litUntil[mission.key]||0)>Date.now();
     var selectedNow=!!(selected&&selected.key===mission.key);
     var instruction=done?'Vandaag voltooid':(neglected?'HELP · Tik om te openen':'Tik om te openen');
-    var slotClass='p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(neglected?' is-neglected':'')+(lit?' is-lit':'')+(selectedNow?' is-selected':'')+(mission.fallback?' is-fallback':'');
+    var slotClass='p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(neglected?' is-neglected':'')+(lit?' is-lit':'')+(selectedNow?' is-selected':'');
     return '<div class="p31-slot-wrap'+(done?' is-done':'')+'">'
       +'<button class="'+slotClass+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+' aria-pressed="'+(done?'true':'false')+'"'+(selectedNow?' aria-current="true"':'')+'>'
       +'<span class="p31-slot-art">'+(ready?'<img src="'+assetUrl(info.art,mission)+'" alt="" draggable="false">':mission.emoji)+(neglected?'<span class="p31-help" aria-hidden="true">HELP</span>':'')+'</span>'
@@ -241,21 +232,19 @@
     modalLevel.textContent='Level '+displayLevel;
     modalState.textContent=state(displayLevel);
     modalProgress.style.width=(clamp(displayLevel,0,10)*10)+'%';
-    var fallbackNote=selected.fallback?' Park 3.1 native artwork voor deze missie staat nog apart op de asset-todo; dit is de bestaande Park 2 fallback.':'';
     modalStatus.textContent=preview!==null
-      ?'Alleen preview — je live level blijft '+info.raw+'.'+fallbackNote
-      :(missionMode?(done?'Vandaag voltooid · tik het ronde vinkje om ongedaan te maken.':'Nog niet voltooid · tik het ronde vinkje op de kaart om af te ronden.'):'Live level uit Daily Missions.')+fallbackNote;
+      ?'Alleen preview — je live level blijft '+info.raw+'.'
+      :(missionMode?(done?'Vandaag voltooid · tik het ronde vinkje om ongedaan te maken.':'Nog niet voltooid · tik het ronde vinkje op de kaart om af te ronden.'):'Live level uit Daily Missions.');
     liveResetEl.disabled=preview===null;
     missionToggleEl.hidden=!missionMode;
     missionToggleEl.disabled=preview!==null;
     missionToggleEl.classList.toggle('is-undo',done);
     missionToggleEl.textContent=preview!==null?'Ga terug naar live om te wijzigen':(done?'Ongedaan maken':'Voltooi vandaag');
-    var fixedFallback=selected.fallback==='budgeting';
-    prevEl.disabled=fixedFallback;
-    nextEl.disabled=fixedFallback;
+    prevEl.disabled=false;
+    nextEl.disabled=false;
   }
   function stepPreview(delta){
-    if(!selected||selected.fallback==='budgeting')return;
+    if(!selected)return;
     preview=clamp(shownLevel()+delta,1,10);
     updateModal();
   }

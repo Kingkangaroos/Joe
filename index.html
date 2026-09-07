@@ -18,7 +18,7 @@
 <script src="ladders.js?v=10.98" defer></script>
 <script src="ventures.js?v=10.98" defer></script>
 <script src="checkin.js?v=10.98" defer></script>
-<script src="push.js?v=10.98" defer></script>
+<script src="push.js?v=10.99" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1170,11 +1170,9 @@ body {
     <div class="life-why-card" id="lifeWhyCard" onclick="location.href='character.html#goals'"></div>
   </div>
 
-  <!-- Daily Level replaces the old Day Score with a mission-only 0–10 aggregate.
-       The CSS crest is intentionally a single placeholder slot: Joey can later swap
-       it for an approved level 1–10 character set without rebuilding the logic. -->
+  <!-- Daily Score shows today's checked mission count with Joey's approved 10-stage evolution. -->
   <div id="dailyLevelCard" style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#171712,#27251d);color:#fff;border-radius:18px;padding:14px 15px;margin:0 0 12px;box-shadow:0 12px 28px -24px rgba(21,20,15,.8)">
-    <div aria-hidden="true" style="width:62px;height:62px;flex:0 0 62px;border-radius:20px;display:grid;place-items:center;background:radial-gradient(circle at 35% 28%,#fff7c9 0 5%,#d7b84a 6% 18%,#766425 38%,#28251a 72%);border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)"><span style="font-size:25px;filter:drop-shadow(0 2px 5px rgba(0,0,0,.35))">✦</span></div>
+    <div aria-hidden="true" style="width:72px;height:82px;flex:0 0 72px;border-radius:20px;display:grid;place-items:center;background:radial-gradient(circle at 35% 28%,#fff7c9 0 5%,#d7b84a 6% 18%,#766425 38%,#28251a 72%);border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)"><span style="font-size:25px;filter:drop-shadow(0 2px 5px rgba(0,0,0,.35))">✦</span></div>
     <div style="min-width:0;flex:1">
       <div style="font-size:9px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#d9d2ac">Daily Level</div>
       <div style="display:flex;align-items:baseline;gap:5px;margin-top:2px"><strong id="dailyLevelValue" style="font-size:28px;line-height:1;font-variant-numeric:tabular-nums">—</strong><span style="font-size:11px;color:#aaa58d">/ 10</span></div>
@@ -1287,7 +1285,7 @@ body {
     <button class="nm-add" id="missionsDayBtn" onclick="toggleMissionsDay()">Yesterday</button></div>
   <div id="weekStrip" style="display:flex;gap:2px;margin:2px 0 10px;padding:0 4px"></div>
   <div class="daily-missions-2" id="dailyMissions2Wrap" style="background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:20px">
-    <iframe id="dailyMissions2Frame" title="Daily Missions 2.0" src="park31.html?embed=1&amp;mode=missions&amp;privacy=all&amp;surface=home&amp;v=1.17" style="display:block;width:100%;height:1180px;min-height:820px;border:0;background:transparent" loading="eager"></iframe>
+    <iframe id="dailyMissions2Frame" title="Daily Missions 2.0" src="park31.html?embed=1&amp;mode=missions&amp;privacy=all&amp;surface=home&amp;v=1.18" style="display:block;width:100%;height:1180px;min-height:820px;border:0;background:transparent" loading="eager"></iframe>
   </div>
   <div class="missions-grid" id="missionsCard" hidden aria-hidden="true" style="display:none!important">
     <div>Loading habits…</div>

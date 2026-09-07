@@ -390,22 +390,21 @@ Regression: `tests/park2-smoke.js`.
 
 ## Park 3.1 — current Lab state
 
-Park 3.1 displays exact 11 canonical public Daily Missions plus visibly separate 2 private dailies.
+Park 3.1 displays the exact 11 canonical public Daily Missions plus 2 private dailies in one personal visual roster while keeping the private routes separate internally.
 
 Asset truth:
-- 110 native Park 3.1 WebPs = 9 public sets ×10 + 2 private sets ×10;
-- missing native public ten-level sets: Budgeting and Meditation;
-- Budgeting uses labelled Park 2 fallback;
-- Meditation uses labelled Park 2 staged fallback.
+- 130 native Park 3.1 WebPs = all 11 public sets ×10 + 2 private sets ×10;
+- Budgeting uses Joey's approved transparent owl evolution directly;
+- Meditation uses Joey's approved transparent panda evolution directly;
+- Home Daily Score uses Joey's approved 10-stage overall King evolution.
 
-Do not fabricate replacements. See `img/lab/park31/ASSET-MAP.md`.
+Do not regenerate or reinterpret these approved sets. See `img/lab/park31/ASSET-MAP.md` and `img/lab/CHARACTER-IMPORTS-LAST-HORSE.md`.
 
 Interaction:
 - short tap opens detail;
 - `− / +` preview is read-only;
 - Complete/Undo changes real state;
-- 560 ms hold shortcut;
-- >12 px movement cancels hold;
+- no long-press completion shortcut;
 - public writes route through host canonical controller;
 - private writes retain PIN route;
 - HELP and level-up celebration remain.

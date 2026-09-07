@@ -151,15 +151,13 @@
   window.GamenfyPush = { enable, disable, status, isStandalone };
 })();
 
-// v7.4 — Home Daily Score presentation + Joey evolution character.
+// v7.5 — Home Daily Score presentation + approved Joey evolution character.
 // Park 3.1 owns the canonical completion summary and posts it to Main.
 // Joey wants the Home score to be the number he actually checked today —
 // not the average 0–10 habit level and not `done / all missions` as the headline.
 // The character art follows that checked count: 0/1 -> L1, 2 -> L2 ... 10+ -> L10.
-// The image files are intentionally externalized under img/lab/daily-score/joey/
-// so the approved transparent character set from the project chat can be dropped
-// in without changing score logic again. Until an asset is present, the existing
-// star badge remains visible instead of showing a broken image.
+// Exact approved transparent character files live under img/lab/daily-score/joey/.
+// The star badge remains a safe fallback if an individual asset ever fails to load.
 (function installHomeDailyCheckedScore () {
   'use strict';
   if (window.__gamenfyHomeDailyCheckedScoreInstalled) return;
@@ -168,7 +166,7 @@
   function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
   function scoreArtLevel(done) { return clamp(Math.floor(Number(done) || 0) || 1, 1, 10); }
   function scoreArtUrl(done) {
-    return 'img/lab/daily-score/joey/l' + String(scoreArtLevel(done)).padStart(2, '0') + '.webp?v=1';
+    return 'img/lab/daily-score/joey/l' + String(scoreArtLevel(done)).padStart(2, '0') + '.webp?v=2';
   }
 
   function ensureCharacterHolder() {

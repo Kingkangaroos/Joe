@@ -7,7 +7,7 @@ const ROOT=path.join(__dirname,'..');
 const settings=fs.readFileSync(path.join(ROOT,'settings.html'),'utf8');
 const push=fs.readFileSync(path.join(ROOT,'push.js'),'utf8');
 
-assert.ok(settings.includes('<script src="push.js?v=10.98" defer></script>'),'Settings must load the real push client');
+assert.ok(settings.includes('<script src="push.js?v=10.99" defer></script>'),'Settings must load the real push client');
 assert.ok(settings.includes('window.GamenfyPush.enable()'),'Settings enable toggle must call real push subscribe');
 assert.ok(settings.includes('window.GamenfyPush.disable()'),'Settings disable toggle must call real push unsubscribe');
 assert.ok(!settings.includes('scheduleReminder()'),'legacy in-page clock notification must stay retired');

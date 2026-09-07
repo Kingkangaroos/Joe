@@ -1,1 +1,0 @@
-Approved transparent character assets are integrated. Live Budgeting art is levels.webp; this note is retained as import history.

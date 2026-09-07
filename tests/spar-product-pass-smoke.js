@@ -22,7 +22,7 @@ assert.match(park,/publicOnlyMode=params\.get\('privacy'\)==='public'/,'Park can
 assert.doesNotMatch(park,/HOLD_MS/,'Park no longer depends on long press');
 assert.match(park,/data-p31-toggle/,'Park exposes tap-circle controls');
 assert.match(park,/5000/,'Park fallback polling is throttled');
-assert.match(parkPage,/park31\.js\?v=1\.17/,'Park page loads the unified-roster/Daily-Level runtime');
+assert.match(parkPage,/park31\.js\?v=1\.18/,'Park page loads the unified-roster/Daily-Level runtime');
 assert.match(xp,/rpg_project_hq_notes_v1/,'Project HQ feedback inbox is in canonical owner-cloud sync scope');
 const jarvis=fs.readFileSync(path.join(root,'jarvis.html'),'utf8'); assert.match(jarvis,/project-hq\.html/,'Project HQ is reachable from the Jarvis workspace hub');
 assert.match(hq,/PROJECT-HQ-STATE\.json/);assert.match(hq,/WEBSITE-VENTURES-HQ-STATE\.json/);assert.match(hq,/rpg_project_hq_notes_v1/);

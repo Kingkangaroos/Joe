@@ -2,7 +2,7 @@
 
 > Durable shared product memory for Joey + ChatGPT/Claude. The chat is not the source of truth. Update this file when product decisions, feedback, priorities, or major implementation status changes.
 
-Last refreshed: 2026-09-06 by ChatGPT (OpenAI)
+Last refreshed: 2026-09-07 by ChatGPT (OpenAI)
 
 ## NOW
 
@@ -14,11 +14,11 @@ Last refreshed: 2026-09-06 by ChatGPT (OpenAI)
 6. **WHY linking** — once the actual Goal store is present, add `linkedSkills` only where Joey genuinely intends a relationship. Do not infer a competing taxonomy.
 7. **Restore Dry Run v4 real-file test** — backup v4 carries a pseudonymous same-account binding, browser sync is now owner-scoped + generation-aware, and backups reject dirty state from another restore generation. Dry Run remains read-only. Next engineering gate is an authenticated atomic three-domain restore RPC plus owner-scoping of active service-role `app_state` paths before the legacy global `PRIMARY KEY(key)` can be replaced.
 8. **Edge Function secret cutover** — Jarvis and `send-daily-push` require environment-secret creation through a supported secure path before redeploy/rotation. The current connector cannot create Edge Function secrets.
-9. **Budgeting owl asset import** — locked direction; native 10-level set still not present. Do not fabricate it.
-10. **Meditation native level set** — waiting for Joey's approved art; fallback remains temporary.
-11. **Life/dashboard taxonomy** — decide only after real WHY links are visible; preserve the underlying 100-year-plan WHY even if old labels change.
+9. **Life/dashboard taxonomy** — decide only after real WHY links are visible; preserve the underlying 100-year-plan WHY even if old labels change.
 ## COMPLETED THIS PASS
 
+- [x] **Approved chat-character import completed:** Budgeting now uses the transparent owl L1–L10 set, Meditation the panda L1–L10 set, and Home Daily Score the Joey/King L1–L10 set.
+- [x] Removed the broken partial binary import and retired the temporary Park 2 fallback/override bridge; all three approved evolutions now use direct level paths with regression coverage.
 - [x] **2026-09-06 visible follow-up release shipped:** PR #46 merged to `main` as `745fbc8a2602eebe2501f122fbf53b135651c85b`; Vercel production `dpl_B8kk35VfjQDmNF71XuY5AHJFtqNY` verified READY.
 - [x] Daily Missions personal roster unified: the two anonymized private quests sit visually among the other missions while their existing private/PIN-backed route remains intact internally.
 - [x] Added a mission-only **Daily Level 0–10** aggregate placeholder on Home; do not spend time on ten temporary characters before Joey has approved the final level-character asset direction.
@@ -58,7 +58,7 @@ Last refreshed: 2026-09-06 by ChatGPT (OpenAI)
 - Long-press is a bad completion interaction on iPhone because it collides with native browser/PWA press behavior.
 - Daily Mission completion should use the familiar tap-circle interaction.
 - Budgeting character set = **owl**.
-- Meditation needs a new native level set from Joey; current fallback is temporary.
+- Meditation's approved native panda set is integrated at all ten levels.
 - Daily Missions 2.0 keeps the current multi-house / multi-scene overview; it is not the future open Skills world.
 - Tapping a Daily Mission scene may keep roughly the existing detail behavior: history/days, reset and level detail. Lab may keep an all-level showcase for demos.
 - Gratitude is a **word cloud**: repeated concepts grow. Selecting a concept only needs straightforward history/count information for now; do not overbuild a separate memory-trail product.
@@ -79,8 +79,9 @@ Last refreshed: 2026-09-06 by ChatGPT (OpenAI)
 - Scene tap is separate from completion.
 - Joey's personal Home shows the full 13-mission visual roster. The two anonymized private quests remain separate internally for PIN/private storage and public-export safety, but must not be presented as a separate attention-grabbing product section.
 - Reward animation should stay brief. Ordinary completion = small reaction; larger celebration should eventually be reserved for genuinely notable progression.
-- Budgeting = owl asset direction.
-- Meditation = native level set still needed from Joey.
+- Budgeting = approved owl L1–L10 set.
+- Meditation = approved panda L1–L10 set.
+- Home Daily Score = approved Joey/King L1–L10 set keyed to today's checked mission count.
 
 ### Daily Challenge
 - Keep it on Home.

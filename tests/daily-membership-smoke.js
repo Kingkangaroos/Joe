@@ -40,8 +40,9 @@ assert.ok(parkPrivate.every(key=>defs[key]&&defs[key].private),'Park private ent
 assert.ok(parkPublic.every(key=>!parkPrivate.includes(key)),'no private daily can replace a public slot');
 
 for(const forbidden of ['tennis','reading'])assert.equal(parkPublic.includes(forbidden),false,forbidden+' remains a normal skill, never a Daily Mission');
-assert.match(source,/budgeting'.*fallback:'budgeting'/s,'Budgeting uses explicit fallback art until native Park 3.1 evolution is approved');
-assert.match(source,/meditation'.*fallback:'meditation'/s,'Meditation uses explicit fallback art until native Park 3.1 evolution is approved');
+assert.match(source,/key:'budgeting'.*dir:'budgeting'/s,'Budgeting uses the approved native owl evolution');
+assert.match(source,/key:'meditation'.*dir:'meditation'/s,'Meditation uses the approved native panda evolution');
+assert.doesNotMatch(source,/fallback:'(?:budgeting|meditation)'/,'approved character sets no longer route through Park 2 fallbacks');
 assert.match(source,/PRIVATE_MISSIONS[\s\S]*weed_control[\s\S]*no_porn/,'private companion art remains available without corrupting public membership');
 
 // Jarvis deployed source is intentionally not committed because it currently

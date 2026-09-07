@@ -1,7 +1,7 @@
 {
   "project": "Gamenfy",
   "owner": "Joey",
-  "updatedAt": "2026-09-06",
+  "updatedAt": "2026-09-07",
   "managedBy": [
     "ChatGPT (OpenAI)",
     "Claude"
@@ -22,11 +22,11 @@
     "Try Restore Dry Run with a real exported backup v4 and verify binding presence; browser sync and backups are now owner/generation-aware, but restore/apply remains blocked until authenticated owner-match, an atomic three-domain server restore RPC, service-role owner scoping and the final composite-primary-key cutover are regression-proven",
     "Create Supabase Edge Function environment secrets through a supported secure secret-management path before any Jarvis/send-daily-push credential cutover; current connector cannot create secrets",
     "Enable Supabase Auth leaked-password protection through a supported Auth configuration path",
-    "Locate/import the approved Budgeting owl level assets when available",
-    "Add Meditation native level set when Joey supplies it",
     "Decide the final top-level life/dashboard taxonomy without losing the 100-year-plan WHY"
   ],
   "completedThisPass": [
+    "Approved chat-character import completed: Budgeting owl L1-L10, Meditation panda L1-L10 and Home Daily Score Joey/King L1-L10 are integrated as optimized transparent WebPs",
+    "Broken partial binary import and temporary Park 2 fallback/override bridge removed; native character levels now use direct canonical paths with regression coverage",
     "Daily Missions 2.0 public-only Home integration",
     "Tap-circle Daily Mission completion; long-press retired",
     "Park 3.1 render/preload/poll performance hardening",
@@ -68,8 +68,6 @@
     "2026-09-06 Website Ventures consolidation: rich four-flagship/Higgsfield/visual-production HQ was ported into the restored Ventures/Venture Lab/Productielijn shell; PR #48 merged as bf848821695bed98a229273eacfb7c707a98c595 and production dpl_WruV9vzjJ7ZYxWyrPcPrccY2Tkpy is READY"
   ],
   "assetsNeeded": [
-    "Budgeting owl native level set import",
-    "Meditation native level set",
     "Dedicated Gamenfy app icon"
   ],
   "lockedDecisions": {
@@ -89,7 +87,7 @@
     "edgeFunctionSecrets": "Env-first cutover only. Never redeploy Jarvis or send-daily-push while re-embedding existing source literals; create environment secrets first, verify, then rotate exposed credentials.",
     "appStateOwnershipCutover": "Do not drop legacy PRIMARY KEY(key) until every service-role app_state reader/writer (including active Fitbit/Jarvis/push paths) is explicitly owner-scoped. Phase 0 UNIQUE(user_id,key) is additive compatibility only; final target is per-owner key identity.",
     "privateDailyPresentation": "On Joey personal Home, all 13 missions are one visual roster. The two anonymized private quests remain separate internally for PIN/private storage and public-export safety, but do not get a separate attention-grabbing section.",
-    "dailyMissionAggregate": "Use a mission-only Daily Level 0-10 aggregate placeholder now. Do not spend asset time on ten temporary characters; replace with Joey-approved level 1-10 character art later.",
+    "dailyMissionAggregate": "Home headline is today's checked mission count. Its approved Joey/King character uses a technical L1 floor for 0-1 checked, then the matching L2-L10 artwork for 2-10+ checked.",
     "ventureStructure": "Finance Ventures keeps the boxed venture overview (Grip, Websites Verkopen, Gamenfy Public, Gamenfy Build) and separates Ventures / Venture Lab / Productielijn. General Lab remains distinct.",
     "labReturnNavigation": "General Lab defaults back to Jarvis; Venture-launched Lab returns to Finance Ventures through explicit return tokens and must never fall through Character/Body last-tab state."
   },

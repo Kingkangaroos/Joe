@@ -7,10 +7,9 @@
 
 Park 3.1 must use the existing Daily Mission score (0–10) as its level source. Level 0 uses level-1 artwork technically; level 1–10 use their matching evolution.
 
-Expected paths (WebP preferred, PNG accepted by the runtime bridge):
+Integrated paths:
 
 - `img/lab/park31/budgeting/l01.webp` … `l10.webp`
-- or the same basenames as `.png`
 
 Character: **owl**. Background must remain transparent.
 
@@ -18,10 +17,9 @@ Character: **owl**. Background must remain transparent.
 
 Same existing Daily Mission score logic; no separate XP or level engine.
 
-Expected paths:
+Integrated paths:
 
 - `img/lab/park31/meditation/l01.webp` … `l10.webp`
-- or the same basenames as `.png`
 
 Character: **panda**. Background must remain transparent.
 
@@ -37,15 +35,15 @@ Character mapping:
 - …
 - 10 or more checked → L10
 
-Expected paths:
+Integrated paths:
 
 - `img/lab/daily-score/joey/l01.webp` … `l10.webp`
-- or the same basenames as `.png` once PNG fallback is enabled for this surface
 
 Character: Joey's approved transparent self-character from the same project chat. Do not substitute another avatar.
 
-## Runtime behavior while files are unavailable
+## Runtime behavior
 
-- Budgeting and Meditation keep their current Park 2 fallback art rather than showing broken images.
-- Home Daily Score keeps the existing star badge rather than showing a broken Joey image.
-- As soon as exact approved files exist at these paths, the wired runtime automatically prefers them without changing level logic.
+- Budgeting and Meditation read the existing Daily Mission level directly and show the matching approved image.
+- Home Daily Score reads today's checked mission count and shows the matching approved Joey image.
+- Level 0 keeps the technical Level-1 artwork floor without changing the displayed live score.
+- The Home star badge remains only as a safe image-load fallback.
