@@ -82,7 +82,6 @@
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
-      storageKey: 'gamenfy-private-auth-v1',
     },
   });
   window.gamenfySupabase = client;
@@ -244,50 +243,4 @@
       else acceptSession(data && data.session);
     })
     .catch(() => failClosed('De beveiligde sessie kon niet worden gecontroleerd.'));
-})();
-
-// ChatGPT/OpenAI — deterministic single-owner private gate.
-// Real data security stays server-side in Supabase RLS. This client gate only
-// decides whether to reveal Joey's private UI. It must not depend on a network
-// lookup that can transiently fail and incorrectly classify the owner as Public.
-(function installPrivateAccessGuard() {
-  'use strict';
-  const PRIVATE_OWNER_ID = 'dff21e4f-51fa-468b-9e0d-2344164efd79';
-  const unguardedReady = window.gamenfyAuthReady;
-  if (!unguardedReady) return;
-
-  function showDenied() {
-    const run = () => {
-      document.documentElement.style.overflow = 'hidden';
-      const oldChip = document.getElementById('gamenfy-account-chip');
-      if (oldChip) oldChip.remove();
-      let gate = document.getElementById('gamenfy-private-access-denied');
-      if (!gate) {
-        gate = document.createElement('div');
-        gate.id = 'gamenfy-private-access-denied';
-        gate.style.cssText = 'position:fixed;inset:0;z-index:2147483646;display:grid;place-items:center;padding:20px;background:#f4f3ef;color:#15140f;font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif';
-        gate.innerHTML = '<div style="width:min(100%,420px);background:#fff;border:1px solid #e8e6df;border-radius:22px;padding:26px;box-shadow:0 18px 60px rgba(21,20,15,.12)"><div style="font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#d4633e;margin-bottom:10px">Gamenfy · privé</div><h1 style="font-size:25px;line-height:1.15;margin:0 0 8px">Dit account heeft geen toegang tot Gamenfy Privé.</h1><p style="font-size:14px;line-height:1.5;color:#6f6c63;margin:0 0 18px">Deze pagina is Joey\'s afgeschermde persoonlijke versie. Gebruik Gamenfy Public met een ander account.</p><button id="gamenfy-go-public" type="button" style="width:100%;padding:13px;border:0;border-radius:12px;background:#15140f;color:#fff;font-weight:850;cursor:pointer">Open Gamenfy Public</button></div>';
-        document.body.appendChild(gate);
-        document.getElementById('gamenfy-go-public').addEventListener('click', () => { window.location.href = '/public/'; });
-      }
-    };
-    if (document.body) run();
-    else document.addEventListener('DOMContentLoaded', run, { once: true });
-  }
-
-  const guardedReady = unguardedReady.then((session) => {
-    if (!session || !session.user) throw new Error('Geen geldige Gamenfy-sessie');
-    if (session.user.id !== PRIVATE_OWNER_ID) {
-      window.gamenfyPrivateAccessDenied = true;
-      window.gamenfyAccessToken = null;
-      window.gamenfyUserId = null;
-      showDenied();
-      throw new Error('Dit account heeft geen toegang tot Gamenfy Privé.');
-    }
-    window.gamenfyPrivateAccessDenied = false;
-    return session;
-  });
-
-  guardedReady.catch(() => {});
-  window.gamenfyAuthReady = guardedReady;
 })();

@@ -1,20 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "outputDirectory": ".",
   "git": {
     "deploymentEnabled": {
       "chatgpt/**": false
     }
   },
-  "redirects": [
-    { "source": "/", "destination": "/private-rpg-pwa-bootstrap.html", "permanent": false },
-    { "source": "/index.html", "destination": "/private-rpg-pwa-bootstrap.html", "permanent": false }
-  ],
-  "rewrites": [
-    { "source": "/public", "destination": "/gamenfy-public.html" },
-    { "source": "/public/", "destination": "/gamenfy-public.html" },
-    { "source": "/private-app", "destination": "/index.html" }
-  ],
   "headers": [
     {
       "source": "/",
