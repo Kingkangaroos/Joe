@@ -1,13 +1,13 @@
 {
   "name": "Website Ventures Higgsfield Manual Queue",
-  "version": 1,
+  "version": 2,
   "updatedAt": "2026-09-08",
   "managedBy": "ChatGPT (OpenAI)",
-  "source": "Website Ventures project decisions + Production Line v3",
+  "source": "Website Ventures project decisions + Production Line v3 + Agency Showroom Slot Contract v1",
   "status": {
     "batch4": "done",
     "nextBatch": 5,
-    "rule": "Only batches after 4 are active here. Still/reference winners before finish or motion."
+    "rule": "Only work after Batch 4 is active here. Still/reference winners before finish or motion. Optional jobs never block the required queue."
   },
   "hardRules": [
     "Batch 4 is complete; do not regenerate it by default.",
@@ -16,20 +16,21 @@
     "One generation job must have one exact website purpose.",
     "No final 4K credit spend before a 2K still winner is chosen.",
     "Generated demo imagery may not be presented as real completed client work.",
-    "For plumbing, lock exactly one recurring technician identity before generating working scenes."
+    "For plumbing, lock exactly one recurring technician identity before generating working scenes.",
+    "Agency support imagery is optional: code, the selected hero and real Plumbing captures should carry the showroom wherever possible."
   ],
   "batches": [
     {
       "number": 5,
-      "name": "Agency Hero Round",
+      "name": "Agency Hero Round + Mobile Derivative",
       "status": "next",
       "dependency": "Batch 4 direction winner",
-      "instruction": "Run all three hero concepts inside the winning art direction. Pick one hero winner before Batch 8 or 9.",
+      "instruction": "Generate the three 16:9 hero concepts inside the chosen direction, select one winner, then create one deliberate 4:5 mobile derivative from that exact winner rather than inventing a second visual world.",
       "jobs": [
         {
           "id": "AG-HERO-TRANSFORM-001",
           "title": "Transformation Sculpture",
-          "purpose": "Agency homepage hero",
+          "purpose": "Agency homepage hero candidate",
           "model": "Higgsfield Soul 2.0",
           "modelId": "soul_2",
           "aspectRatio": "16:9",
@@ -42,7 +43,7 @@
         {
           "id": "AG-HERO-PRODUCT-001",
           "title": "Website as Luxury Product",
-          "purpose": "Agency homepage hero",
+          "purpose": "Agency homepage hero candidate",
           "model": "Higgsfield Soul 2.0",
           "modelId": "soul_2",
           "aspectRatio": "16:9",
@@ -55,7 +56,7 @@
         {
           "id": "AG-HERO-MATERIAL-001",
           "title": "Material Performance",
-          "purpose": "Agency homepage hero",
+          "purpose": "Agency homepage hero candidate",
           "model": "Higgsfield Soul 2.0",
           "modelId": "soul_2",
           "aspectRatio": "16:9",
@@ -64,13 +65,27 @@
           "balance": "Unlimited preferred",
           "prompt": "Abstract but photoreal premium hero for a high-end web design agency: macro architectural composition of flowing clear water crossing polished chrome, pale stone and deep oxblood-red glass, with precise controlled reflections and cinematic studio lighting. The materials feel engineered, tactile and extremely expensive; dynamic enough to imply motion but calm enough for a luxury homepage. Large copy-safe negative space, no text, no logos, no people, no decorative clutter, widescreen 16:9.",
           "gate": "Pass only if the visual impact is strong enough to justify the weaker literal meaning."
+        },
+        {
+          "id": "AG-HERO-MOBILE-001",
+          "title": "Selected Hero — Mobile 4:5 Derivative",
+          "purpose": "Mobile agency hero derived from the selected Batch 5 desktop winner",
+          "model": "Nano Banana 2",
+          "modelId": "nano_banana_2",
+          "aspectRatio": "4:5",
+          "quality": "2K",
+          "count": "1-2 variants",
+          "balance": "Unlimited preferred",
+          "reference": "Upload the selected Batch 5 16:9 hero winner as the image reference",
+          "prompt": "Create a deliberate 4:5 mobile composition derived from the supplied winning 16:9 agency hero. Preserve the exact same hero subject, material palette, lighting language, premium visual identity and emotional tone. Recompose rather than merely crop: keep the recognizable subject large and readable at a 390px mobile viewport, maintain clean negative space for nearby website copy, protect important forms from the top and bottom UI-safe areas, and do not introduce new objects, text, logos, people or a second visual concept. The result must unmistakably belong to the same campaign as the desktop master while feeling intentionally art-directed for portrait mobile use.",
+          "gate": "Pass if desktop and mobile clearly belong to one campaign, the subject remains readable at ~390px width and the mobile composition feels intentional rather than like a forced crop."
         }
       ]
     },
     {
       "number": 6,
       "name": "Plumbing Technician Candidate Round",
-      "status": "after-batch-5-can-run-in-parallel",
+      "status": "ready",
       "instruction": "Generate four credible candidates, then choose exactly one recurring technician master.",
       "jobs": [
         {
@@ -93,7 +108,7 @@
       "number": 7,
       "name": "Same Technician Working Scenes",
       "status": "blocked-until-batch-6-winner",
-      "instruction": "Upload the Batch 6 winner as reference. Identity consistency is mandatory.",
+      "instruction": "Upload the Batch 6 winner as reference. Identity consistency is mandatory. Generate only scenes the actual showcase can use.",
       "jobs": [
         {
           "id": "PL-STORY-DIAG-001",
@@ -141,51 +156,58 @@
     },
     {
       "number": 8,
-      "name": "Agency Support Visuals",
-      "status": "blocked-until-batch-5-winner",
-      "instruction": "All support visuals must inherit the exact winning agency direction rather than invent a new visual world.",
+      "name": "OPTIONAL — Agency Support Visuals",
+      "status": "conditional-code-first",
+      "optionalBatch": true,
+      "instruction": "Default action is SKIP. Only generate one of these after the Batch 5 winner is integrated and the actual coded page still has a clear media gap. Do not make three support images just because prompts exist.",
       "jobs": [
         {
           "id": "AG-SUPPORT-TRANSFORM-001",
-          "title": "Transformation detail",
-          "purpose": "Agency transformation/value section visual",
+          "title": "Optional — Transformation detail",
+          "purpose": "Agency transformation/value section visual only if coded comparison needs external media",
           "model": "Higgsfield Soul 2.0",
           "modelId": "soul_2",
           "aspectRatio": "16:9",
           "quality": "2K",
-          "count": "2-3 variants",
-          "balance": "Unlimited preferred",
-          "reference": "Use the Batch 5 winning direction/hero as visual reference if the website UI allows it",
+          "count": "0-2 only if needed",
+          "balance": "Optional / Unlimited preferred",
+          "optional": true,
+          "defaultAction": "skip unless coded transformation needs it",
+          "reference": "Use the Batch 5 winning direction/hero as visual reference if generation is justified",
           "prompt": "Create a premium supporting website visual in the already chosen agency art direction, focused on the idea of transformation and refinement. Show a close but elegant composition of refined materials such as pale stone, polished chrome, glass and a restrained oxblood-red accent, with a strong sense of craftsmanship, precision and luxury. This image should support a section about turning ordinary businesses into premium digital brands. Photoreal, calm, expensive, modern, no text, no logos, no people, widescreen 16:9.",
-          "gate": "Pass only if it obviously belongs to the same world as the chosen hero."
+          "gate": "Only generate if code/screenshots alone fail the section. If generated, pass only if it obviously belongs to the exact same hero world."
         },
         {
           "id": "AG-SUPPORT-PROCESS-001",
-          "title": "Precision / process",
-          "purpose": "Agency process/method section visual",
+          "title": "Optional — Precision / process",
+          "purpose": "Agency process/method visual only if the coded process section needs external media",
           "model": "Higgsfield Soul 2.0",
           "modelId": "soul_2",
           "aspectRatio": "16:9",
           "quality": "2K",
-          "count": "2-3 variants",
-          "balance": "Unlimited preferred",
-          "reference": "Use the Batch 5 winning direction/hero as visual reference if the website UI allows it",
+          "count": "0-2 only if needed",
+          "balance": "Optional / Unlimited preferred",
+          "optional": true,
+          "defaultAction": "skip unless coded process needs it",
+          "reference": "Use the Batch 5 winning direction/hero as visual reference if generation is justified",
           "prompt": "Create a premium supporting visual for a high-end web design agency, in the exact same chosen art direction as the winner. The image should communicate precision, process and technical refinement through clean geometry, luxurious materials, controlled lighting and disciplined composition. It must feel expensive and trustworthy, with copy-safe negative space for a process or methodology section. No text, no logos, no people, no generic office imagery, widescreen 16:9.",
-          "gate": "Pass if it supports the process section without looking like generic tech or office stock."
+          "gate": "Only generate after a real page review shows a media need. If generated, reject generic tech, office stock or a second visual world."
         },
         {
           "id": "AG-SUPPORT-SHOWCASE-001",
-          "title": "Showcase / product excellence",
-          "purpose": "Agency showcase/portfolio visual",
+          "title": "Optional — Showcase / product excellence",
+          "purpose": "Agency showcase support only if real Plumbing captures and coded device frames leave a clear visual gap",
           "model": "Higgsfield Soul 2.0",
           "modelId": "soul_2",
           "aspectRatio": "16:9",
           "quality": "2K",
-          "count": "2-3 variants",
-          "balance": "Unlimited preferred",
-          "reference": "Use the Batch 5 winning direction/hero as visual reference if the website UI allows it",
+          "count": "0-2 only if needed",
+          "balance": "Optional / Unlimited preferred",
+          "optional": true,
+          "defaultAction": "skip; prefer real Plumbing demo captures",
+          "reference": "Use the Batch 5 winning direction/hero as visual reference if generation is justified",
           "prompt": "Create a supporting showcase image for an elite digital design agency, in the exact same chosen visual direction as the winner. The image should feel like a luxury campaign visual that can sit beside a portfolio or client-results section: sculptural, minimal, premium, highly controlled, photoreal and modern. Suggest product excellence and digital craftsmanship without showing readable UI or text. Use elegant negative space and keep it directly usable on a premium website, widescreen 16:9.",
-          "gate": "Pass if it adds premium depth without competing with the real portfolio/demo content."
+          "gate": "Default is skip. Generate only if real showcase captures are insufficient; never let it compete with or masquerade as real portfolio evidence."
         }
       ]
     },
