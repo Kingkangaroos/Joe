@@ -1,15 +1,16 @@
 // =============================================================
-// Gamenfy — Ventures (v11.4)
+// Gamenfy — Ventures (v11.5)
 // Business ideas as quest ladders. Each venture = phases → steps.
 // Storage: rpg_ventures_v1 (synced). Seeded only if absent.
-// v11.4: keeps the active Website Ventures queue aligned with the
-// Selected Assets integration gate while preserving completed step IDs.
+// v11.5: refreshes Websites Verkopen to the real agency/client pipeline
+// while preserving completion metadata for same-ID historical steps.
 // =============================================================
 (function () {
   'use strict';
 
   const KEY = 'rpg_ventures_v1';
   const GAMENFY_FOCUS_VERSION = 5;
+  const WEBSITE_FOCUS_VERSION = 2;
 
   const SEED = {
     v: 1,
@@ -53,28 +54,29 @@
       {
         id: 'sell_websites',
         name: 'Websites Verkopen',
-        tagline: 'Build & sell simple websites to local businesses',
+        tagline: 'Agency-first premium local websites — reusable client system',
         hero: 'https://images.pexels.com/photos/890065/pexels-photo-890065.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop',
         status: 'active',
+        focusVersion: WEBSITE_FOCUS_VERSION,
         phases: [
-          { id: 'p1', name: 'Set up shop', steps: [
-            { id: 's1', title: 'Pick your offer', detail: 'One clear package: e.g. a sharp 1-page site for local businesses (restaurants, salons, trades) at a fixed price. Write who it is for and the price.', minutes: 30, xp: { sales: 20 } },
-            { id: 's2', title: 'Build a demo site', detail: 'Make one great-looking demo site for a fictional local business. This is your portfolio and your template in one.', minutes: 120, xp: { coding: 60, ai_tools: 20 } },
-            { id: 's3', title: 'Template it', detail: 'Turn the demo into a reusable template you can rebrand for a new business in under an hour.', minutes: 90, xp: { coding: 40, ai_tools: 20 } }
+          { id: 'p1', name: 'Proof + product', steps: [
+            { id: 's1', title: 'Offer + scope locken', detail: 'Gebruik Client Intake + Offer Builder om één begrijpelijke founding offer te locken: doelgroep, resultaat, prijs, revisiegrens en expliciete exclusions. €349 en 1 revisieronde blijven hypotheses totdat Joey ze bewust bevestigt.', minutes: 35, xp: { sales: 20, marketing: 20 } },
+            { id: 's2', title: 'Agency + Plumbing proof afmaken', detail: 'Eigen Agency Showroom eerst. Rond Higgsfield Batch 5 af, integreer de gekozen desktop/mobile hero via Selected Assets en maak daarna de Plumbing showcase met één recurring technician. Geen extra gimmicks of fake proof.', minutes: 90, xp: { coding: 50, ai_tools: 30, marketing: 20 } },
+            { id: 's3', title: 'Reusable client system bewijzen', detail: 'Gebruik de config-driven Plumbing master, Client Factory v2 en Template QA om te bewijzen dat een nieuwe klant vooral config + echte assets + QA is in plaats van opnieuw bouwen.', minutes: 60, xp: { coding: 50, ai_tools: 15 } }
           ]},
           { id: 'p2', name: 'First client', steps: [
-            { id: 's4', title: 'Hit list', detail: '20 local businesses with a weak or missing website. Note name, what they do, and their current site (or lack of one).', minutes: 45, xp: { marketing: 30 } },
-            { id: 's5', title: 'Personalized demos', detail: 'For 3 of them, rebrand your template with their name/photos so they see THEIR site live. ~1 hour each with the template.', minutes: 120, xp: { coding: 40, marketing: 30 } },
-            { id: 's6', title: 'Reach out', detail: 'Email, DM or walk in to those 3 with the live demo link: "I already built you a preview — want it?" Low pressure, high impact.', minutes: 60, xp: { sales: 50 } },
-            { id: 's7', title: 'First euro', detail: 'A business pays for their site. Revenue exists.', minutes: 0, xp: { sales: 120, marketing: 40 }, boss: true }
+            { id: 's4', title: 'Compacte prospect pool', detail: 'Pas na demo + offer lock: maak een kleine Almere/Bussum prospectpool met echte behoefte en zwakke/missende huidige website. Prioriteit op Plumbing/trades; geen generieke massalijst om een target te vullen.', minutes: 45, xp: { marketing: 30, sales: 20 } },
+            { id: 's5', title: '1–3 relevante previews', detail: 'Maak alleen voor sterke prospects een preview via Client Intake → Client Factory. Gebruik openbare/door prospect geleverde echte info; verzin geen reviews, projecten of certificaten.', minutes: 90, xp: { coding: 35, marketing: 30 } },
+            { id: 's6', title: 'Gerichte outreach', detail: 'Benader de beste prospects via legale, doelgerichte route: warm/lokaal, actieve-vraag platform, DM/e-mail waar toegestaan of persoonlijk contact. Geen spamvolume als vervanging voor een sterke demo.', minutes: 60, xp: { sales: 50 } },
+            { id: 's7', title: 'First euro', detail: 'Een echte klant accepteert de afgesproken Website Ventures-offer en betaalt. Vanaf hier meten we fulfilment in plaats van snelheid te gokken.', minutes: 0, xp: { sales: 120, marketing: 40 }, boss: true }
           ]},
-          { id: 'p3', name: 'Deliver & systemize', steps: [
-            { id: 's8', title: 'Launch it', detail: 'Get their domain live, hand it over, and collect a testimonial.', minutes: 90, xp: { coding: 40, sales: 20 } },
-            { id: 's9', title: 'Recurring offer', detail: 'Offer hosting + maintenance for a small monthly fee. Recurring revenue beats one-offs.', minutes: 45, xp: { sales: 40 } },
-            { id: 's10', title: 'Referral ask', detail: 'Ask your first client for 2 referrals. Happy clients are your best sales channel.', minutes: 30, xp: { sales: 30 } }
+          { id: 'p3', name: 'Deliver without chaos', steps: [
+            { id: 's8', title: 'Intake → launch → handoff', detail: 'Lever via de vaste straat: Intake → Offer → Factory → real proof/assets → Fulfilment Run → desktop/mobile QA → Delivery Gate → commercieel geschikte hosting/domain → Customer Handoff.', minutes: 90, xp: { coding: 40, sales: 25 } },
+            { id: 's9', title: 'Hosting + support bewust kiezen', detail: 'Klant blijft domeineigenaar. Gebruik geen Vercel Hobby voor betaalde productie. Leg per klant vast of support/maintenance wel of niet verkocht is; maandelijkse recurring omzet is geen verplichte default.', minutes: 40, xp: { sales: 35, coding: 20 } },
+            { id: 's10', title: 'Referral ask', detail: 'Vraag alleen na een geslaagde echte oplevering om een review/referral. Real proof blijft real en wordt daarna pas in de Agency credibility-laag gebruikt.', minutes: 25, xp: { sales: 30, marketing: 20 } }
           ]},
-          { id: 'p4', name: 'Scale or stop', steps: [
-            { id: 's11', title: 'Review', detail: 'Time per site, price, repeat interest. Decide: raise prices, niche down, or archive with lessons.', minutes: 45, xp: { sales: 40 } }
+          { id: 'p4', name: 'Measure, price, scale', steps: [
+            { id: 's11', title: 'Klant 1–10 review', detail: 'Gebruik Fulfilment Run + change-request data: actieve minuten, wachttijd, revisions, hosting/support en marge. Beslis daarna pas over hogere standaardprijs, student/builder handoff, extra niches of geografische schaal.', minutes: 45, xp: { sales: 40, marketing: 20 }, boss: true }
           ]}
         ]
       },
@@ -140,6 +142,28 @@
     try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
   }
 
+  function captureCompletion (v) {
+    const out = {};
+    (v.phases || []).forEach(function (p) {
+      (p.steps || []).forEach(function (s) {
+        if (s && s.id && s.done) out[s.id] = { done: true, doneAt: s.doneAt || null };
+      });
+    });
+    return out;
+  }
+
+  function restoreCompletion (v, oldCompletion) {
+    (v.phases || []).forEach(function (p) {
+      (p.steps || []).forEach(function (s) {
+        const prev = oldCompletion[s.id];
+        if (prev) {
+          s.done = true;
+          if (prev.doneAt) s.doneAt = prev.doneAt;
+        }
+      });
+    });
+  }
+
   function refreshGamenfyBuildQueue (data) {
     const fresh = SEED.ventures.find(v => v.id === 'app_vormgeving');
     let v = (data.ventures || []).find(x => x.id === 'app_vormgeving');
@@ -149,32 +173,34 @@
       return true;
     }
     if (Number(v.focusVersion || 0) >= GAMENFY_FOCUS_VERSION) return false;
-
-    // Keep completion metadata for same-ID tasks that survived the refresh.
-    const oldCompletion = {};
-    (v.phases || []).forEach(function (p) {
-      (p.steps || []).forEach(function (s) {
-        if (s && s.id && s.done) oldCompletion[s.id] = { done: true, doneAt: s.doneAt || null };
-      });
-    });
-
+    const oldCompletion = captureCompletion(v);
     v.name = fresh.name;
     v.tagline = fresh.tagline;
     v.hero = v.hero || fresh.hero;
     v.status = 'active';
     v.focusVersion = GAMENFY_FOCUS_VERSION;
     v.phases = clone(fresh.phases);
-    (v.phases || []).forEach(function (p) {
-      (p.steps || []).forEach(function (s) {
-        // hf8 remains absent because optional Batch 8 may not block progress.
-        // Same-ID tasks keep prior completion state even when wording is tightened.
-        const prev = oldCompletion[s.id];
-        if (prev) {
-          s.done = true;
-          if (prev.doneAt) s.doneAt = prev.doneAt;
-        }
-      });
-    });
+    restoreCompletion(v, oldCompletion);
+    return true;
+  }
+
+  function refreshWebsiteVenture (data) {
+    const fresh = SEED.ventures.find(v => v.id === 'sell_websites');
+    let v = (data.ventures || []).find(x => x.id === 'sell_websites');
+    if (!fresh) return false;
+    if (!v) {
+      data.ventures.push(clone(fresh));
+      return true;
+    }
+    if (Number(v.focusVersion || 0) >= WEBSITE_FOCUS_VERSION) return false;
+    const oldCompletion = captureCompletion(v);
+    v.name = fresh.name;
+    v.tagline = fresh.tagline;
+    v.hero = v.hero || fresh.hero;
+    v.status = 'active';
+    v.focusVersion = WEBSITE_FOCUS_VERSION;
+    v.phases = clone(fresh.phases);
+    restoreCompletion(v, oldCompletion);
     return true;
   }
 
@@ -201,6 +227,7 @@
         if (v.hero == null && sv.hero) { v.hero = sv.hero; changed = true; }
       });
       if (refreshGamenfyBuildQueue(data)) changed = true;
+      if (refreshWebsiteVenture(data)) changed = true;
       if (changed) save(data);
     } catch (e) {}
     return data;
