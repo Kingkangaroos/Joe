@@ -1,16 +1,15 @@
 // =============================================================
-// Gamenfy — Ventures (v11.3)
+// Gamenfy — Ventures (v11.4)
 // Business ideas as quest ladders. Each venture = phases → steps.
 // Storage: rpg_ventures_v1 (synced). Seeded only if absent.
-// v11.3: aligns the builder queue with Website Ventures Production
-// Line v3.1: mobile hero derivative added, Batch 8 is non-blocking,
-// and the Gamenfy AutoSprite pilot is explicitly deferred.
+// v11.4: keeps the active Website Ventures queue aligned with the
+// Selected Assets integration gate while preserving completed step IDs.
 // =============================================================
 (function () {
   'use strict';
 
   const KEY = 'rpg_ventures_v1';
-  const GAMENFY_FOCUS_VERSION = 4;
+  const GAMENFY_FOCUS_VERSION = 5;
 
   const SEED = {
     v: 1,
@@ -117,10 +116,10 @@
             { id: 'hf9', title: 'Batch 9 · 4K masters', detail: 'Sla Batch 8 standaard over. Alleen als de echte coded agency page later aantoonbaar een media-gat heeft, gebruik je één relevante Batch 8 support-prompt. Voor de verplichte route: maak na gekozen 2K winners maximaal 1–2 Cinema Studio Image 2.5 4K renders voor agency hero en Plumbing hero. Bij 50% resterende betaalde credits eerst stoppen en reviewen.', minutes: 25, xp: { ai_tools: 40, coding: 10 }, boss: true }
           ]},
           { id: 'agency', name: 'Agency Showroom — integrate winners', steps: [
-            { id: 'ag1', title: 'Hero winner + mobile inbouwen', detail: 'Zet de gekozen desktop hero én de 4:5 mobile derivative in de exacte slotcontracten. Bewaar source masters en maak web-optimized derivatives apart.', minutes: 45, xp: { coding: 40, ai_tools: 15 } },
+            { id: 'ag1', title: 'Hero winner + mobile via Selected Assets', detail: 'Commit de gekozen desktop hero en de 4:5 mobile derivative op hun exacte manifest paths. Zet daarna alleen de bedoelde agency.hero.desktop en agency.hero.mobile registry-slots op selected. Review-checkboxen alleen zijn nooit live. Bewaar source masters en web-optimized derivatives apart.', minutes: 45, xp: { coding: 40, ai_tools: 15 } },
             { id: 'ag2', title: 'First-scroll payoff afmaken', detail: 'Laat tekst, hero en scrollbeweging als één Apple-achtige ervaring samenwerken. Hergebruik dezelfde master waar code/CSS/JS genoeg is; genereer niet automatisch meer art.', minutes: 60, xp: { coding: 60, marketing: 15 } },
-            { id: 'ag3', title: 'Plumbing showcase integreren', detail: 'Plaats de gekozen recurring technician en drie werk-scènes als demo/showcase. Gebruik echte desktop/mobile browsercaptures voor website-proof en presenteer AI-demo-art nooit als klantbewijs.', minutes: 60, xp: { coding: 45, marketing: 20 } },
-            { id: 'ag4', title: 'Mobile premium QA', detail: 'Test ongeveer 390px breed: hero composition, copy-safe ruimte, scroll payoff, showcase en CTA moeten ook op iPhone premium voelen.', minutes: 40, xp: { coding: 35 } }
+            { id: 'ag3', title: 'Plumbing showcase via registry integreren', detail: 'Commit de gekozen recurring technician en alleen de drie goedgekeurde werk-scènes op de manifest paths. Activeer daarna bewust de relevante Plumbing registry-slots. Gebruik echte desktop/mobile browsercaptures voor website-proof; AI-demo-art wordt nooit klantbewijs.', minutes: 60, xp: { coding: 45, marketing: 20 } },
+            { id: 'ag4', title: 'Mobile premium QA', detail: 'Test ongeveer 390px breed: hero composition, copy-safe ruimte, scroll payoff, showcase en CTA moeten ook op iPhone premium voelen. Controleer in Selected Assets dat geen selected path ontbreekt.', minutes: 40, xp: { coding: 35 } }
           ]},
           { id: 'commercial', name: 'Na visuals — verkoopbaar maken', steps: [
             { id: 'co1', title: 'Offer + scope locken', detail: 'Maak één begrijpelijke website-offer, founding price, revisiegrens en wat expliciet niet inbegrepen is. Houd €349 als hypothesis totdat dit besloten is.', minutes: 35, xp: { sales: 30, marketing: 20 } },
@@ -151,8 +150,7 @@
     }
     if (Number(v.focusVersion || 0) >= GAMENFY_FOCUS_VERSION) return false;
 
-    // Keep completion metadata for step IDs whose actual task survived the refresh.
-    // Newly introduced IDs (for example hf5m) remain open by definition.
+    // Keep completion metadata for same-ID tasks that survived the refresh.
     const oldCompletion = {};
     (v.phases || []).forEach(function (p) {
       (p.steps || []).forEach(function (s) {
@@ -168,8 +166,8 @@
     v.phases = clone(fresh.phases);
     (v.phases || []).forEach(function (p) {
       (p.steps || []).forEach(function (s) {
-        // hf8 was removed because optional Batch 8 may not block progress.
-        // Other same-ID tasks keep prior completion state.
+        // hf8 remains absent because optional Batch 8 may not block progress.
+        // Same-ID tasks keep prior completion state even when wording is tightened.
         const prev = oldCompletion[s.id];
         if (prev) {
           s.done = true;
