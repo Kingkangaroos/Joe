@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "id": "plumbing-demo",
+  "status": "fictional-demo",
+  "brand": {
+    "name": "AUREL",
+    "subtitle": "Installatietechniek",
+    "footerNote": "AUREL is een fictieve demonaam voor Website Ventures."
+  },
+  "seo": {
+    "title": "AUREL Installatietechniek — Premium Plumbing Flagship v1"
+  },
+  "theme": {
+    "paper": "#f4f1ea",
+    "paper2": "#ebe5da",
+    "ink": "#151410",
+    "muted": "#6e6a61",
+    "accent": "#b6252f",
+    "accentDeep": "#74151d",
+    "chrome": "#d8d9d5",
+    "night": "#11120f"
+  },
+  "hero": {
+    "eyebrow": "Spoed wanneer het moet. Afwerking alsof het mag blijven.",
+    "headline": "Water wacht",
+    "headlineAccent": "op niemand.",
+    "lead": "Van lekkage tot luxe badkamer: één installateur die snel schakelt, rustig uitlegt en werk oplevert dat u niet opnieuw wilt laten doen."
+  },
+  "contact": {
+    "primaryLabel": "Ik heb nu hulp nodig",
+    "primaryHref": "#contact",
+    "secondaryLabel": "Bekijk installatiewerk",
+    "secondaryHref": "#services",
+    "navLabel": "Spoed / contact",
+    "navHref": "#contact"
+  },
+  "intro": {
+    "before": "Niet de goedkoopste bus. Wel degene die u",
+    "accent": "nog een keer belt.",
+    "body": "Deze demo verkoopt geen fictieve keurmerken of reviews. Hij test de commerciële kern: een urgente binnenkomst die snel vertrouwen opbouwt en vervolgens laat zien dat dezelfde vakman ook het nette, hoogwaardige installatiewerk kan uitvoeren."
+  },
+  "servicesSection": {
+    "headline": "Eén nummer voor natte problemen én mooie plannen.",
+    "lead": "De flagship hoeft niet als pure loodgieter-site te voelen. Hij gebruikt spoed als scherpe commerciële ingang, maar laat direct genoeg breedte zien voor renovatie- en installatiewerk met hogere orderwaarde."
+  },
+  "services": [
+    {
+      "title": "Spoed & lekkage",
+      "description": "Triage, lokaliseren, veiligstellen en gericht herstel. De inhoudelijke scope wordt per echte klant aangepast.",
+      "label": "Urgency entry →"
+    },
+    {
+      "title": "Badkamer & sanitair",
+      "description": "Installatie en renovatie met aandacht voor lijnvoering, aansluitingen, details en een rustige oplevering.",
+      "label": "Premium project →"
+    },
+    {
+      "title": "Leidingwerk & onderhoud",
+      "description": "Van verplaatsen en vernieuwen tot preventief onderhoud. Eén duidelijke contactlijn voor huis of klein bedrijf.",
+      "label": "Allround service →"
+    }
+  ],
+  "final": {
+    "kicker": "Final CTA · demo",
+    "headline": "Eerst rust.",
+    "headlineSecond": "Dan water.",
+    "lead": "Voor een echte klant wordt deze CTA gekoppeld aan bellen, WhatsApp, openingstijden en servicegebied. De demo test nu alleen hiërarchie, emotie en conversieritme.",
+    "ctaLabel": "Start opnieuw ↑",
+    "ctaHref": "#top"
+  },
+  "serviceArea": "Demo — geen echte serviceclaim"
+}
