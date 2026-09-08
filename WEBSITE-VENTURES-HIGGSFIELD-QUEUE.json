@@ -1,0 +1,229 @@
+{
+  "name": "Website Ventures Higgsfield Manual Queue",
+  "version": 1,
+  "updatedAt": "2026-09-08",
+  "managedBy": "ChatGPT (OpenAI)",
+  "source": "Website Ventures project decisions + Production Line v3",
+  "status": {
+    "batch4": "done",
+    "nextBatch": 5,
+    "rule": "Only batches after 4 are active here. Still/reference winners before finish or motion."
+  },
+  "hardRules": [
+    "Batch 4 is complete; do not regenerate it by default.",
+    "Manual higgsfield.ai is the default path for Unlimited exploration.",
+    "50% credit balance remaining is a hard review stop for paid generations.",
+    "One generation job must have one exact website purpose.",
+    "No final 4K credit spend before a 2K still winner is chosen.",
+    "Generated demo imagery may not be presented as real completed client work.",
+    "For plumbing, lock exactly one recurring technician identity before generating working scenes."
+  ],
+  "batches": [
+    {
+      "number": 5,
+      "name": "Agency Hero Round",
+      "status": "next",
+      "dependency": "Batch 4 direction winner",
+      "instruction": "Run all three hero concepts inside the winning art direction. Pick one hero winner before Batch 8 or 9.",
+      "jobs": [
+        {
+          "id": "AG-HERO-TRANSFORM-001",
+          "title": "Transformation Sculpture",
+          "purpose": "Agency homepage hero",
+          "model": "Higgsfield Soul 2.0",
+          "modelId": "soul_2",
+          "aspectRatio": "16:9",
+          "quality": "2K",
+          "count": "2-3 variants",
+          "balance": "Unlimited preferred",
+          "prompt": "Hero campaign image for an elite digital design agency. In a pristine architectural gallery, one monumental sculptural form visibly transitions from raw unfinished neutral stone into immaculate polished chrome, crystal-clear glass and a controlled deep oxblood-red translucent material. The transformation is elegant and physically believable, symbolizing an ordinary business becoming a category-leading premium brand. Ultra-real material detail, restrained automotive campaign lighting, modern European luxury, large clean negative space for website headline and CTA, no text, no logo, no people, widescreen 16:9.",
+          "gate": "Pass if the image itself communicates ordinary business -> premium transformation before any copy is read."
+        },
+        {
+          "id": "AG-HERO-PRODUCT-001",
+          "title": "Website as Luxury Product",
+          "purpose": "Agency homepage hero",
+          "model": "Higgsfield Soul 2.0",
+          "modelId": "soul_2",
+          "aspectRatio": "16:9",
+          "quality": "2K",
+          "count": "2-3 variants",
+          "balance": "Unlimited preferred",
+          "prompt": "Hero image for a premium web design agency, treating a website interface as a luxury engineered product rather than a flat screenshot. A razor-thin floating glass display object with subtle chrome edges and a restrained deep-red accent, staged on a sculptural natural-stone plinth inside a pristine architectural space. Sophisticated product-launch photography, tactile realistic materials, minimal composition, huge negative space for headline copy, elegant reflections, no readable UI text, no brand logos, no people, no generic laptop mockup, widescreen 16:9.",
+          "gate": "Pass if a website instantly feels like a premium engineered product rather than a cheap page or laptop mockup."
+        },
+        {
+          "id": "AG-HERO-MATERIAL-001",
+          "title": "Material Performance",
+          "purpose": "Agency homepage hero",
+          "model": "Higgsfield Soul 2.0",
+          "modelId": "soul_2",
+          "aspectRatio": "16:9",
+          "quality": "2K",
+          "count": "2-3 variants",
+          "balance": "Unlimited preferred",
+          "prompt": "Abstract but photoreal premium hero for a high-end web design agency: macro architectural composition of flowing clear water crossing polished chrome, pale stone and deep oxblood-red glass, with precise controlled reflections and cinematic studio lighting. The materials feel engineered, tactile and extremely expensive; dynamic enough to imply motion but calm enough for a luxury homepage. Large copy-safe negative space, no text, no logos, no people, no decorative clutter, widescreen 16:9.",
+          "gate": "Pass only if the visual impact is strong enough to justify the weaker literal meaning."
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "name": "Plumbing Technician Candidate Round",
+      "status": "after-batch-5-can-run-in-parallel",
+      "instruction": "Generate four credible candidates, then choose exactly one recurring technician master.",
+      "jobs": [
+        {
+          "id": "PL-CHAR-001",
+          "title": "Recurring plumbing technician candidates",
+          "purpose": "Plumbing flagship character master",
+          "model": "Higgsfield Soul 2.0",
+          "modelId": "soul_2",
+          "aspectRatio": "3:4",
+          "quality": "2K",
+          "count": "4 candidates",
+          "balance": "Unlimited preferred",
+          "prompt": "Photoreal premium campaign portrait of a real experienced European plumbing/service technician, approximately 30-45 years old, calm, competent and approachable. He wears premium charcoal or deep navy technical workwear with one very subtle oxblood-red accent line; the uniform is immaculate but believable, functional rather than fashionable. Authentic face, realistic skin and hands, natural posture, professional but warm expression. Bright modern service environment, lighting and composition with the polish of a Porsche service campaign, while he must still feel like a real Dutch tradesperson rather than a fashion model. No hard hat unless context requires it, no suit, no crossed-arms corporate pose, no exaggerated stock-photo smile, no hyper-muscular model, no dirty stereotype, no text, no logos.",
+          "avoid": "Reject stock-photo faces, fashion casting, contractor cliché, fake AI perfection, exaggerated muscles or a dirty stereotype.",
+          "gate": "Choose exactly one person only if he feels trustworthy to a Dutch customer and premium enough to carry the full flagship."
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "name": "Same Technician Working Scenes",
+      "status": "blocked-until-batch-6-winner",
+      "instruction": "Upload the Batch 6 winner as reference. Identity consistency is mandatory.",
+      "jobs": [
+        {
+          "id": "PL-STORY-DIAG-001",
+          "title": "Bathroom diagnostic",
+          "purpose": "Plumbing primary website scene",
+          "model": "Higgsfield Soul 2.0",
+          "modelId": "soul_2",
+          "aspectRatio": "16:9",
+          "quality": "2K",
+          "count": "2-3 variants",
+          "balance": "Unlimited preferred",
+          "reference": "Upload the winning Batch 6 technician as the reference image",
+          "prompt": "Using the exact same technician identity from the supplied reference image, create a photoreal premium working scene in a bright modern Dutch bathroom. He is calmly diagnosing a real plumbing issue with professional tools, natural body language and realistic hands. Preserve his face, age, hair, build and charcoal/deep-navy technical workwear with the subtle oxblood-red accent. The environment is clean and believable, not a luxury fantasy. Lighting and composition have the polish of a Porsche service campaign while the action still feels like authentic skilled trade work. Leave intentional negative space for website copy. No second technician, no changed face, no hard hat unless physically necessary, no staged corporate pose, no exaggerated smile, no text, no logos, widescreen 16:9.",
+          "gate": "Pass only when it is obviously the same person and directly usable on the plumbing flagship."
+        },
+        {
+          "id": "PL-STORY-SINK-001",
+          "title": "Under-sink service detail",
+          "purpose": "Plumbing service-section visual",
+          "model": "Higgsfield Soul 2.0",
+          "modelId": "soul_2",
+          "aspectRatio": "16:9",
+          "quality": "2K",
+          "count": "2-3 variants",
+          "balance": "Unlimited preferred",
+          "reference": "Upload the winning Batch 6 technician as the reference image",
+          "prompt": "Using the exact same technician identity from the supplied reference image, create a premium photoreal service scene of the technician working under a bathroom or kitchen sink in a clean modern Dutch home. Preserve the same face, age, hair, build and deep-charcoal/deep-navy technical workwear with the subtle oxblood-red accent. Natural body posture, realistic hands, believable plumbing tools, authentic concentration, bright but controlled lighting, premium campaign polish, spacious composition with room for website copy, no second technician, no changed identity, no text, no logos, widescreen 16:9.",
+          "gate": "Pass when craftsmanship reads clearly at website size and identity remains stable."
+        },
+        {
+          "id": "PL-STORY-TRUST-001",
+          "title": "Arrival / customer trust moment",
+          "purpose": "Plumbing trust/about visual",
+          "model": "Higgsfield Soul 2.0",
+          "modelId": "soul_2",
+          "aspectRatio": "16:9",
+          "quality": "2K",
+          "count": "2-3 variants",
+          "balance": "Unlimited preferred",
+          "reference": "Upload the winning Batch 6 technician as the reference image",
+          "prompt": "Using the exact same technician identity from the supplied reference image, create a premium photoreal scene showing the technician in a calm trustworthy service moment at the entrance of a clean modern Dutch home or just inside the hallway, ready to help. Preserve his exact identity, clothing and subtle oxblood-red accent. He should feel warm, professional and dependable without becoming corporate or posed. The scene should look like a Porsche-level service campaign translated to authentic trade work. No fake handshake, no second technician, no exaggerated smile, no text, no logos, widescreen 16:9 with clean copy-safe space.",
+          "gate": "Pass if the scene increases trust without reading as stock photography or staged corporate imagery."
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "name": "Agency Support Visuals",
+      "status": "blocked-until-batch-5-winner",
+      "instruction": "All support visuals must inherit the exact winning agency direction rather than invent a new visual world.",
+      "jobs": [
+        {
+          "id": "AG-SUPPORT-TRANSFORM-001",
+          "title": "Transformation detail",
+          "purpose": "Agency transformation/value section visual",
+          "model": "Higgsfield Soul 2.0",
+          "modelId": "soul_2",
+          "aspectRatio": "16:9",
+          "quality": "2K",
+          "count": "2-3 variants",
+          "balance": "Unlimited preferred",
+          "reference": "Use the Batch 5 winning direction/hero as visual reference if the website UI allows it",
+          "prompt": "Create a premium supporting website visual in the already chosen agency art direction, focused on the idea of transformation and refinement. Show a close but elegant composition of refined materials such as pale stone, polished chrome, glass and a restrained oxblood-red accent, with a strong sense of craftsmanship, precision and luxury. This image should support a section about turning ordinary businesses into premium digital brands. Photoreal, calm, expensive, modern, no text, no logos, no people, widescreen 16:9.",
+          "gate": "Pass only if it obviously belongs to the same world as the chosen hero."
+        },
+        {
+          "id": "AG-SUPPORT-PROCESS-001",
+          "title": "Precision / process",
+          "purpose": "Agency process/method section visual",
+          "model": "Higgsfield Soul 2.0",
+          "modelId": "soul_2",
+          "aspectRatio": "16:9",
+          "quality": "2K",
+          "count": "2-3 variants",
+          "balance": "Unlimited preferred",
+          "reference": "Use the Batch 5 winning direction/hero as visual reference if the website UI allows it",
+          "prompt": "Create a premium supporting visual for a high-end web design agency, in the exact same chosen art direction as the winner. The image should communicate precision, process and technical refinement through clean geometry, luxurious materials, controlled lighting and disciplined composition. It must feel expensive and trustworthy, with copy-safe negative space for a process or methodology section. No text, no logos, no people, no generic office imagery, widescreen 16:9.",
+          "gate": "Pass if it supports the process section without looking like generic tech or office stock."
+        },
+        {
+          "id": "AG-SUPPORT-SHOWCASE-001",
+          "title": "Showcase / product excellence",
+          "purpose": "Agency showcase/portfolio visual",
+          "model": "Higgsfield Soul 2.0",
+          "modelId": "soul_2",
+          "aspectRatio": "16:9",
+          "quality": "2K",
+          "count": "2-3 variants",
+          "balance": "Unlimited preferred",
+          "reference": "Use the Batch 5 winning direction/hero as visual reference if the website UI allows it",
+          "prompt": "Create a supporting showcase image for an elite digital design agency, in the exact same chosen visual direction as the winner. The image should feel like a luxury campaign visual that can sit beside a portfolio or client-results section: sculptural, minimal, premium, highly controlled, photoreal and modern. Suggest product excellence and digital craftsmanship without showing readable UI or text. Use elegant negative space and keep it directly usable on a premium website, widescreen 16:9.",
+          "gate": "Pass if it adds premium depth without competing with the real portfolio/demo content."
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "name": "Final 4K Masters",
+      "status": "paid-finish-only-after-winners",
+      "instruction": "Do not use this batch for exploration. These are credit-sensitive final masters only.",
+      "jobs": [
+        {
+          "id": "AG-HERO-MASTER-001",
+          "title": "Final agency hero master",
+          "purpose": "Final agency homepage hero",
+          "model": "Cinema Studio Image 2.5",
+          "modelId": "cinematic_studio_2_5",
+          "aspectRatio": "16:9",
+          "quality": "4K",
+          "count": "1-2 max",
+          "balance": "Credits / finish path",
+          "reference": "Use the winning Batch 5 still as reference image",
+          "prompt": "Create a final master-quality premium website hero based on the supplied winning still and the exact winning hero concept. Preserve the same overall composition language, art direction, material palette and emotional tone, but increase realism, richness, lighting control and final polish to true flagship quality. The image must remain calm, expensive, modern and directly usable as the hero image for a luxury digital design agency website. Keep clean negative space for headline and CTA. No text, no logos, no people, widescreen 16:9.",
+          "gate": "Only accept if it is clearly better than the 2K winner without changing the winning concept."
+        },
+        {
+          "id": "PL-HERO-MASTER-001",
+          "title": "Final plumbing hero master",
+          "purpose": "Final plumbing flagship hero",
+          "model": "Cinema Studio Image 2.5",
+          "modelId": "cinematic_studio_2_5",
+          "aspectRatio": "16:9",
+          "quality": "4K",
+          "count": "1-2 max",
+          "balance": "Credits / finish path",
+          "reference": "Use the winning Batch 7 technician working scene as reference image",
+          "prompt": "Create a final master-quality premium plumbing website hero based on the supplied winning technician scene. Preserve the exact same technician identity, premium but believable service aesthetic, composition logic and trustworthiness, while increasing final realism and production polish. The image should look like a flagship service campaign and still feel authentic to a real Dutch plumbing business. Keep generous copy-safe space, no text, no logos, widescreen 16:9.",
+          "gate": "Only accept if the exact technician identity survives and the master feels meaningfully more polished than the 2K source."
+        }
+      ]
+    }
+  ]
+}
