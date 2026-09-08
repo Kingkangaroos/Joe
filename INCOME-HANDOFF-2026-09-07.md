@@ -2,6 +2,21 @@
 
 Managed by ChatGPT (OpenAI). This is the compact commercial handoff from Joey's cross-project sparring session so the Income / Website Ventures project can continue without re-explaining the decisions.
 
+## LIVE UPDATE — 2026-09-08
+- **Higgsfield Batch 4 is complete. Do not regenerate it by default.**
+- The active remaining manual generation queue is now **Batch 5 → 9** in `WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json`.
+- The live copy/paste cockpit is `website-ventures-higgsfield-prompt-board.html` and is linked from Finance → Ventures → Productielijn.
+- Each remaining job now has the exact prompt, model, aspect ratio, quality, variant count, reference instruction, acceptance gate, one-tap copy controls, local completion tracking and a planned repo filename.
+- The asset landing structure is `website-ventures-assets/` with `WEBSITE-VENTURES-ASSET-IMPORT-MANIFEST.json` mapping generation job IDs to target repo paths.
+- Current order:
+  1. **Batch 5 — Agency Hero Round**: 3 meaning-led 16:9 Soul 2.0 concepts; choose one winner.
+  2. **Batch 6 — Plumbing technician**: 4 candidates; choose exactly one recurring technician master.
+  3. **Batch 7 — Same-technician scenes**: diagnosis, under-sink service, arrival/trust using the Batch 6 winner as reference.
+  4. **Batch 8 — Agency support visuals**: transformation, process, showcase; inherit the Batch 5 winning world.
+  5. **Batch 9 — Final 4K masters**: Cinema Studio Image 2.5 only after winners; credit-sensitive finish.
+- Gamenfy's internal Builder/Next-Move queue was also refreshed so it starts at **Batch 5**, rather than still asking for old four-direction / skill-tree / Season-card work.
+- 50% remaining paid-credit balance remains a hard review stop. Unlimited/manual website exploration is preferred before final paid finish.
+
 ## READ THIS FIRST — latest decisions
 1. **Website Ventures = priority #1 / primary near-term income engine.**
 2. **Build Joey's own Website Ventures / agency website first, before polishing the Plumbing flagship further.** Joey explicitly wants his own site to prove he can build exceptional websites before selling that claim to others.
