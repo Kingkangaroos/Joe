@@ -1,0 +1,120 @@
+{
+  "name": "Website Ventures Selected Assets Registry",
+  "version": 1,
+  "updatedAt": "2026-09-08",
+  "managedBy": "ChatGPT (OpenAI)",
+  "status": "active-no-assets-selected-yet",
+  "purpose": "Single integration contract between approved Website Ventures visual winners and the coded Agency/Plumbing pages. A page may only load a media file when the corresponding slot status is exactly 'selected'.",
+  "rules": [
+    "Pending slots must never break or visually replace the coded placeholder.",
+    "Only selected winners enter this registry; exploration variants remain outside live page integration.",
+    "selectedPath must be a repository-relative path to a real committed asset before status becomes selected.",
+    "Agency desktop and mobile hero are separate slots so mobile never silently relies on an accidental desktop crop.",
+    "Plumbing story slots use the same recurring PL-CHAR-001 identity, but PL-CHAR-001 itself is a reference master rather than a mandatory visible website slot.",
+    "Real client proof and reviews are never routed through this AI/demo asset registry.",
+    "Changing a selectedPath should be sufficient to swap an approved visual without editing page markup."
+  ],
+  "slots": {
+    "agency.hero.desktop": {
+      "status": "pending",
+      "purpose": "Agency hero desktop source used inside the right-column hero stage and first-scroll response.",
+      "selectedJobId": null,
+      "selectedGenerationId": null,
+      "selectedPath": null,
+      "candidateJobIds": ["AG-HERO-TRANSFORM-001", "AG-HERO-PRODUCT-001", "AG-HERO-MATERIAL-001"],
+      "candidatePaths": [
+        "website-ventures-assets/agency/ag-hero-transform-001.png",
+        "website-ventures-assets/agency/ag-hero-product-001.png",
+        "website-ventures-assets/agency/ag-hero-material-001.png"
+      ],
+      "futureMasterJobId": "AG-HERO-MASTER-001",
+      "futureMasterPath": "website-ventures-assets/agency/ag-hero-master-001.png",
+      "fit": "cover",
+      "position": "center"
+    },
+    "agency.hero.mobile": {
+      "status": "pending",
+      "purpose": "Deliberate 4:5 mobile derivative of the selected agency desktop hero.",
+      "selectedJobId": null,
+      "selectedGenerationId": null,
+      "selectedPath": null,
+      "requiredJobId": "AG-HERO-MOBILE-001",
+      "plannedPath": "website-ventures-assets/agency/ag-hero-mobile-001.png",
+      "fit": "cover",
+      "position": "center"
+    },
+    "agency.showcase.plumbing.desktop": {
+      "status": "pending",
+      "purpose": "Real desktop browser capture of the actual coded Plumbing demo; not generated AI proof.",
+      "selectedJobId": "REAL-CAPTURE-PL-DESKTOP",
+      "selectedGenerationId": null,
+      "selectedPath": null,
+      "plannedPath": "website-ventures-assets/showcase/plumbing-desktop.png",
+      "sourceType": "real-browser-capture",
+      "fit": "cover",
+      "position": "top"
+    },
+    "agency.showcase.plumbing.mobile": {
+      "status": "pending",
+      "purpose": "Real ~390px mobile capture of the actual coded Plumbing demo; not generated AI proof.",
+      "selectedJobId": "REAL-CAPTURE-PL-MOBILE",
+      "selectedGenerationId": null,
+      "selectedPath": null,
+      "plannedPath": "website-ventures-assets/showcase/plumbing-mobile.png",
+      "sourceType": "real-browser-capture",
+      "fit": "cover",
+      "position": "top"
+    },
+    "plumbing.character.master": {
+      "status": "pending",
+      "purpose": "Recurring technician identity reference for all generated Plumbing scenes. Reference master; not automatically rendered on the website.",
+      "selectedJobId": "PL-CHAR-001",
+      "selectedGenerationId": null,
+      "selectedPath": null,
+      "plannedPath": "website-ventures-assets/plumbing/pl-char-001.png",
+      "renderByDefault": false
+    },
+    "plumbing.hero": {
+      "status": "pending",
+      "purpose": "Approved primary Plumbing hero visual. May initially point to a selected Batch 7 scene and later be upgraded to PL-HERO-MASTER-001 without markup changes.",
+      "selectedJobId": null,
+      "selectedGenerationId": null,
+      "selectedPath": null,
+      "candidateJobIds": ["PL-STORY-DIAG-001", "PL-STORY-SINK-001", "PL-STORY-TRUST-001"],
+      "futureMasterJobId": "PL-HERO-MASTER-001",
+      "futureMasterPath": "website-ventures-assets/plumbing/pl-hero-master-001.png",
+      "fit": "cover",
+      "position": "center"
+    },
+    "plumbing.story.trust": {
+      "status": "pending",
+      "purpose": "Arrival/trust scene shown at Plumbing story beat 03 after approval.",
+      "selectedJobId": "PL-STORY-TRUST-001",
+      "selectedGenerationId": null,
+      "selectedPath": null,
+      "plannedPath": "website-ventures-assets/plumbing/pl-story-trust-001.png",
+      "fit": "cover",
+      "position": "center"
+    },
+    "plumbing.story.diagnosis": {
+      "status": "pending",
+      "purpose": "Diagnosis scene shown at Plumbing story beat 04 after approval.",
+      "selectedJobId": "PL-STORY-DIAG-001",
+      "selectedGenerationId": null,
+      "selectedPath": null,
+      "plannedPath": "website-ventures-assets/plumbing/pl-story-diag-001.png",
+      "fit": "cover",
+      "position": "center"
+    },
+    "plumbing.story.service": {
+      "status": "pending",
+      "purpose": "Under-sink/service scene shown at Plumbing story beat 05 after approval.",
+      "selectedJobId": "PL-STORY-SINK-001",
+      "selectedGenerationId": null,
+      "selectedPath": null,
+      "plannedPath": "website-ventures-assets/plumbing/pl-story-sink-001.png",
+      "fit": "cover",
+      "position": "center"
+    }
+  }
+}
