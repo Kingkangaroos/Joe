@@ -20,6 +20,9 @@ assert.ok(board.includes('WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json'),'board reads 
 assert.ok(board.includes('Copy full setup'),'one-tap full setup copy exists');
 assert.ok(board.includes('Copy prompt only'),'prompt-only copy exists');
 assert.ok(board.includes('navigator.clipboard.writeText'),'clipboard implementation exists');
+assert.ok(board.includes('Mark done'),'manual completion tracking exists');
+assert.ok(board.includes("DONE_KEY='wv_higgsfield_queue_done_v1'"),'queue progress persists locally');
+assert.ok(board.includes('Resterende queue'),'progress summary is visible');
 assert.ok(board.includes('50% credit hard stop'),'credit half-way review gate is visible');
 assert.ok(line.includes('website-ventures-higgsfield-prompt-board.html'),'Production Line v3 links the prompt board');
 console.log('Higgsfield remaining queue smoke passed.');
