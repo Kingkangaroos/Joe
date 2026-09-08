@@ -12,9 +12,12 @@ assert.ok(finance.includes("['net','subs','wish','ventures','debts']"));
 
 const workspace=read('ventures-workspace.html');
 assert.ok(workspace.includes('data-gamenfy-scope="personal"'));
-assert.ok(workspace.includes('Public export: exclude'));
-assert.ok(workspace.includes('Do not create a separate repo'));
+assert.ok(workspace.includes('Personal / internal tooling.'));
+assert.ok(workspace.includes('Project Headquarters blijft de duurzame productbron'));
 assert.ok(workspace.includes('Visual production line'));
+assert.ok(workspace.includes('website-ventures-ops.html'));
+assert.ok(workspace.includes('website-ventures-higgsfield-review.html'));
+assert.ok(workspace.includes('website-ventures-selected-assets.html'));
 assert.ok(workspace.includes("rpg_venture_notes_v1"));
 
 const character=read('character.html');

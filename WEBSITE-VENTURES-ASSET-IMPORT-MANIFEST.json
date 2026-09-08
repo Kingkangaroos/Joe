@@ -1,12 +1,13 @@
 {
   "name": "Website Ventures Asset Import Manifest",
-  "version": 2,
+  "version": 3,
   "updatedAt": "2026-09-08",
   "managedBy": "ChatGPT (OpenAI)",
   "sourceQueue": "WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json",
   "root": "website-ventures-assets",
   "rules": [
     "Upload selected candidates/winners only; exploration variants can remain in Higgsfield.",
+    "Every multi-output required job has unique candidatePaths so downloaded variants cannot overwrite each other before review.",
     "Keep original high-quality masters; create web derivatives separately.",
     "Generated demo imagery is never real client proof.",
     "AG-HERO-MOBILE-001 is derived from the selected Batch 5 hero and must remain the same campaign/world.",
@@ -19,6 +20,11 @@
       "jobId": "AG-HERO-TRANSFORM-001",
       "batch": 5,
       "targetPath": "website-ventures-assets/agency/ag-hero-transform-001.png",
+      "candidatePaths": [
+        "website-ventures-assets/agency/intake/ag-hero-transform-001-a.png",
+        "website-ventures-assets/agency/intake/ag-hero-transform-001-b.png",
+        "website-ventures-assets/agency/intake/ag-hero-transform-001-c.png"
+      ],
       "role": "agency hero candidate",
       "status": "awaiting-generation",
       "winnerPolicy": "candidate; normally only one of the first three Batch 5 concepts becomes the desktop hero winner"
@@ -27,6 +33,11 @@
       "jobId": "AG-HERO-PRODUCT-001",
       "batch": 5,
       "targetPath": "website-ventures-assets/agency/ag-hero-product-001.png",
+      "candidatePaths": [
+        "website-ventures-assets/agency/intake/ag-hero-product-001-a.png",
+        "website-ventures-assets/agency/intake/ag-hero-product-001-b.png",
+        "website-ventures-assets/agency/intake/ag-hero-product-001-c.png"
+      ],
       "role": "agency hero candidate",
       "status": "awaiting-generation",
       "winnerPolicy": "candidate; normally only one of the first three Batch 5 concepts becomes the desktop hero winner"
@@ -35,6 +46,11 @@
       "jobId": "AG-HERO-MATERIAL-001",
       "batch": 5,
       "targetPath": "website-ventures-assets/agency/ag-hero-material-001.png",
+      "candidatePaths": [
+        "website-ventures-assets/agency/intake/ag-hero-material-001-a.png",
+        "website-ventures-assets/agency/intake/ag-hero-material-001-b.png",
+        "website-ventures-assets/agency/intake/ag-hero-material-001-c.png"
+      ],
       "role": "agency hero candidate",
       "status": "awaiting-generation",
       "winnerPolicy": "candidate; normally only one of the first three Batch 5 concepts becomes the desktop hero winner"
@@ -43,6 +59,10 @@
       "jobId": "AG-HERO-MOBILE-001",
       "batch": 5,
       "targetPath": "website-ventures-assets/agency/ag-hero-mobile-001.png",
+      "candidatePaths": [
+        "website-ventures-assets/agency/intake/ag-hero-mobile-001-a.png",
+        "website-ventures-assets/agency/intake/ag-hero-mobile-001-b.png"
+      ],
       "role": "4:5 mobile derivative of selected agency hero",
       "status": "blocked-by-batch-5-desktop-winner",
       "referenceJobId": "selected AG-HERO-TRANSFORM-001, AG-HERO-PRODUCT-001 or AG-HERO-MATERIAL-001",
@@ -66,6 +86,11 @@
       "jobId": "PL-STORY-DIAG-001",
       "batch": 7,
       "targetPath": "website-ventures-assets/plumbing/pl-story-diag-001.png",
+      "candidatePaths": [
+        "website-ventures-assets/plumbing/intake/pl-story-diag-001-a.png",
+        "website-ventures-assets/plumbing/intake/pl-story-diag-001-b.png",
+        "website-ventures-assets/plumbing/intake/pl-story-diag-001-c.png"
+      ],
       "role": "primary diagnosis scene",
       "status": "blocked-by-pl-char-001",
       "referenceJobId": "PL-CHAR-001"
@@ -74,6 +99,11 @@
       "jobId": "PL-STORY-SINK-001",
       "batch": 7,
       "targetPath": "website-ventures-assets/plumbing/pl-story-sink-001.png",
+      "candidatePaths": [
+        "website-ventures-assets/plumbing/intake/pl-story-sink-001-a.png",
+        "website-ventures-assets/plumbing/intake/pl-story-sink-001-b.png",
+        "website-ventures-assets/plumbing/intake/pl-story-sink-001-c.png"
+      ],
       "role": "service detail scene",
       "status": "blocked-by-pl-char-001",
       "referenceJobId": "PL-CHAR-001"
@@ -82,6 +112,11 @@
       "jobId": "PL-STORY-TRUST-001",
       "batch": 7,
       "targetPath": "website-ventures-assets/plumbing/pl-story-trust-001.png",
+      "candidatePaths": [
+        "website-ventures-assets/plumbing/intake/pl-story-trust-001-a.png",
+        "website-ventures-assets/plumbing/intake/pl-story-trust-001-b.png",
+        "website-ventures-assets/plumbing/intake/pl-story-trust-001-c.png"
+      ],
       "role": "arrival/trust scene",
       "status": "blocked-by-pl-char-001",
       "referenceJobId": "PL-CHAR-001"

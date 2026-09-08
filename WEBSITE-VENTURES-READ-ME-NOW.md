@@ -343,4 +343,14 @@ The autonomous no-cost infrastructure work is now far ahead of the manual visual
 
 **Next real P0 remains Higgsfield Batch 5.**
 
+The Batch 5 backend is now variant-safe:
+- each 2–3 output job has unique A/B/C intake filenames;
+- Review stores generation ID, score and defects per variant;
+- the three desktop concepts share one exclusive winner gate;
+- the mobile derivative stays locked until that desktop winner exists;
+- dependent copy resolves the exact winning reference filename;
+- Review can copy one compact Batch 5 handoff back to ChatGPT.
+
+The full browserless regression suite is green again (91/91). Stale tests and documentation from the rolled-back Gamenfy Public experiment and the retired broad v2 Higgsfield plan were aligned with current production truth; no Public rollout or generation was re-enabled.
+
 Until the selected Agency hero exists, do not bury the project under more random tooling or generated support art. New autonomous work should primarily remove actual blockers, tighten measurement, or prepare evidence — not invent extra scope.

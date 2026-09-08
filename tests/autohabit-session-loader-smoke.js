@@ -6,9 +6,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const source = fs.readFileSync(path.join(__dirname, '..', 'auth.js'), 'utf8');
-const privateOwnerMatch = source.match(/const PRIVATE_OWNER_ID = '([^']+)'/);
-const PRIVATE_OWNER_ID = privateOwnerMatch && privateOwnerMatch[1];
-assert.ok(PRIVATE_OWNER_ID, 'auth.js must expose the deterministic private owner constant used by this fixture');
+const TEST_USER_ID = '00000000-0000-4000-8000-000000000001';
 
 function tick() { return new Promise((resolve) => setImmediate(resolve)); }
 
@@ -17,7 +15,7 @@ async function runScenario(opts) {
   const appended = [];
   const windowListeners = {};
   const documentListeners = {};
-  const session = { user: { id: PRIVATE_OWNER_ID, email: 'owner@example.test' }, access_token: 'session-token' };
+  const session = { user: { id: TEST_USER_ID, email: 'owner@example.test' }, access_token: 'session-token' };
 
   const client = {
     auth: {
@@ -94,32 +92,32 @@ async function runScenario(opts) {
 (async () => {
   {
     const state = await runScenario({ rpgSync: true, engine: true });
-    let scripts = state.appended.filter((el) => el.tagName === 'SCRIPT');
+    let scripts = state.appended.filter((el) => el.dataset.gamenfyAutohabitReconcile === '1');
     assert.equal(scripts.length, 1, 'authenticated RPG surfaces load exactly one retrospective reconciler');
     assert.equal(scripts[0].src, 'autohabit-reconcile.js?v=11.9');
     assert.equal(scripts[0].dataset.gamenfyAutohabitReconcile, '1');
     assert.equal(state.window.__gamenfyAutohabitSessionLoaderLoaded, undefined, 'loader does not claim success before script.onload');
 
     state.windowListeners['gamenfy:cloud-sync-ready']({ detail: { appKey: 'rpg' } });
-    scripts = state.appended.filter((el) => el.tagName === 'SCRIPT');
+    scripts = state.appended.filter((el) => el.dataset.gamenfyAutohabitReconcile === '1');
     assert.equal(scripts.length, 1, 'cloud-ready event cannot double-inject while reconciler script is still loading');
 
     scripts[0].onload();
     assert.equal(state.window.__gamenfyAutohabitSessionLoaderLoaded, true, 'session loader records ownership only after successful script load');
     state.windowListeners['gamenfy:cloud-sync-ready']({ detail: { appKey: 'rpg' } });
-    assert.equal(state.appended.filter((el) => el.tagName === 'SCRIPT').length, 1, 'successful load remains deduplicated');
+    assert.equal(state.appended.filter((el) => el.dataset.gamenfyAutohabitReconcile === '1').length, 1, 'successful load remains deduplicated');
   }
 
   {
     const state = await runScenario({ rpgSync: true, engine: true });
-    let scripts = state.appended.filter((el) => el.tagName === 'SCRIPT');
+    let scripts = state.appended.filter((el) => el.dataset.gamenfyAutohabitReconcile === '1');
     assert.equal(scripts.length, 1, 'first reconciler request is injected');
     scripts[0].onerror();
     assert.equal(scripts[0].removed, true, 'failed script node is removed so it cannot block a retry');
     assert.equal(state.window.__gamenfyAutohabitSessionLoaderLoaded, undefined, 'failed network load never claims reconciler ownership');
 
     state.windowListeners['gamenfy:cloud-sync-ready']({ detail: { appKey: 'rpg' } });
-    scripts = state.appended.filter((el) => el.tagName === 'SCRIPT');
+    scripts = state.appended.filter((el) => el.dataset.gamenfyAutohabitReconcile === '1');
     assert.equal(scripts.length, 2, 'a later readiness signal retries the reconciler after script failure');
     scripts[1].onload();
     assert.equal(state.window.__gamenfyAutohabitSessionLoaderLoaded, true, 'retry can become the successful owner');
@@ -127,12 +125,12 @@ async function runScenario(opts) {
 
   {
     const state = await runScenario({ rpgSync: false, engine: false });
-    assert.equal(state.appended.filter((el) => el.tagName === 'SCRIPT').length, 0, 'utility/non-RPG pages never become Daily Mission writers');
+    assert.equal(state.appended.filter((el) => el.dataset.gamenfyAutohabitReconcile === '1').length, 0, 'utility/non-RPG pages never become Daily Mission writers');
   }
 
   {
     const state = await runScenario({ rpgSync: true, engine: true, mainOwnsLoader: true });
-    assert.equal(state.appended.filter((el) => el.tagName === 'SCRIPT').length, 0, 'Main synchronous blocker remains sole loader owner on Main');
+    assert.equal(state.appended.filter((el) => el.dataset.gamenfyAutohabitReconcile === '1').length, 0, 'Main synchronous blocker remains sole loader owner on Main');
   }
 
   assert.match(source, /__cloudSyncRegistry && window\.__cloudSyncRegistry\.rpg/, 'loader requires RPG cloud sync registration');
@@ -141,6 +139,8 @@ async function runScenario(opts) {
   assert.match(source, /typeof window\.addXP === 'function'/, 'loader requires XP writer before reconciliation');
   assert.match(source, /script\.onerror = \(\) =>/, 'loader handles script network failure explicitly');
   assert.match(source, /script\.onload = \(\) =>/, 'loader marks success only after script load');
+  assert.match(source, /window\.gamenfyUserId = session\.user\.id/, 'authenticated single-account session owns its user-scoped state');
+  assert.doesNotMatch(source, /PRIVATE_OWNER_ID|gamenfy_private_access/, 'retired Public/private routing gate must not return');
 
   const index = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
   const xp = fs.readFileSync(path.join(__dirname, '..', 'xp.js'), 'utf8');

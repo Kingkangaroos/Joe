@@ -1,11 +1,17 @@
 # Gamenfy Public Beta — durable handoff
 
-Last updated: 2026-09-07  
+Last updated: 2026-09-08
 Builder: ChatGPT (OpenAI)
 
-## Status
+## Current status — ROLLED BACK / NOT LIVE
 
-**SHIPPED — friend beta ready.**
+The Public Beta route was deliberately removed on 2026-09-07 when the production deployment returned to Joey's single-account private app. `gamenfy-public.html`, the `/public` rewrites and the client-side Public/private routing gate are no longer active. The remaining notes below describe the earlier experiment and are retained as history only; they are not a current launch or hosting contract.
+
+Do not re-enable Public from this archive. A future Public test requires a fresh, explicitly approved rollout and a current isolation/deployment review.
+
+## Historical status before rollback
+
+**ARCHIVED — this was previously shipped for a friend beta.**
 
 Stable share URL:
 

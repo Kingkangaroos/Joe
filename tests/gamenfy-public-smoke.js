@@ -1,58 +1,34 @@
-const fs = require('fs');
-const path = require('path');
-const vm = require('vm');
-const root = path.join(__dirname, '..');
-const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
-const assert = (ok, msg) => { if (!ok) throw new Error(msg); };
+/* Gamenfy Public rollback contract — ChatGPT (OpenAI), 2026-09-08 */
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const vm=require('node:vm');
+const root=path.join(__dirname,'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 
-const html = read('gamenfy-public.html');
-const app = read('gamenfy-public.js');
-const feedback = read('gamenfy-public-feedback.js');
-const auth = read('auth.js');
-const vercel = JSON.parse(read('vercel.json'));
-const feedbackMigration = read('supabase/migrations/20260907160300_add_gamenfy_public_feedback.sql');
+const auth=read('auth.js');
+const vercel=JSON.parse(read('vercel.json'));
+const archive=read('GAMENFY-PUBLIC-BETA.md');
 
-new vm.Script(app, { filename: 'gamenfy-public.js' });
-new vm.Script(feedback, { filename: 'gamenfy-public-feedback.js' });
-new vm.Script(auth, { filename: 'auth.js' });
+new vm.Script(auth,{filename:'auth.js'});
+assert.equal(fs.existsSync(path.join(root,'gamenfy-public.html')),false,'retired Public entry page must remain absent');
+assert.equal(fs.existsSync(path.join(root,'private-login.html')),false,'retired Public/private router must remain absent');
+assert.equal(fs.existsSync(path.join(root,'private-rpg-pwa-bootstrap.html')),false,'retired bootstrap router must remain absent');
+assert.doesNotMatch(auth,/PRIVATE_OWNER_ID|gamenfy_private_access|gamenfyPrivateAccessDenied/,'single-account auth must not revive the rolled-back Public routing gate');
+assert.match(auth,/window\.gamenfyUserId = session\.user\.id/,'authenticated user remains bound to owner-scoped state');
 
-assert(html.includes('Gamenfy · Public Beta'), 'public beta auth mark missing');
-assert(html.includes('/gamenfy-public.js?v=1'), 'public root app script missing');
-assert(html.includes('/gamenfy-public-feedback.js?v=1'), 'public feedback script missing');
-assert(html.includes('id="publicFeedbackForm"'), 'public feedback form missing');
-assert(!html.includes('src="auth.js') && !html.includes('src="/auth.js'), 'public page must not load private auth.js');
-assert(!html.includes('src="sync.js') && !html.includes('src="/sync.js'), 'public page must not load private sync.js');
-assert(!html.includes('fitbit-sync.js') && !html.includes('autohabit-reconcile.js'), 'public page must not load private health integrations');
-assert(!html.includes('jarvis.js') && !html.includes('finance.js'), 'public page must not load private Jarvis/Finance integrations');
-assert(app.includes("const TABLE = 'gamenfy_public_state'"), 'public state table contract missing');
-assert(!app.includes("from('app_state')"), 'public app must never query private app_state');
-assert(app.includes("emailRedirectTo: window.location.origin + '/public'"), 'signup confirmation must return to stable public route');
-assert(app.includes('gamenfy_public'), 'public account metadata marker missing');
-assert(auth.includes('const PRIVATE_OWNER_ID = '), 'deterministic private owner gate missing');
-assert(auth.includes('session.user.id !== PRIVATE_OWNER_ID'), 'private owner gate must compare the authenticated user id deterministically');
-assert(!auth.includes("from('gamenfy_private_access')"), 'retired network allowlist lookup must not return');
-assert(auth.includes("window.location.href = '/public/'"), 'private-to-public redirect missing');
+const rewrites=Array.isArray(vercel.rewrites)?vercel.rewrites:[];
+const redirects=Array.isArray(vercel.redirects)?vercel.redirects:[];
+assert.equal(rewrites.some(r=>r.source==='/public'||r.source==='/public/'),false,'Vercel must not expose the retired Public route');
+assert.equal(redirects.some(r=>String(r.destination||'').includes('private-rpg-pwa-bootstrap')),false,'root must not route through the retired Public/private bootstrap');
+assert.equal(vercel.outputDirectory,'.','single-account production continues to serve the repository root');
 
-assert(feedback.includes("const TABLE = 'gamenfy_public_feedback'"), 'feedback table contract missing');
-assert(!feedback.includes("from('app_state')"), 'feedback module must never query private app_state');
-assert(feedback.includes('session.user.id'), 'feedback insert must bind to authenticated user');
-assert(feedbackMigration.includes('enable row level security'), 'feedback RLS missing');
-assert(feedbackMigration.includes('(select auth.uid()) = user_id'), 'feedback owner RLS contract missing');
+assert.match(archive,/Current status — ROLLED BACK \/ NOT LIVE/,'Public handoff must identify the current rollback prominently');
+assert.match(archive,/history only/,'old Public implementation notes must be labelled historical');
 
-const rewrites = Array.isArray(vercel.rewrites) ? vercel.rewrites : [];
-assert(vercel.outputDirectory === '.', 'Vercel must serve repository root so private and Public Beta can coexist');
-assert(rewrites.some((r) => r.source === '/public' && r.destination === '/gamenfy-public.html'), 'stable /public rewrite missing');
-assert(rewrites.some((r) => r.source === '/public/' && r.destination === '/gamenfy-public.html'), 'stable /public/ rewrite missing');
-
-const dirs = ['budgeting','sleep','nutrition','steps','teeth','household','meditation','gratitude','good-deed','screen-time','cold-shower'];
-for (const dir of dirs) {
-  for (const level of ['01','10']) {
-    const file = path.join(root, 'img', 'lab', 'park31', dir, `l${level}.webp`);
-    assert(fs.existsSync(file), `missing public companion asset ${dir}/l${level}.webp`);
-  }
+for(const optionalArchive of ['gamenfy-public.js','gamenfy-public-feedback.js']){
+  if(fs.existsSync(path.join(root,optionalArchive)))new vm.Script(read(optionalArchive),{filename:optionalArchive});
 }
 
-const missionKeys = ['budgeting','sleep','nutrition','walking','teeth','household','meditation','gratitude','good_deed','screen_time','cold_shower'];
-for (const key of missionKeys) assert(app.includes(`key: '${key}'`), `mission ${key} missing`);
-
-console.log('Gamenfy Public route, deterministic private gate, isolation, feedback, syntax, mission and asset smoke checks passed.');
+console.log('Gamenfy Public rollback contract passed: private single-account root remains active and stale Public routes stay disabled.');

@@ -56,8 +56,17 @@
   function fillList(id,list){const box=document.getElementById(id);box.textContent='';(list||[]).forEach(x=>{const d=document.createElement('div');d.className='item';d.textContent=escText(x);box.appendChild(d)});if(!box.children.length){const e=document.createElement('div');e.className='empty';e.textContent='Nothing here right now.';box.appendChild(e)}}
   function toggleCard(id,has){const el=document.getElementById(id);if(el)el.style.display=has?'':'none'}
   function renderNotes(){const box=document.getElementById('notes');const all=loadNotes();const list=Array.isArray(all[active])?all[active]:[];box.textContent='';if(!list.length){const e=document.createElement('div');e.className='empty';e.textContent='Nothing waiting from you right now.';box.appendChild(e);return}list.slice().reverse().forEach(n=>{const d=document.createElement('div');d.className='note';const p=document.createElement('p');p.textContent=escText(n.text);const tm=document.createElement('time');tm.textContent=escText(n.at);d.append(p,tm);box.appendChild(d)})}
-  function renderFlagships(list){const box=document.getElementById('flagships');box.textContent='';(list||[]).forEach(f=>{const d=document.createElement('div');d.className='flagship';const top=document.createElement('div');top.className='flagship-top';const strong=document.createElement('strong');strong.textContent=escText(f.name);const pill=document.createElement('span');pill.className='pill'+(f.status==='active'?' active':'');pill.textContent=escText(f.status||'planned');top.append(strong,pill);const p=document.createElement('p');p.textContent=[f.role,f.brief].filter(Boolean).join(' — ');d.append(top,p);box.appendChild(d)});toggleCard('flagshipCard',box.children.length>0)}
+  function renderFlagships(list){const box=document.getElementById('flagships');box.textContent='';(list||[]).forEach(f=>{const d=document.createElement('div');d.className='flagship';const top=document.createElement('div');top.className='flagship-top';const strong=document.createElement('strong');strong.textContent=escText(f.name);const pill=document.createElement('span');pill.className='pill'+(/(^|-)active$/.test(String(f.status||''))?' active':'');pill.textContent=escText(f.status||'planned');top.append(strong,pill);const p=document.createElement('p');p.textContent=[f.role,f.brief].filter(Boolean).join(' — ');d.append(top,p);box.appendChild(d)});toggleCard('flagshipCard',box.children.length>0)}
   function renderProduction(list){const box=document.getElementById('visualProduction');box.textContent='';(list||[]).forEach(x=>{const d=document.createElement('div');d.className='production';const head=document.createElement('div');head.className='production-head';const pr=document.createElement('span');pr.className='prio';pr.textContent=escText(x.priority||'');const code=document.createElement('code');code.textContent=escText(x.id||'');const strong=document.createElement('strong');strong.textContent=escText(x.asset||'');head.append(pr,code,strong);const p=document.createElement('p');p.textContent=escText(x.purpose||'');const meta=document.createElement('div');meta.className='meta';meta.textContent=[x.group,x.status].filter(Boolean).join(' · ');d.append(head,p,meta);box.appendChild(d)});toggleCard('productionCard',box.children.length>0)}
+  function currentProduction(s){
+    if(Array.isArray(s.visualProduction))return s.visualProduction;
+    return Object.entries(s.activeGeneration||{}).filter(([,value])=>value&&typeof value==='object').map(([id,value])=>({priority:id==='batch8'||id==='batch9'?'P1':'P0',id:id.toUpperCase(),asset:value.name||id,purpose:value.goal||value.note||'',group:'Higgsfield',status:value.status||''}))
+  }
+  function currentRules(s){if(Array.isArray(s.productionRules))return s.productionRules;return s.integrationGate?.requiredSequence||[]}
+  function currentHiggsfieldPlan(s){
+    if(Array.isArray(s.higgsfieldPlan))return s.higgsfieldPlan;
+    return Object.entries(s.activeGeneration||{}).filter(([,value])=>value&&typeof value==='object').map(([id,value])=>`${id.replace('batch','Batch ')} · ${value.name||''} · ${value.status||''}`)
+  }
   async function renderProject(){
     const res=await fetch(PROJECTS[active],{cache:'no-store'});if(!res.ok)throw new Error('HQ state unavailable');
     const s=await res.json();
@@ -71,9 +80,10 @@
     renderFlagships(s.flagships);
     fillList('backlog',s.ventureBacklog);toggleCard('backlogCard',Array.isArray(s.ventureBacklog)&&s.ventureBacklog.length>0);
     fillList('ideas',s.ideaBank);toggleCard('ideaCard',Array.isArray(s.ideaBank)&&s.ideaBank.length>0);
-    renderProduction(s.visualProduction);
-    fillList('productionRules',s.productionRules);toggleCard('rulesCard',Array.isArray(s.productionRules)&&s.productionRules.length>0);
-    fillList('higgsfieldPlan',s.higgsfieldPlan);toggleCard('higgsfieldCard',Array.isArray(s.higgsfieldPlan)&&s.higgsfieldPlan.length>0);
+    const production=currentProduction(s),rules=currentRules(s),higgsfieldPlan=currentHiggsfieldPlan(s);
+    renderProduction(production);
+    fillList('productionRules',rules);toggleCard('rulesCard',rules.length>0);
+    fillList('higgsfieldPlan',higgsfieldPlan);toggleCard('higgsfieldCard',higgsfieldPlan.length>0);
     renderNotes();
   }
   document.querySelectorAll('[data-project]').forEach(b=>b.classList.toggle('active',b.dataset.project===active));

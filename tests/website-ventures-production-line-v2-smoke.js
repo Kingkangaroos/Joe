@@ -39,15 +39,16 @@ assert.ok(data.gamenfyStrategy.existingInventory.includes('130 committed WebPs')
 
 assert.ok(ui.includes("fetch('WEBSITE-VENTURES-PRODUCTION-LINE-V2.json'"),'Visual production board must read the durable production JSON');
 assert.ok(ui.includes("fetch('HIGGSFIELD-CREDIT-PREFLIGHT.json'"),'Visual production board must surface read-only credit anchors');
-assert.ok(ui.includes("fetch('HIGGSFIELD-P0-GENERATION-MANIFEST.json'"),'Visual production board must surface the executable P0 prompt pack');
+assert.ok(ui.includes("fetch('HIGGSFIELD-P0-GENERATION-MANIFEST.json'"),'Archived production board must retain the deprecated-manifest pointer');
 assert.ok(ui.includes('Gamenfy Objects')&&ui.includes('Model Matrix')&&ui.includes('Credits')&&ui.includes('P0 Prompt Pack')&&ui.includes('Sprintvolgorde'),'Production UI must expose all planning views');
 assert.ok(workspace.includes('website-ventures-production-line-v2.html'),'Finance → Ventures Productielijn must link to the detailed factory');
-assert.ok(workspace.includes('18 Website-assets + 32 Gamenfy objects/sprites'),'Workspace summary must keep scope visible');
-assert.ok(workspace.includes('130 evolution WebPs'),'Workspace must warn against wasting credits on existing Park art');
+assert.ok(workspace.includes('v2 idea archive'),'Workspace must classify v2 as historical rather than active scope');
+assert.ok(workspace.includes('Geen legacy assetlijst meer tussen jou en de echte werkvolgorde'),'Workspace must keep the active queue free of superseded v2 inventory');
 
 assert.ok(elements.currentHiggsfieldState.includes('No reusable Elements currently exist'),'Element registry must not imply Elements were already created');
 assert.ok((elements.planned||[]).some(x=>x.sourceAsset==='PL-CHAR-001'&&x.category==='character'),'Master technician must have a planned character Element');
-assert.ok((elements.planned||[]).some(x=>x.sourceAsset==='GF-ENV-PARK-001'&&x.category==='environment'),'Gamenfy park world must have a planned environment Element');
+assert.equal((elements.planned||[]).length,1,'Only the recurring technician may remain in the active Element plan');
+assert.ok((elements.legacyHypotheses||[]).some(x=>x.id==='HF-GF-PARK-001'&&x.status==='archive-not-approved'),'Gamenfy park Element must remain an explicitly unapproved archive hypothesis');
 assert.ok(!(elements.planned||[]).some(x=>x.element_id),'No Element ID may be invented before Higgsfield actually creates it');
 
 assert.equal(costs.status,'read-only-estimates; no generation jobs submitted','Credit file must never imply paid generation occurred');
@@ -55,11 +56,9 @@ assert.ok((costs.estimates||[]).some(x=>x.machine==='seedance_2_0'&&Number(x.cre
 assert.ok((costs.estimates||[]).some(x=>x.machine==='cinematic_studio_3_0'&&Number(x.creditsExact)===25),'Premium motion cost anchor must stay visible');
 assert.ok((costs.estimates||[]).some(x=>x.machine==='nano_banana_pro'&&Number(x.creditsExact)===2),'Premium still cost anchor must stay visible');
 
-const manifestAssets=(manifest.groups||[]).flatMap(g=>g.assets||[]);
-assert.ok(manifest.status==='prepared-not-submitted','P0 manifest must never imply it has been executed');
-['PL-CHAR-001','PL-STYLE-001','PL-PROP-VAN-001','PL-PROP-TOOLS-001','PL-HERO-001','PL-STORY-001','PL-STORY-002','PL-STORY-003','PL-STORY-004','PL-STORY-005','PL-END-001','GF-ENV-PARK-001','GF-PROP-PATH-001','GF-PROP-TREE-001','GF-PROP-BENCH-001','GF-PROP-LAMP-001','GF-PROP-SIGN-001','GF-PROP-FOUNTAIN-001','GF-DS-CHAR-001','GF-DS-SPRITE-WALK-001','GF-DS-SPRITE-IDLE-001','GF-DS-FX-LEVELUP-001','GF-DS-FX-LOW-001'].forEach(id=>assert.ok(manifestAssets.some(x=>x.assetId===id),'Missing P0 manifest recipe: '+id));
-assert.ok(manifestAssets.some(x=>x.assetId==='GF-DS-CHAR-001'&&String(x.sourceCandidates).includes('img/lab/daily-score/joey/l01.webp')),'Daily Score animation pilot must reuse existing approved source candidates');
-assert.ok(JSON.stringify(manifest).includes('<<<TECHNICIAN_ELEMENT_ID>>>'),'Element-dependent story prompts must keep placeholders until real element IDs exist');
-assert.ok(!JSON.stringify(manifest).match(/[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i),'Generation manifest must not invent element UUIDs');
+assert.equal(manifest.status,'deprecated-do-not-execute','old broad P0 manifest must stay blocked');
+assert.equal(manifest.currentSources.websiteVentures,'WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json','deprecated manifest must point to the active manual queue');
+assert.ok(manifest.doNotInferAsApproved.includes('GF-ENV-PARK-001 or a full master park world'),'old Gamenfy park scope must remain explicitly unapproved');
+assert.equal(Array.isArray(manifest.groups),false,'deprecated manifest must not retain an executable asset group');
 
 console.log('website ventures production line v2 smoke passed');

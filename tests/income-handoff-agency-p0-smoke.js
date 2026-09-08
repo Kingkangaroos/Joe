@@ -10,10 +10,10 @@ const board=read('website-ventures-production-line-v3.html');
 const sites=read('sites.html');
 const oldBoard=read('website-ventures-production-line-v2.html');
 
-assert.ok(handoff.includes('Build Joey\'s own Website Ventures / agency website first'),'Income handoff must retain agency-site-first decision');
-assert.equal(line.sourceOfTruth,'INCOME-HANDOFF-2026-09-07.md');
+assert.ok(handoff.includes("Joey's own Website Ventures / agency showroom = P0"),'Income handoff must retain agency-site-first decision');
+assert.equal(line.sourceOfTruth,'INCOME-HANDOFF-2026-09-07.md + WEBSITE-VENTURES-HQ-STATE.json');
 assert.equal(line.priorityOrder[0],'P0 Joey agency/showroom website','Agency/showroom must remain first production priority');
-assert.ok(line.hardRules.some(x=>x.includes("agency website is built before further polishing the Plumbing flagship")),'Plumbing may not silently become P0 above agency site again');
+assert.ok(line.hardRules.some(x=>x.includes("agency website sets the visual/technical ceiling")),'Plumbing may not silently become P0 above agency site again');
 assert.ok(line.hardRules.some(x=>x.includes('competitive IP')),'Internal production factory must remain non-public');
 
 const agencyAssets=(line.agencyBatches||[]).flatMap(b=>b.assets||[]);
@@ -26,10 +26,10 @@ assert.ok(agency.includes('pointermove')&&agency.includes('sticky-wrap'),'Agency
 const plumbing=line.plumbingShowcase||{};
 assert.ok((plumbing.fixed||[]).includes('one strong recurring technician'),'Recurring technician is a fixed Plumbing principle');
 assert.ok((plumbing.proposedNotLocked||[]).includes('leaking bathroom opening'),'Leak story must be classified as proposed rather than mandatory');
-assert.ok((plumbing.proposedNotLocked||[]).includes('white/deep-red/chrome/water art direction'),'White/red art direction must remain a proposal until reviewed');
+assert.ok((plumbing.proposedNotLocked||[]).includes('white/deep-red/chrome/water as permanent art direction'),'White/red art direction must remain a proposal until reviewed');
 
 const g=line.gamenfyAnimationPilot||{};
-assert.equal((g.tests||[]).length,4,'Gamenfy P0 should stay a bounded 4-test animation pilot');
+assert.equal((g.tests||[]).length,4,'Gamenfy P2 should stay a bounded 4-test animation pilot');
 ['GF-PILOT-WALK-001','GF-PILOT-IDLE-001','GF-PILOT-JUMP-001','GF-PILOT-INTERACT-001'].forEach(id=>assert.ok(g.tests.some(x=>x.id===id),'Missing Gamenfy pilot '+id));
 assert.ok(g.sourceRule.includes('existing approved character'),'Pilot must reuse approved character art');
 assert.ok(g.fallbackArchitectureGate.includes('rigged 2D'),'Rigged 2D fallback gate must remain explicit');

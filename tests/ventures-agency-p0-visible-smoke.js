@@ -7,6 +7,7 @@ assert.ok(s.includes('site-agency-showroom-v0.html'),'Agency Showroom must be di
 assert.ok(s.includes('website-ventures-production-line-v3.html'),'Active Production Line v3 must be directly reachable');
 assert.ok(s.includes('Premium Plumbing'),'Plumbing must remain visible as the first showcase/customer system');
 assert.ok(s.includes('website-ventures-production-line-v2.html'),'v2 idea archive must remain reachable');
-assert.ok(s.includes('18 Website-assets + 32 Gamenfy objects/sprites'),'legacy v2 inventory context must remain explicit');
-assert.ok(s.includes('130 evolution WebPs'),'existing Gamenfy evolution inventory warning must remain explicit');
+assert.ok(s.includes('v2 idea archive'),'legacy v2 inventory must be visibly classified as archive, not active production');
+assert.ok(s.includes('Gamenfy animation blijft P2/deferred'),'broad Gamenfy visual production must not displace Website Ventures P0');
+assert.ok(s.includes('Geen legacy assetlijst meer tussen jou en de echte werkvolgorde'),'active pipeline must reject the superseded broad inventory as its queue');
 console.log('ventures agency P0 visibility smoke passed');

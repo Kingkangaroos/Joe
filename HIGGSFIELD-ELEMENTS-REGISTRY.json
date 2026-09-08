@@ -1,21 +1,32 @@
 {
-  "registry":"Higgsfield reusable Elements registry",
-  "updatedAt":"2026-09-07",
-  "managedBy":"ChatGPT (OpenAI)",
-  "currentHiggsfieldState":"No reusable Elements currently exist in the connected Higgsfield workspace; all rows below are planned and must only be created after their source reference is approved.",
-  "rules":[
-    "Never create an Element from a merely acceptable draft; the source image becomes a consistency anchor.",
-    "Keep Website Ventures and Gamenfy naming explicit even though Higgsfield Elements share one workspace.",
-    "Characters, environments and props are separate Elements when independent reuse adds value.",
-    "Do not create Elements for one-off FX, generic textures or proof images.",
-    "Store the eventual Higgsfield element_id back into this registry and the Visual Vault."
+  "registry": "Higgsfield reusable Elements registry",
+  "version": 2,
+  "updatedAt": "2026-09-08",
+  "managedBy": "ChatGPT (OpenAI)",
+  "currentHiggsfieldState": "No reusable Elements currently exist. Only the selected PL-CHAR-001 technician may become an active Element after Batch 6 passes; all other earlier rows are archived hypotheses and are not generation requirements.",
+  "activeRules": [
+    "Never create an Element from an unapproved draft; the source image becomes a consistency anchor.",
+    "Only create an Element when a current required job names it as a dependency.",
+    "Do not create Elements for one-off FX, generic textures, optional support art or proof images.",
+    "Store an eventual real Higgsfield element_id only after creation; never invent an ID.",
+    "Website Ventures Batch 5 uses independent hero exploration and does not require an Element."
   ],
-  "planned":[
-    {"id":"HF-WEB-PL-TECH-001","sourceAsset":"PL-CHAR-001","name":"web-plumbing-technician","category":"character","status":"blocked-on-approved-reference","usedBy":["PL-STORY-002","PL-STORY-003","PL-STORY-004","PL-STORY-005","PL-END-001"],"createWhen":"Master identity passes second-pose consistency test."},
-    {"id":"HF-WEB-PL-BATH-001","sourceAsset":"PL-STYLE-001 / winning bathroom world","name":"web-plumbing-bathroom","category":"environment","status":"blocked-on-style-lock","usedBy":["PL-HERO-001","PL-STORY-001","PL-STORY-003","PL-STORY-004","PL-STORY-005","PL-END-001"],"createWhen":"White/red/material world is approved and remains credible."},
-    {"id":"HF-WEB-PL-VAN-001","sourceAsset":"PL-PROP-VAN-001","name":"web-plumbing-service-van","category":"prop","status":"blocked-on-approved-reference","usedBy":["PL-STORY-002","future prospect-specific arrival variants"],"createWhen":"Vehicle geometry and editable generic brand zones are approved."},
-    {"id":"HF-GF-PARK-001","sourceAsset":"GF-ENV-PARK-001","name":"gamenfy-park-world","category":"environment","status":"blocked-on-approved-reference","usedBy":["Daily Score walker","future Daily Mission/skill park scenes"],"createWhen":"Master environment has UI-safe zones and matches Park 3.1 character language."},
-    {"id":"HF-GF-DS-CHAR-001","sourceAsset":"GF-DS-CHAR-001","name":"gamenfy-daily-score-walker","category":"character","status":"blocked-on-character-choice","usedBy":["GF-DS-SPRITE-WALK-001","GF-DS-SPRITE-IDLE-001","future score states"],"createWhen":"Only if cross-model consistency is needed beyond AutoSprite; AutoSprite itself can use the source image directly."},
-    {"id":"HF-GF-CHESS-001","sourceAsset":"GF-SK-CHESS-001","name":"gamenfy-chess-board","category":"prop","status":"optional","usedBy":["Chess skill scenes"],"createWhen":"Only if repeated generative scenes need the same board; ordinary app implementation should prefer deterministic board/piece assets."}
+  "planned": [
+    {
+      "id": "HF-WEB-PL-TECH-001",
+      "sourceAsset": "PL-CHAR-001",
+      "name": "web-plumbing-technician",
+      "category": "character",
+      "status": "blocked-until-batch-6-winner",
+      "usedBy": ["PL-STORY-DIAG-001", "PL-STORY-SINK-001", "PL-STORY-TRUST-001"],
+      "createWhen": "Exactly one Batch 6 technician is approved and an Element is materially useful for same-person Batch 7 consistency."
+    }
+  ],
+  "legacyHypotheses": [
+    {"id": "HF-WEB-PL-BATH-001", "status": "archive-not-approved", "reason": "A permanent Plumbing bathroom world is not locked."},
+    {"id": "HF-WEB-PL-VAN-001", "status": "archive-not-approved", "reason": "A service van is not a required current page asset."},
+    {"id": "HF-GF-PARK-001", "status": "archive-not-approved", "reason": "A full Gamenfy park world is deferred; one existing-character animation pilot comes first."},
+    {"id": "HF-GF-DS-CHAR-001", "status": "archive-deferred", "reason": "The bounded Gamenfy pilot uses AutoSprite directly from approved existing art unless evidence proves another consistency layer is needed."},
+    {"id": "HF-GF-CHESS-001", "status": "archive-not-approved", "reason": "Chess is already implemented and no repeated generative-scene need exists."}
   ]
 }
