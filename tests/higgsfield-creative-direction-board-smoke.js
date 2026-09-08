@@ -1,22 +1,25 @@
-/* Higgsfield Generation Queue — ChatGPT (OpenAI), 2026-09-08 */
+/* Higgsfield Remaining Queue — ChatGPT (OpenAI), 2026-09-08 */
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const board=fs.readFileSync('website-ventures-higgsfield-prompt-board.html','utf8');
+const queue=JSON.parse(fs.readFileSync('WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json','utf8'));
 const line=fs.readFileSync('website-ventures-production-line-v3.html','utf8');
-for(const label of ['White Precision','Warm Architectural','Hybrid Precision Luxury','Dark Tech']) assert.ok(board.includes(label),label+' direction exists');
-for(const concept of ['Transformation Sculpture','Website as Luxury Product','Material Performance']) assert.ok(board.includes(concept),concept+' hero concept exists');
-assert.ok(board.includes('50% HARD STOP'),'credit half-way review gate is explicit');
-assert.ok(board.includes('ChatGPT Work + Unlimited verification'),'Work browser unlimited proof test is documented');
-assert.ok(board.includes('real experienced European plumbing/service technician'),'technician prompt is concrete');
-assert.ok(board.includes('Higgsfield Soul 2.0'),'model is shown on generation cards');
-assert.ok(board.includes("modelId:'soul_2'"),'canonical Soul 2.0 model id is stored');
-assert.ok(board.includes("aspect:'16:9'"),'hero/direction aspect ratio is stored');
-assert.ok(board.includes("aspect:'3:4'"),'technician candidate aspect ratio is stored');
-assert.ok(board.includes("quality:'2K'"),'generation quality is stored');
+assert.equal(queue.status.batch4,'done','Batch 4 is marked done');
+assert.equal(queue.status.nextBatch,5,'Batch 5 is next');
+assert.deepEqual(queue.batches.map(b=>b.number),[5,6,7,8,9],'only remaining batches 5-9 are active');
+const jobs=queue.batches.flatMap(b=>b.jobs||[]);
+for(const concept of ['Transformation Sculpture','Website as Luxury Product','Material Performance']) assert.ok(jobs.some(j=>j.title===concept),concept+' hero concept exists');
+assert.ok(jobs.some(j=>j.id==='PL-CHAR-001'),'technician master candidate job exists');
+assert.ok(jobs.filter(j=>j.id.startsWith('PL-STORY-')).length>=3,'same-technician working scenes exist');
+assert.ok(jobs.filter(j=>j.id.startsWith('AG-SUPPORT-')).length===3,'agency support visuals exist');
+assert.ok(jobs.some(j=>j.modelId==='cinematic_studio_2_5'&&j.quality==='4K'),'4K final master path exists');
+assert.ok(jobs.every(j=>j.prompt&&j.model&&j.aspectRatio&&j.quality&&j.count&&j.gate),'every remaining job is copy-ready and gated');
+assert.ok(board.includes('Batch 4 done. Next = Batch 5.'),'board surfaces current progress');
+assert.ok(board.includes('WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json'),'board reads durable queue JSON');
 assert.ok(board.includes('Copy full setup'),'one-tap full setup copy exists');
 assert.ok(board.includes('Copy prompt only'),'prompt-only copy exists');
 assert.ok(board.includes('navigator.clipboard.writeText'),'clipboard implementation exists');
-assert.ok(board.includes('winning candidate as the reference image'),'recurring technician reference step exists');
+assert.ok(board.includes('50% credit hard stop'),'credit half-way review gate is visible');
 assert.ok(line.includes('website-ventures-higgsfield-prompt-board.html'),'Production Line v3 links the prompt board');
-console.log('Higgsfield generation queue smoke passed.');
+console.log('Higgsfield remaining queue smoke passed.');
