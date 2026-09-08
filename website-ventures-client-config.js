@@ -1,12 +1,13 @@
 // Website Ventures — reusable client configuration loader
 // Managed by ChatGPT (OpenAI).
 // Purpose: keep customer identity/content/theme outside template markup.
-// Usage: <body data-wv-client="plumbing-demo"> or ?wvclient=plumbing-demo
+// Usage: body[data-wv-client], ?wvclient=<slug>, and ?wvlocal=1 for a local draft preview.
 (function () {
   'use strict';
 
   const SAFE_SLUG = /^[a-z0-9-]{1,64}$/;
   const CONFIG_ROOT = 'website-ventures-client-configs/';
+  const DRAFT_PREFIX = 'wv_client_config_draft_v1_';
 
   function esc (value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, function (m) {
@@ -20,11 +21,14 @@
     }, obj);
   }
 
+  function validSlug (slug) { return SAFE_SLUG.test(String(slug || '')); }
+  function draftKey (slug) { return DRAFT_PREFIX + String(slug || ''); }
+
   function chooseSlug () {
     const query = new URLSearchParams(location.search).get('wvclient');
     const bodyDefault = document.body && document.body.dataset ? document.body.dataset.wvClient : '';
     const slug = query || bodyDefault || '';
-    return SAFE_SLUG.test(slug) ? slug : '';
+    return validSlug(slug) ? slug : '';
   }
 
   function setTheme (config) {
@@ -73,7 +77,7 @@
     }).join('');
   }
 
-  function apply (config, slug) {
+  function apply (config, slug, source) {
     setTheme(config);
     bindText(config);
     bindHref(config);
@@ -83,8 +87,25 @@
     }
     document.body.dataset.wvClientActive = slug;
     document.body.dataset.wvClientState = 'ready';
-    window.dispatchEvent(new CustomEvent('wv-client-config-ready', { detail: { slug: slug, config: config } }));
+    document.body.dataset.wvClientSource = source || 'repo';
+    window.dispatchEvent(new CustomEvent('wv-client-config-ready', { detail: { slug: slug, config: config, source: source || 'repo' } }));
     return config;
+  }
+
+  function readDraft (slug) {
+    if (!validSlug(slug)) return null;
+    try {
+      const raw = localStorage.getItem(draftKey(slug));
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+
+  function saveDraft (slug, config) {
+    if (!validSlug(slug) || !config || typeof config !== 'object') return false;
+    try {
+      localStorage.setItem(draftKey(slug), JSON.stringify(config));
+      return true;
+    } catch (e) { return false; }
   }
 
   const ready = new Promise(function (resolve) {
@@ -95,15 +116,31 @@
         resolve(null);
         return;
       }
+
+      const localMode = new URLSearchParams(location.search).get('wvlocal') === '1';
+      if (localMode) {
+        const draft = readDraft(slug);
+        if (draft) {
+          resolve(apply(draft, slug, 'local-draft'));
+          return;
+        }
+        console.warn('[Website Ventures] local client draft unavailable; hardcoded template fallback retained.');
+        document.body.dataset.wvClientState = 'draft-missing';
+        document.body.dataset.wvClientSource = 'local-draft';
+        resolve(null);
+        return;
+      }
+
       fetch(CONFIG_ROOT + slug + '.json', { cache: 'no-store' })
         .then(function (r) {
           if (!r.ok) throw new Error('Client config not found');
           return r.json();
         })
-        .then(function (config) { resolve(apply(config, slug)); })
+        .then(function (config) { resolve(apply(config, slug, 'repo')); })
         .catch(function (err) {
           console.warn('[Website Ventures] client config unavailable; hardcoded template fallback retained.', err);
           document.body.dataset.wvClientState = 'fallback';
+          document.body.dataset.wvClientSource = 'repo';
           resolve(null);
         });
     }
@@ -111,5 +148,12 @@
     else boot();
   });
 
-  window.WVClientConfig = { ready: ready, apply: apply };
+  window.WVClientConfig = {
+    ready: ready,
+    apply: apply,
+    readDraft: readDraft,
+    saveDraft: saveDraft,
+    draftKey: draftKey,
+    validSlug: validSlug
+  };
 })();
