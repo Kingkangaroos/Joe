@@ -1,294 +1,344 @@
 # Website Ventures Project HQ
 
-> Durable commercial source of truth for Website Ventures inside Gamenfy. The chat is not the source of truth: decisions, backlog, ideas and the visual-production system belong here.
+> Durable commercial source of truth for Website Ventures inside Gamenfy. Chats are input; this HQ + the structured state/production files are the durable project memory.
 
-Last refreshed: 2026-09-06 by ChatGPT (OpenAI)
+Last refreshed: **2026-09-08 by ChatGPT (OpenAI)**
+
+## READ THIS FIRST — CURRENT STATE
+
+### BESLOTEN
+
+- **Website Ventures is priority #1 / the primary near-term income engine.**
+- **Joey's own Website Ventures / agency website comes first.** It must prove that we can build exceptional websites before we sell that promise to customers.
+- The own site is allowed to be the visual/technical ceiling: **maximum-premium, Apple-like, calm, interaction-led, polished on mobile, with integrated scroll storytelling.**
+- **Premium Plumbing / trades remains the first commercial showcase/customer system**, but it sits inside/under the agency proof layer rather than replacing the agency identity.
+- Plumbing should use **one strong recurring technician**. Consistency beats many unrelated AI people.
+- The technician must feel like an **authentic tradesperson**, not a fashion model. The shell gets the Porsche treatment; the worker stays credible.
+- **Real proof stays real.** AI can create demo/illustrative worlds but never fake completed customer projects, reviews, certifications or measured outcomes.
+- Customer websites should become a **reusable system/template**, customized with copy, color, services, real customer photos and selected identity assets rather than rebuilt from zero.
+- Mobile quality is mandatory. No desktop-only wow effect counts as finished.
+- Higgsfield exploration is done manually on **higgsfield.ai** where Unlimited applies; do not burn connector/API credits merely because a prompt exists.
+- Still/reference winners come before 4K or motion. **50% remaining paid-generation balance = hard review stop.**
+- Gamenfy Public is a low-priority demand test; it does not outrank Website Ventures until repeated real usage proves demand.
+
+### CURRENT ACTIVE GENERATION STATUS
+
+The live manual queue is:
+
+- `WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json`
+- UI: `website-ventures-higgsfield-prompt-board.html`
+- winner review: `website-ventures-higgsfield-review.html`
+- asset intake: `WEBSITE-VENTURES-ASSET-IMPORT-MANIFEST.json`
+- selected assets land under: `website-ventures-assets/`
+
+The current workflow treats **Batch 4 as complete**. We do not rerun it by default.
+
+#### Batch 5 — Agency Hero Round + mobile derivative — NEXT
+
+1. `AG-HERO-TRANSFORM-001` — Transformation Sculpture — Soul 2.0 · 16:9 · 2K.
+2. `AG-HERO-PRODUCT-001` — Website as Luxury Product — Soul 2.0 · 16:9 · 2K.
+3. `AG-HERO-MATERIAL-001` — Material Performance — Soul 2.0 · 16:9 · 2K.
+4. Choose **one** desktop hero winner.
+5. `AG-HERO-MOBILE-001` — use Nano Banana 2 image-to-image · 4:5 · 2K to deliberately recompose that exact winner for mobile. Do not invent a second visual world.
+
+#### Batch 6 — Recurring Plumbing technician
+
+- `PL-CHAR-001` — Soul 2.0 · 3:4 · 2K · four candidates.
+- Choose exactly **one** technician master before any working scenes.
+
+#### Batch 7 — Same-technician working scenes
+
+Using the selected `PL-CHAR-001` as reference:
+
+- `PL-STORY-DIAG-001` — diagnosis scene.
+- `PL-STORY-SINK-001` — under-sink/service detail.
+- `PL-STORY-TRUST-001` — arrival/trust scene.
+
+This is deliberately a **small coherent scene set**, not a full generated movie storyboard.
+
+#### Batch 8 — OPTIONAL / code-first
+
+The prompts exist so we can use them if needed, but **default action is SKIP**:
+
+- `AG-SUPPORT-TRANSFORM-001`
+- `AG-SUPPORT-PROCESS-001`
+- `AG-SUPPORT-SHOWCASE-001`
+
+Only generate one if the actual coded page, after the Batch 5 hero is integrated, still has a clear visual gap. The agency site should not become an AI-image gallery.
+
+#### Batch 9 — final 4K masters
+
+Only after winners exist:
+
+- `AG-HERO-MASTER-001`
+- `PL-HERO-MASTER-001`
+
+Cinema Studio Image 2.5 · 16:9 · 4K · max 1–2 attempts per master. This is **finish**, not exploration.
+
+---
 
 ## OPERATING MODEL
 
 - Repository: `Kingkangaroos/Joe`.
 - Workspace: **Finance → Ventures** inside Gamenfy.
-- Project Headquarters is the durable shared source of truth.
-- Website Ventures is mentally treated as a commercial money-machine, not as Life OS product work, but it deliberately lives in the same Gamenfy architecture.
-- Personal-only Gamenfy surfaces may be marked `data-gamenfy-scope="personal"` for later exclusion from a public/general build.
-- Engineering workflow stays: **branch → test → PR → only then main/production**.
+- Own website prototype: `site-agency-showroom-v0.html`.
+- Current production line: `WEBSITE-VENTURES-PRODUCTION-LINE-V3.json` + `website-ventures-production-line-v3.html`.
+- Exact agency media rules: `AGENCY-SHOWROOM-SLOT-CONTRACT-V1.json`.
+- Structured HQ state: `WEBSITE-VENTURES-HQ-STATE.json`.
+- Cross-project handoff: `INCOME-HANDOFF-2026-09-07.md`.
+- Website Ventures is commercially separate in our thinking, but deliberately lives in the same Gamenfy repo/workspace.
 
 ## PURPOSE
 
 Build and prove a repeatable website-sales business for local SMEs:
 
-1. sell a very clear outcome rather than “a website”;
-2. start with a narrow group of comparable prospects;
-3. make customers 1–10 repeatable before designing for enormous scale;
-4. use exceptional design and AI production as a commercial advantage;
-5. systemize delivery so future builders/students can execute it;
-6. later add sales capacity and region/province expansion only when unit economics and conversion are proven.
+1. sell a clear outcome rather than vague “website development”;
+2. use our own site as proof of the quality ceiling;
+3. prove one reusable customer system with Plumbing/trades;
+4. make customers 1–10 repeatable before designing for massive scale;
+5. systemize delivery so future builders/students can execute controlled work;
+6. expand sales capacity/geography only once unit economics and conversion are real.
 
-The ambition is deliberately not “good enough for a local business.” The flagship sites should feel **state-of-the-art, modern, striking, luxury/high-end and expensive**. The design advantage only matters if it can become a reusable production system.
+The target is deliberately **far above normal local-MKB presentation** while still being commercially repeatable.
 
-## CURRENT SALES HYPOTHESIS
+---
 
-### Leading first niche: plumbing / trades / installations
+## JOEY'S OWN AGENCY WEBSITE — P0
 
-Not permanently locked, but currently the strongest first-sales hypothesis.
+### Role
 
-Why it is attractive:
-- local trades may have a larger gap between real service quality and online presentation;
-- some are less likely to replace a done-for-you service with DIY AI/site builders;
-- a functioning trade business may have more willingness to pay than a solo nail artist whose Instagram + booking link already does much of the job;
-- urgency creates a clear commercial entry point.
+The agency site is:
 
-### Alternatives kept alive
+- the **flagship showroom**;
+- proof that Joey can sell premium web design without his own site undermining the claim;
+- the experimental R&D environment for scroll, animation, interactive demos and future premium add-ons;
+- the first place new visual/interaction technology gets tested before it becomes a reusable customer feature.
 
-**Beauty / nail / aesthetics / coaches** remain serious comparison niches because Joey expects a stronger conversational/personal match with those owners. They should not be discarded; one flagship deliberately tests this visual/sales world.
+### Experience principles
 
-## THE FOUR FLAGSHIPS
+- Apple-like calm rather than noisy “creative agency” clichés.
+- Strong typography and spacing.
+- Expensive motion where it adds meaning.
+- Copy and visual movement should feel like **one scroll narrative**, not a video placed next to unrelated text.
+- The static first frame must already feel premium.
+- Mobile gets its own deliberate composition and choreography.
+- The site demonstrates outcomes and craft; it does **not** publicly reveal internal prompts, model recipes, asset registries or production logic.
 
-### 01 — Premium Plumbing / Installations — ACTIVE
+### Exact media slot rules
 
-Primary sales demo and first complete production system.
+`AGENCY-SHOWROOM-SLOT-CONTRACT-V1.json` is authoritative.
 
-**Positioning:** emergency/urgency as the opening hook, then immediately widen into a premium allround plumbing/installations company. It must not read like a sketchy “24/7 NU BELLEN” emergency site.
+#### `AG-HERO-001`
+- External media: likely.
+- Desktop source: **16:9**, at least 1920×1080, important subject inside central 70% safe zone.
+- Mobile derivative: **4:5**, at least 1200×1500 target logic, readable at ~390px viewport.
+- Hero must sell premium quality in under two seconds even before motion.
 
-**Story:** problem → urgency → contact → rapid arrival → inspection → skilled repair → clean handover → relief/trust → CTA.
+#### `AG-FIRSTSCROLL-001`
+- Reuse the hero through CSS/JS if possible.
+- Do not generate a second asset if transformation of the existing master gives the intended payoff.
 
-**Visual tone:** subtle/chic, extremely high-end, controlled, not slapstick.
+#### `AG-SHOWCASE-PL-001`
+- Use **real captures of the actual Plumbing demo**, desktop + mobile.
+- Do not spend credits generating fake agency “website screenshots”.
 
-**Candidate palette:** pure white + deep signature red + stone/marble + chrome/glass/water. This is the current frontrunner, not a forever-locked palette.
+#### `AG-TRANSFORM-001`
+- Code/screenshot first.
+- Optional generated media only if the coded comparison fails to communicate the value.
 
-**Operator principle:** “Porsche treatment, authentic tradesperson.” The site shell gets premium automotive/tech-level care; the real operator does not have to cosplay a luxury brand. It must still work for a nuchter family business and for a multicultural Dutch customer base without ethnicity-based design variants.
+#### `AG-INTERACT-001`
+- Code first.
+- Generated art is only allowed after the interaction technology itself proves commercially useful.
 
-**Character strategy:** make one exceptional, consistent master technician first and reuse him through the entire demo world. One coherent actor is worth more than twenty unrelated beautiful people.
+#### `AG-OFFER-001`
+- No generated asset needed.
 
-**Real proof:** real completed jobs/team claims remain real. AI can create the demo world, atmosphere and service illustration, but may not be passed off as a real customer project.
+#### `AG-PROOF-001`
+- Real-source-only.
+- Never generate the evidence.
 
-### 02 — Luxury Renovation / Contractor — PLANNED
+#### `AG-CTA-001`
+- No new generation required unless an already-approved master can be reused cheaply.
 
-The best test bed for:
-- architectural imagery;
-- before/after transformations;
-- materials and craftsmanship;
-- Apple-like scroll storytelling;
-- room/process transitions.
+**Expected agency-specific paid visual count: roughly 1–3 selected masters/derivatives before optional motion, not dozens.**
 
-### 03 — Beauty / Aesthetics — PLANNED
+---
 
-Proves the system can become:
-- editorial;
-- skin/glass/liquid driven;
-- luxurious;
-- refined and booking-first;
-- visually very different from trades.
+## PLUMBING / TRADES — FIRST COMMERCIAL SYSTEM
 
-### 04 — Personal Brand / Coach — PLANNED
+### FIXED principles
 
-Proves the system can become:
-- face-led;
-- authority/story driven;
-- transformation-led;
-- video-rich;
-- a personal brand world rather than another service-company clone.
+- One recurring technician.
+- Authentic tradesperson, not fashion model.
+- Premium Porsche/Apple-level presentation is allowed.
+- Real customer proof remains real.
+- Site must be reusable as a customer template/system.
+- Urgency can be an opening commercial hook, but the company should still read as a capable all-round trade/service business rather than a sketchy “24/7 emergency only” brand.
 
-## DESIGN PRINCIPLES — FIXED
+### Current required generated set
 
-- Aim far above normal local-MKB design. The site should make a prospect think **“damn, dit voelt duur.”**
-- VOZOL is a useful reference for the *sense of effort, product polish and tech presentation*; do not copy its possible visual overload.
-- Premium does **not** automatically mean beige. White + deep red can feel premium when spacing, typography, materiality and motion are controlled.
-- Heavy AI use is fine if the output remains believable and website-usable. Rough working target: **90% realistic / 10% overt cinematic stylization**.
-- The premium feel should come from the entire system: layout, typography, composition, lighting, vehicle/tool presentation, motion, materials and proof treatment.
-- Authenticity belongs in the operator and real work; luxury belongs in the presentation system.
-- One coherent world beats a folder full of unrelated pretty generations.
-- A beautiful asset that cannot be deployed coherently on the website is low-value.
+Only the current small Batch 6–7 set is required right now:
 
-## PLUMBING FLAGSHIP — FIRST STORYBOARD
+- recurring technician master;
+- diagnosis scene;
+- under-sink/service-detail scene;
+- arrival/trust scene.
 
-The current concept is a commercial structure, not a locked film script.
+We then put these into the **actual Plumbing page** and judge what is genuinely missing.
 
-1. Premium bathroom / beautiful setting.
-2. A clear but controlled leak/water problem creates urgency.
-3. The resident reaches for the phone/contact action.
-4. Fast transition to the service response.
-5. Premium service vehicle / technician arrives.
-6. Same technician inspects the issue calmly.
-7. Repair-in-progress: realistic tools, hands, fittings, technique.
-8. Technical macro/detail moments create premium texture and motion opportunities.
-9. Technician leaves the environment clean and orderly.
-10. Calm resolved end-state / relieved customer.
-11. Proof: real completed projects, reviews, service areas and guarantees.
-12. Final CTA: equivalent of “wil jij ook zo geholpen worden?”
+### PROPOSED / NOT LOCKED
 
-The core is **problem → control**, not chaos for entertainment.
+The following ideas came from earlier production planning and must **not** be treated as mandatory merely because an old file contains them:
 
-## VISUAL FACTORY — ASSET TYPES
+- leaking-bathroom hero;
+- white/deep-red/chrome/water as the permanent Plumbing art direction;
+- service van;
+- separate tool pack;
+- phone/contact bridge;
+- full arrival → inspection → repair → clean-up → handover sequence;
+- technical macro pack;
+- motion versions.
 
-Every generated asset should have a job.
+They remain useful ideas. They become real production work only after the actual page demonstrates a need.
 
-- **Master Still** — approved high-resolution image for an exact website slot.
-- **Motion Master** — still intentionally composed so it can be animated later.
-- **Reference Element** — recurring person, environment or prop used for consistency.
-- **Texture Pack** — water, chrome, stone, glass, tools, skin/material detail.
-- **Scene Pack** — coherent images from one visual world.
-- **Transition Asset** — first/end states for scroll or image→video transitions.
-- **Proof Frame** — reusable layout that houses authentic client work.
-- **Sales Mockup** — desktop/mobile/before-after presentation for outreach.
-- **Variant Set** — controlled alternatives derived from a locked winner.
+---
 
-## HIGGSFIELD PRODUCTION RULE
+## COMMERCIAL HYPOTHESES — NOT YET FINAL
 
-The subscription is a **planned production sprint**, not a brainstorming subscription.
+### First niche / area
 
-Flow:
+- Leading niche: Plumbing / trades / handyman / installations.
+- Leading geography: **Almere**, with **Bussum** as a useful second local area because Joey already works there.
 
-1. define the exact website slot / purpose;
-2. lock the character/world before broad generation;
-3. generate master still candidates;
-4. select winners;
-5. archive prompt/model/reference/aspect ratio;
-6. animate only winning stills when motion adds material value;
-7. batch variants only after the direction is locked;
-8. keep the approved Visual Vault reusable after the subscription ends.
+### Price
 
-Future custom generations are fine when a paying client genuinely needs client-specific identity or imagery.
+- `€349` = working **founding offer hypothesis**, not a permanent ceiling and not yet final public pricing.
+- `€499–€699` = possible later regular range once quality/scope/fulfilment are proven; also not locked.
 
-## VISUAL VAULT
+### Delivery
 
-Target structure:
+Target direction:
 
-- Industry
-  - Plumbing
-  - Renovation
-  - Beauty
-  - Personal Brand
-- Asset class
-  - Hero
-  - People
-  - Environments
-  - Textures
-  - Services
-  - Animations
-  - Transitions
-  - Cases
-  - CTA
-  - Mockups
-  - Rejected / experiments
+- exceptional reusable template/system;
+- client-specific colors/copy/services;
+- customer's real project/team photos presented well;
+- low implementation time once the system is mature;
+- but communication, revisions, QA, domains and handoff must be measured on real customers before making aggressive speed promises.
 
-Example ID: `PL-HERO-001`.
+### Possible add-on
 
-For each asset retain:
-- preview/result;
-- approved/rejected;
-- image/video;
-- model;
-- prompt;
-- references/elements;
-- aspect ratio;
-- website slot;
-- flagship/client usage;
-- rating;
-- motion-ready yes/no;
-- customizable yes/no.
+`Website Control Session` around €59 is an idea: teach safe content edits without giving away the production system. Not yet locked.
 
-## VISUAL PRODUCTION BACKLOG
+### Domain / hosting principle
 
-### P0 — Plumbing: lock the world
+Customer should remain owner of their domain. Joey may manage setup/DNS/hosting for convenience, but the exact provider, commercial hosting setup, handoff and maintenance pricing still need to be decided.
 
-- [ ] `PL-CHAR-001` — **Master technician** — one premium but authentic recurring tradesperson usable across hero, arrival, inspection, repair and handover.
-- [ ] `PL-STYLE-001` — **Visual world / style lock** — white-led premium shell, deep-red accents, luxury materials, precise tech treatment.
-- [ ] `PL-HERO-001` — **Bathroom emergency master still** — controlled leak/urgency + clean headline/CTA space.
-- [ ] `PL-STORY-001` — **Contact / phone bridge** — fast bridge from problem to service response.
-- [ ] `PL-STORY-002` — **Service vehicle arrival** — speed + professionalism + brand presence.
-- [ ] `PL-STORY-003` — **Inspection / diagnosis** — calm competence after urgency.
-- [ ] `PL-STORY-004` — **Repair in action** — primary craftsmanship scene.
-- [ ] `PL-DETAIL-001` — **Technical macro pack** — hands, fittings, water, chrome, tools, pipe details and textures.
-- [ ] `PL-STORY-005` — **Clean-up / handover** — make premium service visible.
-- [ ] `PL-END-001` — **Resolved end-state** — calm visual supporting the closing CTA.
+---
 
-### P1 — Proof, motion and sales system
+## NEXT BUSINESS QUESTIONS
 
-- [ ] `PL-PROOF-001` — real-project proof frame / before-after system.
-- [ ] `PL-SVC-001` — allround services visual set so the company does not read as emergency-only.
-- [ ] `PL-MOTION-001` — hero motion test; blocked until hero still is approved.
-- [ ] `PL-MOTION-002` — scroll-story transitions; blocked until story stills are approved.
-- [ ] `SALES-MOCK-001` — premium desktop/mobile showcase mockups.
-- [ ] `SALES-BA-001` — old site → premium redesign transformation frame.
-- [ ] `VAULT-001` — asset naming + metadata + approved/rejected workflow.
+### NOG BESLISSEN
 
-### P2 — Next flagship worlds
+1. Exact one-sentence outcome we sell.
+2. Final founding price and later standard price.
+3. Exact inclusions/exclusions and revision boundary.
+4. Customer content-intake process.
+5. Commercial hosting + domain + DNS + ownership flow.
+6. One-off vs annual maintenance/support model.
+7. Real target fulfilment time after measuring customers 1–10.
+8. Best acquisition mix around Joey's full-time job.
+9. Whether Website Control Session is bundled or optional.
 
-- [ ] `FLAG-02-PLAN` — Renovation complete visual queue.
-- [ ] `FLAG-03-PLAN` — Beauty/Aesthetics complete visual queue.
-- [ ] `FLAG-04-PLAN` — Personal Brand/Coach complete visual queue.
+### UITVOEREN after visual proof
 
-## VENTURE BACKLOG
+- integrate selected agency hero + mobile derivative;
+- build first-scroll payoff around the same master;
+- integrate real Plumbing desktop/mobile demo captures;
+- integrate selected recurring technician scenes;
+- mobile/desktop QA;
+- lock offer/scope/hosting;
+- then build first compact Almere/Bussum prospect pool.
 
-This is the **builder-managed Venture Backlog**, not Joey's personal to-do list.
+---
 
-### Business / offer
-- [ ] Lock the one-sentence offer and the exact problem we take off the owner's plate.
-- [ ] Compare plumbing/trades with beauty/nails/coaches on willingness to pay, digital need, prospect volume, sales friction and AI-DIY risk.
-- [ ] Lock the economic model: setup price, recurring hosting/maintenance/updates and inclusions.
-- [ ] Define scope/revision boundaries.
-- [ ] Define customer 1–10 production time budget and delivery QA.
-- [ ] Define what is standardized versus bespoke.
+## VISUAL FACTORY / ASSET INTAKE
 
-### Acquisition
-- [ ] Define first 100 prospect criteria after niche + starting geography are locked.
-- [ ] Build cold-call/outreach script after offer + demo proof are strong.
-- [ ] Build personalized-demo workflow without turning every prospect into hours of unpaid custom work.
+Selected/winning outputs go under:
 
-### Production
-- [ ] Finish four flagship briefs/page maps.
-- [ ] Build Higgsfield model/capability matrix by asset type.
-- [ ] Estimate the still/variant/motion credit budget before subscription spend.
-- [ ] Build the Visual Vault structure and metadata.
-- [ ] Convert the winning flagship system into reusable components/templates.
+- `website-ventures-assets/agency/`
+- `website-ventures-assets/plumbing/`
 
-### Scale — only after proof
-- [ ] Student/builder handoff standard.
-- [ ] Trigger for sales delegation.
-- [ ] Province-by-province rollout logic.
-- [ ] Decide whether recurring services expand into Google profile, local SEO, content/updates or other add-ons after customer evidence.
+Use `WEBSITE-VENTURES-ASSET-IMPORT-MANIFEST.json` for canonical target paths.
+
+Rules:
+
+- Do not dump every Higgsfield variation into the repo.
+- Keep selected candidates/winners only.
+- Preserve the high-quality source master; web-optimized `.webp`/`.avif` derivatives may be added separately.
+- File/job IDs must stay traceable to prompt/model/reference/ratio.
+- Use `website-ventures-higgsfield-review.html` to record score, defects and winner selection.
+- Real proof is separate from AI demo assets.
+
+---
+
+## GAMENFY VISUAL PRODUCTION — CORRECT BOUNDARY
+
+Website Ventures is the active bottleneck right now. Broad Gamenfy asset generation stays deferred.
+
+What remains agreed for the later Gamenfy technology pilot:
+
+- use **one existing approved character**;
+- test real WALK;
+- natural IDLE;
+- expressive JUMP;
+- one character + prop/FX interaction;
+- if sprite output still feels like a moving flat cutout, stop batching and test rigged 2D architecture.
+
+Do **not** currently generate:
+
+- full park world;
+- 11 Daily Mission prop pack;
+- new skill characters;
+- chess/piano/book/weights/whistle/tennis packs.
+
+---
 
 ## IDEA BANK
 
-Unconfirmed ideas live here instead of becoming accidental requirements.
+Unconfirmed ideas stay here instead of becoming accidental requirements:
 
-- Apple-level scroll storytelling for ordinary local service businesses.
-- “Apple/Porsche treatment” for trades.
-- VOZOL-like sense of effort and tech polish, with less clutter.
-- White + deep red + marble/stone/chrome/glass/water as plumbing signature world.
-- Premium bathroom leak → phone → vehicle → technician → repair → clean handover → CTA.
+- Apple-level scroll storytelling for local service businesses.
+- Porsche treatment for authentic tradespeople.
+- VOZOL-like sense of effort/product polish without its possible clutter.
+- White + deep red + stone/chrome/glass/water as one possible Plumbing signature world.
 - Interactive before/after transformations.
-- One recurring demo technician as a reusable reference element.
-- Prospect-specific hero variants derived from master compositions.
+- Prospect-specific hero variants derived from locked master compositions.
 - Real project photos inside ultra-premium proof frames.
-- A literal visual “drawer” that can be opened during sales conversations.
 - Desktop/mobile/before-after sales mockups that make “this could be yours” instantly tangible.
-- One extraordinary base system reused 80% + customized 20%, rather than rebuilding “Apple-killer” design from zero per customer.
-- Province-by-province expansion only after unit economics and conversion are real.
+- One extraordinary base system reused heavily + deliberately customized instead of rebuilding every client site from blank.
+- Province-by-province expansion only after conversion and unit economics are proven.
 
-## BUSINESS QUESTIONS STILL OPEN
-
-The five fundamental questions remain the gate before serious scale:
-
-1. **What do we sell exactly?** One understandable outcome, not “a website”.
-2. **Who is first?** One comparable prospect pool, not all SMEs.
-3. **Why us?** Price alone is weak: likely combination of premium design, speed, no-hassle delivery, trust and commercial effectiveness.
-4. **How do customers 1–10 work?** Repeatable production and sales before mass scale.
-5. **What is the economic model?** One-off + recurring must be decided from real delivery economics.
-
-## LONGER-TERM SCALE MODEL
-
-Expected direction if proof is positive:
-
-Joey learns/owns sales + product quality → production becomes componentized → students/builders execute controlled delivery → recurring service layer grows → sales delegation after a proven script → geographic expansion → Joey moves from builder toward owner/operator of the system.
+---
 
 ## HUMAN CHANGELOG
 
-### 2026-09-06 — sparring + visual-production consolidation
-- Moved Website Ventures explicitly into Gamenfy Finance → Ventures / Project Headquarters rather than treating repo separation as a safety mechanism.
-- Locked the plumbing direction to urgency hook + premium allround positioning.
-- Locked the “Porsche treatment, authentic tradesperson” principle.
-- Chose consistency over variety: one master technician first.
-- Consolidated the four-flagship strategy, Higgsfield sprint rules, Visual Vault and visual-production backlog.
-- Separated Venture Backlog from Joey's personal to-do list.
+### 2026-09-08 — active Higgsfield/manual production system
+- Marked the current workflow's Batch 4 as complete and removed it from the active manual queue.
+- Built Batch 5–9 copy/paste queue with exact model, ratio, quality, prompt, reference, gate and repo filename.
+- Added one-tap copy controls and local completion tracking.
+- Added dedicated winner-review workspace.
+- Added repo asset intake manifest and folder structure.
+- Added a 4:5 Nano Banana 2 mobile derivative step after the selected agency desktop hero.
+- Corrected Batch 8 to **OPTIONAL / skip-by-default** to align with the agency slot contract.
+- Refreshed structured HQ state and Production Line v3.1 so old Plumbing storyboard assets no longer appear mandatory.
+
+### 2026-09-07 — agency-first decision
+- Website Ventures confirmed as priority #1.
+- Joey's own premium agency/showroom moved ahead of Plumbing polish.
+- Agency site defined as Apple-like showcase + R&D proving ground.
+
+### 2026-09-06 — visual-production consolidation
+- Locked “Porsche treatment, authentic tradesperson”.
+- Chose one master technician over unrelated character variety.
+- Kept real proof real.
+- Separated commercial backlog from Joey's personal task list.
