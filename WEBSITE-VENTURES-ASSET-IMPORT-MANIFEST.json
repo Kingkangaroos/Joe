@@ -1,6 +1,6 @@
 {
   "name": "Website Ventures Asset Import Manifest",
-  "version": 1,
+  "version": 2,
   "updatedAt": "2026-09-08",
   "managedBy": "ChatGPT (OpenAI)",
   "sourceQueue": "WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json",
@@ -9,7 +9,9 @@
     "Upload selected candidates/winners only; exploration variants can remain in Higgsfield.",
     "Keep original high-quality masters; create web derivatives separately.",
     "Generated demo imagery is never real client proof.",
+    "AG-HERO-MOBILE-001 is derived from the selected Batch 5 hero and must remain the same campaign/world.",
     "PL-CHAR-001 is the identity source for all Batch 7 Plumbing scenes.",
+    "Batch 8 support assets are optional and should normally be skipped unless a real coded slot proves it needs media.",
     "Batch 9 assets are final 4K masters and remain blocked until a 2K winner is selected."
   ],
   "assets": [
@@ -19,7 +21,7 @@
       "targetPath": "website-ventures-assets/agency/ag-hero-transform-001.png",
       "role": "agency hero candidate",
       "status": "awaiting-generation",
-      "winnerPolicy": "candidate; normally only one Batch 5 concept becomes hero winner"
+      "winnerPolicy": "candidate; normally only one of the first three Batch 5 concepts becomes the desktop hero winner"
     },
     {
       "jobId": "AG-HERO-PRODUCT-001",
@@ -27,7 +29,7 @@
       "targetPath": "website-ventures-assets/agency/ag-hero-product-001.png",
       "role": "agency hero candidate",
       "status": "awaiting-generation",
-      "winnerPolicy": "candidate; normally only one Batch 5 concept becomes hero winner"
+      "winnerPolicy": "candidate; normally only one of the first three Batch 5 concepts becomes the desktop hero winner"
     },
     {
       "jobId": "AG-HERO-MATERIAL-001",
@@ -35,7 +37,16 @@
       "targetPath": "website-ventures-assets/agency/ag-hero-material-001.png",
       "role": "agency hero candidate",
       "status": "awaiting-generation",
-      "winnerPolicy": "candidate; normally only one Batch 5 concept becomes hero winner"
+      "winnerPolicy": "candidate; normally only one of the first three Batch 5 concepts becomes the desktop hero winner"
+    },
+    {
+      "jobId": "AG-HERO-MOBILE-001",
+      "batch": 5,
+      "targetPath": "website-ventures-assets/agency/ag-hero-mobile-001.png",
+      "role": "4:5 mobile derivative of selected agency hero",
+      "status": "blocked-by-batch-5-desktop-winner",
+      "referenceJobId": "selected AG-HERO-TRANSFORM-001, AG-HERO-PRODUCT-001 or AG-HERO-MATERIAL-001",
+      "winnerPolicy": "must preserve the selected desktop hero campaign and be intentionally composed for mobile"
     },
     {
       "jobId": "PL-CHAR-001",
@@ -79,22 +90,25 @@
       "jobId": "AG-SUPPORT-TRANSFORM-001",
       "batch": 8,
       "targetPath": "website-ventures-assets/agency/ag-support-transform-001.png",
-      "role": "agency transformation/value support visual",
-      "status": "blocked-by-batch-5-winner"
+      "role": "optional transformation/value support visual",
+      "status": "optional-skip-by-default",
+      "optional": true
     },
     {
       "jobId": "AG-SUPPORT-PROCESS-001",
       "batch": 8,
       "targetPath": "website-ventures-assets/agency/ag-support-process-001.png",
-      "role": "agency process support visual",
-      "status": "blocked-by-batch-5-winner"
+      "role": "optional process support visual",
+      "status": "optional-skip-by-default",
+      "optional": true
     },
     {
       "jobId": "AG-SUPPORT-SHOWCASE-001",
       "batch": 8,
       "targetPath": "website-ventures-assets/agency/ag-support-showcase-001.png",
-      "role": "agency showcase support visual",
-      "status": "blocked-by-batch-5-winner"
+      "role": "optional showcase support visual",
+      "status": "optional-skip-by-default",
+      "optional": true
     },
     {
       "jobId": "AG-HERO-MASTER-001",
@@ -102,7 +116,7 @@
       "targetPath": "website-ventures-assets/agency/ag-hero-master-001.png",
       "role": "final 4K agency hero master",
       "status": "blocked-by-batch-5-winner",
-      "referenceJobId": "winning Batch 5 job"
+      "referenceJobId": "winning Batch 5 desktop hero"
     },
     {
       "jobId": "PL-HERO-MASTER-001",
