@@ -1,0 +1,30 @@
+{
+  "name": "Website Ventures Delivery Gate",
+  "version": 1,
+  "updatedAt": "2026-09-08",
+  "managedBy": "ChatGPT (OpenAI)",
+  "status": "internal-operational-control",
+  "purpose": "Prevent incomplete client launches and make scope changes visible before they consume untracked fulfilment time.",
+  "launchChecks": [
+    {"id":"intake-approved","label":"Client intake is complete enough to build","required":true},
+    {"id":"scope-visible","label":"Included / excluded scope and revision allowance are recorded","required":true},
+    {"id":"factory-config","label":"Approved client config exists and matches the intended business","required":true},
+    {"id":"real-proof","label":"Every displayed review/certification/project claim is backed by a real source","required":true},
+    {"id":"contact-tested","label":"Primary phone/email/WhatsApp/contact CTA is tested","required":true},
+    {"id":"desktop-qa","label":"Desktop visual and functional QA passed","required":true},
+    {"id":"mobile-qa","label":"~390px mobile visual and functional QA passed","required":true},
+    {"id":"selected-assets","label":"Selected assets load correctly; pending assets keep safe fallback","required":true},
+    {"id":"domain-owner","label":"Domain ownership is explicit and customer ownership is preserved","required":true},
+    {"id":"hosting-commercial","label":"Production hosting is commercially appropriate; do not launch paid clients on Vercel Hobby","required":true},
+    {"id":"dns-ssl","label":"Domain/DNS/HTTPS status is healthy","required":true},
+    {"id":"handoff","label":"Customer receives agreed handoff/support information","required":true}
+  ],
+  "changeRequestRule": "Anything outside the recorded included scope becomes a visible change request before implementation. Recording a request does not mean it is automatically chargeable or approved; commercial treatment remains a decision field.",
+  "changeRequestStates": ["requested","approved","declined","included-as-goodwill","completed"],
+  "handoff": {
+    "intake":"website-ventures-client-intake.html",
+    "factory":"website-ventures-client-factory.html",
+    "fulfilmentRun":"website-ventures-fulfilment-run.html",
+    "operator":"website-ventures-ops.html"
+  }
+}
