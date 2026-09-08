@@ -1,0 +1,154 @@
+{
+  "name": "Gamenfy Higgsfield Animation Technology Pilot",
+  "version": 1,
+  "updatedAt": "2026-09-08",
+  "managedBy": "ChatGPT (OpenAI)",
+  "status": "deferred-until-website-ventures-is-not-the-active-bottleneck",
+  "purpose": "Prove whether one existing approved Gamenfy character can feel genuinely alive through real articulated sprite animation before generating any park, mission-prop, skill-object or new-character asset packs.",
+  "priority": "P2 while Website Ventures is active",
+  "sourceRule": "Use one existing approved Daily Score Joey character source from img/lab/daily-score/joey/l01.webp through l10.webp. Never overwrite or reinterpret the approved l01-l10 evolution files.",
+  "hardRules": [
+    "This pilot is not part of the active Website Ventures required queue.",
+    "No new Gamenfy character is generated for this test.",
+    "No park/environment is generated for this test.",
+    "No 11-mission prop pack or skill-object pack is generated for this test.",
+    "Choose one clean existing full-body source before any AutoSprite job.",
+    "Run WALK first. If WALK fails the life/identity/foot-contact gate, stop and do not spend on IDLE, JUMP or INTERACT.",
+    "If a bounded AutoSprite pilot still feels like a moving cutout, has repeated identity morphing, or cannot align feet/limbs convincingly, stop batching and prototype rigged 2D architecture instead.",
+    "Approved source art remains untouched; outputs go to a separate animation-pilot folder."
+  ],
+  "verifiedModel": {
+    "id": "autosprite",
+    "name": "AutoSprite Animation",
+    "provider": "Higgsfield",
+    "input": "one character image",
+    "output": "game-ready sprite sheet PNG",
+    "verifiedPresets": ["idle", "walk", "run", "attack", "jump", "custom"],
+    "verifiedParameters": {
+      "video_tier": ["turbo", "pro", "max"],
+      "frame_count": "2-64",
+      "frame_size": "32-512",
+      "remove_bg": ["default", "ultra"],
+      "with_sound": "boolean",
+      "is_humanoid": "boolean"
+    }
+  },
+  "sourceSelection": {
+    "id": "GF-PILOT-SOURCE-001",
+    "type": "no-generation-gate",
+    "candidatePaths": [
+      "img/lab/daily-score/joey/l01.webp",
+      "img/lab/daily-score/joey/l02.webp",
+      "img/lab/daily-score/joey/l03.webp",
+      "img/lab/daily-score/joey/l04.webp",
+      "img/lab/daily-score/joey/l05.webp",
+      "img/lab/daily-score/joey/l06.webp",
+      "img/lab/daily-score/joey/l07.webp",
+      "img/lab/daily-score/joey/l08.webp",
+      "img/lab/daily-score/joey/l09.webp",
+      "img/lab/daily-score/joey/l10.webp"
+    ],
+    "instruction": "Choose the clearest neutral full-body level with visible feet, legs and arms, an isolated readable silhouette and the least pose obstruction. Do not choose based on which level is coolest; choose the source that gives the animation model the best chance to articulate the real character cleanly.",
+    "gate": "Source is recognizable at app size, limbs and feet are visible enough to animate, and using it does not require changing the approved character design."
+  },
+  "jobs": [
+    {
+      "id": "GF-PILOT-WALK-001",
+      "title": "Real Walk Cycle",
+      "status": "deferred-first-generation",
+      "dependency": "GF-PILOT-SOURCE-001 selected",
+      "model": "AutoSprite Animation",
+      "modelId": "autosprite",
+      "params": {
+        "kind": "walk",
+        "video_tier": "turbo",
+        "frame_count": 25,
+        "frame_size": 256,
+        "remove_bg": "ultra",
+        "with_sound": false,
+        "is_humanoid": true
+      },
+      "instruction": "Create a natural relaxed walk cycle from the supplied existing Gamenfy character. Preserve the exact character design, face, outfit, proportions, colors and silhouette language. The legs must genuinely alternate through planted-foot, passing and forward-stride poses; arms should swing gently in opposition. Keep torso/head stable, feet consistent in size, no camera movement, no zoom, no new props, no outfit redesign, no face drift. The result should read as a character truly walking rather than a flat image being translated across the screen.",
+      "gate": "At actual app render size the feet do not skate or melt, legs/arms visibly articulate, face/outfit remain the same character, frame-to-frame proportions stay stable and the loop seam is not distracting.",
+      "stopRule": "If this fails after a bounded retry, stop the AutoSprite expansion and evaluate rigged 2D before spending on the remaining pilot jobs.",
+      "targetPath": "img/lab/animation-pilot/daily-score-walk.png"
+    },
+    {
+      "id": "GF-PILOT-IDLE-001",
+      "title": "Natural Idle Cycle",
+      "status": "blocked-until-walk-passes",
+      "dependency": "GF-PILOT-WALK-001 passes",
+      "model": "AutoSprite Animation",
+      "modelId": "autosprite",
+      "params": {
+        "kind": "idle",
+        "video_tier": "turbo",
+        "frame_count": 18,
+        "frame_size": 256,
+        "remove_bg": "ultra",
+        "with_sound": false,
+        "is_humanoid": true
+      },
+      "instruction": "Create a subtle natural idle loop from the exact same Gamenfy character source. Preserve identity, face, outfit, proportions and colors. Use only tiny breathing, a gentle weight shift and minimal natural blink/head movement. No waving, dancing, bouncing, large gestures, camera motion, new props or costume changes. It should make the character feel quietly alive while the user reads the surrounding UI.",
+      "gate": "Same identity as WALK, no jitter or morphing, movement is visible but not distracting, loop is seamless and the feet remain grounded.",
+      "targetPath": "img/lab/animation-pilot/daily-score-idle.png"
+    },
+    {
+      "id": "GF-PILOT-JUMP-001",
+      "title": "Expressive Jump",
+      "status": "blocked-until-walk-passes",
+      "dependency": "GF-PILOT-WALK-001 passes",
+      "model": "AutoSprite Animation",
+      "modelId": "autosprite",
+      "params": {
+        "kind": "jump",
+        "video_tier": "turbo",
+        "frame_count": 22,
+        "frame_size": 256,
+        "remove_bg": "ultra",
+        "with_sound": false,
+        "is_humanoid": true
+      },
+      "instruction": "Create one expressive but believable jump action with the exact same Gamenfy character. Show clear anticipation with bent knees, takeoff driven by the legs, a readable airborne pose, landing compression and a short settle back toward neutral. Preserve face, outfit, proportions and colors. Do not simply translate the whole image vertically; knees, hips, feet and arms must genuinely articulate through the action. No camera movement, no new props, no costume changes.",
+      "gate": "The jump reads as physical character motion at app size, has clear anticipation/takeoff/air/landing, identity remains stable and the body is not merely a flat cutout moving up and down.",
+      "targetPath": "img/lab/animation-pilot/daily-score-jump.png"
+    },
+    {
+      "id": "GF-PILOT-INTERACT-001",
+      "title": "Character + Separate Prop Interaction Proof",
+      "status": "blocked-until-walk-passes",
+      "dependency": "GF-PILOT-WALK-001 passes",
+      "model": "AutoSprite Animation",
+      "modelId": "autosprite",
+      "params": {
+        "kind": "custom",
+        "name": "reach-touch-return",
+        "video_tier": "turbo",
+        "frame_count": 24,
+        "frame_size": 256,
+        "remove_bg": "ultra",
+        "with_sound": false,
+        "is_humanoid": true
+      },
+      "instruction": "Animate the exact same Gamenfy character performing a short reusable interaction with an imaginary anchor point slightly in front of the body around waist height: notice the target, shift weight, reach one hand toward it, make a clear brief touch/press contact pose, then return naturally to neutral. Preserve exact face, outfit, body proportions and colors. Do not bake a visible prop, button, text or new object into the sprite. No camera movement. The empty contact point must remain spatially consistent so the app can render a separate HTML/CSS/image prop at that location.",
+      "gate": "The hand/contact point stays consistent enough that a separately rendered prop can be aligned with it, the body visibly reacts to the interaction, and the architecture proves character + prop/FX can remain separate Lego-like layers.",
+      "stopRule": "If the contact point wanders too much or the body/identity morphs, do not generate a prop library; test a rigged 2D character architecture instead.",
+      "targetPath": "img/lab/animation-pilot/daily-score-interact.png"
+    }
+  ],
+  "integrationPilotAfterAssets": {
+    "destination": "Lab only first; never replace the live Daily Score character until approved",
+    "states": ["idle", "walk", "jump", "interact"],
+    "implementationGoal": "A small JS state machine chooses one prebuilt animation while the character can move along a coded ground plane and interact with one separately positioned temporary prop.",
+    "mobileGate": "Runs smoothly at iPhone viewport size without blocking scrolling or increasing layout shift; reduced-motion users get a stable frame.",
+    "commercialReuse": "If this interaction architecture works, the underlying technology may later become a premium website mascot/interaction add-on without reusing Joey's personal character."
+  },
+  "explicitlyDeferred": [
+    "full park/master world",
+    "path/tree/bench/lamp/sign/fountain asset kit",
+    "11 Daily Mission prop pack",
+    "skill-specific chess/piano/book/weights/whistle/tennis packs",
+    "new final skill characters",
+    "broad motion batch across all existing characters"
+  ]
+}
