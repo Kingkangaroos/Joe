@@ -50,4 +50,15 @@ Do not upload all four candidates as final masters. If candidate comparison is u
 
 Joey generates manually on higgsfield.ai → chooses the strongest output(s) → sends/uploads the winner(s) to ChatGPT → ChatGPT places them under the target paths above → creates optimized website derivatives where useful → integrates them into the exact showroom/Plumbing slot → mobile/desktop QA → records the final usage in the Visual Vault.
 
+### Batch 5 controlled promotion
+
+ChatGPT first places the supplied desktop candidates in the unique `agency/intake/...-a.png`, `-b.png` or `-c.png` paths from `WEBSITE-VENTURES-ASSET-IMPORT-MANIFEST.json`. Promotion is then one validated command:
+
+```bash
+node scripts/website-ventures-promote-batch5.js --job AG-HERO-PRODUCT-001 --variant B --generation-id <Higgsfield URL or ID> --dry-run
+node scripts/website-ventures-promote-batch5.js --job AG-HERO-PRODUCT-001 --variant B --generation-id <Higgsfield URL or ID>
+```
+
+The gate verifies provenance, the declared variant, a real PNG, the required 16:9 or 4:5 ratio, overwrite safety and the desktop-before-mobile dependency. Only after every check passes does it copy the approved candidate to its final path and update both the import manifest and Selected Assets registry. An existing selection requires the deliberate `--replace` flag. This command does not generate, optimize or delete media.
+
 The active prompt queue is `WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json` and the UI is `website-ventures-higgsfield-prompt-board.html`.
