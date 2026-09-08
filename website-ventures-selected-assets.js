@@ -115,6 +115,41 @@
     return Promise.all(jobs);
   }
 
+  function loadScriptOnce (src) {
+    const existing = document.querySelector('script[data-wv-bootstrap="' + src + '"]');
+    if (existing) {
+      if (existing.dataset.wvLoaded === '1') return Promise.resolve();
+      return new Promise(function (resolve, reject) {
+        existing.addEventListener('load', resolve, { once: true });
+        existing.addEventListener('error', reject, { once: true });
+      });
+    }
+    return new Promise(function (resolve, reject) {
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = false;
+      script.dataset.wvBootstrap = src;
+      script.onload = function () { script.dataset.wvLoaded = '1'; resolve(); };
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  function bootClientTemplate () {
+    const path = location.pathname.split('/').pop() || '';
+    if (path !== 'site-plumbing-flagship-v1.html') return;
+
+    const requested = new URLSearchParams(location.search).get('wvclient');
+    if (!requested && !document.body.dataset.wvClient) document.body.dataset.wvClient = 'plumbing-demo';
+
+    loadScriptOnce('website-ventures-client-config.js')
+      .then(function () { return loadScriptOnce('website-ventures-plumbing-template.js'); })
+      .catch(function (err) {
+        console.warn('[Website Ventures] client template bootstrap unavailable; hardcoded Plumbing fallback retained.', err);
+        document.body.dataset.wvTemplateState = 'fallback';
+      });
+  }
+
   const ready = fetch(REGISTRY_URL, { cache: 'no-store' })
     .then(r => {
       if (!r.ok) throw new Error('Selected asset registry could not load');
@@ -140,6 +175,7 @@
 
   function boot () {
     ready.then(() => apply(document));
+    bootClientTemplate();
     let lastMobile = window.matchMedia('(max-width: 860px)').matches;
     window.addEventListener('resize', function () {
       const nowMobile = window.matchMedia('(max-width: 860px)').matches;
