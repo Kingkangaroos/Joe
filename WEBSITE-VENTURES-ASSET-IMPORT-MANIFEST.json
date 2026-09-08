@@ -1,0 +1,116 @@
+{
+  "name": "Website Ventures Asset Import Manifest",
+  "version": 1,
+  "updatedAt": "2026-09-08",
+  "managedBy": "ChatGPT (OpenAI)",
+  "sourceQueue": "WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json",
+  "root": "website-ventures-assets",
+  "rules": [
+    "Upload selected candidates/winners only; exploration variants can remain in Higgsfield.",
+    "Keep original high-quality masters; create web derivatives separately.",
+    "Generated demo imagery is never real client proof.",
+    "PL-CHAR-001 is the identity source for all Batch 7 Plumbing scenes.",
+    "Batch 9 assets are final 4K masters and remain blocked until a 2K winner is selected."
+  ],
+  "assets": [
+    {
+      "jobId": "AG-HERO-TRANSFORM-001",
+      "batch": 5,
+      "targetPath": "website-ventures-assets/agency/ag-hero-transform-001.png",
+      "role": "agency hero candidate",
+      "status": "awaiting-generation",
+      "winnerPolicy": "candidate; normally only one Batch 5 concept becomes hero winner"
+    },
+    {
+      "jobId": "AG-HERO-PRODUCT-001",
+      "batch": 5,
+      "targetPath": "website-ventures-assets/agency/ag-hero-product-001.png",
+      "role": "agency hero candidate",
+      "status": "awaiting-generation",
+      "winnerPolicy": "candidate; normally only one Batch 5 concept becomes hero winner"
+    },
+    {
+      "jobId": "AG-HERO-MATERIAL-001",
+      "batch": 5,
+      "targetPath": "website-ventures-assets/agency/ag-hero-material-001.png",
+      "role": "agency hero candidate",
+      "status": "awaiting-generation",
+      "winnerPolicy": "candidate; normally only one Batch 5 concept becomes hero winner"
+    },
+    {
+      "jobId": "PL-CHAR-001",
+      "batch": 6,
+      "targetPath": "website-ventures-assets/plumbing/pl-char-001.png",
+      "candidatePaths": [
+        "website-ventures-assets/plumbing/pl-char-001-candidate-a.png",
+        "website-ventures-assets/plumbing/pl-char-001-candidate-b.png",
+        "website-ventures-assets/plumbing/pl-char-001-candidate-c.png",
+        "website-ventures-assets/plumbing/pl-char-001-candidate-d.png"
+      ],
+      "role": "recurring technician identity master",
+      "status": "awaiting-generation",
+      "winnerPolicy": "select exactly one recurring technician before Batch 7"
+    },
+    {
+      "jobId": "PL-STORY-DIAG-001",
+      "batch": 7,
+      "targetPath": "website-ventures-assets/plumbing/pl-story-diag-001.png",
+      "role": "primary diagnosis scene",
+      "status": "blocked-by-pl-char-001",
+      "referenceJobId": "PL-CHAR-001"
+    },
+    {
+      "jobId": "PL-STORY-SINK-001",
+      "batch": 7,
+      "targetPath": "website-ventures-assets/plumbing/pl-story-sink-001.png",
+      "role": "service detail scene",
+      "status": "blocked-by-pl-char-001",
+      "referenceJobId": "PL-CHAR-001"
+    },
+    {
+      "jobId": "PL-STORY-TRUST-001",
+      "batch": 7,
+      "targetPath": "website-ventures-assets/plumbing/pl-story-trust-001.png",
+      "role": "arrival/trust scene",
+      "status": "blocked-by-pl-char-001",
+      "referenceJobId": "PL-CHAR-001"
+    },
+    {
+      "jobId": "AG-SUPPORT-TRANSFORM-001",
+      "batch": 8,
+      "targetPath": "website-ventures-assets/agency/ag-support-transform-001.png",
+      "role": "agency transformation/value support visual",
+      "status": "blocked-by-batch-5-winner"
+    },
+    {
+      "jobId": "AG-SUPPORT-PROCESS-001",
+      "batch": 8,
+      "targetPath": "website-ventures-assets/agency/ag-support-process-001.png",
+      "role": "agency process support visual",
+      "status": "blocked-by-batch-5-winner"
+    },
+    {
+      "jobId": "AG-SUPPORT-SHOWCASE-001",
+      "batch": 8,
+      "targetPath": "website-ventures-assets/agency/ag-support-showcase-001.png",
+      "role": "agency showcase support visual",
+      "status": "blocked-by-batch-5-winner"
+    },
+    {
+      "jobId": "AG-HERO-MASTER-001",
+      "batch": 9,
+      "targetPath": "website-ventures-assets/agency/ag-hero-master-001.png",
+      "role": "final 4K agency hero master",
+      "status": "blocked-by-batch-5-winner",
+      "referenceJobId": "winning Batch 5 job"
+    },
+    {
+      "jobId": "PL-HERO-MASTER-001",
+      "batch": 9,
+      "targetPath": "website-ventures-assets/plumbing/pl-hero-master-001.png",
+      "role": "final 4K plumbing hero master",
+      "status": "blocked-by-batch-7-winner",
+      "referenceJobId": "winning Batch 7 scene"
+    }
+  ]
+}
