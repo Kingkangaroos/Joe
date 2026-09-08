@@ -1,124 +1,172 @@
 # Income handoff — 2026-09-07
 
-Managed by ChatGPT (OpenAI). This is the compact commercial handoff from Joey's cross-project sparring session so the Income / Website Ventures project can continue without re-explaining the decisions.
+Managed by ChatGPT (OpenAI). This is the compact commercial handoff from Joey's cross-project sparring so the Income / Website Ventures project can continue without re-explaining the decisions.
 
 ## LIVE UPDATE — 2026-09-08
-- **Higgsfield Batch 4 is complete. Do not regenerate it by default.**
-- The active remaining manual generation queue is now **Batch 5 → 9** in `WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json`.
-- The live copy/paste cockpit is `website-ventures-higgsfield-prompt-board.html` and is linked from Finance → Ventures → Productielijn.
-- Each remaining job now has the exact prompt, model, aspect ratio, quality, variant count, reference instruction, acceptance gate, one-tap copy controls, local completion tracking and a planned repo filename.
-- The asset landing structure is `website-ventures-assets/` with `WEBSITE-VENTURES-ASSET-IMPORT-MANIFEST.json` mapping generation job IDs to target repo paths.
-- Current order:
-  1. **Batch 5 — Agency Hero Round**: 3 meaning-led 16:9 Soul 2.0 concepts; choose one winner.
-  2. **Batch 6 — Plumbing technician**: 4 candidates; choose exactly one recurring technician master.
-  3. **Batch 7 — Same-technician scenes**: diagnosis, under-sink service, arrival/trust using the Batch 6 winner as reference.
-  4. **Batch 8 — Agency support visuals**: transformation, process, showcase; inherit the Batch 5 winning world.
-  5. **Batch 9 — Final 4K masters**: Cinema Studio Image 2.5 only after winners; credit-sensitive finish.
-- Gamenfy's internal Builder/Next-Move queue was also refreshed so it starts at **Batch 5**, rather than still asking for old four-direction / skill-tree / Season-card work.
-- 50% remaining paid-credit balance remains a hard review stop. Unlimited/manual website exploration is preferred before final paid finish.
 
-## READ THIS FIRST — latest decisions
-1. **Website Ventures = priority #1 / primary near-term income engine.**
-2. **Build Joey's own Website Ventures / agency website first, before polishing the Plumbing flagship further.** Joey explicitly wants his own site to prove he can build exceptional websites before selling that claim to others.
-3. Joey's own agency site should be **maximum-premium, Apple-like, visually ambitious and interaction-led**. It is the showroom and R&D playground: hero, scroll storytelling, motion, interactive demos, mobile polish and before/after proof can all be pushed harder here than on a €349–€699 customer template.
-4. Plumbing / trades remains the **first commercial niche / flagship customer system**, but the agency site becomes the first public-facing proof layer that can showcase the Plumbing demo.
-5. **Do not expose the internal production factory.** The public website may show outcomes and capabilities; prompts, internal playbooks, production-line logic, asset registries and backend process are competitive IP. Before commercial launch, reassess the current public GitHub-repo exposure and prefer a private backend/repo while keeping the resulting websites public.
-6. Gamenfy Public remains a cheap beta only; do not let it consume major effort before real repeated usage proves demand.
-7. Grip / other ventures remain idea-bank items, not active execution priority.
+- **Website Ventures = priority #1 / primary near-term income engine.**
+- **Joey's own Website Ventures / agency showroom = P0** and sets the visual/technical ceiling before the customer system is sold.
+- **Higgsfield Batch 4 is treated as complete in the current manual workflow. Do not regenerate it by default.**
+- Active manual generation queue: `WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json`.
+- Copy/paste cockpit: `website-ventures-higgsfield-prompt-board.html`.
+- Winner review: `website-ventures-higgsfield-review.html`.
+- Asset landing map: `WEBSITE-VENTURES-ASSET-IMPORT-MANIFEST.json` → `website-ventures-assets/`.
+- Current required order:
+  1. **Batch 5 — Agency desktop hero round:** three 16:9 / 2K Soul 2.0 concepts → choose exactly one desktop winner.
+  2. **Batch 5 mobile derivative:** `AG-HERO-MOBILE-001` uses Nano Banana 2 image-to-image, 4:5 / 2K, from that exact desktop winner. Recompose intentionally for mobile; do not invent a second campaign.
+  3. **Batch 6 — Plumbing technician:** four 3:4 candidates → choose exactly one recurring technician master.
+  4. **Batch 7 — Same-technician scenes:** diagnosis, under-sink service, arrival/trust using the same selected technician identity.
+  5. **Batch 9 — Final 4K masters:** Cinema Studio Image 2.5 only after selected 2K winners; credit-sensitive finish.
+- **Batch 8 is OPTIONAL / skip-by-default.** Transformation/process/showcase support prompts exist only for a real coded-page media gap. Batch 8 never blocks progress.
+- Gamenfy's internal Ventures next-move queue is synced to this sequence. The old mandatory Batch 8 step was removed.
+- 50% remaining paid-generation balance = hard review stop. Manual Unlimited-supported website generation is preferred for exploration before paid finish.
+- The old `HIGGSFIELD-P0-GENERATION-MANIFEST.json` has been deliberately replaced with a **deprecated-do-not-execute pointer** because it mixed earlier assistant hypotheses with approved work.
 
-## Website Ventures — current commercial direction
-- First niche: **plumbing / trades / handyman**, with Plumbing as current flagship.
-- Starting geography: **Almere first**, optionally Bussum because Joey already works there and can meet businesses in person.
-- Working price hypothesis: **€349 founding offer** is attractive for first customers / proof, but should not become a permanent ceiling. A later regular price around **€499–€699** is a better working hypothesis once the system is proven.
-- Desired delivery model: one exceptional reusable template/system, then customer-specific colors, copy, real project photos and identity/character imagery.
-- Customer should be able to provide their own photos/projects; production converts those into the website world rather than rebuilding from scratch.
-- Target fulfilment should be low once the flagship/template is mature, but do not assume 15–30 minutes end-to-end until real customers prove it. Communication, QA, revisions and domain handoff are likely to dominate time.
-- Possible add-on: **Website Control Session ~€59** teaching the customer how to edit safe content (text, photos, hours, simple project entries) without teaching away the full production system.
-- Need a clear handoff for domains, DNS, hosting, ownership, email and ongoing edits. Customer should remain owner of their domain; Joey may manage it for them.
-- Acquisition should not rely on illegal cold calling or generic spam. Prioritize platforms with active buyer intent, referrals, warm/local contacts and legally compliant outreach experiments around Joey's full-time job.
+## READ THIS FIRST — core decisions
 
-## Joey's own agency website — NEW P0
-Purpose: **prove capability, create trust, and define the visual/technical ceiling before selling customer sites.**
+1. **Website Ventures is the active money-machine.**
+2. **Build Joey's own agency site first.** If Joey sells premium websites, his own site must be a convincing proof of that ability.
+3. Agency direction: **maximum-premium, calm Apple-like shell, strong typography, controlled spacing, integrated scroll/motion, deliberate mobile execution.**
+4. The agency site is also R&D: new scroll/interaction techniques can be proven there and later become premium customer add-ons.
+5. Plumbing/trades remains the **first commercial showcase/customer-template system**, not the public top-level agency identity.
+6. **Do not expose the production factory.** Public website = output/capability. Prompts, model recipes, asset registries, internal workflows and production logic = private competitive IP.
+7. The connected GitHub repo has been observed as **public** in Vercel deployment metadata. This is an IP exposure risk and should be solved before commercial launch; no repo-visibility change has been claimed or performed yet.
+8. Gamenfy Public remains a cheap beta. Do not let it consume major effort before repeated real usage proves demand.
+9. Grip / other ventures remain idea-bank items, not current execution priority.
 
-### Direction that is already agreed
-- Apple-like premium feel: calm, minimal shell, strong typography, expensive motion, controlled spacing, no noisy agency-template aesthetic.
-- The website itself should demonstrate what Joey sells instead of merely describing it.
-- It can be more experimental than customer templates and may become the testbed for techniques later sold as premium add-ons.
-- Plumbing flagship should appear as the first major showcase / case-study/demo world.
-- Mobile quality is non-negotiable; the wow effect cannot depend on desktop only.
+## Website Ventures — commercial direction
 
-### Agency-site assets/features to design next
-These are **planning slots, not yet generated assets**:
-- Agency master visual direction / design system.
-- Premium hero concept with a visually strong first-scroll payoff.
-- Scroll-storytelling sequence where copy and animation move together (Apple-style, not a detached autoplay video).
-- Plumbing flagship showcase sequence: desktop + mobile presentation.
-- Interactive before/after or transformation demo.
-- One reusable premium motion/interaction demo that can later become a commercial add-on.
-- Clear offer / starting-price / CTA section.
-- Credibility layer that uses real evidence only; generated visuals must never masquerade as completed client work.
+- First niche: **plumbing / trades / handyman / installations**.
+- Starting geography: **Almere**, with **Bussum** as a useful second local area because Joey works there.
+- `€349` = working **founding-offer hypothesis**, not final pricing and not a permanent ceiling.
+- `€499–€699` = possible later range once scope, quality, speed and conversion are proven; also not locked.
+- Desired production model: one exceptional reusable customer system → customer-specific colors, copy, services, real photos and selected identity assets.
+- Customer should provide real project/team photos where proof is claimed; production presents them beautifully rather than fabricating proof.
+- Fulfilment should become fast once the template is mature, but do not promise an ultra-short end-to-end time before customers 1–10 reveal real communication, revision, QA, domain and handoff time.
+- Possible add-on: **Website Control Session ~€59**, not locked.
+- Customer should remain owner of their domain. Joey may manage DNS/hosting/setup for convenience.
+- Acquisition should fit Joey's full-time job and Dutch rules: active-buyer platforms, referrals, warm/local contacts and compliant outreach are preferable to generic mass spam or assumed cold-calling loopholes.
 
-Do **not** generate these blindly. First choose the site narrative and exact slots/crops, then generate only what the website actually uses.
+## Joey's own agency website — P0
 
-## Website asset status — distinguish FIXED from PROPOSED
-### FIXED / strongly agreed principles
-- One strong recurring technician for Plumbing; consistency beats many unrelated people.
-- Technician must feel like an authentic Dutch tradesperson, not a fashion model.
-- Website shell can be extremely premium / Porsche-like while the worker stays credible.
-- Strong commercially useful hero is critical.
-- Scroll / visual storytelling should feel integrated with information, Apple-like where appropriate.
-- Real customer project proof remains real; AI may frame/present proof but never fabricate client evidence.
-- Customer sites should be template/system-driven and highly reusable.
-- Assets should be reusable across pages/clients where possible.
+Purpose: **prove capability, create trust and define the visual/technical ceiling before selling customer sites.**
 
-### PROPOSED by ChatGPT — NOT yet approved as mandatory assets
-The current production-line JSON includes concepts such as a leaking-bathroom hero, white/deep-red/chrome/water art direction, service van, plumbing tool set, phone/contact bridge, arrival/inspection/repair/handover stills, macro material shots and motion versions. These are **production hypotheses**, not Joey-approved requirements. Review before spending credits.
+### Agreed experience principles
+
+- Apple-like premium feel: calm, minimal, strong typography, expensive but restrained motion.
+- The site itself demonstrates craft instead of merely describing it.
+- Text, visual and scroll motion should feel like **one experience**, not a detached autoplay video beside static copy.
+- Plumbing is the first major showcase/demo world.
+- Static first frame must already sell quality.
+- Mobile quality is non-negotiable.
+- The agency site should **not** become an AI-image gallery.
+
+### Exact agency media rules
+
+Authoritative file: `AGENCY-SHOWROOM-SLOT-CONTRACT-V1.json`.
+
+- `AG-HERO-001`: likely external visual. Desktop 16:9; mobile deliberate 4:5 derivative.
+- `AG-FIRSTSCROLL-001`: reuse the hero through code/CSS/JS if possible; do not generate another asset automatically.
+- `AG-SHOWCASE-PL-001`: use real browser captures of the actual Plumbing demo, desktop + mobile.
+- `AG-TRANSFORM-001`: code/screenshot first.
+- `AG-INTERACT-001`: code first; generated art only after the interaction itself proves useful.
+- `AG-OFFER-001`: no generation required.
+- `AG-PROOF-001`: real-source-only; never generate the evidence.
+- `AG-CTA-001`: no extra generation required unless an approved master can be reused cheaply.
+
+Expected agency-specific external visual spend should remain small: roughly **one strong hero system plus selected derivatives**, then add media only where the real page needs it.
+
+## Plumbing asset status — FIXED vs PROPOSED
+
+### FIXED / strongly agreed
+
+- One strong recurring technician; consistency beats many unrelated AI people.
+- Authentic tradesperson, not fashion model.
+- Premium Porsche-like shell is allowed.
+- Real client project proof remains real.
+- Customer system must be reusable/template-driven.
+- Current generation round is intentionally small: technician + diagnosis + under-sink/service + trust/arrival scene.
+
+### PROPOSED / NOT mandatory
+
+Do not turn these old concepts into generation work without a real page need or fresh Joey approval:
+
+- leaking-bathroom hero;
+- permanent white/deep-red/chrome/water world;
+- service van;
+- tool pack;
+- phone/contact bridge;
+- full arrival → inspection → repair → clean-up → handover generated sequence;
+- technical macro pack;
+- motion versions.
 
 ## Website offer questions still open
+
 - Exact one-sentence outcome sold.
 - Final founding price and later regular price.
 - Maximum production/communication time per customer.
 - Setup-only vs annual hosting/maintenance model.
-- Revision boundaries and what counts as custom work.
-- Exact domain/hosting provider and fulfilment flow.
-- Best acquisition mix around a full-time job.
-- Whether Website Control Session is optional add-on or bundled.
+- Revision boundaries and custom-work definition.
+- Exact commercial hosting/domain/DNS/handoff flow.
+- Best acquisition mix around Joey's full-time job.
+- Whether Website Control Session is optional or bundled.
 
-## Higgsfield / production sprint
-- Joey plans to buy **one month of a paid Higgsfield plan**, likely Plus or a discounted offer if checkout terms are attractive.
-- Before purchase, check exact monthly/annual term, amount due now, renewal amount, tax and which Unlimited models/days are actually included.
-- Existing `WEBSITE-VENTURES-PRODUCTION-LINE-V2.json`, `HIGGSFIELD-P0-GENERATION-MANIFEST.json`, `HIGGSFIELD-ELEMENTS-REGISTRY.json` and `HIGGSFIELD-CREDIT-PREFLIGHT.json` are useful planning material, but **not every listed asset is approved**.
-- Production principle remains: slot lock -> master/reference -> consistency test -> production stills -> transparent props/sprites -> motion only for winners -> integration/QA -> Vault.
+## Higgsfield operating rule
 
-## Gamenfy asset direction — IMPORTANT CORRECTION
-The current production-line file over-expanded Joey's earlier Daily Score idea into a full park kit (master park, path, trees, bench, lamp, sign, fountain). **That park-world art direction was ChatGPT's interpretation, not an approved Joey decision.** Treat it as CONCEPT ONLY until Joey chooses what he actually wants to feel/see on Home.
+- Active exploration is manual on `higgsfield.ai` when the chosen account/model path is visibly Unlimited-supported.
+- Do not use connector/API generation merely because it is available; treat direct integration as credit-spending unless Higgsfield explicitly reports otherwise.
+- Use still/reference winners before motion or premium finish.
+- Final 4K = winner polish, not exploration.
+- At 50% remaining paid-generation balance: stop, review winners/waste/remaining required jobs, then decide what still deserves paid spend.
 
-### What IS agreed for Gamenfy production
-- Do not regenerate the existing approved 13 x 10 evolution sets by default.
-- The problem to solve is making characters feel genuinely alive rather than sliding static PNGs around.
-- First technology test should use **one existing approved character** and attempt:
-  1. real WALK cycle;
-  2. natural IDLE cycle;
-  3. JUMP cycle / more expressive movement;
-  4. one environment concept only after Joey defines the desired Home feeling/world;
-  5. one character + prop/FX interaction test.
-- A real sprite cycle means legs/arms change frame-by-frame; it is not merely moving one flat image across the screen.
-- If sprites still feel too limited, evaluate a **rigged 2D character architecture** (separate limbs/joints, e.g. Rive/Spine-style) before spending on many more animations. This could also become reusable technology for interactive commercial websites.
+## Gamenfy visual production — IMPORTANT BOUNDARY
 
-### DEFER / P2 for now
-- Full 11-mission prop batch.
-- Chessboard, piano, book, weights, whistle FX, tennis props and other skill-specific object packs.
-- Full park object family.
-- New skill characters.
-Use existing Claude/approved characters as placeholders while the general app and animation technology are proven.
+The earlier full park/world/prop expansion was **assistant inference**, not an approved Joey production requirement.
 
-## Gamenfy Public decision
-- Do not genericize all of Joey's missions/skills yet.
-- Current beta is a demand/understanding test, not a second full product roadmap.
-- Friends only justify extra Public development if they actually return and use it.
-- Personal Gamenfy remains the source of product learning.
+### What is actually prepared
+
+A separate file now exists:
+
+- `GAMENFY-HIGGSFIELD-ANIMATION-PILOT.json`
+- copy-board: `gamenfy-higgsfield-animation-pilot.html`
+- future output folder: `img/lab/animation-pilot/`
+
+It is explicitly **DEFERRED while Website Ventures is the active bottleneck**.
+
+The real bounded pilot is:
+
+1. choose one existing approved Daily Score source from `img/lab/daily-score/joey/l01.webp` … `l10.webp`;
+2. AutoSprite **WALK** first;
+3. only if WALK passes: natural **IDLE**;
+4. **JUMP** with real anticipation/takeoff/landing articulation;
+5. one **custom reach/touch/return interaction** where the visible prop remains a separate app layer.
+
+Verified Higgsfield model: **AutoSprite Animation (`autosprite`)**. Relevant supported presets include `idle`, `walk`, `run`, `attack`, `jump`, `custom`; parameters include turbo/pro/max tier, 2–64 frames, 32–512 frame size, background removal and humanoid toggle.
+
+### Stop rule
+
+If WALK repeatedly looks like a flat translated PNG, feet skate/melt, identity morphs, or interactions cannot hold a stable contact point: **stop the animation batch and prototype rigged 2D architecture** instead.
+
+### DEFER / do not generate now
+
+- full master park/world;
+- path/tree/bench/lamp/sign/fountain kit;
+- 11 Daily Mission props;
+- chess/piano/book/weights/whistle/tennis packs;
+- new final skill characters;
+- broad animation batches across all existing characters.
+
+Core principle: **prove the general technology first; produce character/content breadth later.**
+
+## Gamenfy Public
+
+- Do not genericize all Joey missions/skills yet.
+- Current beta is a demand/understanding test, not a second full roadmap.
+- Friends only justify major Public development if they actually return and use it.
+- Personal Gamenfy remains the main source of product learning.
 
 ## Cross-project operating rule
-- The GitHub repo / Project HQ is the durable shared source of truth between Dashboard, Website Ventures and Income work.
-- Important commercial decisions from other ChatGPT projects should be mirrored into repo handoff/HQ docs, because one ChatGPT project cannot be assumed to automatically receive the full live context of another project.
-- To resume in the Income / Website Ventures project, say: **"Read `INCOME-HANDOFF-2026-09-07.md` from `Kingkangaroos/Joe` first, then continue from it."**
+
+- GitHub repo / Project HQ is the durable bridge between Dashboard, Website Ventures and Income.
+- Important decisions from one ChatGPT project must be mirrored into repo HQ/handoff docs rather than assuming another project automatically received the conversation.
+- To resume in Income / Website Ventures, say: **"Read `INCOME-HANDOFF-2026-09-07.md` from `Kingkangaroos/Joe` first, then continue from it."**
