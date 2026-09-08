@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "id": "plumbing-qa-blue",
+  "status": "qa-fixture-do-not-sell",
+  "brand": {
+    "name": "NOORD",
+    "subtitle": "Water & Warmte",
+    "footerNote": "NOORD is uitsluitend een technische Website Ventures QA-fixture."
+  },
+  "seo": {
+    "title": "NOORD Water & Warmte — Template QA"
+  },
+  "theme": {
+    "paper": "#f2f5f5",
+    "paper2": "#e4ebec",
+    "ink": "#10191d",
+    "muted": "#66747b",
+    "accent": "#176b87",
+    "accentDeep": "#0b3d50",
+    "chrome": "#d7e0e2",
+    "night": "#0d171b"
+  },
+  "hero": {
+    "eyebrow": "Helder advies. Net werk. Eén aanspreekpunt.",
+    "headline": "Comfort begint",
+    "headlineAccent": "achter de muur.",
+    "lead": "Een technische QA-variant om te bewijzen dat dezelfde coded Plumbing-template een ander merk, andere propositie en ander visueel DNA kan dragen zonder HTML te kopiëren."
+  },
+  "contact": {
+    "primaryLabel": "Plan een opname",
+    "primaryHref": "#contact",
+    "secondaryLabel": "Bekijk diensten",
+    "secondaryHref": "#services",
+    "navLabel": "Plan contact",
+    "navHref": "#contact"
+  },
+  "intro": {
+    "before": "Niet harder roepen. Wel",
+    "accent": "duidelijker leveren.",
+    "body": "Deze fixture bevat bewust geen echte klantclaims. Het enige doel is aantonen dat merk, kleur, copy en services vanuit config kunnen wisselen terwijl structuur, responsive gedrag en selected-asset slots gelijk blijven."
+  },
+  "servicesSection": {
+    "headline": "Van storing tot complete installatie.",
+    "lead": "Andere dienstmix, zelfde componenten. Dit test of drie servicekaarten zonder templatewijziging een ander commercieel verhaal kunnen dragen."
+  },
+  "services": [
+    {
+      "title": "CV & verwarming",
+      "description": "Technische QA-copy voor onderhoud, storing en vervanging van verwarmingsinstallaties.",
+      "label": "Warmte →"
+    },
+    {
+      "title": "Sanitair",
+      "description": "Technische QA-copy voor montage, vervanging en nette afwerking van sanitair.",
+      "label": "Sanitair →"
+    },
+    {
+      "title": "Leidingwerk",
+      "description": "Technische QA-copy voor aanpassen, vernieuwen en controleren van leidingwerk.",
+      "label": "Installatie →"
+    }
+  ],
+  "final": {
+    "kicker": "Template QA",
+    "headline": "Zelfde systeem.",
+    "headlineSecond": "Ander bedrijf.",
+    "lead": "Als deze variant coherent blauw, inhoudelijk anders en responsive blijft, is de configlaag geslaagd. Dit is geen echte onderneming of publiek aanbod.",
+    "ctaLabel": "Terug naar boven ↑",
+    "ctaHref": "#top"
+  },
+  "serviceArea": "QA fixture — geen echt servicegebied"
+}
