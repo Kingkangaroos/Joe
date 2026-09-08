@@ -1,0 +1,71 @@
+{
+  "name": "Website Ventures Client Intake + Scope Gate",
+  "version": 1,
+  "updatedAt": "2026-09-08",
+  "managedBy": "ChatGPT (OpenAI)",
+  "purpose": "Capture the minimum commercial and production inputs needed before a client build starts, reduce scope creep, and transform approved inputs into the reusable Client Factory flow.",
+  "status": "operational-draft-not-legal-contract",
+  "rules": [
+    "This is an internal production gate, not legal terms or a signed customer contract.",
+    "No build starts until identity, primary CTA, services, service area and domain state are known.",
+    "Reviews, certifications, project photos, team claims and guarantees are real-source-only and must be supplied or verifiable.",
+    "Unknown inputs stay explicitly unknown; do not invent customer facts to make the website look complete.",
+    "Anything outside agreed sections/functions is a change request, not an invisible addition to the base job.",
+    "Revision allowance remains a commercial field until the final Website Ventures offer is locked."
+  ],
+  "requiredBeforeBuild": [
+    "client.slug",
+    "client.businessName",
+    "client.primaryContact",
+    "client.serviceArea",
+    "offer.primaryOutcome",
+    "offer.primaryCtaLabel",
+    "offer.primaryCtaHref",
+    "services",
+    "domain.state",
+    "scope.template",
+    "scope.revisionRounds"
+  ],
+  "proofInputs": [
+    "realProjectPhotos",
+    "realTeamPhotos",
+    "reviewSource",
+    "certifications",
+    "guarantees",
+    "logosOrBrandFiles"
+  ],
+  "domainStates": [
+    "client-owns-existing-domain",
+    "client-needs-new-domain",
+    "domain-unknown",
+    "temporary-preview-only"
+  ],
+  "scopeDefaults": {
+    "template": "plumbing-v1",
+    "revisionRounds": 1,
+    "revisionStatus": "working-default-not-final-offer",
+    "included": [
+      "responsive template adaptation",
+      "customer brand/copy/contact/services configuration",
+      "customer-supplied real photos/proof placement",
+      "selected reusable visual assets where relevant",
+      "desktop + mobile QA",
+      "basic domain/DNS connection once hosting model is approved"
+    ],
+    "notIncludedByDefault": [
+      "new custom application functionality",
+      "unlimited revision rounds",
+      "fabricated reviews/certifications/project proof",
+      "large bespoke photo/video production",
+      "full rebrand/logo design unless explicitly sold",
+      "ongoing content management unless explicitly sold",
+      "paid third-party subscriptions or domain fees unless explicitly included"
+    ]
+  },
+  "handoff": {
+    "clientFactory": "website-ventures-client-factory.html",
+    "fulfilmentRun": "website-ventures-fulfilment-run.html",
+    "operatorHub": "website-ventures-ops.html",
+    "localDraftPrefix": "wv_client_config_draft_v1_"
+  }
+}
