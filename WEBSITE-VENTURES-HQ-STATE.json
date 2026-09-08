@@ -11,6 +11,7 @@
     "repository": "Kingkangaroos/Joe",
     "workspace": "Finance → Ventures",
     "durableSource": "Project Headquarters",
+    "operatorHub": "website-ventures-ops.html",
     "activeProductionLine": "WEBSITE-VENTURES-PRODUCTION-LINE-V3.json",
     "activeHiggsfieldQueue": "WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json",
     "activePromptBoard": "website-ventures-higgsfield-prompt-board.html",
@@ -19,7 +20,14 @@
     "selectedAssetsRegistry": "WEBSITE-VENTURES-SELECTED-ASSETS.json",
     "selectedAssetsBoard": "website-ventures-selected-assets.html",
     "selectedAssetsLoader": "website-ventures-selected-assets.js",
-    "assetRoot": "website-ventures-assets/"
+    "assetRoot": "website-ventures-assets/",
+    "clientFactory": "website-ventures-client-factory.html",
+    "clientConfigLoader": "website-ventures-client-config.js",
+    "clientConfigSchema": "WEBSITE-VENTURES-CLIENT-CONFIG-SCHEMA.json",
+    "clientConfigRoot": "website-ventures-client-configs/",
+    "plumbingTemplateAdapter": "website-ventures-plumbing-template.js",
+    "templateRuntimeQa": "website-ventures-template-qa.html",
+    "fulfilmentRunTracker": "website-ventures-fulfilment-run.html"
   },
   "priorityOrder": [
     "P0 · Joey's own Website Ventures / agency showroom",
@@ -38,8 +46,10 @@
     "Use the selected technician for only the necessary Batch 7 working scenes; identity consistency is mandatory.",
     "Keep agency support media conditional: first test whether the coded showroom, selected hero, real Plumbing captures and interaction design already carry the page.",
     "Only approved files may replace coded placeholders through WEBSITE-VENTURES-SELECTED-ASSETS.json; local Review winner checkboxes never publish by themselves.",
+    "The Plumbing customer system is now config-driven: use Client Factory/local drafts for editing, keep one coded master template, and commit approved client JSON only after review.",
+    "Use the Fulfilment Run tracker for customers 1–10 so active production time and blockers are measured instead of guessed.",
     "Use Batch 9 only for 4K final masters after 2K winners exist.",
-    "After visual winners are integrated, lock the actual sellable offer, hosting/domain flow, revision boundaries and customer 1–10 fulfilment time."
+    "Commercial offer, hosting/domain flow, revision boundaries and promised fulfilment time remain open until evidence is strong enough to lock them."
   ],
   "lockedDecisions": {
     "websiteVenturesPriority": "Website selling is the primary near-term income engine.",
@@ -63,6 +73,27 @@
     "controlSession": "A roughly €59 Website Control Session is a possible add-on; not locked.",
     "domainOwnership": "The customer should remain owner of their domain; Joey may manage DNS/hosting for convenience.",
     "acquisition": "Prefer active-buyer platforms, referrals, warm/local contacts and legally compliant outreach over generic spam or assumed cold-calling loopholes."
+  },
+  "clientFulfilmentSystem": {
+    "status": "technical-system-live-commercial-terms-open",
+    "masterTemplate": "site-plumbing-flagship-v1.html",
+    "principle": "One coded Plumbing master plus customer config, real customer assets/proof, selected reusable media and QA. Do not clone/rebuild HTML per customer by default.",
+    "configModes": [
+      "Repo configs live in website-ventures-client-configs/<safe-slug>.json.",
+      "Local drafts use Client Factory and ?wvlocal=1; they do not write GitHub.",
+      "Missing or broken client config keeps the hardcoded Plumbing fallback instead of breaking the page."
+    ],
+    "clientFactory": "website-ventures-client-factory.html",
+    "runtimeQa": "website-ventures-template-qa.html",
+    "qaFixtureRule": "plumbing-qa-blue is a technical fixture only; it is not an approved brand, offer or future flagship.",
+    "assetRule": "Client config and Selected Assets are separate gates: changing customer copy/theme never auto-approves generated media.",
+    "proofRule": "Reviews, certifications, project imagery, staff claims and measured outcomes must come from a real client source and are never invented by the config system.",
+    "measurement": {
+      "tool": "website-ventures-fulfilment-run.html",
+      "scope": "customers 1–10",
+      "measure": ["active production time", "phase completion", "waiting/client blockers", "desktop QA", "390px mobile QA", "domain/hosting", "launch/handoff"],
+      "decisionRule": "Do not promise ultra-fast fulfilment or lock final pricing from template theory; use measured customer 1–10 evidence."
+    }
   },
   "agencySlotRules": {
     "source": "AGENCY-SHOWROOM-SLOT-CONTRACT-V1.json",
@@ -158,7 +189,7 @@
     "Lock founding offer price, later standard price hypothesis and what is included.",
     "Define revisions, customer content intake and what counts as bespoke work.",
     "Choose commercially appropriate hosting/domain/DNS fulfilment and ownership model.",
-    "Measure real customer 1–10 communication + production + QA time before claiming ultra-fast fulfilment.",
+    "Use the live Fulfilment Run tracker for customer 1–10 and lock a fulfilment claim only after measured evidence exists.",
     "Build first prospect criteria for Almere/Bussum after offer/demo lock.",
     "Build legally compliant acquisition workflow around Joey's full-time job.",
     "Create student/builder handoff only after customers 1–10 prove the production system.",
