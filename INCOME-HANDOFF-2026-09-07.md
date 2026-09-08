@@ -11,16 +11,22 @@ Managed by ChatGPT (OpenAI). This is the compact commercial handoff from Joey's 
 - Copy/paste cockpit: `website-ventures-higgsfield-prompt-board.html`.
 - Winner review: `website-ventures-higgsfield-review.html`.
 - Asset landing map: `WEBSITE-VENTURES-ASSET-IMPORT-MANIFEST.json` → `website-ventures-assets/`.
+- **Selected/live integration gate:** `WEBSITE-VENTURES-SELECTED-ASSETS.json` + `website-ventures-selected-assets.html` + `website-ventures-selected-assets.js`.
+- The Agency Showroom and Plumbing flagship are already wired to that gate. `pending` keeps the coded placeholder; only `selected + real committed selectedPath` may replace it.
+- The Selected Assets board automatically audits **Queue → Import Manifest → Registry → selected-file existence**, so broken routing becomes visible before QA.
+- Finance → Ventures now exposes the same numbered work route directly: **1 Queue → 2 Review winners → 3 Selected Assets**. Its Productielijn tab reads the active queue JSON directly; the old legacy HQ quick list is no longer the operational queue.
+- `ventures.js` is now **v11.4 / focusVersion 5**. Existing same-ID completion metadata is preserved while current quest copy points to the Selected Assets gate.
 - Current required order:
   1. **Batch 5 — Agency desktop hero round:** three 16:9 / 2K Soul 2.0 concepts → choose exactly one desktop winner.
   2. **Batch 5 mobile derivative:** `AG-HERO-MOBILE-001` uses Nano Banana 2 image-to-image, 4:5 / 2K, from that exact desktop winner. Recompose intentionally for mobile; do not invent a second campaign.
   3. **Batch 6 — Plumbing technician:** four 3:4 candidates → choose exactly one recurring technician master.
   4. **Batch 7 — Same-technician scenes:** diagnosis, under-sink service, arrival/trust using the same selected technician identity.
-  5. **Batch 9 — Final 4K masters:** Cinema Studio Image 2.5 only after selected 2K winners; credit-sensitive finish.
+  5. **Promote approved files through Selected Assets:** local Review winner checkboxes do not publish anything by themselves.
+  6. **Batch 9 — Final 4K masters:** Cinema Studio Image 2.5 only after selected 2K winners; credit-sensitive finish.
 - **Batch 8 is OPTIONAL / skip-by-default.** Transformation/process/showcase support prompts exist only for a real coded-page media gap. Batch 8 never blocks progress.
-- Gamenfy's internal Ventures next-move queue is synced to this sequence. The old mandatory Batch 8 step was removed.
 - 50% remaining paid-generation balance = hard review stop. Manual Unlimited-supported website generation is preferred for exploration before paid finish.
 - The old `HIGGSFIELD-P0-GENERATION-MANIFEST.json` has been deliberately replaced with a **deprecated-do-not-execute pointer** because it mixed earlier assistant hypotheses with approved work.
+- All Website Ventures changes above were committed on `main` and observed as Vercel production **READY** during the 2026-09-08 execution pass.
 
 ## READ THIS FIRST — core decisions
 
@@ -75,6 +81,21 @@ Authoritative file: `AGENCY-SHOWROOM-SLOT-CONTRACT-V1.json`.
 - `AG-CTA-001`: no extra generation required unless an approved master can be reused cheaply.
 
 Expected agency-specific external visual spend should remain small: roughly **one strong hero system plus selected derivatives**, then add media only where the real page needs it.
+
+### Selected Assets integration contract
+
+The coded pages now have predefined media hooks, so selecting a winner no longer requires redesigning page markup.
+
+- Agency desktop hero → `agency.hero.desktop`.
+- Agency mobile hero → `agency.hero.mobile`.
+- Real Plumbing browser captures → `agency.showcase.plumbing.desktop` and `.mobile`.
+- Plumbing master character reference → `plumbing.character.master` (reference-only by default).
+- Plumbing hero → `plumbing.hero`.
+- Plumbing story beats → `plumbing.story.trust`, `.diagnosis`, `.service`.
+- A registry slot on `pending` is intentionally non-destructive.
+- A local Review checkbox is only QA state.
+- Promotion requires the exact file to be committed, then the intended registry slot set to `selected` with a real `selectedPath`, then desktop/mobile verification.
+- If a selected file fails to load, the loader keeps the coded fallback rather than breaking the page.
 
 ## Plumbing asset status — FIXED vs PROPOSED
 
