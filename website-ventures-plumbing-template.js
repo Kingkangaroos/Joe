@@ -27,6 +27,40 @@
       return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
     });
   }
+  function validHex (value) { return /^#[0-9a-f]{6}$/i.test(String(value || '')); }
+  function mixHex (hex, towardWhite) {
+    if (!validHex(hex)) return hex;
+    const n = parseInt(hex.slice(1), 16);
+    const target = towardWhite >= 0 ? 255 : 0;
+    const amount = Math.min(1, Math.abs(towardWhite));
+    const ch = shift => Math.round(((n >> shift) & 255) + (target - ((n >> shift) & 255)) * amount);
+    return '#' + [ch(16), ch(8), ch(0)].map(v => v.toString(16).padStart(2, '0')).join('');
+  }
+  function rgbaHex (hex, alpha) {
+    if (!validHex(hex)) return hex;
+    const n = parseInt(hex.slice(1), 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + alpha + ')';
+  }
+
+  function applyVisualTheme (config) {
+    const theme = config.theme || {};
+    const accent = validHex(theme.accent) ? theme.accent : '#b6252f';
+    const deep = validHex(theme.accentDeep) ? theme.accentDeep : mixHex(accent, -0.38);
+    const mid = mixHex(accent, 0.32);
+
+    const mark = q('.mark');
+    if (mark) mark.style.background = 'conic-gradient(from 35deg,' + accent + ',' + mid + ',' + deep + ',' + accent + ')';
+    const heroVisual = q('.hero-visual');
+    if (heroVisual) heroVisual.style.background = 'radial-gradient(circle at 65% 32%,rgba(255,255,255,.95),transparent 22%),linear-gradient(145deg,#e8e4dd 0 32%,#c8c9c6 32% 38%,#faf9f5 38% 62%,' + accent + ' 62% 66%,#d8d4cc 66% 100%)';
+
+    let style = q('style[data-wv-client-accent]');
+    if (!style) {
+      style = document.createElement('style');
+      style.dataset.wvClientAccent = '1';
+      document.head.appendChild(style);
+    }
+    style.textContent = '.beat .num{color:' + mid + '!important}.story[data-step="1"] .stage-ring{border-color:' + rgbaHex(accent, 0.34) + '!important}.story[data-step="5"] .stage-ring{border-color:' + rgbaHex(accent, 0.65) + '!important}';
+  }
 
   function applyBrand (config) {
     const brand = config.brand || {};
@@ -105,6 +139,7 @@
 
   function apply (config) {
     if (!config) return null;
+    applyVisualTheme(config);
     applyBrand(config);
     applyHero(config);
     applyIntro(config);
