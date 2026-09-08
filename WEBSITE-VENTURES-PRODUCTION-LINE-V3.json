@@ -1,6 +1,6 @@
 {
   "name": "Website Ventures Production Line v3",
-  "version": 3.1,
+  "version": 3.2,
   "updatedAt": "2026-09-08",
   "managedBy": "ChatGPT (OpenAI)",
   "sourceOfTruth": "INCOME-HANDOFF-2026-09-07.md + WEBSITE-VENTURES-HQ-STATE.json",
@@ -12,11 +12,16 @@
     "cockpit": "website-ventures-higgsfield-prompt-board.html",
     "review": "website-ventures-higgsfield-review.html",
     "assetManifest": "WEBSITE-VENTURES-ASSET-IMPORT-MANIFEST.json",
+    "selectedAssetsRegistry": "WEBSITE-VENTURES-SELECTED-ASSETS.json",
+    "selectedAssetsBoard": "website-ventures-selected-assets.html",
+    "selectedAssetsLoader": "website-ventures-selected-assets.js",
     "assetRoot": "website-ventures-assets/",
     "requiredFlow": [
       "Batch 5: agency desktop hero candidates -> choose one -> 4:5 mobile derivative",
       "Batch 6: choose one recurring Plumbing technician",
       "Batch 7: small same-technician scene set",
+      "Promote only approved committed files through the Selected Assets registry; Review winner state alone never publishes",
+      "Verify selected media in the real Agency/Plumbing pages on desktop and mobile",
       "Batch 9: final 4K masters only after winners"
     ],
     "optionalFlow": [
@@ -27,7 +32,7 @@
     "P0 Joey agency/showroom website",
     "P0 select agency hero + mobile derivative",
     "P0 select recurring Plumbing technician + only needed same-person scenes",
-    "P0 integrate winners into live agency + Plumbing demo and QA mobile/desktop",
+    "P0 promote approved files through Selected Assets and QA live agency + Plumbing demo on mobile/desktop",
     "P1 Website commercial fulfilment system",
     "P2 one-character Gamenfy animation technology pilot when Website Ventures generation is not the active bottleneck",
     "P2 broad Gamenfy object/park/skill packs"
@@ -37,6 +42,9 @@
     "Unlimited exploration is preferred where the selected website model supports it.",
     "At 50% remaining paid-generation balance, stop new paid work and review winners, waste and remaining required jobs.",
     "No final 4K generation before a 2K still winner exists.",
+    "A local Review winner checkbox is QA state only; it never makes an asset live.",
+    "A page may replace its coded placeholder only when the intended Selected Assets registry slot is status=selected and selectedPath points to a real committed file.",
+    "Missing/pending/failed selected media must fail safely back to the coded placeholder rather than breaking the page.",
     "Joey's own agency website sets the visual/technical ceiling before customer templates are pushed further.",
     "Agency site demonstrates craft primarily through its coded experience, one strong hero system and real showcase captures; it must not become an AI-image gallery.",
     "Batch 8 support visuals are optional and skip-by-default until a real coded section demonstrates a media need.",
@@ -191,7 +199,7 @@
       "macro material pack",
       "motion versions"
     ],
-    "nextGate": "Integrate the selected recurring technician and small working-scene set into the actual Plumbing demo, then judge what additional scene is genuinely missing before generating more."
+    "nextGate": "Integrate the selected recurring technician and small working-scene set through the Selected Assets registry into the actual Plumbing demo, then judge what additional scene is genuinely missing before generating more."
   },
   "gamenfyAnimationPilot": {
     "priority": "P2-tech-test-while-website-ventures-is-active",
@@ -235,7 +243,8 @@
   "beforeHiggsfieldPurchase": [
     "ACTIVE SPRINT: use the live Higgsfield Queue rather than old v2/P0 manifests.",
     "Generate manually on higgsfield.ai for Unlimited-supported exploration jobs.",
-    "Use Review winners to record scores/defects and select winners before dependent jobs.",
+    "Use Review winners to record scores/defects and select approved candidates before dependent jobs.",
+    "Remember: Review selection does not publish; promote committed winners only through Selected Assets.",
     "Keep Batch 8 optional; do not generate support images until the coded page proves a need.",
     "At 50% of paid credits remaining, stop and review before any further paid generation.",
     "Keep final 4K masters and motion blocked until still/reference winners are approved."
