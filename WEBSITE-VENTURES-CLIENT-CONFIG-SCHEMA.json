@@ -1,0 +1,52 @@
+{
+  "name": "Website Ventures Client Config Contract",
+  "version": 1,
+  "updatedAt": "2026-09-08",
+  "managedBy": "ChatGPT (OpenAI)",
+  "purpose": "Keep client identity, copy, theme and service content outside reusable customer template markup so fulfilment becomes configuration + real assets + QA rather than rebuilding from zero.",
+  "filePattern": "website-ventures-client-configs/<safe-slug>.json",
+  "activation": {
+    "default": "body[data-wv-client]",
+    "previewOverride": "?wvclient=<safe-slug>",
+    "safeSlugRegex": "^[a-z0-9-]{1,64}$"
+  },
+  "requiredCore": [
+    "id",
+    "brand.name",
+    "brand.subtitle",
+    "theme.accent",
+    "hero.eyebrow",
+    "hero.headline",
+    "hero.headlineAccent",
+    "hero.lead",
+    "contact.primaryLabel",
+    "contact.primaryHref",
+    "services"
+  ],
+  "supported": {
+    "brand": ["name", "subtitle", "footerNote"],
+    "seo": ["title"],
+    "theme": ["paper", "paper2", "ink", "muted", "accent", "accentDeep", "chrome", "night"],
+    "hero": ["eyebrow", "headline", "headlineAccent", "lead"],
+    "contact": ["primaryLabel", "primaryHref", "secondaryLabel", "secondaryHref", "navLabel", "navHref"],
+    "intro": ["before", "accent", "body"],
+    "servicesSection": ["headline", "lead"],
+    "services": "Array of up to six {title, description, label}",
+    "final": ["kicker", "headline", "headlineSecond", "lead", "ctaLabel", "ctaHref"],
+    "serviceArea": "Optional display string"
+  },
+  "bindingRules": [
+    "data-wv-bind replaces textContent only; config text is not inserted as raw HTML.",
+    "data-wv-href accepts only # anchors, tel:, mailto:, http:// or https://.",
+    "Theme variables are allowlisted; arbitrary CSS variable names are not accepted.",
+    "Missing/broken config retains the hardcoded template fallback.",
+    "Real client proof, reviews, certifications and project images remain outside generated demo claims and must be sourced from the client."
+  ],
+  "fulfilmentIntent": [
+    "Choose/clone a client config.",
+    "Replace brand, offer copy, contact details, service list and accent theme.",
+    "Add approved real client photos/proof and any selected reusable visual assets.",
+    "QA desktop + approximately 390px mobile.",
+    "Only then connect the customer's domain/hosting flow."
+  ]
+}
