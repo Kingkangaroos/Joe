@@ -1,0 +1,24 @@
+{
+  "name": "Website Ventures Offer Draft",
+  "version": 1,
+  "updatedAt": "2026-09-08",
+  "managedBy": "ChatGPT (OpenAI)",
+  "status": "working-commercial-draft-not-final-terms",
+  "defaults": {
+    "basePrice": 349,
+    "basePriceStatus": "founding-offer-hypothesis",
+    "revisionRounds": "read-from-client-intake",
+    "deliveryPromise": "Do not promise a fixed ultra-fast delivery time until customers 1–10 provide measured evidence.",
+    "paymentModel": "one-off-preferred-working-direction",
+    "controlSession": {"enabled": false, "workingPrice": 59},
+    "hostingDomain": "separate-until-commercial-provider-and-cost-model-are-locked"
+  },
+  "rules": [
+    "The builder creates a customer-facing draft, not legal terms, an invoice or a signed agreement.",
+    "Scope is pulled from the recorded intake; do not silently expand it to make the offer look fuller.",
+    "Domain/hosting and paid third-party costs remain explicit rather than hidden in the website price.",
+    "Revision allowance is shown explicitly.",
+    "Real proof and customer-supplied facts remain the customer's real inputs; AI/demo claims are not turned into customer evidence.",
+    "Any later change request is handled through the Delivery Gate change-request log."
+  ]
+}
