@@ -8,6 +8,7 @@
   const SAFE_SLUG = /^[a-z0-9-]{1,64}$/;
   const CONFIG_ROOT = 'website-ventures-client-configs/';
   const DRAFT_PREFIX = 'wv_client_config_draft_v1_';
+  const RESERVED_DRAFT_SLUGS = new Set(['plumbing-demo', 'plumbing-qa-blue']);
 
   function esc (value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, function (m) {
@@ -23,6 +24,31 @@
 
   function validSlug (slug) { return SAFE_SLUG.test(String(slug || '')); }
   function draftKey (slug) { return DRAFT_PREFIX + String(slug || ''); }
+
+  function darkenHex (hex, amount) {
+    if (!/^#[0-9a-f]{6}$/i.test(String(hex || ''))) return '';
+    const n = parseInt(hex.slice(1), 16);
+    const factor = Math.max(0, Math.min(1, 1 - Number(amount || 0)));
+    const r = Math.round(((n >> 16) & 255) * factor);
+    const g = Math.round(((n >> 8) & 255) * factor);
+    const b = Math.round((n & 255) * factor);
+    return '#' + [r, g, b].map(function (v) { return v.toString(16).padStart(2, '0'); }).join('');
+  }
+
+  function normalizeLocalDraft (slug, config) {
+    let safe = String(slug || '');
+    if (RESERVED_DRAFT_SLUGS.has(safe) && config.status === 'client-draft') {
+      safe = 'client-preview';
+      config.id = safe;
+      const field = document.getElementById('slug');
+      if (field) field.value = safe;
+    }
+    config.theme = config.theme && typeof config.theme === 'object' ? config.theme : {};
+    if (/^#[0-9a-f]{6}$/i.test(String(config.theme.accent || ''))) {
+      config.theme.accentDeep = darkenHex(config.theme.accent, 0.42);
+    }
+    return safe;
+  }
 
   function chooseSlug () {
     const query = new URLSearchParams(location.search).get('wvclient');
@@ -102,8 +128,10 @@
 
   function saveDraft (slug, config) {
     if (!validSlug(slug) || !config || typeof config !== 'object') return false;
+    const safeSlug = normalizeLocalDraft(slug, config);
+    if (!validSlug(safeSlug)) return false;
     try {
-      localStorage.setItem(draftKey(slug), JSON.stringify(config));
+      localStorage.setItem(draftKey(safeSlug), JSON.stringify(config));
       return true;
     } catch (e) { return false; }
   }
@@ -154,6 +182,7 @@
     readDraft: readDraft,
     saveDraft: saveDraft,
     draftKey: draftKey,
-    validSlug: validSlug
+    validSlug: validSlug,
+    darkenHex: darkenHex
   };
 })();
