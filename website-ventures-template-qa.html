@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f4f3ef"><title>Template QA — Website Ventures</title>
+<style>
+:root{--bg:#f4f3ef;--ink:#15140f;--muted:#706c63;--line:#ddd9cf;--green:#287a52;--red:#a71927}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;padding:16px 14px 70px}.wrap{max-width:1400px;margin:auto}.top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.top a{text-decoration:none;color:var(--ink);border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 11px;font-size:10px;font-weight:900}.kick{margin-top:22px;color:var(--red);font-size:9px;font-weight:950;letter-spacing:.14em;text-transform:uppercase}h1{font-size:clamp(42px,6vw,76px);letter-spacing:-.06em;line-height:.9;margin:7px 0 12px}.lead{max-width:800px;color:var(--muted);font-size:11px;line-height:1.6}.summary{margin:18px 0;padding:14px;border:1px solid var(--line);border-radius:15px;background:#fff;font-size:11px;font-weight:850}.summary.pass{background:#edf7f1;color:#286746;border-color:#c7e1d2}.summary.fail{background:#fff1f2;color:#7e333b;border-color:#ebc8cc}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}.head{padding:12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}.head b{font-size:12px}.state{font-size:8px;font-weight:950;text-transform:uppercase;border-radius:999px;padding:5px 7px;background:#f4f1ea;color:var(--muted)}.state.pass{background:#e6f4ec;color:var(--green)}.state.fail{background:#fbe9eb;color:#8d3540}.checks{padding:10px 12px;display:grid;gap:5px;font-size:9px;color:var(--muted)}.checks div{padding:7px 8px;border-radius:9px;background:#f8f6f1}.checks .pass{color:#286746;background:#edf7f1}.checks .fail{color:#7e333b;background:#fff1f2}.frame{display:block;width:100%;height:720px;border:0;background:#ece9e1}@media(max-width:900px){.grid{grid-template-columns:1fr}.frame{height:620px}}
+</style>
+</head>
+<body data-gamenfy-scope="personal" data-qa-status="running">
+<main class="wrap"><div class="top"><a href="website-ventures-client-factory.html">← Client Factory</a><a href="finance.html?tab=ventures&space=lab&venture=sell_websites">Finance · Ventures</a></div><div class="kick">Website Ventures · internal runtime QA</div><h1>One template. Two brands.</h1><p class="lead">Runtime-harnas voor de configlaag. Beide iframes gebruiken exact <code>site-plumbing-flagship-v1.html</code>; alleen de repo-config verschilt. De checks lezen na load dezelfde-origin DOM-state terug.</p><div class="summary" id="summary">Runtime checks draaien…</div><div class="grid" id="grid"></div></main>
+<script>
+(function(){
+'use strict';
+const cases=[
+{id:'aurel',label:'AUREL demo',slug:'plumbing-demo',brand:'AUREL',accent:'#b6252f',service:'Spoed & lekkage'},
+{id:'blue',label:'Blue QA fixture',slug:'plumbing-qa-blue',brand:'NOORD',accent:'#176b87',service:'CV & verwarming'}
+];
+const grid=document.getElementById('grid'),summary=document.getElementById('summary');let completed=0,failed=0;
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function card(c){return '<article class="card"><div class="head"><b>'+esc(c.label)+'</b><span class="state" id="state-'+c.id+'">loading</span></div><div class="checks" id="checks-'+c.id+'"><div>Wachten op iframe…</div></div><iframe class="frame" id="frame-'+c.id+'" src="site-plumbing-flagship-v1.html?wvclient='+encodeURIComponent(c.slug)+'" title="'+esc(c.label)+'"></iframe></article>'}
+grid.innerHTML=cases.map(card).join('');
+function finish(){completed++;if(completed<cases.length)return;const pass=failed===0;document.body.dataset.qaStatus=pass?'pass':'fail';summary.className='summary '+(pass?'pass':'fail');summary.textContent=pass?'PASS · beide merken gebruiken dezelfde template en laden hun eigen config/coherent accent.':'FAIL · '+failed+' fixture(s) hebben een runtime mismatch.'}
+function inspect(c){const frame=document.getElementById('frame-'+c.id),state=document.getElementById('state-'+c.id),box=document.getElementById('checks-'+c.id);let doc,body;try{doc=frame.contentDocument;body=doc&&doc.body}catch(e){}const tests=[];function test(label,ok,actual){tests.push({label,ok,actual});if(!ok)failed++}
+if(!doc||!body){test('same-origin DOM bereikbaar',false,'geen document')}else{
+test('template configured',body.dataset.wvTemplateState==='configured',body.dataset.wvTemplateState||'missing');
+test('client source = repo',body.dataset.wvClientSource==='repo',body.dataset.wvClientSource||'missing');
+test('actieve slug',body.dataset.wvClientActive===c.slug,body.dataset.wvClientActive||'missing');
+const brand=doc.querySelector('.brand strong')?.textContent.trim()||'';test('brand = '+c.brand,brand===c.brand,brand);
+const accent=getComputedStyle(doc.documentElement).getPropertyValue('--red').trim().toLowerCase();test('accent = '+c.accent,accent===c.accent.toLowerCase(),accent);
+const service=doc.querySelector('.service h3')?.textContent.trim()||'';test('eerste service = '+c.service,service===c.service,service);
+const area=doc.querySelector('[data-wv-service-area]')?.textContent.trim()||'';test('servicegebied badge',!!area,area||'missing');
+}
+state.textContent=tests.every(t=>t.ok)?'pass':'fail';state.className='state '+(tests.every(t=>t.ok)?'pass':'fail');box.innerHTML=tests.map(t=>'<div class="'+(t.ok?'pass':'fail')+'">'+(t.ok?'✓ ':'✕ ')+esc(t.label)+' · '+esc(t.actual)+'</div>').join('');finish()}
+cases.forEach(c=>{const f=document.getElementById('frame-'+c.id);f.addEventListener('load',()=>setTimeout(()=>inspect(c),1200),{once:true})});
+setTimeout(()=>{cases.forEach(c=>{const s=document.getElementById('state-'+c.id);if(s.textContent==='loading'){s.textContent='timeout';s.className='state fail';document.getElementById('checks-'+c.id).innerHTML='<div class="fail">✕ runtime timeout</div>';failed++;finish()}})},9000);
+})();
+</script>
+</body></html>
