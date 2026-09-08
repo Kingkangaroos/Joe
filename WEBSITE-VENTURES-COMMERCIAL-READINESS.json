@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-09-08",
+  "managedBy": "ChatGPT (OpenAI)",
+  "meaning": {
+    "ready": "Built or deliberately decided; no Joey decision required for the stated scope.",
+    "human": "Requires Joey to choose/approve a commercial decision.",
+    "manual": "Requires a manual creative/production action such as Higgsfield generation or real client input.",
+    "external": "Requires an external account/provider/legal/business action that ChatGPT must not silently buy or approve.",
+    "deferred": "Correctly postponed until evidence exists."
+  },
+  "gates": [
+    {
+      "id": "agency-structure",
+      "area": "Proof",
+      "label": "Agency Showroom code/interaction structure",
+      "status": "ready",
+      "evidence": "site-agency-showroom-v0.html",
+      "note": "Code-first scroll story, comparison interaction and responsive proof slots exist."
+    },
+    {
+      "id": "agency-hero",
+      "area": "Proof",
+      "label": "Final Agency hero desktop + mobile",
+      "status": "manual",
+      "evidence": "WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json · Batch 5",
+      "note": "Manual Higgsfield winner selection remains the real P0 visual blocker."
+    },
+    {
+      "id": "plumbing-master",
+      "area": "Product",
+      "label": "Reusable Plumbing master/template",
+      "status": "ready",
+      "evidence": "site-plumbing-flagship-v1.html + Client Factory v2",
+      "note": "Customer variation is config-driven; broken configs fail safely to the master."
+    },
+    {
+      "id": "plumbing-technician",
+      "area": "Proof",
+      "label": "One recurring Plumbing technician + needed scenes",
+      "status": "manual",
+      "evidence": "Batch 6–7",
+      "note": "One identity must be selected before same-technician scenes are produced."
+    },
+    {
+      "id": "client-fulfilment",
+      "area": "Operations",
+      "label": "Client production street",
+      "status": "ready",
+      "evidence": "Intake → Offer → Factory → Fulfilment → Delivery → Handoff",
+      "note": "Core operational system exists and keeps proof/scope/QA separated."
+    },
+    {
+      "id": "offer-outcome",
+      "area": "Offer",
+      "label": "One-sentence public customer outcome",
+      "status": "human",
+      "evidence": null,
+      "note": "Must be chosen before public launch copy is treated as final."
+    },
+    {
+      "id": "launch-price",
+      "area": "Offer",
+      "label": "Founding price",
+      "status": "human",
+      "evidence": "€349 is hypothesis only",
+      "note": "Do not present €349 as final until Joey chooses it."
+    },
+    {
+      "id": "scope-revisions",
+      "area": "Offer",
+      "label": "Base scope + revision limit",
+      "status": "human",
+      "evidence": "Current tools use one revision as a working default",
+      "note": "Operational default is not the same as final commercial terms."
+    },
+    {
+      "id": "domain-ownership",
+      "area": "Infrastructure",
+      "label": "Customer owns domain principle",
+      "status": "ready",
+      "evidence": "WEBSITE-VENTURES-HOSTING-DOMAIN-DECISION.md",
+      "note": "Joey may manage DNS, but ownership should remain with the customer."
+    },
+    {
+      "id": "commercial-hosting",
+      "area": "Infrastructure",
+      "label": "Commercial hosting/provider route",
+      "status": "external",
+      "evidence": "Current joe project is Vercel Hobby",
+      "note": "Paid customer production must not be launched on the current Hobby project; provider/plan needs explicit approval."
+    },
+    {
+      "id": "source-ip",
+      "area": "Security",
+      "label": "Private source / fork cutover",
+      "status": "external",
+      "evidence": "WEBSITE-VENTURES-IP-REPO-CUTOVER.md",
+      "note": "Joe is a public fork. Detach/standalone + private conversion is permanent and approval-gated."
+    },
+    {
+      "id": "deployment-ip",
+      "area": "Security",
+      "label": "Internal tools no longer publicly served",
+      "status": "external",
+      "evidence": "WEBSITE-VENTURES-DEPLOYMENT-EXPOSURE.md",
+      "note": "Private source alone is insufficient while internal static files remain publicly reachable on production."
+    },
+    {
+      "id": "acquisition-playbook",
+      "area": "Sales",
+      "label": "Legally bounded first-10 acquisition route",
+      "status": "ready",
+      "evidence": "WEBSITE-VENTURES-ACQUISITION-V1.md + acquisition tracker",
+      "note": "Active-buyer platforms, warm introductions and referrals are preferred over mass cold outreach."
+    },
+    {
+      "id": "first-prospects",
+      "area": "Sales",
+      "label": "First live opportunities",
+      "status": "deferred",
+      "evidence": "website-ventures-acquisition-tracker.html",
+      "note": "Start after proof + offer are strong enough; do not mass-personalize prospects before then."
+    },
+    {
+      "id": "delivery-claim",
+      "area": "Economics",
+      "label": "Public fulfilment-time promise",
+      "status": "deferred",
+      "evidence": "website-ventures-fulfilment-run.html",
+      "note": "Measure customers 1–10 before promising ultra-fast delivery."
+    },
+    {
+      "id": "legal-commercial",
+      "area": "Commercial legal",
+      "label": "Final legal terms / invoicing / business contracting process",
+      "status": "external",
+      "evidence": null,
+      "note": "Operational tools are not contracts, invoices or professional legal advice. This must be settled before normal paid scale."
+    }
+  ],
+  "launchRule": "Public paid selling is not READY while any critical Offer, Infrastructure, Security or Commercial legal gate remains human/external. A private pilot/customer conversation may happen earlier only when scope, payment, hosting and legal responsibilities are explicitly handled for that case."
+}
