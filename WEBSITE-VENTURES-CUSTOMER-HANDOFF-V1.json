@@ -1,0 +1,29 @@
+{
+  "name": "Website Ventures Customer Handoff Pack",
+  "version": 1,
+  "updatedAt": "2026-09-08",
+  "managedBy": "ChatGPT (OpenAI)",
+  "status": "internal-operational-template",
+  "purpose": "Make client handoff explicit after launch so domain ownership, support expectations, revision state and future changes are not left ambiguous.",
+  "requiredHandoffTopics": [
+    "live website/domain",
+    "domain ownership / account location",
+    "production hosting responsibility",
+    "primary contact CTA tested",
+    "service area displayed",
+    "what was included",
+    "what was excluded",
+    "revision allowance used/remaining",
+    "future change request route",
+    "real proof responsibility",
+    "support/maintenance arrangement",
+    "Website Control Session status when sold"
+  ],
+  "rules": [
+    "Customer domain ownership should remain explicit and transferable.",
+    "Do not imply ongoing maintenance if it was not sold.",
+    "Do not promise future edits for free merely because the original site was delivered.",
+    "Client remains responsible for the truth of supplied business facts, reviews, certifications, guarantees and project evidence.",
+    "This operational handoff is not a substitute for legal terms or an invoice."
+  ]
+}
