@@ -1,10 +1,8 @@
 {
   "project": "Website Ventures",
   "owner": "Joey",
-  "updatedAt": "2026-09-06",
-  "managedBy": [
-    "ChatGPT (OpenAI)"
-  ],
+  "updatedAt": "2026-09-08",
+  "managedBy": ["ChatGPT (OpenAI)"],
   "workflow": {
     "chatIsSourceOfTruth": false,
     "feedbackAutoCaptured": true,
@@ -13,290 +11,159 @@
     "repository": "Kingkangaroos/Joe",
     "workspace": "Finance → Ventures",
     "durableSource": "Project Headquarters",
-    "development": "branch → test → PR → main/production"
+    "activeProductionLine": "WEBSITE-VENTURES-PRODUCTION-LINE-V3.json",
+    "activeHiggsfieldQueue": "WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json",
+    "activePromptBoard": "website-ventures-higgsfield-prompt-board.html",
+    "reviewBoard": "website-ventures-higgsfield-review.html",
+    "assetImportManifest": "WEBSITE-VENTURES-ASSET-IMPORT-MANIFEST.json",
+    "assetRoot": "website-ventures-assets/"
   },
-  "now": [
-    "Lock the first sales wedge: trades/plumbing is the leading hypothesis; beauty/nails/coaches remain comparison niches, not discarded.",
-    "Turn the Premium Plumbing flagship into the first complete commercial demo: offer story, page flow, master technician, reusable stills, proof areas and motion candidates.",
-    "Prepare the Higgsfield production queue before the next credit-heavy production sprint: still-first, select winners, animate only winners.",
-    "Define the economics for customers 1–10: exact offer, price, recurring hosting/maintenance, scope and revision boundaries.",
-    "Build the reusable Visual Vault so a prospect can be shown credible alternatives immediately without generating every site from scratch."
+  "priorityOrder": [
+    "P0 · Joey's own Website Ventures / agency showroom",
+    "P0 · Higgsfield Batch 5 hero selection",
+    "P0 · One recurring Plumbing technician",
+    "P0 · Only the Plumbing scenes actually needed by the showcase",
+    "P0 · Integrate winners into agency + Plumbing and QA mobile/desktop",
+    "P1 · Offer, price, scope, hosting/domain and first-customer fulfilment",
+    "P1 · Acquisition after proof is strong",
+    "P2 · More flagship worlds and broad asset libraries only after evidence"
   ],
-  "assetsNeeded": [
-    "P0 · PL-CHAR-001 — One exceptional consistent master technician/worker for the plumbing flagship.",
-    "P0 · PL-HERO-001 — Premium bathroom emergency master still: subtle leak/urgency, chic rather than slapstick.",
-    "P0 · PL-STORY-001 — Contact/phone moment that bridges the emergency to dispatch.",
-    "P0 · PL-STORY-002 — Premium service vehicle arrival / technician arrival scene.",
-    "P0 · PL-STORY-003 — Inspection and diagnostic scene with the same technician.",
-    "P0 · PL-STORY-004 — Repair-in-progress scene plus technical macro/detail set.",
-    "P0 · PL-STORY-005 — Clean-up / neat handover scene that makes service quality visible.",
-    "P0 · PL-END-001 — Resolved, calm end-state + CTA visual.",
-    "P1 · PL-PROOF-001 — Real-project proof frame/template; actual client work must remain real.",
-    "P1 · PL-MOTION-001 — Motion tests only for selected winning stills/story transitions.",
-    "P1 · SALES-MOCK-001 — Desktop/mobile showcase mockups and before/after presentation format.",
-    "P1 · VAULT-001 — Asset naming + metadata system for prompt/model/ratio/usage/rating/motion-ready/customizable."
+  "now": [
+    "Batch 4 is treated as complete in the current manual generation workflow; do not regenerate it by default.",
+    "Run Batch 5 in the Higgsfield Queue: test the three agency hero concepts inside the chosen visual direction and pick one winner.",
+    "Run Batch 6: generate four credible technician candidates and lock exactly one recurring Plumbing technician.",
+    "Use the selected technician for only the necessary Batch 7 working scenes; identity consistency is mandatory.",
+    "Keep agency support media conditional: first test whether the coded showroom, hero master, real Plumbing captures and interaction design already carry the page.",
+    "Use Batch 9 only for 4K final masters after 2K winners exist.",
+    "After visual winners are integrated, lock the actual sellable offer, hosting/domain flow, revision boundaries and customer 1–10 fulfilment time."
   ],
   "lockedDecisions": {
-    "operatingModel": "Website Ventures lives inside the existing Gamenfy repo/app under Finance → Ventures. It is mentally a commercial money-machine, but it does not need a separate architecture or repository.",
-    "developmentWorkflow": "Use branch → test → PR → only then main/production. Personal-only Gamenfy surfaces may use data-gamenfy-scope=\"personal\".",
-    "businessGoal": "Prove a repeatable website-sales business before optimizing for provinces, teams or mass scale. Customers 1–10 come before 100,000-customer architecture.",
-    "firstSalesHypothesis": "Trades/plumbing/installation is the leading first niche because the digital gap may be larger and DIY-AI substitution lower; beauty/nails/coaches remain useful alternative markets because Joey expects an easier personal sales match.",
-    "flagshipStrategy": "Build at least four knockout showcase websites across distinct categories rather than four copies of the same niche.",
-    "designAmbition": "State-of-the-art, modern, striking and luxury/high-end. The site should feel expensive enough to give Joey confidence when selling; the aspiration is deliberately beyond normal local-MKB design.",
-    "referenceFeel": "VOZOL-like effort/tech polish is a useful inspiration, but borrow the premium branded experience rather than the visual overload.",
-    "aiVisualRule": "Heavy AI use is acceptable when the result remains realistic, polished and website-usable; roughly 90% realistic / 10% overt cinematic stylization is acceptable.",
-    "proofIntegrity": "Real staff identity and completed customer projects should use real evidence when they are presented as such. AI may create atmosphere, demo worlds and illustrative service scenes, but should not fabricate proof.",
-    "plumbingPositioning": "Use emergency/urgency as the opening hook, then position the company as a premium allround plumbing/installations brand rather than a pure 24/7 emergency service.",
-    "plumbingStory": "Problem → urgency → contact → rapid arrival → inspection → skilled repair → clean handover → relief/trust → CTA.",
-    "plumbingTone": "Subtle/chic and unmistakably high-end; no slapstick chaos or screaming-discount aesthetic.",
-    "plumbingPaletteCandidate": "Primary candidate: pure white + deep signature red + stone/marble + chrome/glass/water. Candidate, not yet permanently locked.",
-    "operatorPrinciple": "Porsche treatment, authentic tradesperson: the design shell can be extremely premium while the actual operator remains nuchter, diverse and recognizably themselves.",
-    "characterStrategy": "For the first plumbing flagship, prioritize one exceptionally strong, consistent hero technician reusable across the entire site instead of many unrelated people.",
-    "assetRule": "Website applicability and consistency beat raw generation volume. A beautiful asset that cannot be coherently deployed is low-value.",
-    "higgsfieldRule": "Treat the subscription as a planned production sprint: define the queue first, generate master stills first, select winners, then spend video/motion credits only on winners.",
-    "scaleVisualRule": "Invest heavily once in an exceptional design system, then componentize and reuse it; premium quality becomes valuable only if it can be productized.",
-    "workspaceStructure": "Finance → Ventures keeps three explicit spaces: Ventures, Venture Lab and Productielijn. General Lab remains a separate Jarvis workspace.",
-    "returnNavigation": "Website Ventures Headquarters opened from Finance returns to Finance → Ventures; General Lab defaults to Jarvis and Venture-launched Lab returns to Finance → Ventures."
+    "websiteVenturesPriority": "Website selling is the primary near-term income engine.",
+    "agencyFirst": "Joey's own Website Ventures / agency site is built first and sets the visual/technical ceiling before selling the claim to customers.",
+    "agencyFeel": "Maximum-premium, calm Apple-like shell with strong typography, controlled spacing, integrated scroll/motion and excellent mobile execution.",
+    "agencyRole": "The agency site is both showroom and R&D playground; it should demonstrate capability rather than only describe it.",
+    "firstCommercialNiche": "Plumbing/trades remains the first commercial showcase and customer-template system.",
+    "startingGeography": "Almere is the leading first area; Bussum can be useful because Joey already works there.",
+    "operatorPrinciple": "Porsche treatment, authentic tradesperson: premium presentation is allowed while the worker remains credible and recognizably a real trade professional.",
+    "characterStrategy": "One exceptional recurring Plumbing technician is preferred over many unrelated AI people.",
+    "proofIntegrity": "Real completed client work, reviews, staff claims, certifications and measured results stay real. AI demo imagery may never masquerade as proof.",
+    "templateRule": "Customer sites should be system/template-driven and highly reusable, with customer-specific copy, colors, photos and selected identity assets rather than rebuilding from zero.",
+    "mobileRule": "Every important visual/interaction must have a deliberate mobile version; desktop-only wow is rejected.",
+    "higgsfieldRule": "Manual higgsfield.ai is preferred for Unlimited exploration. Still/reference winners first; motion and 4K finish only after approval.",
+    "creditRule": "When 50% of the paid generation balance remains, stop new paid generations and review winners, waste and remaining queue before spending more.",
+    "publicGamenfyPriority": "Gamenfy Public remains a low-cost demand test and must not outrank Website Ventures without real repeated usage evidence."
   },
-  "flagships": [
-    {
-      "id": "flagship-01",
-      "name": "Premium Plumbing / Installations",
-      "role": "Primary sales demo and first production system",
-      "status": "active",
-      "brief": "Urgency hook, premium allround positioning, one consistent technician, high-end white/red visual world, real project-proof slots and a complete problem-to-relief story."
+  "workingCommercialHypotheses": {
+    "foundingPrice": "€349 is a working founding-offer hypothesis, not a permanent ceiling or final public price.",
+    "laterPrice": "€499–€699 is a later working range once scope, quality and fulfilment are proven; not locked.",
+    "controlSession": "A roughly €59 Website Control Session is a possible add-on; not locked.",
+    "domainOwnership": "The customer should remain owner of their domain; Joey may manage DNS/hosting for convenience.",
+    "acquisition": "Prefer active-buyer platforms, referrals, warm/local contacts and legally compliant outreach over generic spam or assumed cold-calling loopholes."
+  },
+  "agencySlotRules": {
+    "source": "AGENCY-SHOWROOM-SLOT-CONTRACT-V1.json",
+    "hero": {
+      "id": "AG-HERO-001",
+      "externalMediaNeed": "likely",
+      "desktopSource": "16:9, minimum 1920x1080, recognizable subject inside central 70% safe zone",
+      "mobileSource": "4:5, minimum 1200x1500, deliberate composition at ~390px viewport",
+      "rule": "One strong hero/visual-DNA master first; the static frame must already sell premium quality."
     },
-    {
-      "id": "flagship-02",
-      "name": "Luxury Renovation / Contractor",
-      "role": "Best environment for before/after and Apple-like scroll storytelling",
-      "status": "planned",
-      "brief": "Architectural imagery, material detail, room transformations, construction process and premium craftsmanship."
+    "firstScroll": "Reuse the selected hero through code/CSS/JS if possible; do not automatically generate a second asset.",
+    "plumbingShowcase": "Use the real coded Plumbing demo and its approved visuals/screenshots for the agency showcase; do not pay for duplicate agency-specific AI media.",
+    "transformation": "Code/screenshot first. Generate extra media only if the coded comparison fails to communicate the value.",
+    "interaction": "Code first. Add generated media only after the reusable interaction technology itself proves useful.",
+    "offer": "No external visual generation required.",
+    "proof": "Real-source-only. Never generate the evidence itself.",
+    "cta": "No new generation required unless an already-approved asset can be reused cheaply."
+  },
+  "activeGeneration": {
+    "batch4": {"status": "complete", "note": "Current manual workflow treats Batch 4 as done; exact remote-session historical numbering is not used as a requirement for future assets."},
+    "batch5": {
+      "name": "Agency Hero Round",
+      "status": "next",
+      "jobs": ["AG-HERO-TRANSFORM-001", "AG-HERO-PRODUCT-001", "AG-HERO-MATERIAL-001"],
+      "goal": "Choose one meaning-led 2K agency hero winner before 4K finish."
     },
-    {
-      "id": "flagship-03",
-      "name": "Beauty / Aesthetics",
-      "role": "Show the system can become editorial, luxurious and appointment-led",
-      "status": "planned",
-      "brief": "Skin/glass/liquid macro imagery, refined motion, premium treatment cards and booking-first conversion."
+    "batch6": {
+      "name": "Plumbing Technician Candidate Round",
+      "status": "ready",
+      "jobs": ["PL-CHAR-001"],
+      "goal": "Choose exactly one recurring technician master from four candidates."
     },
-    {
-      "id": "flagship-04",
-      "name": "Personal Brand / Coach",
-      "role": "Show a human/authority-led system rather than another service-company clone",
-      "status": "planned",
-      "brief": "Face-led storytelling, authority, transformation narrative, video and a distinct personal brand world."
+    "batch7": {
+      "name": "Same Technician Working Scenes",
+      "status": "blocked-until-PL-CHAR-001-winner",
+      "jobs": ["PL-STORY-DIAG-001", "PL-STORY-SINK-001", "PL-STORY-TRUST-001"],
+      "goal": "Produce a small coherent set of usable scenes with the exact same technician identity."
+    },
+    "batch8": {
+      "name": "Conditional Agency Support Visuals",
+      "status": "conditional-code-first",
+      "jobs": ["AG-SUPPORT-TRANSFORM-001", "AG-SUPPORT-PROCESS-001", "AG-SUPPORT-SHOWCASE-001"],
+      "goal": "Only generate a support visual if the actual coded slot still benefits from external media after the Batch 5 hero is integrated.",
+      "default": "skip unless needed"
+    },
+    "batch9": {
+      "name": "Final 4K Masters",
+      "status": "blocked-until-winners",
+      "jobs": ["AG-HERO-MASTER-001", "PL-HERO-MASTER-001"],
+      "goal": "Credit-sensitive final polish only; do not use for exploration."
     }
+  },
+  "assetsNeeded": [
+    "P0 · One selected agency hero/visual-DNA master from Batch 5.",
+    "P0 · A deliberate mobile 4:5 derivative/crop of the selected agency hero; prefer precise edit/crop over inventing a second world.",
+    "P0 · PL-CHAR-001 — one selected recurring Plumbing technician master.",
+    "P0 · Small coherent Plumbing working-scene set only after PL-CHAR-001 is locked.",
+    "P0 · Real desktop + mobile captures of the actual Plumbing demo for the agency showcase.",
+    "P1 CONDITIONAL · Agency support visual(s) only when the coded transformation/process/showcase slot demonstrably needs external media.",
+    "P1 · Final 4K agency/Plumbing hero masters only after selected 2K winners.",
+    "P1 · Visual Vault metadata, selected/rejected history, prompt/model/reference/ratio and exact usage.",
+    "REAL-SOURCE-ONLY · future client proof, real reviews and actual project imagery."
+  ],
+  "proposedNotLocked": [
+    "A leaking-bathroom opening hero for Plumbing.",
+    "White/deep-red/chrome/water as the permanent Plumbing art direction.",
+    "Service van as a mandatory asset.",
+    "Phone/contact bridge as a mandatory generated asset.",
+    "A full arrival -> inspection -> repair -> handover generated sequence.",
+    "Large plumbing tool/macro packs before the page proves they are needed.",
+    "Motion versions before still winners exist.",
+    "Three separate agency support images simply because the queue has slots for them."
+  ],
+  "deferred": [
+    "Broad alternative flagship asset production before agency + Plumbing prove the system.",
+    "Large reusable AI prop libraries without a direct page need.",
+    "Full Gamenfy park/object/skill asset production; general animation technology should be proven first.",
+    "Mass prospect personalization before one strong agency site, one strong Plumbing demo and a locked offer exist."
   ],
   "ventureBacklog": [
-    "Lock the exact one-sentence offer and what problem is being taken off the owner's plate.",
-    "Compare plumbing/trades against beauty/nails/coaches on willingness to pay, digital need, prospect volume, sales friction and AI-DIY risk.",
-    "Lock pricing structure: one-off setup versus recurring hosting/maintenance/updates and what is included.",
-    "Define first-ten-customer scope, revision limits, content intake, launch checklist and QA.",
-    "Define what must be custom versus what can be standardized without feeling templated.",
-    "Build the first 100-prospect criteria/list once the niche and geographic starting point are locked.",
-    "Write the cold-call/outreach system only after offer + proof demo are strong enough to support it.",
-    "Create the four flagship briefs and page/section maps.",
-    "Create a model/capability matrix for each asset type before the Higgsfield sprint.",
-    "Estimate credit budget by stills, variants, elements and motion tests before subscription spend.",
-    "Define Visual Vault naming, metadata, folders and winner/rejected workflow.",
-    "Define the handoff standard future student/builders will use after customers 1–10 prove the system.",
-    "Define the trigger for adding salespeople and province-by-province expansion."
+    "Lock the exact one-sentence customer outcome sold.",
+    "Lock founding offer price, later standard price hypothesis and what is included.",
+    "Define revisions, customer content intake and what counts as bespoke work.",
+    "Choose commercially appropriate hosting/domain/DNS fulfilment and ownership model.",
+    "Measure real customer 1–10 communication + production + QA time before claiming ultra-fast fulfilment.",
+    "Build first prospect criteria for Almere/Bussum after offer/demo lock.",
+    "Build legally compliant acquisition workflow around Joey's full-time job.",
+    "Create student/builder handoff only after customers 1–10 prove the production system.",
+    "Expand flagships, sales capacity or geography only after unit economics and conversion are real."
+  ],
+  "flagships": [
+    {"id": "agency", "name": "Website Ventures / Agency Showroom", "role": "public capability proof and R&D ceiling", "status": "P0-active"},
+    {"id": "flagship-01", "name": "Premium Plumbing / Installations", "role": "first commercial showcase/customer system", "status": "P0-active"},
+    {"id": "flagship-02", "name": "Luxury Renovation / Contractor", "role": "future architecture/before-after test world", "status": "planned"},
+    {"id": "flagship-03", "name": "Beauty / Aesthetics", "role": "future editorial/booking-first world", "status": "planned"},
+    {"id": "flagship-04", "name": "Personal Brand / Coach", "role": "future human/authority-led world", "status": "planned"}
   ],
   "ideaBank": [
-    "Apple-level scroll storytelling applied to ordinary local service businesses.",
-    "Premium tech-brand treatment for trades: a local installer presented with the care normally reserved for automotive/consumer-tech brands.",
-    "VOZOL-like sense of visual effort and product presentation, simplified enough to keep trust and conversion high.",
-    "White + deep red as a signature system, using marble/stone/chrome/glass/water for premium materiality.",
-    "Opening plumbing sequence: premium bathroom leak → phone → vehicle arrival → technician at work → clean resolution → 'wil jij ook zo geholpen worden?' CTA.",
-    "Interactive before/after transformations for renovation and future prospect demos.",
-    "One master demo technician as a reusable reference element across stills and motion.",
-    "Prospect-specific hero variants generated from locked master compositions rather than redesigning from zero.",
-    "Real project photos placed inside ultra-premium proof frames so nuchter businesses still feel authentic.",
-    "A literal 'visual drawer': industry → hero / people / environments / textures / services / animations / transitions / cases / CTA / mockups / rejected.",
-    "Store every winning asset with model, prompt, aspect ratio, usage, rating, motion-ready and customizable metadata.",
-    "Create reusable sales mockups so calls can instantly show 'this could be yours' rather than explaining design abstractly.",
-    "Province-by-province scaling only after first-customer unit economics and conversion are proven."
-  ],
-  "productionRules": [
-    "One coherent website world beats a folder full of unrelated pretty generations.",
-    "Start with master stills. Do not spend motion/video credits until a still/composition is approved.",
-    "Create or lock the recurring technician first, then build scenes around that identity.",
-    "Generate for exact website slots/aspect ratios whenever possible rather than creating generic art and hoping it fits later.",
-    "Keep real proof real: actual projects, reviews and real-team claims need actual source material.",
-    "Separate premium shell from operator identity so the system works for polished companies and nuchter family businesses alike.",
-    "Keep rejected experiments because they can become alternatives later, but never let them pollute the approved asset set.",
-    "Batch only after a direction is locked; broad reruns before selection waste credits and reduce consistency."
-  ],
-  "higgsfieldPlan": [
-    "Pre-plan the complete generation queue before subscription activation.",
-    "Create the plumbing master technician as a reusable reference element if the selected Higgsfield model/workflow supports it reliably.",
-    "Generate several candidate master stills for each critical website slot, not random scenes.",
-    "Select the small set of winners for hero/story/technical/detail/CTA.",
-    "Animate only winners and only when motion materially improves the website experience.",
-    "Archive prompt + model + reference + ratio + result for every approved asset so the system can be reused after the subscription ends.",
-    "Use future custom generations only where a paying client genuinely needs client-specific identity or imagery."
-  ],
-  "visualProduction": [
-    {
-      "id": "PL-CHAR-001",
-      "priority": "P0",
-      "status": "next",
-      "group": "Plumbing · Character",
-      "asset": "Master technician",
-      "purpose": "Create one premium but authentic recurring tradesperson usable in hero, arrival, inspection, repair and handover scenes."
-    },
-    {
-      "id": "PL-STYLE-001",
-      "priority": "P0",
-      "status": "next",
-      "group": "Plumbing · Style",
-      "asset": "Visual world / style lock",
-      "purpose": "White-led premium shell, deep-red accents, luxury materials and precise tech treatment; verify that it still feels credible for a Dutch trade business."
-    },
-    {
-      "id": "PL-HERO-001",
-      "priority": "P0",
-      "status": "queued",
-      "group": "Plumbing · Hero",
-      "asset": "Bathroom emergency master still",
-      "purpose": "Immediate understandable urgency in a beautiful bathroom, controlled water problem, ample clean space for headline + CTA."
-    },
-    {
-      "id": "PL-STORY-001",
-      "priority": "P0",
-      "status": "queued",
-      "group": "Plumbing · Story",
-      "asset": "Contact / phone bridge",
-      "purpose": "Fast visual handoff from problem to service response without turning into a long commercial."
-    },
-    {
-      "id": "PL-STORY-002",
-      "priority": "P0",
-      "status": "queued",
-      "group": "Plumbing · Story",
-      "asset": "Service vehicle arrival",
-      "purpose": "Make speed, professionalism and brand presence visible; same technician/world."
-    },
-    {
-      "id": "PL-STORY-003",
-      "priority": "P0",
-      "status": "queued",
-      "group": "Plumbing · Story",
-      "asset": "Inspection / diagnosis",
-      "purpose": "Show calm competence after urgency; usable as scroll story and service-proof image."
-    },
-    {
-      "id": "PL-STORY-004",
-      "priority": "P0",
-      "status": "queued",
-      "group": "Plumbing · Story",
-      "asset": "Repair in action",
-      "purpose": "Primary craftsmanship scene with realistic tools/positioning and website-safe composition."
-    },
-    {
-      "id": "PL-DETAIL-001",
-      "priority": "P0",
-      "status": "queued",
-      "group": "Plumbing · Detail",
-      "asset": "Technical macro pack",
-      "purpose": "Hands, fittings, water, chrome, tools, pipe details and textures for section breaks and premium motion."
-    },
-    {
-      "id": "PL-STORY-005",
-      "priority": "P0",
-      "status": "queued",
-      "group": "Plumbing · Story",
-      "asset": "Clean-up / neat handover",
-      "purpose": "Make the premium service promise tangible: job solved and environment left clean."
-    },
-    {
-      "id": "PL-END-001",
-      "priority": "P0",
-      "status": "queued",
-      "group": "Plumbing · CTA",
-      "asset": "Resolved end-state",
-      "purpose": "Calm client/result image that closes the story and supports the final contact CTA."
-    },
-    {
-      "id": "PL-PROOF-001",
-      "priority": "P1",
-      "status": "design",
-      "group": "Plumbing · Proof",
-      "asset": "Real project proof frame",
-      "purpose": "Reusable layout/system for authentic before/after or completed-project photos from paying clients."
-    },
-    {
-      "id": "PL-SVC-001",
-      "priority": "P1",
-      "status": "design",
-      "group": "Plumbing · Services",
-      "asset": "Allround service visual set",
-      "purpose": "Prevent the brand from reading as emergency-only: installations, maintenance, bathroom, heating/plumbing service where relevant."
-    },
-    {
-      "id": "PL-MOTION-001",
-      "priority": "P1",
-      "status": "blocked-on-stills",
-      "group": "Plumbing · Motion",
-      "asset": "Hero motion test",
-      "purpose": "Animate only the approved hero still; motion must add urgency/premium feel without delaying comprehension."
-    },
-    {
-      "id": "PL-MOTION-002",
-      "priority": "P1",
-      "status": "blocked-on-stills",
-      "group": "Plumbing · Motion",
-      "asset": "Scroll story transitions",
-      "purpose": "Test arrival/inspection/repair transitions or first→last frame sequences after stills are locked."
-    },
-    {
-      "id": "SALES-MOCK-001",
-      "priority": "P1",
-      "status": "queued",
-      "group": "Sales · Mockups",
-      "asset": "Desktop/mobile premium mockups",
-      "purpose": "Instant prospect-facing presentation of the flagship and personalized variants."
-    },
-    {
-      "id": "SALES-BA-001",
-      "priority": "P1",
-      "status": "queued",
-      "group": "Sales · Before/after",
-      "asset": "Old site → premium redesign frame",
-      "purpose": "Make the commercial transformation understandable in seconds during outreach."
-    },
-    {
-      "id": "VAULT-001",
-      "priority": "P1",
-      "status": "queued",
-      "group": "System · Visual Vault",
-      "asset": "Asset metadata + naming system",
-      "purpose": "Store every approved/rejected asset with prompt, model, references, ratio, site slot, rating, motion-ready and customizable fields."
-    },
-    {
-      "id": "FLAG-02-PLAN",
-      "priority": "P2",
-      "status": "planned",
-      "group": "Flagship 02",
-      "asset": "Renovation visual queue",
-      "purpose": "Design the second complete asset world after Plumbing is coherent enough to reuse lessons."
-    },
-    {
-      "id": "FLAG-03-PLAN",
-      "priority": "P2",
-      "status": "planned",
-      "group": "Flagship 03",
-      "asset": "Beauty visual queue",
-      "purpose": "Design the editorial/luxury asset world for Beauty/Aesthetics."
-    },
-    {
-      "id": "FLAG-04-PLAN",
-      "priority": "P2",
-      "status": "planned",
-      "group": "Flagship 04",
-      "asset": "Personal Brand visual queue",
-      "purpose": "Design the human/authority-led asset world for Coach/Personal Brand."
-    }
+    "Apple-level scroll storytelling for ordinary local service businesses.",
+    "Porsche-level presentation care for authentic tradespeople.",
+    "Interactive before/after transformations.",
+    "One recurring demo technician as a reusable reference element.",
+    "Prospect-specific variants derived from locked master compositions rather than redesigning from zero.",
+    "Real project photos inside ultra-premium proof frames.",
+    "Desktop/mobile/before-after sales mockups that make the transformation instantly tangible.",
+    "One extraordinary base system reused heavily and customized deliberately rather than rebuilding every client website from blank."
   ]
 }
