@@ -1,15 +1,16 @@
 // =============================================================
-// Gamenfy — Ventures (v11.2)
+// Gamenfy — Ventures (v11.3)
 // Business ideas as quest ladders. Each venture = phases → steps.
 // Storage: rpg_ventures_v1 (synced). Seeded only if absent.
-// v11.2: refreshes the builder work queue to the live Website Ventures
-// Higgsfield Batch 5+ flow. Existing earned XP is untouched.
+// v11.3: aligns the builder queue with Website Ventures Production
+// Line v3.1: mobile hero derivative added, Batch 8 is non-blocking,
+// and the Gamenfy AutoSprite pilot is explicitly deferred.
 // =============================================================
 (function () {
   'use strict';
 
   const KEY = 'rpg_ventures_v1';
-  const GAMENFY_FOCUS_VERSION = 3;
+  const GAMENFY_FOCUS_VERSION = 4;
 
   const SEED = {
     v: 1,
@@ -103,28 +104,31 @@
       {
         id: 'app_vormgeving',
         name: 'Gamenfy Build',
-        tagline: 'Website Ventures first — live Higgsfield production + agency showroom integration',
+        tagline: 'Website Ventures first — active visual production, showroom integration and commercial lock',
         hero: 'https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop',
         status: 'active',
         focusVersion: GAMENFY_FOCUS_VERSION,
         phases: [
-          { id: 'hf', name: 'NU — Higgsfield queue', steps: [
-            { id: 'hf5', title: 'Batch 5 · Agency Hero Round', detail: 'Open de Higgsfield Queue. Genereer de drie 16:9 Soul 2.0 hero-concepten in de gekozen Batch 4-richting. Kies één winner voordat support visuals of 4K finish doorgaan.', minutes: 35, xp: { ai_tools: 30, marketing: 20 } },
+          { id: 'hf', name: 'NU — Website Ventures Higgsfield', steps: [
+            { id: 'hf5', title: 'Batch 5 · Agency desktop hero kiezen', detail: 'Open de Higgsfield Queue. Genereer de drie 16:9 Soul 2.0 hero-concepten en leg de resultaten vast in Review winners. Kies exact één desktop hero winner voordat finish doorgaat.', minutes: 35, xp: { ai_tools: 30, marketing: 20 } },
+            { id: 'hf5m', title: 'Batch 5 · Mobile hero derivative', detail: 'Gebruik de gekozen desktop winner als reference in Nano Banana 2. Maak 1–2 bewuste 4:5 2K mobile derivatives. Zelfde campaign/world; recompose voor ~390px in plaats van een tweede concept te verzinnen.', minutes: 20, xp: { ai_tools: 20, coding: 10 } },
             { id: 'hf6', title: 'Batch 6 · Recurring technician kiezen', detail: 'Genereer vier 3:4 technician candidates met Soul 2.0 en kies exact één geloofwaardige master. Diezelfde identiteit wordt verplicht voor alle Plumbing-scenes.', minutes: 30, xp: { ai_tools: 30, marketing: 10 } },
-            { id: 'hf7', title: 'Batch 7 · Same-technician scenes', detail: 'Gebruik de Batch 6 winner als reference en maak alleen de drie noodzakelijke 16:9 scènes: diagnosis, under-sink service en arrival/trust. Stop bij identity drift.', minutes: 40, xp: { ai_tools: 35, marketing: 15 } },
-            { id: 'hf8', title: 'Batch 8 · Agency support visuals', detail: 'Maak transformation, process en showcase support visuals binnen exact dezelfde hero-wereld. Geen nieuwe art direction introduceren.', minutes: 35, xp: { ai_tools: 30, marketing: 15 } },
-            { id: 'hf9', title: 'Batch 9 · 4K masters', detail: 'Alleen na gekozen winners: maximaal 1–2 Cinema Studio Image 2.5 4K renders voor de agency hero en Plumbing hero. Dit is de credit-sensitive finish.', minutes: 25, xp: { ai_tools: 40, coding: 10 }, boss: true }
+            { id: 'hf7', title: 'Batch 7 · Same-technician scenes', detail: 'Gebruik de Batch 6 winner als reference en maak alleen de drie noodzakelijke 16:9 scènes: diagnosis, under-sink service en arrival/trust. Stop bij identity drift. Batch 8 support-art is optioneel en blokkeert deze route niet.', minutes: 40, xp: { ai_tools: 35, marketing: 15 } },
+            { id: 'hf9', title: 'Batch 9 · 4K masters', detail: 'Sla Batch 8 standaard over. Alleen als de echte coded agency page later aantoonbaar een media-gat heeft, gebruik je één relevante Batch 8 support-prompt. Voor de verplichte route: maak na gekozen 2K winners maximaal 1–2 Cinema Studio Image 2.5 4K renders voor agency hero en Plumbing hero. Bij 50% resterende betaalde credits eerst stoppen en reviewen.', minutes: 25, xp: { ai_tools: 40, coding: 10 }, boss: true }
           ]},
           { id: 'agency', name: 'Agency Showroom — integrate winners', steps: [
-            { id: 'ag1', title: 'Hero winner inbouwen', detail: 'Zet de gekozen agency hero in de exacte desktop/mobile slotcontracten. Maak web-optimized derivatives zonder de source master te vervangen.', minutes: 45, xp: { coding: 40, ai_tools: 15 } },
-            { id: 'ag2', title: 'First-scroll payoff afmaken', detail: 'Laat tekst, visual en scrollbeweging als één Apple-achtige ervaring samenwerken. Geen losse autoplay-video naast statische copy.', minutes: 60, xp: { coding: 60, marketing: 15 } },
-            { id: 'ag3', title: 'Plumbing showcase integreren', detail: 'Plaats de gekozen recurring technician en werk-scènes als demo/showcase, duidelijk niet als verzonnen klantbewijs.', minutes: 60, xp: { coding: 45, marketing: 20 } },
-            { id: 'ag4', title: 'Mobile premium QA', detail: 'Test ongeveer 390px breed: hero crop, copy-safe ruimte, scroll payoff, showcase en CTA moeten ook op iPhone premium voelen.', minutes: 40, xp: { coding: 35 } }
+            { id: 'ag1', title: 'Hero winner + mobile inbouwen', detail: 'Zet de gekozen desktop hero én de 4:5 mobile derivative in de exacte slotcontracten. Bewaar source masters en maak web-optimized derivatives apart.', minutes: 45, xp: { coding: 40, ai_tools: 15 } },
+            { id: 'ag2', title: 'First-scroll payoff afmaken', detail: 'Laat tekst, hero en scrollbeweging als één Apple-achtige ervaring samenwerken. Hergebruik dezelfde master waar code/CSS/JS genoeg is; genereer niet automatisch meer art.', minutes: 60, xp: { coding: 60, marketing: 15 } },
+            { id: 'ag3', title: 'Plumbing showcase integreren', detail: 'Plaats de gekozen recurring technician en drie werk-scènes als demo/showcase. Gebruik echte desktop/mobile browsercaptures voor website-proof en presenteer AI-demo-art nooit als klantbewijs.', minutes: 60, xp: { coding: 45, marketing: 20 } },
+            { id: 'ag4', title: 'Mobile premium QA', detail: 'Test ongeveer 390px breed: hero composition, copy-safe ruimte, scroll payoff, showcase en CTA moeten ook op iPhone premium voelen.', minutes: 40, xp: { coding: 35 } }
           ]},
           { id: 'commercial', name: 'Na visuals — verkoopbaar maken', steps: [
             { id: 'co1', title: 'Offer + scope locken', detail: 'Maak één begrijpelijke website-offer, founding price, revisiegrens en wat expliciet niet inbegrepen is. Houd €349 als hypothesis totdat dit besloten is.', minutes: 35, xp: { sales: 30, marketing: 20 } },
             { id: 'co2', title: 'Hosting + domain flow locken', detail: 'Leg vast wie eigenaar blijft van het domein, welke hosting commercieel gebruikt wordt, DNS-handoff en welke support jaarlijks/eenmalig is.', minutes: 40, xp: { sales: 20, coding: 20 } },
             { id: 'co3', title: 'Eerste prospect pool bouwen', detail: 'Maak na demo/offer-lock de eerste compacte Almere/Bussum prospectlijst op basis van echte behoefte en zwakke huidige website. Geen generieke massaspam.', minutes: 45, xp: { sales: 40, marketing: 20 }, boss: true }
+          ]},
+          { id: 'gfpilot', name: 'LATER — Gamenfy animation technology', steps: [
+            { id: 'gfauto', title: 'Bounded AutoSprite pilot', detail: 'Pas wanneer Website Ventures niet meer de actieve bottleneck is: open de aparte Gamenfy Animation Pilot. Kies één bestaand Daily Score level als source en bewijs WALK eerst; alleen bij pass volgen IDLE, JUMP en één separate-prop interaction. Geen park/objectpack genereren.', minutes: 45, xp: { ai_tools: 30, coding: 30 }, boss: true }
           ]}
         ]
       }
@@ -147,14 +151,32 @@
     }
     if (Number(v.focusVersion || 0) >= GAMENFY_FOCUS_VERSION) return false;
 
-    // This queue is planning state, not earned progression. Old completion XP
-    // stays in the character; only the stale task list is refreshed.
+    // Keep completion metadata for step IDs whose actual task survived the refresh.
+    // Newly introduced IDs (for example hf5m) remain open by definition.
+    const oldCompletion = {};
+    (v.phases || []).forEach(function (p) {
+      (p.steps || []).forEach(function (s) {
+        if (s && s.id && s.done) oldCompletion[s.id] = { done: true, doneAt: s.doneAt || null };
+      });
+    });
+
     v.name = fresh.name;
     v.tagline = fresh.tagline;
     v.hero = v.hero || fresh.hero;
     v.status = 'active';
     v.focusVersion = GAMENFY_FOCUS_VERSION;
     v.phases = clone(fresh.phases);
+    (v.phases || []).forEach(function (p) {
+      (p.steps || []).forEach(function (s) {
+        // hf8 was removed because optional Batch 8 may not block progress.
+        // Other same-ID tasks keep prior completion state.
+        const prev = oldCompletion[s.id];
+        if (prev) {
+          s.done = true;
+          if (prev.doneAt) s.doneAt = prev.doneAt;
+        }
+      });
+    });
     return true;
   }
 
