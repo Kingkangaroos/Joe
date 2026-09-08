@@ -16,24 +16,28 @@
     "activePromptBoard": "website-ventures-higgsfield-prompt-board.html",
     "reviewBoard": "website-ventures-higgsfield-review.html",
     "assetImportManifest": "WEBSITE-VENTURES-ASSET-IMPORT-MANIFEST.json",
+    "selectedAssetsRegistry": "WEBSITE-VENTURES-SELECTED-ASSETS.json",
+    "selectedAssetsBoard": "website-ventures-selected-assets.html",
+    "selectedAssetsLoader": "website-ventures-selected-assets.js",
     "assetRoot": "website-ventures-assets/"
   },
   "priorityOrder": [
     "P0 · Joey's own Website Ventures / agency showroom",
-    "P0 · Higgsfield Batch 5 hero selection",
+    "P0 · Higgsfield Batch 5 desktop hero selection + deliberate mobile derivative",
     "P0 · One recurring Plumbing technician",
     "P0 · Only the Plumbing scenes actually needed by the showcase",
-    "P0 · Integrate winners into agency + Plumbing and QA mobile/desktop",
+    "P0 · Promote approved winners through the Selected Assets gate and QA agency + Plumbing on mobile/desktop",
     "P1 · Offer, price, scope, hosting/domain and first-customer fulfilment",
     "P1 · Acquisition after proof is strong",
     "P2 · More flagship worlds and broad asset libraries only after evidence"
   ],
   "now": [
     "Batch 4 is treated as complete in the current manual generation workflow; do not regenerate it by default.",
-    "Run Batch 5 in the Higgsfield Queue: test the three agency hero concepts inside the chosen visual direction and pick one winner.",
+    "Run Batch 5 in the Higgsfield Queue: test the three agency desktop hero concepts, pick one winner, then create the deliberate 4:5 mobile derivative from that exact winner.",
     "Run Batch 6: generate four credible technician candidates and lock exactly one recurring Plumbing technician.",
     "Use the selected technician for only the necessary Batch 7 working scenes; identity consistency is mandatory.",
-    "Keep agency support media conditional: first test whether the coded showroom, hero master, real Plumbing captures and interaction design already carry the page.",
+    "Keep agency support media conditional: first test whether the coded showroom, selected hero, real Plumbing captures and interaction design already carry the page.",
+    "Only approved files may replace coded placeholders through WEBSITE-VENTURES-SELECTED-ASSETS.json; local Review winner checkboxes never publish by themselves.",
     "Use Batch 9 only for 4K final masters after 2K winners exist.",
     "After visual winners are integrated, lock the actual sellable offer, hosting/domain flow, revision boundaries and customer 1–10 fulfilment time."
   ],
@@ -80,10 +84,10 @@
   "activeGeneration": {
     "batch4": {"status": "complete", "note": "Current manual workflow treats Batch 4 as done; exact remote-session historical numbering is not used as a requirement for future assets."},
     "batch5": {
-      "name": "Agency Hero Round",
+      "name": "Agency Hero Round + Mobile Derivative",
       "status": "next",
-      "jobs": ["AG-HERO-TRANSFORM-001", "AG-HERO-PRODUCT-001", "AG-HERO-MATERIAL-001"],
-      "goal": "Choose one meaning-led 2K agency hero winner before 4K finish."
+      "jobs": ["AG-HERO-TRANSFORM-001", "AG-HERO-PRODUCT-001", "AG-HERO-MATERIAL-001", "AG-HERO-MOBILE-001"],
+      "goal": "Choose one meaning-led 2K desktop agency hero winner, then make one deliberate 4:5 mobile derivative from that exact winner before 4K finish."
     },
     "batch6": {
       "name": "Plumbing Technician Candidate Round",
@@ -111,9 +115,20 @@
       "goal": "Credit-sensitive final polish only; do not use for exploration."
     }
   },
+  "integrationGate": {
+    "rule": "A generated or captured file is never live merely because it exists or was marked winner in local review state.",
+    "requiredSequence": [
+      "Generate/import candidate to the exact manifest path.",
+      "Review and approve the candidate.",
+      "Set the intended registry slot status to selected and selectedPath to the real committed file.",
+      "Let website-ventures-selected-assets.js load it into the predefined page slot.",
+      "Verify the Agency/Plumbing page on desktop and mobile before considering the asset integrated."
+    ],
+    "failSafe": "Pending or failed selected paths retain the existing coded placeholder instead of breaking the page."
+  },
   "assetsNeeded": [
-    "P0 · One selected agency hero/visual-DNA master from Batch 5.",
-    "P0 · A deliberate mobile 4:5 derivative/crop of the selected agency hero; prefer precise edit/crop over inventing a second world.",
+    "P0 · One selected agency desktop hero/visual-DNA master from Batch 5.",
+    "P0 · A deliberate mobile 4:5 derivative of the selected agency hero; recompose instead of inventing a second world.",
     "P0 · PL-CHAR-001 — one selected recurring Plumbing technician master.",
     "P0 · Small coherent Plumbing working-scene set only after PL-CHAR-001 is locked.",
     "P0 · Real desktop + mobile captures of the actual Plumbing demo for the agency showcase.",
