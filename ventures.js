@@ -1,15 +1,15 @@
 // =============================================================
-// Gamenfy — Ventures (v11.1)
+// Gamenfy — Ventures (v11.2)
 // Business ideas as quest ladders. Each venture = phases → steps.
 // Storage: rpg_ventures_v1 (synced). Seeded only if absent.
-// v11.1: refreshes only the Gamenfy Build work queue so Main/Next Move
-// reflects Joey's current website-first focus. Existing earned XP is untouched.
+// v11.2: refreshes the builder work queue to the live Website Ventures
+// Higgsfield Batch 5+ flow. Existing earned XP is untouched.
 // =============================================================
 (function () {
   'use strict';
 
   const KEY = 'rpg_ventures_v1';
-  const GAMENFY_FOCUS_VERSION = 2;
+  const GAMENFY_FOCUS_VERSION = 3;
 
   const SEED = {
     v: 1,
@@ -103,27 +103,28 @@
       {
         id: 'app_vormgeving',
         name: 'Gamenfy Build',
-        tagline: 'Current product/design work — website-first, with a reusable visual production line',
+        tagline: 'Website Ventures first — live Higgsfield production + agency showroom integration',
         hero: 'https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop',
         status: 'active',
         focusVersion: GAMENFY_FOCUS_VERSION,
         phases: [
-          { id: 'wf', name: 'NU — eerst websites', steps: [
-            { id: 'wf1', title: 'Website Lab · Test 1 beoordelen', detail: 'Open Test 1 · Scroll Animations. Noteer alleen: KEEP, CHANGE, REUSE. Dit staat #1 omdat websites nu je actieve businessfocus zijn en direct richting een verkoopbare productielijn gaan.', minutes: 20, xp: { ai_tools: 10, marketing: 10 } },
-            { id: 'wf2', title: 'Website Test 2 · volgende techniek kiezen', detail: 'Kies één duidelijk andere website-techniek om naast Test 1 te zetten. Niet Test 1 overschrijven: nieuwe richting = nieuw testnummer.', minutes: 20, xp: { ai_tools: 20 } },
-            { id: 'wf3', title: 'Website-productielijn vastleggen', detail: 'Maak de vaste flow: basiswebsite → 4 visuele/scroll alternatieven → ChatGPT bouwt eerst → alleen bij duidelijke meerwaarde Higgsfield-test → winnaar locken → herbruikbare template.', minutes: 30, xp: { ai_tools: 30, coding: 20 } }
+          { id: 'hf', name: 'NU — Higgsfield queue', steps: [
+            { id: 'hf5', title: 'Batch 5 · Agency Hero Round', detail: 'Open de Higgsfield Queue. Genereer de drie 16:9 Soul 2.0 hero-concepten in de gekozen Batch 4-richting. Kies één winner voordat support visuals of 4K finish doorgaan.', minutes: 35, xp: { ai_tools: 30, marketing: 20 } },
+            { id: 'hf6', title: 'Batch 6 · Recurring technician kiezen', detail: 'Genereer vier 3:4 technician candidates met Soul 2.0 en kies exact één geloofwaardige master. Diezelfde identiteit wordt verplicht voor alle Plumbing-scenes.', minutes: 30, xp: { ai_tools: 30, marketing: 10 } },
+            { id: 'hf7', title: 'Batch 7 · Same-technician scenes', detail: 'Gebruik de Batch 6 winner als reference en maak alleen de drie noodzakelijke 16:9 scènes: diagnosis, under-sink service en arrival/trust. Stop bij identity drift.', minutes: 40, xp: { ai_tools: 35, marketing: 15 } },
+            { id: 'hf8', title: 'Batch 8 · Agency support visuals', detail: 'Maak transformation, process en showcase support visuals binnen exact dezelfde hero-wereld. Geen nieuwe art direction introduceren.', minutes: 35, xp: { ai_tools: 30, marketing: 15 } },
+            { id: 'hf9', title: 'Batch 9 · 4K masters', detail: 'Alleen na gekozen winners: maximaal 1–2 Cinema Studio Image 2.5 4K renders voor de agency hero en Plumbing hero. Dit is de credit-sensitive finish.', minutes: 25, xp: { ai_tools: 40, coding: 10 }, boss: true }
           ]},
-          { id: 'vp', name: 'Visuele productielijn — vaste queue', steps: [
-            { id: 'vp1', title: '1 · Website hero — 4 richtingen', detail: 'Vier duidelijk verschillende hero-concepten. Eerst kijken wat ChatGPT zelf goed kan maken; Higgsfield alleen inzetten waar motion/kwaliteit aantoonbaar extra waarde geeft.', minutes: 30, xp: { ai_tools: 30, marketing: 20 } },
-            { id: 'vp2', title: '2 · Skill tree — 4 richtingen', detail: 'Vier manieren om skill-progressie visueel te maken. Eén winnaar kiezen voordat er assets in bulk worden geproduceerd.', minutes: 30, xp: { ai_tools: 30 } },
-            { id: 'vp3', title: '3 · Home hero animation — 4 richtingen', detail: 'Vier home-hero/motionrichtingen. Focus op motiverende beweging die de app beter maakt, niet alleen decoratie.', minutes: 30, xp: { ai_tools: 30 } },
-            { id: 'vp4', title: '4 · Season card — 4 richtingen', detail: 'Vier visuele Season-card concepten die de actieve Season prominenter en motiverender maken.', minutes: 25, xp: { ai_tools: 25 } },
-            { id: 'vp5', title: '5 · Lab characters — later', detail: 'Characters blijven een geldige vijfde productielijn, maar staan bewust achter websites, skill tree, Home hero en Season card zodat ze je nu niet opnieuw afleiden.', minutes: 15, xp: { ai_tools: 10 } }
+          { id: 'agency', name: 'Agency Showroom — integrate winners', steps: [
+            { id: 'ag1', title: 'Hero winner inbouwen', detail: 'Zet de gekozen agency hero in de exacte desktop/mobile slotcontracten. Maak web-optimized derivatives zonder de source master te vervangen.', minutes: 45, xp: { coding: 40, ai_tools: 15 } },
+            { id: 'ag2', title: 'First-scroll payoff afmaken', detail: 'Laat tekst, visual en scrollbeweging als één Apple-achtige ervaring samenwerken. Geen losse autoplay-video naast statische copy.', minutes: 60, xp: { coding: 60, marketing: 15 } },
+            { id: 'ag3', title: 'Plumbing showcase integreren', detail: 'Plaats de gekozen recurring technician en werk-scènes als demo/showcase, duidelijk niet als verzonnen klantbewijs.', minutes: 60, xp: { coding: 45, marketing: 20 } },
+            { id: 'ag4', title: 'Mobile premium QA', detail: 'Test ongeveer 390px breed: hero crop, copy-safe ruimte, scroll payoff, showcase en CTA moeten ook op iPhone premium voelen.', minutes: 40, xp: { coding: 35 } }
           ]},
-          { id: 'pipe', name: 'Per onderdeel — productieprotocol', steps: [
-            { id: 'pipe1', title: 'ChatGPT-first test', detail: 'Maak eerst goedkope/creditloze varianten met ChatGPT. Beoordeel compositie, stijl en bruikbaarheid voordat externe credits worden gebruikt.', minutes: 25, xp: { ai_tools: 20 } },
-            { id: 'pipe2', title: 'Higgsfield delta-test', detail: 'Test Higgsfield alleen op de richting waar het iets moet toevoegen: betere motion, consistentie of renderkwaliteit. Eén zuinige test per richting/model; geen brede reruns.', minutes: 25, xp: { ai_tools: 30 } },
-            { id: 'pipe3', title: 'Winnaar locken + hergebruiken', detail: 'Sla de gekozen referentie/stijl op en bouw pas daarna varianten/batches. Doel: niet 45 keer een nét andere stijl genereren.', minutes: 20, xp: { ai_tools: 30, coding: 10 }, boss: true }
+          { id: 'commercial', name: 'Na visuals — verkoopbaar maken', steps: [
+            { id: 'co1', title: 'Offer + scope locken', detail: 'Maak één begrijpelijke website-offer, founding price, revisiegrens en wat expliciet niet inbegrepen is. Houd €349 als hypothesis totdat dit besloten is.', minutes: 35, xp: { sales: 30, marketing: 20 } },
+            { id: 'co2', title: 'Hosting + domain flow locken', detail: 'Leg vast wie eigenaar blijft van het domein, welke hosting commercieel gebruikt wordt, DNS-handoff en welke support jaarlijks/eenmalig is.', minutes: 40, xp: { sales: 20, coding: 20 } },
+            { id: 'co3', title: 'Eerste prospect pool bouwen', detail: 'Maak na demo/offer-lock de eerste compacte Almere/Bussum prospectlijst op basis van echte behoefte en zwakke huidige website. Geen generieke massaspam.', minutes: 45, xp: { sales: 40, marketing: 20 }, boss: true }
           ]}
         ]
       }
