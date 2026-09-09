@@ -41,7 +41,7 @@
   }
 
   function esc (value) {
-    return String(value || '').replace(/[&<>"']/g, match => ({
+    return String(value == null ? '' : value).replace(/[&<>"']/g, match => ({
       '&': '&amp;',
       '<': '&lt;',
       '>': '&gt;',

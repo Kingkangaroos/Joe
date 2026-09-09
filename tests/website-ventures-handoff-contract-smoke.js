@@ -84,6 +84,7 @@ assert.ok(page.includes('id="copy" type="button" disabled'), 'customer copy must
 assert.ok(page.includes('if (!result?.report?.ready) return;'), 'copy handler must fail closed on the final handoff contract');
 assert.ok(page.includes("'<h1>' + esc(name)"), 'customer identity must be HTML-escaped in the preview');
 assert.ok(page.includes("services.map(item => '<li>' + esc(item)"), 'customer service content must be HTML-escaped in the preview');
+assert.ok(page.includes("String(value == null ? '' : value)"), 'numeric zero must survive HTML escaping in revision summaries');
 assert.ok(page.includes('<option value="">Maak een keuze</option>'), 'hosting/support choices must require an explicit selection');
 assert.ok(page.includes('Conceptweergave. Kopiëren blijft geblokkeerd'), 'blocked handoff must remain usable as a clearly labelled concept');
 
