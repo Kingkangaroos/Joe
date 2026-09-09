@@ -133,6 +133,12 @@ Measures customer 1–10 active production minutes and blockers. Do not guess fu
 
 Checks intake, scope, config, proof, CTA, desktop QA, ~390px mobile QA, selected assets/fallback, domain ownership, commercial hosting, DNS/HTTPS and handoff.
 
+ChatGPT evidence preflight:
+- Intake, scope and Factory-config checks fail closed when their current local evidence is missing, invalid or belongs to another client;
+- the Factory draft must pass the shared client contract and align with Intake identity, service area, CTA and service titles;
+- saved foundational vinkjes are forced back to false when their evidence becomes invalid;
+- proof, contact, device, asset, domain, hosting, DNS and handoff checks stay deliberately human.
+
 Also records out-of-scope requests, estimated extra minutes, price impact and decision/reason.
 
 ### 6. Customer Handoff

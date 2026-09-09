@@ -103,7 +103,8 @@
     "Built isolated ChatGPT Venture Lab with offer stress test, niche matrix, unit economics simulator and evidence gates.",
     "Added Website Lab entry points while preserving all accepted prior website tests.",
     "Built the Visual Vault and variant-safe Selected Assets flow for reusable winners, real proof frames, CTA patterns, prompt metadata and rejected alternatives.",
-    "Added one shared fail-closed client config contract across Intake, Client Factory and the live Plumbing runtime."
+    "Added one shared fail-closed client config contract across Intake, Client Factory and the live Plumbing runtime.",
+    "Closed the Delivery Gate checkbox bypass with a deterministic Intake, scope and Factory-config evidence preflight while keeping real QA human."
   ],
   "todo": [
     {"priority": "P0", "task": "Use real sales conversations to test pain, wording and price instead of further theorizing the offer.", "blockedByUser": true, "reason": "External outreach requires Joey's explicit instruction."},
