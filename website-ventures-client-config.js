@@ -57,6 +57,13 @@
     return validSlug(slug) ? slug : '';
   }
 
+  function validateConfig (config, slug) {
+    if (!window.WVClientContract || typeof window.WVClientContract.validate !== 'function') {
+      return { ok: false, errors: ['client contract unavailable'] };
+    }
+    return window.WVClientContract.validate(config, slug);
+  }
+
   function setTheme (config) {
     const theme = config.theme || {};
     const allowed = {
@@ -104,6 +111,13 @@
   }
 
   function apply (config, slug, source) {
+    const check = validateConfig(config, slug);
+    if (!check.ok) {
+      console.warn('[Website Ventures] invalid client config blocked; hardcoded template fallback retained.', check.errors);
+      document.body.dataset.wvClientState = 'invalid-config';
+      document.body.dataset.wvClientSource = source || 'repo';
+      return null;
+    }
     setTheme(config);
     bindText(config);
     bindHref(config);
@@ -130,6 +144,7 @@
     if (!validSlug(slug) || !config || typeof config !== 'object') return false;
     const safeSlug = normalizeLocalDraft(slug, config);
     if (!validSlug(safeSlug)) return false;
+    if (!validateConfig(config, safeSlug).ok) return false;
     try {
       localStorage.setItem(draftKey(safeSlug), JSON.stringify(config));
       return true;

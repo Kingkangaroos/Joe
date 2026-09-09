@@ -80,7 +80,8 @@ Current behavior:
 - one coded master;
 - customer identity/copy/contact/services/theme come from config;
 - local preview uses `?wvlocal=1`;
-- missing/broken config keeps safe hardcoded fallback;
+- every repo or local-draft config passes one shared fail-closed contract before any field is applied;
+- missing, partial or broken config is rejected as a whole and keeps the safe hardcoded fallback;
 - client config never auto-approves generated Selected Assets;
 - `plumbing-qa-blue` is only a technical QA fixture, not a brand/product direction.
 
@@ -117,7 +118,9 @@ Important fix:
 - Intake-created client drafts now open automatically;
 - AUREL no longer silently overwrites the customer draft;
 - AUREL is only an explicit baseline;
-- customer config stays local until deliberately copied/committed.
+- customer config stays local until deliberately copied/committed;
+- Intake cannot hand off a missing/unsafe CTA or incomplete service;
+- Factory can save, preview or copy only a config that passes `website-ventures-client-contract.js`.
 
 ### 4. Fulfilment Run
 - `website-ventures-fulfilment-run.html`
@@ -352,6 +355,6 @@ The Batch 5 backend is now variant-safe:
 - Review can copy one compact Batch 5 handoff back to ChatGPT;
 - ChatGPT has one controlled promotion command that validates the PNG, ratio, provenance, overwrite intent and desktop-before-mobile dependency before updating final files and registries.
 
-The full browserless regression suite is green again (92/92). Stale tests and documentation from the rolled-back Gamenfy Public experiment and the retired broad v2 Higgsfield plan were aligned with current production truth; no Public rollout or generation was re-enabled.
+The full browserless regression suite is green again (93/93). The Plumbing config path now fails closed before partial client data can leak over the safe master fallback. Stale tests and documentation from the rolled-back Gamenfy Public experiment and the retired broad v2 Higgsfield plan were aligned with current production truth; no Public rollout or generation was re-enabled.
 
 Until the selected Agency hero exists, do not bury the project under more random tooling or generated support art. New autonomous work should primarily remove actual blockers, tighten measurement, or prepare evidence — not invent extra scope.

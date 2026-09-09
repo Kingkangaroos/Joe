@@ -2,7 +2,7 @@
   "project": "Website Ventures · ChatGPT Venture Lab",
   "owner": "Joey",
   "managedBy": "ChatGPT (OpenAI)",
-  "updatedAt": "2026-09-07",
+  "updatedAt": "2026-09-09",
   "purpose": "Isolated experimental layer for testing business hypotheses without silently changing accepted Website Ventures decisions, assets or customer data.",
   "sourceHierarchy": {
     "confirmedDecisions": "WEBSITE-VENTURES-HQ-STATE.json",
@@ -101,12 +101,13 @@
     "Built Premium Plumbing production pack with asset order and paid-credit discipline.",
     "Prepared research-only Flevoland prospect wave; no outreach sent.",
     "Built isolated ChatGPT Venture Lab with offer stress test, niche matrix, unit economics simulator and evidence gates.",
-    "Added Website Lab entry points while preserving all accepted prior website tests."
+    "Added Website Lab entry points while preserving all accepted prior website tests.",
+    "Built the Visual Vault and variant-safe Selected Assets flow for reusable winners, real proof frames, CTA patterns, prompt metadata and rejected alternatives.",
+    "Added one shared fail-closed client config contract across Intake, Client Factory and the live Plumbing runtime."
   ],
   "todo": [
     {"priority": "P0", "task": "Use real sales conversations to test pain, wording and price instead of further theorizing the offer.", "blockedByUser": true, "reason": "External outreach requires Joey's explicit instruction."},
     {"priority": "P0", "task": "Move Premium Plumbing from story shell toward a knockout sellable demo using the production pack.", "blockedByUser": false},
-    {"priority": "P0", "task": "Create the Visual Vault structure for reusable winners, proof frames, CTA patterns, prompt/model metadata and rejected alternatives.", "blockedByUser": false},
     {"priority": "P1", "task": "After real evidence, promote or reject founding price ladder in HQ state.", "blockedByUser": false},
     {"priority": "P1", "task": "Only after plumbing proof, build Luxury Renovation as second flagship and compare sales response.", "blockedByUser": false},
     {"priority": "P2", "task": "Define student-builder handoff and QA only after first customer delivery is repeatable.", "blockedByUser": false}

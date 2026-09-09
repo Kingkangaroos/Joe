@@ -1,7 +1,7 @@
 {
   "name": "Website Ventures Client Config Contract",
-  "version": 1,
-  "updatedAt": "2026-09-08",
+  "version": 2,
+  "updatedAt": "2026-09-09",
   "managedBy": "ChatGPT (OpenAI)",
   "purpose": "Keep client identity, copy, theme and service content outside reusable customer template markup so fulfilment becomes configuration + real assets + QA rather than rebuilding from zero.",
   "filePattern": "website-ventures-client-configs/<safe-slug>.json",
@@ -39,7 +39,8 @@
     "data-wv-bind replaces textContent only; config text is not inserted as raw HTML.",
     "data-wv-href accepts only # anchors, tel:, mailto:, http:// or https://.",
     "Theme variables are allowlisted; arbitrary CSS variable names are not accepted.",
-    "Missing/broken config retains the hardcoded template fallback.",
+    "Every repo or local-draft config must pass website-ventures-client-contract.js before any field is applied.",
+    "Missing, partial or invalid config is rejected as a whole and retains the hardcoded template fallback.",
     "Real client proof, reviews, certifications and project images remain outside generated demo claims and must be sourced from the client."
   ],
   "fulfilmentIntent": [

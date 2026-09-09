@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-08",
+  "updatedAt": "2026-09-09",
   "managedBy": "ChatGPT (OpenAI)",
   "meaning": {
     "ready": "Built or deliberately decided; no Joey decision required for the stated scope.",
@@ -31,8 +31,8 @@
       "area": "Product",
       "label": "Reusable Plumbing master/template",
       "status": "ready",
-      "evidence": "site-plumbing-flagship-v1.html + Client Factory v2",
-      "note": "Customer variation is config-driven; broken configs fail safely to the master."
+      "evidence": "site-plumbing-flagship-v1.html + Client Factory v2 + website-ventures-client-contract.js",
+      "note": "Customer variation is config-driven; Intake, Factory and runtime share one fail-closed config contract so partial or unsafe configs retain the complete master fallback."
     },
     {
       "id": "plumbing-technician",

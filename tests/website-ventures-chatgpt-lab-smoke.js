@@ -30,6 +30,8 @@ assert.equal(labState.currentWorkingModel.foundingPrice.setupExVat,995,'Lab stat
 assert.equal(labState.currentWorkingModel.foundingPrice.monthlyExVat,49,'Lab state keeps the active monthly hypothesis');
 assert.equal(labState.currentWorkingModel.leadingWedgeStatus,'hypothesis, not permanent lock','Niche cannot silently become permanent');
 assert.ok(labState.guardrails.some(x=>x.includes('No prospect calls')),'Durable lab state must keep no-outreach guardrail');
+assert.ok(labState.completedAutonomousWork.some(x=>x.includes('Built the Visual Vault')),'Completed Visual Vault must not remain a phantom P0 todo');
+assert.ok(!labState.todo.some(x=>x.task.includes('Create the Visual Vault structure')),'Completed Visual Vault must be removed from active todo');
 
 assert.ok(vaultPage.includes('Visual Vault')&&vaultPage.includes('10/12'),'Visual Vault workbench and motion gate must stay visible');
 assert.equal(vault.ratingRubric.maxScore,12,'Vault rubric stays twelve-point');

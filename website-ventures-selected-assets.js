@@ -142,7 +142,8 @@
     const requested = new URLSearchParams(location.search).get('wvclient');
     if (!requested && !document.body.dataset.wvClient) document.body.dataset.wvClient = 'plumbing-demo';
 
-    loadScriptOnce('website-ventures-client-config.js')
+    loadScriptOnce('website-ventures-client-contract.js')
+      .then(function () { return loadScriptOnce('website-ventures-client-config.js'); })
       .then(function () { return loadScriptOnce('website-ventures-plumbing-template.js'); })
       .catch(function (err) {
         console.warn('[Website Ventures] client template bootstrap unavailable; hardcoded Plumbing fallback retained.', err);
