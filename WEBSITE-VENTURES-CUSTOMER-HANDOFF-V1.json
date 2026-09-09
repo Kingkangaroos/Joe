@@ -1,10 +1,23 @@
 {
   "name": "Website Ventures Customer Handoff Pack",
-  "version": 1,
-  "updatedAt": "2026-09-08",
+  "version": 2,
+  "updatedAt": "2026-09-09",
   "managedBy": "ChatGPT (OpenAI)",
   "status": "internal-operational-template",
   "purpose": "Make client handoff explicit after launch so domain ownership, support expectations, revision state and future changes are not left ambiguous.",
+  "copyGate": {
+    "contract": "website-ventures-handoff-contract.js",
+    "required": [
+      "current matching Intake, scope and Factory-config evidence",
+      "all 12 Delivery Gate checks, including the manual handoff check",
+      "HTTPS live URL",
+      "explicit domain/account owner",
+      "explicit hosting responsibility",
+      "explicit support/maintenance arrangement",
+      "non-negative whole revision count"
+    ],
+    "behavior": "A concept preview remains available for preparation. Customer copy is disabled and fails closed until every requirement passes; stale saved Delivery Gate state cannot override invalid current evidence."
+  },
   "requiredHandoffTopics": [
     "live website/domain",
     "domain ownership / account location",
@@ -24,6 +37,8 @@
     "Do not imply ongoing maintenance if it was not sold.",
     "Do not promise future edits for free merely because the original site was delivered.",
     "Client remains responsible for the truth of supplied business facts, reviews, certifications, guarantees and project evidence.",
+    "All customer-supplied Intake and handoff values are escaped before rendering into the HTML preview.",
+    "Copying the customer text requires the current Delivery Gate and evidence contracts; a concept preview is not a release decision.",
     "This operational handoff is not a substitute for legal terms or an invoice."
   ]
 }
