@@ -105,7 +105,8 @@
     "Built the Visual Vault and variant-safe Selected Assets flow for reusable winners, real proof frames, CTA patterns, prompt metadata and rejected alternatives.",
     "Added one shared fail-closed client config contract across Intake, Client Factory and the live Plumbing runtime.",
     "Closed the Delivery Gate checkbox bypass with a deterministic Intake, scope and Factory-config evidence preflight while keeping real QA human.",
-    "Bound Customer Handoff copy to current evidence, all 12 Delivery Gate checks and explicit release details; escaped customer values in the preview."
+    "Bound Customer Handoff copy to current evidence, all 12 Delivery Gate checks and explicit release details; escaped customer values in the preview.",
+    "Protected first-10 fulfilment metrics: real Intake required to measure, page-open no longer starts elapsed time, and launched requires 9/9 phases plus 12/12 Delivery Gate and current evidence."
   ],
   "todo": [
     {"priority": "P0", "task": "Use real sales conversations to test pain, wording and price instead of further theorizing the offer.", "blockedByUser": true, "reason": "External outreach requires Joey's explicit instruction."},
