@@ -1,6 +1,253 @@
 <!DOCTYPE html>
 <html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f4f3ef"><title>Delivery Gate — Website Ventures</title><style>
-:root{--bg:#f4f3ef;--ink:#15140f;--muted:#706c63;--line:#ded9cf;--card:#fff;--red:#a71927;--green:#287a52;--amber:#9a7418}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}body{padding:16px 14px 80px}.wrap{max-width:1080px;margin:auto}.top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.top a{text-decoration:none;color:var(--ink);border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 11px;font-size:10px;font-weight:900}.kick{margin-top:24px;font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.14em;color:var(--red)}h1{font-size:clamp(44px,8vw,82px);line-height:.88;letter-spacing:-.065em;margin:8px 0 12px}.lead{max-width:800px;color:var(--muted);font-size:12px;line-height:1.6}.bar{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:18px 0}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px}.stat small{display:block;color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:.08em}.stat strong{display:block;font-size:18px;margin-top:4px}.layout{display:grid;grid-template-columns:1fr .9fr;gap:10px;align-items:start}.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:15px}.panel h2{font-size:20px;letter-spacing:-.04em;margin:0 0 4px}.panel>p{margin:0 0 12px;color:var(--muted);font-size:10px;line-height:1.5}.checks{display:grid;gap:7px}.check{display:flex;gap:9px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fbfaf7}.check input{margin-top:2px}.check b{display:block;font-size:10px}.check span{display:block;color:var(--muted);font-size:8px;margin-top:3px}.qa{padding:11px;border-radius:12px;background:#f6f3ed;color:var(--muted);font-size:9px;line-height:1.55}.qa.good{background:#edf7f1;color:#286746}.qa.bad{background:#fff1f2;color:#7e333b}.cr{border:1px solid var(--line);border-radius:13px;padding:11px;margin-bottom:8px;background:#fbfaf7}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.field{display:grid;gap:4px}.field.full{grid-column:1/-1}.field label{font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:9px 10px;font:11px/1.4 inherit;color:var(--ink)}textarea{min-height:70px;resize:vertical}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 11px;font-size:10px;font-weight:900}.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}.btn.red{color:var(--red)}.warn{margin-top:10px;background:#fff7e8;border:1px solid #ead3ad;color:#73591d;padding:11px;border-radius:12px;font-size:9px;line-height:1.5}.summary{display:grid;gap:8px;margin-bottom:12px}.sum{border:1px solid var(--line);border-radius:12px;padding:10px}.sum small{display:block;color:var(--muted);font-size:8px;text-transform:uppercase}.sum strong{display:block;font-size:12px;margin-top:4px}.pill{display:inline-flex;padding:5px 7px;border-radius:999px;background:#f0ede7;color:var(--muted);font-size:8px;font-weight:900;margin-right:5px}.pill.green{background:#edf7f1;color:var(--green)}.pill.red{background:#fff1f2;color:#7e333b}@media(max-width:820px){.layout{grid-template-columns:1fr}.bar{grid-template-columns:1fr 1fr}}@media(max-width:520px){.grid{grid-template-columns:1fr}.panel{padding:12px}}
-</style></head><body data-gamenfy-scope="personal"><main class="wrap"><div class="top"><a href="website-ventures-ops.html">← Operator Hub</a><div><a href="website-ventures-client-intake.html">Intake</a> <a href="website-ventures-fulfilment-run.html">Fulfilment Run</a></div></div><div class="kick">Website Ventures · delivery control</div><h1>Nothing ships by accident.</h1><p class="lead">Laatste operationele gate vóór een betaalde klantsite live gaat, plus een change-request log voor alles wat buiten de afgesproken scope komt. Lokaal opgeslagen; geen klantdata wordt door deze pagina automatisch gepubliceerd.</p><div class="bar"><div class="stat"><small>Client</small><strong id="client">—</strong></div><div class="stat"><small>Launch</small><strong id="launch">0/12</strong></div><div class="stat"><small>Open changes</small><strong id="open">0</strong></div><div class="stat"><small>Extra minutes</small><strong id="mins">0</strong></div></div><div class="layout"><section class="panel"><h2>Launch checklist</h2><p>Alle verplichte checks moeten groen zijn. Een vinkje is operationeel bewijs, geen vervanging voor echte QA.</p><div class="checks" id="checks"></div><div class="qa" id="qa">Checklist laden…</div><div class="actions"><button class="btn primary" id="saveChecks" type="button">Save launch state</button><button class="btn" id="resetChecks" type="button">Reset checks</button></div><div class="warn"><b>Hosting boundary:</b> betaalde klanten horen niet op het huidige Vercel Hobby-project te eindigen. De commerciële hostingroute moet vóór launch bewust gekozen zijn.</div></section><aside class="panel"><h2>Change requests</h2><p>Een verzoek buiten scope wordt eerst zichtbaar. Pas daarna beslis je: inbegrepen, goodwill, extra betaald, afgewezen of uitgevoerd.</p><div class="summary"><div class="sum"><small>Current client</small><strong id="sClient">Nog geen intake geladen</strong></div><div class="sum"><small>Recorded scope</small><strong id="sScope">—</strong></div></div><div id="changes"></div><button class="btn" id="addChange" type="button">+ Change request</button><div class="actions"><button class="btn primary" id="saveChanges" type="button">Save changes</button><button class="btn" id="copyLog" type="button">Copy log JSON</button></div><textarea id="json" style="display:none;width:100%;min-height:230px;margin-top:10px;font:10px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace"></textarea></aside></div></main><script>
-(function(){'use strict';const $=id=>document.getElementById(id),INTAKE_PREFIX='wv_client_intake_v1_',CHECK_PREFIX='wv_delivery_checks_v1_',CHANGE_PREFIX='wv_change_requests_v1_';const CHECKS=[['intake-approved','Intake complete enough to build'],['scope-visible','Scope + revisies recorded'],['factory-config','Approved client config exists'],['real-proof','Displayed proof is real-source-backed'],['contact-tested','Primary CTA/contact tested'],['desktop-qa','Desktop QA passed'],['mobile-qa','~390px mobile QA passed'],['selected-assets','Selected assets/fallbacks verified'],['domain-owner','Domain ownership explicit'],['hosting-commercial','Commercially appropriate hosting chosen'],['dns-ssl','Domain/DNS/HTTPS healthy'],['handoff','Customer handoff/support info ready']];let clientSlug='',intake=null,changeN=0;function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}function loadIntake(){try{clientSlug=localStorage.getItem(INTAKE_PREFIX+'last')||'';if(clientSlug){const raw=localStorage.getItem(INTAKE_PREFIX+clientSlug);if(raw)intake=JSON.parse(raw)}}catch(e){}$('client').textContent=intake?.client?.businessName||clientSlug||'—';$('sClient').textContent=intake?.client?.businessName||'Nog geen intake geladen';$('sScope').textContent=intake?((intake.scope?.template||'—')+' · '+(intake.scope?.revisionRounds??'—')+' revisieronde(n)'):'—'}function renderChecks(){let saved={};try{saved=JSON.parse(localStorage.getItem(CHECK_PREFIX+clientSlug)||'{}')||{}}catch(e){}$('checks').innerHTML=CHECKS.map(([id,label])=>'<label class="check"><input type="checkbox" data-check="'+id+'" '+(saved[id]?'checked':'')+'><span><b>'+esc(label)+'</b><span>'+id+'</span></span></label>').join('');refreshChecks()}function refreshChecks(){const xs=[...document.querySelectorAll('[data-check]')],done=xs.filter(x=>x.checked).length;$('launch').textContent=done+'/'+CHECKS.length;$('qa').className='qa '+(done===CHECKS.length?'good':'bad');$('qa').textContent=done===CHECKS.length?'Launch gate complete. Doe nog steeds een laatste echte device/domain check vóór publicatie.':(CHECKS.length-done)+' verplichte launch-check(s) open.'}function saveChecks(){const s={};document.querySelectorAll('[data-check]').forEach(x=>s[x.dataset.check]=x.checked);try{localStorage.setItem(CHECK_PREFIX+clientSlug,JSON.stringify(s));refreshChecks()}catch(e){}}function changeRow(d){d=d||{};changeN++;const r=document.createElement('div');r.className='cr';r.innerHTML='<div class="grid"><div class="field full"><label>Verzoek</label><textarea data-c="request"></textarea></div><div class="field"><label>Status</label><select data-c="status"><option>requested</option><option>approved</option><option>declined</option><option>included-as-goodwill</option><option>completed</option></select></div><div class="field"><label>Geschatte extra minuten</label><input data-c="minutes" type="number" min="0" value="0"></div><div class="field"><label>Prijsimpact</label><input data-c="price" placeholder="€0 / €50 / tbd"></div><div class="field"><label>Besluit / reden</label><input data-c="decision"></div></div><div class="actions"><button class="btn red" type="button">Verwijder</button></div>';r.querySelector('[data-c=request]').value=d.request||'';r.querySelector('[data-c=status]').value=d.status||'requested';r.querySelector('[data-c=minutes]').value=d.minutes||0;r.querySelector('[data-c=price]').value=d.priceImpact||'';r.querySelector('[data-c=decision]').value=d.decision||'';r.querySelector('button').onclick=()=>{r.remove();refreshChanges()};r.addEventListener('input',refreshChanges);r.addEventListener('change',refreshChanges);$('changes').appendChild(r);refreshChanges()}function changeData(){return[...document.querySelectorAll('.cr')].map(r=>({request:r.querySelector('[data-c=request]').value.trim(),status:r.querySelector('[data-c=status]').value,minutes:Number(r.querySelector('[data-c=minutes]').value||0),priceImpact:r.querySelector('[data-c=price]').value.trim(),decision:r.querySelector('[data-c=decision]').value.trim()})).filter(x=>x.request||x.minutes||x.priceImpact||x.decision)}function refreshChanges(){const d=changeData(),open=d.filter(x=>!['declined','completed'].includes(x.status)).length,mins=d.reduce((a,x)=>a+(Number(x.minutes)||0),0);$('open').textContent=open;$('mins').textContent=mins}function saveChanges(){const p={schemaVersion:1,clientSlug,clientName:intake?.client?.businessName||'',updatedAt:new Date().toISOString(),items:changeData()};try{localStorage.setItem(CHANGE_PREFIX+clientSlug,JSON.stringify(p));refreshChanges()}catch(e){}return p}function loadChanges(){let p=null;try{p=JSON.parse(localStorage.getItem(CHANGE_PREFIX+clientSlug)||'null')}catch(e){}$('changes').innerHTML='';changeN=0;(p?.items||[]).forEach(changeRow);if(!(p?.items||[]).length)changeRow()}loadIntake();renderChecks();loadChanges();document.addEventListener('change',e=>{if(e.target.matches('[data-check]'))refreshChecks()});$('saveChecks').onclick=saveChecks;$('resetChecks').onclick=()=>{document.querySelectorAll('[data-check]').forEach(x=>x.checked=false);saveChecks()};$('addChange').onclick=()=>changeRow();$('saveChanges').onclick=saveChanges;$('copyLog').onclick=async()=>{const t=JSON.stringify(saveChanges(),null,2);$('json').value=t;$('json').style.display='block';try{await navigator.clipboard.writeText(t)}catch(e){}};})();
+:root{--bg:#f4f3ef;--ink:#15140f;--muted:#706c63;--line:#ded9cf;--card:#fff;--red:#a71927;--green:#287a52;--amber:#9a7418}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}body{padding:16px 14px 80px}.wrap{max-width:1080px;margin:auto}.top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.top a{text-decoration:none;color:var(--ink);border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 11px;font-size:10px;font-weight:900}.kick{margin-top:24px;font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.14em;color:var(--red)}h1{font-size:clamp(44px,8vw,82px);line-height:.88;letter-spacing:-.065em;margin:8px 0 12px}.lead{max-width:800px;color:var(--muted);font-size:12px;line-height:1.6}.bar{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:18px 0}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px}.stat small{display:block;color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:.08em}.stat strong{display:block;font-size:18px;margin-top:4px}.layout{display:grid;grid-template-columns:1fr .9fr;gap:10px;align-items:start}.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:15px}.panel h2{font-size:20px;letter-spacing:-.04em;margin:0 0 4px}.panel>p{margin:0 0 12px;color:var(--muted);font-size:10px;line-height:1.5}.checks{display:grid;gap:7px}.check{display:flex;gap:9px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fbfaf7}.check.locked{opacity:.62;background:#f1efea}.check input{margin-top:2px}.check b{display:block;font-size:10px}.check span{display:block;color:var(--muted);font-size:8px;margin-top:3px}.qa{padding:11px;border-radius:12px;background:#f6f3ed;color:var(--muted);font-size:9px;line-height:1.55}.qa+.checks,.checks+.qa{margin-top:8px}.qa.good{background:#edf7f1;color:#286746}.qa.bad{background:#fff1f2;color:#7e333b}.cr{border:1px solid var(--line);border-radius:13px;padding:11px;margin-bottom:8px;background:#fbfaf7}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.field{display:grid;gap:4px}.field.full{grid-column:1/-1}.field label{font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:9px 10px;font:11px/1.4 inherit;color:var(--ink)}textarea{min-height:70px;resize:vertical}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 11px;font-size:10px;font-weight:900}.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}.btn.red{color:var(--red)}.warn{margin-top:10px;background:#fff7e8;border:1px solid #ead3ad;color:#73591d;padding:11px;border-radius:12px;font-size:9px;line-height:1.5}.summary{display:grid;gap:8px;margin-bottom:12px}.sum{border:1px solid var(--line);border-radius:12px;padding:10px}.sum small{display:block;color:var(--muted);font-size:8px;text-transform:uppercase}.sum strong{display:block;font-size:12px;margin-top:4px}.pill{display:inline-flex;padding:5px 7px;border-radius:999px;background:#f0ede7;color:var(--muted);font-size:8px;font-weight:900;margin-right:5px}.pill.green{background:#edf7f1;color:var(--green)}.pill.red{background:#fff1f2;color:#7e333b}@media(max-width:820px){.layout{grid-template-columns:1fr}.bar{grid-template-columns:1fr 1fr}}@media(max-width:520px){.grid{grid-template-columns:1fr}.panel{padding:12px}}
+</style></head><body data-gamenfy-scope="personal"><main class="wrap"><div class="top"><a href="website-ventures-ops.html">← Operator Hub</a><div><a href="website-ventures-client-intake.html">Intake</a> <a href="website-ventures-fulfilment-run.html">Fulfilment Run</a></div></div><div class="kick">Website Ventures · delivery control</div><h1>Nothing ships by accident.</h1><p class="lead">Laatste operationele gate vóór een betaalde klantsite live gaat, plus een change-request log voor alles wat buiten de afgesproken scope komt. Lokaal opgeslagen; geen klantdata wordt door deze pagina automatisch gepubliceerd.</p><div class="bar"><div class="stat"><small>Client</small><strong id="client">—</strong></div><div class="stat"><small>Launch</small><strong id="launch">0/12</strong></div><div class="stat"><small>Open changes</small><strong id="open">0</strong></div><div class="stat"><small>Extra minutes</small><strong id="mins">0</strong></div></div><div class="layout"><section class="panel"><h2>Launch checklist</h2><p>Alle verplichte checks moeten groen zijn. Een vinkje is operationeel bewijs, geen vervanging voor echte QA.</p><div class="qa" id="evidence">Evidence preflight laden…</div><div class="checks" id="checks"></div><div class="qa" id="qa">Checklist laden…</div><div class="actions"><button class="btn primary" id="saveChecks" type="button">Save launch state</button><button class="btn" id="resetChecks" type="button">Reset checks</button></div><div class="warn"><b>Hosting boundary:</b> betaalde klanten horen niet op het huidige Vercel Hobby-project te eindigen. De commerciële hostingroute moet vóór launch bewust gekozen zijn.</div></section><aside class="panel"><h2>Change requests</h2><p>Een verzoek buiten scope wordt eerst zichtbaar. Pas daarna beslis je: inbegrepen, goodwill, extra betaald, afgewezen of uitgevoerd.</p><div class="summary"><div class="sum"><small>Current client</small><strong id="sClient">Nog geen intake geladen</strong></div><div class="sum"><small>Recorded scope</small><strong id="sScope">—</strong></div></div><div id="changes"></div><button class="btn" id="addChange" type="button">+ Change request</button><div class="actions"><button class="btn primary" id="saveChanges" type="button">Save changes</button><button class="btn" id="copyLog" type="button">Copy log JSON</button></div><textarea id="json" style="display:none;width:100%;min-height:230px;margin-top:10px;font:10px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace"></textarea></aside></div></main><script src="website-ventures-client-contract.js?v=1"></script><script src="website-ventures-delivery-evidence.js?v=1"></script><script>
+(function () {
+  'use strict';
+
+  const $ = id => document.getElementById(id);
+  const INTAKE_PREFIX = 'wv_client_intake_v1_';
+  const CONFIG_PREFIX = 'wv_client_config_draft_v1_';
+  const CHECK_PREFIX = 'wv_delivery_checks_v1_';
+  const CHANGE_PREFIX = 'wv_change_requests_v1_';
+  const CHECKS = [
+    ['intake-approved', 'Intake complete enough to build'],
+    ['scope-visible', 'Scope + revisies recorded'],
+    ['factory-config', 'Approved client config exists'],
+    ['real-proof', 'Displayed proof is real-source-backed'],
+    ['contact-tested', 'Primary CTA/contact tested'],
+    ['desktop-qa', 'Desktop QA passed'],
+    ['mobile-qa', '~390px mobile QA passed'],
+    ['selected-assets', 'Selected assets/fallbacks verified'],
+    ['domain-owner', 'Domain ownership explicit'],
+    ['hosting-commercial', 'Commercially appropriate hosting chosen'],
+    ['dns-ssl', 'Domain/DNS/HTTPS healthy'],
+    ['handoff', 'Customer handoff/support info ready']
+  ];
+  const FOUNDATIONS = {
+    'intake-approved': 'intake',
+    'scope-visible': 'scope',
+    'factory-config': 'config'
+  };
+  const EVIDENCE_LABELS = {
+    intake: 'Intake',
+    scope: 'Scope',
+    config: 'Factory-config'
+  };
+
+  let clientSlug = '';
+  let intake = null;
+  let evidence = {
+    intake: { ok: false, errors: ['Evidence nog niet geladen.'] },
+    scope: { ok: false, errors: ['Evidence nog niet geladen.'] },
+    config: { ok: false, errors: ['Evidence nog niet geladen.'] }
+  };
+  let changeN = 0;
+
+  function esc (value) {
+    return String(value || '').replace(/[&<>"']/g, match => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[match]);
+  }
+
+  function loadIntake () {
+    intake = null;
+    clientSlug = '';
+    try {
+      clientSlug = localStorage.getItem(INTAKE_PREFIX + 'last') || '';
+      if (clientSlug) {
+        const raw = localStorage.getItem(INTAKE_PREFIX + clientSlug);
+        if (raw) intake = JSON.parse(raw);
+      }
+    } catch (error) {}
+    $('client').textContent = intake?.client?.businessName || clientSlug || '—';
+    $('sClient').textContent = intake?.client?.businessName || 'Nog geen intake geladen';
+    $('sScope').textContent = intake
+      ? (intake.scope?.template || '—') + ' · ' + (intake.scope?.revisionRounds ?? '—') + ' revisieronde(n)'
+      : '—';
+  }
+
+  function loadEvidence () {
+    let config = null;
+    if (clientSlug) {
+      try {
+        const raw = localStorage.getItem(CONFIG_PREFIX + clientSlug);
+        if (raw) config = JSON.parse(raw);
+      } catch (error) {}
+    }
+    evidence = window.WVDeliveryEvidence?.assess(intake, config, clientSlug) || {
+      intake: { ok: false, errors: ['Evidencecontract is niet geladen.'] },
+      scope: { ok: false, errors: ['Evidencecontract is niet geladen.'] },
+      config: { ok: false, errors: ['Evidencecontract is niet geladen.'] }
+    };
+    renderEvidence();
+  }
+
+  function renderEvidence () {
+    const keys = Object.keys(EVIDENCE_LABELS);
+    const ready = keys.filter(key => evidence[key]?.ok).length;
+    $('evidence').className = 'qa ' + (ready === keys.length ? 'good' : 'bad');
+    $('evidence').innerHTML =
+      '<b>Automatische evidence preflight · ' + ready + '/' + keys.length + ' geldig</b><br>' +
+      keys.map(key => {
+        const result = evidence[key];
+        return (result?.ok ? '✓ ' : 'Geblokkeerd · ') + esc(EVIDENCE_LABELS[key]) +
+          (result?.ok ? '' : ': ' + esc(result?.errors?.[0] || 'onbekende fout'));
+      }).join('<br>');
+  }
+
+  function renderChecks () {
+    let saved = {};
+    try {
+      saved = JSON.parse(localStorage.getItem(CHECK_PREFIX + clientSlug) || '{}') || {};
+    } catch (error) {}
+    $('checks').innerHTML = CHECKS.map(([id, label]) => {
+      const evidenceKey = FOUNDATIONS[id];
+      const proof = evidenceKey ? evidence[evidenceKey] : null;
+      const locked = !!proof && !proof.ok;
+      const checked = !!saved[id] && !locked;
+      const detail = proof
+        ? (proof.ok ? id + ' · evidence geldig' : id + ' · geblokkeerd: ' + (proof.errors?.[0] || 'evidence ontbreekt'))
+        : id + ' · menselijke controle';
+      return '<label class="check' + (locked ? ' locked' : '') + '">' +
+        '<input type="checkbox" data-check="' + id + '" data-evidence="' + (evidenceKey || 'manual') + '"' +
+        (checked ? ' checked' : '') + (locked ? ' disabled aria-disabled="true"' : '') + '>' +
+        '<span><b>' + esc(label) + '</b><span>' + esc(detail) + '</span></span></label>';
+    }).join('');
+    refreshChecks();
+  }
+
+  function refreshChecks () {
+    const inputs = [...document.querySelectorAll('[data-check]')];
+    inputs.forEach(input => {
+      const evidenceKey = FOUNDATIONS[input.dataset.check];
+      if (evidenceKey && !evidence[evidenceKey]?.ok) input.checked = false;
+    });
+    const done = inputs.filter(input => input.checked).length;
+    const blocked = Object.values(FOUNDATIONS).filter(key => !evidence[key]?.ok).length;
+    const complete = done === CHECKS.length && blocked === 0;
+    $('launch').textContent = done + '/' + CHECKS.length;
+    $('qa').className = 'qa ' + (complete ? 'good' : 'bad');
+    $('qa').textContent = complete
+      ? 'Launch gate complete. Doe nog steeds een laatste echte device/domain check vóór publicatie.'
+      : blocked
+        ? 'Launch geblokkeerd: ' + blocked + ' automatische evidence-check(s) ontbreken; ' + (CHECKS.length - done) + ' launch-check(s) open.'
+        : (CHECKS.length - done) + ' verplichte menselijke launch-check(s) open.';
+  }
+
+  function saveChecks () {
+    if (!clientSlug || !intake) {
+      $('qa').className = 'qa bad';
+      $('qa').textContent = 'Launch state niet opgeslagen: laad eerst een geldige Client Intake.';
+      return null;
+    }
+    const saved = {};
+    document.querySelectorAll('[data-check]').forEach(input => {
+      const evidenceKey = FOUNDATIONS[input.dataset.check];
+      saved[input.dataset.check] = evidenceKey && !evidence[evidenceKey]?.ok ? false : input.checked;
+    });
+    try {
+      localStorage.setItem(CHECK_PREFIX + clientSlug, JSON.stringify(saved));
+      refreshChecks();
+      return saved;
+    } catch (error) {
+      $('qa').className = 'qa bad';
+      $('qa').textContent = 'Launch state kon niet lokaal worden opgeslagen.';
+      return null;
+    }
+  }
+
+  function changeRow (data) {
+    data = data || {};
+    changeN++;
+    const row = document.createElement('div');
+    row.className = 'cr';
+    row.innerHTML = '<div class="grid"><div class="field full"><label>Verzoek</label><textarea data-c="request"></textarea></div><div class="field"><label>Status</label><select data-c="status"><option>requested</option><option>approved</option><option>declined</option><option>included-as-goodwill</option><option>completed</option></select></div><div class="field"><label>Geschatte extra minuten</label><input data-c="minutes" type="number" min="0" value="0"></div><div class="field"><label>Prijsimpact</label><input data-c="price" placeholder="€0 / €50 / tbd"></div><div class="field"><label>Besluit / reden</label><input data-c="decision"></div></div><div class="actions"><button class="btn red" type="button">Verwijder</button></div>';
+    row.querySelector('[data-c=request]').value = data.request || '';
+    row.querySelector('[data-c=status]').value = data.status || 'requested';
+    row.querySelector('[data-c=minutes]').value = data.minutes || 0;
+    row.querySelector('[data-c=price]').value = data.priceImpact || '';
+    row.querySelector('[data-c=decision]').value = data.decision || '';
+    row.querySelector('button').onclick = () => {
+      row.remove();
+      refreshChanges();
+    };
+    row.addEventListener('input', refreshChanges);
+    row.addEventListener('change', refreshChanges);
+    $('changes').appendChild(row);
+    refreshChanges();
+  }
+
+  function changeData () {
+    return [...document.querySelectorAll('.cr')].map(row => ({
+      request: row.querySelector('[data-c=request]').value.trim(),
+      status: row.querySelector('[data-c=status]').value,
+      minutes: Number(row.querySelector('[data-c=minutes]').value || 0),
+      priceImpact: row.querySelector('[data-c=price]').value.trim(),
+      decision: row.querySelector('[data-c=decision]').value.trim()
+    })).filter(item => item.request || item.minutes || item.priceImpact || item.decision);
+  }
+
+  function refreshChanges () {
+    const data = changeData();
+    const open = data.filter(item => !['declined', 'completed'].includes(item.status)).length;
+    const minutes = data.reduce((total, item) => total + (Number(item.minutes) || 0), 0);
+    $('open').textContent = open;
+    $('mins').textContent = minutes;
+  }
+
+  function saveChanges () {
+    const payload = {
+      schemaVersion: 1,
+      clientSlug,
+      clientName: intake?.client?.businessName || '',
+      updatedAt: new Date().toISOString(),
+      items: changeData()
+    };
+    try {
+      localStorage.setItem(CHANGE_PREFIX + clientSlug, JSON.stringify(payload));
+      refreshChanges();
+    } catch (error) {}
+    return payload;
+  }
+
+  function loadChanges () {
+    let payload = null;
+    try {
+      payload = JSON.parse(localStorage.getItem(CHANGE_PREFIX + clientSlug) || 'null');
+    } catch (error) {}
+    $('changes').innerHTML = '';
+    changeN = 0;
+    (payload?.items || []).forEach(changeRow);
+    if (!(payload?.items || []).length) changeRow();
+  }
+
+  loadIntake();
+  loadEvidence();
+  renderChecks();
+  loadChanges();
+
+  document.addEventListener('change', event => {
+    if (event.target.matches('[data-check]')) refreshChecks();
+  });
+  $('saveChecks').onclick = saveChecks;
+  $('resetChecks').onclick = () => {
+    document.querySelectorAll('[data-check]').forEach(input => { input.checked = false; });
+    saveChecks();
+  };
+  $('addChange').onclick = () => changeRow();
+  $('saveChanges').onclick = saveChanges;
+  $('copyLog').onclick = async () => {
+    const text = JSON.stringify(saveChanges(), null, 2);
+    $('json').value = text;
+    $('json').style.display = 'block';
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {}
+  };
+})();
 </script></body></html>

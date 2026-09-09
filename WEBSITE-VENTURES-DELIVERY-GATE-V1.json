@@ -1,10 +1,31 @@
 {
   "name": "Website Ventures Delivery Gate",
-  "version": 1,
-  "updatedAt": "2026-09-08",
+  "version": 2,
+  "updatedAt": "2026-09-09",
   "managedBy": "ChatGPT (OpenAI)",
   "status": "internal-operational-control",
   "purpose": "Prevent incomplete client launches and make scope changes visible before they consume untracked fulfilment time.",
+  "evidencePreflight": {
+    "contract": "website-ventures-delivery-evidence.js",
+    "rule": "Foundational launch checks cannot be selected or persisted as complete unless current local evidence passes. Invalid previously saved checks fail closed.",
+    "foundationalChecks": {
+      "intake-approved": "A matching complete Client Intake with safe CTA and fully described services exists.",
+      "scope-visible": "Template, revision allowance, included scope and excluded scope are explicit.",
+      "factory-config": "A matching Factory draft passes the shared client contract and aligns with Intake identity, service area, CTA and service titles."
+    },
+    "manualChecksRemainManual": [
+      "real-proof",
+      "contact-tested",
+      "desktop-qa",
+      "mobile-qa",
+      "selected-assets",
+      "domain-owner",
+      "hosting-commercial",
+      "dns-ssl",
+      "handoff"
+    ],
+    "boundary": "This is a deterministic local operational preflight, not tamper-proof server authorization and not a replacement for human QA."
+  },
   "launchChecks": [
     {"id":"intake-approved","label":"Client intake is complete enough to build","required":true},
     {"id":"scope-visible","label":"Included / excluded scope and revision allowance are recorded","required":true},
@@ -24,6 +45,8 @@
   "handoff": {
     "intake":"website-ventures-client-intake.html",
     "factory":"website-ventures-client-factory.html",
+    "clientContract":"website-ventures-client-contract.js",
+    "evidenceContract":"website-ventures-delivery-evidence.js",
     "fulfilmentRun":"website-ventures-fulfilment-run.html",
     "operator":"website-ventures-ops.html"
   }
