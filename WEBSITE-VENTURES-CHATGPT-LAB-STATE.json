@@ -2,8 +2,8 @@
   "project": "Website Ventures · ChatGPT Venture Lab",
   "owner": "Joey",
   "managedBy": "ChatGPT (OpenAI)",
-  "updatedAt": "2026-09-09",
-  "purpose": "Isolated experimental layer for testing business hypotheses without silently changing accepted Website Ventures decisions, assets or customer data.",
+  "updatedAt": "2026-09-10",
+  "purpose": "Isolated experimental layer for testing business hypotheses and interaction prototypes without silently changing accepted Website Ventures decisions, assets or customer data.",
   "sourceHierarchy": {
     "confirmedDecisions": "WEBSITE-VENTURES-HQ-STATE.json",
     "salesExecution": "ventures-sales.html + WEBSITE-VENTURES-SALES-PLAYBOOK.md",
@@ -18,6 +18,32 @@
     "Accepted Website Lab variants are never overwritten; new variants are additive.",
     "Do not scale to students, salespeople or provinces before the first delivery and sales loop is proven."
   ],
+  "activePrototype": {
+    "id": "AG-SCROLL-HERO-LAB-V1",
+    "file": "website-ventures-agency-scroll-hero-lab.html",
+    "status": "lab-testing",
+    "approvedByJoeyToBuild": "2026-09-10",
+    "visualReference": "Product A direction: thin glass/chrome tablet over large rough pale stone in a calm premium architectural environment with restrained oxblood red.",
+    "motionReference": "Higgsfield 3D Jutsu motion v7: friendly smooth diagonal lift, less zoom, tablet edges remain visible, soft peak, return to the same stone.",
+    "interactionContract": [
+      "Start with the tablet resting on the same large pale stone.",
+      "Scroll lifts the tablet diagonally and rotates it toward upright with smooth continuous interpolation.",
+      "At the peak the tablet fills most, but not all, of the viewport so its physical edges remain visible.",
+      "The tablet screen becomes real HTML and shows coded Website Ventures demos rather than generated fake website screenshots.",
+      "First live preview is Premium Plumbing; second prototype preview is the preserved Architectural Luxury scroll test.",
+      "Later scroll returns the same tablet to the same stone, reserving the end state for a future CTA."
+    ],
+    "deliberatelyDeferred": [
+      "final Product A material fidelity",
+      "liquid marble/water/chrome effects",
+      "final business name and typography lock",
+      "final agency copy",
+      "final mobile 3D motion",
+      "paid Seedance or image generation",
+      "live agency publication"
+    ],
+    "nextGate": "Joey scroll-tests the Lab prototype on desktop and gives motion/composition feedback before the prototype is integrated into the broader agency showroom."
+  },
   "currentWorkingModel": {
     "offer": "Premium website for local service/trade businesses without the owner having to manage a web agency project.",
     "leadingWedge": "Plumbing / installations / trades",
@@ -89,6 +115,8 @@
     "A reusable component/visual system so another builder can follow a standard without degrading quality."
   ],
   "productionOrder": [
+    "AG-SCROLL-HERO-LAB-V1 scroll-driven interaction architecture",
+    "AG-HERO visual/material fidelity only after motion architecture is accepted",
     "PL-CHAR-001 consistent master technician",
     "PL-HERO-001 approved premium hero still",
     "PL-STORY still sequence with same technician/world",
@@ -106,9 +134,12 @@
     "Added one shared fail-closed client config contract across Intake, Client Factory and the live Plumbing runtime.",
     "Closed the Delivery Gate checkbox bypass with a deterministic Intake, scope and Factory-config evidence preflight while keeping real QA human.",
     "Bound Customer Handoff copy to current evidence, all 12 Delivery Gate checks and explicit release details; escaped customer values in the preview.",
-    "Protected first-10 fulfilment metrics: real Intake required to measure, page-open no longer starts elapsed time, and launched requires 9/9 phases plus 12/12 Delivery Gate and current evidence."
+    "Protected first-10 fulfilment metrics: real Intake required to measure, page-open no longer starts elapsed time, and launched requires 9/9 phases plus 12/12 Delivery Gate and current evidence.",
+    "Built AG-SCROLL-HERO-LAB-V1 as a zero-generation-credit desktop interaction proof with same-stone lift/return and real HTML demo previews."
   ],
   "todo": [
+    {"priority": "P0", "task": "Joey tests AG-SCROLL-HERO-LAB-V1 motion/composition on desktop; refine lift, framing and return before visual polish.", "blockedByUser": true, "reason": "The next iteration should follow Joey's visual feedback instead of guessing polish."},
+    {"priority": "P0", "task": "After motion approval, bring stone/tablet/material language closer to Product A and integrate the accepted interaction into the broader agency showroom.", "blockedByUser": false},
     {"priority": "P0", "task": "Use real sales conversations to test pain, wording and price instead of further theorizing the offer.", "blockedByUser": true, "reason": "External outreach requires Joey's explicit instruction."},
     {"priority": "P0", "task": "Move Premium Plumbing from story shell toward a knockout sellable demo using the production pack.", "blockedByUser": false},
     {"priority": "P1", "task": "After real evidence, promote or reject founding price ladder in HQ state.", "blockedByUser": false},
@@ -116,6 +147,8 @@
     {"priority": "P2", "task": "Define student-builder handoff and QA only after first customer delivery is repeatable.", "blockedByUser": false}
   ],
   "ideaBank": [
+    "Agency hero loop: business identity above a physical tablet on stone -> scroll lifts tablet -> live niche websites inside screen -> later return to same stone around CTA.",
+    "After core motion approval, explore subtle liquid-marble/chrome/water behavior without turning the page into an AI gallery.",
     "Before/after prospect demo mode that swaps a weak current-site structure for the premium component system without pretending it is already the client's site.",
     "A reusable proof-frame system that makes ordinary real customer photos feel premium without altering what actually happened.",
     "A niche starter kit: services taxonomy, page map, CTA patterns and visual slots, while preserving client-specific proof and personality.",
