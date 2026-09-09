@@ -1,7 +1,7 @@
 {
   "name": "Website Ventures Production Line v3",
   "version": 3.2,
-  "updatedAt": "2026-09-08",
+  "updatedAt": "2026-09-09",
   "managedBy": "ChatGPT (OpenAI)",
   "sourceOfTruth": "INCOME-HANDOFF-2026-09-07.md + WEBSITE-VENTURES-HQ-STATE.json",
   "status": "active-manual-higgsfield-generation",
@@ -17,15 +17,18 @@
     "selectedAssetsLoader": "website-ventures-selected-assets.js",
     "assetRoot": "website-ventures-assets/",
     "requiredFlow": [
-      "Batch 5: agency desktop hero candidates -> choose one -> 4:5 mobile derivative",
-      "Batch 6: choose one recurring Plumbing technician",
-      "Batch 7: small same-technician scene set",
+      "Batch 5: Joey produces three core agency desktop hero directions",
+      "Batch 6: required Fire Challenger -> two Soul 2.0 jobs -> maximum four Unlimited outputs",
+      "Joint gate: review every Batch 5 + Batch 6 direction and choose exactly one desktop winner",
+      "Batch 7: 4:5 mobile derivative from the exact joint desktop winner",
+      "Batch 8: choose one recurring Plumbing technician",
+      "Batch 9: small same-technician scene set",
       "Promote only approved committed files through the Selected Assets registry; Review winner state alone never publishes",
       "Verify selected media in the real Agency/Plumbing pages on desktop and mobile",
-      "Batch 9: final 4K masters only after winners"
+      "Batch 11: final 4K masters only after winners; agency uses the exact joint desktop winner"
     ],
     "optionalFlow": [
-      "Batch 8 agency support visuals are skip-by-default and never block progress"
+      "Batch 10 agency support visuals are skip-by-default and never block progress"
     ]
   },
   "priorityOrder": [
@@ -47,7 +50,8 @@
     "Missing/pending/failed selected media must fail safely back to the coded placeholder rather than breaking the page.",
     "Joey's own agency website sets the visual/technical ceiling before customer templates are pushed further.",
     "Agency site demonstrates craft primarily through its coded experience, one strong hero system and real showcase captures; it must not become an AI-image gallery.",
-    "Batch 8 support visuals are optional and skip-by-default until a real coded section demonstrates a media need.",
+    "Batch 6 Fire Challenger is required Unlimited exploration capped at four outputs; rejected fire remains reviewed without finish spend.",
+    "Batch 10 support visuals are optional and skip-by-default until a real coded section demonstrates a media need.",
     "Plumbing remains the first customer showcase, not the public top-level Website Ventures identity.",
     "Generated demo visuals may never masquerade as completed client work, reviews, certifications or measured outcomes.",
     "Internal prompts, model recipes, production logic and asset registries are competitive IP and must not be exposed on the public agency site.",
@@ -139,7 +143,7 @@
           "format": "coded slider/scrub/scroll state with replaceable visual inputs",
           "variants": 1,
           "gate": "Interaction explains value in under 5 seconds; works with touch and keyboard; does not depend on fabricated client evidence.",
-          "generationRule": "Code/screenshot first; Batch 8 visual only if this fails without media."
+          "generationRule": "Code/screenshot first; Batch 10 visual only if this fails without media."
         },
         {
           "id": "AG-INTERACT-001",
@@ -245,7 +249,7 @@
     "Generate manually on higgsfield.ai for Unlimited-supported exploration jobs.",
     "Use Review winners to record scores/defects and select approved candidates before dependent jobs.",
     "Remember: Review selection does not publish; promote committed winners only through Selected Assets.",
-    "Keep Batch 8 optional; do not generate support images until the coded page proves a need.",
+    "Keep Batch 10 optional; do not generate support images until the coded page proves a need.",
     "At 50% of paid credits remaining, stop and review before any further paid generation.",
     "Keep final 4K masters and motion blocked until still/reference winners are approved."
   ]

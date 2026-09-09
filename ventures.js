@@ -9,7 +9,7 @@
   'use strict';
 
   const KEY = 'rpg_ventures_v1';
-  const GAMENFY_FOCUS_VERSION = 5;
+  const GAMENFY_FOCUS_VERSION = 6;
   const WEBSITE_FOCUS_VERSION = 2;
 
   const SEED = {
@@ -61,7 +61,7 @@
         phases: [
           { id: 'p1', name: 'Proof + product', steps: [
             { id: 's1', title: 'Offer + scope locken', detail: 'Gebruik Client Intake + Offer Builder om één begrijpelijke founding offer te locken: doelgroep, resultaat, prijs, revisiegrens en expliciete exclusions. €349 en 1 revisieronde blijven hypotheses totdat Joey ze bewust bevestigt.', minutes: 35, xp: { sales: 20, marketing: 20 } },
-            { id: 's2', title: 'Agency + Plumbing proof afmaken', detail: 'Eigen Agency Showroom eerst. Rond Higgsfield Batch 5 af, integreer de gekozen desktop/mobile hero via Selected Assets en maak daarna de Plumbing showcase met één recurring technician. Geen extra gimmicks of fake proof.', minutes: 90, xp: { coding: 50, ai_tools: 30, marketing: 20 } },
+            { id: 's2', title: 'Agency + Plumbing proof afmaken', detail: 'Eigen Agency Showroom eerst. Rond Batch 5 en de verplichte Batch 6 Fire Challenger af, kies één gezamenlijke desktopwinner en maak daarna exact daarvan mobile/4K. Plumbing blijft één recurring technician gebruiken. Geen extra gimmicks of fake proof.', minutes: 90, xp: { coding: 50, ai_tools: 30, marketing: 20 } },
             { id: 's3', title: 'Reusable client system bewijzen', detail: 'Gebruik de config-driven Plumbing master, Client Factory v2 en Template QA om te bewijzen dat een nieuwe klant vooral config + echte assets + QA is in plaats van opnieuw bouwen.', minutes: 60, xp: { coding: 50, ai_tools: 15 } }
           ]},
           { id: 'p2', name: 'First client', steps: [
@@ -111,11 +111,12 @@
         focusVersion: GAMENFY_FOCUS_VERSION,
         phases: [
           { id: 'hf', name: 'NU — Website Ventures Higgsfield', steps: [
-            { id: 'hf5', title: 'Batch 5 · Agency desktop hero kiezen', detail: 'Open de Higgsfield Queue. Genereer de drie 16:9 Soul 2.0 hero-concepten en leg de resultaten vast in Review winners. Kies exact één desktop hero winner voordat finish doorgaat.', minutes: 35, xp: { ai_tools: 30, marketing: 20 } },
-            { id: 'hf5m', title: 'Batch 5 · Mobile hero derivative', detail: 'Gebruik de gekozen desktop winner als reference in Nano Banana 2. Maak 1–2 bewuste 4:5 2K mobile derivatives. Zelfde campaign/world; recompose voor ~390px in plaats van een tweede concept te verzinnen.', minutes: 20, xp: { ai_tools: 20, coding: 10 } },
-            { id: 'hf6', title: 'Batch 6 · Recurring technician kiezen', detail: 'Genereer vier 3:4 technician candidates met Soul 2.0 en kies exact één geloofwaardige master. Diezelfde identiteit wordt verplicht voor alle Plumbing-scenes.', minutes: 30, xp: { ai_tools: 30, marketing: 10 } },
-            { id: 'hf7', title: 'Batch 7 · Same-technician scenes', detail: 'Gebruik de Batch 6 winner als reference en maak alleen de drie noodzakelijke 16:9 scènes: diagnosis, under-sink service en arrival/trust. Stop bij identity drift. Batch 8 support-art is optioneel en blokkeert deze route niet.', minutes: 40, xp: { ai_tools: 35, marketing: 15 } },
-            { id: 'hf9', title: 'Batch 9 · 4K masters', detail: 'Sla Batch 8 standaard over. Alleen als de echte coded agency page later aantoonbaar een media-gat heeft, gebruik je één relevante Batch 8 support-prompt. Voor de verplichte route: maak na gekozen 2K winners maximaal 1–2 Cinema Studio Image 2.5 4K renders voor agency hero en Plumbing hero. Bij 50% resterende betaalde credits eerst stoppen en reviewen.', minutes: 25, xp: { ai_tools: 40, coding: 10 }, boss: true }
+            { id: 'hf5', title: 'Batch 5 · Agency core heroes produceren', detail: 'Joey genereert de drie bestaande 16:9 Soul 2.0-concepten en legt alle resultaten vast. De definitieve desktopkeuze wacht verplicht op Batch 6.', minutes: 35, xp: { ai_tools: 30, marketing: 20 } },
+            { id: 'hf6f', title: 'Batch 6 · Fire Challenger', detail: 'Genereer Controlled Flame in Glass en Descending Fire Veil in Soul 2.0, 16:9, 2K, Unlimited-preferred. Maximaal twee varianten per job en vier outputs totaal. Reject fantasy, inferno, unsafe fire, stock CGI, clutter en orange kitsch.', minutes: 25, xp: { ai_tools: 25, marketing: 20 } },
+            { id: 'hf7m', title: 'Batch 7 · Joint winner → mobile', detail: 'Score Batch 5 + 6 en kies exact één gezamenlijke desktopwinner. Gebruik het exacte kandidaatbestand en generation-ID als reference voor 1–2 bewuste 4:5 mobile derivatives; verliezende fire blijft reviewed zonder finishcredits.', minutes: 20, xp: { ai_tools: 20, coding: 10 } },
+            { id: 'hf8', title: 'Batch 8 · Recurring technician kiezen', detail: 'Genereer vier 3:4 technician candidates met Soul 2.0 en kies exact één geloofwaardige master. Diezelfde identiteit wordt verplicht voor alle Plumbing-scenes.', minutes: 30, xp: { ai_tools: 30, marketing: 10 } },
+            { id: 'hf9', title: 'Batch 9 · Same-technician scenes', detail: 'Gebruik de Batch 8 winner als reference en maak alleen de drie noodzakelijke 16:9 scènes: diagnosis, under-sink service en arrival/trust. Stop bij identity drift. Batch 10 support-art is optioneel.', minutes: 40, xp: { ai_tools: 35, marketing: 15 } },
+            { id: 'hf11', title: 'Batch 11 · 4K masters', detail: 'Sla Batch 10 standaard over. De agency 4K-master unlockt alleen na exact één joint Batch 5 + 6-winner en gebruikt die exacte reference. Plumbing gebruikt zijn Batch 9-winner. Bij 50% resterende betaalde credits eerst stoppen en reviewen.', minutes: 25, xp: { ai_tools: 40, coding: 10 }, boss: true }
           ]},
           { id: 'agency', name: 'Agency Showroom — integrate winners', steps: [
             { id: 'ag1', title: 'Hero winner + mobile via Selected Assets', detail: 'Commit de gekozen desktop hero en de 4:5 mobile derivative op hun exacte manifest paths. Zet daarna alleen de bedoelde agency.hero.desktop en agency.hero.mobile registry-slots op selected. Review-checkboxen alleen zijn nooit live. Bewaar source masters en web-optimized derivatives apart.', minutes: 45, xp: { coding: 40, ai_tools: 15 } },

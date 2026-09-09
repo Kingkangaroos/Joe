@@ -1,7 +1,7 @@
 {
   "name": "Website Ventures Selected Assets Registry",
-  "version": 1,
-  "updatedAt": "2026-09-08",
+  "version": 2,
+  "updatedAt": "2026-09-09",
   "managedBy": "ChatGPT (OpenAI)",
   "status": "active-no-assets-selected-yet",
   "purpose": "Single integration contract between approved Website Ventures visual winners and the coded Agency/Plumbing pages. A page may only load a media file when the corresponding slot status is exactly 'selected'.",
@@ -10,6 +10,8 @@
     "Only selected winners enter this registry; exploration variants remain outside live page integration.",
     "selectedPath must be a repository-relative path to a real committed asset before status becomes selected.",
     "Agency desktop and mobile hero are separate slots so mobile never silently relies on an accidental desktop crop.",
+    "The agency desktop slot has one joint candidate pool across Batch 5 and required Batch 6 Fire Challenger; exactly one winner may be selected.",
+    "Mobile and the final 4K agency master must use the exact selected desktop candidate path and generation ID as reference provenance.",
     "Plumbing story slots use the same recurring PL-CHAR-001 identity, but PL-CHAR-001 itself is a reference master rather than a mandatory visible website slot.",
     "Real client proof and reviews are never routed through this AI/demo asset registry.",
     "Changing a selectedPath should be sufficient to swap an approved visual without editing page markup."
@@ -21,11 +23,13 @@
       "selectedJobId": null,
       "selectedGenerationId": null,
       "selectedPath": null,
-      "candidateJobIds": ["AG-HERO-TRANSFORM-001", "AG-HERO-PRODUCT-001", "AG-HERO-MATERIAL-001"],
+      "candidateJobIds": ["AG-HERO-TRANSFORM-001", "AG-HERO-PRODUCT-001", "AG-HERO-MATERIAL-001", "AG-HERO-FIRE-GLASS-001", "AG-HERO-FIRE-VEIL-001"],
       "candidatePaths": [
         "website-ventures-assets/agency/ag-hero-transform-001.png",
         "website-ventures-assets/agency/ag-hero-product-001.png",
-        "website-ventures-assets/agency/ag-hero-material-001.png"
+        "website-ventures-assets/agency/ag-hero-material-001.png",
+        "website-ventures-assets/agency/ag-hero-fire-glass-001.png",
+        "website-ventures-assets/agency/ag-hero-fire-veil-001.png"
       ],
       "futureMasterJobId": "AG-HERO-MASTER-001",
       "futureMasterPath": "website-ventures-assets/agency/ag-hero-master-001.png",
@@ -38,6 +42,8 @@
       "selectedJobId": null,
       "selectedGenerationId": null,
       "selectedPath": null,
+      "referenceDesktopCandidatePath": null,
+      "referenceDesktopGenerationId": null,
       "requiredJobId": "AG-HERO-MOBILE-001",
       "plannedPath": "website-ventures-assets/agency/ag-hero-mobile-001.png",
       "fit": "cover",
@@ -76,7 +82,7 @@
     },
     "plumbing.hero": {
       "status": "pending",
-      "purpose": "Approved primary Plumbing hero visual. May initially point to a selected Batch 7 scene and later be upgraded to PL-HERO-MASTER-001 without markup changes.",
+      "purpose": "Approved primary Plumbing hero visual. May initially point to a selected Batch 9 scene and later be upgraded to PL-HERO-MASTER-001 without markup changes.",
       "selectedJobId": null,
       "selectedGenerationId": null,
       "selectedPath": null,

@@ -7,18 +7,18 @@
 </style>
 </head>
 <body><main class="wrap">
-<div class="top"><a href="website-ventures-higgsfield-prompt-board.html">← Higgsfield Queue</a><div class="right"><button class="primary" id="copyHandoff" disabled>Copy Batch 5 handoff</button><a href="website-ventures-selected-assets.html">Selected Assets gate →</a></div></div>
+<div class="top"><a href="website-ventures-higgsfield-prompt-board.html">← Higgsfield Queue</a><div class="right"><button class="primary" id="copyHandoff" disabled>Copy Batch 5 + 6 handoff</button><a href="website-ventures-selected-assets.html">Selected Assets gate →</a></div></div>
 <div class="kick">Website Ventures · Variant review</div><h1>Review every variant.</h1>
-<p class="lead">Elke Higgsfield-output krijgt zijn eigen vaste intakepad, generation-ID, score en defectnotitie. Binnen de drie desktopconcepten kan maar één echte winnaar bestaan. Daardoor blijft de mobiele derivative automatisch gekoppeld aan het juiste bronbeeld.</p>
+<p class="lead">Elke Higgsfield-output krijgt zijn eigen vaste intakepad, generation-ID, score en defectnotitie. De definitieve desktopwinner komt uit de volledige gezamenlijke pool van Batch 5 én de verplichte Batch 6 · Fire Challenger. Er kan exact één winnaar bestaan; mobile en 4K blijven aan dat precieze bronbeeld gekoppeld.</p>
 <div class="promotion"><b>Geen automatische publicatie:</b> een lokale winnaar is alleen reviewstatus. Pas na import, commit en een bewuste wijziging van de registry naar <b>selected</b> mag een beeld de coded placeholder vervangen.</div>
-<div class="gatebar waiting" id="desktopGate"><div><b>Desktop winner ontbreekt</b><span>Review eerst Batch 5 Transformation, Product en Material.</span></div><span>Mobile derivative blijft geblokkeerd.</span></div>
+<div class="gatebar waiting" id="desktopGate"><div><b>Gezamenlijke desktopbeslissing ontbreekt</b><span>Review Batch 5 én beide Fire Challenger-jobs.</span></div><span>Mobile + agency 4K blijven geblokkeerd.</span></div>
 <div id="app">Laden…</div>
-<p class="footer">Review state wordt lokaal op dit apparaat bewaard. “Copy Batch 5 handoff” maakt één compact overdrachtsblok dat Joey na de generatie samen met de beelden naar ChatGPT kan sturen.</p>
+<p class="footer">Review state wordt lokaal op dit apparaat bewaard. “Copy Batch 5 + 6 handoff” bewaart ook verliezende Fire Challenger-richtingen als beoordeeld alternatief; daar volgen geen finishcredits op.</p>
 </main>
 <script>
 const KEY='wv_higgsfield_review_v2';
 const LEGACY_KEY='wv_higgsfield_review_v1';
-const DESKTOP_IDS=['AG-HERO-TRANSFORM-001','AG-HERO-PRODUCT-001','AG-HERO-MATERIAL-001'];
+const JOINT_DESKTOP_IDS=['AG-HERO-TRANSFORM-001','AG-HERO-PRODUCT-001','AG-HERO-MATERIAL-001','AG-HERO-FIRE-GLASS-001','AG-HERO-FIRE-VEIL-001'];
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const variantLabel=i=>String.fromCharCode(65+i);
 function blank(){return{version:2,jobs:{}}}
@@ -38,8 +38,11 @@ async function exists(path){try{const r=await fetch(path,{method:'HEAD',cache:'n
 function pathsFor(asset){return asset.candidatePaths&&asset.candidatePaths.length?asset.candidatePaths:(asset.targetPath?[asset.targetPath]:[])}
 function jobState(id){return state.jobs[id]||(state.jobs[id]={variants:{}})}
 function variantState(id,index){const j=jobState(id),key=String.fromCharCode(97+index);return j.variants[key]||(j.variants[key]={source:'',score:'',notes:'',winner:false})}
-function winnerGroup(id){return DESKTOP_IDS.includes(id)?'agency-desktop-winner':'winner-'+id}
-function winnerFor(ids){for(const id of ids){const j=state.jobs[id];if(!j)continue;for(const [key,v] of Object.entries(j.variants||{})){if(v.winner)return{id,key,index:key.charCodeAt(0)-97,value:v}}}return null}
+function winnerGroup(id){return JOINT_DESKTOP_IDS.includes(id)?'agency-joint-desktop-winner':'winner-'+id}
+function winnersFor(ids){const winners=[];for(const id of ids){const j=state.jobs[id];if(!j)continue;for(const [key,v] of Object.entries(j.variants||{})){if(v.winner)winners.push({id,key,index:key.charCodeAt(0)-97,value:v})}}return winners}
+function winnerFor(ids){const winners=winnersFor(ids);return winners.length===1?winners[0]:null}
+function reviewedJob(id){const variants=Object.values(state.jobs[id]?.variants||{}),recorded=variants.filter(v=>String(v.source||'').trim());return recorded.length>0&&recorded.every(v=>String(v.score||'').trim())}
+function jointDecision(){return JOINT_DESKTOP_IDS.every(reviewedJob)?winnerFor(JOINT_DESKTOP_IDS):null}
 function clearGroup(group,exceptId,exceptIndex){
   Object.entries(state.jobs).forEach(([id,j])=>Object.entries(j.variants||{}).forEach(([key,v])=>{const index=key.charCodeAt(0)-97;if(winnerGroup(id)===group&&(id!==exceptId||index!==exceptIndex))v.winner=false}))
 }
@@ -49,10 +52,10 @@ function card(j,asset){
   return `<article class="card ${hasWinner?'selected':''}" data-card="${esc(j.id)}"><span class="badge">${esc(j.id)}</span><h3>${esc(j.title)}</h3><div class="final-path"><b>Approved winner target:</b> ${esc(asset.targetPath||'No target path')}</div><div class="variants">${variants||'<div class="variant">Geen intakepad gedefinieerd.</div>'}</div>${hasWinner?`<button class="clear" data-clear="${esc(j.id)}">Clear winner</button>`:''}<span class="saved" id="saved-${esc(j.id)}"></span></article>`
 }
 function updateDesktopGate(){
-  const gate=document.getElementById('desktopGate'),winner=winnerFor(DESKTOP_IDS);
-  if(!winner){gate.className='gatebar waiting';gate.innerHTML='<div><b>Desktop winner ontbreekt</b><span>Review eerst Batch 5 Transformation, Product en Material.</span></div><span>Mobile derivative blijft geblokkeerd.</span>';return}
+  const gate=document.getElementById('desktopGate'),winner=jointDecision(),missing=JOINT_DESKTOP_IDS.filter(id=>!reviewedJob(id));
+  if(!winner){gate.className='gatebar waiting';gate.innerHTML=`<div><b>Gezamenlijke desktopbeslissing incompleet</b><span>${missing.length?'Nog minimaal één gescoorde variant nodig voor: '+esc(missing.join(', ')):'Selecteer exact één winnaar uit de volledige Batch 5 + 6-pool.'}</span></div><span>Mobile + agency 4K blijven geblokkeerd.</span>`;return}
   const asset=assets.get(winner.id)||{},path=pathsFor(asset)[winner.index]||asset.targetPath||'';
-  gate.className='gatebar';gate.innerHTML=`<div><b>Desktop winner locked ✓</b><span>${esc(winner.id)} · Variant ${variantLabel(winner.index)}</span></div><span>Mobile reference: ${esc(path)}</span>`
+  gate.className='gatebar';gate.innerHTML=`<div><b>Gezamenlijke desktopwinner locked ✓</b><span>${esc(winner.id)} · Variant ${variantLabel(winner.index)}</span></div><span>Exacte mobile + 4K-reference: ${esc(path)}</span>`
 }
 async function hydratePreviews(){
   for(const [id,asset] of assets){const paths=pathsFor(asset);for(let index=0;index<paths.length;index++){if(await exists(paths[index])){const p=document.querySelector(`[data-preview="${CSS.escape(id+':'+index)}"]`);if(p)p.innerHTML=`<img src="${esc(paths[index])}?v=${Date.now()}" alt="${esc(id)} variant ${variantLabel(index)}">`}}}
@@ -62,12 +65,13 @@ function render(){
   for(const b of queue.batches){html+=`<section class="batch"><div class="batch-head"><h2>Batch ${b.number} · ${esc(b.name)}</h2><span class="batch-state">${esc(b.status||'')}</span></div><div class="grid">`;for(const j of (b.jobs||[]))html+=card(j,assets.get(j.id)||{});html+='</div></section>'}
   app.innerHTML=html;updateDesktopGate();hydratePreviews();
 }
-function setField(el){const index=Number(el.dataset.index),s=variantState(el.dataset.id,index);let value=el.value;if(el.dataset.field==='score'&&value!==''){const n=Math.max(0,Math.min(10,Number(value)));value=Number.isFinite(n)?String(n):'';el.value=value}s[el.dataset.field]=value;save();flash(el.dataset.id)}
+function setField(el){const index=Number(el.dataset.index),s=variantState(el.dataset.id,index);let value=el.value;if(el.dataset.field==='score'&&value!==''){const n=Math.max(0,Math.min(10,Number(value)));value=Number.isFinite(n)?String(n):'';el.value=value}s[el.dataset.field]=value;save();flash(el.dataset.id);updateDesktopGate()}
 function flash(id){const el=document.getElementById('saved-'+id);if(!el)return;el.textContent='Saved ✓';clearTimeout(el._t);el._t=setTimeout(()=>el.textContent='',900)}
 function handoff(){
-  const selected=winnerFor(DESKTOP_IDS),lines=['WEBSITE VENTURES — HIGGSFIELD BATCH 5 HANDOFF'];
-  for(const id of DESKTOP_IDS){const job=queue.batches.flatMap(b=>b.jobs||[]).find(j=>j.id===id),asset=assets.get(id)||{};lines.push('',id+' · '+(job?.title||''));pathsFor(asset).forEach((path,index)=>{const s=variantState(id,index);lines.push(`- ${variantLabel(index)} | score ${s.score||'—'}/10 | ${s.source||'no generation ID'} | ${s.notes||'no notes'} | ${path}${s.winner?' | WINNER':''}`)})}
-  if(selected){const asset=assets.get(selected.id)||{};lines.push('',`SELECTED DESKTOP: ${selected.id} · Variant ${variantLabel(selected.index)}`,`MOBILE REFERENCE FILE: ${pathsFor(asset)[selected.index]||asset.targetPath||'missing'}`)}else lines.push('','SELECTED DESKTOP: not selected yet');
+  const selected=jointDecision(),lines=['WEBSITE VENTURES — HIGGSFIELD BATCH 5 + FIRE CHALLENGER HANDOFF'];
+  for(const id of JOINT_DESKTOP_IDS){const job=queue.batches.flatMap(b=>b.jobs||[]).find(j=>j.id===id),asset=assets.get(id)||{};lines.push('',id+' · '+(job?.title||''));pathsFor(asset).forEach((path,index)=>{const s=variantState(id,index);lines.push(`- ${variantLabel(index)} | score ${s.score||'—'}/10 | ${s.source||'no generation ID'} | ${s.notes||'no notes'} | ${path}${s.winner?' | WINNER':''}`)})}
+  if(selected){const asset=assets.get(selected.id)||{},source=selected.value.source||'missing';lines.push('',`SELECTED JOINT DESKTOP: ${selected.id} · Variant ${variantLabel(selected.index)}`,`EXACT DERIVATIVE + 4K REFERENCE FILE: ${pathsFor(asset)[selected.index]||asset.targetPath||'missing'}`,`EXACT REFERENCE GENERATION: ${source}`)}else lines.push('','SELECTED JOINT DESKTOP: blocked — review every direction and select exactly one winner');
+  lines.push('','FIRE NON-WINNERS: preserve as reviewed alternatives; no finish credits.');
   return lines.join('\n')
 }
 let queue,assets,state=load(),app=document.getElementById('app');

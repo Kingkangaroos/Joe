@@ -1,7 +1,7 @@
 {
   "name": "Website Ventures Asset Import Manifest",
-  "version": 3,
-  "updatedAt": "2026-09-08",
+  "version": 4,
+  "updatedAt": "2026-09-09",
   "managedBy": "ChatGPT (OpenAI)",
   "sourceQueue": "WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json",
   "root": "website-ventures-assets",
@@ -10,10 +10,13 @@
     "Every multi-output required job has unique candidatePaths so downloaded variants cannot overwrite each other before review.",
     "Keep original high-quality masters; create web derivatives separately.",
     "Generated demo imagery is never real client proof.",
-    "AG-HERO-MOBILE-001 is derived from the selected Batch 5 hero and must remain the same campaign/world.",
-    "PL-CHAR-001 is the identity source for all Batch 7 Plumbing scenes.",
-    "Batch 8 support assets are optional and should normally be skipped unless a real coded slot proves it needs media.",
-    "Batch 9 assets are final 4K masters and remain blocked until a 2K winner is selected."
+    "Batch 6 Fire Challenger is required Unlimited exploration capped at two variants per job and four outputs total.",
+    "Exactly one agency desktop winner must be selected across every Batch 5 and Batch 6 candidate.",
+    "AG-HERO-MOBILE-001 is derived from the exact joint desktop winner and must retain its candidate path and generation-ID provenance.",
+    "Non-winning fire candidates remain preserved as reviewed-not-selected alternatives and receive no finish spend.",
+    "PL-CHAR-001 is the identity source for all Batch 9 Plumbing scenes.",
+    "Batch 10 support assets are optional and should normally be skipped unless a real coded slot proves it needs media.",
+    "Batch 11 assets are final 4K masters and remain blocked until the applicable exact 2K winner is selected."
   ],
   "assets": [
     {
@@ -27,7 +30,7 @@
       ],
       "role": "agency hero candidate",
       "status": "awaiting-generation",
-      "winnerPolicy": "candidate; normally only one of the first three Batch 5 concepts becomes the desktop hero winner"
+      "winnerPolicy": "joint agency desktop candidate; exactly one winner across all Batch 5 + Batch 6 candidates"
     },
     {
       "jobId": "AG-HERO-PRODUCT-001",
@@ -40,7 +43,7 @@
       ],
       "role": "agency hero candidate",
       "status": "awaiting-generation",
-      "winnerPolicy": "candidate; normally only one of the first three Batch 5 concepts becomes the desktop hero winner"
+      "winnerPolicy": "joint agency desktop candidate; exactly one winner across all Batch 5 + Batch 6 candidates"
     },
     {
       "jobId": "AG-HERO-MATERIAL-001",
@@ -53,24 +56,51 @@
       ],
       "role": "agency hero candidate",
       "status": "awaiting-generation",
-      "winnerPolicy": "candidate; normally only one of the first three Batch 5 concepts becomes the desktop hero winner"
+      "winnerPolicy": "joint agency desktop candidate; exactly one winner across all Batch 5 + Batch 6 candidates"
+    },
+    {
+      "jobId": "AG-HERO-FIRE-GLASS-001",
+      "batch": 6,
+      "targetPath": "website-ventures-assets/agency/ag-hero-fire-glass-001.png",
+      "candidatePaths": [
+        "website-ventures-assets/agency/intake/ag-hero-fire-glass-001-a.png",
+        "website-ventures-assets/agency/intake/ag-hero-fire-glass-001-b.png"
+      ],
+      "role": "required high-end fire challenger for joint agency desktop review",
+      "status": "awaiting-generation",
+      "outputCap": 2,
+      "winnerPolicy": "joint agency desktop candidate; preserve as reviewed-not-selected with no finish spend if it loses"
+    },
+    {
+      "jobId": "AG-HERO-FIRE-VEIL-001",
+      "batch": 6,
+      "targetPath": "website-ventures-assets/agency/ag-hero-fire-veil-001.png",
+      "candidatePaths": [
+        "website-ventures-assets/agency/intake/ag-hero-fire-veil-001-a.png",
+        "website-ventures-assets/agency/intake/ag-hero-fire-veil-001-b.png"
+      ],
+      "role": "required descending-motion fire challenger for joint agency desktop review",
+      "status": "awaiting-generation",
+      "outputCap": 2,
+      "winnerPolicy": "joint agency desktop candidate; preserve as reviewed-not-selected with no finish spend if it loses"
     },
     {
       "jobId": "AG-HERO-MOBILE-001",
-      "batch": 5,
+      "batch": 7,
       "targetPath": "website-ventures-assets/agency/ag-hero-mobile-001.png",
       "candidatePaths": [
         "website-ventures-assets/agency/intake/ag-hero-mobile-001-a.png",
         "website-ventures-assets/agency/intake/ag-hero-mobile-001-b.png"
       ],
       "role": "4:5 mobile derivative of selected agency hero",
-      "status": "blocked-by-batch-5-desktop-winner",
-      "referenceJobId": "selected AG-HERO-TRANSFORM-001, AG-HERO-PRODUCT-001 or AG-HERO-MATERIAL-001",
-      "winnerPolicy": "must preserve the selected desktop hero campaign and be intentionally composed for mobile"
+      "status": "blocked-by-single-joint-desktop-winner",
+      "referenceJobId": "exact single winner across all Batch 5 + Batch 6 agency desktop candidates",
+      "referencePolicy": "selectedCandidatePath and selectedGenerationId must exactly match agency.hero.desktop",
+      "winnerPolicy": "must preserve the exact selected desktop winner and be intentionally composed for mobile"
     },
     {
       "jobId": "PL-CHAR-001",
-      "batch": 6,
+      "batch": 8,
       "targetPath": "website-ventures-assets/plumbing/pl-char-001.png",
       "candidatePaths": [
         "website-ventures-assets/plumbing/pl-char-001-candidate-a.png",
@@ -80,11 +110,11 @@
       ],
       "role": "recurring technician identity master",
       "status": "awaiting-generation",
-      "winnerPolicy": "select exactly one recurring technician before Batch 7"
+      "winnerPolicy": "select exactly one recurring technician before Batch 9"
     },
     {
       "jobId": "PL-STORY-DIAG-001",
-      "batch": 7,
+      "batch": 9,
       "targetPath": "website-ventures-assets/plumbing/pl-story-diag-001.png",
       "candidatePaths": [
         "website-ventures-assets/plumbing/intake/pl-story-diag-001-a.png",
@@ -97,7 +127,7 @@
     },
     {
       "jobId": "PL-STORY-SINK-001",
-      "batch": 7,
+      "batch": 9,
       "targetPath": "website-ventures-assets/plumbing/pl-story-sink-001.png",
       "candidatePaths": [
         "website-ventures-assets/plumbing/intake/pl-story-sink-001-a.png",
@@ -110,7 +140,7 @@
     },
     {
       "jobId": "PL-STORY-TRUST-001",
-      "batch": 7,
+      "batch": 9,
       "targetPath": "website-ventures-assets/plumbing/pl-story-trust-001.png",
       "candidatePaths": [
         "website-ventures-assets/plumbing/intake/pl-story-trust-001-a.png",
@@ -123,7 +153,7 @@
     },
     {
       "jobId": "AG-SUPPORT-TRANSFORM-001",
-      "batch": 8,
+      "batch": 10,
       "targetPath": "website-ventures-assets/agency/ag-support-transform-001.png",
       "role": "optional transformation/value support visual",
       "status": "optional-skip-by-default",
@@ -131,7 +161,7 @@
     },
     {
       "jobId": "AG-SUPPORT-PROCESS-001",
-      "batch": 8,
+      "batch": 10,
       "targetPath": "website-ventures-assets/agency/ag-support-process-001.png",
       "role": "optional process support visual",
       "status": "optional-skip-by-default",
@@ -139,7 +169,7 @@
     },
     {
       "jobId": "AG-SUPPORT-SHOWCASE-001",
-      "batch": 8,
+      "batch": 10,
       "targetPath": "website-ventures-assets/agency/ag-support-showcase-001.png",
       "role": "optional showcase support visual",
       "status": "optional-skip-by-default",
@@ -147,19 +177,20 @@
     },
     {
       "jobId": "AG-HERO-MASTER-001",
-      "batch": 9,
+      "batch": 11,
       "targetPath": "website-ventures-assets/agency/ag-hero-master-001.png",
       "role": "final 4K agency hero master",
-      "status": "blocked-by-batch-5-winner",
-      "referenceJobId": "winning Batch 5 desktop hero"
+      "status": "blocked-by-single-joint-desktop-winner",
+      "referenceJobId": "exact single Batch 5 + Batch 6 joint desktop winner",
+      "referencePolicy": "selectedCandidatePath and selectedGenerationId must exactly match agency.hero.desktop"
     },
     {
       "jobId": "PL-HERO-MASTER-001",
-      "batch": 9,
+      "batch": 11,
       "targetPath": "website-ventures-assets/plumbing/pl-hero-master-001.png",
       "role": "final 4K plumbing hero master",
-      "status": "blocked-by-batch-7-winner",
-      "referenceJobId": "winning Batch 7 scene"
+      "status": "blocked-by-batch-9-winner",
+      "referenceJobId": "winning Batch 9 scene"
     }
   ]
 }

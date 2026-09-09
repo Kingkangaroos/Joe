@@ -20,4 +20,12 @@ After subscription activation:
 - At or below 50% remaining, stop new paid generations and review winners, discarded generations, remaining asset queue, and which remaining tasks can move to Unlimited/manual website generation.
 - Motion/video stays behind approved still/reference winners.
 
+## Website Ventures agency decision gate — 2026-09-09
+- Joey produces Batch 5 manually. Batch 6 `Fire Challenger` follows as a required comparison round using Soul 2.0, 16:9, 2K and Unlimited-preferred settings.
+- Batch 6 contains only `Controlled Flame in Glass` and `Descending Fire Veil`, at most two variants each and four outputs total.
+- The final desktop winner is selected once across every Batch 5 + Batch 6 candidate. Fantasy, inferno, unsafe fire, generic stock CGI, clutter and orange kitsch are hard rejects; high-class campaign continuity is a hard pass condition.
+- Batch 7 mobile and the Batch 11 agency 4K master remain locked until exactly one joint desktop winner exists and must use its exact candidate path and generation ID.
+- A losing fire direction remains a reviewed alternative and receives no finish spend.
+- This backend/documentation change generated no media and spent zero credits.
+
 This note is internal production logic, not public agency copy.

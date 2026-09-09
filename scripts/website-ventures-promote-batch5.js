@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Website Ventures Batch 5 promotion gate — ChatGPT (OpenAI), 2026-09-08 */
+/* Website Ventures joint Batch 5 + Fire Challenger promotion gate — ChatGPT (OpenAI), 2026-09-09 */
 'use strict';
 
 const fs = require('node:fs');
@@ -10,7 +10,9 @@ const REGISTRY_FILE = 'WEBSITE-VENTURES-SELECTED-ASSETS.json';
 const DESKTOP_JOBS = new Set([
   'AG-HERO-TRANSFORM-001',
   'AG-HERO-PRODUCT-001',
-  'AG-HERO-MATERIAL-001'
+  'AG-HERO-MATERIAL-001',
+  'AG-HERO-FIRE-GLASS-001',
+  'AG-HERO-FIRE-VEIL-001'
 ]);
 const MOBILE_JOB = 'AG-HERO-MOBILE-001';
 const ALLOWED_JOBS = new Set([...DESKTOP_JOBS, MOBILE_JOB]);
@@ -74,7 +76,7 @@ function promote (options) {
   const root = path.resolve(options.root || path.join(__dirname, '..'));
   const jobId = String(options.jobId || '').trim().toUpperCase();
   const generationId = String(options.generationId || '').trim();
-  if (!ALLOWED_JOBS.has(jobId)) fail('This gate only promotes required Batch 5 agency hero jobs.');
+  if (!ALLOWED_JOBS.has(jobId)) fail('This gate only promotes joint Batch 5 + Fire Challenger agency hero jobs and their mobile derivative.');
   if (!generationId) fail('A Higgsfield generation URL or ID is required for provenance.');
 
   const { label, index } = variantIndex(options.variant);
@@ -103,7 +105,7 @@ function promote (options) {
   if (jobId === MOBILE_JOB) {
     const desktop = registry.slots['agency.hero.desktop'];
     if (!desktop || desktop.status !== 'selected' || !desktop.selectedPath) {
-      fail('Mobile promotion is blocked until the Batch 5 desktop winner is selected.');
+      fail('Mobile promotion is blocked until exactly one joint Batch 5 + Fire Challenger desktop winner is selected.');
     }
   }
   const replacing = slot.status === 'selected' || fs.existsSync(targetFile);
@@ -135,6 +137,12 @@ function promote (options) {
   slot.selectedCandidatePath = candidatePath;
   slot.selectedVariant = label;
   slot.selectedAt = now;
+  if (jobId === MOBILE_JOB) {
+    const desktop = registry.slots['agency.hero.desktop'];
+    slot.referenceDesktopJobId = desktop.selectedJobId;
+    slot.referenceDesktopCandidatePath = desktop.selectedCandidatePath;
+    slot.referenceDesktopGenerationId = desktop.selectedGenerationId;
+  }
   registry.updatedAt = now.slice(0, 10);
   registry.status = 'active-with-selected-assets';
 
@@ -176,7 +184,7 @@ function parseArgs (argv) {
 }
 
 function printResult (result) {
-  console.log(result.dryRun ? 'BATCH 5 PROMOTION PREFLIGHT PASSED' : 'BATCH 5 ASSET PROMOTED');
+  console.log(result.dryRun ? 'JOINT AGENCY PROMOTION PREFLIGHT PASSED' : 'JOINT AGENCY ASSET PROMOTED');
   console.log(`Job: ${result.jobId} · variant ${result.variant} · ${result.dimensions.width}x${result.dimensions.height}`);
   console.log(`Source: ${result.candidatePath}`);
   console.log(`Target: ${result.targetPath}`);
@@ -188,7 +196,7 @@ if (require.main === module) {
   try {
     printResult(promote(parseArgs(process.argv.slice(2))));
   } catch (error) {
-    console.error(`Batch 5 promotion blocked: ${error.message}`);
+    console.error(`Joint agency promotion blocked: ${error.message}`);
     process.exitCode = 1;
   }
 }
