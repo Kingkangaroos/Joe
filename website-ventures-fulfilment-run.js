@@ -296,6 +296,7 @@
     $('slug').value = slugify($('slug').value);
     loadKey();
   };
+  $('slug').oninput = renderGate;
   $('runNo').onchange = loadKey;
   $('runStatus').onchange = () => save(false);
   $('save').onclick = () => save(false);

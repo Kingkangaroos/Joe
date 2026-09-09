@@ -81,6 +81,7 @@ assert.ok(controller.includes("const INTAKE_PREFIX = 'wv_client_intake_v1_';"), 
 assert.ok(controller.includes('startedAt: null'), 'opening the page must not silently start elapsed measurement');
 assert.ok(controller.includes("if (requestedStatus === 'launched')"), 'launched status must use a dedicated guard');
 assert.ok(controller.includes("$('runStatus').value = run.status || 'active';"), 'blocked launched selection must revert to persisted status');
+assert.ok(controller.includes("$('slug').oninput = renderGate;"), 'changing client identity must refresh the evidence lock immediately');
 assert.ok(controller.includes('run.launchEvidence = {'), 'accepted launched status must retain a compact evidence snapshot');
 assert.ok(controller.includes("if (!save(true)) return;"), 'copying run data must also pass the Intake foundation gate');
 
