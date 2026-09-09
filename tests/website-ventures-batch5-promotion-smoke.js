@@ -1,4 +1,4 @@
-/* Website Ventures Batch 5 promotion gate — ChatGPT (OpenAI), 2026-09-08 */
+/* Website Ventures joint Batch 5 + Fire Challenger promotion gate — ChatGPT (OpenAI), 2026-09-09 */
 'use strict';
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -35,23 +35,27 @@ function candidate (root, jobId, index, width, height) {
 
 try {
   const root = fixture();
-  const desktop = candidate(root, 'AG-HERO-PRODUCT-001', 1, 1600, 900);
-  const dry = promote({ root, jobId: 'AG-HERO-PRODUCT-001', variant: 'B', generationId: 'hf-test-desktop', dryRun: true });
+  const desktop = candidate(root, 'AG-HERO-FIRE-VEIL-001', 1, 1600, 900);
+  const dry = promote({ root, jobId: 'AG-HERO-FIRE-VEIL-001', variant: 'B', generationId: 'hf-test-fire-desktop', dryRun: true });
   assert.equal(dry.slotKey, 'agency.hero.desktop');
   assert.equal(fs.existsSync(path.join(root, desktop.item.targetPath)), false, 'dry-run must not copy the candidate');
 
-  promote({ root, jobId: 'AG-HERO-PRODUCT-001', variant: 'B', generationId: 'hf-test-desktop' });
+  promote({ root, jobId: 'AG-HERO-FIRE-VEIL-001', variant: 'B', generationId: 'hf-test-fire-desktop' });
   let registry = JSON.parse(fs.readFileSync(path.join(root, 'WEBSITE-VENTURES-SELECTED-ASSETS.json')));
   assert.equal(registry.slots['agency.hero.desktop'].status, 'selected');
   assert.equal(registry.slots['agency.hero.desktop'].selectedVariant, 'B');
-  assert.equal(registry.slots['agency.hero.desktop'].selectedGenerationId, 'hf-test-desktop');
+  assert.equal(registry.slots['agency.hero.desktop'].selectedJobId, 'AG-HERO-FIRE-VEIL-001');
+  assert.equal(registry.slots['agency.hero.desktop'].selectedGenerationId, 'hf-test-fire-desktop');
   assert.ok(fs.existsSync(path.join(root, desktop.item.targetPath)), 'approved candidate is copied to the final target');
-  assert.throws(() => promote({ root, jobId: 'AG-HERO-PRODUCT-001', variant: 'B', generationId: 'hf-second' }), /--replace/, 'replacement needs explicit approval');
+  assert.throws(() => promote({ root, jobId: 'AG-HERO-FIRE-VEIL-001', variant: 'B', generationId: 'hf-second' }), /--replace/, 'replacement needs explicit approval');
 
   const mobile = candidate(root, 'AG-HERO-MOBILE-001', 0, 1200, 1500);
   promote({ root, jobId: 'AG-HERO-MOBILE-001', variant: 'A', generationId: 'hf-test-mobile' });
   registry = JSON.parse(fs.readFileSync(path.join(root, 'WEBSITE-VENTURES-SELECTED-ASSETS.json')));
   assert.equal(registry.slots['agency.hero.mobile'].selectedPath, mobile.item.targetPath);
+  assert.equal(registry.slots['agency.hero.mobile'].referenceDesktopJobId, 'AG-HERO-FIRE-VEIL-001');
+  assert.equal(registry.slots['agency.hero.mobile'].referenceDesktopCandidatePath, desktop.item.candidatePaths[1]);
+  assert.equal(registry.slots['agency.hero.mobile'].referenceDesktopGenerationId, 'hf-test-fire-desktop');
 
   const blockedRoot = fixture();
   candidate(blockedRoot, 'AG-HERO-MOBILE-001', 0, 1200, 1500);
@@ -61,7 +65,7 @@ try {
   candidate(wrongRatioRoot, 'AG-HERO-TRANSFORM-001', 0, 1000, 1000);
   assert.throws(() => promote({ root: wrongRatioRoot, jobId: 'AG-HERO-TRANSFORM-001', variant: 'A', generationId: 'hf-wrong-ratio' }), /must be 16:9/, 'wrong aspect ratio must be rejected');
 
-  console.log('Website Ventures Batch 5 promotion gate smoke passed.');
+  console.log('Website Ventures joint Batch 5 + Fire Challenger promotion gate smoke passed.');
 } finally {
   for (const root of tempRoots) fs.rmSync(root, { recursive: true, force: true });
 }

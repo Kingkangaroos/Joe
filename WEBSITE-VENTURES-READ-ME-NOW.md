@@ -1,6 +1,6 @@
 # Website Ventures — READ ME NOW
 
-**Current checkpoint: 2026-09-08 · ChatGPT (OpenAI)**
+**Current checkpoint: 2026-09-09 · ChatGPT (OpenAI)**
 
 If another chat/builder needs the current Website Ventures state, **read this file first**, then use `WEBSITE-VENTURES-HQ.md` / `WEBSITE-VENTURES-HQ-STATE.json` for deeper context.
 
@@ -8,11 +8,11 @@ If another chat/builder needs the current Website Ventures state, **read this fi
 
 1. **Website Ventures remains income priority #1.**
 2. **Joey's own Agency Showroom remains the first visual/technical flagship.**
-3. Higgsfield **Batch 5 is still the next manual visual step**: three 2K desktop agency hero concepts → choose one → deliberate 4:5 mobile derivative from that exact winner.
-4. Batch 6 then selects **one recurring Plumbing technician**.
-5. Batch 7 creates only the three currently-needed same-technician working scenes.
-6. Batch 8 remains optional / skip-by-default.
-7. Batch 9 is 4K finish only after actual winners exist.
+3. Higgsfield **Batch 5 is still the next manual visual step**: Joey produces the three existing 2K desktop agency hero concepts.
+4. Required **Batch 6 · Fire Challenger** follows with two Soul 2.0 16:9 2K jobs, max two variants each and max four Unlimited outputs total.
+5. Review all Batch 5 + 6 candidates and choose exactly one joint desktopwinner; only then may Batch 7 mobile use that exact candidate path/generation ID.
+6. Batch 8 selects one recurring Plumbing technician; Batch 9 creates only the three currently-needed same-technician scenes.
+7. Batch 10 remains optional / skip-by-default. Batch 11 is 4K finish only; the agency master uses the exact joint desktopwinner.
 
 No new paid Higgsfield generation was started by ChatGPT during the operational/commercial buildout below.
 
@@ -31,7 +31,7 @@ It now links:
 - static vs WordPress evidence gate;
 - hosting/domain and security boundaries.
 
-`ventures-workspace.html` in Finance → Ventures now points centrally to the Operator Hub and forces `ventures.js?v=11.5` so stale quest copy should not remain cached.
+`ventures-workspace.html` in Finance → Ventures now points centrally to the Operator Hub and forces `ventures.js?v=11.6` so stale quest copy should not remain cached.
 
 ## ACTIVE VISUAL PIPELINE
 
@@ -180,9 +180,10 @@ Status language:
 - bounded first-10 acquisition process.
 
 ### Manual blockers
-- Batch 5 final Agency hero desktop + mobile;
-- Batch 6 recurring technician;
-- Batch 7 same-technician scene set.
+- Batch 5 core Agency desktop candidates produced by Joey;
+- required Batch 6 Fire Challenger and one joint desktop decision;
+- Batch 7 exact-winner mobile derivative;
+- Batch 8 recurring technician and Batch 9 same-technician scene set.
 
 ### Joey decisions still open
 - exact public customer outcome / one-sentence offer;
@@ -364,15 +365,15 @@ The autonomous no-cost infrastructure work is now far ahead of the manual visual
 
 **Next real P0 remains Higgsfield Batch 5.**
 
-The Batch 5 backend is now variant-safe:
+The Batch 5 + Fire Challenger backend is now variant-safe:
 - each 2–3 output job has unique A/B/C intake filenames;
 - Review stores generation ID, score and defects per variant;
-- the three desktop concepts share one exclusive winner gate;
-- the mobile derivative stays locked until that desktop winner exists;
+- the three core directions and two capped Fire Challenger jobs share one exclusive winner gate;
+- the mobile derivative and agency 4K master stay locked until every direction has review coverage and exactly one joint desktopwinner exists;
 - dependent copy resolves the exact winning reference filename;
-- Review can copy one compact Batch 5 handoff back to ChatGPT;
-- ChatGPT has one controlled promotion command that validates the PNG, ratio, provenance, overwrite intent and desktop-before-mobile dependency before updating final files and registries.
+- Review copies one compact Batch 5 + 6 handoff with exact file and generation-ID provenance;
+- ChatGPT has one controlled promotion command that validates the PNG, ratio, provenance, overwrite intent and joint-desktop-before-mobile dependency before updating final files and registries.
 
-The full browserless regression suite is green again (93/93). The Plumbing config path now fails closed before partial client data can leak over the safe master fallback. Stale tests and documentation from the rolled-back Gamenfy Public experiment and the retired broad v2 Higgsfield plan were aligned with current production truth; no Public rollout or generation was re-enabled.
+The full browserless regression suite is green again (96/96). The Plumbing config path still fails closed before partial client data can leak over the safe master fallback. The Higgsfield queue, review gate, promotion gate, manifests and current operating docs now agree on the mandatory Fire Challenger and renumbered Batch 5–11 flow; no generation was started.
 
 Until the selected Agency hero exists, do not bury the project under more random tooling or generated support art. New autonomous work should primarily remove actual blockers, tighten measurement, or prepare evidence — not invent extra scope.

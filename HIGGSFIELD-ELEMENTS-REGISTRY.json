@@ -3,13 +3,13 @@
   "version": 2,
   "updatedAt": "2026-09-08",
   "managedBy": "ChatGPT (OpenAI)",
-  "currentHiggsfieldState": "No reusable Elements currently exist. Only the selected PL-CHAR-001 technician may become an active Element after Batch 6 passes; all other earlier rows are archived hypotheses and are not generation requirements.",
+  "currentHiggsfieldState": "No reusable Elements currently exist. Only the selected PL-CHAR-001 technician may become an active Element after Batch 8 passes; all other earlier rows are archived hypotheses and are not generation requirements.",
   "activeRules": [
     "Never create an Element from an unapproved draft; the source image becomes a consistency anchor.",
     "Only create an Element when a current required job names it as a dependency.",
     "Do not create Elements for one-off FX, generic textures, optional support art or proof images.",
     "Store an eventual real Higgsfield element_id only after creation; never invent an ID.",
-    "Website Ventures Batch 5 uses independent hero exploration and does not require an Element."
+    "Website Ventures Batch 5 and required Batch 6 Fire Challenger use independent hero exploration and do not require an Element."
   ],
   "planned": [
     {
@@ -19,7 +19,7 @@
       "category": "character",
       "status": "blocked-until-batch-6-winner",
       "usedBy": ["PL-STORY-DIAG-001", "PL-STORY-SINK-001", "PL-STORY-TRUST-001"],
-      "createWhen": "Exactly one Batch 6 technician is approved and an Element is materially useful for same-person Batch 7 consistency."
+      "createWhen": "Exactly one Batch 8 technician is approved and an Element is materially useful for same-person Batch 9 consistency."
     }
   ],
   "legacyHypotheses": [

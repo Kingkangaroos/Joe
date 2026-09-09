@@ -2,7 +2,7 @@
 
 > Durable commercial source of truth for Website Ventures inside Gamenfy. Chats are input; this HQ + the structured state/production files are the durable project memory.
 
-Last refreshed: **2026-09-08 by ChatGPT (OpenAI)**
+Last refreshed: **2026-09-09 by ChatGPT (OpenAI)**
 
 ## READ THIS FIRST — CURRENT STATE
 
@@ -33,20 +33,32 @@ The live manual queue is:
 
 The current workflow treats **Batch 4 as complete**. We do not rerun it by default.
 
-#### Batch 5 — Agency Hero Round + mobile derivative — NEXT
+#### Batch 5 — Agency Core Hero Round — NEXT
 
 1. `AG-HERO-TRANSFORM-001` — Transformation Sculpture — Soul 2.0 · 16:9 · 2K.
 2. `AG-HERO-PRODUCT-001` — Website as Luxury Product — Soul 2.0 · 16:9 · 2K.
 3. `AG-HERO-MATERIAL-001` — Material Performance — Soul 2.0 · 16:9 · 2K.
-4. Choose **one** desktop hero winner.
-5. `AG-HERO-MOBILE-001` — use Nano Banana 2 image-to-image · 4:5 · 2K to deliberately recompose that exact winner for mobile. Do not invent a second visual world.
+Joey produces this batch. The definitive desktop decision waits for required Batch 6.
 
-#### Batch 6 — Recurring Plumbing technician
+#### Batch 6 — Fire Challenger — REQUIRED
+
+- `AG-HERO-FIRE-GLASS-001` — Controlled Flame in Glass — Soul 2.0 · 16:9 · 2K.
+- `AG-HERO-FIRE-VEIL-001` — Descending Fire Veil — Soul 2.0 · 16:9 · 2K.
+- Unlimited-preferred, max two variants per job and max four outputs total.
+- Reject fantasy, inferno, a fire-safety disaster, generic stock CGI, clutter and orange kitsch. Pass only high-class work inside the same agency campaign world.
+- Review every Batch 5 + Batch 6 candidate and choose exactly **one** joint desktopwinner. Losing fire remains a reviewed alternative with no finish spend.
+
+#### Batch 7 — Mobile derivative
+
+- `AG-HERO-MOBILE-001` — Nano Banana 2 image-to-image · 4:5 · 2K.
+- Locked until exactly one joint desktopwinner exists; use that exact candidate path and generation ID as reference.
+
+#### Batch 8 — Recurring Plumbing technician
 
 - `PL-CHAR-001` — Soul 2.0 · 3:4 · 2K · four candidates.
 - Choose exactly **one** technician master before any working scenes.
 
-#### Batch 7 — Same-technician working scenes
+#### Batch 9 — Same-technician working scenes
 
 Using the selected `PL-CHAR-001` as reference:
 
@@ -56,7 +68,7 @@ Using the selected `PL-CHAR-001` as reference:
 
 This is deliberately a **small coherent scene set**, not a full generated movie storyboard.
 
-#### Batch 8 — OPTIONAL / code-first
+#### Batch 10 — OPTIONAL / code-first
 
 The prompts exist so we can use them if needed, but **default action is SKIP**:
 
@@ -64,16 +76,16 @@ The prompts exist so we can use them if needed, but **default action is SKIP**:
 - `AG-SUPPORT-PROCESS-001`
 - `AG-SUPPORT-SHOWCASE-001`
 
-Only generate one if the actual coded page, after the Batch 5 hero is integrated, still has a clear visual gap. The agency site should not become an AI-image gallery.
+Only generate one if the actual coded page, after the joint hero is integrated, still has a clear visual gap. The agency site should not become an AI-image gallery.
 
-#### Batch 9 — final 4K masters
+#### Batch 11 — final 4K masters
 
 Only after winners exist:
 
 - `AG-HERO-MASTER-001`
 - `PL-HERO-MASTER-001`
 
-Cinema Studio Image 2.5 · 16:9 · 4K · max 1–2 attempts per master. This is **finish**, not exploration.
+Cinema Studio Image 2.5 · 16:9 · 4K · max 1–2 attempts per master. This is **finish**, not exploration. The agency master remains locked until exactly one joint desktopwinner exists and must use that exact winner as reference.
 
 ---
 
@@ -177,7 +189,7 @@ The agency site is:
 
 ### Current required generated set
 
-Only the current small Batch 6–7 set is required right now:
+Only the current small Batch 8–9 Plumbing set is required right now:
 
 - recurring technician master;
 - diagnosis scene;
@@ -321,6 +333,13 @@ Unconfirmed ideas stay here instead of becoming accidental requirements:
 ---
 
 ## HUMAN CHANGELOG
+
+### 2026-09-09 — mandatory Fire Challenger + joint agency winner gate
+- Inserted required Batch 6 with Controlled Flame in Glass and Descending Fire Veil, capped at four Unlimited outputs total.
+- Moved mobile to Batch 7, Plumbing to Batch 8–9, optional agency support to Batch 10 and final masters to Batch 11 without changing their content.
+- Mobile and agency 4K now unlock from exactly one joint Batch 5 + 6 desktopwinner and retain the exact candidate path/generation ID.
+- Added explicit fire reject/pass gates and preserved losing fire as reviewed alternatives with no finish spend.
+- Workflow-only change: zero images generated and zero credits used.
 
 ### 2026-09-08 — active Higgsfield/manual production system
 - Marked the current workflow's Batch 4 as complete and removed it from the active manual queue.

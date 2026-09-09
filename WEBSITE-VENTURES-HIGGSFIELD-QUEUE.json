@@ -1,7 +1,7 @@
 {
   "name": "Website Ventures Higgsfield Manual Queue",
-  "version": 2,
-  "updatedAt": "2026-09-08",
+  "version": 3,
+  "updatedAt": "2026-09-09",
   "managedBy": "ChatGPT (OpenAI)",
   "source": "Website Ventures project decisions + Production Line v3 + Agency Showroom Slot Contract v1",
   "status": {
@@ -14,6 +14,8 @@
     "Manual higgsfield.ai is the default path for Unlimited exploration.",
     "50% credit balance remaining is a hard review stop for paid generations.",
     "One generation job must have one exact website purpose.",
+    "Batch 6 Fire Challenger is required Unlimited exploration with exactly two jobs, at most two variants per job and at most four outputs total.",
+    "Select exactly one agency desktop winner across every Batch 5 and Batch 6 candidate before any agency derivative or finish job unlocks.",
     "No final 4K credit spend before a 2K still winner is chosen.",
     "Generated demo imagery may not be presented as real completed client work.",
     "For plumbing, lock exactly one recurring technician identity before generating working scenes.",
@@ -22,10 +24,10 @@
   "batches": [
     {
       "number": 5,
-      "name": "Agency Hero Round + Mobile Derivative",
+      "name": "Agency Core Hero Round",
       "status": "next",
       "dependency": "Batch 4 direction winner",
-      "instruction": "Generate the three 16:9 hero concepts inside the chosen direction, select one winner, then create one deliberate 4:5 mobile derivative from that exact winner rather than inventing a second visual world.",
+      "instruction": "Joey generates the three 16:9 core hero concepts. Keep every candidate for the joint review with mandatory Batch 6; do not select the definitive agency desktop winner before the Fire Challenger is reviewed.",
       "jobs": [
         {
           "id": "AG-HERO-TRANSFORM-001",
@@ -65,25 +67,76 @@
           "balance": "Unlimited preferred",
           "prompt": "Abstract but photoreal premium hero for a high-end web design agency: macro architectural composition of flowing clear water crossing polished chrome, pale stone and deep oxblood-red glass, with precise controlled reflections and cinematic studio lighting. The materials feel engineered, tactile and extremely expensive; dynamic enough to imply motion but calm enough for a luxury homepage. Large copy-safe negative space, no text, no logos, no people, no decorative clutter, widescreen 16:9.",
           "gate": "Pass only if the visual impact is strong enough to justify the weaker literal meaning."
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "name": "Fire Challenger",
+      "status": "required-after-batch-5",
+      "dependency": "All Batch 5 core desktop candidates are available for review",
+      "requiredBatch": true,
+      "outputCap": 4,
+      "instruction": "Required Unlimited exploration before the definitive agency hero decision. Generate exactly these two 16:9 Soul 2.0 jobs with at most two variants each (four outputs total maximum), then review them together with every Batch 5 candidate. If neither fire direction wins, preserve both as reviewed alternatives and spend no finish credits on them.",
+      "rejectGate": "Reject fantasy, inferno, a fire-safety disaster, generic stock CGI, an overcrowded composition or orange kitsch.",
+      "passGate": "Accept only when the result feels high-class and unmistakably belongs to the same restrained premium agency campaign world as Batch 5.",
+      "jobs": [
+        {
+          "id": "AG-HERO-FIRE-GLASS-001",
+          "title": "Controlled Flame in Glass",
+          "purpose": "High-end fire/motion challenger for the agency desktop hero",
+          "model": "Higgsfield Soul 2.0",
+          "modelId": "soul_2",
+          "aspectRatio": "16:9",
+          "quality": "2K",
+          "count": "2 variants maximum",
+          "balance": "Unlimited preferred · exploration only",
+          "prompt": "High-end 16:9 campaign hero for an elite digital design agency. One sculptural, physically believable flame is visibly contained and guided through crystal-clear architectural glass, polished chrome and pale natural stone. The surrounding space is calm, pristine and white, with restrained deep oxblood and amber light glowing through the materials. The flame is the sudden visual bam inside an otherwise quiet premium world, controlled rather than dangerous. Photoreal material physics, high-fashion and automotive campaign polish, generous clean copy-safe negative space, no text, no logo, no people, no fantasy, no inferno, no explosion, no safety disaster, no generic stock CGI, no clutter, no orange kitsch, widescreen 16:9.",
+          "avoid": "Reject fantasy, inferno, explosion, uncontrolled fire, a fire-safety disaster, generic stock CGI, overcrowding, orange kitsch, text, logos or people.",
+          "gate": "Pass only if the single controlled flame is physically credible, high-class, copy-safe and clearly lives inside the same restrained agency campaign world as Batch 5."
         },
+        {
+          "id": "AG-HERO-FIRE-VEIL-001",
+          "title": "Descending Fire Veil",
+          "purpose": "High-end vertical fire/motion challenger for the agency desktop hero",
+          "model": "Higgsfield Soul 2.0",
+          "modelId": "soul_2",
+          "aspectRatio": "16:9",
+          "quality": "2K",
+          "count": "2 variants maximum",
+          "balance": "Unlimited preferred · exploration only",
+          "prompt": "High-end 16:9 campaign hero for an elite digital design agency. An elegant downward veil of controlled fire and fine glowing particles travels vertically along crystal-clear glass, polished chrome and pale natural stone inside a quiet white architectural environment. The composition must clearly suggest graceful descending motion without explosion, chaos or danger. Deep oxblood and restrained amber illumination, photoreal material interaction, high-fashion editorial and automotive campaign polish, disciplined minimal composition and generous clean copy-safe space. No text, no logo, no people, no fantasy, no inferno, no cheap or generic CGI, no crowded scene, no orange kitsch, widescreen 16:9.",
+          "avoid": "Reject upward or explosive motion, fantasy, inferno, uncontrolled fire, a fire-safety disaster, generic stock CGI, overcrowding, orange kitsch, text, logos or people.",
+          "gate": "Pass only if the downward motion reads immediately, the fire feels elegant and physically credible, and the result is high-class within the exact Batch 5 agency campaign world."
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "name": "Selected Hero — Mobile 4:5 Derivative",
+      "status": "blocked-until-exactly-one-joint-desktop-winner",
+      "dependency": "Exactly one desktop winner selected across all Batch 5 + Batch 6 candidates",
+      "instruction": "Create the mobile derivative only from the exact jointly selected desktop winner; do not introduce a second campaign world.",
+      "jobs": [
         {
           "id": "AG-HERO-MOBILE-001",
           "title": "Selected Hero — Mobile 4:5 Derivative",
-          "purpose": "Mobile agency hero derived from the selected Batch 5 desktop winner",
+          "purpose": "Mobile agency hero derived from the exact Batch 5 + Batch 6 joint desktop winner",
           "model": "Nano Banana 2",
           "modelId": "nano_banana_2",
           "aspectRatio": "4:5",
           "quality": "2K",
           "count": "1-2 variants",
           "balance": "Unlimited preferred",
-          "reference": "Upload the selected Batch 5 16:9 hero winner as the image reference",
+          "reference": "Upload the exact jointly selected Batch 5 + Batch 6 16:9 desktop winner as the image reference",
+          "referencePolicy": "Must resolve to the exact selected candidate path and generation ID of the single joint desktop winner.",
           "prompt": "Create a deliberate 4:5 mobile composition derived from the supplied winning 16:9 agency hero. Preserve the exact same hero subject, material palette, lighting language, premium visual identity and emotional tone. Recompose rather than merely crop: keep the recognizable subject large and readable at a 390px mobile viewport, maintain clean negative space for nearby website copy, protect important forms from the top and bottom UI-safe areas, and do not introduce new objects, text, logos, people or a second visual concept. The result must unmistakably belong to the same campaign as the desktop master while feeling intentionally art-directed for portrait mobile use.",
-          "gate": "Pass if desktop and mobile clearly belong to one campaign, the subject remains readable at ~390px width and the mobile composition feels intentional rather than like a forced crop."
+          "gate": "Pass only if the supplied reference is the exact single joint desktop winner and desktop/mobile clearly belong to one campaign; the subject remains readable at ~390px and the composition feels intentional rather than cropped."
         }
       ]
     },
     {
-      "number": 6,
+      "number": 8,
       "name": "Plumbing Technician Candidate Round",
       "status": "ready",
       "instruction": "Generate four credible candidates, then choose exactly one recurring technician master.",
@@ -105,10 +158,10 @@
       ]
     },
     {
-      "number": 7,
+      "number": 9,
       "name": "Same Technician Working Scenes",
-      "status": "blocked-until-batch-6-winner",
-      "instruction": "Upload the Batch 6 winner as reference. Identity consistency is mandatory. Generate only scenes the actual showcase can use.",
+      "status": "blocked-until-batch-8-winner",
+      "instruction": "Upload the Batch 8 winner as reference. Identity consistency is mandatory. Generate only scenes the actual showcase can use.",
       "jobs": [
         {
           "id": "PL-STORY-DIAG-001",
@@ -120,7 +173,7 @@
           "quality": "2K",
           "count": "2-3 variants",
           "balance": "Unlimited preferred",
-          "reference": "Upload the winning Batch 6 technician as the reference image",
+          "reference": "Upload the winning Batch 8 technician as the reference image",
           "prompt": "Using the exact same technician identity from the supplied reference image, create a photoreal premium working scene in a bright modern Dutch bathroom. He is calmly diagnosing a real plumbing issue with professional tools, natural body language and realistic hands. Preserve his face, age, hair, build and charcoal/deep-navy technical workwear with the subtle oxblood-red accent. The environment is clean and believable, not a luxury fantasy. Lighting and composition have the polish of a Porsche service campaign while the action still feels like authentic skilled trade work. Leave intentional negative space for website copy. No second technician, no changed face, no hard hat unless physically necessary, no staged corporate pose, no exaggerated smile, no text, no logos, widescreen 16:9.",
           "gate": "Pass only when it is obviously the same person and directly usable on the plumbing flagship."
         },
@@ -134,7 +187,7 @@
           "quality": "2K",
           "count": "2-3 variants",
           "balance": "Unlimited preferred",
-          "reference": "Upload the winning Batch 6 technician as the reference image",
+          "reference": "Upload the winning Batch 8 technician as the reference image",
           "prompt": "Using the exact same technician identity from the supplied reference image, create a premium photoreal service scene of the technician working under a bathroom or kitchen sink in a clean modern Dutch home. Preserve the same face, age, hair, build and deep-charcoal/deep-navy technical workwear with the subtle oxblood-red accent. Natural body posture, realistic hands, believable plumbing tools, authentic concentration, bright but controlled lighting, premium campaign polish, spacious composition with room for website copy, no second technician, no changed identity, no text, no logos, widescreen 16:9.",
           "gate": "Pass when craftsmanship reads clearly at website size and identity remains stable."
         },
@@ -148,18 +201,18 @@
           "quality": "2K",
           "count": "2-3 variants",
           "balance": "Unlimited preferred",
-          "reference": "Upload the winning Batch 6 technician as the reference image",
+          "reference": "Upload the winning Batch 8 technician as the reference image",
           "prompt": "Using the exact same technician identity from the supplied reference image, create a premium photoreal scene showing the technician in a calm trustworthy service moment at the entrance of a clean modern Dutch home or just inside the hallway, ready to help. Preserve his exact identity, clothing and subtle oxblood-red accent. He should feel warm, professional and dependable without becoming corporate or posed. The scene should look like a Porsche-level service campaign translated to authentic trade work. No fake handshake, no second technician, no exaggerated smile, no text, no logos, widescreen 16:9 with clean copy-safe space.",
           "gate": "Pass if the scene increases trust without reading as stock photography or staged corporate imagery."
         }
       ]
     },
     {
-      "number": 8,
+      "number": 10,
       "name": "OPTIONAL — Agency Support Visuals",
       "status": "conditional-code-first",
       "optionalBatch": true,
-      "instruction": "Default action is SKIP. Only generate one of these after the Batch 5 winner is integrated and the actual coded page still has a clear media gap. Do not make three support images just because prompts exist.",
+      "instruction": "Default action is SKIP. Only generate one of these after the exact Batch 5 + Batch 6 joint winner is integrated and the actual coded page still has a clear media gap. Do not make three support images just because prompts exist.",
       "jobs": [
         {
           "id": "AG-SUPPORT-TRANSFORM-001",
@@ -173,7 +226,7 @@
           "balance": "Optional / Unlimited preferred",
           "optional": true,
           "defaultAction": "skip unless coded transformation needs it",
-          "reference": "Use the Batch 5 winning direction/hero as visual reference if generation is justified",
+          "reference": "Use the exact Batch 5 + Batch 6 joint winning direction/hero as visual reference if generation is justified",
           "prompt": "Create a premium supporting website visual in the already chosen agency art direction, focused on the idea of transformation and refinement. Show a close but elegant composition of refined materials such as pale stone, polished chrome, glass and a restrained oxblood-red accent, with a strong sense of craftsmanship, precision and luxury. This image should support a section about turning ordinary businesses into premium digital brands. Photoreal, calm, expensive, modern, no text, no logos, no people, widescreen 16:9.",
           "gate": "Only generate if code/screenshots alone fail the section. If generated, pass only if it obviously belongs to the exact same hero world."
         },
@@ -189,7 +242,7 @@
           "balance": "Optional / Unlimited preferred",
           "optional": true,
           "defaultAction": "skip unless coded process needs it",
-          "reference": "Use the Batch 5 winning direction/hero as visual reference if generation is justified",
+          "reference": "Use the exact Batch 5 + Batch 6 joint winning direction/hero as visual reference if generation is justified",
           "prompt": "Create a premium supporting visual for a high-end web design agency, in the exact same chosen art direction as the winner. The image should communicate precision, process and technical refinement through clean geometry, luxurious materials, controlled lighting and disciplined composition. It must feel expensive and trustworthy, with copy-safe negative space for a process or methodology section. No text, no logos, no people, no generic office imagery, widescreen 16:9.",
           "gate": "Only generate after a real page review shows a media need. If generated, reject generic tech, office stock or a second visual world."
         },
@@ -205,14 +258,14 @@
           "balance": "Optional / Unlimited preferred",
           "optional": true,
           "defaultAction": "skip; prefer real Plumbing demo captures",
-          "reference": "Use the Batch 5 winning direction/hero as visual reference if generation is justified",
+          "reference": "Use the exact Batch 5 + Batch 6 joint winning direction/hero as visual reference if generation is justified",
           "prompt": "Create a supporting showcase image for an elite digital design agency, in the exact same chosen visual direction as the winner. The image should feel like a luxury campaign visual that can sit beside a portfolio or client-results section: sculptural, minimal, premium, highly controlled, photoreal and modern. Suggest product excellence and digital craftsmanship without showing readable UI or text. Use elegant negative space and keep it directly usable on a premium website, widescreen 16:9.",
           "gate": "Default is skip. Generate only if real showcase captures are insufficient; never let it compete with or masquerade as real portfolio evidence."
         }
       ]
     },
     {
-      "number": 9,
+      "number": 11,
       "name": "Final 4K Masters",
       "status": "paid-finish-only-after-winners",
       "instruction": "Do not use this batch for exploration. These are credit-sensitive final masters only.",
@@ -227,9 +280,10 @@
           "quality": "4K",
           "count": "1-2 max",
           "balance": "Credits / finish path",
-          "reference": "Use the winning Batch 5 still as reference image",
+          "reference": "Use the exact single jointly selected Batch 5 + Batch 6 desktop winner as reference image",
+          "referencePolicy": "Must resolve to the exact selected candidate path and generation ID of the single joint desktop winner.",
           "prompt": "Create a final master-quality premium website hero based on the supplied winning still and the exact winning hero concept. Preserve the same overall composition language, art direction, material palette and emotional tone, but increase realism, richness, lighting control and final polish to true flagship quality. The image must remain calm, expensive, modern and directly usable as the hero image for a luxury digital design agency website. Keep clean negative space for headline and CTA. No text, no logos, no people, widescreen 16:9.",
-          "gate": "Only accept if it is clearly better than the 2K winner without changing the winning concept."
+          "gate": "Unlock only after exactly one joint desktop winner exists. Accept only if it uses that exact winner as reference and is clearly better without changing the winning concept."
         },
         {
           "id": "PL-HERO-MASTER-001",
@@ -241,7 +295,7 @@
           "quality": "4K",
           "count": "1-2 max",
           "balance": "Credits / finish path",
-          "reference": "Use the winning Batch 7 technician working scene as reference image",
+          "reference": "Use the winning Batch 9 technician working scene as reference image",
           "prompt": "Create a final master-quality premium plumbing website hero based on the supplied winning technician scene. Preserve the exact same technician identity, premium but believable service aesthetic, composition logic and trustworthiness, while increasing final realism and production polish. The image should look like a flagship service campaign and still feel authentic to a real Dutch plumbing business. Keep generous copy-safe space, no text, no logos, widescreen 16:9.",
           "gate": "Only accept if the exact technician identity survives and the master feels meaningfully more polished than the 2K source."
         }
