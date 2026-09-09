@@ -127,6 +127,12 @@ Important fix:
 
 Measures customer 1–10 active production minutes and blockers. Do not guess fulfilment time from template theory.
 
+ChatGPT measurement integrity gate:
+- a run can be saved, timed or exported only for a matching complete Client Intake with explicit scope;
+- simply opening the page no longer starts elapsed measurement;
+- `launched` requires current Intake/config evidence, all 9 fulfilment phases and all 12 Delivery Gate checks;
+- an accepted launch records a compact evidence-count snapshot with the run so later benchmarks are traceable.
+
 ### 5. Delivery Gate + Change Requests
 - `website-ventures-delivery-gate.html`
 - `WEBSITE-VENTURES-DELIVERY-GATE-V1.json`
