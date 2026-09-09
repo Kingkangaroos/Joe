@@ -21,7 +21,7 @@
 <section class="final" id="contact"><div><h2>Build something people remember.</h2><p>Prototype CTA only. Brand name, exact one-sentence outcome, final pricing and contact mechanism are not locked yet.</p><a class="btn" href="sites.html">← Terug naar Website Lab</a></div></section>
 </main>
 <div class="prototype-note"><b>LAB / NOT PUBLIC COPY.</b> Brandnaam, headline, kleuren, pricing en visual art direction zijn hypotheses. Doel van v0: structuur + interaction ceiling bewijzen vóór asset spend.</div>
-<script src="website-ventures-selected-assets.js"></script>
+<script src="website-ventures-selected-assets.js?v=2"></script>
 <script>
 (function(){
 const hero=document.getElementById('heroStage');const stickyWrap=document.querySelector('.sticky-wrap');const steps=[...document.querySelectorAll('.story-step')];const desktop=document.getElementById('desktop');function onScroll(){const y=window.scrollY;hero.style.setProperty('--scroll',Math.min(1,y/700));const r=stickyWrap.getBoundingClientRect();const total=stickyWrap.offsetHeight-innerHeight;const progress=Math.max(0,Math.min(1,-r.top/Math.max(1,total)));const index=Math.min(steps.length-1,Math.floor(progress*steps.length));steps.forEach((s,i)=>s.classList.toggle('active',i===index));desktop.style.setProperty('--phase',progress.toFixed(3));}addEventListener('scroll',onScroll,{passive:true});onScroll();

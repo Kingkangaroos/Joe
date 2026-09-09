@@ -142,9 +142,9 @@
     const requested = new URLSearchParams(location.search).get('wvclient');
     if (!requested && !document.body.dataset.wvClient) document.body.dataset.wvClient = 'plumbing-demo';
 
-    loadScriptOnce('website-ventures-client-contract.js')
-      .then(function () { return loadScriptOnce('website-ventures-client-config.js'); })
-      .then(function () { return loadScriptOnce('website-ventures-plumbing-template.js'); })
+    loadScriptOnce('website-ventures-client-contract.js?v=1')
+      .then(function () { return loadScriptOnce('website-ventures-client-config.js?v=2'); })
+      .then(function () { return loadScriptOnce('website-ventures-plumbing-template.js?v=2'); })
       .catch(function (err) {
         console.warn('[Website Ventures] client template bootstrap unavailable; hardcoded Plumbing fallback retained.', err);
         document.body.dataset.wvTemplateState = 'fallback';
