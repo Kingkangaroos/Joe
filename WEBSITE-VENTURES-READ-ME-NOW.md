@@ -147,6 +147,12 @@ Also records out-of-scope requests, estimated extra minutes, price impact and de
 
 Produces a handoff summary for URL, ownership, hosting, scope, revisions, support and future changes.
 
+ChatGPT handoff release gate:
+- the handoff stays a labelled concept until current Intake/config evidence, all 12 Delivery Gate checks and explicit opleverdetails pass;
+- customer copy requires an HTTPS live URL plus explicit domain owner, hosting and support responsibility;
+- stale 12/12 state cannot override a now-invalid Intake or Factory config;
+- customer-provided values are HTML-escaped in the preview.
+
 ## COMMERCIAL READINESS
 
 Sources:
