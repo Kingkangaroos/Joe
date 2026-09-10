@@ -21,19 +21,17 @@
   "activePrototype": {
     "id": "AG-SCROLL-HERO-LAB-V1",
     "file": "website-ventures-agency-scroll-hero-lab.html",
-    "currentLabVersion": "v1.3",
-    "status": "lab-testing",
+    "currentLabVersion": "v1.4",
+    "status": "integrated-lab-testing",
     "approvedByJoeyToBuild": "2026-09-10",
-    "visualReference": "Product A direction: thin black/glass tablet over a large rough pale stone in a calm white premium architectural/travertine environment, with polished chrome/glass and restrained oxblood red.",
+    "visualReference": "Product A direction: thin black-glass/chrome tablet over a large rough pale stone in a calm premium architectural environment with restrained oxblood red.",
     "motionReference": "Higgsfield 3D Jutsu motion v7: friendly smooth diagonal lift, less zoom, tablet edges remain visible, soft peak, return to the same stone.",
     "latestChanges": [
-      "Kept the scroll interaction active in narrow in-app browsers instead of falling back to a static layout.",
-      "Slowed the scroll-follow interpolation for a softer, friendlier pickup and return.",
-      "Added a subtle arc to the diagonal lift instead of a straight mechanical translation.",
-      "Reduced peak scale again so the physical tablet frame stays clearly visible.",
-      "Rebuilt the stone blockout with more mass, grain, contour variation and a restrained surface rift.",
-      "Refined the tablet toward black glass, chrome/satin metal and restrained oxblood accenting.",
-      "Kept the screen handoff tied to real coded demo pages rather than generated fake UI."
+      "Promoted the accepted Product-A motion architecture from an isolated hero proof into a full Agency Showroom Lab page.",
+      "Kept the same-stone lift/return and narrow-browser scroll motion intact.",
+      "Added real coded Plumbing and Architectural Luxury showcases after the hero.",
+      "Added a productized three-step delivery story, founding-offer block and final CTA section without inventing client proof.",
+      "Kept all AI image/video generation at zero credits for this integration pass."
     ],
     "interactionContract": [
       "Start with the tablet resting on the same large pale stone.",
@@ -41,54 +39,33 @@
       "At the peak the tablet fills most, but not all, of the viewport so its physical edges remain visible.",
       "The tablet screen becomes real HTML and shows coded Website Ventures demos rather than generated fake website screenshots.",
       "First live preview is Premium Plumbing; second prototype preview is the preserved Architectural Luxury scroll test.",
-      "Later scroll returns the same tablet to the same stone, reserving the end state for a future CTA."
+      "Later scroll returns the same tablet to the same stone.",
+      "After the hero loop the user continues into one coherent agency narrative rather than a separate prototype page."
     ],
     "deliberatelyDeferred": [
-      "photoreal final Product A material fidelity",
+      "final Product A photoreal material fidelity",
       "liquid marble/water/chrome effects",
       "final business name and typography lock",
       "final agency copy",
+      "real customer proof until genuine proof exists",
       "paid Seedance or image generation",
-      "live agency publication"
+      "public agency launch"
     ],
-    "nextGate": "Joey scroll-tests Lab v1.3 and judges whether the Product A direction, pickup arc, peak framing and same-stone return now feel strong enough to move from blockout into final-quality hero integration."
+    "nextGate": "Joey tests integrated Lab v1.4 as one full website: hero motion first, then narrative flow, showcase framing and offer. Visual/material polish follows direct feedback."
   },
   "currentWorkingModel": {
     "offer": "Premium website for local service/trade businesses without the owner having to manage a web agency project.",
     "leadingWedge": "Plumbing / installations / trades",
     "leadingWedgeStatus": "hypothesis, not permanent lock",
-    "foundingPrice": {
-      "customers": "1-3",
-      "setupExVat": 995,
-      "monthlyExVat": 49,
-      "status": "active test hypothesis"
-    },
+    "foundingPrice": {"customers": "1-3", "setupExVat": 995, "monthlyExVat": 49, "status": "active test hypothesis"},
     "deliveryTargetHoursAfterCompleteIntake": 6,
     "scope": "Up to 3 core pages, one bundled revision round, mobile + desktop, contact flow, basic technical SEO/analytics and launch after complete intake.",
     "flagship": "site-plumbing-flagship-v1.html"
   },
   "offerExperiments": [
-    {
-      "id": "OFFER-A",
-      "name": "Premium Refresh",
-      "price": "€995 setup + €49/month",
-      "status": "active",
-      "promotionRule": "Keep until real conversations and first paid clients create evidence for changing it."
-    },
-    {
-      "id": "OFFER-B",
-      "name": "Premium Plus",
-      "price": "€1,250 setup + €59/month",
-      "status": "blocked-on-proof",
-      "promotionRule": "Test only if Offer A sells without major price resistance and delivery is consistently <=6 hours."
-    },
-    {
-      "id": "OFFER-C",
-      "name": "Fast Onepager",
-      "price": "€750 setup + €39/month",
-      "status": "fallback-experiment",
-      "promotionRule": "Use only if discovery shows the niche wants materially less scope and values speed more than page count."
-    }
+    {"id": "OFFER-A", "name": "Premium Refresh", "price": "€995 setup + €49/month", "status": "active", "promotionRule": "Keep until real conversations and first paid clients create evidence for changing it."},
+    {"id": "OFFER-B", "name": "Premium Plus", "price": "€1,250 setup + €59/month", "status": "blocked-on-proof", "promotionRule": "Test only if Offer A sells without major price resistance and delivery is consistently <=6 hours."},
+    {"id": "OFFER-C", "name": "Fast Onepager", "price": "€750 setup + €39/month", "status": "fallback-experiment", "promotionRule": "Use only if discovery shows the niche wants materially less scope and values speed more than page count."}
   ],
   "nicheWorkingScores": {
     "warning": "Internal decision scores, not market facts. Real prospect behavior overrides them.",
@@ -101,21 +78,9 @@
     ]
   },
   "evidenceGates": [
-    {
-      "gate": "30 meaningful owner contacts",
-      "question": "Does the target recognize the problem and agree the current online presentation is costing trust/opportunity?",
-      "failureResponse": "Change ICP/message before investing further in design volume."
-    },
-    {
-      "gate": "10 real demos",
-      "question": "Does the flagship create enough desire to generate a serious commercial conversation?",
-      "failureResponse": "Fix demo/offer before adding more niches."
-    },
-    {
-      "gate": "3 paid customers",
-      "question": "Can Joey repeatedly close, deliver and support the founding offer?",
-      "failureResponse": "Do not hire or expand geography yet."
-    }
+    {"gate": "30 meaningful owner contacts", "question": "Does the target recognize the problem and agree the current online presentation is costing trust/opportunity?", "failureResponse": "Change ICP/message before investing further in design volume."},
+    {"gate": "10 real demos", "question": "Does the flagship create enough desire to generate a serious commercial conversation?", "failureResponse": "Fix demo/offer before adding more niches."},
+    {"gate": "3 paid customers", "question": "Can Joey repeatedly close, deliver and support the founding offer?", "failureResponse": "Do not hire or expand geography yet."}
   ],
   "scaleGates": [
     "Delivery repeatedly at or below roughly 6 hours after complete intake.",
@@ -124,8 +89,8 @@
     "A reusable component/visual system so another builder can follow a standard without degrading quality."
   ],
   "productionOrder": [
-    "AG-SCROLL-HERO-LAB-V1 scroll-driven interaction architecture",
-    "AG-HERO visual/material fidelity only after motion architecture is accepted",
+    "AG-SCROLL-HERO-LAB-V1 integrated agency experience",
+    "AG-HERO final Product A material fidelity after interaction acceptance",
     "PL-CHAR-001 consistent master technician",
     "PL-HERO-001 approved premium hero still",
     "PL-STORY still sequence with same technician/world",
@@ -138,19 +103,17 @@
     "Built Premium Plumbing production pack with asset order and paid-credit discipline.",
     "Prepared research-only Flevoland prospect wave; no outreach sent.",
     "Built isolated ChatGPT Venture Lab with offer stress test, niche matrix, unit economics simulator and evidence gates.",
-    "Added Website Lab entry points while preserving all accepted prior website tests.",
-    "Built the Visual Vault and variant-safe Selected Assets flow for reusable winners, real proof frames, CTA patterns, prompt metadata and rejected alternatives.",
-    "Added one shared fail-closed client config contract across Intake, Client Factory and the live Plumbing runtime.",
-    "Closed the Delivery Gate checkbox bypass with a deterministic Intake, scope and Factory-config evidence preflight while keeping real QA human.",
-    "Bound Customer Handoff copy to current evidence, all 12 Delivery Gate checks and explicit release details; escaped customer values in the preview.",
-    "Protected first-10 fulfilment metrics: real Intake required to measure, page-open no longer starts elapsed time, and launched requires 9/9 phases plus 12/12 Delivery Gate and current evidence.",
-    "Built AG-SCROLL-HERO-LAB-V1 as a zero-generation-credit interaction proof with same-stone lift/return and real HTML demo previews.",
-    "Refined the active prototype to Lab v1.2 with narrow-browser motion, softer interpolation, less zoom and a larger Product-A-like stone blockout.",
-    "Pushed Lab v1.3 as a zero-credit Product A visual pass with a softer pickup arc, calmer framing, more convincing rough-stone mass and a thinner black-glass/chrome tablet treatment."
+    "Added Website Lab entry points while preserving accepted prior website tests.",
+    "Built the Visual Vault and variant-safe Selected Assets flow.",
+    "Added shared fail-closed client config contract across Intake, Client Factory and Plumbing runtime.",
+    "Protected fulfilment metrics and customer handoff evidence gates.",
+    "Built AG-SCROLL-HERO-LAB-V1 as a zero-generation-credit interaction proof.",
+    "Refined the prototype through v1.3 with narrow-browser motion, softer interpolation, less zoom and a larger Product-A-like stone blockout.",
+    "Integrated the Product-A hero into a coherent full Agency Showroom Lab v1.4 with coded showcases, process, offer and CTA."
   ],
   "todo": [
-    {"priority": "P0", "task": "Joey tests AG-SCROLL-HERO-LAB-V1 v1.3 motion/composition and judges Product A direction, pickup arc, peak framing and same-stone return.", "blockedByUser": true, "reason": "The next final-quality hero pass should follow Joey's direct visual feedback rather than guessing."},
-    {"priority": "P0", "task": "After visual/motion approval, integrate the accepted hero system into the broader agency showroom and build the final CTA return state.", "blockedByUser": false},
+    {"priority": "P0", "task": "Joey tests integrated Agency Showroom Lab v1.4 and gives direct feedback on hero motion, narrative flow and overall visual ceiling.", "blockedByUser": true, "reason": "Next polish should follow direct visual feedback rather than arbitrary iteration."},
+    {"priority": "P0", "task": "Increase Product A material fidelity after the integrated interaction is accepted.", "blockedByUser": false},
     {"priority": "P0", "task": "Use real sales conversations to test pain, wording and price instead of further theorizing the offer.", "blockedByUser": true, "reason": "External outreach requires Joey's explicit instruction."},
     {"priority": "P0", "task": "Move Premium Plumbing from story shell toward a knockout sellable demo using the production pack.", "blockedByUser": false},
     {"priority": "P1", "task": "After real evidence, promote or reject founding price ladder in HQ state.", "blockedByUser": false},
@@ -158,7 +121,7 @@
     {"priority": "P2", "task": "Define student-builder handoff and QA only after first customer delivery is repeatable.", "blockedByUser": false}
   ],
   "ideaBank": [
-    "Agency hero loop: business identity above a physical tablet on stone -> scroll lifts tablet -> live niche websites inside screen -> later return to same stone around CTA.",
+    "Agency hero loop: business identity above a physical tablet on stone -> scroll lifts tablet -> live niche websites inside screen -> return to same stone.",
     "After core motion approval, explore subtle liquid-marble/chrome/water behavior without turning the page into an AI gallery.",
     "Before/after prospect demo mode that swaps a weak current-site structure for the premium component system without pretending it is already the client's site.",
     "A reusable proof-frame system that makes ordinary real customer photos feel premium without altering what actually happened.",
