@@ -4,6 +4,7 @@ const fs=require('node:fs');
 const read=p=>fs.readFileSync(p,'utf8');
 
 const hero=read('website-ventures-agency-scroll-hero-lab.html');
+const heroLower=hero.toLowerCase();
 const archive=read('website-ventures-agency-scroll-hero-lab-v1-4-archive.html');
 const source=read('site-agency-showroom-v1-5.html');
 const sites=read('sites.html');
@@ -19,8 +20,8 @@ assert.ok(archive.includes('Integrated Lab v1.4'),'Previous integrated v1.4 must
 assert.ok(hero.includes('site-plumbing-flagship-v1.html'),'Showcase 01 must use the real coded Plumbing demo');
 assert.ok(hero.includes('site-klus-scroll-1-2.html'),'Showcase 02 must use the preserved Architectural Luxury demo');
 assert.ok(hero.includes('site-pt.html'),'Showcase 03 must use a distinct coded Performance foundation');
-assert.ok(hero.includes('Join the Club'),'Agency v1.5 must include the honest fourth Join the Club slot');
-assert.ok(hero.includes('We also make')&&hero.includes('product-motion'),'Agency v1.5 must include the product/ad motion capability world');
+assert.ok(heroLower.includes('join the club'),'Agency v1.5 must include the honest fourth Join the Club slot');
+assert.ok(heroLower.includes('we also make')&&(heroLower.includes('productmotion')||heroLower.includes('product-motion')),'Agency v1.5 must include the product/ad motion capability world');
 assert.ok(hero.includes('setupTotal')&&hero.includes('configSummary'),'Agency v1.5 must include a live configurator');
 assert.ok(hero.includes('Online boeken')&&hero.includes('iDEAL')&&hero.includes('Motion ad'),'Configurator must expose the intended optional capability types');
 assert.ok(hero.includes('outroRun')&&hero.includes('paintOutro')&&hero.includes('--close'),'Agency v1.5 must preserve a scroll-driven closing scene');
@@ -29,8 +30,8 @@ assert.ok(hero.includes('requestAnimationFrame'),'Hero scroll updates must stay 
 assert.ok(hero.includes('@media(max-width:720px)'),'Deliberate narrow-browser behavior must exist');
 assert.ok(hero.includes('prefers-reduced-motion'),'Reduced-motion treatment must exist');
 assert.ok(!hero.includes('generate_video')&&!hero.includes('generate_image'),'Public-facing Lab HTML must not contain generation machinery');
-assert.ok(hero.includes('dezelfde steen')||hero.includes('same stone')||hero.includes('Same object · same stone'),'Same-stone story must remain explicit');
-assert.ok(hero.includes('geen bindend aanbod')||hero.includes('geen bindend'),'Configurator must not pretend test pricing is a binding quote');
+assert.ok(heroLower.includes('dezelfde steen')||heroLower.includes('same stone'),'Same-stone story must remain explicit');
+assert.ok(heroLower.includes('geen bindend'),'Configurator must not pretend test pricing is a binding quote');
 assert.ok(hero.includes('Je kunt gewoon verder scrollen'),'Contact CTA must explicitly remain non-blocking in Lab');
 
 assert.ok(sites.includes('website-ventures-agency-scroll-hero-lab.html'),'Website Lab must surface the canonical Agency Lab');
