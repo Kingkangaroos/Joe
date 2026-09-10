@@ -7,6 +7,7 @@ const line=JSON.parse(read('WEBSITE-VENTURES-PRODUCTION-LINE-V3.json'));
 const hq=JSON.parse(read('WEBSITE-VENTURES-HQ-STATE.json'));
 const agency0=read('site-agency-showroom-v0.html');
 const active=read('website-ventures-agency-scroll-hero-lab.html');
+const activeLower=active.toLowerCase();
 const board=read('website-ventures-production-line-v3.html');
 const sites=read('sites.html');
 const oldBoard=read('website-ventures-production-line-v2.html');
@@ -28,7 +29,7 @@ assert.ok(hq.generationStrategy.historicalPlan.includes('Fire Challenger')&&hq.g
 assert.ok(agency0.includes('LAB / NOT PUBLIC COPY.'),'Agency v0 remains preserved as a prototype archive');
 assert.ok(agency0.includes('site-plumbing-flagship-v1.html'),'Historical agency prototype retains Plumbing input');
 assert.ok(active.includes('Agency Showroom · Lab v1.5'),'Canonical Agency page is now v1.5');
-assert.ok(active.includes('Join the Club')&&active.includes('setupTotal')&&active.includes('outroRun'),'v1.5 must include showcases, configurator and ending');
+assert.ok(activeLower.includes('join the club')&&active.includes('setupTotal')&&active.includes('outroRun'),'v1.5 must include showcases, configurator and ending');
 assert.ok(board.includes("fetch('WEBSITE-VENTURES-PRODUCTION-LINE-V3.json'"),'Visual Production Line still reads durable state');
 assert.ok(board.includes('Agency v1.5')&&board.includes('targeted Unlimited sprint'),'Production board must expose current sprint');
 
