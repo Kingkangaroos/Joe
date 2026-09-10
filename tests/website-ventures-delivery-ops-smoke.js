@@ -2,34 +2,33 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const read=p=>fs.readFileSync(p,'utf8');
-
 const delivery=read('website-ventures-delivery-os.html');
 const sales=read('ventures-sales-v2.html');
 const lab=read('sites.html');
 
-assert.ok(delivery.includes('data-gamenfy-scope="personal"'),'Delivery OS must remain personal-only');
-assert.ok(delivery.includes("APP_KEY_PREFIX='venture_delivery:'"),'Delivery must use a user-namespaced cloud prefix');
-assert.ok(delivery.includes('APP_KEY_PREFIX+window.gamenfyUserId'),'Delivery cloud key must be tied to the authenticated account');
-assert.ok(delivery.includes('syncedKeys:[KEY]'),'Delivery must sync only its own state key');
-assert.ok(!delivery.includes('xp.js'),'Delivery must not boot broad RPG cloud sync');
-assert.ok(delivery.includes('Intake gate'),'Delivery must retain intake gate');
-assert.ok(delivery.includes('QA gate'),'Delivery must retain QA gate');
-assert.ok(delivery.includes('LAUNCH GEBLOKKEERD'),'Launch must be blocked in UI until QA is complete');
-assert.ok(delivery.includes('maximaal 3 kernpagina’s'),'Founding scope guardrail must stay visible');
-assert.ok(delivery.includes('één gebundelde revisieronde'),'Revision scope must stay bounded');
-assert.ok(delivery.includes('10 founding slots'),'First-ten delivery capacity must remain explicit');
+assert.ok(delivery.includes('data-gamenfy-scope="personal"'),'Delivery OS remains personal-only');
+assert.ok(delivery.includes("APP_KEY_PREFIX='venture_delivery:'"),'Delivery uses a user-namespaced cloud prefix');
+assert.ok(delivery.includes('APP_KEY_PREFIX+window.gamenfyUserId'),'Delivery cloud key is tied to authenticated account');
+assert.ok(delivery.includes('syncedKeys:[KEY]'),'Delivery syncs only its own state key');
+assert.ok(!delivery.includes('xp.js'),'Delivery does not boot broad RPG cloud sync');
+assert.ok(delivery.includes('Intake gate'),'Delivery retains intake gate');
+assert.ok(delivery.includes('QA gate'),'Delivery retains QA gate');
+assert.ok(delivery.includes('LAUNCH GEBLOKKEERD'),'Launch is blocked until QA completes');
+assert.ok(delivery.includes('maximaal 3 kernpagina’s'),'Founding scope guardrail remains visible');
+assert.ok(delivery.includes('één gebundelde revisieronde'),'Revision scope remains bounded');
+assert.ok(delivery.includes('10 founding slots'),'First-ten capacity remains explicit');
+assert.ok(delivery.includes("SALES_KEY='rpg_venture_sales_v1'"),'Delivery import reads active Sales local state');
+assert.ok(delivery.includes("sales.clients.filter(x=>x&&x.stage==='Gewonnen'"),'Only explicit wins enter Delivery');
+assert.ok(delivery.includes("state.clients.findIndex(x=>!String(x.company||'').trim())"),'Sales import fills only empty Delivery slots');
+assert.ok(delivery.includes("slot.status='Waiting intake'"),'Imported wins start at Waiting intake');
+assert.ok(delivery.includes('slot.intake={};slot.qa={};'),'Import never fabricates intake or QA completion');
+assert.ok(delivery.includes('Bestaande Delivery-klanten worden niet overschreven'),'UI states no-overwrite rule');
+assert.ok(delivery.includes('navigator.clipboard.writeText(text)'),'Intake helper copies text only');
+assert.ok(delivery.includes('er wordt niets verzonden')||delivery.includes('niets automatisch verstuurd'),'Intake helper states nothing is sent');
 
-assert.ok(delivery.includes("SALES_KEY='rpg_venture_sales_v1'"),'Delivery import must read the active Sales local state');
-assert.ok(delivery.includes("sales.clients.filter(x=>x&&x.stage==='Gewonnen'"),'Only explicitly won sales may enter Delivery');
-assert.ok(delivery.includes("state.clients.findIndex(x=>!String(x.company||'').trim())"),'Sales import may fill only empty Delivery slots');
-assert.ok(delivery.includes("slot.status='Waiting intake'"),'Imported wins must start at Waiting intake');
-assert.ok(delivery.includes('slot.intake={};slot.qa={};'),'Import must never fabricate intake or QA completion');
-assert.ok(delivery.includes('Bestaande Delivery-klanten worden niet overschreven'),'UI must state the no-overwrite rule');
-assert.ok(delivery.includes('navigator.clipboard.writeText(text)'),'Intake helper must copy text only');
-assert.ok(delivery.includes('er wordt niets verzonden')||delivery.includes('niets automatisch verstuurd'),'Intake helper must explicitly state that nothing is sent');
-
-assert.ok(sales.includes("APP_KEY_PREFIX='venture_sales:'"),'Sales must keep its isolated namespaced prefix');
-assert.ok(!sales.includes("APP_KEY_PREFIX='venture_delivery:'"),'Sales and delivery cloud channels must stay separate');
-assert.ok(lab.includes('venture_sales')&&lab.includes('venture_delivery'),'Website Lab must explain the state separation');
-
+assert.ok(sales.includes("APP_KEY_PREFIX='venture_sales:'"),'Sales keeps isolated namespaced prefix');
+assert.ok(!sales.includes("APP_KEY_PREFIX='venture_delivery:'"),'Sales and Delivery cloud channels remain separate');
+assert.ok(!delivery.includes("APP_KEY_PREFIX='venture_sales:'"),'Delivery must not write into Sales namespace');
+assert.ok(lab.includes('website-ventures-delivery-os.html'),'Delivery OS remains reachable from Website Lab');
+assert.ok(lab.includes('ventures-sales-v2.html'),'Sales v2 remains reachable from Website Lab');
 console.log('website ventures delivery ops smoke passed');
