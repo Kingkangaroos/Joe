@@ -13,6 +13,8 @@
 <script src="auth.js?v=11.0" defer></script>
 <script src="sync.js?v=11.9" defer></script>
 <script src="hq-note-resync.js?v=1.0" defer></script>
+<link rel="stylesheet" href="hq-asset-inbox.css">
+<script src="hq-asset-inbox.js?v=1.0" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
 <script src="xp.js?v=10.98" defer></script>
 <style>
@@ -25,6 +27,7 @@
   <header class="head"><div class="head-links"><a class="back" id="hqBack" href="jarvis.html">‹ Jarvis</a><a class="ops-link" href="gamenfy-asset-operations.html">Asset Operations →</a></div><div class="kicker">ChatGPT + Joey · durable memory</div><h1>Project HQ</h1><p class="sub">One source of truth for what is active, what is locked, what still needs producing, and what stays an idea rather than an accidental requirement.</p></header>
   <div class="tabs"><button class="tab active" data-project="gamenfy">Gamenfy</button><button class="tab" data-project="website">Website Ventures</button></div>
   <div class="status"><strong id="projectName">Loading…</strong><span id="updatedAt"></span></div>
+  <section class="card" id="hqAssetInbox" aria-label="Shared image inbox"></section>
   <section class="grid">
     <article class="card"><div class="label">Now</div><div id="nowList"></div></article>
     <article class="card"><div class="label">Assets / waiting</div><div id="assetList"></div></article>
