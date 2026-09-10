@@ -1,0 +1,47 @@
+{
+  "name": "Website Ventures Higgsfield Manual Queue",
+  "version": 3,
+  "updatedAt": "2026-09-09",
+  "managedBy": "ChatGPT (OpenAI)",
+  "source": "Website Ventures project decisions + Production Line v3 + Agency Showroom Slot Contract v1",
+  "status": {
+    "batch4": "done",
+    "nextBatch": 5,
+    "rule": "Only work after Batch 4 is active here. Still/reference winners before finish or motion. Optional jobs never block the required queue."
+  },
+  "hardRules": [
+    "Batch 4 is complete; do not regenerate it by default.",
+    "Manual higgsfield.ai is the default path for Unlimited exploration.",
+    "50% credit balance remaining is a hard review stop for paid generations.",
+    "One generation job must have one exact website purpose.",
+    "Batch 6 Fire Challenger is required Unlimited exploration with exactly two jobs, at most two variants per job and at most four outputs total.",
+    "Select exactly one agency desktop winner across every Batch 5 and Batch 6 candidate before any agency derivative or finish job unlocks.",
+    "No final 4K credit spend before a 2K still winner is chosen.",
+    "Generated demo imagery may not be presented as real completed client work.",
+    "For plumbing, lock exactly one recurring technician identity before generating working scenes.",
+    "Agency support imagery is optional: code, the selected hero and real Plumbing captures should carry the showroom wherever possible."
+  ],
+  "archiveNote": "This file preserves the pre-v1.5 Batch 5-11 strategy. Full prompt history also remains in Git history at blob e59231d68e9e3982d3f814636c4fba2c28956930. The old Fire Challenger gate is not active anymore.",
+  "historicalJobs": [
+    "AG-HERO-TRANSFORM-001",
+    "AG-HERO-PRODUCT-001",
+    "AG-HERO-MATERIAL-001",
+    "AG-HERO-FIRE-GLASS-001",
+    "AG-HERO-FIRE-VEIL-001",
+    "AG-HERO-MOBILE-001",
+    "PL-CHAR-001",
+    "PL-STORY-DIAG-001",
+    "PL-STORY-SINK-001",
+    "PL-STORY-TRUST-001",
+    "AG-SUPPORT-TRANSFORM-001",
+    "AG-SUPPORT-PROCESS-001",
+    "AG-SUPPORT-SHOWCASE-001",
+    "AG-HERO-MASTER-001",
+    "PL-HERO-MASTER-001"
+  ],
+  "historicalPolicy": {
+    "reasonArchived": "Agency v1.5 now supplies exact page slots and the remaining Unlimited window is better spent against those slots than against an abstract mandatory batch ladder.",
+    "reuse": "Any old prompt may still be reused as a challenger when it solves a current page slot; no old job is mandatory by virtue of its old batch number.",
+    "fire": "Optional challenger only; never a blocker."
+  }
+}
