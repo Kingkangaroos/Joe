@@ -1,7 +1,7 @@
 {
   "project": "Website Ventures",
   "owner": "Joey",
-  "updatedAt": "2026-09-08",
+  "updatedAt": "2026-09-10",
   "managedBy": ["ChatGPT (OpenAI)"],
   "workflow": {
     "chatIsSourceOfTruth": false,
@@ -12,218 +12,182 @@
     "workspace": "Finance → Ventures",
     "durableSource": "Project Headquarters",
     "operatorHub": "website-ventures-ops.html",
+    "activeAgencyLab": "website-ventures-agency-scroll-hero-lab.html",
+    "activeAgencySourceVariant": "site-agency-showroom-v1-5.html",
+    "previousAgencyArchive": "website-ventures-agency-scroll-hero-lab-v1-4-archive.html",
     "activeProductionLine": "WEBSITE-VENTURES-PRODUCTION-LINE-V3.json",
     "activeHiggsfieldQueue": "WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json",
-    "activePromptBoard": "website-ventures-higgsfield-prompt-board.html",
     "reviewBoard": "website-ventures-higgsfield-review.html",
-    "assetImportManifest": "WEBSITE-VENTURES-ASSET-IMPORT-MANIFEST.json",
     "selectedAssetsRegistry": "WEBSITE-VENTURES-SELECTED-ASSETS.json",
-    "selectedAssetsBoard": "website-ventures-selected-assets.html",
     "selectedAssetsLoader": "website-ventures-selected-assets.js",
-    "assetRoot": "website-ventures-assets/",
     "clientFactory": "website-ventures-client-factory.html",
-    "clientConfigLoader": "website-ventures-client-config.js",
-    "clientConfigSchema": "WEBSITE-VENTURES-CLIENT-CONFIG-SCHEMA.json",
-    "clientConfigRoot": "website-ventures-client-configs/",
-    "plumbingTemplateAdapter": "website-ventures-plumbing-template.js",
-    "templateRuntimeQa": "website-ventures-template-qa.html",
     "fulfilmentRunTracker": "website-ventures-fulfilment-run.html"
   },
+  "northStar": {
+    "customerReaction": "The first reaction should be: this looks exceptionally expensive, intentional and high-effort; then the reachable price should feel surprisingly good rather than cheap.",
+    "productPromise": "Premium-feeling, highly tailored websites for small businesses, built on a reusable production system so quality can stay high without custom-agency overhead on every project.",
+    "qualityBar": "Strong hero, high-quality imagery, short clear information, smooth/cinematic interaction, excellent mobile execution and no obvious template feel.",
+    "perceivedValuePrinciple": "The front end should feel bespoke and high-budget even when roughly 70% of the underlying system is reusable."
+  },
   "priorityOrder": [
-    "P0 · Joey's own Website Ventures / agency showroom",
-    "P0 · Higgsfield Batch 5 + mandatory Batch 6 Fire Challenger joint desktop selection + deliberate mobile derivative",
-    "P0 · One recurring Plumbing technician",
-    "P0 · Only the Plumbing scenes actually needed by the showcase",
-    "P0 · Promote approved winners through the Selected Assets gate and QA agency + Plumbing on mobile/desktop",
-    "P1 · Offer, price, scope, hosting/domain and first-customer fulfilment",
-    "P1 · Acquisition after proof is strong",
-    "P2 · More flagship worlds and broad asset libraries only after evidence"
+    "P0 · Finish Joey's own Agency Showroom as the visual and commercial proof layer.",
+    "P0 · Finish three visibly different example websites and surface them inside the agency site.",
+    "P0 · Use the remaining Higgsfield Unlimited window for assets that directly improve the agency site or those three examples.",
+    "P0 · Create at least one credible product/ad motion example and keep it clearly labelled as a demo until a real case exists.",
+    "P0 · After own site + three strong examples are showable, expose the offer to a real person before building a fourth fictional demo.",
+    "P1 · Validate price, revision boundaries, delivery time and add-on economics with first customers.",
+    "P2 · Scale to more niches, builders or sales capacity only after repeatable delivery and real satisfaction evidence."
   ],
   "now": [
-    "Batch 4 is treated as complete in the current manual generation workflow; do not regenerate it by default.",
-    "Run Batch 5 in the Higgsfield Queue: Joey tests the three agency desktop hero concepts.",
-    "Run required Batch 6 Fire Challenger next: two Soul 2.0 16:9 2K jobs, maximum two variants each and four Unlimited outputs total; reject fantasy, inferno, unsafe fire, stock CGI, clutter and orange kitsch.",
-    "Select exactly one joint desktop winner across every Batch 5 + Batch 6 candidate, then use that exact candidate and generation ID for Batch 7 mobile and the Batch 11 agency 4K master.",
-    "Run Batch 8: generate four credible technician candidates and lock exactly one recurring Plumbing technician.",
-    "Use the selected technician for only the necessary Batch 9 working scenes; identity consistency is mandatory.",
-    "Keep agency support media conditional: first test whether the coded showroom, selected hero, real Plumbing captures and interaction design already carry the page.",
-    "Only approved files may replace coded placeholders through WEBSITE-VENTURES-SELECTED-ASSETS.json; local Review winner checkboxes never publish by themselves.",
-    "The Plumbing customer system is now config-driven: use Client Factory/local drafts for editing, keep one coded master template, and commit approved client JSON only after review.",
-    "Use the Fulfilment Run tracker for customers 1–10 so active production time and blockers are measured instead of guessed.",
-    "Use Batch 11 only for 4K final masters after the applicable exact 2K winners exist.",
-    "Commercial offer, hosting/domain flow, revision boundaries and promised fulfilment time remain open until evidence is strong enough to lock them."
+    "Agency Showroom Lab v1.5 is the active Website Ventures experience.",
+    "The page now follows the intended story: same-stone tablet hero -> three different website worlds + Join the Club slot -> product/ad motion world -> interactive configurator -> optional contact CTA -> cinematic close/return to the stone.",
+    "Premium Plumbing remains showcase 01 and the first commercial customer-template system.",
+    "Architectural Luxury remains a cinematic/storytelling showcase world.",
+    "Performance / Personal Trainer is currently the third coded foundation and still needs a stronger final visual pass before being treated as a finished flagship.",
+    "The product/ad section is currently an internal concept study, not a client case.",
+    "The configurator uses visible test pricing and is not a binding quote system yet.",
+    "Manual Higgsfield Unlimited time should be treated as a short asset-production sprint, not a reason to generate thousands of uncurated images.",
+    "Generation priority is usable winner quality: agency hero/material assets, three example-site heroes/sections, and one product/ad motion direction.",
+    "No mandatory Fire Challenger gate remains. Fire/chrome/liquid effects are optional visual challengers only if they improve a real page slot.",
+    "Only approved assets may replace coded placeholders through the Selected Assets gate.",
+    "Real reviews, client work, measured outcomes, staff identities and certifications remain real-source-only."
   ],
+  "weekSprint": {
+    "window": "2026-09-10 through 2026-09-17",
+    "successDefinition": [
+      "Joey's own agency website stands as one coherent premium experience.",
+      "Three example websites are presentation-ready enough to show inside the agency site.",
+      "At least one ad/product-motion example exists.",
+      "Highest-value remaining Unlimited assets are harvested and organized for real use rather than quantity alone.",
+      "At least one real person sees the offer or a real external test project begins once the site and three examples are ready."
+    ],
+    "unlimitedWindow": "Joey estimates roughly four days remain in the current Unlimited period; exact subscription timing should be verified manually in Higgsfield if needed.",
+    "antiDelayRule": "After the own site plus three examples are good enough to show, do not build a fourth fictional demo before at least one real external viewer/test."
+  },
   "lockedDecisions": {
     "websiteVenturesPriority": "Website selling is the primary near-term income engine.",
-    "agencyFirst": "Joey's own Website Ventures / agency site is built first and sets the visual/technical ceiling before selling the claim to customers.",
-    "agencyFeel": "Maximum-premium, calm Apple-like shell with strong typography, controlled spacing, integrated scroll/motion and excellent mobile execution.",
-    "agencyRole": "The agency site is both showroom and R&D playground; it should demonstrate capability rather than only describe it.",
+    "agencyFirst": "Joey's own Website Ventures / agency site sets the visual and technical ceiling before broad selling.",
+    "agencyFeel": "Maximum-premium, calm, cinematic and highly intentional; Apple-like interaction discipline and Porsche-like polish are quality references, not branding references.",
+    "agencyRole": "The agency site is showroom, offer explainer and R&D proof in one experience.",
     "firstCommercialNiche": "Plumbing/trades remains the first commercial showcase and customer-template system.",
-    "startingGeography": "Almere is the leading first area; Bussum can be useful because Joey already works there.",
-    "operatorPrinciple": "Porsche treatment, authentic tradesperson: premium presentation is allowed while the worker remains credible and recognizably a real trade professional.",
-    "characterStrategy": "One exceptional recurring Plumbing technician is preferred over many unrelated AI people.",
-    "proofIntegrity": "Real completed client work, reviews, staff claims, certifications and measured results stay real. AI demo imagery may never masquerade as proof.",
-    "templateRule": "Customer sites should be system/template-driven and highly reusable, with customer-specific copy, colors, photos and selected identity assets rather than rebuilding from zero.",
-    "mobileRule": "Every important visual/interaction must have a deliberate mobile version; desktop-only wow is rejected.",
-    "higgsfieldRule": "Manual higgsfield.ai is preferred for Unlimited exploration. Still/reference winners first; motion and 4K finish only after approval.",
-    "creditRule": "When 50% of the paid generation balance remains, stop new paid generations and review winners, waste and remaining queue before spending more.",
-    "publicGamenfyPriority": "Gamenfy Public remains a low-cost demand test and must not outrank Website Ventures without real repeated usage evidence."
+    "templateRule": "Aim for roughly 70% reusable underlying structure while front-end identity, color, copy, hero, motion, composition and information rhythm can vary strongly by customer.",
+    "customerChoiceModel": "The product can be configured through five main dimensions: visual theme, hero direction, scroll/motion family, information/story flow and optional functionality/integrations.",
+    "motionLibraryRule": "Start with 3-4 strong motion families and grow toward a broader menu only after real customers reveal what gets chosen; do not prebuild ten fully polished motions just to fill a menu.",
+    "bespokeRule": "Paid bespoke work is allowed outside the core system when the economics justify it; productization should primarily control revision/scope chaos rather than suppress creative variation.",
+    "mobileRule": "Every important visual/interaction needs deliberate mobile behavior.",
+    "proofIntegrity": "No fake reviews, projects, certifications, staff identity or performance claims.",
+    "higgsfieldRule": "Prefer manual Unlimited exploration while available; preserve winners, generation metadata and direct page use.",
+    "qualityOverQuantity": "A smaller curated set of genuinely usable high-quality assets is more valuable than thousands of mediocre generations.",
+    "salesGate": "Own site + three strong examples is the trigger for real external feedback; perfection beyond that point cannot substitute for market evidence."
+  },
+  "agencyExperience": {
+    "activeVersion": "v1.5",
+    "canonicalFile": "website-ventures-agency-scroll-hero-lab.html",
+    "sourceVariant": "site-agency-showroom-v1-5.html",
+    "flow": [
+      "Cinematic pale-stone / black-glass-chrome device hero.",
+      "Device lifts and becomes a real interface to coded examples.",
+      "Three distinct website showcase worlds plus Join the Club / Coming Soon.",
+      "Open-field visual transition into ads/product motion capability.",
+      "Interactive Thuisbezorgd-like website configurator with visible option pricing.",
+      "Optional intro/call CTA; never block the ending behind a booking action.",
+      "Closing sequence returns the device visually to the same stone."
+    ],
+    "guideCharacter": "A subtle generic maker-guide placeholder exists in v1.5. An actual Joey-like character remains optional future polish and should not become gimmicky or be represented as Joey's likeness without a proper reference image.",
+    "publicLaunchStatus": "lab-only"
   },
   "workingCommercialHypotheses": {
-    "foundingPrice": "€349 is a working founding-offer hypothesis, not a permanent ceiling or final public price.",
-    "laterPrice": "€499–€699 is a later working range once scope, quality and fulfilment are proven; not locked.",
-    "controlSession": "A roughly €59 Website Control Session is a possible add-on; not locked.",
-    "domainOwnership": "The customer should remain owner of their domain; Joey may manage DNS/hosting for convenience.",
-    "acquisition": "Prefer active-buyer platforms, referrals, warm/local contacts and legally compliant outreach over generic spam or assumed cold-calling loopholes."
+    "foundingPrice": "€995 setup ex VAT + €49/month is the current active test hypothesis for the core offer; not a permanent ceiling or market fact.",
+    "baseScope": "Up to 3 core pages, responsive desktop/mobile, contact flow and basic technical SEO/analytics, with one bundled revision round as the current working scope.",
+    "configuratorTestAddOns": {
+      "cinematicReveal": 175,
+      "storyScroll": 250,
+      "premiumAssetPack": 95,
+      "bookingSetup": 150,
+      "paymentsIdealSetup": 180,
+      "singleMotionAd": 60,
+      "extraCorePage": 90
+    },
+    "pricingCaveat": "Add-on prices in Agency v1.5 are interface/test hypotheses for learning; they are not locked until real delivery time, demand and willingness-to-pay evidence exists.",
+    "domainOwnership": "Customer should remain owner of their domain; Joey may manage DNS/hosting for convenience.",
+    "acquisition": "Prefer referrals, warm/local contacts, active-buyer platforms, genuine redesign conversations and legally compliant outreach over generic spam."
+  },
+  "firstExternalTest": {
+    "candidate": "A friend with a real weightlifting-belt/product business may become a low-risk external product/commerce test if she wants it.",
+    "commercialFraming": "A small contribution can cover direct generation costs while Joey treats the project primarily as a learning/test case, provided expectations and permission are clear.",
+    "learningGoals": [
+      "Can a real product owner become genuinely happy with the result?",
+      "How much feedback and revision does a real customer require?",
+      "What will someone actually pay?",
+      "How much production time does the work really consume?",
+      "Can the same visual system produce useful web and motion/ad assets?",
+      "Does the finished work create real traction, trust or other measurable value?"
+    ]
   },
   "clientFulfilmentSystem": {
     "status": "technical-system-live-commercial-terms-open",
     "masterTemplate": "site-plumbing-flagship-v1.html",
-    "principle": "One coded Plumbing master plus customer config, real customer assets/proof, selected reusable media and QA. Do not clone/rebuild HTML per customer by default.",
-    "configModes": [
-      "Repo configs live in website-ventures-client-configs/<safe-slug>.json.",
-      "Local drafts use Client Factory and ?wvlocal=1; they do not write GitHub.",
-      "Missing or broken client config keeps the hardcoded Plumbing fallback instead of breaking the page."
-    ],
+    "principle": "Use reusable coded masters plus customer config, real customer assets/proof, selected media and QA; do not rebuild everything from blank by default.",
     "clientFactory": "website-ventures-client-factory.html",
     "runtimeQa": "website-ventures-template-qa.html",
-    "qaFixtureRule": "plumbing-qa-blue is a technical fixture only; it is not an approved brand, offer or future flagship.",
-    "assetRule": "Client config and Selected Assets are separate gates: changing customer copy/theme never auto-approves generated media.",
-    "proofRule": "Reviews, certifications, project imagery, staff claims and measured outcomes must come from a real client source and are never invented by the config system.",
-    "measurement": {
-      "tool": "website-ventures-fulfilment-run.html",
-      "scope": "customers 1–10",
-      "measure": ["active production time", "phase completion", "waiting/client blockers", "desktop QA", "390px mobile QA", "domain/hosting", "launch/handoff"],
-      "decisionRule": "Do not promise ultra-fast fulfilment or lock final pricing from template theory; use measured customer 1–10 evidence."
-    }
+    "fulfilmentRunTracker": "website-ventures-fulfilment-run.html",
+    "measureFirst10": ["active production time", "revision volume", "waiting/client blockers", "desktop/mobile QA", "domain/hosting", "customer satisfaction", "willingness to pay", "launch/handoff"]
   },
-  "agencySlotRules": {
-    "source": "AGENCY-SHOWROOM-SLOT-CONTRACT-V1.json",
-    "hero": {
-      "id": "AG-HERO-001",
-      "externalMediaNeed": "likely",
-      "desktopSource": "16:9, minimum 1920x1080, recognizable subject inside central 70% safe zone",
-      "mobileSource": "4:5, minimum 1200x1500, deliberate composition at ~390px viewport",
-      "rule": "One strong hero/visual-DNA master first; the static frame must already sell premium quality."
-    },
-    "firstScroll": "Reuse the selected hero through code/CSS/JS if possible; do not automatically generate a second asset.",
-    "plumbingShowcase": "Use the real coded Plumbing demo and its approved visuals/screenshots for the agency showcase; do not pay for duplicate agency-specific AI media.",
-    "transformation": "Code/screenshot first. Generate extra media only if the coded comparison fails to communicate the value.",
-    "interaction": "Code first. Add generated media only after the reusable interaction technology itself proves useful.",
-    "offer": "No external visual generation required.",
-    "proof": "Real-source-only. Never generate the evidence itself.",
-    "cta": "No new generation required unless an already-approved asset can be reused cheaply."
-  },
-  "activeGeneration": {
-    "batch4": {"status": "complete", "note": "Current manual workflow treats Batch 4 as done; exact remote-session historical numbering is not used as a requirement for future assets."},
-    "batch5": {
-      "name": "Agency Core Hero Round",
-      "status": "next",
-      "jobs": ["AG-HERO-TRANSFORM-001", "AG-HERO-PRODUCT-001", "AG-HERO-MATERIAL-001"],
-      "goal": "Joey produces the three core 2K desktop agency hero directions before mandatory fire comparison."
-    },
-    "batch6": {
-      "name": "Fire Challenger",
-      "status": "required-after-batch-5",
-      "jobs": ["AG-HERO-FIRE-GLASS-001", "AG-HERO-FIRE-VEIL-001"],
-      "goal": "Generate at most four Unlimited outputs and include every fire candidate in the joint agency desktop decision; preserve losing fire as reviewed alternatives with no finish spend."
-    },
-    "batch7": {
-      "name": "Selected Hero Mobile Derivative",
-      "status": "blocked-until-exactly-one-joint-desktop-winner",
-      "jobs": ["AG-HERO-MOBILE-001"],
-      "goal": "Create the deliberate 4:5 derivative from the exact joint desktop winner only."
-    },
-    "batch8": {
-      "name": "Plumbing Technician Candidate Round",
-      "status": "ready",
-      "jobs": ["PL-CHAR-001"],
-      "goal": "Choose exactly one recurring technician master from four candidates."
-    },
-    "batch9": {
-      "name": "Same Technician Working Scenes",
-      "status": "blocked-until-PL-CHAR-001-winner",
-      "jobs": ["PL-STORY-DIAG-001", "PL-STORY-SINK-001", "PL-STORY-TRUST-001"],
-      "goal": "Produce a small coherent set of usable scenes with the exact same technician identity."
-    },
-    "batch10": {
-      "name": "Conditional Agency Support Visuals",
-      "status": "conditional-code-first",
-      "jobs": ["AG-SUPPORT-TRANSFORM-001", "AG-SUPPORT-PROCESS-001", "AG-SUPPORT-SHOWCASE-001"],
-      "goal": "Only generate a support visual if the actual coded slot still benefits from external media after the joint hero is integrated.",
-      "default": "skip unless needed"
-    },
-    "batch11": {
-      "name": "Final 4K Masters",
-      "status": "blocked-until-winners",
-      "jobs": ["AG-HERO-MASTER-001", "PL-HERO-MASTER-001"],
-      "goal": "Credit-sensitive final polish only; do not use for exploration."
-    }
+  "generationStrategy": {
+    "status": "targeted-manual-unlimited-sprint",
+    "paidCredits": "Do not spend paid connector/image/video credits automatically.",
+    "priorityAssets": [
+      "Agency hero Product-A-quality material/hero options that survive website use and zoom scrutiny.",
+      "Final hero + supporting visual set for Premium Plumbing with one consistent technician identity where people are used.",
+      "Distinct high-quality visual set for showcase 02.",
+      "Distinct high-quality visual set for showcase 03.",
+      "At least one genuinely usable product/ad motion direction for the secondary capability section."
+    ],
+    "selectionRule": "Generate enough variety to find winners, but curate aggressively. The target is a useful library, not a raw-generation count.",
+    "resolutionRule": "Judge assets at real website display size and use upscale/refinement only for selected winners when needed.",
+    "historicalPlan": "Previous Batch 5/6/7 Fire Challenger and joint-winner sequence is preserved as history but is no longer a mandatory gate."
   },
   "integrationGate": {
     "rule": "A generated or captured file is never live merely because it exists or was marked winner in local review state.",
     "requiredSequence": [
-      "Generate/import candidate to the exact manifest path.",
+      "Generate/import candidate to a known manifest path.",
       "Review and approve the candidate.",
-      "Set the intended registry slot status to selected and selectedPath to the real committed file.",
-      "Let website-ventures-selected-assets.js load it into the predefined page slot.",
-      "Verify the Agency/Plumbing page on desktop and mobile before considering the asset integrated."
+      "Set intended registry slot status to selected with a real committed selectedPath.",
+      "Let the Selected Assets loader populate the predefined slot.",
+      "Verify the actual Agency/flagship page on desktop and mobile."
     ],
-    "failSafe": "Pending or failed selected paths retain the existing coded placeholder instead of breaking the page."
+    "failSafe": "Missing/pending/failed selected media falls back to coded presentation rather than breaking the page."
   },
-  "assetsNeeded": [
-    "P0 · One selected agency desktop hero/visual-DNA master from the joint Batch 5 + required Batch 6 pool.",
-    "P0 · A deliberate mobile 4:5 derivative using the exact selected candidate path and generation ID; recompose instead of inventing a second world.",
-    "P0 · PL-CHAR-001 — one selected recurring Plumbing technician master.",
-    "P0 · Small coherent Plumbing working-scene set only after PL-CHAR-001 is locked.",
-    "P0 · Real desktop + mobile captures of the actual Plumbing demo for the agency showcase.",
-    "P1 CONDITIONAL · Agency support visual(s) only when the coded transformation/process/showcase slot demonstrably needs external media.",
-    "P1 · Final 4K agency/Plumbing hero masters only after selected 2K winners.",
-    "P1 · Visual Vault metadata, selected/rejected history, prompt/model/reference/ratio and exact usage.",
-    "REAL-SOURCE-ONLY · future client proof, real reviews and actual project imagery."
-  ],
-  "proposedNotLocked": [
-    "A leaking-bathroom opening hero for Plumbing.",
-    "White/deep-red/chrome/water as the permanent Plumbing art direction.",
-    "Service van as a mandatory asset.",
-    "Phone/contact bridge as a mandatory generated asset.",
-    "A full arrival -> inspection -> repair -> handover generated sequence.",
-    "Large plumbing tool/macro packs before the page proves they are needed.",
-    "Motion versions before still winners exist.",
-    "Three separate agency support images simply because the queue has slots for them."
+  "flagships": [
+    {"id": "agency", "name": "Website Ventures / Agency Showroom", "role": "public capability proof, configurator and R&D ceiling", "status": "P0-active-v1.5"},
+    {"id": "flagship-01", "name": "Premium Plumbing / Installations", "role": "first commercial service-business showcase/customer system", "status": "P0-active"},
+    {"id": "flagship-02", "name": "Architectural Luxury / Renovation", "role": "cinematic/storytelling contrast world", "status": "P0-needs-finalization"},
+    {"id": "flagship-03", "name": "Performance / Personal Trainer", "role": "high-energy conversion contrast world", "status": "P0-coded-foundation-needs-finalization"},
+    {"id": "capability-product", "name": "Product / Motion Ads", "role": "secondary capability and possible future commerce offer line", "status": "concept-until-real-test"}
   ],
   "deferred": [
-    "Broad alternative flagship asset production before agency + Plumbing prove the system.",
-    "Large reusable AI prop libraries without a direct page need.",
-    "Full Gamenfy park/object/skill asset production; general animation technology should be proven first.",
-    "Mass prospect personalization before one strong agency site, one strong Plumbing demo and a locked offer exist."
+    "Large generic asset libraries without direct website use.",
+    "Ten fully polished scroll-motion families before real customer preference evidence.",
+    "Full Joey-like guide character until the core site and examples are stronger.",
+    "Mass prospect personalization before own site + three examples are showable.",
+    "Student/builder delegation before delivery is repeatable.",
+    "Broad geographic scaling before customer satisfaction, unit economics and sales conversion are real."
   ],
-  "ventureBacklog": [
-    "Lock the exact one-sentence customer outcome sold.",
-    "Lock founding offer price, later standard price hypothesis and what is included.",
-    "Define revisions, customer content intake and what counts as bespoke work.",
-    "Choose commercially appropriate hosting/domain/DNS fulfilment and ownership model.",
-    "Use the live Fulfilment Run tracker for customer 1–10 and lock a fulfilment claim only after measured evidence exists.",
-    "Build first prospect criteria for Almere/Bussum after offer/demo lock.",
-    "Build legally compliant acquisition workflow around Joey's full-time job.",
-    "Create student/builder handoff only after customers 1–10 prove the production system.",
-    "Expand flagships, sales capacity or geography only after unit economics and conversion are real."
-  ],
-  "flagships": [
-    {"id": "agency", "name": "Website Ventures / Agency Showroom", "role": "public capability proof and R&D ceiling", "status": "P0-active"},
-    {"id": "flagship-01", "name": "Premium Plumbing / Installations", "role": "first commercial showcase/customer system", "status": "P0-active"},
-    {"id": "flagship-02", "name": "Luxury Renovation / Contractor", "role": "future architecture/before-after test world", "status": "planned"},
-    {"id": "flagship-03", "name": "Beauty / Aesthetics", "role": "future editorial/booking-first world", "status": "planned"},
-    {"id": "flagship-04", "name": "Personal Brand / Coach", "role": "future human/authority-led world", "status": "planned"}
+  "nextActions": [
+    "Polish the three example websites to distinct presentation-ready states.",
+    "Use remaining Unlimited time on the exact asset gaps for Agency + those three sites + one product/ad motion test.",
+    "Replace coded/placeholder visuals only after winner approval.",
+    "Connect a real calendar/contact flow before public launch.",
+    "Once showable, get first real external reaction/test instead of adding another fictional demo.",
+    "Use first-customer evidence to lock pricing, add-ons, revisions, fulfilment promise and scale plan."
   ],
   "ideaBank": [
-    "Apple-level scroll storytelling for ordinary local service businesses.",
-    "Porsche-level presentation care for authentic tradespeople.",
-    "Interactive before/after transformations.",
-    "One recurring demo technician as a reusable reference element.",
-    "Prospect-specific variants derived from locked master compositions rather than redesigning from zero.",
-    "Real project photos inside ultra-premium proof frames.",
-    "Desktop/mobile/before-after sales mockups that make the transformation instantly tangible.",
-    "One extraordinary base system reused heavily and customized deliberately rather than rebuilding every client website from blank."
+    "Thuisbezorgd-like website ordering/configuration experience.",
+    "Three visually different showcase worlds with their own motion language inside one agency story.",
+    "Join the Club / Coming Soon slot that stays honest while creating forward momentum.",
+    "Open-field product-motion world using phones and launch assets as a second visual language.",
+    "Reusable motion library that grows from a few strong families based on real selection data.",
+    "A subtle maker/guide character that can make the studio feel personal without cheapening the premium aesthetic.",
+    "Product/commerce and ad-motion work as a possible second offer line after a genuine external test proves demand and repeatability."
   ]
 }
