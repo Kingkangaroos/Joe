@@ -1,256 +1,120 @@
 {
   "name": "Website Ventures Production Line v3",
-  "version": 3.2,
-  "updatedAt": "2026-09-09",
+  "version": 3.3,
+  "updatedAt": "2026-09-10",
   "managedBy": "ChatGPT (OpenAI)",
-  "sourceOfTruth": "INCOME-HANDOFF-2026-09-07.md + WEBSITE-VENTURES-HQ-STATE.json",
-  "status": "active-manual-higgsfield-generation",
+  "sourceOfTruth": "WEBSITE-VENTURES-HQ-STATE.json",
+  "status": "active-agency-v1.5-targeted-unlimited-sprint",
+  "activeBuild": {
+    "agency": "website-ventures-agency-scroll-hero-lab.html",
+    "agencyVersion": "v1.5",
+    "threeShowcaseGoal": true,
+    "productMotionGoal": true,
+    "salesGate": "After own site + three strong examples are showable, get a real external reaction/test before building a fourth fictional demo."
+  },
   "activeGeneration": {
-    "batch4": "complete",
-    "nextRequiredBatch": 5,
+    "mode": "manual-higgsfield-unlimited-targeted",
+    "nextRequiredBatch": null,
     "queue": "WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json",
-    "cockpit": "website-ventures-higgsfield-prompt-board.html",
     "review": "website-ventures-higgsfield-review.html",
-    "assetManifest": "WEBSITE-VENTURES-ASSET-IMPORT-MANIFEST.json",
     "selectedAssetsRegistry": "WEBSITE-VENTURES-SELECTED-ASSETS.json",
-    "selectedAssetsBoard": "website-ventures-selected-assets.html",
-    "selectedAssetsLoader": "website-ventures-selected-assets.js",
     "assetRoot": "website-ventures-assets/",
     "requiredFlow": [
-      "Batch 5: Joey produces three core agency desktop hero directions",
-      "Batch 6: required Fire Challenger -> two Soul 2.0 jobs -> maximum four Unlimited outputs",
-      "Joint gate: review every Batch 5 + Batch 6 direction and choose exactly one desktop winner",
-      "Batch 7: 4:5 mobile derivative from the exact joint desktop winner",
-      "Batch 8: choose one recurring Plumbing technician",
-      "Batch 9: small same-technician scene set",
-      "Promote only approved committed files through the Selected Assets registry; Review winner state alone never publishes",
-      "Verify selected media in the real Agency/Plumbing pages on desktop and mobile",
-      "Batch 11: final 4K masters only after winners; agency uses the exact joint desktop winner"
+      "Identify exact missing visual slots in Agency v1.5 and the three target example websites.",
+      "Generate manually on higgsfield.ai only for those slots while Unlimited is active.",
+      "Curate for usable quality rather than generation count.",
+      "Review and approve winners before any dependent motion/upscale work.",
+      "Promote only committed approved files through Selected Assets.",
+      "Verify final page use on desktop and mobile."
     ],
-    "optionalFlow": [
-      "Batch 10 agency support visuals are skip-by-default and never block progress"
-    ]
+    "historicalNote": "Old mandatory Batch 5 -> Fire Challenger -> joint winner -> mobile sequence is history only. Fire is no longer a required blocker."
   },
   "priorityOrder": [
-    "P0 Joey agency/showroom website",
-    "P0 select agency hero + mobile derivative",
-    "P0 select recurring Plumbing technician + only needed same-person scenes",
-    "P0 promote approved files through Selected Assets and QA live agency + Plumbing demo on mobile/desktop",
-    "P1 Website commercial fulfilment system",
-    "P2 one-character Gamenfy animation technology pilot when Website Ventures generation is not the active bottleneck",
-    "P2 broad Gamenfy object/park/skill packs"
+    "P0 Agency Showroom v1.5 full experience",
+    "P0 three distinct presentation-ready example websites",
+    "P0 remaining Unlimited assets for Agency + those three examples",
+    "P0 at least one usable product/ad motion example",
+    "P0 recurring Plumbing technician and only the scenes actually used",
+    "P1 first real external test and pricing/delivery evidence",
+    "P2 Gamenfy animation pilot outside Website Ventures sprint"
   ],
   "hardRules": [
-    "Joey manually runs the active Higgsfield queue on higgsfield.ai; do not spend connector credits just because a prompt exists.",
-    "Unlimited exploration is preferred where the selected website model supports it.",
-    "At 50% remaining paid-generation balance, stop new paid work and review winners, waste and remaining required jobs.",
-    "No final 4K generation before a 2K still winner exists.",
-    "A local Review winner checkbox is QA state only; it never makes an asset live.",
-    "A page may replace its coded placeholder only when the intended Selected Assets registry slot is status=selected and selectedPath points to a real committed file.",
-    "Missing/pending/failed selected media must fail safely back to the coded placeholder rather than breaking the page.",
-    "Joey's own agency website sets the visual/technical ceiling before customer templates are pushed further.",
-    "Agency site demonstrates craft primarily through its coded experience, one strong hero system and real showcase captures; it must not become an AI-image gallery.",
-    "Batch 6 Fire Challenger is required Unlimited exploration capped at four outputs; rejected fire remains reviewed without finish spend.",
-    "Batch 10 support visuals are optional and skip-by-default until a real coded section demonstrates a media need.",
-    "Plumbing remains the first customer showcase, not the public top-level Website Ventures identity.",
-    "Generated demo visuals may never masquerade as completed client work, reviews, certifications or measured outcomes.",
-    "Internal prompts, model recipes, production logic and asset registries are competitive IP and must not be exposed on the public agency site.",
-    "Gamenfy Park 3.1 evolution inventory is preserved; do not regenerate existing 13 x 10 evolution sets by default.",
-    "For Gamenfy, prove real character movement with one approved source character before expanding to props, parks or skill packs.",
-    "All unapproved v2 Plumbing scene concepts and full Gamenfy park/object concepts remain hypotheses, not production requirements."
+    "Joey manually runs Higgsfield Unlimited generation; do not spend connector generation credits automatically.",
+    "Quality and direct page usability outrank raw generation quantity.",
+    "No final 4K or expensive motion pass before a lower-cost still/reference winner exists.",
+    "A local Review winner checkbox is QA state only; it never publishes an asset.",
+    "A page replaces a coded placeholder only when the intended Selected Assets slot is selected and points to a real committed file.",
+    "Missing/pending/failed selected media fails safely back to coded presentation.",
+    "Agency v1.5 must feel like multiple bespoke worlds, not an AI gallery or one template recolored three times.",
+    "Plumbing remains showcase 01 and its worker identity must stay consistent where a recurring technician is used.",
+    "Generated demo visuals never masquerade as real client work, reviews, certifications, staff claims or measured outcomes.",
+    "Public pricing remains a test hypothesis until first-client evidence supports it.",
+    "Booking/contact CTA must never block a visitor from continuing to the cinematic ending."
   ],
-  "agencyNarrativeHypothesis": {
-    "status": "prototype-not-approved-copy",
-    "principle": "The website itself demonstrates the quality and interaction Joey sells.",
+  "agencyExperience": {
+    "status": "coded-v1.5-active",
     "flow": [
-      "Hero: immediate premium visual/interaction proof with one clear promise hypothesis",
-      "First-scroll payoff: the hero/system responds so capability is experienced, not described",
-      "Plumbing showcase: real desktop + mobile demo captures as first proof-of-craft",
-      "Transformation demo: coded before/after or ordinary-to-premium interactive comparison",
-      "Reusable premium interaction demo: code-first commercial add-on technology experiment",
-      "Offer/starting-price section: clear but still editable while pricing is tested",
-      "Credibility layer: real evidence only",
-      "CTA: low-friction contact/demo request"
+      "same-stone tablet hero",
+      "three distinct website worlds",
+      "Join the Club / Coming Soon slot",
+      "product/ad motion world",
+      "interactive website configurator",
+      "optional contact / intro CTA",
+      "same-stone cinematic close"
     ],
-    "mobileRule": "Every wow interaction must have a deliberate mobile version; no desktop-only proof."
-  },
-  "agencyBatches": [
-    {
-      "id": "AG-A",
-      "name": "Agency structure + design-system lock",
-      "priority": "P0",
-      "status": "coded-prototype-exists",
-      "spend": "none",
-      "definitionOfDone": "The coded showroom establishes narrative, spacing, type hierarchy, motion rhythm and mobile structure so generated assets can be inserted without redesigning the whole page.",
-      "assets": [
-        {
-          "id": "AG-SHELL-001",
-          "type": "coded-system",
-          "destination": "site-agency-showroom-v0.html",
-          "input": "calm premium shell, strong typography, controlled spacing, restrained palette, interaction-led sections",
-          "format": "responsive HTML/CSS/JS",
-          "variants": 1,
-          "gate": "Feels expensive without relying on stock imagery; mobile still feels intentional; future winners can slot in cleanly."
-        },
-        {
-          "id": "AG-NARR-001",
-          "type": "storyboard",
-          "destination": "agency page section order",
-          "input": "hero -> first-scroll proof -> plumbing showcase -> transformation -> premium interaction -> offer -> credibility -> CTA",
-          "format": "section contract",
-          "variants": 1,
-          "gate": "Each section has one job and one visual slot; no duplicate agency-copy sections."
-        },
-        {
-          "id": "AG-MOBILE-001",
-          "type": "responsive-contract",
-          "destination": "all agency interactions",
-          "format": "390px reference + fluid tablet/desktop",
-          "variants": 1,
-          "gate": "No horizontal overflow; text remains readable; sticky/scroll experiences retain their intended payoff on mobile."
-        }
-      ]
-    },
-    {
-      "id": "AG-B",
-      "name": "Agency exact visual slots",
-      "priority": "P0",
-      "status": "slot-contract-locked",
-      "definitionOfDone": "Generated media is limited to slots with a real page job. External media is not added merely to decorate sections.",
-      "assets": [
-        {
-          "id": "AG-HERO-001",
-          "type": "hero-slot",
-          "destination": "agency above fold + first-scroll payoff",
-          "format": "desktop 16:9 winner + deliberate 4:5 mobile derivative",
-          "variants": 2,
-          "gate": "Strong without copy; stable negative space; first frame sells premium quality; mobile and desktop clearly belong to one campaign."
-        },
-        {
-          "id": "AG-SHOWCASE-PL-001",
-          "type": "showcase-slot",
-          "destination": "first major agency case/demo section",
-          "input": "real captures of the actual Premium Plumbing demo plus its approved visuals",
-          "format": "desktop browser frame + mobile device frame + live-link presentation",
-          "variants": 2,
-          "gate": "Clearly presented as a demo/showcase until a real customer exists; proves desktop and mobile craft.",
-          "generationRule": "Do not generate duplicate agency-specific fake screens."
-        },
-        {
-          "id": "AG-TRANSFORM-001",
-          "type": "interactive-demo-slot",
-          "destination": "ordinary-to-premium transformation section",
-          "format": "coded slider/scrub/scroll state with replaceable visual inputs",
-          "variants": 1,
-          "gate": "Interaction explains value in under 5 seconds; works with touch and keyboard; does not depend on fabricated client evidence.",
-          "generationRule": "Code/screenshot first; Batch 10 visual only if this fails without media."
-        },
-        {
-          "id": "AG-INTERACT-001",
-          "type": "premium-interaction-rnd",
-          "destination": "agency R&D showcase / future paid add-on",
-          "format": "coded interaction first; optional visual assets later",
-          "variants": 1,
-          "gate": "Feels meaningfully premium rather than decorative; reusable in a customer site; mobile fallback remains impressive.",
-          "generationRule": "No separate asset until the interaction technology itself passes."
-        },
-        {
-          "id": "AG-OFFER-001",
-          "type": "commercial-slot",
-          "destination": "offer + starting-price + CTA",
-          "input": "working hypothesis €349 founding / later €499-€699, not yet final",
-          "format": "coded content block",
-          "variants": 1,
-          "gate": "Final price language matches deliverable scope.",
-          "generationRule": "No generation required."
-        },
-        {
-          "id": "AG-PROOF-001",
-          "type": "credibility-slot",
-          "destination": "proof section",
-          "input": "real evidence only",
-          "format": "empty-ready coded component",
-          "variants": 1,
-          "gate": "Every proof claim can be traced to a real customer or measurable fact.",
-          "generationRule": "Never generate the evidence itself."
-        }
-      ]
+    "showcases": [
+      {"id": "SHOW-01", "current": "site-plumbing-flagship-v1.html", "role": "service/trust", "status": "P0-active"},
+      {"id": "SHOW-02", "current": "site-klus-scroll-1-2.html", "role": "cinematic/story", "status": "P0-needs-final-polish"},
+      {"id": "SHOW-03", "current": "site-pt.html", "role": "energy/conversion", "status": "P0-foundation-needs-final-polish"},
+      {"id": "SHOW-04", "current": null, "role": "Join the Club / future real case", "status": "intentional-placeholder"}
+    ],
+    "configurator": {
+      "baseSetupExVat": 995,
+      "monthlyExVat": 49,
+      "status": "test-pricing-only",
+      "dimensions": ["visual theme", "hero direction", "scroll/motion family", "information/story flow", "optional functions/integrations"]
     }
-  ],
+  },
+  "assetSprint": {
+    "success": [
+      "Agency hero/material quality is strong enough for real website display.",
+      "Showcase 01 has a coherent premium visual set and recurring technician where needed.",
+      "Showcase 02 has its own distinct final visual language.",
+      "Showcase 03 has its own distinct final visual language.",
+      "At least one product/ad motion asset can replace the current coded study if it is genuinely better."
+    ],
+    "avoid": [
+      "thousands of unreviewed heroes",
+      "duplicate directions with no page slot",
+      "mandatory fire generation",
+      "fake website UI generated into images",
+      "full motion before still/reference approval"
+    ]
+  },
   "plumbingShowcase": {
-    "priority": "P0-after-agency-hero-selection",
-    "role": "first major showroom demo and first commercial customer template system",
+    "priority": "P0",
+    "role": "first major showroom demo and first commercial customer-template system",
     "fixed": [
       "one strong recurring technician",
       "authentic tradesperson rather than fashion model",
-      "extremely premium shell is allowed",
+      "premium presentation allowed",
       "real customer proof stays real",
-      "template/system reusability is mandatory"
+      "template/system reusability mandatory"
     ],
-    "currentRequiredAssets": [
-      "PL-CHAR-001 recurring technician master",
-      "PL-STORY-DIAG-001 diagnosis scene",
-      "PL-STORY-SINK-001 service/detail scene",
-      "PL-STORY-TRUST-001 arrival/trust scene"
-    ],
-    "proposedNotLocked": [
-      "leaking bathroom opening",
-      "white/deep-red/chrome/water as permanent art direction",
-      "service van",
-      "tool pack",
-      "phone bridge",
-      "full arrival/inspection/repair/handover sequence",
-      "macro material pack",
-      "motion versions"
-    ],
-    "nextGate": "Integrate the selected recurring technician and small working-scene set through the Selected Assets registry into the actual Plumbing demo, then judge what additional scene is genuinely missing before generating more."
+    "nextGate": "Integrate only the technician/scene assets that make the actual Plumbing page stronger, then stop generating once the page has what it needs."
   },
   "gamenfyAnimationPilot": {
-    "priority": "P2-tech-test-while-website-ventures-is-active",
-    "sourceRule": "Use one existing approved character. Do not generate a new skill character for this test.",
-    "tests": [
-      {
-        "id": "GF-PILOT-WALK-001",
-        "type": "real-walk-cycle",
-        "target": "legs and arms change frame-by-frame; no sliding-flat-image illusion",
-        "preferredWorkflow": "AutoSprite walk from one approved character source",
-        "gate": "Feet contact stable, identity stable, body does not morph, loop reads as real walking at app size."
-      },
-      {
-        "id": "GF-PILOT-IDLE-001",
-        "type": "natural-idle-cycle",
-        "preferredWorkflow": "AutoSprite idle",
-        "gate": "Subtle breathing/weight shift/blink style motion without jitter or identity drift."
-      },
-      {
-        "id": "GF-PILOT-JUMP-001",
-        "type": "expressive-jump-cycle",
-        "preferredWorkflow": "AutoSprite jump",
-        "gate": "Clear anticipation, airborne pose and landing; not a vertical translation of a flat cutout."
-      },
-      {
-        "id": "GF-PILOT-INTERACT-001",
-        "type": "character-prop-fx-test",
-        "preferredWorkflow": "one simple existing/temporary prop + custom sprite/CSS/FX",
-        "gate": "Character appears to physically interact with the prop; proves layering architecture before object batching."
-      }
-    ],
-    "fallbackArchitectureGate": "If the above cannot feel genuinely alive after a bounded pilot, stop paid animation batching and prototype rigged 2D limbs/joints (Rive/Spine-style architecture) instead.",
-    "deferred": [
-      "full park world",
-      "11 Daily Mission prop pack",
-      "skill-specific object packs",
-      "new skill characters",
-      "chess/piano/book/weights/whistle/tennis asset packs"
-    ]
+    "priority": "P2-outside-current-website-sprint",
+    "sourceRule": "Use one existing approved character first; prove real movement before scaling asset production.",
+    "tests": ["walk cycle", "idle cycle", "jump cycle", "character-prop interaction"],
+    "deferred": ["full park world", "large skill/object packs", "new character batches"]
   },
-  "beforeHiggsfieldPurchase": [
-    "ACTIVE SPRINT: use the live Higgsfield Queue rather than old v2/P0 manifests.",
-    "Generate manually on higgsfield.ai for Unlimited-supported exploration jobs.",
-    "Use Review winners to record scores/defects and select approved candidates before dependent jobs.",
-    "Remember: Review selection does not publish; promote committed winners only through Selected Assets.",
-    "Keep Batch 10 optional; do not generate support images until the coded page proves a need.",
-    "At 50% of paid credits remaining, stop and review before any further paid generation.",
-    "Keep final 4K masters and motion blocked until still/reference winners are approved."
+  "beforeHiggsfieldUse": [
+    "Open the current targeted queue, not the old Batch 5/6 Fire workflow.",
+    "Name the exact page slot before generating.",
+    "Use Unlimited exploration where supported.",
+    "Review outputs at real website display size and inspect winner quality before upscaling.",
+    "Preserve prompt/model/reference/ratio metadata for useful winners.",
+    "Stop paid generation at the 50% balance guardrail and reassess."
   ]
 }
