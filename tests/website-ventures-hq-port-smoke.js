@@ -1,33 +1,43 @@
-/* Website Ventures HQ port after Joey PR46 follow-up — ChatGPT (OpenAI), 2026-09-06 */
+/* Website Ventures HQ port — ChatGPT (OpenAI), updated 2026-09-10 */
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const read=p=>fs.readFileSync(p,'utf8');
 const state=JSON.parse(read('WEBSITE-VENTURES-HQ-STATE.json'));
+const line=JSON.parse(read('WEBSITE-VENTURES-PRODUCTION-LINE-V3.json'));
+const queue=JSON.parse(read('WEBSITE-VENTURES-HIGGSFIELD-QUEUE.json'));
+
 assert.equal(state.workflow.repository,'Kingkangaroos/Joe');
 assert.equal(state.workflow.workspace,'Finance → Ventures');
+assert.equal(state.workflow.activeAgencyLab,'website-ventures-agency-scroll-hero-lab.html');
+assert.equal(state.agencyExperience.activeVersion,'v1.5');
 assert.equal(state.flagships.length,5);
-assert.equal(state.activeGeneration.batch5.status,'next');
-assert.ok(!state.activeGeneration.batch5.jobs.includes('AG-HERO-MOBILE-001'));
-assert.deepEqual(state.activeGeneration.batch6.jobs,['AG-HERO-FIRE-GLASS-001','AG-HERO-FIRE-VEIL-001']);
-assert.ok(state.activeGeneration.batch7.jobs.includes('AG-HERO-MOBILE-001'));
-assert.ok(state.activeGeneration.batch8.jobs.includes('PL-CHAR-001'));
-assert.ok(state.lockedDecisions.operatorPrinciple.includes('Porsche treatment'));
-assert.ok(state.lockedDecisions.templateRule.includes('reusable'));
-assert.ok(Array.isArray(state.integrationGate.requiredSequence)&&state.integrationGate.requiredSequence.length>=4);
+assert.ok(state.lockedDecisions.agencyFeel.includes('Porsche-like polish'),'Premium quality reference remains explicit without becoming branding');
+assert.ok(state.lockedDecisions.templateRule.includes('70% reusable'),'Reusable-underneath / bespoke-front-end rule remains explicit');
+assert.ok(state.lockedDecisions.motionLibraryRule.includes('3-4 strong motion families'),'Motion library is bounded until customer evidence exists');
+assert.ok(state.lockedDecisions.salesGate.includes('three strong examples'),'Anti-delay external test gate remains locked');
+assert.ok(Array.isArray(state.integrationGate.requiredSequence)&&state.integrationGate.requiredSequence.length>=4,'Selected Assets integration gate remains explicit');
+assert.equal(state.generationStrategy.status,'targeted-manual-unlimited-sprint');
+assert.ok(state.generationStrategy.priorityAssets.length>=5,'HQ records exact targeted asset priorities');
+assert.ok(state.generationStrategy.historicalPlan.includes('Fire Challenger')&&state.generationStrategy.historicalPlan.includes('no longer a mandatory gate'),'Old Fire ladder is history only');
+assert.equal(line.version,3.3,'Production Line is current v3.3');
+assert.equal(line.activeGeneration.nextRequiredBatch,null,'No obsolete mandatory batch blocks production');
+assert.equal(queue.version,4,'Higgsfield queue uses targeted v4');
+assert.equal(queue.status.nextBatch,null,'Targeted queue has no stale next batch');
+
 const workspace=read('ventures-workspace.html');
 assert.ok(workspace.includes('data-space="overview"')&&workspace.includes('data-space="lab"')&&workspace.includes('data-space="pipeline"'),'PR46 three-space shell remains authoritative');
-assert.ok(workspace.includes('project-hq.html?from=ventures&amp;project=website'));
-assert.ok(workspace.includes('lab.html?from=ventures'));
+assert.ok(workspace.includes('project-hq.html?from=ventures&project=website')||workspace.includes('project-hq.html?from=ventures&amp;project=website'),'Project HQ remains reachable');
+assert.ok(workspace.includes('lab.html?from=ventures'),'General Lab remains separately reachable');
 const hq=read('project-hq.html');
-assert.ok(hq.includes('sync.js?v=11.9'),'Project HQ must request the current generation-aware sync cache key');
+assert.ok(hq.includes('sync.js?v=11.9'),'Project HQ requests current sync cache key');
 assert.ok(hq.includes('Venture Backlog'));
 assert.ok(hq.includes('Idea Bank'));
 assert.ok(hq.includes('Visual Production Backlog'));
 assert.ok(hq.includes('Higgsfield sprint'));
-assert.ok(hq.includes('function currentProduction(s)'),'Project HQ must adapt the current activeGeneration schema');
-assert.ok(hq.includes('s.integrationGate?.requiredSequence'),'Project HQ must render the current integration gate as production rules');
+assert.ok(hq.includes('function currentProduction(s)'),'Project HQ retains schema-adapter function');
+assert.ok(hq.includes('s.integrationGate?.requiredSequence'),'Project HQ renders integration gate as production rules');
 assert.ok(hq.includes("hqQs.get('from')==='ventures'"));
 assert.ok(hq.includes("finance.html?tab=ventures"));
 assert.ok(hq.includes("href=\"jarvis.html\""));
-console.log('Website Ventures HQ port smoke passed: rich HQ data is live inside the PR46 Ventures/Venture Lab/Productielijn shell.');
+console.log('Website Ventures HQ v1.5 port smoke passed.');
