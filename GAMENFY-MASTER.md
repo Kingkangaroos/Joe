@@ -4,6 +4,8 @@
 > Joey noemt de assistent "Claudia". App-UI is Engels. Aesthetic: premium & licht ("Daylight"), niet donker/gamey.
 > **Volledige geschiedenis t/m v10.92 staat in `GAMENFY-HISTORY-ARCHIVE.md`** — dit document is bewust kort en beschrijft alleen de huidige staat, geen changelog. Zoek daar alleen als Joey specifiek naar iets ouds vraagt.
 
+> **Current asset-operations override (2026-09-10):** use `GAMENFY-ASSET-OPERATIONS.json` plus `GAMENFY-BADGE-REGISTRY.json` for visual inventory, badge intake, placement strategy, review gates and queue priority. The live art baseline is 13 × 10 Daily Mission frames plus 10 Daily Score Joey frames. No standalone badge originals are currently committed, so do not recreate or invent them.
+
 ---
 
 ## Waarom v11 (24 augustus 2026)

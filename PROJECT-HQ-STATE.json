@@ -1,7 +1,7 @@
 {
   "project": "Gamenfy",
   "owner": "Joey",
-  "updatedAt": "2026-09-07",
+  "updatedAt": "2026-09-10",
   "managedBy": [
     "ChatGPT (OpenAI)",
     "Claude"
@@ -13,6 +13,8 @@
     "userEditable": true
   },
   "now": [
+    "Use Gamenfy Asset Operations as the current source for visual inventory, badge intake, product placements, review gates and zero-credit queue discipline",
+    "Import Joey's already-created badge originals before defining or building any badge UI; no standalone badge collection is currently present in main or the recent character-assets import branch",
     "Reopen Body in the installed PWA and confirm the production v11.9 owner-scoped Fitbit read renders health data; backend owner data is already verified healthy, so any remaining Waiting for Fitbit symptom is a client/PWA runtime reproduction",
     "Visually confirm the unified 13-mission personal roster, mission-only Daily Level, restored four-box Ventures overview, Venture Lab separation and deterministic Lab return navigation on Joey device",
     "Run iPhone Device QA Lab from the installed Gamenfy PWA and capture standalone mode, safe-area, Visual Viewport and max fixed-bottom drift diagnostics; do not patch production bottom navigation until this real-device proof exists",
@@ -25,6 +27,8 @@
     "Decide the final top-level life/dashboard taxonomy without losing the 100-year-plan WHY"
   ],
   "completedThisPass": [
+    "Built a read-only Gamenfy Asset Operations Hub with exact live inventory, mission usage map, badge intake, ranked queue, pass/reject gates and a Lab-only Warm White + Oxblood direction",
+    "Added a machine-checked empty badge registry and asset audit so missing originals cannot silently become invented badges or fake unlocks",
     "Approved chat-character import completed: Budgeting owl L1-L10, Meditation panda L1-L10 and Home Daily Score Joey/King L1-L10 are integrated as optimized transparent WebPs",
     "Broken partial binary import and temporary Park 2 fallback/override bridge removed; native character levels now use direct canonical paths with regression coverage",
     "Daily Missions 2.0 public-only Home integration",
@@ -68,7 +72,57 @@
     "2026-09-06 Website Ventures consolidation: rich four-flagship/Higgsfield/visual-production HQ was ported into the restored Ventures/Venture Lab/Productielijn shell; PR #48 merged as bf848821695bed98a229273eacfb7c707a98c595 and production dpl_WruV9vzjJ7ZYxWyrPcPrccY2Tkpy is READY"
   ],
   "assetsNeeded": [
+    "Joey's already-created badge original files or their exact current location; repository audit found no standalone badge collection, so do not recreate them",
     "Dedicated Gamenfy app icon"
+  ],
+  "visualProduction": [
+    {
+      "priority": "P0",
+      "id": "GF-BADGE-INTAKE-001",
+      "asset": "Joey badge collection intake",
+      "purpose": "Import existing originals with provenance; do not invent replacements, names or unlock triggers from appearance alone.",
+      "group": "Badges",
+      "status": "waiting-on-joey-files"
+    },
+    {
+      "priority": "P0",
+      "id": "GF-BADGE-CONTRACT-001",
+      "asset": "Badge registry + unlock contract",
+      "purpose": "Give every imported badge one canonical trigger, privacy class, locked/unlocked rule, placement and accessible explanation.",
+      "group": "Badges",
+      "status": "blocked-on-intake"
+    },
+    {
+      "priority": "P1",
+      "id": "GF-APP-ICON-001",
+      "asset": "Dedicated Gamenfy PWA icon",
+      "purpose": "Approve one recognizable master before deriving technical install/splash sizes.",
+      "group": "App identity",
+      "status": "needs-direction"
+    },
+    {
+      "priority": "P2",
+      "id": "GF-MOTION-PILOT-001",
+      "asset": "One existing-character WALK proof",
+      "purpose": "Only after badge/dashboard hierarchy is accepted; no new character and no expansion unless WALK passes.",
+      "group": "Motion technology",
+      "status": "deferred"
+    }
+  ],
+  "productionRules": [
+    "No visual without an exact product job, destination, provenance record and review gate.",
+    "Keep the approved 13 x 10 Daily Mission evolutions and 10-stage Daily Score Joey set; do not regenerate them.",
+    "Badges prove durable milestones while mission companions show reversible daily growth; do not duplicate those roles.",
+    "Private mission or badge meaning remains PIN/private-safe on every public-capable surface.",
+    "Gamenfy Asset Operations is read-only and authorizes zero image generation or credit spend."
+  ],
+  "higgsfieldPlan": [
+    "No Gamenfy generation job is authorized in the current Operations Hub pass.",
+    "The existing AutoSprite WALK-first pilot stays deferred until badge integration and dashboard hierarchy are accepted."
+  ],
+  "ideaBank": [
+    "Warm White + Oxblood as a controlled Lab-first token direction; keep white dominant and preserve green/amber semantic states.",
+    "Character Trophy Case as the canonical badge collection, plus one exact-once unlock moment and at most one featured/latest badge on Home."
   ],
   "lockedDecisions": {
     "budgetingCharacter": "owl",
@@ -89,7 +143,10 @@
     "privateDailyPresentation": "On Joey personal Home, all 13 missions are one visual roster. The two anonymized private quests remain separate internally for PIN/private storage and public-export safety, but do not get a separate attention-grabbing section.",
     "dailyMissionAggregate": "Home headline is today's checked mission count. Its approved Joey/King character uses a technical L1 floor for 0-1 checked, then the matching L2-L10 artwork for 2-10+ checked.",
     "ventureStructure": "Finance Ventures keeps the boxed venture overview (Grip, Websites Verkopen, Gamenfy Public, Gamenfy Build) and separates Ventures / Venture Lab / Productielijn. General Lab remains distinct.",
-    "labReturnNavigation": "General Lab defaults back to Jarvis; Venture-launched Lab returns to Finance Ventures through explicit return tokens and must never fall through Character/Body last-tab state."
+    "labReturnNavigation": "General Lab defaults back to Jarvis; Venture-launched Lab returns to Finance Ventures through explicit return tokens and must never fall through Character/Body last-tab state.",
+    "assetOperations": "GAMENFY-ASSET-OPERATIONS.json is the current visual inventory and workflow source. No new asset is imported or created without a named slot, provenance, destination and pass gate.",
+    "badgeRole": "Badges are durable milestone receipts; Daily Mission companions remain the reversible 0-10 growth layer. Character Trophy Case is the proposed canonical collection, unlock moments are exact-once, and Home may show at most one featured/latest badge.",
+    "whiteRedDirection": "Warm White + Oxblood is Lab-only until Joey reviews it and an installed-iPhone QA pass succeeds; shared Home tokens remain unchanged."
   },
   "fitbitReconcileAudit": {
     "verifiedAt": "2026-09-06",

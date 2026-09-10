@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "gamenfy-badge-registry",
+  "updatedAt": "2026-09-10",
+  "managedBy": "ChatGPT (OpenAI)",
+  "status": "awaiting-joey-originals",
+  "assetRoot": "img/gamenfy/badges/",
+  "items": [],
+  "requiredItemFields": [
+    "id",
+    "name",
+    "status",
+    "sourceFile",
+    "assetPath",
+    "privacy",
+    "trigger.source",
+    "trigger.condition",
+    "states.locked",
+    "states.unlocked",
+    "placements",
+    "accessibleDescription"
+  ],
+  "statusFlow": [
+    "intake",
+    "contracted",
+    "reviewed",
+    "wired",
+    "live"
+  ],
+  "notes": [
+    "The empty items array is deliberate: Joey reported that badges exist, but no standalone originals are committed in the current repository.",
+    "Do not invent badge names, triggers or replacement art to fill this registry.",
+    "Locked presentation should normally be derived with CSS from the accepted original; it is not a second generation job."
+  ]
+}
