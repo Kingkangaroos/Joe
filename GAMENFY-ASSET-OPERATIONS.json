@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 1,
+  "id": "gamenfy-asset-operations",
+  "project": "Gamenfy Personal",
+  "version": "1.0.0",
+  "updatedAt": "2026-09-10",
+  "managedBy": "ChatGPT (OpenAI)",
+  "defaultView": "overview",
+  "status": "active",
+  "strategy": {
+    "decision": "Stop making broad visual packs. First turn Joey's existing badges into a data-backed product layer, while preserving the already complete Daily Mission character system.",
+    "firstMove": "Import Joey's existing badge originals and map every badge to one exact trigger, one privacy class and at least one deliberate app surface.",
+    "dailyMissionDecision": "The 13 approved Daily Mission evolution sets and the Daily Score Joey set are complete. Keep them; do not regenerate them.",
+    "badgeRole": "Badges are milestone receipts. Mission companions show day-to-day growth; badges prove durable achievements. They must not duplicate one another.",
+    "publicBoundary": "This board manages Joey's personal Gamenfy. Gamenfy Public is rolled back and receives no automatic promotion from this queue.",
+    "generationAuthorized": false,
+    "creditsSpentThisRound": 0
+  },
+  "inventory": [
+    {
+      "id": "GF-MISSION-EVOLUTIONS",
+      "name": "Daily Mission evolutions",
+      "kind": "approved-evolution-art",
+      "status": "live",
+      "assetCount": 130,
+      "setCount": 13,
+      "source": "img/lab/park31/<mission>/l01.webp ... l10.webp",
+      "representative": "img/lab/park31/steps/l06.webp",
+      "usedIn": [
+        "Home · Daily Missions 2.0 roster",
+        "Park 3.1 · mission detail and level preview",
+        "Lab · Daily Mission companion QA",
+        "Health Trail · Steps runner"
+      ],
+      "decision": "Keep and operate. No replacement batch."
+    },
+    {
+      "id": "GF-DAILY-SCORE",
+      "name": "Daily Score Joey / King",
+      "kind": "approved-evolution-art",
+      "status": "live",
+      "assetCount": 10,
+      "setCount": 1,
+      "source": "img/lab/daily-score/joey/l01.webp ... l10.webp",
+      "representative": "img/lab/daily-score/joey/l06.webp",
+      "usedIn": [
+        "Home · Daily Score headline"
+      ],
+      "decision": "Keep identity and direct score mapping."
+    },
+    {
+      "id": "GF-BADGES",
+      "name": "Joey's badge collection",
+      "kind": "achievement-badges",
+      "status": "awaiting-intake",
+      "assetCount": 0,
+      "setCount": 0,
+      "source": "GAMENFY-BADGE-REGISTRY.json",
+      "representative": null,
+      "usedIn": [
+        "Proposed · Character Trophy Case",
+        "Proposed · one-time unlock moment",
+        "Proposed · one latest or featured badge on Home"
+      ],
+      "decision": "Do not invent replacements. Import the originals, then wire only badges with a valid trigger contract."
+    },
+    {
+      "id": "GF-APP-ICON",
+      "name": "Dedicated app icon",
+      "kind": "pwa-brand-asset",
+      "status": "missing",
+      "assetCount": 0,
+      "setCount": 0,
+      "source": "manifest.json currently has an empty icons array",
+      "representative": null,
+      "usedIn": [
+        "Future · installed PWA home screen",
+        "Future · splash and notification identity"
+      ],
+      "decision": "One approved master first; derive required icon sizes only after that approval."
+    },
+    {
+      "id": "GF-LEGACY-LAB-ART",
+      "name": "Park 2 / Garden references",
+      "kind": "reference-art",
+      "status": "reference-only",
+      "assetCount": 20,
+      "setCount": 0,
+      "source": "img/lab/park2/",
+      "representative": "img/lab/park2/walking.png",
+      "usedIn": [
+        "Lab · Park 2 reference",
+        "Lab · Daily Mission Garden example",
+        "Daily Windows prototypes"
+      ],
+      "decision": "Do not confuse these references with the live Park 3.1 source."
+    },
+    {
+      "id": "GF-MOTION-PILOT",
+      "name": "Existing-character motion pilot",
+      "kind": "technology-proof",
+      "status": "deferred",
+      "assetCount": 0,
+      "setCount": 0,
+      "source": "GAMENFY-HIGGSFIELD-ANIMATION-PILOT.json",
+      "representative": "img/lab/daily-score/joey/l06.webp",
+      "usedIn": [
+        "Future · Lab-only technology proof"
+      ],
+      "decision": "No credits until badges and dashboard clarity are integrated; WALK must pass before any expansion."
+    }
+  ],
+  "missionSets": [
+    { "key": "budgeting", "label": "Budgeting", "directory": "budgeting", "privacy": "public", "identity": "Owl", "representativeLevel": 6 },
+    { "key": "sleep", "label": "Sleep", "directory": "sleep", "privacy": "public", "identity": "Sleeper", "representativeLevel": 6 },
+    { "key": "nutrition", "label": "Nutrition", "directory": "nutrition", "privacy": "public", "identity": "Nutrition companion", "representativeLevel": 6 },
+    { "key": "walking", "label": "Steps", "directory": "steps", "privacy": "public", "identity": "Runner", "representativeLevel": 6 },
+    { "key": "teeth", "label": "Brush Teeth", "directory": "teeth", "privacy": "public", "identity": "Tooth hero", "representativeLevel": 6 },
+    { "key": "household", "label": "Household", "directory": "household", "privacy": "public", "identity": "Household helper", "representativeLevel": 6 },
+    { "key": "meditation", "label": "Meditation", "directory": "meditation", "privacy": "public", "identity": "Panda", "representativeLevel": 6 },
+    { "key": "gratitude", "label": "Gratitude", "directory": "gratitude", "privacy": "public", "identity": "Gratitude spirit", "representativeLevel": 6 },
+    { "key": "good_deed", "label": "Good Deed", "directory": "good-deed", "privacy": "public", "identity": "Heart hero", "representativeLevel": 6 },
+    { "key": "screen_time", "label": "Screen Time", "directory": "screen-time", "privacy": "public", "identity": "Screen companion", "representativeLevel": 6 },
+    { "key": "cold_shower", "label": "Cold Shower", "directory": "cold-shower", "privacy": "public", "identity": "Ice elemental", "representativeLevel": 6 },
+    { "key": "weed_control", "label": "Gardening", "directory": "no-weed", "privacy": "private", "identity": "Plant guardian", "representativeLevel": 6 },
+    { "key": "no_porn", "label": "Discipline", "directory": "discipline", "privacy": "private", "identity": "Discipline transition", "representativeLevel": 6 }
+  ],
+  "badgeSystem": {
+    "status": "awaiting-original-files",
+    "repositoryAudit": "No standalone badge asset collection was present in origin/main or origin/chatgpt-character-assets-import on 2026-09-10.",
+    "registry": "GAMENFY-BADGE-REGISTRY.json",
+    "assetRoot": "img/gamenfy/badges/",
+    "recommendedSurfaces": [
+      {
+        "rank": 1,
+        "surface": "Character · Trophy Case",
+        "role": "Persistent collection and progress context",
+        "rule": "This is the canonical badge home. Locked badges use a CSS treatment, not a second generated asset."
+      },
+      {
+        "rank": 2,
+        "surface": "Unlock moment",
+        "role": "Immediate reinforcement when a canonical milestone becomes true",
+        "rule": "Show once only after state persistence succeeds; never infer from a decorative click."
+      },
+      {
+        "rank": 3,
+        "surface": "Home",
+        "role": "Small latest or featured proof",
+        "rule": "Maximum one badge. Home stays an overview and never becomes a trophy grid."
+      }
+    ],
+    "requiredContract": [
+      "Stable slug ID and display name",
+      "Original source filename and committed app asset path",
+      "Canonical trigger source and exact condition",
+      "Public or private classification",
+      "Locked and unlocked presentation rule",
+      "At least one deliberate app placement",
+      "Accessible text that explains why it was earned"
+    ]
+  },
+  "queue": [
+    {
+      "rank": 1,
+      "id": "GF-BADGE-INTAKE-001",
+      "priority": "P0",
+      "title": "Import Joey's existing badges",
+      "status": "waiting-on-joey-files",
+      "owner": "Joey supplies originals · ChatGPT imports and validates",
+      "creditPolicy": "0 credits · existing files only",
+      "outcome": "Every supplied original is preserved, normalized into a stable path and represented in the badge registry without inventing triggers.",
+      "dependency": "Joey attaches the badge originals or provides their exact current location."
+    },
+    {
+      "rank": 2,
+      "id": "GF-BADGE-CONTRACT-001",
+      "priority": "P0",
+      "title": "Lock badge meaning before UI wiring",
+      "status": "ready-after-intake",
+      "owner": "ChatGPT proposes mappings · Joey approves ambiguous meaning",
+      "creditPolicy": "0 credits",
+      "outcome": "Each badge has one auditable trigger, privacy class, unlock state and accessible explanation.",
+      "dependency": "GF-BADGE-INTAKE-001"
+    },
+    {
+      "rank": 3,
+      "id": "GF-BADGE-INTEGRATION-001",
+      "priority": "P0",
+      "title": "Build the Trophy Case and unlock route",
+      "status": "blocked-by-contract",
+      "owner": "ChatGPT",
+      "creditPolicy": "0 credits",
+      "outcome": "Character owns the full collection, unlock moments are exact-once, and Home shows at most one featured/latest badge.",
+      "dependency": "Exactly one accepted registry contract for every imported badge"
+    },
+    {
+      "rank": 4,
+      "id": "GF-APP-ICON-001",
+      "priority": "P1",
+      "title": "Choose one dedicated Gamenfy app icon",
+      "status": "needs-joey-direction",
+      "owner": "Joey selects one direction · ChatGPT derives technical sizes",
+      "creditPolicy": "No generation unless Joey explicitly requests it",
+      "outcome": "One recognizable PWA identity instead of an empty manifest icon set.",
+      "dependency": "One approved master icon"
+    },
+    {
+      "rank": 5,
+      "id": "GF-WHITE-RED-LAB-001",
+      "priority": "P1",
+      "title": "Judge the white / oxblood direction",
+      "status": "lab-preview-live",
+      "owner": "Joey",
+      "creditPolicy": "0 credits · CSS only",
+      "outcome": "Approve or reject a warmer white, oxblood red and near-black token family before any global app migration.",
+      "dependency": "Visual review of this Operations Hub"
+    },
+    {
+      "rank": 6,
+      "id": "GF-MOTION-PILOT-001",
+      "priority": "P2",
+      "title": "Test life with one existing character",
+      "status": "deferred",
+      "owner": "ChatGPT after explicit Joey approval",
+      "creditPolicy": "No current authorization; bounded WALK first if later approved",
+      "outcome": "Prove real articulation before any animation pack is considered.",
+      "dependency": "Badge integration and dashboard hierarchy accepted"
+    }
+  ],
+  "gates": {
+    "globalPass": [
+      "The asset has a named product job and exact destination before import or creation.",
+      "The source file, provenance and status are recorded in the manifest or registry.",
+      "The real app data source is canonical; visual concepts never define membership or unlock state.",
+      "Private mission or badge meaning remains PIN/private-safe on every public-capable surface.",
+      "The asset is legible at actual iPhone render size and has useful accessible text.",
+      "Wiring, missing-file, duplicate-ID and privacy regressions pass before deployment."
+    ],
+    "globalReject": [
+      "A pretty asset with no trigger, destination or product job",
+      "A badge that merely duplicates a mission level or another badge",
+      "A new visual pack while approved live art already fills the same job",
+      "Private wording or identity leaking into a public/exportable route",
+      "A broad theme migration approved only from a mockup",
+      "Any generation or credit spend launched from this read-only hub"
+    ],
+    "badgePass": [
+      "One stable ID maps to one original asset and one exact unlock condition.",
+      "The badge communicates an achievement that is meaningfully different from daily character growth.",
+      "Unlock is derived from persisted canonical state and can be reproduced in a test.",
+      "The Trophy Case placement, unlock moment and optional Home feature obey their separate density rules."
+    ],
+    "badgeReject": [
+      "No reliable trigger exists",
+      "The art cannot be matched to a unique achievement",
+      "It relies on fake or manually implied progress",
+      "It needs a separate generated locked-state image",
+      "It clutters Home or competes with Daily Missions 2.0"
+    ]
+  },
+  "themeDirection": {
+    "status": "lab-only",
+    "name": "Warm White + Oxblood",
+    "tokens": {
+      "background": "#F7F4F1",
+      "card": "#FFFFFF",
+      "ink": "#171215",
+      "primary": "#7F1830",
+      "primaryBright": "#B82948",
+      "soft": "#F7E8EB",
+      "line": "#E7DADD"
+    },
+    "rules": [
+      "White stays dominant; red creates hierarchy, not a permanent alarm state.",
+      "Use oxblood for anchors and active states, bright red only for small moments.",
+      "Keep success green and warnings amber so red retains brand meaning.",
+      "Validate in Lab and on an installed iPhone before migrating shared app tokens."
+    ]
+  },
+  "agentStrategy": {
+    "decision": "Do not make the product strategy depend on a model label.",
+    "useHighReasoningFor": [
+      "Repository and state audits",
+      "Cross-surface integration contracts",
+      "Privacy and exact-once unlock tests",
+      "End-to-end production verification"
+    ],
+    "doNotUseItAs": [
+      "Permission to generate more assets",
+      "A replacement for durable manifests and tests",
+      "Proof that a visual direction is good without Joey's review"
+    ]
+  }
+}

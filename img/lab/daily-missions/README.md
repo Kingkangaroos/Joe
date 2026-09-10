@@ -1,114 +1,34 @@
-# Daily Mission character/evolution assets
+# Daily Mission character and evolution assets
 
-**Owner:** Joey / Gamenfy  
-**Maintainer note:** ChatGPT (OpenAI)  
-**Branch created for this work:** `chatgpt/daily-mission-assets`  
-**Date:** 2026-08-30
+**Owner:** Joey / Gamenfy
 
-## Source of truth
+**Current status:** complete and live
 
-Daily Mission membership must never be guessed from visual concepts or general Skills.
+**Operational source:** `../../../GAMENFY-ASSET-OPERATIONS.json`
 
-The public Daily Mission UI is generated from `window.RPG_DEFAULT_SKILLS` using:
+**Exact Park contract:** `../park31/ASSET-MAP.md`
+
+## Canonical membership
+
+Daily Mission membership comes from `window.RPG_DEFAULT_SKILLS`, never from a visual concept:
 
 ```js
 d.isHabit && !d.private && d.active !== false
 ```
 
-Current active public Daily Missions in `xp.js`:
+There are 11 public Daily Missions: Budgeting, Sleep, Nutrition, Steps, Brush Teeth, Household, Meditation, Gratitude, Good Deed, Screen Time and Cold Shower.
 
-1. `budgeting` — Budgeting
-2. `sleep` — Sleep
-3. `nutrition` — Nutrition
-4. `walking` — 10k Steps
-5. `teeth` — Brush Teeth 2×
-6. `household` — Household
-7. `meditation` — Meditation
-8. `gratitude` — Gratitude
-9. `good_deed` — Good Deed
-10. `screen_time` — Screen Time
-11. `cold_shower` — Cold Shower
+Two additional personal daily quests use anonymized presentation and stay private/PIN-backed internally: Gardening (`weed_control`) and Discipline (`no_porn`). Joey's personal Home presents all 13 as one roster without exposing the private meaning.
 
-`grounding` is a habit definition but `active:false`, so it must not be rendered.
+## Current artwork
 
-## Private daily quests
+- `img/lab/park31/` contains 13 approved native sets with `l01.webp` through `l10.webp`: 130 distinct WebPs.
+- `img/lab/daily-score/joey/` contains the approved 10-stage Home Daily Score Joey / King evolution.
+- `img/lab/park2/` is reference/prototype art, not the live Park 3.1 source.
+- Normal skills such as Tennis, Reading, Finger Whistling, Gym, Piano and AI Tools are not Daily Missions merely because reference art exists.
 
-These exist in the Daily flow but are deliberately **not** part of the public habit/evolution grid:
+Do not regenerate or reinterpret an approved live set. New visual work needs a named product slot, destination, provenance and pass gate in Gamenfy Asset Operations first.
 
-- `no_porn` — No Porn
-- `weed_control` — Weed Control
+## Verification
 
-They use the private/PIN daily-quest flow and must not be exposed through a public asset grid by accident.
-
-## Explicit exclusions
-
-The following are examples of normal skills and must **not** appear merely because character art exists for them:
-
-- `tennis` — Tennis
-- `reading` — Reading
-- `whistling` — Finger Whistling
-- `strength` / `gym` — strength training skills
-- `piano` — Piano
-- `ai_tools` — AI Tools
-
-## Existing repo assets that may be reused
-
-| Mission | Existing asset | Status |
-| --- | --- | --- |
-| Budgeting | `img/lab/park2/budgeting.png` | usable concept |
-| Sleep | `img/lab/park2/sleep.png` | usable concept |
-| 10k Steps | `img/lab/park2/walking.png` | usable concept |
-| Meditation | `img/lab/park2/meditation.png` | usable concept |
-| Good Deed | `img/lab/park2/good-deed.png` | usable concept |
-| Nutrition | — | needs dedicated evolution character |
-| Brush Teeth 2× | — | needs dedicated evolution character |
-| Household | — | needs dedicated evolution character |
-| Gratitude | — | needs dedicated evolution character |
-| Screen Time | — | needs dedicated evolution character |
-| Cold Shower | — | needs dedicated evolution character |
-
-## Generated 2026-08-30 concept batch
-
-ChatGPT generated a larger concept batch before validating the live Daily Mission list. It has been classified rather than discarded.
-
-### Potentially relevant Daily concepts
-
-- Sleep evolution card
-- Steps evolution card
-- No Porn evolution concept — private; do not place in public repo UI
-- No Weed / clarity evolution concept — private; do not place in public repo UI
-
-### Useful but **not Daily Mission** concepts
-
-- Finger Whistling
-- Tennis
-- Reading
-- Strength
-- Hydration
-
-These may be reused later for the normal Skills/character system, but they must not be wired into Daily Missions.
-
-### Rejected as data references
-
-The generated Daily Mission dashboard/mockups that showed Tennis, Reading or Finger Whistling as Daily Missions are visual references only and must never be used as membership data.
-
-## Evolution behavior
-
-Daily public habits use the persistent 0–10 score from `rpg_habits_v1`:
-
-- completed day: +1, max 10
-- missed day: -1, min 0
-- no weekly reset
-- level 10: Master
-
-The workbench in `daily-garden.js` reads this real score and renders one square per active public Daily Mission. Missing artwork displays a deliberate placeholder until a mission-specific character is approved.
-
-## Safety rule for future AI work
-
-Before generating or wiring a Daily Mission asset:
-
-1. Read `RPG_DEFAULT_SKILLS` / current app data.
-2. Verify `isHabit`, `active`, and `private` state.
-3. Never infer membership from previous concept art.
-4. Keep private daily assets out of the public grid/repository surface.
-5. Build on a branch and visually verify before merge.
+`tests/daily-membership-smoke.js` locks public/private membership. `tests/park31-smoke.js` verifies the 130-file Park inventory. `tests/gamenfy-asset-operations-smoke.js` verifies the complete operations, badge-intake and zero-credit contract.
