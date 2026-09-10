@@ -21,6 +21,9 @@ assert.ok(!hero.includes('.scroll-run{height:auto}'),'Narrow layout must retain 
 assert.ok(hero.includes('window.innerWidth<=720'),'Motion renderer must deliberately adapt its geometry for narrow browsers');
 assert.ok(hero.includes('prefers-reduced-motion'),'Reduced-motion users need a deliberate fallback');
 assert.ok(!hero.includes('generate_video')&&!hero.includes('generate_image'),'Public Lab prototype must not contain generation machinery');
+assert.ok(hero.includes('Show, don’t claim'),'Integrated Lab must continue from the hero into the agency narrative');
+assert.ok(hero.includes('Founding offer'),'Integrated Lab must expose the current offer as a test rather than a hidden planning detail');
+assert.ok(hero.includes('Geen nep-reviews')||hero.includes('Geen fake proof'),'Integrated Lab must not imply fabricated customer proof');
 
 assert.ok(sites.includes('website-ventures-agency-scroll-hero-lab.html'),'Website Lab must surface the active scroll hero prototype');
 assert.ok(ventures.includes('website-ventures-agency-scroll-hero-lab.html?from=ventures'),'Ventures must link directly to the active agency site');
@@ -29,9 +32,9 @@ assert.ok(ventures.includes('Mijn nieuwe Agency-site'),'Venture Lab workbench mu
 assert.ok(ventures.includes('Gamenfy General Lab'),'The unrelated general Lab must be explicitly distinguished');
 
 assert.equal(state.activePrototype.id,'AG-SCROLL-HERO-LAB-V1','Durable Lab state must point at the active prototype');
-assert.equal(state.activePrototype.status,'lab-testing','Prototype must remain Lab-only until Joey approves it');
-assert.ok(state.activePrototype.deliberatelyDeferred.includes('live agency publication'),'Live publication must remain deferred');
-assert.ok(state.activePrototype.interactionContract.some(x=>x.includes('same tablet')||x.includes('same large pale stone')),'State must preserve the same-object/same-stone motion contract');
+assert.ok(['lab-testing','integrated-lab-testing'].includes(state.activePrototype.status),'Prototype must remain Lab-only until Joey approves public launch');
+assert.ok(state.activePrototype.deliberatelyDeferred.includes('public agency launch')||state.activePrototype.deliberatelyDeferred.includes('live agency publication'),'Public launch must remain deferred');
+assert.ok(state.activePrototype.interactionContract.some(x=>x.includes('same tablet')||x.includes('same large pale stone')||x.includes('same tablet to the same stone')),'State must preserve the same-object/same-stone motion contract');
 assert.ok(state.guardrails.some(x=>x.includes('No paid Higgsfield')),'Paid autonomous generation remains blocked');
 
 console.log('website ventures agency scroll hero lab smoke passed');
