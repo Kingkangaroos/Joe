@@ -15,72 +15,87 @@
     "No prospect calls, emails, DMs or form submissions from the Lab without Joey explicitly requesting outreach.",
     "No fake reviews, client projects, certifications, staff identity or performance claims.",
     "No paid Higgsfield/video generation credits are spent from autonomous Lab work.",
-    "Accepted Website Lab variants are never overwritten; new variants are additive.",
+    "Accepted Website Lab variants are never overwritten without first preserving the prior version as an archive.",
     "Do not scale to students, salespeople or provinces before the first delivery and sales loop is proven."
   ],
   "activePrototype": {
-    "id": "AG-SCROLL-HERO-LAB-V1",
+    "id": "AGENCY-SHOWROOM-LAB-V1-5",
     "file": "website-ventures-agency-scroll-hero-lab.html",
-    "currentLabVersion": "v1.4",
+    "sourceVariant": "site-agency-showroom-v1-5.html",
+    "archivePrevious": "website-ventures-agency-scroll-hero-lab-v1-4-archive.html",
+    "currentLabVersion": "v1.5",
     "status": "integrated-lab-testing",
     "approvedByJoeyToBuild": "2026-09-10",
     "visualReference": "Product A direction: thin black-glass/chrome tablet over a large rough pale stone in a calm premium architectural environment with restrained oxblood red.",
     "motionReference": "Higgsfield 3D Jutsu motion v7: friendly smooth diagonal lift, less zoom, tablet edges remain visible, soft peak, return to the same stone.",
+    "experienceArchitecture": [
+      "Cinematic same-stone tablet hero that becomes a real coded interface.",
+      "Three visually different coded showcase worlds plus a fourth Join the Club / Coming Soon slot.",
+      "Separate open-field product-motion section that demonstrates ad / launch-asset capability without pretending to be client work.",
+      "Interactive website configurator with visible test pricing for motion, hero direction and extra functions.",
+      "Optional contact / introduction CTA that never blocks the rest of the page.",
+      "Cinematic closing sequence where the visual device settles back onto the same stone.",
+      "Subtle guide-character proof-of-concept; not represented as Joey's actual likeness."
+    ],
     "latestChanges": [
-      "Promoted the accepted Product-A motion architecture from an isolated hero proof into a full Agency Showroom Lab page.",
-      "Kept the same-stone lift/return and narrow-browser scroll motion intact.",
-      "Added real coded Plumbing and Architectural Luxury showcases after the hero.",
-      "Added a productized three-step delivery story, founding-offer block and final CTA section without inventing client proof.",
-      "Kept all AI image/video generation at zero credits for this integration pass."
+      "Expanded the full agency flow from v1.4 into the v1.5 concept Joey described during Wandel Mode.",
+      "Added a third coded showcase world using the existing Performance / Personal Trainer foundation and kept a fourth Join the Club slot open for a future real case.",
+      "Added a motion/ad section with a clearly-labelled internal weightlifting-belt product-motion study and a second abstract campaign-motion concept.",
+      "Added an interactive configurator starting from the active €995 + €49/month test hypothesis, with selectable scroll motion, hero direction, booking, payments/iDEAL, motion ad and extra page options.",
+      "Added a non-blocking CTA and scroll-driven closing device/stone scene.",
+      "Preserved integrated Lab v1.4 as an archive before promoting v1.5 to the canonical Ventures link.",
+      "Used zero Higgsfield/image/video generation credits for this code build."
     ],
     "interactionContract": [
       "Start with the tablet resting on the same large pale stone.",
       "Scroll lifts the tablet diagonally and rotates it toward upright with smooth continuous interpolation.",
       "At the peak the tablet fills most, but not all, of the viewport so its physical edges remain visible.",
       "The tablet screen becomes real HTML and shows coded Website Ventures demos rather than generated fake website screenshots.",
-      "First live preview is Premium Plumbing; second prototype preview is the preserved Architectural Luxury scroll test.",
-      "Later scroll returns the same tablet to the same stone.",
-      "After the hero loop the user continues into one coherent agency narrative rather than a separate prototype page."
+      "Showcase section must communicate multiple visual worlds rather than one template repeated three times.",
+      "Ads / product motion must be presented as a capability demo unless and until it becomes a genuine client case.",
+      "Configurator is transparent about test pricing and does not masquerade as a binding quotation.",
+      "Booking/contact is optional; users can always continue to the ending.",
+      "The visual story ends by closing/settling the device back on the same stone."
     ],
     "deliberatelyDeferred": [
       "final Product A photoreal material fidelity",
-      "liquid marble/water/chrome effects",
+      "actual generated hero and showcase winners from the remaining Unlimited sprint",
+      "final three showcase niches and their final hero assets",
+      "real friend/product case until permission/assets exist",
+      "actual calendar/contact backend",
+      "final public pricing lock",
       "final business name and typography lock",
-      "final agency copy",
       "real customer proof until genuine proof exists",
-      "paid Seedance or image generation",
       "public agency launch"
     ],
-    "nextGate": "Joey tests integrated Lab v1.4 as one full website: hero motion first, then narrative flow, showcase framing and offer. Visual/material polish follows direct feedback."
+    "nextGate": "Use the remaining Unlimited window to create only assets that materially upgrade the agency hero and the three target showcase websites, then replace Lab placeholders through the normal approval/Selected Assets gate."
+  },
+  "weekSprint": {
+    "targetDateWindow": "2026-09-10 through 2026-09-17",
+    "primaryOutcome": "Own agency site visually strong and coherent, three distinct example websites represented in it, and at least one product/ad motion example available.",
+    "assetWindow": "Approximately four remaining days of the current Higgsfield Unlimited period per Joey's estimate; use as a production sprint, not a random asset dump.",
+    "salesGate": "Once own site plus three strong examples are good enough to show, do not build a fourth fictional demo before at least one real person has seen the offer or a real external test project has started.",
+    "reuseTarget": "Roughly 70% reusable underlying system while front-end color, copy, hero, motion, composition and information rhythm can vary substantially."
   },
   "currentWorkingModel": {
-    "offer": "Premium website for local service/trade businesses without the owner having to manage a web agency project.",
+    "offer": "Premium-feeling websites for small businesses: visibly high-end and bespoke at a surprisingly reachable test price, while the production system underneath stays reusable.",
     "leadingWedge": "Plumbing / installations / trades",
-    "leadingWedgeStatus": "hypothesis, not permanent lock",
+    "leadingWedgeStatus": "first commercial showcase, not permanent market lock",
     "foundingPrice": {"customers": "1-3", "setupExVat": 995, "monthlyExVat": 49, "status": "active test hypothesis"},
     "deliveryTargetHoursAfterCompleteIntake": 6,
     "scope": "Up to 3 core pages, one bundled revision round, mobile + desktop, contact flow, basic technical SEO/analytics and launch after complete intake.",
-    "flagship": "site-plumbing-flagship-v1.html"
+    "flagship": "site-plumbing-flagship-v1.html",
+    "productization": "Customer chooses or is guided through visual theme, hero direction, scroll/motion family, information flow and optional functionality; builder can still offer paid bespoke work outside the core system."
   },
   "offerExperiments": [
     {"id": "OFFER-A", "name": "Premium Refresh", "price": "€995 setup + €49/month", "status": "active", "promotionRule": "Keep until real conversations and first paid clients create evidence for changing it."},
     {"id": "OFFER-B", "name": "Premium Plus", "price": "€1,250 setup + €59/month", "status": "blocked-on-proof", "promotionRule": "Test only if Offer A sells without major price resistance and delivery is consistently <=6 hours."},
     {"id": "OFFER-C", "name": "Fast Onepager", "price": "€750 setup + €39/month", "status": "fallback-experiment", "promotionRule": "Use only if discovery shows the niche wants materially less scope and values speed more than page count."}
   ],
-  "nicheWorkingScores": {
-    "warning": "Internal decision scores, not market facts. Real prospect behavior overrides them.",
-    "criteria": ["urgency", "willingnessToPay", "digitalGap", "repeatability", "demoImpact"],
-    "scores": [
-      {"niche": "Plumbing / installations", "scoreOutOf25": 24, "rank": 1},
-      {"niche": "Renovation / contractor", "scoreOutOf25": 21, "rank": 2},
-      {"niche": "Beauty / aesthetics", "scoreOutOf25": 19, "rank": 3},
-      {"niche": "Coach / personal brand", "scoreOutOf25": 16, "rank": 4}
-    ]
-  },
   "evidenceGates": [
-    {"gate": "30 meaningful owner contacts", "question": "Does the target recognize the problem and agree the current online presentation is costing trust/opportunity?", "failureResponse": "Change ICP/message before investing further in design volume."},
-    {"gate": "10 real demos", "question": "Does the flagship create enough desire to generate a serious commercial conversation?", "failureResponse": "Fix demo/offer before adding more niches."},
-    {"gate": "3 paid customers", "question": "Can Joey repeatedly close, deliver and support the founding offer?", "failureResponse": "Do not hire or expand geography yet."}
+    {"gate": "first external viewer/test project", "question": "Does the finished presentation create a genuine wow reaction and a serious conversation?", "failureResponse": "Fix the offer/demo before adding more fictional showcase volume."},
+    {"gate": "3 paid customers", "question": "Can Joey repeatedly close, deliver and support the founding offer while customers remain happy?", "failureResponse": "Do not hire or expand geography yet."},
+    {"gate": "measured customer outcomes", "question": "Do customers report better trust, traction, conversion quality or other real business value?", "failureResponse": "Do not sell unsupported performance claims; improve product and measurement."
   ],
   "scaleGates": [
     "Delivery repeatedly at or below roughly 6 hours after complete intake.",
@@ -89,45 +104,37 @@
     "A reusable component/visual system so another builder can follow a standard without degrading quality."
   ],
   "productionOrder": [
-    "AG-SCROLL-HERO-LAB-V1 integrated agency experience",
-    "AG-HERO final Product A material fidelity after interaction acceptance",
-    "PL-CHAR-001 consistent master technician",
-    "PL-HERO-001 approved premium hero still",
-    "PL-STORY still sequence with same technician/world",
-    "PL-PROOF reusable frame for genuine customer evidence",
-    "PL-MOTION only for approved winning stills"
+    "Agency Showroom Lab v1.5 full-flow testing",
+    "Use remaining Unlimited window for highest-value agency + three-showcase assets",
+    "Finish three distinct example websites enough to present inside the agency site",
+    "Create at least one usable product/ad motion example",
+    "Replace placeholders only through approved asset gates",
+    "Start first real external test before a fourth fictional demo",
+    "Measure delivery, feedback, willingness to pay and customer satisfaction before scaling"
   ],
   "completedAutonomousWork": [
     "Built Sales Machine for customers 1-10 with ICP, funnel, pipeline, setup revenue, MRR and scripts.",
     "Built Website Ventures sales playbook with scope/economics/objections/referrals/scale gates.",
     "Built Premium Plumbing production pack with asset order and paid-credit discipline.",
-    "Prepared research-only Flevoland prospect wave; no outreach sent.",
     "Built isolated ChatGPT Venture Lab with offer stress test, niche matrix, unit economics simulator and evidence gates.",
-    "Added Website Lab entry points while preserving accepted prior website tests.",
-    "Built the Visual Vault and variant-safe Selected Assets flow.",
-    "Added shared fail-closed client config contract across Intake, Client Factory and Plumbing runtime.",
-    "Protected fulfilment metrics and customer handoff evidence gates.",
-    "Built AG-SCROLL-HERO-LAB-V1 as a zero-generation-credit interaction proof.",
-    "Refined the prototype through v1.3 with narrow-browser motion, softer interpolation, less zoom and a larger Product-A-like stone blockout.",
-    "Integrated the Product-A hero into a coherent full Agency Showroom Lab v1.4 with coded showcases, process, offer and CTA."
+    "Built Visual Vault and variant-safe Selected Assets flow.",
+    "Built AG-SCROLL-HERO-LAB-V1 and refined it through integrated v1.4.",
+    "Built Agency Showroom Lab v1.5 with three showcase worlds, Join the Club slot, ads/product-motion section, live configurator, non-blocking CTA and cinematic closing scene."
   ],
   "todo": [
-    {"priority": "P0", "task": "Joey tests integrated Agency Showroom Lab v1.4 and gives direct feedback on hero motion, narrative flow and overall visual ceiling.", "blockedByUser": true, "reason": "Next polish should follow direct visual feedback rather than arbitrary iteration."},
-    {"priority": "P0", "task": "Increase Product A material fidelity after the integrated interaction is accepted.", "blockedByUser": false},
-    {"priority": "P0", "task": "Use real sales conversations to test pain, wording and price instead of further theorizing the offer.", "blockedByUser": true, "reason": "External outreach requires Joey's explicit instruction."},
-    {"priority": "P0", "task": "Move Premium Plumbing from story shell toward a knockout sellable demo using the production pack.", "blockedByUser": false},
-    {"priority": "P1", "task": "After real evidence, promote or reject founding price ladder in HQ state.", "blockedByUser": false},
-    {"priority": "P1", "task": "Only after plumbing proof, build Luxury Renovation as second flagship and compare sales response.", "blockedByUser": false},
-    {"priority": "P2", "task": "Define student-builder handoff and QA only after first customer delivery is repeatable.", "blockedByUser": false}
+    {"priority": "P0", "task": "Generate/select the strongest remaining hero and showcase assets during the active Unlimited window; prioritize usable quality over raw quantity.", "blockedByUser": true, "reason": "Manual Higgsfield generation requires Joey at the site and should follow an exact queue."},
+    {"priority": "P0", "task": "Bring three distinct example websites to presentation-ready quality and show them inside Agency v1.5.", "blockedByUser": false},
+    {"priority": "P0", "task": "Turn the internal product-motion study into one genuine external product/ad test when Joey's friend is ready and permission/assets are available.", "blockedByUser": true, "reason": "Requires a real person's product assets and consent."},
+    {"priority": "P0", "task": "After own site + three examples are good enough, expose the offer to at least one real person before building another fictional demo.", "blockedByUser": true, "reason": "External sales/contact action requires Joey's involvement or explicit outreach instruction."},
+    {"priority": "P1", "task": "Use first-client evidence to lock or change pricing, revision rules, add-on prices and delivery promise.", "blockedByUser": false},
+    {"priority": "P2", "task": "Define student-builder handoff only after first customer delivery is repeatable.", "blockedByUser": false}
   ],
   "ideaBank": [
-    "Agency hero loop: business identity above a physical tablet on stone -> scroll lifts tablet -> live niche websites inside screen -> return to same stone.",
-    "After core motion approval, explore subtle liquid-marble/chrome/water behavior without turning the page into an AI gallery.",
-    "Before/after prospect demo mode that swaps a weak current-site structure for the premium component system without pretending it is already the client's site.",
-    "A reusable proof-frame system that makes ordinary real customer photos feel premium without altering what actually happened.",
-    "A niche starter kit: services taxonomy, page map, CTA patterns and visual slots, while preserving client-specific proof and personality.",
-    "A first-ten dashboard benchmark view that turns sales conversations and build hours into automatic go/no-go evidence for price changes.",
-    "Luxury Renovation as the second flagship because Apple-like scroll storytelling is naturally supported by transformation imagery.",
-    "Later: territory/province dashboard only after sales conversion and delivery capacity are measured."
+    "Maintain a library of 3-4 strong motion families first, then grow toward a broader menu only after real customers reveal which motions get chosen.",
+    "Five customer configuration dimensions: visual theme, hero direction, scroll/motion family, information/story flow, optional functionality/integrations.",
+    "Agency hero loop: physical tablet on stone -> live websites -> broader capability world -> configurator -> CTA -> return to same stone.",
+    "Subtle maker/guide character can eventually become a branded personality layer, but it must not make the premium site feel gimmicky.",
+    "Product/commerce work may become a second offer line if the first genuine product test proves attractive and repeatable.",
+    "Real project photos can be framed/presented premium without altering what actually happened."
   ]
 }
