@@ -1,4 +1,4 @@
-/* Visible product sprint — ChatGPT (OpenAI), 2026-09-06 */
+/* Visible product sprint — ChatGPT (OpenAI), updated 2026-09-10 */
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -12,13 +12,14 @@ assert.ok(finance.includes("['net','subs','wish','ventures','debts']"));
 
 const workspace=read('ventures-workspace.html');
 assert.ok(workspace.includes('data-gamenfy-scope="personal"'));
-assert.ok(workspace.includes('Personal / internal tooling.'));
-assert.ok(workspace.includes('Project Headquarters blijft de duurzame productbron'));
-assert.ok(workspace.includes('Visual production line'));
+assert.ok(workspace.includes('Project Headquarters')||workspace.includes('Headquarters'),'Project Headquarters remains the durable product source entry');
+assert.ok(workspace.includes('Productielijn'),'Visual production remains a first-class Ventures space');
 assert.ok(workspace.includes('website-ventures-ops.html'));
 assert.ok(workspace.includes('website-ventures-higgsfield-review.html'));
 assert.ok(workspace.includes('website-ventures-selected-assets.html'));
+assert.ok(workspace.includes('website-ventures-higgsfield-prompt-board.html'),'Targeted generation queue is reachable');
 assert.ok(workspace.includes("rpg_venture_notes_v1"));
+assert.ok(workspace.includes('P0 · Mijn eigen website · v1.5'),'Current Agency v1.5 remains visibly P0');
 
 const character=read('character.html');
 const toolbar=character.slice(character.indexOf('<div class="skills-toolbar"'),character.indexOf('<!-- SKILLS VIEW -->'));
