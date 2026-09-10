@@ -28,7 +28,6 @@ const hq = read('project-hq.html');
 const rescue = read('hq-note-resync.js');
 const importContract = read('img/lab/CHARACTER-IMPORTS-LAST-HORSE.md');
 
-// Home Daily Score: the headline is ONLY today's checked count.
 assert(push.includes("data.type !== 'gamenfy:park31-summary'"), 'Daily Score must listen to Park 3.1 canonical summary');
 assert(push.includes('value.textContent = String(done);'), 'Daily Score headline must equal completedToday');
 assert(push.includes("label.textContent = 'Daily Score'"), 'Home card must be labelled Daily Score');
@@ -37,19 +36,17 @@ assert(push.includes('done / count'), 'progress bar may still use checked/total 
 assert(push.includes("img/lab/daily-score/joey/l"), 'Joey Daily Score evolution path missing');
 assert(push.includes('scoreArtLevel(done)'), 'Joey art must be derived from checked-count score');
 
-// All three approved Creator sets must remain complete, transparent and distinct.
 verifyTransparentEvolutionSet('img/lab/daily-score/joey', 'Daily Score Joey');
 verifyTransparentEvolutionSet('img/lab/park31/budgeting', 'Budgeting owl');
 verifyTransparentEvolutionSet('img/lab/park31/meditation', 'Meditation panda');
 
-// Accepted Website Lab history remains visibly available.
-assert(sites.includes('Bewaarde oude testwebsite'), 'old Website Lab test must be visibly called out');
+assert(sites.includes('Bewaarde scroll R&D')||sites.includes('Bewaarde oude testwebsite'), 'old Website Lab tests must be visibly called out');
 assert(sites.includes('site-klus-scroll-1-2.html'), 'Test 1.2 must remain in Website Lab');
 assert(sites.includes('site-klus-scroll-1-1.html'), 'Test 1.1 must remain in Website Lab');
 assert(sites.includes('site-klus-scroll.html'), 'original Test 1 must remain in Website Lab');
 assert(sites.includes('site-plumbing-flagship-v1.html'), 'new plumbing flagship must coexist with old tests');
+assert(sites.includes('website-ventures-agency-scroll-hero-lab-v1-4-archive.html'), 'integrated Agency v1.4 must remain archived after v1.5 promotion');
 
-// The Last Horse characters use Park 3.1's current mission level directly, never a second level engine.
 assert(!park.includes('character-art-overrides.js'), 'obsolete fallback bridge must not remain loaded');
 assert(art.includes("key:'budgeting',label:'Budgeting',emoji:'💰',dir:'budgeting'"), 'Budgeting must map directly to the approved owl evolution');
 assert(art.includes("key:'meditation',label:'Meditation',emoji:'🧘',dir:'meditation'"), 'Meditation must map directly to the approved panda evolution');
@@ -58,13 +55,11 @@ assert(!art.includes("fallback:'budgeting'"), 'Budgeting fallback wiring must be
 assert(!art.includes("fallback:'meditation'"), 'Meditation fallback wiring must be retired');
 assert(importContract.includes('do **not** regenerate'), 'import contract must protect exact approved assets');
 
-// Transparent character framing: roster cards and modal must contain instead of crop.
 assert(park.includes('.p31-slot[data-mission="budgeting"] .p31-slot-art img'), 'Budgeting roster art must use transparent-character contain framing');
 assert(park.includes('.p31-slot[data-mission="meditation"] .p31-slot-art img'), 'Meditation roster art must use transparent-character contain framing');
 assert(park.includes('img[alt^="Budgeting companion"]'), 'Budgeting modal art must use contain framing');
 assert(park.includes('img[alt^="Meditation companion"]'), 'Meditation modal art must use contain framing');
 
-// HQ notes: rescue script must capture local state before xp.js starts RPG sync.
 const rescuePos = hq.indexOf('hq-note-resync.js?v=1.0');
 const xpPos = hq.indexOf('xp.js?v=10.98');
 assert(rescuePos >= 0 && xpPos >= 0 && rescuePos < xpPos, 'HQ rescue must load before xp.js');
@@ -73,4 +68,4 @@ assert(rescue.includes("gamenfy:cloud-sync-ready"), 'HQ rescue must wait for can
 assert(rescue.includes('mergeNotes'), 'HQ rescue must merge instead of blindly replacing note arrays');
 assert(rescue.includes("localStorage.setItem(NOTE_KEY"), 'rescued note payload must re-enter normal sync journal');
 
-console.log('Daily Score + all approved Last Horse character sets + framing + HQ note rescue smoke checks passed.');
+console.log('Daily Score + approved character sets + Website Lab history + HQ note rescue smoke checks passed.');
