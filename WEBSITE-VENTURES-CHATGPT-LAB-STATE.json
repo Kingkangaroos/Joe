@@ -21,17 +21,19 @@
   "activePrototype": {
     "id": "AG-SCROLL-HERO-LAB-V1",
     "file": "website-ventures-agency-scroll-hero-lab.html",
-    "currentLabVersion": "v1.2",
+    "currentLabVersion": "v1.3",
     "status": "lab-testing",
     "approvedByJoeyToBuild": "2026-09-10",
-    "visualReference": "Product A direction: thin glass/chrome tablet over large rough pale stone in a calm premium architectural environment with restrained oxblood red.",
+    "visualReference": "Product A direction: thin black/glass tablet over a large rough pale stone in a calm white premium architectural/travertine environment, with polished chrome/glass and restrained oxblood red.",
     "motionReference": "Higgsfield 3D Jutsu motion v7: friendly smooth diagonal lift, less zoom, tablet edges remain visible, soft peak, return to the same stone.",
     "latestChanges": [
-      "Removed the narrow-browser animation dead path so the scroll motion also runs inside Joey's in-app browser.",
-      "Added eased scroll-follow interpolation for a softer, friendlier lift rather than direct frame snapping.",
-      "Reduced peak zoom so the physical tablet frame remains visible.",
-      "Made the pale stone larger and more textured while preserving the same-stone return contract.",
-      "Kept the screen transition tied to real coded demo pages rather than generated fake UI."
+      "Kept the scroll interaction active in narrow in-app browsers instead of falling back to a static layout.",
+      "Slowed the scroll-follow interpolation for a softer, friendlier pickup and return.",
+      "Added a subtle arc to the diagonal lift instead of a straight mechanical translation.",
+      "Reduced peak scale again so the physical tablet frame stays clearly visible.",
+      "Rebuilt the stone blockout with more mass, grain, contour variation and a restrained surface rift.",
+      "Refined the tablet toward black glass, chrome/satin metal and restrained oxblood accenting.",
+      "Kept the screen handoff tied to real coded demo pages rather than generated fake UI."
     ],
     "interactionContract": [
       "Start with the tablet resting on the same large pale stone.",
@@ -42,14 +44,14 @@
       "Later scroll returns the same tablet to the same stone, reserving the end state for a future CTA."
     ],
     "deliberatelyDeferred": [
-      "final Product A material fidelity",
+      "photoreal final Product A material fidelity",
       "liquid marble/water/chrome effects",
       "final business name and typography lock",
       "final agency copy",
       "paid Seedance or image generation",
       "live agency publication"
     ],
-    "nextGate": "Joey scroll-tests Lab v1.2 in the in-app browser and judges the pickup angle, smoothness, framing and same-stone return before deeper Product A polish."
+    "nextGate": "Joey scroll-tests Lab v1.3 and judges whether the Product A direction, pickup arc, peak framing and same-stone return now feel strong enough to move from blockout into final-quality hero integration."
   },
   "currentWorkingModel": {
     "offer": "Premium website for local service/trade businesses without the owner having to manage a web agency project.",
@@ -143,11 +145,12 @@
     "Bound Customer Handoff copy to current evidence, all 12 Delivery Gate checks and explicit release details; escaped customer values in the preview.",
     "Protected first-10 fulfilment metrics: real Intake required to measure, page-open no longer starts elapsed time, and launched requires 9/9 phases plus 12/12 Delivery Gate and current evidence.",
     "Built AG-SCROLL-HERO-LAB-V1 as a zero-generation-credit interaction proof with same-stone lift/return and real HTML demo previews.",
-    "Refined the active prototype to Lab v1.2 with narrow-browser motion, softer interpolation, less zoom and a larger Product-A-like stone blockout."
+    "Refined the active prototype to Lab v1.2 with narrow-browser motion, softer interpolation, less zoom and a larger Product-A-like stone blockout.",
+    "Pushed Lab v1.3 as a zero-credit Product A visual pass with a softer pickup arc, calmer framing, more convincing rough-stone mass and a thinner black-glass/chrome tablet treatment."
   ],
   "todo": [
-    {"priority": "P0", "task": "Joey tests AG-SCROLL-HERO-LAB-V1 v1.2 motion/composition in the in-app browser; tune lift, framing and return from direct feedback.", "blockedByUser": true, "reason": "The next motion tuning pass should follow Joey's direct visual feedback."},
-    {"priority": "P0", "task": "After motion approval, bring stone/tablet/material language closer to Product A and integrate the accepted interaction into the broader agency showroom.", "blockedByUser": false},
+    {"priority": "P0", "task": "Joey tests AG-SCROLL-HERO-LAB-V1 v1.3 motion/composition and judges Product A direction, pickup arc, peak framing and same-stone return.", "blockedByUser": true, "reason": "The next final-quality hero pass should follow Joey's direct visual feedback rather than guessing."},
+    {"priority": "P0", "task": "After visual/motion approval, integrate the accepted hero system into the broader agency showroom and build the final CTA return state.", "blockedByUser": false},
     {"priority": "P0", "task": "Use real sales conversations to test pain, wording and price instead of further theorizing the offer.", "blockedByUser": true, "reason": "External outreach requires Joey's explicit instruction."},
     {"priority": "P0", "task": "Move Premium Plumbing from story shell toward a knockout sellable demo using the production pack.", "blockedByUser": false},
     {"priority": "P1", "task": "After real evidence, promote or reject founding price ladder in HQ state.", "blockedByUser": false},
