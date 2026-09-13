@@ -5,8 +5,63 @@
 (function () {
   'use strict';
 
+  var FITBIT_SYNC_URL = 'https://ttxjsoahmtennnufgeqx.supabase.co/functions/v1/fitbit-sync';
   var attempts = 0;
   var installed = false;
+
+  async function fitbitRequest(query, init) {
+    if (window.gamenfyAuthReady) await window.gamenfyAuthReady;
+    if (typeof window.gamenfyAuthHeaders !== 'function') throw new Error('Log opnieuw in bij Gamenfy');
+    var options = Object.assign({ cache: 'no-store' }, init || {});
+    options.headers = window.gamenfyAuthHeaders(Object.assign({ 'content-type': 'application/json' }, options.headers || {}));
+    var response = await fetch(FITBIT_SYNC_URL + query, options);
+    var body = null;
+    try { body = await response.json(); } catch (_error) {}
+    if (!response.ok || !body || body.ok !== true) throw new Error((body && body.error) || ('Fitbit-koppeling mislukt (' + response.status + ')'));
+    return body;
+  }
+
+  window.gamenfyGetFitbitStatus = function () {
+    return fitbitRequest('?client_status=1', { method: 'GET' });
+  };
+
+  window.gamenfyReconnectFitbit = async function (button) {
+    var popup = null;
+    try { popup = window.open('about:blank', 'gamenfy-fitbit-reauth'); } catch (_error) {}
+    var oldText = button && button.textContent;
+    if (button) { button.disabled = true; button.textContent = 'Koppeling openen…'; }
+    try {
+      var body = await fitbitRequest('?client_reauth=1', { method: 'POST', body: '{}' });
+      if (!body.url) throw new Error('Geen veilige herstellink ontvangen');
+      if (popup) popup.location.replace(body.url); else window.location.assign(body.url);
+      return true;
+    } catch (error) {
+      try { if (popup) popup.close(); } catch (_error) {}
+      if (button) { button.disabled = false; button.textContent = oldText || 'Fitbit opnieuw koppelen'; }
+      if (typeof window.showToast === 'function') window.showToast(error.message || 'Fitbit-koppeling mislukt', 4000);
+      else window.alert(error.message || 'Fitbit-koppeling mislukt');
+      return false;
+    }
+  };
+
+  function renderHomeStatus(status) {
+    var anchor = document.getElementById('goalQuestCommand') || document.getElementById('dailyLevelCard');
+    if (!anchor || !status) return;
+    var old = document.getElementById('fitbitConnectionAlert');
+    if (!status.needsReauth) { if (old) old.remove(); return; }
+    var card = old || document.createElement('div');
+    card.id = 'fitbitConnectionAlert';
+    card.style.cssText = 'margin:0 0 12px;padding:13px 14px;border:1px solid #E8C889;border-radius:14px;background:#FDF3E2;color:#6B4E12;font:500 12px/1.45 Inter,sans-serif';
+    card.innerHTML = '<b style="display:block;color:#4A3608;margin-bottom:3px">Fitbit heeft opnieuw toestemming nodig</b><span>Je laatste metingen blijven zichtbaar, maar worden niet bijgewerkt.</span><button type="button" style="display:block;width:100%;margin-top:9px;border:0;border-radius:10px;background:#4A3608;color:white;padding:10px;font-weight:800;cursor:pointer">Fitbit opnieuw koppelen</button>';
+    card.querySelector('button').addEventListener('click', function () { window.gamenfyReconnectFitbit(this); });
+    if (!old) anchor.parentNode.insertBefore(card, anchor);
+  }
+
+  async function checkConnectionStatus() {
+    try { var status = await window.gamenfyGetFitbitStatus(); window.gamenfyFitbitStatus = status; renderHomeStatus(status); return status; }
+    catch (_error) { return null; }
+  }
+  window.gamenfyCheckFitbitConnection = checkConnectionStatus;
 
   function dateObjectFromFitbit(fb) {
     var out = { byDate: {}, hevy: {}, lastHealthDate: null };
@@ -99,6 +154,8 @@
     try {
       if (typeof hmData !== 'undefined') hmData = null;
       retryInstall();
+      checkConnectionStatus();
     } catch (_error) {}
   });
+  if (window.gamenfyAuthReady) window.gamenfyAuthReady.then(checkConnectionStatus).catch(function () {});
 })();

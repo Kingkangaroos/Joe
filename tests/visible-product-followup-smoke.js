@@ -10,7 +10,7 @@ assert.match(home,/gamenfy:park31-summary/,'Home listens to the canonical Park s
 assert.match(park,/DISPLAY_MISSIONS/,'Park has an explicit unified personal display order');
 assert.match(park,/gamenfy:park31-summary/,'Park publishes mission-only overall level');
 assert.doesNotMatch(park,/Private dailies<\/strong>|apart van de publieke 11/,'private quests are not a visual subsection');
-assert.match(page,/13 missions · één persoonlijke roster/,'Park copy is visually unified');
+assert.match(page,/12 missions · één persoonlijke roster/,'Park copy is visually unified while Gardening stays hidden');
 assert.match(lab,/id="labBackLink"[\s\S]*href="jarvis\.html"/,'Lab defaults back to Jarvis, never Skills/Body');
 assert.match(lab,/finance\.html\?tab=ventures/,'Lab can return safely to Ventures');
 assert.doesNotMatch(lab,/Terug naar Skills/,'Lab no longer claims Skills ownership');

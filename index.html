@@ -6,11 +6,12 @@
 <meta name="theme-color" content="#F4F3EF">
 <title>Gamenfy — Command Center</title>
 <link rel="manifest" href="./manifest.json">
+<link rel="stylesheet" href="goal-quests.css?v=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=11.0" defer></script>
+<script src="auth.js?v=11.1" defer></script>
 <script src="sync.js?v=11.9" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
 <script src="xp.js?v=10.98" defer></script>
@@ -19,6 +20,7 @@
 <script src="ventures.js?v=10.98" defer></script>
 <script src="checkin.js?v=10.98" defer></script>
 <script src="push.js?v=10.99" defer></script>
+<script src="goal-quests.js?v=1.0" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -446,12 +448,12 @@ body {
 }
 .grat-add:active { transform: scale(0.96); }
 .grat-tags {
-  min-height: 118px; display:flex; align-items:center; align-content:center; justify-content:center;
-  flex-wrap:wrap; gap:8px 12px; margin-top:12px; padding:12px 8px;
-  border:1px solid var(--line); border-radius:14px;
-  background:radial-gradient(circle at 50% 45%,rgba(46,139,95,.07),transparent 68%),var(--bg);
+  min-height: 148px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:7px; margin-top:12px; padding:14px 2px 8px;
+  border:0; border-radius:0; background:transparent;
 }
 .grat-tags:empty { min-height:0; margin-top:0; padding:0; border:0; }
+.grat-cloud-row{width:var(--grat-row-width,100%);display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:6px 12px;margin:0 auto;min-height:18px}
 .grat-word {
   appearance:none; border:0; background:transparent; padding:2px 3px; cursor:pointer;
   font-family:var(--font-display); font-size:var(--grat-size,13px); font-weight:800;
@@ -1181,6 +1183,11 @@ body {
     </div>
   </div>
 
+  <section class="gq-command" id="goalQuestCommand" aria-labelledby="goalQuestHeading">
+    <div class="gq-command-head"><h2 id="goalQuestHeading">Command Quests</h2><p>Own the week. Steer the month.</p></div>
+    <div class="gq-cards" id="goalQuestCards"></div>
+  </section>
+
   <!-- Legacy Day Score DOM remains hidden for rollback/history only. -->
   <div class="sec-head" style="display:none" aria-hidden="true">Day Score</div>
   <div class="day-arc-card" id="dayArcCard" style="display:none" aria-hidden="true">
@@ -1285,7 +1292,7 @@ body {
     <button class="nm-add" id="missionsDayBtn" onclick="toggleMissionsDay()">Yesterday</button></div>
   <div id="weekStrip" style="display:flex;gap:2px;margin:2px 0 10px;padding:0 4px"></div>
   <div class="daily-missions-2" id="dailyMissions2Wrap" style="background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:20px">
-    <iframe id="dailyMissions2Frame" title="Daily Missions 2.0" src="park31.html?embed=1&amp;mode=missions&amp;privacy=all&amp;surface=home&amp;v=1.18" style="display:block;width:100%;height:1180px;min-height:820px;border:0;background:transparent" loading="eager"></iframe>
+    <iframe id="dailyMissions2Frame" title="Daily Missions 2.0" src="park31.html?embed=1&amp;mode=missions&amp;privacy=all&amp;surface=home&amp;v=1.19" style="display:block;width:100%;height:1180px;min-height:820px;border:0;background:transparent" loading="eager"></iframe>
   </div>
   <div class="missions-grid" id="missionsCard" hidden aria-hidden="true" style="display:none!important">
     <div>Loading habits…</div>
@@ -1331,8 +1338,8 @@ window.addEventListener('message', function(event){
 });
 function applyGratitudeShape(){
   const card=document.getElementById('gratitudeHomeCard'); if(!card)return;
-  const bucket=Math.floor(Date.now()/86400000/5)%5;
-  for(let i=0;i<5;i++)card.classList.toggle('grat-shape-'+i,i===bucket);
+  for(let i=0;i<5;i++)card.classList.remove('grat-shape-'+i);
+  card.classList.add('grat-shape-cloud');
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyGratitudeShape,{once:true});else applyGratitudeShape();
 
@@ -1560,7 +1567,8 @@ function renderGratitude(){
   }
   const max=Math.max(...entries.map(([,d])=>Number(d.count)||1));
   const today=todayStr();
-  entries.forEach(([key,d])=>{
+  function makeWord(entry){
+    const [key,d]=entry;
     const count=Math.max(1,Number(d.count)||1);
     const weight=max<=1?0:Math.log(count)/Math.log(max);
     const btn=document.createElement('button'); btn.type='button'; btn.className='grat-word'+(d.lastDate===today?' recent':'');
@@ -1569,7 +1577,31 @@ function renderGratitude(){
     btn.style.setProperty('--grat-opacity',String(.62+weight*.38));
     btn.setAttribute('aria-label',(d.label||key)+' · grateful '+count+' times');
     btn.addEventListener('click',()=>openGratitudeWord(key));
-    box.appendChild(btn);
+    return btn;
+  }
+  const patterns={1:[1],2:[2],3:[1,2],4:[1,2,1],5:[1,3,1],6:[1,4,1],7:[1,2,3,1],8:[1,3,3,1],9:[1,2,3,2,1],10:[1,2,4,2,1]};
+  let capacities=patterns[entries.length];
+  if(!capacities){
+    capacities=[1,1,1,1,1];
+    const weights=[.12,.22,.32,.22,.12];
+    while(capacities.reduce((a,b)=>a+b,0)<entries.length){
+      const used=capacities.reduce((a,b)=>a+b,0);
+      let best=0,bestNeed=-Infinity;
+      for(let i=0;i<5;i++){ const need=(entries.length*weights[i])-capacities[i]; if(need>bestNeed){bestNeed=need;best=i;} }
+      capacities[best]++;
+      if(used>entries.length+5)break;
+    }
+  }
+  const rows=capacities.map(()=>[]), remaining=entries.slice();
+  const center=(capacities.length-1)/2;
+  const priority=capacities.map((_,i)=>i).sort((a,b)=>Math.abs(a-center)-Math.abs(b-center));
+  priority.forEach(rowIndex=>{ rows[rowIndex]=remaining.splice(0,capacities[rowIndex]); });
+  rows.forEach((items,rowIndex)=>{
+    const row=document.createElement('div'); row.className='grat-cloud-row';
+    const distance=Math.abs(rowIndex-center)/(center||1);
+    row.style.setProperty('--grat-row-width',Math.round(100-distance*46)+'%');
+    items.forEach(entry=>row.appendChild(makeWord(entry)));
+    box.appendChild(row);
   });
 }
 window.openGratitudeWord=function(key){
@@ -1600,14 +1632,20 @@ window.gratAdd=function(){
   const dd=gratDailyLoad();
   dd.gratitudeWords = Array.isArray(dd.gratitudeWords) ? dd.gratitudeWords : [];
   if(!dd.gratitudeWords.some(w=>String(w).toLowerCase()===key)) dd.gratitudeWords.push(word);
+  let wordXp=false;
   if(!dd.gratitudeXpGiven && typeof window.addXP==='function'){
     window.addXP('gratitude',10,'Gratitude ingevuld');
     dd.gratitudeXpGiven=true;
-    showToast('Grateful \u00b7 +10 XP');
+    wordXp=true;
   }
   gratDailySave(dd);
+  const missionCompleted=completeGratitudeMission(todayStr());
   inp.value='';
   renderGratitude();
+  if(wordXp&&missionCompleted) showToast('Gratitude opgeslagen · missie voltooid · +25 XP');
+  else if(missionCompleted) showToast('Gratitude-missie automatisch voltooid · +15 XP');
+  else if(wordXp) showToast('Grateful · +10 XP');
+  else showToast('Gratitude opgeslagen');
 };
 document.addEventListener('DOMContentLoaded',()=>{
   const gi=document.getElementById('gratInput');
@@ -1631,6 +1669,21 @@ function hlogSet(key, date, val){
   const l=hlogLoad(); l[key]=l[key]||{};
   if(val) l[key][date]=true; else delete l[key][date];
   hlogSave(l);
+}
+
+function completeGratitudeMission(date){
+  if(hlogHas('gratitude',date)) return false;
+  const def=(window.RPG_DEFAULT_SKILLS||{}).gratitude||{label:'Gratitude',icon:'🙏'};
+  if(date===todayStr()&&typeof window.checkHabit==='function') window.checkHabit('gratitude',def.label,def.icon);
+  else if(typeof window.checkHabitFor==='function') window.checkHabitFor('gratitude',date,def.label,def.icon);
+  hlogSet('gratitude',date,true);
+  if(typeof window.recomputeHabitFromLog==='function') window.recomputeHabitFromLog('gratitude');
+  if(typeof window.addXP==='function') window.addXP('gratitude',15,'Habit: '+def.label);
+  try{ const st=JSON.parse(localStorage.getItem('rpg_streak_v1'))||{days:{}}; st.days=st.days||{}; st.days[date]=true; localStorage.setItem('rpg_streak_v1',JSON.stringify(st)); }catch(e){}
+  try{ window.dispatchEvent(new CustomEvent('gamenfy:daily-mission-change',{detail:{key:'gratitude',date:date,done:true,automatic:true}})); }catch(e){}
+  renderMissions(); renderCharStrip();
+  if(window.Streak){ renderStreakPill(); renderCheckinCard(); }
+  return true;
 }
 
 let missionsDayOffset=0; const MISSIONS_MAX_BACK=13;
@@ -1661,12 +1714,10 @@ window.toggleMissionsDay=function(){ setViewDay(missionsDayOffset===0 ? -1 : 0);
 // v9.1: spiegel van de privé entries in ALL_DAILY_QUESTS (character.html).
 // Dit zijn XP-skills met eigen quest-ladder — géén 0-10 habits.
 const PRIVATE_DAILY = [
-  { id:'no_porn',      icon:'🛡️', label:'No Porn',      skill:'no_porn',      xp:45 },
-  { id:'weed_control', icon:'🚫', label:'Weed Control', skill:'weed_control', xp:40 },
+  { id:'no_porn', icon:'🛡️', label:'Discipline', skill:'no_porn', xp:45 },
 ];
 
 window.togglePrivateQuest = function(id){
-  if (sessionStorage.getItem('rpg_private_unlocked') !== '1') { privatePinPrompt(); return; }
   const q = PRIVATE_DAILY.find(x => x.id === id); if (!q) return;
   const date = viewedDateStr();
   let dd = {}; try { dd = JSON.parse(localStorage.getItem('rpg_daily_v1:' + date)) || {}; } catch (e) {}
@@ -1691,9 +1742,12 @@ window.togglePrivateQuest = function(id){
     showToast(was ? 'Unchecked' : '+' + q.xp + ' XP · ' + q.label);
   }
   renderMissions(); renderCharStrip();
+  try { window.dispatchEvent(new CustomEvent('gamenfy:daily-mission-change',{detail:{key:id,date:date,done:!was,private:true}})); } catch (e) {}
+  return !was;
 };
 
-window.privatePinPrompt = function(){
+window.privatePinPrompt = function(onSuccess, options){
+  options = options || {};
   document.getElementById('pinBg')?.remove();
   const bg = document.createElement('div');
   bg.id = 'pinBg';
@@ -1712,10 +1766,23 @@ window.privatePinPrompt = function(){
   setTimeout(() => inp.focus(), 60);
   inp.addEventListener('input', () => {
     if (inp.value.length === 4) {
-      if (inp.value === '1111') { sessionStorage.setItem('rpg_private_unlocked','1'); bg.remove(); renderMissions(); }
+      const expected = localStorage.getItem('rpg_pin_v1') || '1111';
+      if (inp.value === expected) {
+        if (options.persist !== false) sessionStorage.setItem('rpg_private_unlocked','1');
+        bg.remove();
+        if (typeof onSuccess === 'function') onSuccess(); else renderMissions();
+      }
       else { document.getElementById('pinErrMain').textContent = 'Wrong PIN, try again'; inp.value=''; }
     }
   });
+};
+
+// Home keeps the harmless Discipline checkbox frictionless. Opening the real
+// private skill always asks for the configured PIN and does not expose private
+// labels for the rest of the session as a side effect.
+window.gamenfyOpenPrivateMission = function(id){
+  const q = PRIVATE_DAILY.find(x => x.id === id); if (!q) return;
+  privatePinPrompt(() => openMissionDetail(q.skill, 1, q.id), { persist:false });
 };
 
 function yesterdayStr(){ const d=new Date(); d.setDate(d.getDate()-1);
@@ -1903,6 +1970,8 @@ window.toggleMission = function(key) {
   renderMissions();
   renderCharStrip();
   if (window.Streak) { renderStreakPill(); renderCheckinCard(); }
+  try { window.dispatchEvent(new CustomEvent('gamenfy:daily-mission-change',{detail:{key:key,date:date,done:!done}})); } catch (e) {}
+  return !done;
 };
 
 // ── Focus skills ─────────────────────────────────────────────
@@ -3540,6 +3609,7 @@ function boot() {
   renderMissions();
   renderSeasonBanner();
   renderLifeWhy();
+  if(window.GamenfyGoalQuests) window.GamenfyGoalQuests.render();
   try{renderWorkoutChallenge();}catch(e){}
   renderFocusGrid();
   renderCoreTracker();
