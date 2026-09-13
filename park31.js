@@ -1,14 +1,15 @@
 /* Park 3.1 — Daily Mission companion HQ integration
    Performed-by: ChatGPT (OpenAI), 2026-08-31; membership pass 2026-09-03.
    Public membership remains canonical under the hood. On Joey's personal Home,
-   the two anonymized private quests are presented in the same roster as every
-   other Daily Mission so they do not receive a separate attention-grabbing block.
+   the anonymized Discipline quest is presented in the same roster as every
+   other Daily Mission. Gardening stays out of Home while both underlying
+   private skills and their history remain available behind the Skills PIN.
 */
 (function(){
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.16';
+  var VERSION='1.19';
   var PUBLIC_MISSIONS=[
     {key:'budgeting',label:'Budgeting',emoji:'💰',dir:'budgeting'},
     {key:'sleep',label:'Sleep',emoji:'😴',dir:'sleep'},
@@ -28,7 +29,7 @@
   ];
   var MISSIONS=PUBLIC_MISSIONS.concat(PRIVATE_MISSIONS);
   var DISPLAY_MISSIONS=[
-    'budgeting','sleep','nutrition','walking','teeth','household','weed_control',
+    'budgeting','sleep','nutrition','walking','teeth','household',
     'meditation','gratitude','good_deed','screen_time','no_porn','cold_shower'
   ].map(function(key){return MISSIONS.find(function(item){return item.key===key;});}).filter(Boolean);
   var stage,button,art,levelEl,stateEl,sourceEl,copyEl,levelsEl,progressEl,lightEl,errorEl,rosterEl,rosterCountEl;
@@ -139,11 +140,11 @@
     var neglected=missionMode&&!done&&inactivityDays(mission)>=3;
     var lit=(litUntil[mission.key]||0)>Date.now();
     var selectedNow=!!(selected&&selected.key===mission.key);
-    var instruction=done?'Vandaag voltooid':(neglected?'HELP · Tik om te openen':'Tik om te openen');
-    var slotClass='p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(neglected?' is-neglected':'')+(lit?' is-lit':'')+(selectedNow?' is-selected':'');
+    var instruction=done?'Vandaag voltooid':(neglected?'HELP · Tik om te openen':(info.raw===0?'Slapend · voltooi om te wekken':'Tik om te openen'));
+    var slotClass='p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(neglected?' is-neglected':'')+(lit?' is-lit':'')+(selectedNow?' is-selected':'')+(info.raw===0?' is-zero':'');
     return '<div class="p31-slot-wrap'+(done?' is-done':'')+'">'
       +'<button class="'+slotClass+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+' aria-pressed="'+(done?'true':'false')+'"'+(selectedNow?' aria-current="true"':'')+'>'
-      +'<span class="p31-slot-art">'+(ready?'<img src="'+assetUrl(info.art,mission)+'" alt="" draggable="false">':mission.emoji)+(neglected?'<span class="p31-help" aria-hidden="true">HELP</span>':'')+'</span>'
+      +'<span class="p31-slot-art">'+(ready?'<img src="'+assetUrl(info.art,mission)+'" alt="" draggable="false">':mission.emoji)+(info.raw===0?'<span class="p31-dormant" aria-hidden="true">Zzz</span>':'')+(neglected?'<span class="p31-help" aria-hidden="true">HELP</span>':'')+'</span>'
       +'<span class="p31-slot-copy"><strong>'+mission.label+'</strong><small title="'+artworkLabel(mission)+'">'+missionCopy(mission)+'</small><em>'+(missionMode?instruction:(ready?'Tik om te openen':'artwork pending'))+'</em></span>'
       +'<span class="p31-slot-level">L'+info.raw+'</span></button>'
       +(missionMode?'<button class="p31-check'+(done?' is-done':'')+'" type="button" data-p31-toggle="'+mission.key+'" aria-label="'+(done?'Maak '+mission.label+' ongedaan':'Voltooi '+mission.label+' vandaag')+'" aria-pressed="'+(done?'true':'false')+'">'+(done?'✓':'')+'</button>':'')
@@ -204,6 +205,12 @@
   function openMission(key){
     selected=MISSIONS.find(function(item){return item.key===key;})||null;
     preview=null;
+    if(selected&&selected.private&&homeSurface){
+      var w=hostWindow();
+      if(typeof w.gamenfyOpenPrivateMission==='function')w.gamenfyOpenPrivateMission(selected.key);
+      selected=null;
+      return;
+    }
     if(!selected||!modal)return;
     updateModal();
     modal.hidden=false;
@@ -227,6 +234,7 @@
     var url=assetUrl(shown,selected);
     if(modalArt.getAttribute('src')!==url)modalArt.setAttribute('src',url);
     modalArt.alt=selected.label+' companion preview at level '+shown;
+    if(modalArt.parentElement)modalArt.parentElement.classList.toggle('is-zero',displayLevel===0&&preview===null);
     modalTitle.textContent=selected.label;
     modalMeta.textContent=(preview===null?'LIVE LEVEL · '+info.raw:'PREVIEW '+shown+' · LIVE '+info.raw);
     modalLevel.textContent='Level '+displayLevel;
@@ -350,7 +358,7 @@
     document.addEventListener('keydown',function(event){if(event.key==='Escape'&&modal&&!modal.hidden)closeModal();});
     art.addEventListener('load',function(){stage.classList.remove('is-loading');errorEl.hidden=true;});
     art.addEventListener('error',function(){stage.classList.remove('is-loading');errorEl.hidden=false;});
-    window.addEventListener('storage',function(event){if(!event.key||event.key==='rpg_habits_v1'||event.key==='rpg_habitlog_v1')refresh();});
+    window.addEventListener('storage',function(event){if(!event.key||event.key==='rpg_habits_v1'||event.key==='rpg_habitlog_v1'||String(event.key).indexOf('rpg_daily_v1:')===0)refresh();});
     window.addEventListener('gamenfy:daily-mission-change',refresh);
     window.addEventListener('gamenfy:auto-habits-changed',refresh);
     window.addEventListener('gamenfy:remote-state-applied',refresh);

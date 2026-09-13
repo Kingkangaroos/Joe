@@ -94,7 +94,7 @@ assert.deepEqual(Array.from(sandboxWindow.GamenfyPark31Registry.privateKeys),['w
 
 assert.equal(ids.p31Stage.dataset.liveLevel,'7','live walking score is shown');
 assert.equal(ids.p31Stage.dataset.artLevel,'7','walking level selects matching artwork');
-assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.16$/,'level 7 loads current l07 artwork');
+assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.19$/,'level 7 loads current l07 artwork');
 assert.equal(ids.p31State.textContent,'EXPERT','level 7 uses canonical Expert band');
 assert.equal(levelNodes[6].attributes['aria-current'],'step','live evolution dot is selected');
 ids.p31Companion.listeners.click();
@@ -108,7 +108,7 @@ for(const [score,label] of expectedBands){
 }
 storage.rpg_habits_v1=JSON.stringify({walking:{score:0}});intervalTimers[0]();
 assert.equal(ids.p31Stage.dataset.liveLevel,'0');assert.equal(ids.p31Stage.dataset.artLevel,'1');
-assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.16$/);assert.equal(ids.p31Progress.style.width,'0%');
+assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.19$/);assert.equal(ids.p31Progress.style.width,'0%');
 
 // Thirteen native Park 3.1 sets remain intact: all eleven public missions plus two private companions.
 const nativeDirs=['budgeting','steps','nutrition','teeth','household','meditation','gratitude','good-deed','screen-time','cold-shower','no-weed','discipline','sleep'];
@@ -128,16 +128,17 @@ for(const missionDir of ['budgeting','meditation','cold-shower','teeth','good-de
     assert.ok(bytes.includes(Buffer.from('ALPH')),missionDir+' l'+level+' has alpha');
   }
 }
-assert.equal((ids.p31Roster.innerHTML.match(/<button class="p31-slot/g)||[]).length,13,'roster contains eleven public plus two private companion cards');
+assert.equal((ids.p31Roster.innerHTML.match(/<button class="p31-slot/g)||[]).length,12,'Home roster contains eleven public companions plus anonymized Discipline');
 for(const label of ['Budgeting','Sleep','Nutrition','Steps','Brush Teeth','Household','Meditation','Gratitude','Good Deed','Screen Time','Cold Shower']){
   assert.match(ids.p31Roster.innerHTML,new RegExp(label+'[\\s\\S]*Tik om te openen'),'public '+label+' is present and interactive');
 }
-for(const label of ['Gardening','Discipline'])assert.match(ids.p31Roster.innerHTML,new RegExp(label+'[\\s\\S]*10 evolution levels'),'anonymized '+label+' is available in the unified personal roster');
+assert.doesNotMatch(ids.p31Roster.innerHTML,/Gardening/,'Gardening is hidden from the visible roster');
+assert.match(ids.p31Roster.innerHTML,/Discipline[\s\S]*10 evolution levels/,'anonymized Discipline remains available in the unified personal roster');
 assert.doesNotMatch(ids.p31Roster.innerHTML,/Private dailies|apart van de publieke 11|is-private/,'personal roster does not visually separate private quests');
 assert.match(ids.p31Roster.innerHTML,/Budgeting[\s\S]*10 evolution levels/,'Budgeting uses its native 10-level owl set');
 assert.match(ids.p31Roster.innerHTML,/Meditation[\s\S]*10 evolution levels/,'Meditation uses its native 10-level panda set');
 assert.doesNotMatch(ids.p31Roster.innerHTML,/Park 2 fallback|3-stage fallback/,'approved native sets replace all temporary fallbacks');
-assert.equal(ids.p31RosterCount.textContent,'13 missions');
+assert.equal(ids.p31RosterCount.textContent,'12 missions');
 assert.match(ids.p31Roster.innerHTML,/class="p31-help"[^>]*>HELP<\/span>/,'inactive mission can show HELP');
 assert.equal(typeof windowListeners['gamenfy:auto-habits-changed'],'function');
 assert.equal(typeof parentListeners['gamenfy:auto-habits-changed'],'function');
@@ -147,13 +148,15 @@ assert.ok(!source.includes('recomputeHabitFromLog'),'display layer cannot indepe
 assert.ok(!source.includes("localStorage.setItem('rpg_habitlog_v1'"),'display layer never writes canonical completion log');
 assert.doesNotMatch(source,/HOLD_MS/,'long-press completion is retired');
 assert.match(source,/data-p31-toggle/,'each mission exposes a dedicated tap completion control');
-assert.match(source,/mission\.private&&typeof w\.togglePrivateQuest/,'private companions retain PIN-backed host route');
+assert.match(source,/mission\.private&&typeof w\.togglePrivateQuest/,'private companion checkbox retains its host completion route');
+assert.match(source,/gamenfyOpenPrivateMission/,'opening the private companion delegates to the PIN-gated host route');
+assert.match(source,/info\.raw===0\?'Slapend/,'level zero has a distinct dormant presentation before L1');
 
 const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
-assert.match(lab,/park31-lab\.js\?v=1\.1/);assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.18"/);
+assert.match(lab,/park31-lab\.js\?v=1\.1/);assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.19"/);
 const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');assert.match(home,/park31\.html\?embed=1&amp;mode=missions&amp;privacy=all/,'Personal Home includes public and PIN-backed private Daily Missions 2.0 companions');
 const page=fs.readFileSync(path.join(__dirname,'..','park31.html'),'utf8');
-assert.match(page,/park31\.js\?v=1\.18/);assert.match(page,/13 missions/);assert.match(page,/Budgeting gebruikt de uil en Meditation de panda/);
+assert.match(page,/park31\.js\?v=1\.19/);assert.match(page,/12 missions/);assert.match(page,/Budgeting gebruikt de uil en Meditation de panda/);
 
 const walkingSlot=new Element('walking-slot');walkingSlot.dataset.mission='walking';
 const openEvent={target:walkingSlot,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
@@ -161,7 +164,7 @@ ids.p31Roster.listeners.click(openEvent);
 assert.equal(ids.p31Modal.hidden,false);assert.equal(ids.p31ModalTitle.textContent,'Steps');assert.equal(ids.p31ModalLevel.textContent,'Level 0');assert.equal(ids.p31ModalState.textContent,'STARTER');assert.equal(ids.p31ModalProgress.style.width,'0%');assert.equal(missionToggles.length,0);
 
 const liveStorage=storage.rpg_habits_v1;ids.p31Next.listeners.click();
-assert.equal(ids.p31ModalMeta.textContent,'PREVIEW 2 · LIVE 0');assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.16$/);assert.equal(ids.p31MissionToggle.disabled,true);assert.equal(storage.rpg_habits_v1,liveStorage);closeNodes[0].listeners.click();
+assert.equal(ids.p31ModalMeta.textContent,'PREVIEW 2 · LIVE 0');assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.19$/);assert.equal(ids.p31MissionToggle.disabled,true);assert.equal(storage.rpg_habits_v1,liveStorage);closeNodes[0].listeners.click();
 
 const walkingCheck=new Element('walking-check');walkingCheck.dataset.p31Toggle='walking';
 const checkEvent={target:walkingCheck,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};

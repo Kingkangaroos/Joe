@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="park31.css?v=1.15">
+<link rel="stylesheet" href="park31.css?v=1.19">
 <style>
 .p31-roster-divider{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:5px 0 -1px;padding:9px 4px 6px;border-top:1px solid rgba(185,211,255,.16);color:#c9cce9}
 .p31-roster-divider strong{font:800 9px 'Schibsted Grotesk',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.08em}
@@ -24,11 +24,11 @@
 body.p31-embedded .p31-slot.is-fallback .p31-slot-copy small{display:block;margin-top:3px;color:#d7bb73;font-size:5px;line-height:1.25}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=11.0" defer></script>
+<script src="auth.js?v=11.1" defer></script>
 <script src="sync.js?v=11.9" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
 <script src="xp.js?v=10.98" defer></script>
-<script src="park31.js?v=1.18" defer></script>
+<script src="park31.js?v=1.19" defer></script>
 </head>
 <body>
 <main class="p31-shell">
@@ -36,7 +36,7 @@ body.p31-embedded .p31-slot.is-fallback .p31-slot-copy small{display:block;margi
     <a class="p31-back" href="lab.html#chatgpt-lab">‹ Lab</a>
     <div class="p31-kicker"><span></span> ChatGPT build · Park 3.1</div>
     <h1>Daily Mission Park</h1>
-    <p>Je Daily Missions staan in één roster. De twee geanonimiseerde persoonlijke quests gebruiken intern nog hun bestaande beveiligde route, maar krijgen visueel geen aparte sectie.</p>
+    <p>Je Daily Missions staan in één roster. Discipline blijft anoniem op Home; de echte privéskill is alleen na je pincode te openen.</p>
   </header>
 
   <section class="p31-livebar" aria-label="Live Steps-status">
@@ -57,8 +57,8 @@ body.p31-embedded .p31-slot.is-fallback .p31-slot-copy small{display:block;margi
 
   <section class="p31-roster" aria-label="Park 3.1 Daily Mission companions">
     <div class="p31-roster-head">
-      <span><strong>Daily Mission companions</strong><small>13 missions · één persoonlijke roster · live state</small></span>
-      <span id="p31RosterCount">13 missions</span>
+      <span><strong>Daily Mission companions</strong><small>12 missions · één persoonlijke roster · live state</small></span>
+      <span id="p31RosterCount">12 missions</span>
     </div>
     <div class="p31-roster-grid" id="p31Roster"></div>
   </section>

@@ -140,7 +140,7 @@
   function ensureFitbitClientBridge() {
     if (document.querySelector('script[data-gamenfy-fitbit-direct]')) return;
     const script = document.createElement('script');
-    script.src = 'fitbit-client-direct.js?v=1';
+    script.src = 'fitbit-client-direct.js?v=2';
     script.dataset.gamenfyFitbitDirect = '1';
     document.head.appendChild(script);
   }

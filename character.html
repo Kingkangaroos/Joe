@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=11.0" defer></script>
+<script src="auth.js?v=11.1" defer></script>
 <script src="sync.js?v=11.9" defer></script>
 <script src="backup-owner-binding.js?v=1" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
@@ -1139,6 +1139,7 @@ textarea {
   margin-bottom:12px;font-size:12.5px;color:#6B4E12;line-height:1.5}
 .hm-stale b{color:#4A3608}
 .hm-stale a{color:#8A5A12;font-weight:700}
+.hm-reconnect{display:block;width:100%;margin-top:9px;border:0;border-radius:9px;background:#4A3608;color:#fff;padding:9px 11px;font-weight:800;cursor:pointer}.hm-reconnect:disabled{opacity:.55;cursor:wait}
 .hm-card {
   background:var(--card); border:1px solid var(--line); border-radius:16px;
   padding:13px 14px 11px; cursor:pointer; -webkit-tap-highlight-color:transparent;
@@ -1620,8 +1621,8 @@ function showTab(id){
 }
 
 // ── PIN ────────────────────────────────────────────
-const PRIVATE_PIN     = '1111';
 const PIN_SESSION_KEY = 'rpg_private_unlocked';
+function configuredPrivatePin(){ return localStorage.getItem('rpg_pin_v1') || '1111'; }
 function isPrivateUnlocked(){ return sessionStorage.getItem(PIN_SESSION_KEY)==='1'; }
 function unlockPrivate(){ sessionStorage.setItem(PIN_SESSION_KEY,'1'); }
 
@@ -1649,7 +1650,7 @@ function showPinModal(onSuccess){
   setTimeout(()=>inp.focus(),50);
   inp.addEventListener('input',()=>{
     if(inp.value.length===4){
-      if(inp.value===PRIVATE_PIN){ unlockPrivate(); overlay.remove(); onSuccess(); }
+      if(inp.value===configuredPrivatePin()){ unlockPrivate(); overlay.remove(); onSuccess(); }
       else{ err.textContent='Wrong PIN, try again'; inp.value=''; setTimeout(()=>err.textContent='',2000); }
     }
   });
@@ -3210,7 +3211,11 @@ function renderDaily(){
       window.addXP('gratitude',10,'Gratitude ingevuld');
       dd.gratitudeXpGiven=true; saveDaily(dd,sd);
     }
-    renderGratitudeTags(loadDaily(sd));
+    const gratitudeQuest=getPublicDailyQuests().find(q=>q.skill==='gratitude');
+    const missionCompleted=!!(gratitudeQuest&&!dailyQuestDone(gratitudeQuest,sd,loadDaily(sd))&&toggleDailyQuest(gratitudeQuest,sd));
+    try{ window.dispatchEvent(new CustomEvent('gamenfy:daily-mission-change',{detail:{key:'gratitude',date:sd,done:true,automatic:true}})); }catch(e){}
+    if(missionCompleted&&typeof showToast==='function') showToast('Gratitude-missie automatisch voltooid · +15 XP');
+    renderDaily();
   }
   if(gi&&!gi._wired){
     gi._wired=true;
@@ -4745,13 +4750,14 @@ function hmMetricDefs(d){
 // moving. Two-day threshold: tolerates a normal sync hiccup, catches an outage.
 function hmStaleBanner(d){
   const last = d && d.lastHealthDate;
-  if(!last) return '<div class="hm-stale"><b>Nog geen Fitbit-data geladen.</b> Open Body opnieuw of trek even omlaag nadat je bent ingelogd; de app probeert de cloudfeed opnieuw.</div>';
+  if(!last) return '<div class="hm-stale"><b>Nog geen Fitbit-data geladen.</b> Controleer de koppeling hieronder.<button class="hm-reconnect" type="button" onclick="gamenfyReconnectFitbit(this)">Fitbit opnieuw koppelen</button></div>';
   const p = last.split('-').map(Number);
   const days = Math.round((new Date(hmDateStr(0)) - new Date(p[0], p[1]-1, p[2])) / 86400000);
   if(days < 2) return '';
   return '<div class="hm-stale"><b>Gezondheidsdata staat stil.</b> Laatste meting: '+last
     + ' (' + days + ' dagen geleden) \u2014 de cijfers hieronder zijn dus verouderd. '
-    + 'Gamenfy probeert Fitbit automatisch opnieuw te lezen zodra je de app opent.</div>';
+    + 'De automatische sync kan pas verder zodra de toestemming is hersteld.'
+    + '<button class="hm-reconnect" type="button" onclick="gamenfyReconnectFitbit(this)">Fitbit opnieuw koppelen</button></div>';
 }
 
 async function loadHealthMetrics(){
