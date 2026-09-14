@@ -71,3 +71,17 @@ Questions for the review:
 5. Repair Steps / Brush Teeth / Good Deed transparency + crop, then full asset QA.
 6. Rebuild gratitude visualization as true shaped word cloud.
 7. Prototype Flex Day after Daily Mission research, not before.
+
+## Follow-up audit — 2026-09-14 · ChatGPT (OpenAI)
+
+| Point | Verified status | Remaining |
+| --- | --- | --- |
+| Fitbit | Recovery UI wired; prior backend diagnosis documented | Deferred by Joey; not re-audited in this pass |
+| Hide Gardening | Implemented in Home / Park display roster | Keep history and internal key |
+| Gratitude completion | Home and dated Character routes wired; smoke passes | Real-device confirmation |
+| Immediate L0 → L1 | Dormant CSS treatment implemented | Separate Cold Shower L00 proof is queued |
+| Crop / transparency | CSS contain framing implemented | Source-file repair and full alpha/crop QA |
+| Gratitude shape | Tapered word rows implemented | True shape-constrained packing and visual approval |
+| Daily Mission review | Open | Research before changing roster/frequency |
+| Flex Day | Deferred | Depends on Daily Mission review |
+| Command Quests | Weekly/monthly UI and sync implemented | Rollover history bug fixed on 14 September; regression covers dates, metadata and no XP side effects |

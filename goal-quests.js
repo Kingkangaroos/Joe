@@ -25,7 +25,8 @@
     ['weekly','monthly'].forEach(function(type){
       var currentPeriod=period(type);
       if(!data[type]||data[type].period!==currentPeriod){
-        if(data[type]&&data[type].title){data.history.unshift(data[type]);data.history=data.history.slice(0,24);}
+        var previous=data[type]&&data[type].quest;
+        if(previous&&previous.title){data.history.unshift(previous);data.history=data.history.slice(0,24);}
         data[type]={period:currentPeriod,quest:null};changed=true;
       }
     });

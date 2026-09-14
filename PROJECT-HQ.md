@@ -2,19 +2,20 @@
 
 > Durable shared product memory for Joey + ChatGPT/Claude. The chat is not the source of truth. Update this file when product decisions, feedback, priorities, or major implementation status changes.
 
-Last refreshed: 2026-09-07 by ChatGPT (OpenAI)
+Last refreshed: 2026-09-14 by ChatGPT (OpenAI)
 
-## NOW
+## NOW — reviewed 14 September 2026
 
-1. **Real-device Body/Fitbit confirmation after v11.9** — backend owner data is healthy and the production client read path has been replaced. Reopen the installed PWA and verify Body renders Fitbit data. If it still says Waiting for Fitbit, capture it as an iPhone/runtime-only bug rather than repeating backend repair.
-2. **Visual follow-up check** — confirm the personal Daily Missions roster feels like one set, Daily Level reads clearly, Finance → Ventures shows the four boxed ventures, and General/Venture Lab returns land in the correct workspace.
-3. **Installed-iPhone Device QA pass** — open `iPhone Device QA` from the normal Lab inside the installed Gamenfy PWA. Capture standalone mode, safe-area, Visual Viewport and max fixed-bottom drift. In the same pass test Daily Missions 2.0 and Swipe Navigation. Do not patch production bottom navigation or activate the dormant swipe engine before this real-device proof.
-4. **Fitbit retrospective natural proof** — live same-owner audit still shows 12 historical qualifying completions missing from canonical history (7 Walking, 5 Sleep), none `manual-off` and none marked XP-paid. Run a normal authenticated Gamenfy session, then re-audit read-only. Never manufacture proof with SQL writes.
-5. **Goal/WHY source verification on device** — the live RPG cloud row currently has no `rpg_goals_v1`; the 29 Aug private backup also had no `rpg_goals_v1`, so there is no evidence of a recent Goal-store deletion. Open Goals on Joey's device: if local Goals exist, canonical RPG sync should populate cloud; if local is also empty, enter current Goals deliberately rather than restoring the unrelated legacy June `goals` row.
-6. **WHY linking** — once the actual Goal store is present, add `linkedSkills` only where Joey genuinely intends a relationship. Do not infer a competing taxonomy.
-7. **Restore Dry Run v4 real-file test** — backup v4 carries a pseudonymous same-account binding, browser sync is now owner-scoped + generation-aware, and backups reject dirty state from another restore generation. Dry Run remains read-only. Next engineering gate is an authenticated atomic three-domain restore RPC plus owner-scoping of active service-role `app_state` paths before the legacy global `PRIMARY KEY(key)` can be replaced.
-8. **Edge Function secret cutover** — Jarvis and `send-daily-push` require environment-secret creation through a supported secure path before redeploy/rotation. The current connector cannot create Edge Function secrets.
-9. **Life/dashboard taxonomy** — decide only after real WHY links are visible; preserve the underlying 100-year-plan WHY even if old labels change.
+Current in-app priorities are in `PROJECT-HQ-STATE.json`; older dated audits below are historical evidence, not a fresh live-state diagnosis.
+
+1. Review Daily Missions: daily vs weekly/contextual, smallest useful set, and possible automatic completion. This research precedes Flex Day.
+2. Gratitude: tapered rows shipped; true shape-constrained packing and device review remain open.
+3. Badge intake and exact achievement contracts: registry is empty; the focused file search did not locate identifiable originals. Do not infer that the files do not exist.
+4. Run the dedicated Gamenfy workflow: three batches/eight jobs are live; repair/L0/motion outputs still await manual production and review.
+5. Installed-iPhone QA: current mission interactions, gratitude shape and dormant swipe prototype.
+
+Fitbit/OAuth is deferred at Joey's request. The 13 September invalid_grant/reauth diagnosis supersedes the older device-only hypothesis. Flex Day remains after research; restore, server-secret work and unresolved WHY mappings remain separately tracked.
+
 ## COMPLETED THIS PASS
 
 - [x] **Approved chat-character import completed:** Budgeting now uses the transparent owl L1–L10 set, Meditation the panda L1–L10 set, and Home Daily Score the Joey/King L1–L10 set.
@@ -158,6 +159,11 @@ Last refreshed: 2026-09-07 by ChatGPT (OpenAI)
 - Restore/import apply UI only after v4 owner-match, atomic restore-generation and generation-aware sync are proven; normal Settings exposure comes last.
 
 ## HUMAN CHANGELOG
+
+### 2026-09-14 — open-point audit and Command Quest history · ChatGPT (OpenAI)
+- Checked the 13 September feedback against shipped code and passing smoke checks; separated shipped implementations from device review, research and asset production still open.
+- Fixed rollover dropping week/month quests: archive the nested quest rather than testing a title on its period wrapper. Keep completion/reward metadata and the existing 24-item history cap; archiving does not award or revoke XP.
+- Refreshed in-app HQ priorities and exposed completed/deferred sections. Kept older technical audits explicitly historical; Fitbit remains deferred.
 
 ### 2026-09-14 — Gamenfy production workflow · ChatGPT (OpenAI)
 - Added a dedicated Gamenfy workflow linked from Lab and Asset Operations, with three batches and eight jobs.

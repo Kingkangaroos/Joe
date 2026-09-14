@@ -30,6 +30,8 @@
   <section class="card" id="hqAssetInbox" aria-label="Shared image inbox"></section>
   <section class="grid">
     <article class="card"><div class="label">Now</div><div id="nowList"></div></article>
+    <article class="card" id="completedCard"><div class="label">Recent afgerond</div><div id="completedList"></div></article>
+    <article class="card" id="deferredCard"><div class="label">Later / afhankelijkheden</div><div id="deferredList"></div></article>
     <article class="card"><div class="label">Assets / waiting</div><div id="assetList"></div></article>
     <article class="card wide"><div class="label">Locked decisions</div><div id="decisions"></div></article>
     <article class="card wide" id="flagshipCard"><div class="label">Flagships</div><div id="flagships"></div></article>
@@ -76,6 +78,8 @@
     document.getElementById('projectName').textContent=s.project||active;
     document.getElementById('updatedAt').textContent='Updated '+(s.updatedAt||'');
     fillList('nowList',s.now);
+    fillList('completedList',(s.completedThisPass||[]).slice(0,8));toggleCard('completedCard',Array.isArray(s.completedThisPass)&&s.completedThisPass.length>0);
+    fillList('deferredList',s.deferred);toggleCard('deferredCard',Array.isArray(s.deferred)&&s.deferred.length>0);
     fillList('assetList',s.assetsNeeded);
     const dec=document.getElementById('decisions');dec.textContent='';
     Object.entries(s.lockedDecisions||{}).forEach(([k,v])=>{const d=document.createElement('div');d.className='decision';const b=document.createElement('b');b.textContent=k.replace(/([A-Z])/g,' $1');const sp=document.createElement('span');sp.textContent=escText(v);d.append(b,sp);dec.appendChild(d)});
