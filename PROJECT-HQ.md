@@ -159,6 +159,12 @@ Last refreshed: 2026-09-07 by ChatGPT (OpenAI)
 
 ## HUMAN CHANGELOG
 
+### 2026-09-14 — Gamenfy production workflow · ChatGPT (OpenAI)
+- Added a dedicated Gamenfy workflow linked from Lab and Asset Operations, with three batches and eight jobs.
+- Batch 1 repairs Steps, Brush Teeth and Good Deed; batch 2 creates one Cold Shower L0 proof; batch 3 starts with Joey WALK before IDLE, JUMP and INTERACT.
+- Every job includes reference, model, settings, export dimensions, prompt and acceptance criteria. Copy buttons and device-local created progress are available.
+- Generation remains manual; marking created does not mean integrated. Fitbit work is deferred for this asset workflow.
+
 ### 2026-09-06 — Website Ventures HQ consolidated onto restored shell
 - Superseded Website Ventures PR #45 was **not merged** because its workspace shell predated Joey's restored Ventures / Venture Lab / Productielijn structure.
 - Its useful commercial strategy was ported forward instead: four flagships, plumbing first-niche hypothesis, premium/authentic operator principle, Visual Vault, Higgsfield still-first sprint and the structured visual-production backlog.

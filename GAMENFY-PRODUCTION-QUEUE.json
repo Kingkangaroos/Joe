@@ -1,0 +1,217 @@
+{
+  "name": "Gamenfy Production Workflow",
+  "version": 1,
+  "updatedAt": "2026-09-14",
+  "managedBy": "ChatGPT (OpenAI)",
+  "modelAudit": {
+    "checkedAt": "2026-09-14",
+    "note": "Eigen Gamenfy-workflow. Instellingen getoetst aan Higgsfield-catalogus. Geen generaties gestart; actuele Unlimited-dekking onbevestigd. Pixelmaten bij stills zijn exportdoelen. Sprite-afmetingen gelden per frame."
+  },
+  "batches": [
+    {
+      "number": 1,
+      "name": "Herstel bestaande companions",
+      "instruction": "Begin met Steps, Brush Teeth en Good Deed. Bekijk bestaande levels, kies defecten en herstel één proef per karakter. Niet alle 30 afbeeldingen opnieuw genereren.",
+      "jobs": [
+        {
+          "id": "GF-REPAIR-STEPS",
+          "title": "Steps · uitsnede en transparantie",
+          "purpose": "Park 3.1 · Steps · herstel eerst één problematisch level",
+          "model": "Nano Banana 2",
+          "modelId": "nano_banana_2",
+          "type": "Reference image → image",
+          "aspectRatio": "1:1",
+          "settings": {
+            "resolution": "2k"
+          },
+          "exportTarget": "1024 × 1024 px RGBA PNG → lossless WebP",
+          "quality": "Eerst proef → Lab → goedkeuren",
+          "count": "1 proef, daarna beoordelen",
+          "balance": "Handmatig · controleer actuele dekking/kosten",
+          "reference": "img/lab/park31/steps/l01.webp t/m l10.webp; upload exact het beschadigde level, één per opdracht",
+          "prompt": "Repair the supplied existing Gamenfy companion image. Preserve the exact character, evolution level, face, colors, costume, accessories and stylized 3D cartoon rendering. Keep the complete body including head, hands and feet inside a square canvas with 10 percent clear padding on every side. Only reconstruct parts visibly lost at the original crop boundary. Remove white matte and background remnants without erasing white character details. No checkerboard texture, no new scenery, no redesign, no text. Deliver an isolated character; a separate background-removal pass and actual alpha-channel verification are required before app integration.",
+          "gate": "Controleer alle 10 bestaande levels; herstel alleen defecten. Echte alpha check op donker/licht vlak; geen witte halo, afgeknipte voeten of veranderde identiteit. Nieuw bestand in img/lab/gamenfy-production/repair/; origineel bewaren."
+        },
+        {
+          "id": "GF-REPAIR-TEETH",
+          "title": "Brush Teeth · uitsnede en transparantie",
+          "purpose": "Park 3.1 · Brush Teeth · herstel eerst één problematisch level",
+          "model": "Nano Banana 2",
+          "modelId": "nano_banana_2",
+          "type": "Reference image → image",
+          "aspectRatio": "1:1",
+          "settings": {
+            "resolution": "2k"
+          },
+          "exportTarget": "1024 × 1024 px RGBA PNG → lossless WebP",
+          "quality": "Eerst proef → Lab → goedkeuren",
+          "count": "1 proef, daarna beoordelen",
+          "balance": "Handmatig · controleer actuele dekking/kosten",
+          "reference": "img/lab/park31/teeth/l01.webp t/m l10.webp; upload exact het beschadigde level, één per opdracht",
+          "prompt": "Repair the supplied existing Gamenfy companion image. Preserve the exact character, evolution level, face, colors, costume, accessories and stylized 3D cartoon rendering. Keep the complete body including head, hands and feet inside a square canvas with 10 percent clear padding on every side. Only reconstruct parts visibly lost at the original crop boundary. Remove white matte and background remnants without erasing white character details. No checkerboard texture, no new scenery, no redesign, no text. Deliver an isolated character; a separate background-removal pass and actual alpha-channel verification are required before app integration.",
+          "gate": "Controleer alle 10 bestaande levels; herstel alleen defecten. Echte alpha check op donker/licht vlak; geen witte halo, afgeknipte voeten of veranderde identiteit. Nieuw bestand in img/lab/gamenfy-production/repair/; origineel bewaren."
+        },
+        {
+          "id": "GF-REPAIR-GOOD-DEED",
+          "title": "Good Deed · uitsnede en transparantie",
+          "purpose": "Park 3.1 · Good Deed · herstel eerst één problematisch level",
+          "model": "Nano Banana 2",
+          "modelId": "nano_banana_2",
+          "type": "Reference image → image",
+          "aspectRatio": "1:1",
+          "settings": {
+            "resolution": "2k"
+          },
+          "exportTarget": "1024 × 1024 px RGBA PNG → lossless WebP",
+          "quality": "Eerst proef → Lab → goedkeuren",
+          "count": "1 proef, daarna beoordelen",
+          "balance": "Handmatig · controleer actuele dekking/kosten",
+          "reference": "img/lab/park31/good-deed/l01.webp t/m l10.webp; upload exact het beschadigde level, één per opdracht",
+          "prompt": "Repair the supplied existing Gamenfy companion image. Preserve the exact character, evolution level, face, colors, costume, accessories and stylized 3D cartoon rendering. Keep the complete body including head, hands and feet inside a square canvas with 10 percent clear padding on every side. Only reconstruct parts visibly lost at the original crop boundary. Remove white matte and background remnants without erasing white character details. No checkerboard texture, no new scenery, no redesign, no text. Deliver an isolated character; a separate background-removal pass and actual alpha-channel verification are required before app integration.",
+          "gate": "Controleer alle 10 bestaande levels; herstel alleen defecten. Echte alpha check op donker/licht vlak; geen witte halo, afgeknipte voeten of veranderde identiteit. Nieuw bestand in img/lab/gamenfy-production/repair/; origineel bewaren."
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "name": "Direct resultaat · L0 → L1",
+      "instruction": "Eén Cold Shower-proef. Pas uitbreiden als het verschil bij de eerste voltooiing duidelijk beter werkt.",
+      "jobs": [
+        {
+          "id": "GF-L0-COLD-SHOWER",
+          "title": "Cold Shower · echte ruststand",
+          "purpose": "Park 3.1 · proef voor directe L0 → L1-beloning",
+          "model": "Nano Banana 2",
+          "modelId": "nano_banana_2",
+          "type": "Reference image → image",
+          "aspectRatio": "1:1",
+          "settings": {
+            "resolution": "2k"
+          },
+          "exportTarget": "1024 × 1024 px RGBA PNG",
+          "quality": "Eerst proef → Lab → goedkeuren",
+          "count": "1 proef, daarna beoordelen",
+          "balance": "Handmatig · controleer actuele dekking/kosten",
+          "reference": "img/lab/park31/cold-shower/l01.webp",
+          "prompt": "Create a dormant level-zero variant of this exact Gamenfy ice companion. Preserve identity, silhouette language, proportions and material style. Make it sleepy and inactive with lowered posture and subdued color, while keeping the full body and all extremities visible. Square composition, 10 percent padding, no environment, no text, no new accessories. Keep the original level-one artwork unchanged; this is a separate dormant variant. Background removal and alpha verification happen after generation.",
+          "gate": "Vergelijk in Lab direct met bestaande L1: één voltooiing moet duidelijk nieuw leven tonen. Geen wijziging aan +1/−1-logica; eerst één missie testen."
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "name": "Echte beweging · Joey-pilot",
+      "instruction": "Kies één bron met zichtbare benen en voeten. WALK eerst; IDLE, JUMP en INTERACT alleen na een geslaagde walk. Bij blijvend glijden of vervormen stoppen en 2D-rig onderzoeken.",
+      "jobs": [
+        {
+          "id": "GF-PILOT-WALK-001",
+          "title": "Real Walk Cycle",
+          "purpose": "Gamenfy Lab · Daily Score Joey · GF-PILOT-SOURCE-001 selected",
+          "model": "AutoSprite Animation",
+          "modelId": "autosprite",
+          "type": "Image → sprite sheet",
+          "aspectRatio": "Per frame 1:1",
+          "settings": {
+            "kind": "walk",
+            "video_tier": "turbo",
+            "frame_count": 25,
+            "frame_size": 256,
+            "remove_bg": "ultra",
+            "with_sound": false,
+            "is_humanoid": true
+          },
+          "exportTarget": "25 frames × 256 × 256 px · PNG atlas; indeling uit resultaat lezen",
+          "quality": "Eerst proef → Lab → goedkeuren",
+          "count": "1 proef, daarna beoordelen",
+          "balance": "Handmatig · controleer actuele dekking/kosten",
+          "reference": "Eén goedgekeurde full-body bron uit img/lab/daily-score/joey/l01.webp t/m l10.webp. Dezelfde bron voor alle bewegingen.",
+          "prompt": "Create a natural relaxed walk cycle from the supplied existing Gamenfy character. Preserve the exact character design, face, outfit, proportions, colors and silhouette language. The legs must genuinely alternate through planted-foot, passing and forward-stride poses; arms should swing gently in opposition. Keep torso/head stable, feet consistent in size, no camera movement, no zoom, no new props, no outfit redesign, no face drift. The result should read as a character truly walking rather than a flat image being translated across the screen.",
+          "gate": "At actual app render size the feet do not skate or melt, legs/arms visibly articulate, face/outfit remain the same character, frame-to-frame proportions stay stable and the loop seam is not distracting. If this fails after a bounded retry, stop the AutoSprite expansion and evaluate rigged 2D before spending on the remaining pilot jobs. Eerst WALK goedkeuren; daarna vervolg."
+        },
+        {
+          "id": "GF-PILOT-IDLE-001",
+          "title": "Natural Idle Cycle",
+          "purpose": "Gamenfy Lab · Daily Score Joey · GF-PILOT-WALK-001 passes",
+          "model": "AutoSprite Animation",
+          "modelId": "autosprite",
+          "type": "Image → sprite sheet",
+          "aspectRatio": "Per frame 1:1",
+          "settings": {
+            "kind": "idle",
+            "video_tier": "turbo",
+            "frame_count": 18,
+            "frame_size": 256,
+            "remove_bg": "ultra",
+            "with_sound": false,
+            "is_humanoid": true
+          },
+          "exportTarget": "18 frames × 256 × 256 px · PNG atlas; indeling uit resultaat lezen",
+          "quality": "Eerst proef → Lab → goedkeuren",
+          "count": "1 proef, daarna beoordelen",
+          "balance": "Handmatig · controleer actuele dekking/kosten",
+          "reference": "Eén goedgekeurde full-body bron uit img/lab/daily-score/joey/l01.webp t/m l10.webp. Dezelfde bron voor alle bewegingen.",
+          "prompt": "Create a subtle natural idle loop from the exact same Gamenfy character source. Preserve identity, face, outfit, proportions and colors. Use only tiny breathing, a gentle weight shift and minimal natural blink/head movement. No waving, dancing, bouncing, large gestures, camera motion, new props or costume changes. It should make the character feel quietly alive while the user reads the surrounding UI.",
+          "gate": "Same identity as WALK, no jitter or morphing, movement is visible but not distracting, loop is seamless and the feet remain grounded.  Eerst WALK goedkeuren; daarna vervolg."
+        },
+        {
+          "id": "GF-PILOT-JUMP-001",
+          "title": "Expressive Jump",
+          "purpose": "Gamenfy Lab · Daily Score Joey · GF-PILOT-WALK-001 passes",
+          "model": "AutoSprite Animation",
+          "modelId": "autosprite",
+          "type": "Image → sprite sheet",
+          "aspectRatio": "Per frame 1:1",
+          "settings": {
+            "kind": "jump",
+            "video_tier": "turbo",
+            "frame_count": 22,
+            "frame_size": 256,
+            "remove_bg": "ultra",
+            "with_sound": false,
+            "is_humanoid": true
+          },
+          "exportTarget": "22 frames × 256 × 256 px · PNG atlas; indeling uit resultaat lezen",
+          "quality": "Eerst proef → Lab → goedkeuren",
+          "count": "1 proef, daarna beoordelen",
+          "balance": "Handmatig · controleer actuele dekking/kosten",
+          "reference": "Eén goedgekeurde full-body bron uit img/lab/daily-score/joey/l01.webp t/m l10.webp. Dezelfde bron voor alle bewegingen.",
+          "prompt": "Create one expressive but believable jump action with the exact same Gamenfy character. Show clear anticipation with bent knees, takeoff driven by the legs, a readable airborne pose, landing compression and a short settle back toward neutral. Preserve face, outfit, proportions and colors. Do not simply translate the whole image vertically; knees, hips, feet and arms must genuinely articulate through the action. No camera movement, no new props, no costume changes.",
+          "gate": "The jump reads as physical character motion at app size, has clear anticipation/takeoff/air/landing, identity remains stable and the body is not merely a flat cutout moving up and down.  Eerst WALK goedkeuren; daarna vervolg."
+        },
+        {
+          "id": "GF-PILOT-INTERACT-001",
+          "title": "Character + Separate Prop Interaction Proof",
+          "purpose": "Gamenfy Lab · Daily Score Joey · GF-PILOT-WALK-001 passes",
+          "model": "AutoSprite Animation",
+          "modelId": "autosprite",
+          "type": "Image → sprite sheet",
+          "aspectRatio": "Per frame 1:1",
+          "settings": {
+            "kind": "custom",
+            "name": "reach-touch-return",
+            "video_tier": "turbo",
+            "frame_count": 24,
+            "frame_size": 256,
+            "remove_bg": "ultra",
+            "with_sound": false,
+            "is_humanoid": true
+          },
+          "exportTarget": "24 frames × 256 × 256 px · PNG atlas; indeling uit resultaat lezen",
+          "quality": "Eerst proef → Lab → goedkeuren",
+          "count": "1 proef, daarna beoordelen",
+          "balance": "Handmatig · controleer actuele dekking/kosten",
+          "reference": "Eén goedgekeurde full-body bron uit img/lab/daily-score/joey/l01.webp t/m l10.webp. Dezelfde bron voor alle bewegingen.",
+          "prompt": "Animate the exact same Gamenfy character performing a short reusable interaction with an imaginary anchor point slightly in front of the body around waist height: notice the target, shift weight, reach one hand toward it, make a clear brief touch/press contact pose, then return naturally to neutral. Preserve exact face, outfit, body proportions and colors. Do not bake a visible prop, button, text or new object into the sprite. No camera movement. The empty contact point must remain spatially consistent so the app can render a separate HTML/CSS/image prop at that location.",
+          "gate": "The hand/contact point stays consistent enough that a separately rendered prop can be aligned with it, the body visibly reacts to the interaction, and the architecture proves character + prop/FX can remain separate Lego-like layers. If the contact point wanders too much or the body/identity morphs, do not generate a prop library; test a rigged 2D character architecture instead. Eerst WALK goedkeuren; daarna vervolg."
+        }
+      ]
+    }
+  ],
+  "integration": [
+    "Bron selecteren en exacte bestandsnaam bewaren.",
+    "Handmatig genereren met Copy full setup.",
+    "Download origineel + model/instellingen; markeer alleen Als gemaakt.",
+    "Controleer alpha, identiteit, voeten, loop en formaat in Gamenfy Lab.",
+    "Pas na goedkeuring vervangen en live controleren; gemaakt is niet hetzelfde als geïntegreerd."
+  ]
+}
