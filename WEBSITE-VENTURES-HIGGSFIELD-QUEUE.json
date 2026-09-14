@@ -1,7 +1,7 @@
 {
   "name": "Website Ventures Higgsfield Manual Queue",
   "version": 4,
-  "updatedAt": "2026-09-10",
+  "updatedAt": "2026-09-14",
   "managedBy": "ChatGPT (OpenAI)",
   "source": "WEBSITE-VENTURES-HQ-STATE.json + Website Ventures Production Line v3.3 + Agency Showroom Lab v1.5",
   "status": {
@@ -44,22 +44,34 @@
           "aspectRatio": "16:9",
           "quality": "2K exploration",
           "count": "2-4 curated variants, then stop and review",
-          "balance": "Unlimited preferred",
+          "balance": "Unlimited preferred; current account coverage must be checked",
           "prompt": "Photoreal campaign frame for an elite web design studio. One razor-thin black-glass display tablet with precision chrome edge details rests naturally on one single large asymmetric rough pale limestone/travertine slab inside a calm bright architectural gallery. The stone must read as one substantial irregular rock, not a pile of spheres or small stones. Subtle deep oxblood-red accent only, controlled soft daylight, tactile micro-detail in stone, glass and metal, elegant negative space for large website typography, premium automotive-product photography polish without any car branding. No readable UI, no logos, no people, no extra devices, no clutter, widescreen 16:9.",
-          "gate": "Pass only if the stone/device look materially more convincing than the coded blockout and can anchor the same-stone story."
+          "gate": "Pass only if the stone/device look materially more convincing than the coded blockout and can anchor the same-stone story.",
+          "modelId": "soul_2",
+          "type": "Text → image",
+          "settings": {
+            "quality": "2k"
+          },
+          "exportTarget": "1920 × 1080 px · web export target"
         },
         {
           "id": "AG15-HERO-MOBILE-A",
           "title": "Product A deliberate mobile derivative",
           "purpose": "Agency v1.5 mobile hero reference",
-          "model": "Nano Banana 2 or current best reference-preserving image model",
+          "model": "Nano Banana 2",
           "aspectRatio": "4:5",
           "quality": "2K exploration",
           "count": "1-2 after desktop direction is accepted",
-          "balance": "Unlimited preferred",
+          "balance": "Unlimited preferred; current account coverage must be checked",
           "reference": "Use exact accepted AG15-HERO-PRODUCT-A winner",
           "prompt": "Recompose the supplied accepted Product A hero into a deliberate 4:5 mobile campaign frame. Preserve the exact same tablet, same single large pale stone, material palette and lighting language. Keep the device readable at a 390px viewport and preserve clean text-safe space. Recompose rather than crop. No new objects, no text, no logos, no people.",
-          "gate": "Desktop and mobile must unmistakably be the same world and same object."
+          "gate": "Desktop and mobile must unmistakably be the same world and same object.",
+          "modelId": "nano_banana_2",
+          "type": "Reference image → image",
+          "settings": {
+            "resolution": "2k"
+          },
+          "exportTarget": "1080 × 1350 px · web export target"
         }
       ]
     },
@@ -75,37 +87,55 @@
           "purpose": "Premium Plumbing recurring character master",
           "model": "Higgsfield Soul 2.0",
           "aspectRatio": "3:4",
-          "quality": "2K",
+          "quality": "2K exploration",
           "count": "Up to 4 candidates; lock exactly one",
-          "balance": "Unlimited preferred",
+          "balance": "Unlimited preferred; current account coverage must be checked",
           "prompt": "Photoreal premium portrait of one experienced Dutch/European plumbing and installation technician, roughly 30-45, competent, calm and approachable. Authentic face, realistic skin and hands, natural posture, charcoal or deep navy technical workwear with one restrained oxblood accent, functional rather than fashionable. Bright believable modern service environment. Campaign-level polish but unmistakably a real tradesperson. No crossed arms, no stock-photo grin, no suit, no fashion-model styling, no text, no logo.",
-          "gate": "Choose one identity only if he feels both credible to a Dutch homeowner and strong enough to carry a premium flagship."
+          "gate": "Choose one identity only if he feels both credible to a Dutch homeowner and strong enough to carry a premium flagship.",
+          "modelId": "soul_2",
+          "type": "Text → image",
+          "settings": {
+            "quality": "2k"
+          },
+          "exportTarget": "1536 × 2048 px · web export target"
         },
         {
           "id": "PL15-HERO-WORK",
           "title": "Hero working scene",
           "purpose": "Premium Plumbing hero / major storytelling slot",
-          "model": "Higgsfield Soul 2.0",
+          "model": "Nano Banana 2",
           "aspectRatio": "16:9",
-          "quality": "2K",
+          "quality": "2K exploration",
           "count": "2-3 variants after character lock",
-          "balance": "Unlimited preferred",
+          "balance": "Unlimited preferred; current account coverage must be checked",
           "reference": "Exact PL15-CHAR-MASTER winner",
           "prompt": "Using the exact supplied technician identity, create a photoreal premium working scene in a bright modern Dutch bathroom. He is genuinely diagnosing or repairing a plumbing issue with realistic tools and natural body language. Preserve face, age, build, hair and workwear exactly. Campaign polish, believable trade work, clean copy-safe negative space, no second technician, no pose, no text, no logos, widescreen 16:9.",
-          "gate": "Must be obviously the same technician and immediately usable in the actual Plumbing page."
+          "gate": "Must be obviously the same technician and immediately usable in the actual Plumbing page.",
+          "modelId": "nano_banana_2",
+          "type": "Reference image → image",
+          "settings": {
+            "resolution": "2k"
+          },
+          "exportTarget": "1920 × 1080 px · web export target"
         },
         {
           "id": "PL15-DETAIL-WORK",
           "title": "Service detail scene",
           "purpose": "Premium Plumbing secondary service/story section",
-          "model": "Higgsfield Soul 2.0",
+          "model": "Nano Banana 2",
           "aspectRatio": "16:9",
-          "quality": "2K",
+          "quality": "2K exploration",
           "count": "1-2 after hero winner",
-          "balance": "Unlimited preferred",
+          "balance": "Unlimited preferred; current account coverage must be checked",
           "reference": "Exact PL15-CHAR-MASTER winner",
           "prompt": "Using the exact supplied technician identity, show a close authentic service moment under a sink or at a visible installation detail in a clean Dutch home. Realistic hands, tools and plumbing hardware, controlled bright light, premium service-campaign composition and intentional negative space. Preserve the exact person and workwear. No second technician, no text, no logo.",
-          "gate": "Only keep it if it fills a real page section not already covered by the hero."
+          "gate": "Only keep it if it fills a real page section not already covered by the hero.",
+          "modelId": "nano_banana_2",
+          "type": "Reference image → image",
+          "settings": {
+            "resolution": "2k"
+          },
+          "exportTarget": "1920 × 1080 px · web export target"
         }
       ]
     },
@@ -121,24 +151,36 @@
           "purpose": "Showcase 02 final hero visual",
           "model": "Higgsfield Soul 2.0",
           "aspectRatio": "16:9",
-          "quality": "2K",
+          "quality": "2K exploration",
           "count": "2-4 curated variants",
-          "balance": "Unlimited preferred",
+          "balance": "Unlimited preferred; current account coverage must be checked",
           "prompt": "Photoreal editorial hero for a premium renovation and interior craftsmanship website. One serene contemporary European bathroom/interior with sculptural natural stone, warm plaster, refined joinery and carefully controlled daylight. Architectural-magazine composition, quiet luxury, tactile surfaces, generous copy-safe negative space, sophisticated but believable rather than fantasy mansion. No people, no text, no logo, widescreen 16:9.",
-          "gate": "Must feel calm, architectural and expensive enough to be clearly different from the Plumbing service world."
+          "gate": "Must feel calm, architectural and expensive enough to be clearly different from the Plumbing service world.",
+          "modelId": "soul_2",
+          "type": "Text → image",
+          "settings": {
+            "quality": "2k"
+          },
+          "exportTarget": "1920 × 1080 px · web export target"
         },
         {
           "id": "REN15-TRANSFORM",
           "title": "Cinematic transformation companion",
           "purpose": "Showcase 02 scroll/before-after storytelling asset",
-          "model": "Higgsfield Soul 2.0",
+          "model": "Nano Banana 2",
           "aspectRatio": "16:9",
-          "quality": "2K",
+          "quality": "2K exploration",
           "count": "1-2 only after hero direction is selected",
-          "balance": "Unlimited preferred",
+          "balance": "Unlimited preferred; current account coverage must be checked",
           "reference": "Accepted REN15-HERO direction",
           "prompt": "Create a second frame in the exact same architectural world and material palette as the supplied reference, designed for a cinematic renovation-story transition. Preserve room identity, lighting logic and key geometry while changing viewpoint/detail enough to reveal craftsmanship and transformation. No text, no logo, no people, widescreen 16:9.",
-          "gate": "Must pair seamlessly with the hero in one scroll story rather than look like another random interior."
+          "gate": "Must pair seamlessly with the hero in one scroll story rather than look like another random interior.",
+          "modelId": "nano_banana_2",
+          "type": "Reference image → image",
+          "settings": {
+            "resolution": "2k"
+          },
+          "exportTarget": "1920 × 1080 px · web export target"
         }
       ]
     },
@@ -154,24 +196,40 @@
           "purpose": "Showcase 03 final hero visual",
           "model": "Higgsfield Soul 2.0",
           "aspectRatio": "16:9",
-          "quality": "2K",
+          "quality": "2K exploration",
           "count": "2-4 curated variants",
-          "balance": "Unlimited preferred",
+          "balance": "Unlimited preferred; current account coverage must be checked",
           "prompt": "Premium high-energy campaign hero for a performance coach or strength-training website. One authentic athlete in a focused training moment, sculptural directional light, deep graphite environment with one restrained electric or warm accent, crisp movement and strong negative space for short copy. Editorial sports-campaign quality, realistic skin and anatomy, confident but not aggressive, modern and clean. No gym-stock cliché, no exaggerated bodybuilding, no text, no logo, widescreen 16:9.",
-          "gate": "Must feel instantly different from Plumbing and Architectural Luxury while still meeting the same premium quality ceiling."
+          "gate": "Must feel instantly different from Plumbing and Architectural Luxury while still meeting the same premium quality ceiling.",
+          "modelId": "soul_2",
+          "type": "Text → image",
+          "settings": {
+            "quality": "2k"
+          },
+          "exportTarget": "1920 × 1080 px · web export target"
         },
         {
           "id": "PERF15-MOTION-REF",
           "title": "Performance motion reference",
           "purpose": "Short loop/scroll-motion reference for showcase 03",
-          "model": "Use current best reference-preserving video/motion model only after still winner",
+          "model": "Seedance 2.5",
           "aspectRatio": "16:9",
-          "quality": "Preview first",
+          "quality": "720p preview; 1080p only after approval",
           "count": "1 bounded test",
-          "balance": "Unlimited only if supported; otherwise defer",
+          "balance": "Check current Unlimited coverage before generation; otherwise defer",
           "reference": "Exact PERF15-HERO winner",
           "prompt": "Preserve the exact athlete, environment and framing. Add only subtle premium movement: controlled body motion, fabric response, light sweep or atmospheric depth. Keep the subject stable and avoid morphing, camera chaos or ad-like text overlays.",
-          "gate": "Keep only if motion clearly raises the perceived quality without identity drift."
+          "gate": "Keep only if motion clearly raises the perceived quality without identity drift.",
+          "modelId": "seedance_2_5",
+          "type": "Image → video",
+          "settings": {
+            "mode": "omni_reference",
+            "resolution": "720p",
+            "duration": 5,
+            "generate_audio": false,
+            "bitrate_mode": "standard"
+          },
+          "exportTarget": "1920 × 1080 px · web export target"
         }
       ]
     },
@@ -185,26 +243,42 @@
           "id": "AD15-PRODUCT-STILL",
           "title": "Premium product-launch still",
           "purpose": "Agency v1.5 'We also make things move' phone/product slot",
-          "model": "Higgsfield Soul 2.0 or best product-image model available in Unlimited",
+          "model": "Higgsfield Soul 2.0",
           "aspectRatio": "9:16",
-          "quality": "2K",
+          "quality": "2K exploration",
           "count": "2-3 curated variants",
-          "balance": "Unlimited preferred",
+          "balance": "Unlimited preferred; current account coverage must be checked",
           "prompt": "Premium vertical product-launch campaign frame for a high-quality strength-training accessory such as a leather weightlifting belt. One beautifully constructed belt presented as an engineered object, tactile leather grain and metal hardware, refined studio architecture, warm neutral stone, deep charcoal and one restrained oxblood accent. High-end product photography, strong depth and copy-safe space, no brand logo, no readable text, no person, no fake performance claim, vertical 9:16.",
-          "gate": "Must look like a real premium product campaign and work inside a phone/social frame."
+          "gate": "Must look like a real premium product campaign and work inside a phone/social frame.",
+          "modelId": "soul_2",
+          "type": "Text → image",
+          "settings": {
+            "quality": "2k"
+          },
+          "exportTarget": "1080 × 1920 px · web export target"
         },
         {
           "id": "AD15-PRODUCT-MOTION",
           "title": "Premium product motion",
           "purpose": "Agency v1.5 product-motion capability proof",
-          "model": "Seedance 2.5 or current best reference-preserving motion model",
+          "model": "Seedance 2.5",
           "aspectRatio": "9:16",
-          "quality": "Preview/1080p only after still winner",
+          "quality": "720p preview; 1080p only after approval",
           "count": "1-2 bounded tests",
-          "balance": "Unlimited only if supported; otherwise defer",
+          "balance": "Check current Unlimited coverage before generation; otherwise defer",
           "reference": "Exact AD15-PRODUCT-STILL winner",
           "prompt": "Preserve the exact supplied product, materials and set. Create a restrained luxury product motion: slow controlled camera arc and/or product rotation, subtle light travel across leather and hardware, natural shadows and precise material response. No product morphing, no extra straps or buckles, no text, no logo, no human hands, no sudden cuts. The result should feel like a premium launch film that can live inside a website or social phone frame.",
-          "gate": "Keep only if object geometry remains stable and the motion is genuinely useful on the agency site."
+          "gate": "Keep only if object geometry remains stable and the motion is genuinely useful on the agency site.",
+          "modelId": "seedance_2_5",
+          "type": "Image → video",
+          "settings": {
+            "mode": "omni_reference",
+            "resolution": "720p",
+            "duration": 5,
+            "generate_audio": false,
+            "bitrate_mode": "standard"
+          },
+          "exportTarget": "1080 × 1920 px · web export target"
         }
       ]
     }
@@ -223,5 +297,20 @@
     "archive": "WEBSITE-VENTURES-HIGGSFIELD-QUEUE-v3-archive.json",
     "oldQueueBlob": "e59231d68e9e3982d3f814636c4fba2c28956930",
     "note": "Previous Batch 5-11 prompt history remains available through the archive/Git history. Old Fire Challenger is no longer mandatory."
+  },
+  "modelAudit": {
+    "checkedAt": "2026-09-14",
+    "source": "Live Higgsfield models_get/models_list catalog + official model pages",
+    "note": "Model support is verified; account Unlimited coverage is not confirmed. Export dimensions below are delivery targets, not guaranteed native 2K dimensions.",
+    "innovations": [
+      "Seedance 2.5 verified: omni_reference, 4–30 seconds, up to 1080p; use a 5-second silent test after still approval.",
+      "Nano Banana 2 supports reference edits, 4:5 and 1K/2K/4K.",
+      "AutoSprite supports game sprite sheets; candidate for a separate one-character pilot, not a reason to regenerate the park."
+    ],
+    "sources": [
+      "https://higgsfield.ai/nano-banana-intro",
+      "https://higgsfield.ai/soul-intro",
+      "https://higgsfield.ai/ai-video"
+    ]
   }
 }
