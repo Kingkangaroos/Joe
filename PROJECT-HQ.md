@@ -1,6 +1,14 @@
 # Gamenfy Project HQ
 
-> Durable shared product memory for Joey + ChatGPT/Claude. The chat is not the source of truth. Update this file when product decisions, feedback, priorities, or major implementation status changes.
+> Actuele afspraken uit Joeys chat sturen de uitvoering. Leg ze hier vast; ideeën zijn niet automatisch bouwopdrachten.
+
+## Actueel — 17 september 2026
+
+ChatGPT Lab is de centrale werkplek. Oude proeven blijven achter Older Lab Experiments. Het actuele stappenplan en alle feedback staan in GAMENFY-WORKSPACE.json. GAMENFY-RELEASES.json houdt uitgevoerde wijzigingen bij; volg GAMENFY-RELEASES.md bij iedere oplevering.
+
+Dagelijkse missies blijven behouden, worden samen gereviewd, en het weekritme komt ernaast. Geen karakterproductie of credits in deze opruimronde. Bij ‘ga verder, druk’ aannemen dat Joey de chat niet leest: cumulatief loggen en later samenvatten; stilte is geen akkoord.
+
+Onderstaande eerdere audits zijn historische context, niet de actieve opdrachtvolgorde.
 
 Last refreshed: 2026-09-14 by ChatGPT (OpenAI)
 

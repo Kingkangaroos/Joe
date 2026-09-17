@@ -1,0 +1,29 @@
+{
+  "updatedAt": "2026-09-17",
+  "managedBy": "ChatGPT",
+  "steps": [
+    {"title":"1. Karakterfamilie kiezen","why":"Eén familie met grote ogen, wezens en mensen; de huidige vibe blijft de richting.","next":"ChatGPT maakt eerst een voorstel. Joey beoordeelt de stijl vóór productie.","gate":"Nog te maken; bestaande beelden blijven bewaard."},
+    {"title":"2. Herbruikbare beweging bewijzen","why":"Geen zes losse clips voor elk karakter op alle tien levels.","next":"Eén karakterproef met herbruikbare beweging; controle op begin-, midden- en eindevolutie en een tweede lichaamstype.","gate":"Eerst technisch en visueel bewijs, dan pas opschalen. Geen credits zonder akkoord."},
+    {"title":"3. Home als game met widgets","why":"Meer leven, kleur en overzicht; minder wit en eindeloos scrollen.","next":"Compacte aanklikbare blokken, waaronder agenda, eerst als Lab-voorstel.","gate":"Joey beoordeelt de proef voordat Home opnieuw wordt ingericht."},
+    {"title":"4. Skills met een waarom en pad","why":"Weten waarom tennis of oefenen telt, wat de volgende mijlpaal is en wat een level oplevert.","next":"WHY → oefening → mijlpaal → zichtbare beloning. Gebruik het bestaande honderdjarenplan; geen verzonnen doelkoppelingen.","gate":"De inhoudelijke koppelingen eerst samen beoordelen."},
+    {"title":"5. Bestaande Daily Missions samen reviewen","why":"Dagelijkse basis blijft belangrijk: opgeruimd huis, stappen, goede daad en meditatie.","next":"Alle huidige missies behouden en één voor één beoordelen. Cold Shower apart bespreken; niets automatisch schrappen.","gate":"Geen wijzigingen aan levels, voortgang of missies zonder concrete afspraak."},
+    {"title":"6. Flexibel weekritme naast dailies","why":"Een voldaan weekgevoel, zonder dat een verschoven afspraak een mislukking wordt.","next":"3 keer sport/beweging, dagelijks 10.000 stappen, 2–3 sociale momenten en een weekendactiviteit. Overlap mag; geplande momenten kunnen verschuiven.","gate":"Dit is de afgesproken richting, nog geen geïmplementeerde nieuwe weekmissies."}
+  ],
+  "agreements": [
+    "Deze chat stuurt de keuzes. Bestaand werk bewaren; ideeën zijn niet automatisch bouwopdrachten.",
+    "Ga verder, druk betekent: Joey leest de updates waarschijnlijk niet. Elke oplevering in het blijvende log vastleggen en later samenvatten; stilte is geen akkoord.",
+    "Na uitvoering altijd in de chat: wat is veranderd, waar staat het, wat kun je testen en wat staat nog open.",
+    "Een update als gezien markeren is geen ontwerpgoedkeuring. Gezien-status is per account en apparaat.",
+    "Geen nieuwe afbeeldingen genereren of betaalde credits gebruiken in deze opruimronde."
+  ],
+  "feedback": [
+    "Poppetjes: transparantie, beschadigde uitsnedes en gelijke/grotere weergaveschaal zijn drie aparte controles. Joey laat transparante art elders maken; de schaalfix blijft open.",
+    "Fitbit blijft open: bij een storing eerst de bestaande herkoppelroute tonen; structurele synchronisatie apart onderzoeken. Deze ronde repareert Fitbit niet.",
+    "Levels moeten voelbaar belonen: zichtbare evolutie en een leuk level-upmoment, niet alleen cijfers.",
+    "Skills moeten aansluiten op Liefde, Geld, Vrijheid, Blijheid en Exploration uit het bestaande langetermijnplan.",
+    "Swipe hapert rond Body; blijft een experiment. Gratitude-vorm en badge-originelen blijven open; bestaande inhoud bewaren.",
+    "Vaker op tijd komen hoort bij gewenst weekgevoel. Slaapgesprek nu gepauzeerd; slaapmissie niet verwijderen.",
+    "Flex Day pas na missiereview. Maandelijks 24 uur vasten is alleen een geparkeerde onderzoeksvraag, geen missie of gezondheidsadvies.",
+    "Kennis en bruikbare assetmethodes uit Ventures hergebruiken; projecten en actuele workflows duidelijk gescheiden houden."
+  ]
+}

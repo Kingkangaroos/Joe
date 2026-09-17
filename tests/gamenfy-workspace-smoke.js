@@ -1,0 +1,25 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const base=path.join(__dirname,'..'),read=p=>fs.readFileSync(path.join(base,p),'utf8');
+const api=require('../gamenfy-updates.js'),releases=JSON.parse(read('GAMENFY-RELEASES.json')).releases;
+const values=new Map(),storage={getItem:k=>values.get(k),setItem:(k,v)=>values.set(k,v)};
+assert.equal(new Set(releases.map(r=>r.id)).size,releases.length);
+assert.equal(api.relevant(releases,'home').length,1);
+assert.equal(api.unread(releases,api.read(storage,'owner-a')).length,releases.length);
+assert.equal(values.size,0,'opening/reading never acknowledges');
+assert.equal(api.acknowledge(storage,'owner-a',[releases[0].id]),true);
+assert.equal(api.unread(releases,api.read(storage,'owner-a')).length,releases.length-1);
+assert.equal(api.read(storage,'owner-b').length,0,'account isolation');
+api.acknowledge(storage,'owner-a',[releases[0].id]);assert.equal(api.read(storage,'owner-a').length,1);
+assert.equal(api.unread(releases.concat({id:'future-release'}),api.read(storage,'owner-a')).at(-1).id,'future-release');
+assert.equal(api.acknowledge(null,'owner-a',['x']),false);assert.deepEqual(api.read(null,'owner-a'),[]);
+storage.setItem(api.key('owner-b'),'{broken');assert.deepEqual(api.read(storage,'owner-b'),[]);
+assert.equal(api.acknowledge(storage,'',['x']),false);
+const plan=JSON.parse(read('GAMENFY-WORKSPACE.json'));assert.equal(plan.steps.length,6);
+assert.match(plan.steps[4].next,/behouden/);assert.match(plan.steps[5].next,/2–3 sociale/);
+const lab=read('lab.html');assert.doesNotMatch(lab,/<iframe/,'experiments are lazy mounted');
+for(const m of lab.matchAll(/href="([^"?#]+)[^"]*"/g)){if(!/^https?:/.test(m[1]))assert.ok(fs.existsSync(path.join(base,m[1])),m[1]);}
+for(const id of ['park31','park2','healthTrail','missionGarden','at1Wrap','scene'])assert.ok(read('lab-older-experiments.html').includes('id="'+id+'"'));
+assert.match(read('index.html'),/id="gamenfyUpdates"/);
+assert.doesNotMatch(read('gamenfy-workspace.js')+read('gamenfy-updates.js'),/supabase|setItem\(['"]rpg_/,'new modules cannot write mission/cloud state');
+console.log('Workspace and release log: owner isolation, explicit acknowledgement, future releases, failure handling, retained experiments and links pass.');

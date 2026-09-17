@@ -126,6 +126,8 @@ button{color:inherit}
 @media(max-width:560px){.shell{padding-left:12px;padding-right:12px}.top-right .manifest-link{display:none}.hero{border-radius:24px;padding:25px 18px 36px}.hero h1{font-size:47px}.hero:after{width:190px;height:190px;right:-94px;bottom:-128px}.metric{min-height:88px;padding:13px}.section{padding:16px;border-radius:20px}.mission-grid{grid-template-columns:1fr 1fr}.mission{min-height:174px}.mission-art{height:104px}.inventory-row{grid-template-columns:1fr auto}.inventory-row .use{grid-column:1/-1}.job{grid-template-columns:43px 1fr}.job-state{grid-column:2;text-align:left;max-width:none}.job-rank{width:38px;height:38px}.gate-grid{grid-template-columns:1fr}.tabs-wrap{top:51px;margin-left:-4px;margin-right:-4px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.panel{animation:none}.toast{transition:none}}
 </style>
+<link rel="stylesheet" href="gamenfy-workspace.css?v=1">
+<script src="gamenfy-workspace.js?v=1" defer></script>
 </head>
 <body data-gamenfy-scope="personal" data-default-view="overview" data-manifest="GAMENFY-ASSET-OPERATIONS.json" data-badge-registry="GAMENFY-BADGE-REGISTRY.json">
 <main class="shell">
@@ -139,16 +141,16 @@ button{color:inherit}
 
   <header class="hero">
     <div class="kicker">Gamenfy Personal · Asset Operations</div>
-    <h1>Know what earns its place.</h1>
-    <p>One operational view for the art that is live, the badges waiting for intake, the exact review gates, and the few assets that can still improve the product. No gallery-building for the sake of it.</p>
+    <h1>Operation Hub</h1>
+    <p>Hier zie je wat eerst komt, waarom het nodig is en wie de volgende stap zet. Bestaande assets blijven bewaard. Nieuwe ontwerpen worden eerst in Lab beoordeeld.</p>
     <div class="hero-line">
       <span class="hero-pill safe">0 generation jobs authorized</span>
       <span class="hero-pill">Read-only operator route</span>
-      <span class="hero-pill">Warm White + Oxblood · Lab preview</span>
+      <span class="hero-pill">Kleurrijke game-richting · voorstel nog te maken</span>
     </div>
   </header>
 
-  <p><a href="gamenfy-production-workflow.html">Open Gamenfy workflow → batches, prompts, modellen en afmetingen</a></p>
+  <details><summary>Oude productieaanpak · alleen referentie</summary><a href="gamenfy-production-workflow.html">Gamenfy workflow → batches, prompts, modellen en afmetingen</a><p>Niet de actuele opdrachtvolgorde. Volg het stappenplan hieronder.</p></details>
   <section class="metrics" aria-label="Asset metrics">
     <article class="metric"><strong id="metricSets">—</strong><span>approved Daily Mission sets</span></article>
     <article class="metric"><strong id="metricFrames">—</strong><span>live evolution frames audited</span></article>
@@ -167,6 +169,8 @@ button{color:inherit}
   </div>
 
   <section class="panel" id="panelOverview" role="tabpanel" aria-labelledby="tabOverview">
+    <section class="gw-card"><h2>Jouw stappenplan</h2><p>Begin bij 1. De review van je dailies en je weekritme blijven expliciet onderdeel van het plan.</p><div id="gwSteps">Stappen laden…</div></section>
+    <details><summary>Inventaris en achtergrondinformatie</summary>
     <article class="section red">
       <div class="eyebrow">Current decision</div>
       <p class="big-decision" id="strategyDecision">Loading the durable asset strategy…</p>
@@ -185,6 +189,7 @@ button{color:inherit}
       <div class="section-head"><div><div class="eyebrow">Operating boundary</div><h2>Better reasoning, same discipline.</h2><p id="agentDecision"></p></div></div>
       <div class="split"><div><div class="eyebrow">Use it for</div><div class="rules" id="agentUse"></div></div><div><div class="eyebrow">Never use it as</div><div class="rules" id="agentAvoid"></div></div></div>
     </article>
+    </details>
   </section>
 
   <section class="panel" id="panelMap" role="tabpanel" aria-labelledby="tabMap" hidden>
@@ -200,7 +205,7 @@ button{color:inherit}
 
   <section class="panel" id="panelQueue" role="tabpanel" aria-labelledby="tabQueue" hidden>
     <article class="section red">
-      <div class="section-head"><div><div class="eyebrow">Best next move</div><h2>Use the badges Joey already made.</h2><p>Originals first. Meaning second. UI wiring third. The queue blocks downstream work until the preceding truth exists.</p></div><span class="status wait">Human intake</span></div>
+      <div class="section-head"><div><div class="eyebrow">Historische assettaken</div><h2>Bewaarde eerdere queue</h2><p>Niet de actieve prioriteiten. Volg eerst het stappenplan onder Overview; deze referentietaken zijn niet automatisch goedgekeurd.</p></div></div>
       <div class="queue" id="queueList"></div>
     </article>
   </section>

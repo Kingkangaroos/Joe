@@ -130,7 +130,7 @@ assert.match(source,/>=5 historical values/,'insight source documents the minimu
 assert.match(source,/intentionally do not interpret SpO2\/breathing\/skin-temperature as diagnosis/,'high-stakes wearable fields are explicitly excluded from automated interpretation');
 assert.equal(api.healthInsights({},'2026-09-02',12)[0].key,'waiting','missing Fitbit data creates a waiting state, never a penalty');
 
-const lab=fs.readFileSync(path.join(__dirname,'..','lab.html'),'utf8');
+const lab=fs.readFileSync(path.join(__dirname,'..','lab-older-experiments.html'),'utf8');
 const section=lab.match(/<section class="ht-card"[\s\S]*?<\/section>/)[0];
 const chatgptPanel=lab.match(/<section class="lab-panel" id="labPanelChatgpt"[\s\S]*?<section class="lab-panel" id="labPanelOther"/)[0];
 assert.doesNotMatch(section,/href=/,'Health Trail is built directly in Lab, not hidden behind a link');

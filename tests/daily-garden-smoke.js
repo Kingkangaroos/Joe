@@ -123,7 +123,7 @@ const sandbox = {
 };
 
 const source = fs.readFileSync(path.join(__dirname, '..', 'daily-garden.js'), 'utf8');
-const lab = fs.readFileSync(path.join(__dirname, '..', 'lab.html'), 'utf8');
+const lab = fs.readFileSync(path.join(__dirname, '..', 'lab-older-experiments.html'), 'utf8');
 assert.match(lab,/daily-garden\.js\?v=11\.7/,'the Lab requests the corrected evolution-band release');
 vm.runInNewContext(source, sandbox, { filename:'daily-garden.js' });
 

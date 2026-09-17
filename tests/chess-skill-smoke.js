@@ -102,7 +102,7 @@ const dailyMissionKeys = Object.keys(defs).filter(key => defs[key].isHabit && !d
 assert.equal(dailyMissionKeys.includes('chess'), false, 'Chess never leaks into the 0-10 Daily Mission Garden');
 assert.ok(ladder.length || quests.length, 'the assessment union includes Chess automatically');
 
-const lab = fs.readFileSync(path.join(__dirname, '..', 'lab.html'), 'utf8');
+const lab = fs.readFileSync(path.join(__dirname, '..', 'lab-older-experiments.html'), 'utf8');
 const character = fs.readFileSync(path.join(__dirname, '..', 'character.html'), 'utf8');
 assert.ok(lab.includes("chess:[.42,.62,.12]"), 'Lab gives Chess its own movement temperament');
 assert.ok(lab.includes("chess:'<rect x=\"77\""), 'Lab gives Chess its own board/knight prop');

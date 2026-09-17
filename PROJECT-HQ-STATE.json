@@ -1,18 +1,24 @@
 {
   "project": "Gamenfy",
   "owner": "Joey",
-  "updatedAt": "2026-09-14",
+  "updatedAt": "2026-09-17",
   "managedBy": [
     "ChatGPT (OpenAI)",
     "Claude"
   ],
   "workflow": {
-    "chatIsSourceOfTruth": false,
+    "chatIsSourceOfTruth": true,
     "feedbackAutoCaptured": true,
     "builderManaged": true,
     "userEditable": true
   },
   "now": [
+    "Actueel stappenplan: Operation Hub → karakterfamilie, herbruikbare beweging, Home-widgets, Skills, Daily Mission-review en weekritme. Zie GAMENFY-WORKSPACE.json.",
+    "Bestaande Daily Missions blijven behouden. Samen reviewen, Cold Shower apart bespreken. Weekritme komt ernaast: 3x bewegen/sport, dagelijks 10k stappen, 2–3 sociale momenten en weekendactiviteit; plannen mogen schuiven.",
+    "Ga verder, druk: Joey leest de chat waarschijnlijk niet. Elke oplevering vastleggen in GAMENFY-RELEASES.json, cumulatief samenvatten; stilte is geen akkoord.",
+    "Nog niet gebouwd: nieuwe familie/beweging, Home-redesign, Skills-pad en weekmissies. Schaal/transparantie en Fitbit blijven open."
+  ],
+  "previousPriorities20260914": [
     "Daily Missions herzien: bepaal welke missies dagelijks, wekelijks of contextueel horen en welke 3–7 acties werkelijk bijdragen aan Joeys doelen. Onderzoek eerst; nog geen extra checklist of Flex Day bouwen.",
     "Gratitude-vorm beoordelen: de woorden staan nu in taps toelopende rijen. Een echte vormgestuurde plaatsing met botsingscontrole ontbreekt nog; bestaande woorden, aantallen en klikdetails behouden.",
     "Bestaande badges lokaliseren en betekenis vastleggen: de registry is nog leeg. De zoekronde van 14 september leverde geen herkenbare badgecollectie op; dit bewijst niet dat de originelen ontbreken.",
@@ -20,6 +26,7 @@
     "Op Joeys iPhone: bestaande Device QA en Swipe Navigation Lab beoordelen, plus de gratitude-vorm en directe L0→L1-reactie. Swipe blijft een Lab-proef totdat het goed voelt."
   ],
   "completedThisPass": [
+    "2026-09-17 · ChatGPT Lab geordend; oude experimenten behouden, afzonderlijk te openen. Operation Hub met zes stappen en aanklikbare assetpreviews. Home-melding en blijvend wijzigingslog toegevoegd; geen missies of voortgang aangepast.",
     "2026-09-14 · Week- en maandquests bewaren nu de werkelijke quest in historie bij een nieuwe periode; gereed/onvoltooid, stappen en beloningsmetadata blijven behouden. Geen nieuwe XP bij archiveren.",
     "2026-09-14 · Gamenfy workflow live via Lab en Asset Operations: drie batches, acht jobs met modellen, instellingen, afmetingen en kopieerbare prompts; geen generaties gestart.",
     "2026-09-13 · Gardening verborgen uit de normale Home-roster; historische gegevens en interne sleutel blijven bestaan. Discipline blijft zichtbaar onder de generieke naam.",
@@ -72,12 +79,14 @@
     "General Lab belongs to Jarvis by default and explicit return tokens route Venture-launched Lab back to Finance Ventures instead of Character Body",
     "2026-09-06 Website Ventures consolidation: rich four-flagship/Higgsfield/visual-production HQ was ported into the restored Ventures/Venture Lab/Productielijn shell; PR #48 merged as bf848821695bed98a229273eacfb7c707a98c595 and production dpl_WruV9vzjJ7ZYxWyrPcPrccY2Tkpy is READY"
   ],
-  "assetsNeeded": [
+  "assetsNeeded": ["Nog geen nieuwe productieopdracht. Eerst familievoorstel en herbruikbare beweging beoordelen; bestaande assets blijven behouden."],
+  "previousAssetsNeeded": [
     "Badge-originelen met herkenbare bestandsnamen en de bedoelde prestatie per badge; eerst bestaande bestanden terugvinden, niet opnieuw genereren.",
     "Eén goedgekeurd Gamenfy app-icoon als bron voor de installatiematen; huidige manifest heeft nog geen icons.",
     "Repair-, Cold Shower L0- en WALK-proefbestanden uit Gamenfy workflow; gemaakt markeren is geen integratie of goedkeuring."
   ],
-  "visualProduction": [
+  "visualProduction": [],
+  "previousVisualProduction": [
     {
       "priority": "P1",
       "id": "GF-REPAIR-BATCH-001",
@@ -134,7 +143,8 @@
     "Private mission or badge meaning remains PIN/private-safe on every public-capable surface.",
     "Gamenfy Asset Operations is read-only and authorizes zero image generation or credit spend."
   ],
-  "higgsfieldPlan": [
+  "higgsfieldPlan": [],
+  "previousHiggsfieldPlan": [
     "Gamenfy workflow is de aparte productievolgorde: herstel Steps/Teeth/Good Deed → één Cold Shower L0-proef → WALK, daarna pas IDLE/JUMP/INTERACT.",
     "Workflow publiceren geeft geen toestemming voor automatisch betaalde generaties. Handmatig model, referentie en instellingen overnemen; actuele dekking controleren."
   ],
@@ -143,6 +153,9 @@
     "Character Trophy Case as the canonical badge collection, plus one exact-once unlock moment and at most one featured/latest badge on Home."
   ],
   "lockedDecisions": {
+    "currentWorkspace": "GAMENFY-WORKSPACE.json bevat de actuele afspraken uit de chat van september 2026. Oudere technische beslissingen hieronder blijven context; tegenstrijdige oude ontwerpkeuzes zijn niet leidend.",
+    "dailyReview": "Bestaande Daily Missions behouden en samen reviewen. Weekritme ernaast, niet ter vervanging.",
+    "busyMode": "Ga verder, druk betekent waarschijnlijk ongelezen chat. Bijhouden in het blijvende wijzigingslog; stilte is geen akkoord.",
     "budgetingCharacter": "owl",
     "dailyMissionsVisualFramework": "Park 3.1 / Daily Missions 2.0",
     "dailyCompletionInteraction": "tap-circle",

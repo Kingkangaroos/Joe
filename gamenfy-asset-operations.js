@@ -74,6 +74,7 @@
     copy.appendChild(make('h3', '', item.name));
     copy.appendChild(make('p', '', item.assetCount + ' assets · ' + item.decision));
     card.append(art, copy);
+    if(item.representative) clickable(card,function(){preview(item.name,[item.representative]);});
     return card;
   }
 
@@ -83,7 +84,7 @@
     var roles = document.getElementById('roleCards');
     roles.textContent = '';
     [
-      ['01', 'Mission companions', 'Show reversible daily consistency from Level 0–10. They are already complete and live.'],
+      ['01', 'Mission companions', 'Current art is live; transparency, crop, scale and reusable movement still need review.'],
       ['02', 'Achievement badges', 'Prove durable milestones. They need exact triggers and a collection home before wiring.'],
       ['03', 'App identity', 'Create recognition outside a mission. One app icon matters; another character pack does not.']
     ].forEach(function (role) {
@@ -116,6 +117,8 @@
       image.loading = 'lazy';
       art.appendChild(image);
       card.append(art, make('span', 'privacy', mission.privacy === 'private' ? 'PIN-safe' : 'public'), make('h3', '', mission.label), make('p', '', mission.identity + ' · l01–l10 · live'));
+      card.append(make('p','','Open alle 10 levels →'));
+      clickable(card,function(){preview(mission.label,Array.from({length:10},function(_,i){return 'img/lab/park31/'+mission.directory+'/l'+String(i+1).padStart(2,'0')+'.webp';}));});
       grid.appendChild(card);
     });
 
@@ -133,6 +136,8 @@
     });
   }
 
+  function clickable(card,action){card.tabIndex=0;card.setAttribute('role','button');card.style.cursor='pointer';card.addEventListener('click',action);card.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();action();}});}
+  function preview(title,paths){var d=make('dialog','gw-dialog');d.setAttribute('aria-label',title);var close=make('button','','Sluiten');close.type='button';close.onclick=function(){d.close();};d.append(close,make('h2','',title),make('p','','Bronbestanden bekijken: transparantie, uitsnede en weergavegrootte worden apart beoordeeld.'));var grid=make('div','gw-grid');paths.forEach(function(path,i){var a=make('a');a.href=path;a.target='_blank';a.rel='noopener';var img=make('img');img.src=path;img.alt=title+' · '+(paths.length===10?'Level '+(i+1):'bronbestand');img.loading='lazy';a.append(img,make('span','',img.alt));grid.append(a);});d.append(grid);d.addEventListener('close',function(){d.remove();});document.body.append(d);d.showModal();}
   function renderQueue(operations) {
     var list = document.getElementById('queueList');
     list.textContent = '';

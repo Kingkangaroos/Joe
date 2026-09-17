@@ -8,9 +8,9 @@
   "defaultView": "overview",
   "status": "active",
   "strategy": {
-    "decision": "Stop making broad visual packs. First turn Joey's existing badges into a data-backed product layer, while preserving the already complete Daily Mission character system.",
-    "firstMove": "Import Joey's existing badge originals and map every badge to one exact trigger, one privacy class and at least one deliberate app surface.",
-    "dailyMissionDecision": "The 13 approved Daily Mission evolution sets and the Daily Score Joey set are complete. Keep them; do not regenerate them.",
+    "decision": "Actuele volgorde: karakterfamilie → herbruikbare beweging → Home-widgets → Skills → Daily Mission-review → weekritme. Zie GAMENFY-WORKSPACE.json. De queue hieronder bewaart oudere referentietaken.",
+    "firstMove": "ChatGPT maakt eerst een familievoorstel; Joey beoordeelt dat voordat productie begint. Bestaande art bewaren.",
+    "dailyMissionDecision": "De 13 bestaande artsets blijven beschikbaar. Transparantie, uitsnede, schaal en beweging staan nog open. Geen dagelijkse missies verwijderen.",
     "badgeRole": "Badges are milestone receipts. Mission companions show day-to-day growth; badges prove durable achievements. They must not duplicate one another.",
     "publicBoundary": "This board manages Joey's personal Gamenfy. Gamenfy Public is rolled back and receives no automatic promotion from this queue.",
     "generationAuthorized": false,

@@ -41,7 +41,7 @@ assert.match(page, /GAMENFY-ASSET-OPERATIONS\.json/, 'hub loads the durable oper
 assert.match(page, /GAMENFY-BADGE-REGISTRY\.json/, 'hub loads the badge registry');
 assert.doesNotMatch(page + runtime, /higgsfield\.ai|imagegen|generate image/i, 'read-only hub must not expose a generation launch route');
 assert.match(lab, /gamenfy-asset-operations\.html/, 'General Lab must surface the Gamenfy Asset Operations Hub');
-assert.match(lab, /13 Daily Mission-evoluties/, 'Lab card must describe the complete personal roster');
+assert.match(lab, /lab-older-experiments\.html\?experiment=park31/, 'Lab keeps the complete personal roster available in its archived experiment');
 assert.match(hq, /gamenfy-asset-operations\.html/, 'Project HQ must link to the asset operator route');
 assert.doesNotMatch(home, /#7F1830|#B82948|gamenfy-asset-operations\.css/, 'white/red remains Lab-only and does not silently restyle Home');
 

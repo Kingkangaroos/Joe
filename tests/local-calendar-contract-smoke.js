@@ -42,7 +42,7 @@ assert.match(parkHost,/window\.viewedDateStr=todayStr/,'Park host supplies the s
 
 // Daily Garden still contains an old standalone UTC fallback, but it has no
 // supported standalone page. The real Lab must load Park 3.1's local helper first.
-const lab=read('lab.html');
+const lab=read('lab-older-experiments.html');
 const parkTag=lab.indexOf('park31-lab.js');
 const gardenTag=lab.indexOf('daily-garden.js');
 assert.ok(parkTag>=0&&gardenTag>=0&&parkTag<gardenTag,'supported Lab loads local viewedDateStr before Daily Garden');
