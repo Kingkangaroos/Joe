@@ -18,7 +18,7 @@ async function flush(){await new Promise(r=>setImmediate(r));}
   const document={body,getElementById:id=>id==='gamenfyUpdates'?box:null,createElement:t=>new Element(t)};
   vm.runInNewContext(read('gamenfy-updates.js'),{window,document,fetch:async()=>({ok:true,json:async()=>JSON.parse(read('GAMENFY-RELEASES.json'))})});
   await flush();assert.equal(box.children.length,0,'wait for real account event');
-  window.gamenfyUserId='fixture-owner';events['gamenfy-auth-ready']();assert.match(box.textContent,/Nieuw voor jou · 1/);
+  window.gamenfyUserId='fixture-owner';events['gamenfy-auth-ready']();const count=JSON.parse(read('GAMENFY-RELEASES.json')).releases.filter(r=>r.surfaces.includes('home')).length;assert.ok(box.textContent.includes('Nieuw voor jou · '+count));
   button(box,'Bekijk wijzigingen').onclick();let dialog=find(body,x=>x.tagName==='dialog');assert.ok(dialog.open);assert.match(dialog.textContent,/Week- en maandquesthistorie/);assert.equal(writes,0);
   button(dialog,'Sluiten').onclick();assert.equal(find(body,x=>x.tagName==='dialog'),undefined);assert.match(box.textContent,/Nieuw voor jou/);assert.equal(writes,0);
   button(box,'Bekijk wijzigingen').onclick();dialog=find(body,x=>x.tagName==='dialog');button(dialog,'Deze updates gezien').onclick();assert.equal(writes,1);assert.match(box.textContent,/Wat is er nieuw/);

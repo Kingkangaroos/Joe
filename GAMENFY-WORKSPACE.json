@@ -1,6 +1,9 @@
 {
   "updatedAt": "2026-09-17",
   "managedBy": "ChatGPT",
+  "activeExperiments": [
+    {"id":"claude-companion-park-3d","title":"Claude Lab · Companion Park 3D","url":"https://gamenfy-claude-lab.vercel.app/","owner":"Claude","status":"external-lab-linked","next":"Samen beweging en evolutie beoordelen; bruikbare onderdelen later pas integreren in de echte app.","verification":"Publieke pagina bereikbaar; embed niet geblokkeerd door responseheaders. Testbrowser heeft geen WebGL, dus beweging niet visueel geverifieerd.","dataBoundary":"Losse proef; geen koppeling met echte missies, account of voortgang."}
+  ],
   "steps": [
     {"title":"1. Karakterfamilie kiezen","why":"Eén familie met grote ogen, wezens en mensen; de huidige vibe blijft de richting.","next":"ChatGPT maakt eerst een voorstel. Joey beoordeelt de stijl vóór productie.","gate":"Nog te maken; bestaande beelden blijven bewaard."},
     {"title":"2. Herbruikbare beweging bewijzen","why":"Geen zes losse clips voor elk karakter op alle tien levels.","next":"Eén karakterproef met herbruikbare beweging; controle op begin-, midden- en eindevolutie en een tweede lichaamstype.","gate":"Eerst technisch en visueel bewijs, dan pas opschalen. Geen credits zonder akkoord."},
@@ -10,6 +13,8 @@
     {"title":"6. Flexibel weekritme naast dailies","why":"Een voldaan weekgevoel, zonder dat een verschoven afspraak een mislukking wordt.","next":"3 keer sport/beweging, dagelijks 10.000 stappen, 2–3 sociale momenten en een weekendactiviteit. Overlap mag; geplande momenten kunnen verschuiven.","gate":"Dit is de afgesproken richting, nog geen geïmplementeerde nieuwe weekmissies."}
   ],
   "agreements": [
+    "Toevoegen betekent niet weghalen. Feedback die open blijft blijft zichtbaar totdat het aantoonbaar is opgelost of Joey expliciet anders beslist. Opgeloste punten houden een herkenbare historie; niets stilzwijgend schrappen.",
+    "Claude mag zijn eigen Lab verder ontwikkelen. ChatGPT Lab biedt één centrale ingang; nuttige onderdelen worden pas na beoordeling in de echte app geïntegreerd.",
     "Deze chat stuurt de keuzes. Bestaand werk bewaren; ideeën zijn niet automatisch bouwopdrachten.",
     "Ga verder, druk betekent: Joey leest de updates waarschijnlijk niet. Elke oplevering in het blijvende log vastleggen en later samenvatten; stilte is geen akkoord.",
     "Na uitvoering altijd in de chat: wat is veranderd, waar staat het, wat kun je testen en wat staat nog open.",
@@ -17,6 +22,8 @@
     "Geen nieuwe afbeeldingen genereren of betaalde credits gebruiken in deze opruimronde."
   ],
   "feedback": [
+    "Claude’s Companion Park 3D is nu als actief experiment gekoppeld. De beweging/evolutie samen beoordelen; deze koppeling lost de bestaande karakter-, schaal- of animatiepunten nog niet op.",
+    "WHY-link blijft open: de doelkoppelingen met het bestaande honderdjarenplan verder uitwerken. De oudere WHY-link audit is alleen een hulpmiddel, niet de afronding van dit punt.",
     "Poppetjes: transparantie, beschadigde uitsnedes en gelijke/grotere weergaveschaal zijn drie aparte controles. Joey laat transparante art elders maken; de schaalfix blijft open.",
     "Fitbit blijft open: bij een storing eerst de bestaande herkoppelroute tonen; structurele synchronisatie apart onderzoeken. Deze ronde repareert Fitbit niet.",
     "Levels moeten voelbaar belonen: zichtbare evolutie en een leuk level-upmoment, niet alleen cijfers.",

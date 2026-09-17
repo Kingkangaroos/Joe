@@ -4,6 +4,10 @@
 
 ## Actueel — 17 september 2026
 
+Claude’s Companion Park 3D is als actief extern experiment bereikbaar in ChatGPT Lab: https://gamenfy-claude-lab.vercel.app/. De oorspronkelijke Vercel-app blijft ongewijzigd, zonder GitHub-repokoppeling. Geen account-/missiedatabrug. Publicatie en embedheaders gecontroleerd; beweging niet visueel gevalideerd doordat de testbrowser geen WebGL heeft. Eerst samen beoordelen, later bruikbare delen integreren.
+
+Toevoegen betekent niets weghalen. Open feedback blijft zichtbaar tot bewezen opgelost of expliciet anders afgesproken; opgeloste punten behouden historie. WHY-link blijft expliciet open.
+
 ChatGPT Lab is de centrale werkplek. Oude proeven blijven achter Older Lab Experiments. Het actuele stappenplan en alle feedback staan in GAMENFY-WORKSPACE.json. GAMENFY-RELEASES.json houdt uitgevoerde wijzigingen bij; volg GAMENFY-RELEASES.md bij iedere oplevering.
 
 Dagelijkse missies blijven behouden, worden samen gereviewd, en het weekritme komt ernaast. Geen karakterproductie of credits in deze opruimronde. Bij ‘ga verder, druk’ aannemen dat Joey de chat niet leest: cumulatief loggen en later samenvatten; stilte is geen akkoord.

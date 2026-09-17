@@ -13,6 +13,7 @@
     "userEditable": true
   },
   "now": [
+    "Actief experiment: ChatGPT Lab → Companion Park 3D opent Claude’s externe Lab. Eerst beweging/evolutie beoordelen; geen koppeling met echte missies of levels gemaakt.",
     "Actueel stappenplan: Operation Hub → karakterfamilie, herbruikbare beweging, Home-widgets, Skills, Daily Mission-review en weekritme. Zie GAMENFY-WORKSPACE.json.",
     "Bestaande Daily Missions blijven behouden. Samen reviewen, Cold Shower apart bespreken. Weekritme komt ernaast: 3x bewegen/sport, dagelijks 10k stappen, 2–3 sociale momenten en weekendactiviteit; plannen mogen schuiven.",
     "Ga verder, druk: Joey leest de chat waarschijnlijk niet. Elke oplevering vastleggen in GAMENFY-RELEASES.json, cumulatief samenvatten; stilte is geen akkoord.",
@@ -26,6 +27,7 @@
     "Op Joeys iPhone: bestaande Device QA en Swipe Navigation Lab beoordelen, plus de gratitude-vorm en directe L0→L1-reactie. Swipe blijft een Lab-proef totdat het goed voelt."
   ],
   "completedThisPass": [
+    "2026-09-17 · Claude’s externe Companion Park 3D als eigen blok onder Actuele experimenten toegevoegd; groot openen in Lab of apart. Bestaande experimenten en feedback behouden; WHY-link expliciet open.",
     "2026-09-17 · ChatGPT Lab geordend; oude experimenten behouden, afzonderlijk te openen. Operation Hub met zes stappen en aanklikbare assetpreviews. Home-melding en blijvend wijzigingslog toegevoegd; geen missies of voortgang aangepast.",
     "2026-09-14 · Week- en maandquests bewaren nu de werkelijke quest in historie bij een nieuwe periode; gereed/onvoltooid, stappen en beloningsmetadata blijven behouden. Geen nieuwe XP bij archiveren.",
     "2026-09-14 · Gamenfy workflow live via Lab en Asset Operations: drie batches, acht jobs met modellen, instellingen, afmetingen en kopieerbare prompts; geen generaties gestart.",
@@ -153,6 +155,7 @@
     "Character Trophy Case as the canonical badge collection, plus one exact-once unlock moment and at most one featured/latest badge on Home."
   ],
   "lockedDecisions": {
+    "additiveFeedback": "Feedback die open blijft blijft zichtbaar totdat het aantoonbaar opgelost is of Joey expliciet anders beslist. Toevoegingen verwijderen geen oude punten; opgeloste punten houden een historie.",
     "currentWorkspace": "GAMENFY-WORKSPACE.json bevat de actuele afspraken uit de chat van september 2026. Oudere technische beslissingen hieronder blijven context; tegenstrijdige oude ontwerpkeuzes zijn niet leidend.",
     "dailyReview": "Bestaande Daily Missions behouden en samen reviewen. Weekritme ernaast, niet ter vervanging.",
     "busyMode": "Ga verder, druk betekent waarschijnlijk ongelezen chat. Bijhouden in het blijvende wijzigingslog; stilte is geen akkoord.",

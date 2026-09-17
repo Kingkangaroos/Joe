@@ -4,7 +4,8 @@ const base=path.join(__dirname,'..'),read=p=>fs.readFileSync(path.join(base,p),'
 const api=require('../gamenfy-updates.js'),releases=JSON.parse(read('GAMENFY-RELEASES.json')).releases;
 const values=new Map(),storage={getItem:k=>values.get(k),setItem:(k,v)=>values.set(k,v)};
 assert.equal(new Set(releases.map(r=>r.id)).size,releases.length);
-assert.equal(api.relevant(releases,'home').length,1);
+assert.deepEqual(api.relevant(releases,'home'),releases.filter(r=>r.surfaces.includes('home')));
+assert.ok(api.relevant(releases,'home').length>=1);
 assert.equal(api.unread(releases,api.read(storage,'owner-a')).length,releases.length);
 assert.equal(values.size,0,'opening/reading never acknowledges');
 assert.equal(api.acknowledge(storage,'owner-a',[releases[0].id]),true);
