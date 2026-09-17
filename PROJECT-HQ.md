@@ -4,6 +4,14 @@
 
 ## Actueel — 17 september 2026
 
+### Home-proef 2.0 en taakverdeling
+
+Claude pakt stap 1 (karakterfamilie) en stap 2 (animatie) op. ChatGPT + Joey pakken stap 3 op. `lab-home-v2.html` is de afzonderlijke interactieve Home-proef, bereikbaar via een eigen beeldtegel in Lab en de link bij stap 3 in Operation Hub. De huidige app blijft versie 1; geen gegevensreset. Het eerdere ‘Joey beoordeelt de proef’ verwees naar nog te maken werk, niet een verborgen bestaand experiment.
+
+Review: de huidige Home stapelt groet/quote, Season/WHY, score, quests, health/workout, next move, agenda, to-do, een lange mission-roster en gratitude. De proef groepeert dit in een visueel dagblok, compacte mission-crew, agenda, weekritme en één skillactie. Details op tikafstand; overige onderdelen houden een ingang onder Overzicht. Zie `GAMENFY-HOME-V2-REVIEW.md` voor de precieze mapping en open keuzes.
+
+Joey vraagt de vormgeving van Claude’s huidige Lab-blok later op te pakken: liever kleine beeldtegels en minder tekst. Voorlopig bewaard zoals het is; open feedback niet verwijderen.
+
 Claude’s Companion Park 3D is als actief extern experiment bereikbaar in ChatGPT Lab: https://gamenfy-claude-lab.vercel.app/. De oorspronkelijke Vercel-app blijft ongewijzigd, zonder GitHub-repokoppeling. Geen account-/missiedatabrug. Publicatie en embedheaders gecontroleerd; beweging niet visueel gevalideerd doordat de testbrowser geen WebGL heeft. Eerst samen beoordelen, later bruikbare delen integreren.
 
 Toevoegen betekent niets weghalen. Open feedback blijft zichtbaar tot bewezen opgelost of expliciet anders afgesproken; opgeloste punten behouden historie. WHY-link blijft expliciet open.
