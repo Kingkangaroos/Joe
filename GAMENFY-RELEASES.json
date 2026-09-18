@@ -1,6 +1,26 @@
 {
   "releases": [
     {
+      "id": "2026-09-18-rigged-3d-test-pack",
+      "date": "2026-09-18",
+      "surfaces": [
+        "lab"
+      ],
+      "title": "Vijf echte 3D character-tests staan klaar",
+      "why": "Joey vindt de 2D/AutoSprite fallback nog als een bewegend plaatje voelen. Claude’s 3D-park liet zien dat een rig, skeleton en echte locomotion overtuigender kunnen zijn.",
+      "changes": [
+        "Claude’s actuele Companion Park-code geïnspecteerd: Three.js, GLTFLoader, AnimationMixer, skeleton/bone detection, clipselectie en root-locomotion zijn de relevante technische verschillen.",
+        "Test 1 Rig Purist is de strenge benchmark zonder fake bounce of achtergrondtrucs.",
+        "Test 2 Home Hero test live 3D als compacte premium Home-character met levelgestuurde energie.",
+        "Test 3 Side Runner combineert echte skeletal animation met root movement door 3D-ruimte.",
+        "Test 4 Living Park laat de character zelfstandig kiezen, draaien, lopen en rusten om presence te testen.",
+        "Test 5 Mission Interaction koppelt demomissies aan fysieke wereldactie: kiezen, erheen lopen en reageren op completion.",
+        "De eerdere AutoSprite Bridge blijft beschikbaar als vergelijking maar is niet langer de leidende route."
+      ],
+      "try": "Jarvis → Lab → 3D Character Test Pack. Bekijk test 1 t/m 5. Vanavond is korte feedback per test genoeg; vooral welke het meest levend en meest Gamenfy voelt.",
+      "remaining": "Dit gebruikt voorlopig dezelfde externe GLB als Claude’s park. Nog geen eigen definitieve character-family, geen echte mission/health-data, geen productie-Home wijziging en geen nieuwe AI-generation of credit spend."
+    },
+    {
       "id": "2026-09-18-autosprite-bridge",
       "date": "2026-09-18",
       "surfaces": [
