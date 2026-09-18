@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const MODE = document.body.dataset.mode || 'rig';
 const MODEL_URL = 'https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20260916_220039_950a8a2c-9c1d-4854-8949-682a553945de.glb';
@@ -49,6 +50,8 @@ const shadow=new THREE.Mesh(new THREE.CircleGeometry(.44,32),new THREE.MeshBasic
 shadow.rotation.x=-Math.PI/2; shadow.position.y=.025; actorRoot.add(shadow);
 
 let model,mixer,clips=[],actions={},current='idle',boneCount=0,feet=[],modelHeight=1.5;
+let perfActors=[],perfTargetCount=1,perfFrames=0,perfElapsed=0,perfFps=0,lastTriangleCount=0;
+let footMarkers=[],footPrev=[],footFloor=Infinity,slipAccum=0,slipSamples=0,contactSamples=0;
 const tmp=new THREE.Vector3();
 function findClip(re){return clips.find(c=>re.test(c.name))}
 function findBone(re){let hit=null; model?.traverse(o=>{if(!hit&&o.isBone&&re.test(o.name))hit=o}); return hit}
@@ -126,6 +129,36 @@ function addParkDecor(){
 function setCamera(pos,targetPos,orbit=true){
   camera.position.copy(pos);controls.target.copy(targetPos);controls.enabled=orbit;controls.update();
 }
+function setupFootQa(){
+  footMarkers.forEach(m=>scene.remove(m)); footMarkers=[]; footPrev=[]; footFloor=Infinity; slipAccum=0; slipSamples=0; contactSamples=0;
+  feet.forEach((f,i)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(.045,16,12),new THREE.MeshBasicMaterial({color:i?'#8fd7ff':'#9cf0b8'}));m.position.y=.04;scene.add(m);footMarkers.push(m);footPrev.push(new THREE.Vector3())});
+}
+function updateFootQa(dt){
+  if(!feet.length||!footMarkers.length||!dt)return;
+  feet.forEach((f,i)=>{f.getWorldPosition(tmp);footFloor=Math.min(footFloor,tmp.y);footMarkers[i].position.set(tmp.x,Math.max(.035,tmp.y),tmp.z);const prev=footPrev[i];if(prev.lengthSq()>0){const dx=Math.hypot(tmp.x-prev.x,tmp.z-prev.z),v=dx/dt;const contact=tmp.y<=footFloor+.065;if(contact){contactSamples++;slipAccum+=v;slipSamples++;footMarkers[i].material.color.set(v<.22?'#8ef0b0':v<.5?'#f2d388':'#ff8f9a')}}prev.copy(tmp)});
+  if($('slipValue')){const avg=slipSamples?slipAccum/slipSamples:0;$('slipValue').textContent=avg.toFixed(2)+' m/s';$('slipValue').dataset.band=avg<.22?'good':avg<.5?'warn':'bad'}
+  if($('contactValue'))$('contactValue').textContent=String(contactSamples);
+}
+function applyToonLook(){
+  scene.background=new THREE.Color('#f2efe8');floor.material.color.set('#d9e3cf');inner.material.color.set('#e9e4db');ring.visible=false;renderer.toneMappingExposure=.95;camera.fov=24;camera.updateProjectionMatrix();
+  model?.traverse(o=>{if(o.isMesh){const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>{if(!m)return;m.roughness=1;m.metalness=0;m.flatShading=true;m.needsUpdate=true})}});
+}
+function clearPerfActors(){for(const p of perfActors){p.group.removeFromParent()}perfActors=[]}
+function buildPerfActors(n){
+  perfTargetCount=n;clearPerfActors();
+  const radius=n<=3?2.2:3.8;
+  for(let i=1;i<n;i++){
+    const clone=SkeletonUtils.clone(model),g=new THREE.Group();g.add(clone);scene.add(g);const a=(i/(n))*Math.PI*2;g.position.set(Math.cos(a)*radius,0,Math.sin(a)*radius);g.rotation.y=-a+Math.PI/2;
+    const mx=new THREE.AnimationMixer(clone);const cl=findClip(/run|sprint|jog/i)||findClip(/walk/i)||clips[0];const ac=cl?mx.clipAction(cl):null;if(ac){ac.play();ac.timeScale=.8+(i%4)*.12}perfActors.push({group:g,mixer:mx});
+  }
+  if($('actorCount'))$('actorCount').textContent=String(n);
+}
+function updatePerf(dt){
+  perfActors.forEach(p=>p.mixer.update(dt));perfFrames++;perfElapsed+=dt;if(perfElapsed>=.75){perfFps=perfFrames/perfElapsed;perfFrames=0;perfElapsed=0;lastTriangleCount=renderer.info.render.triangles||0;if($('fpsValue'))$('fpsValue').textContent=perfFps.toFixed(0)+' fps';if($('triValue'))$('triValue').textContent=lastTriangleCount.toLocaleString();if($('qualityValue'))$('qualityValue').textContent=perfFps>=52?'strong':perfFps>=42?'borderline':'too heavy';}
+}
+function reactiveHome(section){
+  const map={missions:new THREE.Vector3(1.65,0,.35),agenda:new THREE.Vector3(.15,0,-.15),skills:new THREE.Vector3(-1.55,0,.3),money:new THREE.Vector3(.75,0,-.8)};const v=map[section]||map.missions;walkTo(v,1.15);if($('homeFocus'))$('homeFocus').textContent=section;document.querySelectorAll('[data-home-anchor]').forEach(b=>b.classList.toggle('on',b.dataset.homeAnchor===section));toast('Focus: '+section);
+}
 function modeSetup(){
   if(MODE==='rig'){
     floor.material.color.set('#222a35');inner.material.color.set('#2d3748');ring.visible=false;
@@ -150,6 +183,18 @@ function modeSetup(){
     addNode('10K Steps',-2.7,0,'#85e4bf'); addNode('Meditation',0,0,'#bdafff'); addNode('Household',2.7,0,'#f0c88e');
     actorRoot.position.set(0,0,2.3);actorRoot.rotation.y=Math.PI; setCamera(new THREE.Vector3(0,3.4,7.4),new THREE.Vector3(0,.4,0),false);blendAction('idle',.6);
     buildMissionStrip();
+  }
+  if(MODE==='grounded'){
+    floor.scale.set(1.8,1,1);inner.visible=false;ring.visible=false;actorRoot.position.set(-3.6,0,0);target.set(3.6,0,0);moving=true;moveSpeed=1.15;sideDir=1;setCamera(new THREE.Vector3(0,1.15,7.2),new THREE.Vector3(0,.7,0),false);blendAction('walk',1);setupFootQa();
+  }
+  if(MODE==='toon'){
+    applyToonLook();actorRoot.position.set(.8,0,0);actorRoot.rotation.y=-.2;setCamera(new THREE.Vector3(2.9,1.35,7.6),new THREE.Vector3(.75,.72,0),false);blendAction('idle',.58);
+  }
+  if(MODE==='reactive'){
+    floor.material.color.set('#19283a');inner.material.color.set('#20364b');ring.visible=false;actorRoot.position.set(.15,0,.1);setCamera(new THREE.Vector3(2.6,1.55,5.6),new THREE.Vector3(.2,.68,0),false);blendAction('idle',.6);reactiveHome('agenda');
+  }
+  if(MODE==='perf'){
+    floor.material.color.set('#20283a');inner.material.color.set('#27344d');ring.visible=false;actorRoot.position.set(0,0,0);setCamera(new THREE.Vector3(8.5,5.4,9.5),new THREE.Vector3(0,.45,0),true);blendAction('walk',1);buildPerfActors(6);
   }
 }
 function buildMissionStrip(){
@@ -180,6 +225,9 @@ function bindUI(){
   }
   $('completeMission') && ($('completeMission').onclick=completeSelected);
   $('followToggle') && ($('followToggle').onclick=()=>{controls.enabled=!controls.enabled;$('followToggle').textContent=controls.enabled?'Vrije camera':'Volg camera'});
+  if($('rootSpeed')){$('rootSpeed').oninput=()=>{moveSpeed=+$('rootSpeed').value;$('rootSpeedValue').textContent=moveSpeed.toFixed(2)+' m/s'}}
+  document.querySelectorAll('[data-home-anchor]').forEach(b=>b.onclick=()=>reactiveHome(b.dataset.homeAnchor));
+  document.querySelectorAll('[data-perf-count]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-perf-count]').forEach(x=>x.classList.toggle('on',x===b));buildPerfActors(+b.dataset.perfCount)});
 }
 
 function updateMode(dt,t){
@@ -194,11 +242,16 @@ function updateMode(dt,t){
     if($('distanceValue')) $('distanceValue').textContent=(Math.hypot(actorRoot.position.x,actorRoot.position.z)).toFixed(1)+' m';
   }
   if(MODE==='interact')rootLocomotion(dt);
+  if(MODE==='grounded'){
+    rootLocomotion(dt);if(!moving){sideDir*=-1;target.set(sideDir>0?3.6:-3.6,0,0);moving=true;blendAction('walk',1)}updateFootQa(dt);
+  }
+  if(MODE==='reactive')rootLocomotion(dt);
+  if(MODE==='perf')updatePerf(dt);
   if(celebrate>0){
     celebrate-=dt; actorBody.position.y=Math.sin((1.15-celebrate)*Math.PI*3)*.15*Math.max(0,celebrate/.45);actorBody.rotation.z=Math.sin((1.15-celebrate)*Math.PI*4)*.06;
     if(celebrate<=0){actorBody.position.y=0;actorBody.rotation.z=0;selectedNode?.orb.scale.setScalar(1)}
   }
-  if(MODE==='home'){
+  if(MODE==='home'||MODE==='toon'){
     actorBody.rotation.y=Math.sin(t*.45)*.08;
   }
 }
