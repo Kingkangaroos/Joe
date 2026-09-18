@@ -2,16 +2,74 @@
   "updatedAt": "2026-09-18",
   "managedBy": "ChatGPT",
   "activeExperiments": [
-    {"id":"home-v2","title":"Gamenfy 2.0 · Home-proef","url":"lab-home-v2.html","owner":"ChatGPT + Joey","status":"lab-review-ready","next":"Joey beoordeelt de wisselende missie-spotlight en missiebar: vink een demo-missie af, sluit het overzicht en controleer de nieuwste companion bovenaan. Karaktergrootte, blokvolgorde en kleur blijven open.","dataBoundary":"Uitsluitend voorbeeldgegevens in geheugen; geen echte account-, mission-, agenda- of healthdata. Home versie 1 blijft intact."},
-    {"id":"claude-companion-park-3d","title":"Claude Lab · Companion Park 3D","url":"https://gamenfy-claude-lab.vercel.app/","owner":"Claude","status":"external-lab-linked","next":"Samen beweging en evolutie beoordelen; bruikbare onderdelen later pas integreren in de echte app.","verification":"Publieke pagina bereikbaar; embed niet geblokkeerd door responseheaders. Testbrowser heeft geen WebGL, dus beweging niet visueel geverifieerd.","dataBoundary":"Losse proef; geen koppeling met echte missies, account of voortgang."}
+    {
+      "id": "home-v2",
+      "title": "Gamenfy 2.0 · Home-proef",
+      "url": "lab-home-v2.html",
+      "owner": "ChatGPT + Joey",
+      "status": "lab-review-ready",
+      "next": "Joey beoordeelt de wisselende missie-spotlight en missiebar: vink een demo-missie af, sluit het overzicht en controleer de nieuwste companion bovenaan. Karaktergrootte, blokvolgorde en kleur blijven open.",
+      "dataBoundary": "Uitsluitend voorbeeldgegevens in geheugen; geen echte account-, mission-, agenda- of healthdata. Home versie 1 blijft intact."
+    },
+    {
+      "id": "autosprite-bridge",
+      "title": "AutoSprite Bridge · state-engine proef",
+      "url": "lab-autosprite-bridge.html",
+      "owner": "ChatGPT",
+      "status": "lab-integration-ready-no-generation",
+      "next": "Test level 0–10, handmatige states en de pass-gate sequence. De pagina controleert vaste lokale slots voor WALK/IDLE/JUMP/INTERACT; echte AutoSprite-art is nog niet gegenereerd.",
+      "verification": "Higgsfield modelcontract opnieuw live geverifieerd: autosprite accepteert één image input en idle/walk/run/jump/custom plus isometrische presets, 2–64 frames, 32–512px, turbo/pro/max en default/ultra background removal.",
+      "dataBoundary": "Alleen bestaande lokale L06-art en tijdelijke browserstate. Geen Supabase, Fitbit, accountdata of generation job; geen credits gebruikt."
+    },
+    {
+      "id": "claude-companion-park-3d",
+      "title": "Claude Lab · Companion Park 3D",
+      "url": "https://gamenfy-claude-lab.vercel.app/",
+      "owner": "Claude",
+      "status": "external-lab-linked",
+      "next": "Samen beweging en evolutie beoordelen; bruikbare onderdelen later pas integreren in de echte app.",
+      "verification": "Publieke pagina bereikbaar; embed niet geblokkeerd door responseheaders. Testbrowser heeft geen WebGL, dus beweging niet visueel geverifieerd.",
+      "dataBoundary": "Losse proef; geen koppeling met echte missies, account of voortgang."
+    }
   ],
   "steps": [
-    {"title":"1. Karakterfamilie kiezen","why":"Eén familie met grote ogen, wezens en mensen; de huidige vibe blijft de richting.","next":"Claude pakt dit op met Joey. ChatGPT bouwt nu geen parallelle karakterfamilie.","gate":"In uitvoering bij Claude, nog niet afgerond. Bestaande beelden blijven bewaard."},
-    {"title":"2. Herbruikbare beweging bewijzen","why":"Geen zes losse clips voor elk karakter op alle tien levels.","next":"Claude werkt de animaties verder uit in zijn eigen Lab. Beweging en evoluties beoordelen voordat onderdelen in de echte app komen.","gate":"In uitvoering bij Claude. De koppeling naar zijn park betekent niet dat alle animatievragen opgelost zijn."},
-    {"title":"3. Home als game met widgets","why":"Meer leven, kleur en overzicht; minder wit en eindeloos scrollen.","next":"Open ChatGPT Lab → Gamenfy 2.0 · Home-proef. Test de compacte blokken, voorbeeldacties en beide kleurstanden.","gate":"Concrete proef staat nu klaar: lab-home-v2.html. Joey beoordeelt eerst; huidige Home blijft versie 1. Geen gegevensreset.","reviewUrl":"lab-home-v2.html"},
-    {"title":"4. Skills met een waarom en pad","why":"Weten waarom tennis of oefenen telt, wat de volgende mijlpaal is en wat een level oplevert.","next":"WHY → oefening → mijlpaal → zichtbare beloning. Gebruik het bestaande honderdjarenplan; geen verzonnen doelkoppelingen.","gate":"De inhoudelijke koppelingen eerst samen beoordelen."},
-    {"title":"5. Bestaande Daily Missions samen reviewen","why":"Dagelijkse basis blijft belangrijk: opgeruimd huis, stappen, goede daad en meditatie.","next":"Alle huidige missies behouden en één voor één beoordelen. Cold Shower apart bespreken; niets automatisch schrappen.","gate":"Geen wijzigingen aan levels, voortgang of missies zonder concrete afspraak."},
-    {"title":"6. Flexibel weekritme naast dailies","why":"Een voldaan weekgevoel, zonder dat een verschoven afspraak een mislukking wordt.","next":"3 keer sport/beweging, dagelijks 10.000 stappen, 2–3 sociale momenten en een weekendactiviteit. Overlap mag; geplande momenten kunnen verschuiven.","gate":"Dit is de afgesproken richting, nog geen geïmplementeerde nieuwe weekmissies."}
+    {
+      "title": "1. Karakterfamilie kiezen",
+      "why": "Eén familie met grote ogen, wezens en mensen; de huidige vibe blijft de richting.",
+      "next": "Claude pakt dit op met Joey. ChatGPT bouwt nu geen parallelle karakterfamilie.",
+      "gate": "In uitvoering bij Claude, nog niet afgerond. Bestaande beelden blijven bewaard."
+    },
+    {
+      "title": "2. Herbruikbare beweging bewijzen",
+      "why": "Geen zes losse clips voor elk karakter op alle tien levels.",
+      "next": "Claude werkt de animaties verder uit in zijn eigen Lab. Beweging en evoluties beoordelen voordat onderdelen in de echte app komen.",
+      "gate": "In uitvoering bij Claude. De koppeling naar zijn park betekent niet dat alle animatievragen opgelost zijn."
+    },
+    {
+      "title": "3. Home als game met widgets",
+      "why": "Meer leven, kleur en overzicht; minder wit en eindeloos scrollen.",
+      "next": "Open ChatGPT Lab → Gamenfy 2.0 · Home-proef. Test de compacte blokken, voorbeeldacties en beide kleurstanden.",
+      "gate": "Concrete proef staat nu klaar: lab-home-v2.html. Joey beoordeelt eerst; huidige Home blijft versie 1. Geen gegevensreset.",
+      "reviewUrl":"lab-home-v2.html"
+    },
+    {
+      "title": "4. Skills met een waarom en pad",
+      "why": "Weten waarom tennis of oefenen telt, wat de volgende mijlpaal is en wat een level oplevert.",
+      "next": "WHY → oefening → mijlpaal → zichtbare beloning. Gebruik het bestaande honderdjarenplan; geen verzonnen doelkoppelingen.",
+      "gate": "De inhoudelijke koppelingen eerst samen beoordelen."
+    },
+    {
+      "title": "5. Bestaande Daily Missions samen reviewen",
+      "why": "Dagelijkse basis blijft belangrijk: opgeruimd huis, stappen, goede daad en meditatie.",
+      "next": "Alle huidige missies behouden en één voor één beoordelen. Cold Shower apart bespreken; niets automatisch schrappen.",
+      "gate": "Geen wijzigingen aan levels, voortgang of missies zonder concrete afspraak."
+    },
+    {
+      "title": "6. Flexibel weekritme naast dailies",
+      "why": "Een voldaan weekgevoel, zonder dat een verschoven afspraak een mislukking wordt.",
+      "next": "3 keer sport/beweging, dagelijks 10.000 stappen, 2–3 sociale momenten en een weekendactiviteit. Overlap mag; geplande momenten kunnen verschuiven.",
+      "gate": "Dit is de afgesproken richting, nog geen geïmplementeerde nieuwe weekmissies."
+    }
   ],
   "agreements": [
     "Taakverdeling: Claude verzorgt stap 1 en 2 (karakterfamilie en animatie); ChatGPT + Joey pakken stap 3 (Home) op. De nieuwe naam Gamenfy 2.0 geldt alleen voor de proef; geen reset of vervanging van de echte app.",
@@ -24,6 +82,7 @@
     "Geen nieuwe afbeeldingen genereren of betaalde credits gebruiken in deze opruimronde."
   ],
   "feedback": [
+    "18 september: Higgsfield AutoSprite-onderzoek toegepast als aparte Lab Bridge. State-engine + levelmapping + lokale asset-slots zijn gebouwd; echte sprite-output blijft bewust ongebruikt totdat WALK de articulatie/identity gate kan worden getest.",
     "18 september: eerdere Home-feedback verwerkt in dezelfde proef — wisselende companions, missiebar en laatste demo-voltooiing vooraan. Nog door Joey te beoordelen; geen productie-Home goedgekeurd.",
     "Lab later visueler maken met compacte beeldtegels en minder tekst. Claude’s huidige Companion Park-blok voorlopig niet veranderen; eerst zijn verdere werk afwachten.",
     "Home-proef beoordelen: hoeveel ruimte voor het karakter, agenda/weekritme of Daily Missions als eerste, en lichte versus donkere kleuren. Er is nu een concrete proef; geen definitieve goedkeuring of vervanging van Home.",

@@ -1,8 +1,120 @@
-{"releases":[
- {"id":"2026-09-18-home-mission-spotlight","date":"2026-09-18","surfaces":["home","lab"],"title":"Home-proef: je missies wisselen mee","why":"Joey wil niet steeds Steps zien, maar wisselende companions en de laatste afgevinkte missie bovenaan.","changes":["Dezelfde Home-proef heeft een wisselende spotlight met alle elf bestaande openbare companions en vorige/volgende/pauze-knoppen.","Tik op het karakter voor een horizontale missiebar en volledig overzicht. Afvinken via eigen rondje; details apart.","De nieuwste demo-voltooiing staat vooraan in hero, crew en overzicht. Terugnemen verwijdert die prioriteit. Wisselen pauzeert na een eigen keuze of voltooiing.","Agenda, weekritme, beide kleurstanden en alle bestaande missies blijven behouden; HQ en werkvolgorde bijgewerkt."],"try":"Jarvis → Lab → Gamenfy 2.0. Open het missie-overzicht, vink Meditatie en daarna Budgeting af, sluit het overzicht. Budgeting staat nu bovenaan; probeer ook terugnemen en Start wisselen.","remaining":"Alle acties gebruiken alleen tijdelijke demodata. Echte Home, levels en gegevens zijn niet gewijzigd. Karaktergrootte, blokvolgorde en kleur wachten nog op Joey; animaties blijven bij Claude. Geen credits gebruikt."},
- {"id":"2026-09-17-home-v2-prototype","date":"2026-09-17","surfaces":["home","lab"],"title":"Gamenfy 2.0: jouw Home-proef staat klaar","why":"Je wilt stap 3 concreet kunnen beoordelen: minder lezen, meer visuele blokken en een duidelijker dagoverzicht. De eerder genoemde proef bestond nog niet; nu wel.","changes":["Eigen beeldtegel in Lab met een afzonderlijke interactieve Home-proef: karakter/dagvoortgang, crew, agenda, weekritme en een volgende stap.","Blokken openen details. Je kunt voorbeeldmissies afvinken, een afspraak verschuiven en beide kleurstanden vergelijken; alleen tijdelijke demodata.","In de proef: review van de huidige indeling en drie gerichte vragen onder Jouw oordeel.","Operation Hub verwijst nu direct naar de proef. Claude staat als uitvoerder van stap 1 en 2; wij werken aan stap 3."],"try":"Jarvis → Lab → Gamenfy 2.0. Open agenda en missies, wissel Nacht/Licht en klik Jouw oordeel.","remaining":"Je echte Home blijft versie 1; geen datareset, verwijderde missies of nieuwe koppeling met Fitbit. Bestaande character-art is alleen een beeldreferentie. Nieuwe animatie blijft bij Claude; de vormgeving van zijn Lab-blok is geparkeerd."},
- {"id":"2026-09-17-claude-park-link","date":"2026-09-17","surfaces":["home","lab"],"title":"Claude’s 3D-park staat nu in je Lab","why":"Je wilt weer zichtbare experimentblokken en Claude’s bewegende park op één centrale plek kunnen openen.","changes":["Nieuw blok onder Actuele experimenten: Claude Lab · Companion Park 3D. Open groot in Lab of apart.","Claude’s oorspronkelijke project blijft onaangeroerd. De tegel volgt zijn actuele externe versie; er wordt geen account- of missiedata doorgestuurd.","De afspraak om open feedback niet stilzwijgend te verwijderen is vastgelegd. Bestaande feedback, oudere proeven en de WHY-link blijven behouden."],"try":"Jarvis → Lab → Actuele experimenten → Open het park in Lab. Tik op een companion en probeer Evolueer of Spring. Bij laadproblemen: Apart openen.","remaining":"De 3D-beweging is niet visueel geverifieerd: de testbrowser ondersteunt geen WebGL. Het park is nog niet gekoppeld aan echte missies of levels. Bestaande karakter-, Fitbit-, Skills- en weekritmepunten blijven open."},
- {"id":"2026-09-17-lab-workspace","date":"2026-09-17","surfaces":["home","lab"],"title":"Je Lab is opnieuw geordend","why":"Naar aanleiding van onze chat: minder zoeken, duidelijkere prioriteiten en geen updates missen als je druk bent.","changes":["ChatGPT Lab heeft een compacte startpagina; eerdere proeven blijven onder Older Lab Experiments en openen afzonderlijk.","Operation Hub toont de zes afgesproken stappen. De assetmap opent previews van alle tien levels.","HQ bewaart je feedback, inclusief behoud en review van Daily Missions en het gewenste weekritme.","Home toont een melding voor nieuwe updates. Het volledige log blijft beschikbaar in Lab, ook na markeren als gezien."],"try":"Open Jarvis → Lab → Older Lab Experiments en klik een proef. Open daarna Operation Hub → Asset map en klik een personage.","remaining":"Nieuwe karakterfamilie, echte herbruikbare beweging, schaal/transparantie, Home-redesign, Skills en weekmissies zijn nog niet gebouwd. Fitbit is niet gerepareerd. Geen missies of voortgang verwijderd; geen credits gebruikt."},
- {"id":"2026-09-14-quest-history","date":"2026-09-14","surfaces":["lab"],"title":"Week- en maandquesthistorie hersteld","why":"Bij periodewissels werd de verkeerde titel gecontroleerd.","changes":["De werkelijke quest wordt bij een nieuwe periode bewaard met voltooiingsmetadata, zonder extra XP."],"try":"Bekijk je questhistorie na een periodewissel.","remaining":"Eerder verloren historie is hiermee niet automatisch teruggehaald."},
- {"id":"2026-09-14-production-reference","date":"2026-09-14","surfaces":["lab"],"title":"Eerdere productieaanpak bewaard","why":"Drie batches met acht opdrachten waren eerder gepubliceerd.","changes":["Prompts en instellingen blijven als referentie beschikbaar bij Older Lab Experiments."],"try":"Gebruik nu het actuele stappenplan in Operation Hub.","remaining":"Deze oude aanpak is geen verplichte takenlijst. Er zijn hiermee geen nieuwe beelden of animaties gemaakt."}
-]}
+{
+  "releases": [
+    {
+      "id": "2026-09-18-autosprite-bridge",
+      "date": "2026-09-18",
+      "surfaces": [
+        "lab"
+      ],
+      "title": "AutoSprite Bridge: de animatie-architectuur staat in Lab",
+      "why": "De nieuwe Higgsfield AutoSprite-mogelijkheid is direct toepasbaar op het Gamenfy-probleem van characters die als bewegende plaatjes voelen, maar we willen eerst de integratie en pass/fail-gates bewijzen zonder credits te verspillen.",
+      "changes": [
+        "Nieuw actief Lab-experiment met één bestaande Daily Score-character, level 0–10 state mapping en handmatige tired/idle/walk/run/celebrate states.",
+        "Vaste lokale asset-slots voor AutoSprite WALK, IDLE, JUMP en INTERACT; de pagina controleert of outputs al aanwezig zijn en blijft anders expliciet in fallback-modus.",
+        "De exact geverifieerde AutoSprite WALK-config staat in de proef: autosprite, turbo, 25 frames, 256px, ultra background removal, humanoid, geen sound.",
+        "Pass-gate en stop-regel zijn ingebouwd: alleen echte art doorzetten als ledematen articuleren, identiteit stabiel blijft en voeten niet glijden."
+      ],
+      "try": "Jarvis → Lab → AutoSprite Bridge. Zet Auto level aan, schuif level 0→10, vink voltooid aan en speel daarna de pass-gate sequence.",
+      "remaining": "Dit bewijst de integratie, niet de kwaliteit van een echte AutoSprite-output. Er is geen generation job gestart, geen credit gebruikt en geen productie-Home of Claude-animatie aangepast."
+    },
+    {
+      "id": "2026-09-18-home-mission-spotlight",
+      "date": "2026-09-18",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Home-proef: je missies wisselen mee",
+      "why": "Joey wil niet steeds Steps zien, maar wisselende companions en de laatste afgevinkte missie bovenaan.",
+      "changes": [
+        "Dezelfde Home-proef heeft een wisselende spotlight met alle elf bestaande openbare companions en vorige/volgende/pauze-knoppen.",
+        "Tik op het karakter voor een horizontale missiebar en volledig overzicht. Afvinken via eigen rondje; details apart.",
+        "De nieuwste demo-voltooiing staat vooraan in hero, crew en overzicht. Terugnemen verwijdert die prioriteit. Wisselen pauzeert na een eigen keuze of voltooiing.",
+        "Agenda, weekritme, beide kleurstanden en alle bestaande missies blijven behouden; HQ en werkvolgorde bijgewerkt."
+      ],
+      "try": "Jarvis → Lab → Gamenfy 2.0. Open het missie-overzicht, vink Meditatie en daarna Budgeting af, sluit het overzicht. Budgeting staat nu bovenaan; probeer ook terugnemen en Start wisselen.",
+      "remaining": "Alle acties gebruiken alleen tijdelijke demodata. Echte Home, levels en gegevens zijn niet gewijzigd. Karaktergrootte, blokvolgorde en kleur wachten nog op Joey; animaties blijven bij Claude. Geen credits gebruikt."
+    },
+    {
+      "id": "2026-09-17-home-v2-prototype",
+      "date": "2026-09-17",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Gamenfy 2.0: jouw Home-proef staat klaar",
+      "why": "Je wilt stap 3 concreet kunnen beoordelen: minder lezen, meer visuele blokken en een duidelijker dagoverzicht. De eerder genoemde proef bestond nog niet; nu wel.",
+      "changes": [
+        "Eigen beeldtegel in Lab met een afzonderlijke interactieve Home-proef: karakter/dagvoortgang, crew, agenda, weekritme en een volgende stap.",
+        "Blokken openen details. Je kunt voorbeeldmissies afvinken, een afspraak verschuiven en beide kleurstanden vergelijken; alleen tijdelijke demodata.",
+        "In de proef: review van de huidige indeling en drie gerichte vragen onder Jouw oordeel.",
+        "Operation Hub verwijst nu direct naar de proef. Claude staat als uitvoerder van stap 1 en 2; wij werken aan stap 3."
+      ],
+      "try": "Jarvis → Lab → Gamenfy 2.0. Open agenda en missies, wissel Nacht/Licht en klik Jouw oordeel.",
+      "remaining": "Je echte Home blijft versie 1; geen datareset, verwijderde missies of nieuwe koppeling met Fitbit. Bestaande character-art is alleen een beeldreferentie. Nieuwe animatie blijft bij Claude; de vormgeving van zijn Lab-blok is geparkeerd."
+    },
+    {
+      "id": "2026-09-17-claude-park-link",
+      "date": "2026-09-17",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Claude’s 3D-park staat nu in je Lab",
+      "why": "Je wilt weer zichtbare experimentblokken en Claude’s bewegende park op één centrale plek kunnen openen.",
+      "changes": [
+        "Nieuw blok onder Actuele experimenten: Claude Lab · Companion Park 3D. Open groot in Lab of apart.",
+        "Claude’s oorspronkelijke project blijft onaangeroerd. De tegel volgt zijn actuele externe versie; er wordt geen account- of missiedata doorgestuurd.",
+        "De afspraak om open feedback niet stilzwijgend te verwijderen is vastgelegd. Bestaande feedback, oudere proeven en de WHY-link blijven behouden."
+      ],
+      "try": "Jarvis → Lab → Actuele experimenten → Open het park in Lab. Tik op een companion en probeer Evolueer of Spring. Bij laadproblemen: Apart openen.",
+      "remaining": "De 3D-beweging is niet visueel geverifieerd: de testbrowser ondersteunt geen WebGL. Het park is nog niet gekoppeld aan echte missies of levels. Bestaande karakter-, Fitbit-, Skills- en weekritmepunten blijven open."
+    },
+    {
+      "id": "2026-09-17-lab-workspace",
+      "date": "2026-09-17",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Je Lab is opnieuw geordend",
+      "why": "Naar aanleiding van onze chat: minder zoeken, duidelijkere prioriteiten en geen updates missen als je druk bent.",
+      "changes": [
+        "ChatGPT Lab heeft een compacte startpagina; eerdere proeven blijven onder Older Lab Experiments en openen afzonderlijk.",
+        "Operation Hub toont de zes afgesproken stappen. De assetmap opent previews van alle tien levels.",
+        "HQ bewaart je feedback, inclusief behoud en review van Daily Missions en het gewenste weekritme.",
+        "Home toont een melding voor nieuwe updates. Het volledige log blijft beschikbaar in Lab, ook na markeren als gezien."
+      ],
+      "try": "Open Jarvis → Lab → Older Lab Experiments en klik een proef. Open daarna Operation Hub → Asset map en klik een personage.",
+      "remaining": "Nieuwe karakterfamilie, echte herbruikbare beweging, schaal/transparantie, Home-redesign, Skills en weekmissies zijn nog niet gebouwd. Fitbit is niet gerepareerd. Geen missies of voortgang verwijderd; geen credits gebruikt."
+    },
+    {
+      "id": "2026-09-14-quest-history",
+      "date": "2026-09-14",
+      "surfaces": [
+        "lab"
+      ],
+      "title": "Week- en maandquesthistorie hersteld",
+      "why": "Bij periodewissels werd de verkeerde titel gecontroleerd.",
+      "changes": [
+        "De werkelijke quest wordt bij een nieuwe periode bewaard met voltooiingsmetadata, zonder extra XP."
+      ],
+      "try": "Bekijk je questhistorie na een periodewissel.",
+      "remaining": "Eerder verloren historie is hiermee niet automatisch teruggehaald."
+    },
+    {
+      "id": "2026-09-14-production-reference",
+      "date": "2026-09-14",
+      "surfaces": [
+        "lab"
+      ],
+      "title": "Eerdere productieaanpak bewaard",
+      "why": "Drie batches met acht opdrachten waren eerder gepubliceerd.",
+      "changes": [
+        "Prompts en instellingen blijven als referentie beschikbaar bij Older Lab Experiments."
+      ],
+      "try": "Gebruik nu het actuele stappenplan in Operation Hub.",
+      "remaining": "Deze oude aanpak is geen verplichte takenlijst. Er zijn hiermee geen nieuwe beelden of animaties gemaakt."
+    }
+  ]
+}
