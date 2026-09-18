@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-17",
+  "updatedAt": "2026-09-18",
   "managedBy": "ChatGPT",
   "activeExperiments": [
-    {"id":"home-v2","title":"Gamenfy 2.0 · Home-proef","url":"lab-home-v2.html","owner":"ChatGPT + Joey","status":"lab-review-ready","next":"Joey beoordeelt karaktergrootte, volgorde van agenda/weekritme versus dailies, en lichte/donkere kleurstand.","dataBoundary":"Uitsluitend voorbeeldgegevens in geheugen; geen echte account-, mission-, agenda- of healthdata. Home versie 1 blijft intact."},
+    {"id":"home-v2","title":"Gamenfy 2.0 · Home-proef","url":"lab-home-v2.html","owner":"ChatGPT + Joey","status":"lab-review-ready","next":"Joey beoordeelt de wisselende missie-spotlight en missiebar: vink een demo-missie af, sluit het overzicht en controleer de nieuwste companion bovenaan. Karaktergrootte, blokvolgorde en kleur blijven open.","dataBoundary":"Uitsluitend voorbeeldgegevens in geheugen; geen echte account-, mission-, agenda- of healthdata. Home versie 1 blijft intact."},
     {"id":"claude-companion-park-3d","title":"Claude Lab · Companion Park 3D","url":"https://gamenfy-claude-lab.vercel.app/","owner":"Claude","status":"external-lab-linked","next":"Samen beweging en evolutie beoordelen; bruikbare onderdelen later pas integreren in de echte app.","verification":"Publieke pagina bereikbaar; embed niet geblokkeerd door responseheaders. Testbrowser heeft geen WebGL, dus beweging niet visueel geverifieerd.","dataBoundary":"Losse proef; geen koppeling met echte missies, account of voortgang."}
   ],
   "steps": [
@@ -24,6 +24,7 @@
     "Geen nieuwe afbeeldingen genereren of betaalde credits gebruiken in deze opruimronde."
   ],
   "feedback": [
+    "18 september: eerdere Home-feedback verwerkt in dezelfde proef — wisselende companions, missiebar en laatste demo-voltooiing vooraan. Nog door Joey te beoordelen; geen productie-Home goedgekeurd.",
     "Lab later visueler maken met compacte beeldtegels en minder tekst. Claude’s huidige Companion Park-blok voorlopig niet veranderen; eerst zijn verdere werk afwachten.",
     "Home-proef beoordelen: hoeveel ruimte voor het karakter, agenda/weekritme of Daily Missions als eerste, en lichte versus donkere kleuren. Er is nu een concrete proef; geen definitieve goedkeuring of vervanging van Home.",
     "Claude’s Companion Park 3D is nu als actief experiment gekoppeld. De beweging/evolutie samen beoordelen; deze koppeling lost de bestaande karakter-, schaal- of animatiepunten nog niet op.",

@@ -4,6 +4,10 @@
 
 ## Actueel — 17 september 2026
 
+### Aanvulling — 18 september 2026 · ChatGPT
+
+Binnen dezelfde Home-proef wordt Joeys eerdere feedback concreet: wisselende Daily Mission-companions, tikbare missiebar/overzicht, en nieuwste demo-voltooiing vooraan. Agenda/weekritme en licht/donker blijven behouden. Afvinken en terugnemen blijven uitsluitend tijdelijke demohandelingen; alle echte data en Home v1 blijven intact. Claude behoudt familie/animatie. Reviewkeuzes over karaktergrootte, blokvolgorde en kleur blijven open. Zie het blijvende opleverlog; druk-modus is geen stilzwijgend ontwerp- of rolloutakkoord.
+
 ### Home-proef 2.0 en taakverdeling
 
 Claude pakt stap 1 (karakterfamilie) en stap 2 (animatie) op. ChatGPT + Joey pakken stap 3 op. `lab-home-v2.html` is de afzonderlijke interactieve Home-proef, bereikbaar via een eigen beeldtegel in Lab en de link bij stap 3 in Operation Hub. De huidige app blijft versie 1; geen gegevensreset. Het eerdere ‘Joey beoordeelt de proef’ verwees naar nog te maken werk, niet een verborgen bestaand experiment.
