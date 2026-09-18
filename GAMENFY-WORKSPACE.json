@@ -22,6 +22,16 @@
       "dataBoundary": "Demo-only. Geen Supabase, Fitbit, XP, echte Daily Mission writes of Higgsfield generation. Externe GLB wordt alleen read-only geladen."
     },
     {
+      "id": "rigged-3d-feel-wave2",
+      "title": "3D Feel Lab · Wave 2",
+      "url": "lab-3d-feel-tests.html",
+      "owner": "ChatGPT",
+      "status": "four-critical-tests-ready",
+      "next": "Joey beoordeelt vanavond tests 6–9 naast de eerste vijf. Wave 2 test niet meer varianten om varianten, maar vier mogelijke failure modes: foot slip, visual fit, Home functionaliteit en iPhone-performance.",
+      "verification": "Zelfde read-only test-GLB als Wave 1. Test 6 meet foot slip nabij contact; test 7 verandert alleen presentatie; test 8 koppelt Home-focus aan root locomotion; test 9 stress-test meerdere skeleton mixers met live FPS/triangles.",
+      "dataBoundary": "Demo-only; geen Supabase, Fitbit, XP, echte missions of generation jobs. Geen credits."
+    },
+    {
       "id": "autosprite-bridge",
       "title": "AutoSprite Bridge · state-engine proef",
       "url": "lab-autosprite-bridge.html",
@@ -82,6 +92,7 @@
     }
   ],
   "agreements": [
+    "In druk-modus geen eindeloze cosmetische varianten maken. Nieuwe tests moeten nieuwe informatie opleveren: body mechanics, product-fit, performance of een andere duidelijke failure mode.",
     "Nieuwe tijdelijke taakverdeling: Claude’s Companion Park blijft een onaangeraakte externe referentie. ChatGPT mag zelfstandig rigged-3D product-fit tests bouwen in eigen Lab zolang echte data en credits niet worden geraakt; Joey beoordeelt de set later.",
     "Toevoegen betekent niet weghalen. Feedback die open blijft blijft zichtbaar totdat het aantoonbaar is opgelost of Joey expliciet anders beslist. Opgeloste punten houden een herkenbare historie; niets stilzwijgend schrappen.",
     "Claude mag zijn eigen Lab verder ontwikkelen. ChatGPT Lab biedt één centrale ingang; nuttige onderdelen worden pas na beoordeling in de echte app geïntegreerd.",
@@ -92,6 +103,7 @@
     "Geen nieuwe afbeeldingen genereren of betaalde credits gebruiken in deze opruimronde."
   ],
   "feedback": [
+    "18 september · druk-modus vervolg: na de eerste vijf 3D-tests is Wave 2 gebouwd met vier falsificerende tests: foot-contact QA, 2.5D visual fit, Reactive Home en iPhone performance. Geen keuze nodig tot Joey vanavond feedback geeft.",
     "18 september · 3D-richting: AutoSprite/2D is gedegradeerd tot vergelijking omdat het nog als een bewegend plaatje voelt. Vijf rigged-3D producttests staan klaar; test 5 (mission interaction) is de sterkste kandidaat, maar nog geen definitieve keuze.",
     "18 september · druk-modus: Joey wil geen discussie over 2D versus 3D totdat hij vanavond tijd heeft. Maak zelfstandig meerdere serieuze tests; later geeft hij feedback op de set.",
     "18 september: Higgsfield AutoSprite-onderzoek toegepast als aparte Lab Bridge. State-engine + levelmapping + lokale asset-slots zijn gebouwd; echte sprite-output blijft bewust ongebruikt totdat WALK de articulatie/identity gate kan worden getest.",
