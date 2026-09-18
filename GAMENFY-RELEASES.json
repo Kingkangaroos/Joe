@@ -1,6 +1,24 @@
 {
   "releases": [
     {
+      "id": "2026-09-18-3d-feel-wave2",
+      "date": "2026-09-18",
+      "surfaces": [
+        "lab"
+      ],
+      "title": "3D Feel Lab: vier kritische vervolgtests",
+      "why": "Na de eerste vijf 3D-producttests willen we niet cosmetisch doorbouwen. De volgende stap moet juist de belangrijkste failure modes meten voordat live 3D richting krijgt.",
+      "changes": [
+        "Test 6 Grounded Walk QA meet horizontale foot slip tijdens ground contact en laat root-snelheid tunen op de clip.",
+        "Test 7 2.5D Toon Fit houdt de echte rig maar maakt camera/materialen rustiger om beweging los van game-engine-look te beoordelen.",
+        "Test 8 Reactive Home laat Agenda, Daily Missions, Skills en Geld de 3D companion fysiek naar andere focus-ankers sturen.",
+        "Test 9 iPhone Performance Gate stress-test 1, 3, 6 en 11 skeleton mixers en toont live FPS, triangle count en een eenvoudige quality gate.",
+        "Lab bevat nu twee reviewwaves: tests 1–5 voor productrichting en 6–9 voor body mechanics, art direction, functionele Home-fit en performance."
+      ],
+      "try": "Jarvis → Lab → 3D Feel Lab. Bekijk tests 6–9. Daarna kun je vanavond de hele set 1–9 in één keer beoordelen.",
+      "remaining": "Geen definitieve 3D-keuze. Nog steeds dezelfde externe test-GLB, geen eigen final character-family, geen echte appdata en geen AI-credit spend."
+    },
+    {
       "id": "2026-09-18-rigged-3d-test-pack",
       "date": "2026-09-18",
       "surfaces": [
