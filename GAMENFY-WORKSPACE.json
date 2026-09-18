@@ -23,13 +23,23 @@
     },
     {
       "id": "rigged-3d-feel-wave2",
-      "title": "3D Feel Lab · Wave 2",
+      "title": "3D Feel Lab · Wave 2 + synthesis",
       "url": "lab-3d-feel-tests.html",
       "owner": "ChatGPT",
-      "status": "four-critical-tests-ready",
-      "next": "Joey beoordeelt vanavond tests 6–9 naast de eerste vijf. Wave 2 test niet meer varianten om varianten, maar vier mogelijke failure modes: foot slip, visual fit, Home functionaliteit en iPhone-performance.",
-      "verification": "Zelfde read-only test-GLB als Wave 1. Test 6 meet foot slip nabij contact; test 7 verandert alleen presentatie; test 8 koppelt Home-focus aan root locomotion; test 9 stress-test meerdere skeleton mixers met live FPS/triangles.",
+      "status": "tests-6-through-10-ready",
+      "next": "Vanavond: tests 1–10 beoordelen via lab-3d-review.html. Test 10 is synthesis-hypothese, geen gekozen eindrichting.",
+      "verification": "Zelfde read-only test-GLB als Wave 1. Test 6 meet foot slip nabij contact; test 7 verandert alleen presentatie; test 8 koppelt Home-focus aan root locomotion; test 9 stress-test meerdere skeleton mixers met live FPS/triangles. Test 10 combineert single-rig Home, 2.5D look, root locomotion en completion-reactie.",
       "dataBoundary": "Demo-only; geen Supabase, Fitbit, XP, echte missions of generation jobs. Geen credits."
+    },
+    {
+      "id": "rigged-3d-review",
+      "title": "3D Review · tests 1–10",
+      "url": "lab-3d-review.html",
+      "owner": "ChatGPT + Joey",
+      "status": "ready-for-evening-feedback",
+      "next": "Per test Ja / Misschien / Nee + optionele korte notitie; daarna Kopieer feedback en plak die in de chat.",
+      "verification": "Reviewstate is alleen lokale browserstate; niets wordt naar Supabase of andere backend geschreven.",
+      "dataBoundary": "Alleen device-local reviewvoorkeuren. Geen account-, health-, mission- of XP-data."
     },
     {
       "id": "autosprite-bridge",
@@ -103,6 +113,8 @@
     "Geen nieuwe afbeeldingen genereren of betaalde credits gebruiken in deze opruimronde."
   ],
   "feedback": [
+    "18 september · Vanavond-review toegevoegd: tests 1–10 snel scoren met Ja / Misschien / Nee + korte notitie; alles blijft lokaal totdat Joey zelf de samenvatting kopieert naar de chat.",
+    "18 september · Test 10 toegevoegd als synthese, niet als besluit: één live rigged companion in een rustige 2.5D Home-card, UI-focus via echte root movement en fysieke completion-reactie.",
     "18 september · druk-modus vervolg: na de eerste vijf 3D-tests is Wave 2 gebouwd met vier falsificerende tests: foot-contact QA, 2.5D visual fit, Reactive Home en iPhone performance. Geen keuze nodig tot Joey vanavond feedback geeft.",
     "18 september · 3D-richting: AutoSprite/2D is gedegradeerd tot vergelijking omdat het nog als een bewegend plaatje voelt. Vijf rigged-3D producttests staan klaar; test 5 (mission interaction) is de sterkste kandidaat, maar nog geen definitieve keuze.",
     "18 september · druk-modus: Joey wil geen discussie over 2D versus 3D totdat hij vanavond tijd heeft. Maak zelfstandig meerdere serieuze tests; later geeft hij feedback op de set.",
