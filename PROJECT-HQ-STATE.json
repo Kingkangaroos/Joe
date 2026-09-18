@@ -1,7 +1,7 @@
 {
   "project": "Gamenfy",
   "owner": "Joey",
-  "updatedAt": "2026-09-17",
+  "updatedAt": "2026-09-18",
   "managedBy": [
     "ChatGPT (OpenAI)",
     "Claude"
@@ -13,6 +13,7 @@
     "userEditable": true
   },
   "now": [
+    "18 september: dezelfde Home-proef uitgebreid met wisselende missie-spotlight, horizontale missiebar en laatste demo-voltooiing vooraan; terugnemen blijft omkeerbaar. Bestaande reviewkeuzes blijven open; geen wijziging aan echte data of Home v1.",
     "Claude verzorgt stap 1 en 2: familie en animatie. ChatGPT + Joey beoordelen nu stap 3 via ChatGPT Lab → Gamenfy 2.0 · Home-proef (lab-home-v2.html). Huidige Home blijft versie 1; geen reset van gegevens.",
     "Actief experiment: ChatGPT Lab → Companion Park 3D opent Claude’s externe Lab. Eerst beweging/evolutie beoordelen; geen koppeling met echte missies of levels gemaakt.",
     "Actueel stappenplan: Operation Hub → karakterfamilie, herbruikbare beweging, Home-widgets, Skills, Daily Mission-review en weekritme. Zie GAMENFY-WORKSPACE.json.",
@@ -83,7 +84,9 @@
     "General Lab belongs to Jarvis by default and explicit return tokens route Venture-launched Lab back to Finance Ventures instead of Character Body",
     "2026-09-06 Website Ventures consolidation: rich four-flagship/Higgsfield/visual-production HQ was ported into the restored Ventures/Venture Lab/Productielijn shell; PR #48 merged as bf848821695bed98a229273eacfb7c707a98c595 and production dpl_WruV9vzjJ7ZYxWyrPcPrccY2Tkpy is READY"
   ],
-  "assetsNeeded": ["Nog geen nieuwe productieopdracht. Eerst familievoorstel en herbruikbare beweging beoordelen; bestaande assets blijven behouden."],
+  "assetsNeeded": [
+    "Nog geen nieuwe productieopdracht. Eerst familievoorstel en herbruikbare beweging beoordelen; bestaande assets blijven behouden."
+  ],
   "previousAssetsNeeded": [
     "Badge-originelen met herkenbare bestandsnamen en de bedoelde prestatie per badge; eerst bestaande bestanden terugvinden, niet opnieuw genereren.",
     "Eén goedgekeurd Gamenfy app-icoon als bron voor de installatiematen; huidige manifest heeft nog geen icons.",

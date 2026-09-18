@@ -1,0 +1,28 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const {createDemo,toggleMission,orderedMissions,advanceFeatured}=require('../lab-home-v2.js');
+const a=createDemo(),b=createDemo(),levels=a.missions.map(m=>m.level);
+assert.equal(a.featuredKey,'meditation');
+const seen=new Set();for(let i=0;i<11;i++){seen.add(a.featuredKey);advanceFeatured(a,1);}
+assert.equal(seen.size,11);assert.equal(a.featuredKey,'meditation');
+advanceFeatured(a,-1);assert.equal(a.featuredKey,'household');
+toggleMission(a,'meditation');assert.equal(a.featuredKey,'meditation');
+toggleMission(a,'budgeting');assert.equal(a.featuredKey,'budgeting');
+assert.deepEqual(orderedMissions(a).slice(0,2).map(m=>m.key),['budgeting','meditation']);
+toggleMission(a,'budgeting');assert.equal(a.featuredKey,'meditation');
+assert.equal(orderedMissions(a)[0].key,'meditation');
+toggleMission(a,'meditation');assert.deepEqual(a.completionOrder,[]);
+assert.equal(a.missions.filter(m=>m.done).length,4);
+assert.equal(orderedMissions(a).length,11);assert.equal(new Set(orderedMissions(a).map(m=>m.key)).size,11);
+assert.deepEqual(a.missions.map(m=>m.level),levels);assert.deepEqual(b,createDemo());
+toggleMission(a,'sleep');toggleMission(a,'sleep');toggleMission(a,'sleep');
+assert.deepEqual(a.completionOrder,['sleep']);assert.equal(toggleMission(a,'missing'),null);
+assert.deepEqual(createDemo().completionOrder,[]);
+const root=path.join(__dirname,'..'),js=fs.readFileSync(path.join(root,'lab-home-v2.js'),'utf8'),html=fs.readFileSync(path.join(root,'lab-home-v2.html'),'utf8');
+assert.doesNotMatch(html+js,/localStorage|sessionStorage|indexedDB|supabase|fetch\(|XMLHttpRequest|sendBeacon|auth\.js|sync\.js|xp\.js/);
+for(const id of ['missionHero','heroTitle','featuredCopy','featuredEyebrow','heroImage','heroImageButton','featuredStatus','rotationToggle','featuredPosition','crewPreview'])assert.ok(html.includes('id="'+id+'"'),id);
+assert.match(js,/rotationPaused\|\|document.hidden\|\|dialog.open\|\|!heroVisible/);
+assert.match(js,/prefers-reduced-motion: reduce/);
+console.log('Home spotlight: all 11, newest first, undo/recheck, isolated levels and no real-state APIs PASS');

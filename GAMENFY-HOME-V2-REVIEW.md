@@ -29,6 +29,12 @@ Blokken openen een dialoog; elf openbare demomissies bekijken en vinkjes omzette
 
 ## Gerichte vragen aan Joey
 
+### Doorbouw 18 september · missie-spotlight
+
+Eerdere feedback is in dezelfde proef verwerkt: niet altijd Steps, maar alle elf bestaande companions in een wisselende spotlight. Tik op karakter of knop voor een horizontale missiebar plus volledig overzicht. Afvinken heeft een eigen rondje; details blijven apart. De laatste demo-voltooiing komt vooraan in hero, crew en overzicht; terugnemen verwijdert die prioriteit. Na afvinken of handmatig kiezen pauzeert wisselen totdat Joey het weer start. Automatisch wisselen (8 seconden) wacht bij een open dialoog, focus/hover, verborgen tab of hero buiten beeld; beperkte-bewegingvoorkeur start gepauzeerd.
+
+Geen animatieproductie, nieuwe art, accountkoppeling of wijziging aan canonieke levels. Reset/herladen wist uitsluitend de tijdelijke proef. Agenda, weekritme en beide kleurstanden blijven behouden. Onderstaande ontwerpkeuzes blijven open; deze uitvoering is geen goedkeuring van de productie-Home.
+
 1. Karaktergrootte: zoals nu, groter met meer wereld, of kleiner met meer overzicht?
 2. Direct onder het karakter: agenda + weekritme, of Daily Missions eerst?
 3. Kleurstand: Nacht met kleur, of Licht met kleur?
