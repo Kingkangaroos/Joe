@@ -196,6 +196,9 @@ function modeSetup(){
   if(MODE==='perf'){
     floor.material.color.set('#20283a');inner.material.color.set('#27344d');ring.visible=false;actorRoot.position.set(0,0,0);setCamera(new THREE.Vector3(8.5,5.4,9.5),new THREE.Vector3(0,.45,0),true);blendAction('walk',1);buildPerfActors(6);
   }
+  if(MODE==='synthesis'){
+    applyToonLook();scene.background=new THREE.Color('#101529');floor.material.color.set('#1e3145');inner.material.color.set('#273e55');ring.visible=false;actorRoot.position.set(.15,0,.05);setCamera(new THREE.Vector3(2.9,1.45,7.2),new THREE.Vector3(.2,.72,0),false);blendAction('idle',.58);reactiveHome('agenda');
+  }
 }
 function buildMissionStrip(){
   const strip=$('missionStrip'); if(!strip)return; strip.innerHTML='';
@@ -228,6 +231,7 @@ function bindUI(){
   if($('rootSpeed')){$('rootSpeed').oninput=()=>{moveSpeed=+$('rootSpeed').value;$('rootSpeedValue').textContent=moveSpeed.toFixed(2)+' m/s'}}
   document.querySelectorAll('[data-home-anchor]').forEach(b=>b.onclick=()=>reactiveHome(b.dataset.homeAnchor));
   document.querySelectorAll('[data-perf-count]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-perf-count]').forEach(x=>x.classList.toggle('on',x===b));buildPerfActors(+b.dataset.perfCount)});
+  $('synthesisComplete') && ($('synthesisComplete').onclick=()=>{celebrate=1.15;const n=Number($('synthesisLevel')?.textContent||6);if($('synthesisLevel'))$('synthesisLevel').textContent=String(Math.min(10,n+1));toast('Missie voltooid · world reacts');});
 }
 
 function updateMode(dt,t){
@@ -245,7 +249,7 @@ function updateMode(dt,t){
   if(MODE==='grounded'){
     rootLocomotion(dt);if(!moving){sideDir*=-1;target.set(sideDir>0?3.6:-3.6,0,0);moving=true;blendAction('walk',1)}updateFootQa(dt);
   }
-  if(MODE==='reactive')rootLocomotion(dt);
+  if(MODE==='reactive'||MODE==='synthesis')rootLocomotion(dt);
   if(MODE==='perf')updatePerf(dt);
   if(celebrate>0){
     celebrate-=dt; actorBody.position.y=Math.sin((1.15-celebrate)*Math.PI*3)*.15*Math.max(0,celebrate/.45);actorBody.rotation.z=Math.sin((1.15-celebrate)*Math.PI*4)*.06;

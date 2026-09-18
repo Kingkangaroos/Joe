@@ -1,6 +1,23 @@
 {
   "releases": [
     {
+      "id": "2026-09-18-living-home-synthesis",
+      "date": "2026-09-18",
+      "surfaces": [
+        "lab"
+      ],
+      "title": "Test 10 + snelle review voor vanavond",
+      "why": "Na negen losse tests is één synthese nuttig, maar zonder te doen alsof de richting al gekozen is. Joey wil later snel feedback kunnen geven zonder alles opnieuw uit te leggen.",
+      "changes": [
+        "Test 10 Living Home combineert één live rigged companion, rustige 2.5D-presentatie, Home-focus via echte root locomotion en een fysieke completion-reactie.",
+        "Nieuwe reviewpagina voor tests 1–10 met Ja / Misschien / Nee en korte notitie per test.",
+        "Reviewstate blijft alleen lokaal op het apparaat; Kopieer feedback maakt één compacte samenvatting om later in de chat te plakken.",
+        "Lab en 3D Feel Hub linken nu direct naar test 10 en de review."
+      ],
+      "try": "Jarvis → Lab → 3D Feel Lab → Test 10. Daarna Vanavond: snelle review van alle 10.",
+      "remaining": "Test 10 is een werkhypothese, geen productie-keuze. Nog steeds dezelfde externe test-GLB, geen eigen final character-family en geen echte appdata."
+    },
+    {
       "id": "2026-09-18-3d-feel-wave2",
       "date": "2026-09-18",
       "surfaces": [
