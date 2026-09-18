@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1026">
+<title>AutoSprite Bridge · Gamenfy Lab</title>
+<style>
+:root{--bg:#090d21;--panel:#131932;--panel2:#0e1430;--ink:#f6f7ff;--muted:#aab3d2;--line:#2b365e;--cyan:#79e7d0;--lav:#c6b9ff;--peach:#ffc8a8;--danger:#ff9e9e;--green:#8fe2ba;--display:ui-rounded,"SF Pro Rounded",system-ui,sans-serif;--font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:dark}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 20% -10%,#222d65 0,#0b1026 36%,#070a18 80%);color:var(--ink);font-family:var(--font)}a{color:inherit}.shell{max-width:1050px;margin:auto;padding:18px 16px 80px}.top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:20px}.top a{text-decoration:none;font-size:12px;font-weight:800;color:#dfe5ff}.badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #35506b;border-radius:999px;background:#0c1d2a;color:#8ff1dc;font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.badge i{width:7px;height:7px;border-radius:50%;background:#72efcf;box-shadow:0 0 12px #72efcf}h1{font:800 clamp(38px,8vw,72px)/.92 var(--display);letter-spacing:-.06em;margin:8px 0 12px;max-width:850px}.lead{max-width:780px;color:var(--muted);font-size:13px;line-height:1.65;margin:0 0 22px}.notice{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid #4a466b;border-radius:14px;background:#191832;color:#dcd8ff;font-size:11px;line-height:1.5;margin-bottom:18px}.notice b{color:#fff}.grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:14px}.card{border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,rgba(20,27,56,.95),rgba(12,17,40,.95));box-shadow:0 22px 60px -40px #000;padding:16px}.stage{position:relative;height:430px;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#172653 0 57%,#263d63 57% 66%,#18382e 66%);isolation:isolate}.sky{position:absolute;inset:0 0 34%;background:radial-gradient(circle at 70% 23%,#d5c3ff44,transparent 13%),radial-gradient(circle at 18% 32%,#8fe7ff22,transparent 16%)}.hill{position:absolute;left:-8%;right:-8%;bottom:30%;height:35%;border-radius:50% 50% 0 0/100% 100% 0 0;background:#1c2e51;transform:scaleY(.72)}.ground{position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(#284b3c,#163224)}.track{position:absolute;left:-20%;bottom:18%;width:140%;height:56px;border-radius:50%;border-top:2px dashed #b7dbc166;transform:rotate(-2deg)}.runner{--dur:.9s;position:absolute;left:50%;bottom:20%;width:178px;height:228px;margin-left:-89px;display:grid;place-items:end center;transform-origin:50% 100%;z-index:4}.runner img{display:block;max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 15px 14px #02040d99);transform-origin:50% 85%;user-select:none;-webkit-user-drag:none}.shadow{position:absolute;left:50%;bottom:18%;width:110px;height:22px;margin-left:-55px;border-radius:50%;background:radial-gradient(ellipse,#03050ba8 0,transparent 72%);z-index:3}.dust{position:absolute;left:50%;bottom:19%;width:8px;height:8px;border-radius:50%;background:#c9f0d8;opacity:0;z-index:3}.speed-line{position:absolute;right:-90px;width:140px;height:2px;background:linear-gradient(90deg,transparent,#a5f1ffbb,transparent);opacity:0;z-index:2}.speed-line.s1{top:43%}.speed-line.s2{top:54%;animation-delay:.22s}.speed-line.s3{top:63%;animation-delay:.41s}.state-tired .runner{animation:tired 2.8s ease-in-out infinite}.state-tired .runner img{filter:grayscale(.12) brightness(.85) drop-shadow(0 15px 14px #02040d99)}.state-idle .runner{animation:idle 2.7s ease-in-out infinite}.state-walk .runner{animation:walk var(--dur) ease-in-out infinite}.state-run .runner{--dur:.42s;animation:run var(--dur) ease-in-out infinite}.state-celebrate .runner{animation:celebrate 1.15s cubic-bezier(.2,.8,.2,1) infinite}.state-walk .ground,.state-walk .track{animation:groundShift 3.2s linear infinite}.state-run .ground,.state-run .track{animation:groundShift 1.25s linear infinite}.state-walk .dust,.state-run .dust{animation:dust var(--dur) ease-out infinite}.state-walk .dust:nth-of-type(2),.state-run .dust:nth-of-type(2){animation-delay:calc(var(--dur)/2)}.state-run .speed-line{animation:speed .8s linear infinite}.state-walk .shadow,.state-run .shadow{animation:shadowPulse var(--dur) ease-in-out infinite}@keyframes idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes tired{0%,100%{transform:translateY(0) rotate(-1deg) scaleY(.98)}50%{transform:translateY(3px) rotate(1deg) scaleY(.95)}}@keyframes walk{0%,100%{transform:translateY(0) rotate(-1.5deg)}25%{transform:translateY(-10px) rotate(0)}50%{transform:translateY(0) rotate(1.5deg)}75%{transform:translateY(-8px) rotate(0)}}@keyframes run{0%,100%{transform:translateY(0) rotate(-2deg) scaleY(.98)}50%{transform:translateY(-17px) rotate(1deg) scaleY(1.03)}}@keyframes celebrate{0%,100%{transform:translateY(0) rotate(0)}35%{transform:translateY(-42px) rotate(-5deg)}60%{transform:translateY(-18px) rotate(5deg)}}@keyframes groundShift{from{background-position:0 0}to{background-position:-240px 0}}@keyframes dust{0%{opacity:0;transform:translate(-15px,0) scale(.4)}10%{opacity:.8}60%{opacity:0;transform:translate(-35px,-12px) scale(2.5)}100%{opacity:0}}@keyframes speed{0%{opacity:0;transform:translateX(0)}15%{opacity:.85}100%{opacity:0;transform:translateX(-700px)}}@keyframes shadowPulse{0%,100%{transform:scaleX(1);opacity:.65}50%{transform:scaleX(.72);opacity:.35}}.stage-label{position:absolute;left:14px;top:14px;z-index:6;padding:8px 10px;border-radius:999px;background:#070b1bbf;border:1px solid #53618a;color:#dce3ff;font-size:9px;font-weight:800;backdrop-filter:blur(9px)}.level-bubble{position:absolute;left:50%;bottom:8%;z-index:6;transform:translateX(-50%);padding:7px 10px;border-radius:999px;background:#0b1026cc;border:1px solid #7085a9;color:#fff;font:800 10px var(--display)}.controls{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.controls button{border:1px solid #43527d;background:#111936;color:#dfe5ff;padding:9px 12px;border-radius:999px;font:750 10px var(--font);cursor:pointer}.controls button.on{background:var(--lav);color:#241d42;border-color:var(--lav)}.slider-wrap{margin-top:14px;padding:12px;border-radius:15px;background:#0d1430;border:1px solid #26345e}.slider-head{display:flex;justify-content:space-between;gap:8px;font-size:11px}.slider-head b{font-size:14px}.slider-wrap input[type=range]{width:100%;margin:12px 0 3px;accent-color:#c6b9ff}.toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px;font-size:10px;color:var(--muted)}.toggle input{width:20px;height:20px;accent-color:#7ce7c7}.mini{color:var(--muted);font-size:10px;line-height:1.55}.state-readout{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}.kv{padding:10px;border:1px solid #2a365f;border-radius:13px;background:#0d1430}.kv span{display:block;color:#8794b9;font-size:7px;text-transform:uppercase;letter-spacing:.08em;font-weight:800}.kv b{display:block;margin-top:4px;font-size:11px}.section-title{font:800 18px var(--display);letter-spacing:-.02em;margin:0 0 8px}.asset-list{display:grid;gap:8px;margin-top:10px}.asset{display:grid;grid-template-columns:10px 1fr auto;gap:9px;align-items:center;padding:10px;border-radius:13px;border:1px solid #2a365f;background:#0d1430}.asset i{width:9px;height:9px;border-radius:50%;background:#606c8e}.asset[data-status=ready] i{background:var(--green);box-shadow:0 0 10px #8fe2ba66}.asset[data-status=missing] i{background:#f0bf75}.asset strong{font-size:10px}.asset small{display:block;color:#7f8bad;font-size:8px;margin-top:2px}.asset code{font-size:8px;color:#99a7ce}.contract{margin-top:12px;border-radius:15px;background:#090f27;border:1px solid #2a365f;padding:12px}.contract pre{white-space:pre-wrap;word-break:break-word;font:9px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;color:#cad4f5;margin:0}.btn{margin-top:10px;width:100%;border:0;border-radius:13px;background:#c6b9ff;color:#281f46;padding:11px 13px;font-size:10px;font-weight:900;cursor:pointer}.btn.secondary{background:#16213f;color:#dce4ff;border:1px solid #3a4b77}.pass{margin-top:12px;padding:12px;border-radius:14px;background:#102b26;border:1px solid #285c4d;color:#a8ecd4;font-size:10px;line-height:1.5}.warning{margin-top:12px;padding:12px;border-radius:14px;background:#2c2114;border:1px solid #644e2d;color:#f5d49d;font-size:10px;line-height:1.5}.footer{margin-top:18px;color:#7f8bad;font-size:9px;line-height:1.55}.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,18px);opacity:0;pointer-events:none;background:#f3f4ff;color:#151a31;padding:10px 14px;border-radius:999px;font-size:10px;font-weight:800;transition:.2s;z-index:20}.toast.show{opacity:1;transform:translate(-50%,0)}@media(max-width:780px){.grid{grid-template-columns:1fr}.stage{height:390px}}@media(prefers-reduced-motion:reduce){.runner,.ground,.track,.dust,.speed-line,.shadow{animation:none!important}.controls [data-state=walk],.controls [data-state=run],.controls [data-state=celebrate]{opacity:.72}}
+</style>
+</head>
+<body class="state-walk" data-gamenfy-scope="personal">
+<main class="shell">
+  <div class="top"><a href="lab.html">‹ ChatGPT Lab</a><span class="badge"><i></i> Lab only · geen credits</span></div>
+  <span class="badge">Higgsfield open-source toepassing</span>
+  <h1>AutoSprite Bridge</h1>
+  <p class="lead">Een echte integratietest voor de nieuwe game-ready sprite-aanpak. De state-engine, levelmapping, mobile motion en asset-slots staan nu los van productie. Zodra één AutoSprite WALK-output in de afgesproken map staat, hoeft de app-architectuur niet opnieuw bedacht te worden.</p>
+  <div class="notice"><span>◎</span><div><b>Dit is bewust nog geen claim dat AutoSprite de character-art goed animeert.</b> Zolang de echte spritesheet ontbreekt gebruikt de stage de bestaande L06-art met een code-fallback om snelheid, state-wissels en Home/Park-gedrag te testen. Geen accountdata, Supabase, Fitbit of betaalde generatie wordt aangeraakt.</div></div>
+
+  <div class="grid">
+    <section class="card">
+      <div class="stage" id="stage" aria-label="AutoSprite integratieproef">
+        <div class="sky"></div><div class="hill"></div><div class="ground"></div><div class="track"></div>
+        <div class="speed-line s1"></div><div class="speed-line s2"></div><div class="speed-line s3"></div>
+        <div class="shadow"></div><div class="dust"></div><div class="dust"></div>
+        <div class="runner" id="runner"><img id="character" src="img/lab/daily-score/joey/l06.webp" alt="Bestaande Gamenfy Daily Score character"></div>
+        <div class="stage-label" id="stageLabel">Fallback · WALK state</div>
+        <div class="level-bubble" id="levelBubble">LVL 6 · WALK</div>
+      </div>
+      <div class="controls" aria-label="Animation state controls">
+        <button type="button" data-state="tired">Tired</button>
+        <button type="button" data-state="idle">Idle</button>
+        <button type="button" data-state="walk" class="on">Walk</button>
+        <button type="button" data-state="run">Run</button>
+        <button type="button" data-state="celebrate">Celebrate</button>
+        <button type="button" id="autoButton">Auto level</button>
+      </div>
+      <div class="slider-wrap">
+        <div class="slider-head"><span>Daily level</span><b id="levelValue">6 / 10</b></div>
+        <input id="level" type="range" min="0" max="10" value="6" step="1" aria-label="Daily level 0 tot 10">
+        <label class="toggle"><span>Vandaag voltooid → level 10 viert eerst</span><input id="completed" type="checkbox"></label>
+      </div>
+      <div class="state-readout"><div class="kv"><span>State</span><b id="stateValue">walk</b></div><div class="kv"><span>Renderer</span><b id="rendererValue">fallback still</b></div><div class="kv"><span>FPS target</span><b id="fpsValue">10 fps</b></div><div class="kv"><span>Home mapping</span><b id="homeValue">L6–8 → walk</b></div></div>
+      <p class="mini" style="margin:12px 2px 0">Test wat we nodig hebben voor Home: level 0–2 tired, 3–5 rustige walk, 6–8 walk, 9 run, 10 + voltooid celebrate. Dezelfde state-engine kan later ook Park of een D-score-vervanger aansturen.</p>
+    </section>
+
+    <aside class="card">
+      <h2 class="section-title">Asset slots</h2>
+      <p class="mini">De browser controleert alleen of afgesproken lokale bestanden bestaan. Er wordt niets naar Higgsfield gestuurd.</p>
+      <div class="asset-list" id="assetList"></div>
+
+      <div class="contract"><pre id="contract">MODEL: AutoSprite Animation
+MODEL ID: autosprite
+SOURCE: img/lab/daily-score/joey/l06.webp
+KIND: walk
+VIDEO TIER: turbo
+FRAME COUNT: 25
+FRAME SIZE: 256
+REMOVE BG: ultra
+WITH SOUND: false
+IS HUMANOID: true
+TARGET: img/lab/animation-pilot/daily-score-walk.png</pre></div>
+      <button class="btn" id="copySetup" type="button">Kopieer WALK setup</button>
+      <button class="btn secondary" id="playGate" type="button">Speel pass-gate test</button>
+
+      <div class="pass"><b>Pass-gate</b><br>Pas echte AutoSprite art in Home toe als benen/armen zichtbaar articuleren, voeten niet schaatsen, gezicht/outfit stabiel blijven en de loop op app-formaat overtuigt.</div>
+      <div class="warning"><b>Stop-regel</b><br>Als WALK na een begrensde retry nog als een bewegend uitgeknipt plaatje voelt, geen batch maken. Dan rigged 2D/3D testen.</div>
+    </aside>
+  </div>
+
+  <p class="footer">ChatGPT Lab · 18 september 2026. Gebouwd als reversibele integratieproef. De bestaande character-evoluties blijven onaangeraakt; Claude’s eigen animatiewerk en Companion Park blijven apart. Deze pagina maakt geen externe API-calls en start geen generation jobs.</p>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(()=>{
+  const source='img/lab/daily-score/joey/l06.webp';
+  const slots=[
+    ['walk','img/lab/animation-pilot/daily-score-walk.png'],
+    ['idle','img/lab/animation-pilot/daily-score-idle.png'],
+    ['jump','img/lab/animation-pilot/daily-score-jump.png'],
+    ['interact','img/lab/animation-pilot/daily-score-interact.png']
+  ];
+  const stateMeta={
+    tired:{fps:6,map:'L0–2 → tired'},idle:{fps:6,map:'handmatig / rust'},walk:{fps:10,map:'L3–8 → walk'},run:{fps:14,map:'L9 → run'},celebrate:{fps:12,map:'L10 + done → celebrate'}
+  };
+  const $=id=>document.getElementById(id);let state='walk',auto=false,celebrateTimer=0;
+  const toast=msg=>{const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.timer);t.timer=setTimeout(()=>t.classList.remove('show'),1800)};
+  function setState(next,origin='manual'){
+    state=next;document.body.className='state-'+state;document.querySelectorAll('[data-state]').forEach(b=>b.classList.toggle('on',b.dataset.state===state));
+    const m=stateMeta[state];$('stateValue').textContent=state;$('fpsValue').textContent=m.fps+' fps';$('homeValue').textContent=m.map;$('levelBubble').textContent='LVL '+$('level').value+' · '+state.toUpperCase();$('stageLabel').textContent='Fallback · '+state.toUpperCase()+' state';
+    if(origin==='manual'){auto=false;$('autoButton').classList.remove('on')}
+  }
+  function mappedState(){const level=Number($('level').value),done=$('completed').checked;if(level<=2)return'tired';if(level<=8)return'walk';if(level===9)return'run';return done?'celebrate':'idle'}
+  function applyAuto(){if(!auto)return;clearTimeout(celebrateTimer);const next=mappedState();setState(next,'auto');if(next==='celebrate'){celebrateTimer=setTimeout(()=>{if(auto){setState('idle','auto')}},2400)}}
+  $('level').addEventListener('input',()=>{$('levelValue').textContent=$('level').value+' / 10';applyAuto()});$('completed').addEventListener('change',applyAuto);
+  document.querySelectorAll('[data-state]').forEach(b=>b.addEventListener('click',()=>setState(b.dataset.state)));
+  $('autoButton').addEventListener('click',()=>{auto=!auto;$('autoButton').classList.toggle('on',auto);if(auto){applyAuto();toast('Auto level aan')}else toast('Auto level uit')});
+  $('copySetup').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('contract').textContent);toast('WALK setup gekopieerd')}catch(e){toast('Kopiëren niet toegestaan op dit apparaat')}});
+  $('playGate').addEventListener('click',()=>{auto=false;$('autoButton').classList.remove('on');let i=0;const seq=['idle','walk','run','celebrate','walk'];const tick=()=>{setState(seq[i],'gate');i++;if(i<seq.length)setTimeout(tick,1200);else toast('Gate-sequence klaar')};tick()});
+  const list=$('assetList');slots.forEach(([name,path])=>{const row=document.createElement('div');row.className='asset';row.dataset.status='checking';row.innerHTML='<i></i><div><strong>'+name.toUpperCase()+'</strong><small>controle lokale output</small></div><code>checking…</code>';list.append(row);const im=new Image();im.onload=()=>{row.dataset.status='ready';row.querySelector('small').textContent=im.naturalWidth+'×'+im.naturalHeight+' gevonden';row.querySelector('code').textContent='ready';if(name==='walk')$('rendererValue').textContent='walk asset found'};im.onerror=()=>{row.dataset.status='missing';row.querySelector('small').textContent='nog niet gegenereerd';row.querySelector('code').textContent='slot ready'};im.src=path+'?probe=1'});
+  $('character').src=source;setState('walk','boot');
+})();
+</script>
+</body></html>
