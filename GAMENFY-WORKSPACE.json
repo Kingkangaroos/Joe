@@ -12,12 +12,22 @@
       "dataBoundary": "Uitsluitend voorbeeldgegevens in geheugen; geen echte account-, mission-, agenda- of healthdata. Home versie 1 blijft intact."
     },
     {
+      "id": "rigged-3d-test-pack",
+      "title": "3D Character Test Pack · 5 richtingen",
+      "url": "lab-3d-character-tests.html",
+      "owner": "ChatGPT",
+      "status": "five-tests-ready-for-evening-review",
+      "next": "Joey hoeft vanavond alleen per test te zeggen wat levend voelt en wat niet. Test 1 is rig-benchmark; 2 Home-fit; 3 echte locomotion; 4 presence; 5 mission interaction.",
+      "verification": "Claude Companion Park-code live geïnspecteerd: Three.js 0.170, GLTFLoader, AnimationMixer, skeleton/bone detection, idle/walk/run clip selection en root-locomotion. De vijf tests gebruiken dezelfde externe GLB zonder Claude’s project te wijzigen.",
+      "dataBoundary": "Demo-only. Geen Supabase, Fitbit, XP, echte Daily Mission writes of Higgsfield generation. Externe GLB wordt alleen read-only geladen."
+    },
+    {
       "id": "autosprite-bridge",
       "title": "AutoSprite Bridge · state-engine proef",
       "url": "lab-autosprite-bridge.html",
       "owner": "ChatGPT",
-      "status": "lab-integration-ready-no-generation",
-      "next": "Test level 0–10, handmatige states en de pass-gate sequence. De pagina controleert vaste lokale slots voor WALK/IDLE/JUMP/INTERACT; echte AutoSprite-art is nog niet gegenereerd.",
+      "status": "comparison-only-3d-priority",
+      "next": "Alleen bewaren als 2D vergelijking. Joey ervaart de huidige aanpak nog als bewegend plaatje; geen extra AutoSprite spend voordat rigged 3D is beoordeeld.",
       "verification": "Higgsfield modelcontract opnieuw live geverifieerd: autosprite accepteert één image input en idle/walk/run/jump/custom plus isometrische presets, 2–64 frames, 32–512px, turbo/pro/max en default/ultra background removal.",
       "dataBoundary": "Alleen bestaande lokale L06-art en tijdelijke browserstate. Geen Supabase, Fitbit, accountdata of generation job; geen credits gebruikt."
     },
@@ -72,7 +82,7 @@
     }
   ],
   "agreements": [
-    "Taakverdeling: Claude verzorgt stap 1 en 2 (karakterfamilie en animatie); ChatGPT + Joey pakken stap 3 (Home) op. De nieuwe naam Gamenfy 2.0 geldt alleen voor de proef; geen reset of vervanging van de echte app.",
+    "Nieuwe tijdelijke taakverdeling: Claude’s Companion Park blijft een onaangeraakte externe referentie. ChatGPT mag zelfstandig rigged-3D product-fit tests bouwen in eigen Lab zolang echte data en credits niet worden geraakt; Joey beoordeelt de set later.",
     "Toevoegen betekent niet weghalen. Feedback die open blijft blijft zichtbaar totdat het aantoonbaar is opgelost of Joey expliciet anders beslist. Opgeloste punten houden een herkenbare historie; niets stilzwijgend schrappen.",
     "Claude mag zijn eigen Lab verder ontwikkelen. ChatGPT Lab biedt één centrale ingang; nuttige onderdelen worden pas na beoordeling in de echte app geïntegreerd.",
     "Deze chat stuurt de keuzes. Bestaand werk bewaren; ideeën zijn niet automatisch bouwopdrachten.",
@@ -82,6 +92,8 @@
     "Geen nieuwe afbeeldingen genereren of betaalde credits gebruiken in deze opruimronde."
   ],
   "feedback": [
+    "18 september · 3D-richting: AutoSprite/2D is gedegradeerd tot vergelijking omdat het nog als een bewegend plaatje voelt. Vijf rigged-3D producttests staan klaar; test 5 (mission interaction) is de sterkste kandidaat, maar nog geen definitieve keuze.",
+    "18 september · druk-modus: Joey wil geen discussie over 2D versus 3D totdat hij vanavond tijd heeft. Maak zelfstandig meerdere serieuze tests; later geeft hij feedback op de set.",
     "18 september: Higgsfield AutoSprite-onderzoek toegepast als aparte Lab Bridge. State-engine + levelmapping + lokale asset-slots zijn gebouwd; echte sprite-output blijft bewust ongebruikt totdat WALK de articulatie/identity gate kan worden getest.",
     "18 september: eerdere Home-feedback verwerkt in dezelfde proef — wisselende companions, missiebar en laatste demo-voltooiing vooraan. Nog door Joey te beoordelen; geen productie-Home goedgekeurd.",
     "Lab later visueler maken met compacte beeldtegels en minder tekst. Claude’s huidige Companion Park-blok voorlopig niet veranderen; eerst zijn verdere werk afwachten.",
