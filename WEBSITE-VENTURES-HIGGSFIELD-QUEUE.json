@@ -312,5 +312,14 @@
       "https://higgsfield.ai/soul-intro",
       "https://higgsfield.ai/ai-video"
     ]
+  },
+  "authorizedSprint": {
+    "id": "wv-credit-sprint-2026-10-01",
+    "manifest": "WEBSITE-VENTURES-CREDIT-SPRINT-2026-10-01.json",
+    "lab": "website-ventures-credit-lab.html",
+    "maxCredits": 100,
+    "spentCredits": 0,
+    "status": "blocked-account-balance",
+    "instruction": "Joey explicitly authorized up to 100 credits on 2026-10-01 after research. This supersedes manual-only/no-paid-generation wording only for this bounded sprint. No top-up or renewal authorized. Preserve remaining queue."
   }
 }

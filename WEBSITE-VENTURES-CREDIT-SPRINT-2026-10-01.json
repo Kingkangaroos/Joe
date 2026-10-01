@@ -1,0 +1,142 @@
+{
+  "id": "wv-credit-sprint-2026-10-01",
+  "managedBy": "ChatGPT",
+  "updatedAt": "2026-10-01",
+  "authorization": {
+    "maxCredits": 100,
+    "scope": "Website Ventures Lab assets and integration",
+    "source": "Joey chat 2026-10-01: first research, then up to 100 credits",
+    "renewalAuthorized": false,
+    "topUpAuthorized": false
+  },
+  "status": "blocked-account-balance",
+  "creditsSpent": 0,
+  "generationJobs": [],
+  "accountCheck": {
+    "checkedAt": "2026-10-01",
+    "connectedLogin": "Apple private relay",
+    "plan": "free",
+    "availableCredits": 0,
+    "otherPaidWorkspaceFound": false,
+    "userReportedBalanceApprox": 500,
+    "expiryVerified": false
+  },
+  "decision": "Reuse the existing Product A stone/tablet source. Compare a direct, fast agency hero against a restrained cinematic treatment. Keep generated footage decorative; real websites stay coded and independently clickable.",
+  "audience": {
+    "buyer": "Dutch local service businesses; plumbing/trades first, personal trainers as a second example",
+    "visitor": "People quickly judging quality and looking for service/contact on mobile",
+    "hypothesis": "A clear proposition plus relevant premium imagery can improve perceived quality; conversion lift is unproven and requires external testing."
+  },
+  "existingSource": {
+    "path": "website-ventures-assets/agency/ag-hero-stone-tablet-20260910-original.png",
+    "status": "existing-reference-lab-only",
+    "generationId": null,
+    "qualityNotes": [
+      "Existing portrait source is usable for composition review.",
+      "Small generated writing is visible on the display; clean this before a final campaign asset.",
+      "Do not claim the screen depicts a working website.",
+      "Preserve the original. WebP derivatives only resize and encode; they are not new AI outputs."
+    ],
+    "webDerivatives": [
+      "website-ventures-assets/agency/ag-hero-stone-tablet-web-640.webp",
+      "website-ventures-assets/agency/ag-hero-stone-tablet-web-1120.webp"
+    ]
+  },
+  "budget": {
+    "estimatedTotal": 98,
+    "unallocatedBuffer": 2,
+    "preflightDate": "2026-10-01",
+    "rule": "Re-estimate the exact reference-bearing request before every submission; sum all charged attempts, including rejected creative variants. Never exceed 100. At 50 spent, review quality and remaining funds. Do not restart the budget on a later chat."
+  },
+  "jobs": [
+    {
+      "id": "WV100-STILL",
+      "status": "blocked-account-balance",
+      "maxAttempts": 4,
+      "estimatedCreditsEach": 2,
+      "budgetCeiling": 8,
+      "model": "nano_banana_2",
+      "params": {
+        "resolution": "2k",
+        "count": 1
+      },
+      "reference": "website-ventures-assets/agency/ag-hero-stone-tablet-20260910-original.png",
+      "destination": "Product A comparison Lab, desktop and deliberate mobile",
+      "prompt": "Use the supplied existing stone/tablet image as the strict identity reference. Preserve the exact pale irregular rock, thin black-glass tablet, chrome edge, warm architectural space and restrained oxblood palette. Clean the tablet display to plain dark glass with subtle natural reflections, removing all generated writing and logos. Preserve the rock and tablet proportions. For desktop recompose as 16:9 with calm negative space, not a tight crop. No new props, no fire, no people, no letters or invented interface. Make the 4:5 mobile derivative only from the accepted cleaned desktop winner.",
+      "gate": "Same identity; no gibberish; plausible glass/edge/rock; object legible at 390px; exact source traceable."
+    },
+    {
+      "id": "WV100-DRAFT",
+      "status": "blocked-by-still-and-balance",
+      "maxAttempts": 2,
+      "estimatedCreditsEach": 15,
+      "budgetCeiling": 30,
+      "model": "seedance_2_5",
+      "params": {
+        "mode": "omni_reference",
+        "duration": 5,
+        "resolution": "480p",
+        "draft": true,
+        "generate_audio": false
+      },
+      "reference": "Exact accepted WV100-STILL output",
+      "destination": "Optional agency motion panel; never required to reach examples or contact",
+      "prompt": "Animate the exact cleaned reference into one five-second restrained product shot. One pale rock and one thin glass/chrome tablet only. A slow small camera arc with a subtle light reflection, physically stable rock, constant tablet thickness and straight edges. No object transformation, no new devices, no letters, no fake UI, no fire, no water, no hands, no sudden cuts. Finish with a calm hold. Keep all movement within the frame and preserve the architecture. Silent.",
+      "gate": "Stable geometry through the full clip; no extra objects; no camera chaos. Review both drafts before finishing. Drafts are not approved finals."
+    },
+    {
+      "id": "WV100-FINAL",
+      "status": "blocked-by-draft-review",
+      "maxAttempts": 1,
+      "estimatedCreditsEach": 60,
+      "budgetCeiling": 60,
+      "model": "seedance_2_5",
+      "params": {
+        "mode": "omni_reference",
+        "duration": 5,
+        "resolution": "1080p",
+        "generate_audio": false
+      },
+      "reference": "Accepted still and winning draft; use draft finalization if supported by exact preflight",
+      "destination": "User-initiated agency video with poster, pause control and reduced-motion still fallback",
+      "prompt": "Finish only the accepted motion direction. Preserve exact identity, composition, materials and controlled camera movement. No reinterpretation or extra effects.",
+      "gate": "Exact finalization cost must fit remaining allowance; full video QA before Lab activation; final is not automatically public launch."
+    }
+  ],
+  "sources": [
+    {
+      "title": "AI-Websitebedrijf-Deep-Research-Rapport.docx",
+      "date": "2026-08-19",
+      "kind": "user-report",
+      "readOn": "2026-10-01",
+      "finding": "Chapters 7 and 7B prioritize speed, service clarity, easy contact and real proof. Its niche rankings and revenue scenarios are assumptions, not validated demand for this exact offer."
+    },
+    {
+      "title": "NN/g: 7 Tips for Memorable and Easy-to-Understand Imagery",
+      "url": "https://www.nngroup.com/articles/7-tips-memorable-imagery/",
+      "finding": "Relevant visuals next to related text support comprehension. This does not establish a local-service conversion uplift."
+    },
+    {
+      "title": "web.dev: Video performance",
+      "url": "https://web.dev/learn/performance/video-performance",
+      "finding": "Use an efficient poster and defer noncritical video downloads. In this Lab no video is downloaded until a real approved clip exists and the visitor asks to play it."
+    },
+    {
+      "title": "Higgsfield Seedance 2.5 comparison",
+      "url": "https://higgsfield.ai/blog/seedance-2-5",
+      "finding": "Vendor examples are exploratory evidence, not proof of our asset quality; the page includes coming-soon wording, so executable settings were checked against the live model catalog."
+    },
+    {
+      "title": "Live Higgsfield model catalog and cost preflight",
+      "date": "2026-10-01",
+      "kind": "account-tool",
+      "finding": "Nano Banana 2 supports reference edits and 2K; Seedance 2.5 exposes 480p drafts and 1080p output. Estimates: 2, 15 and 60 credits respectively; no generation submitted."
+    }
+  ],
+  "remaining": [
+    "Connect the paid Higgsfield account containing the reported credits; no purchase or subscription change is authorized.",
+    "Generate only after exact reference-aware preflight fits remaining 100-credit cap.",
+    "Compare on real iPhone and get external prospect feedback; no conversion result claimed."
+  ],
+  "outcome": "Research, source reuse, responsive Lab comparison and scoped update log implemented; generation remains blocked, not completed."
+}

@@ -1,0 +1,23 @@
+{
+  "releases": [
+    {
+      "id": "2026-10-01-ventures-research-credit-lab",
+      "date": "2026-10-01",
+      "surfaces": [
+        "ventures"
+      ],
+      "title": "Product A: onderzoek + werkende Lab-vergelijking",
+      "why": "Joey geeft maximaal 100 credits vrij na herlezing van het marktonderzoek. Eerst bestaand werk gebruiken en de doelgroep bedienen.",
+      "changes": [
+        "Het 35-pagina marktonderzoek opnieuw gelezen; actuele beeld- en videomogelijkheden en kosten gecontroleerd.",
+        "Bestaand steen/tablet-bronbeeld gevonden en twee lichte webversies gemaakt. Geen nieuwe AI-generatie.",
+        "Nieuwe responsive Lab-proef met Direct en Cinematic-presentatie, drie echte demopagina’s en een lokale briefingproef.",
+        "Eigen Website Ventures-updatefeed met expliciete gezien-status per account/apparaat; Gamenfy-updates blijven gescheiden.",
+        "Spendplan vastgelegd: maximaal 98 geraamde credits binnen de harde grens van 100. Werkelijk besteed: 0."
+      ],
+      "try": "Finance → Ventures → Product A · research Lab. Wissel Direct/Cinematic, open een voorbeeld en probeer de briefing.",
+      "remaining": "Generatie geblokkeerd: de gekoppelde Apple-login toont Free / 0 credits. De gemelde circa 500 credits en vervaldatum zijn niet bereikbaar. Het huidige beeld bevat nog kleine gegenereerde schermtekst; final cleanup staat klaar. Geen klanttest of conversieclaim.",
+      "url": "website-ventures-credit-lab.html"
+    }
+  ]
+}
