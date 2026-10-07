@@ -314,12 +314,12 @@
     ]
   },
   "authorizedSprint": {
-    "id": "wv-credit-sprint-2026-10-01",
-    "manifest": "WEBSITE-VENTURES-CREDIT-SPRINT-2026-10-01.json",
-    "lab": "website-ventures-credit-lab.html",
-    "maxCredits": 100,
-    "spentCredits": 0,
-    "status": "blocked-account-balance",
-    "instruction": "Joey explicitly authorized up to 100 credits on 2026-10-01 after research. This supersedes manual-only/no-paid-generation wording only for this bounded sprint. No top-up or renewal authorized. Preserve remaining queue."
+    "id": "wv-credit-rescue-2026-10-07",
+    "plan": "WEBSITE-VENTURES-CREDIT-RESCUE-2026-10-07.json",
+    "lab": "website-ventures-credit-rescue-lab.html",
+    "maxCredits": 544,
+    "creditsSpent": 544,
+    "status": "all-generations-completed-lab-only",
+    "note": "Explicit Joey authorization on 7 October replaces earlier manual-only and 100-credit restriction for this finished bounded sprint only. No purchase/renewal; balance 0 verified."
   }
 }

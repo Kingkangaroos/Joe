@@ -1,0 +1,788 @@
+{
+  "id": "wv-credit-rescue-2026-10-07",
+  "managedBy": "ChatGPT",
+  "authorization": {
+    "maxCredits": 544,
+    "source": "Joey chat 7 October: use all 544 credits for valuable Website Ventures and Gamenfy assets",
+    "supersedes": "October 1 cap of 100 for this explicitly authorized new sprint",
+    "noPurchase": true,
+    "noRenewal": true
+  },
+  "startingBalance": 544,
+  "endingBalance": 0,
+  "creditsSpent": 544,
+  "balanceVerifiedAt": "2026-10-07T21:32Z",
+  "status": "all-generations-completed-lab-only",
+  "subscriptionExpiry": "User reports expiry tonight; exact billing timestamp not independently verified",
+  "halfwayReview": {
+    "atSpent": 268,
+    "balance": 276,
+    "checkedAt": "2026-10-07T21:31Z",
+    "evidence": "All 14 stills inspected; sampled five 1-second frames per first four motion clips. Object identity/material continuity adequate for Lab demo; conversion unproven. PT intentionally tiny preparation movement, not workout instruction. No automatic final approval.",
+    "decision": "Proceed with remaining four distinct planned jobs, exact quotes sum 276, max total 544."
+  },
+  "research": {
+    "report": "AI-Websitebedrijf-Deep-Research-Rapport.docx",
+    "reread": "2026-10-01",
+    "decision": "Agency + three local business demos + product motion; clarity/contact speed first, motion optional; real photos required for real-client evidence."
+  },
+  "qaSummary": "14 beelden visueel bekeken; 8 video’s via steekproefframes gecontroleerd. Gamenfy articuleert echt, maar blijft een gerenderde vergelijking en geen interactieve 3D-rig. Lokale browserstart geweigerd door socket-permissie; echte iPhone- en prospectfeedback blijven open.",
+  "assets": [
+    {
+      "index": 1,
+      "world": "agency",
+      "title": "Agency · desktop master",
+      "type": "image",
+      "purpose": "Product A agency hero",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": "nano_banana_flash",
+      "credits": 2,
+      "jobId": "940c9922-4dec-4573-808a-91f38a8d3a88",
+      "status": "completed",
+      "qa": "Schoon scherm; ruime typografieruimte; geschikt als hero-studie.",
+      "prompt": "Use the reference as strict material and object identity. Photoreal premium campaign hero, the same one large irregular pale limestone rock, same razor-thin black glass tablet with precision chrome rim in a warm quiet gallery. Recompose into widescreen 16:9: object on right third, calm bright negative space on left for real HTML copy. Remove ALL screen writing and logos; screen is plain dark reflective glass. Physically credible support and proportions. Restrained oxblood accent, soft daylight, subtle film grain, high-end architectural product photography. No extra devices, no people, no fire, no text, no invented UI. One substantial rock not spheres.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "count": 1,
+        "aspect_ratio": "16:9",
+        "medias": [
+          {
+            "role": "image",
+            "value": "https://joe-silk.vercel.app/website-ventures-assets/agency/ag-hero-stone-tablet-20260910-original.png"
+          }
+        ],
+        "prompt": "Use the reference as strict material and object identity. Photoreal premium campaign hero, the same one large irregular pale limestone rock, same razor-thin black glass tablet with precision chrome rim in a warm quiet gallery. Recompose into widescreen 16:9: object on right third, calm bright negative space on left for real HTML copy. Remove ALL screen writing and logos; screen is plain dark reflective glass. Physically credible support and proportions. Restrained oxblood accent, soft daylight, subtle film grain, high-end architectural product photography. No extra devices, no people, no fire, no text, no invented UI. One substantial rock not spheres."
+      },
+      "sourceDescription": "https://joe-silk.vercel.app/website-ventures-assets/agency/ag-hero-stone-tablet-20260910-original.png",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212008_940c9922-4dec-4573-808a-91f38a8d3a88.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/01-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/01-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 2,
+      "world": "agency",
+      "title": "Agency · chrome / steen detail",
+      "type": "image",
+      "purpose": "Agency material detail section",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": "nano_banana_flash",
+      "credits": 2,
+      "jobId": "f781f65a-dd16-4313-a762-546094ba3a92",
+      "status": "completed",
+      "qa": "Materiaalcontrast bruikbaar voor detailsectie; kijkhoek verschilt van hero.",
+      "prompt": "Strict reference identity of the same thin black-glass/chrome tablet on one irregular pale limestone rock. Extreme editorial close-up of the contact between the chrome rim, polished black glass and rough chalky stone, low three-quarter camera, tactile pores and soft daylight, same warm gallery and tiny oxblood reflection. Clean plain screen with no writing. Widescreen composition with uncluttered negative space. No new props, no people, no text, no logos, no interface. Make material contrast feel exquisitely real, not a floating device.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "count": 1,
+        "aspect_ratio": "16:9",
+        "medias": [
+          {
+            "role": "image",
+            "value": "https://joe-silk.vercel.app/website-ventures-assets/agency/ag-hero-stone-tablet-20260910-original.png"
+          }
+        ],
+        "prompt": "Strict reference identity of the same thin black-glass/chrome tablet on one irregular pale limestone rock. Extreme editorial close-up of the contact between the chrome rim, polished black glass and rough chalky stone, low three-quarter camera, tactile pores and soft daylight, same warm gallery and tiny oxblood reflection. Clean plain screen with no writing. Widescreen composition with uncluttered negative space. No new props, no people, no text, no logos, no interface. Make material contrast feel exquisitely real, not a floating device."
+      },
+      "sourceDescription": "https://joe-silk.vercel.app/website-ventures-assets/agency/ag-hero-stone-tablet-20260910-original.png",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212008_f781f65a-dd16-4313-a762-546094ba3a92.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/02-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/02-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 3,
+      "world": "plumbing",
+      "title": "Vakbedrijf · fictieve monteur",
+      "type": "image",
+      "purpose": "Plumbing recurring demo identity",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": "nano_banana_flash",
+      "credits": 2,
+      "jobId": "5ad77e34-75f3-4f44-9461-c218142f0efe",
+      "status": "completed",
+      "qa": "Geloofwaardige demo-identiteit; achtergrondlabels bevatten AI-tekst, niet als leesbaar bewijs gebruiken.",
+      "prompt": "Photoreal editorial DEMO identity portrait for a Dutch local plumbing service website, one experienced male installation technician around 38, short brown hair, light stubble, calm approachable expression, relaxed natural stance with arms by sides, charcoal technical workwear and tiny deep oxblood trim. Full torso to knees, visible natural hands, believable bright Netherlands service interior, authentic working person not fashion model, real skin texture, polished but unpretentious. No grin, no crossed arms, no brand, no text, no company logo. This is a fictional demo character, not evidence of real staff.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "count": 1,
+        "aspect_ratio": "3:4",
+        "prompt": "Photoreal editorial DEMO identity portrait for a Dutch local plumbing service website, one experienced male installation technician around 38, short brown hair, light stubble, calm approachable expression, relaxed natural stance with arms by sides, charcoal technical workwear and tiny deep oxblood trim. Full torso to knees, visible natural hands, believable bright Netherlands service interior, authentic working person not fashion model, real skin texture, polished but unpretentious. No grin, no crossed arms, no brand, no text, no company logo. This is a fictional demo character, not evidence of real staff."
+      },
+      "sourceDescription": "Text-only fictional demo",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212005_5ad77e34-75f3-4f44-9461-c218142f0efe.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/03-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/03-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 4,
+      "world": "renovation",
+      "title": "Renovatie · architecturale master",
+      "type": "image",
+      "purpose": "Renovation demo hero",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": "nano_banana_flash",
+      "credits": 2,
+      "jobId": "6b91e7c8-d018-40d6-a22d-2eb8102369be",
+      "status": "completed",
+      "qa": "Rustige ruimte en herkenbare materialen; fictief interieur.",
+      "prompt": "Photoreal architectural editorial hero of a believable high-end renovated Dutch townhouse bathroom, warm lime plaster, one sculptural pale travertine basin, brushed bronze tap, restrained oak cabinetry, sunlight grazing material from a tall window, expertly fitted joinery and realistic scale, warm billionaires beige with muted sage accents, quiet magazine-quality composition with left third copy-safe shadow space. Eye-level wide lens without distortion, no people, no text, no logos, no gold ostentation, no fantasy mansion. A fictional renovation demo, not a real completed client project.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "count": 1,
+        "aspect_ratio": "16:9",
+        "prompt": "Photoreal architectural editorial hero of a believable high-end renovated Dutch townhouse bathroom, warm lime plaster, one sculptural pale travertine basin, brushed bronze tap, restrained oak cabinetry, sunlight grazing material from a tall window, expertly fitted joinery and realistic scale, warm billionaires beige with muted sage accents, quiet magazine-quality composition with left third copy-safe shadow space. Eye-level wide lens without distortion, no people, no text, no logos, no gold ostentation, no fantasy mansion. A fictional renovation demo, not a real completed client project."
+      },
+      "sourceDescription": "Text-only fictional demo",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212006_6b91e7c8-d018-40d6-a22d-2eb8102369be.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/04-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/04-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 5,
+      "world": "performance",
+      "title": "Performance · desktop master",
+      "type": "image",
+      "purpose": "Personal trainer demo hero",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": "nano_banana_flash",
+      "credits": 2,
+      "jobId": "99375ff0-08e1-4725-9fa8-dd4ab28ed588",
+      "status": "completed",
+      "qa": "Menselijke energie met donkere copy-safe ruimte; fictieve trainer.",
+      "prompt": "Photoreal premium personal training website DEMO hero. One adult athletic male trainer around 32 with short dark hair, charcoal training shirt and shorts, preparing for a controlled dumbbell exercise in a small authentic modern gym. Dark navy environment, deliberate electric lime accent in background, energetic side light, human skin, natural hands, correct equipment and believable physique not extreme bodybuilder. Trainer on right third, left third dark clear copy-safe space. Gritty clean campaign photograph, no other people, no text, no logos, no fabricated medals or before-after claim.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "count": 1,
+        "aspect_ratio": "16:9",
+        "prompt": "Photoreal premium personal training website DEMO hero. One adult athletic male trainer around 32 with short dark hair, charcoal training shirt and shorts, preparing for a controlled dumbbell exercise in a small authentic modern gym. Dark navy environment, deliberate electric lime accent in background, energetic side light, human skin, natural hands, correct equipment and believable physique not extreme bodybuilder. Trainer on right third, left third dark clear copy-safe space. Gritty clean campaign photograph, no other people, no text, no logos, no fabricated medals or before-after claim."
+      },
+      "sourceDescription": "Text-only fictional demo",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212006_99375ff0-08e1-4725-9fa8-dd4ab28ed588.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/05-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/05-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 6,
+      "world": "product",
+      "title": "Product · verticale master",
+      "type": "image",
+      "purpose": "Product/ad motion demo",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": "nano_banana_flash",
+      "credits": 2,
+      "jobId": "924024cc-b39f-450e-9fd2-dac52e0ceb39",
+      "status": "completed",
+      "qa": "Consistente cream/sage fles; fictief productconcept.",
+      "prompt": "Photoreal premium unbranded product launch hero keyframe, one minimalist matte cream reusable water bottle with a single sage green cap, centered on one solid warm travertine block, deep charcoal studio background, sculptural grazing side light, gentle sage reflected edge, crisp realistic bottle silhouette and finely tactile materials. Vertical campaign composition with generous breathing room above and below. No text, no labels, no logos, no water splash, no extra bottles, no people. Looks like a real professional commercial product photograph. This is a fictional concept product.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "count": 1,
+        "aspect_ratio": "9:16",
+        "prompt": "Photoreal premium unbranded product launch hero keyframe, one minimalist matte cream reusable water bottle with a single sage green cap, centered on one solid warm travertine block, deep charcoal studio background, sculptural grazing side light, gentle sage reflected edge, crisp realistic bottle silhouette and finely tactile materials. Vertical campaign composition with generous breathing room above and below. No text, no labels, no logos, no water splash, no extra bottles, no people. Looks like a real professional commercial product photograph. This is a fictional concept product."
+      },
+      "sourceDescription": "Text-only fictional demo",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212007_924024cc-b39f-450e-9fd2-dac52e0ceb39.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/06-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/06-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 7,
+      "world": "agency",
+      "title": "Agency · mobiele compositie",
+      "type": "image",
+      "purpose": "Agency deliberate mobile hero",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": "nano_banana_flash",
+      "credits": 2,
+      "jobId": "01060c41-a78f-4a42-a7b2-2956a191343d",
+      "status": "completed",
+      "qa": "Volledige steen en tablet zichtbaar; ruime plek voor HTML-heading.",
+      "prompt": "Recompose the exact supplied cleaned tablet-and-rock campaign hero for deliberate mobile 4:5 layout. Same one irregular pale limestone rock, exact tablet chrome rim and plain dark reflective glass, same warm quiet gallery. Put complete device/rock in lower two-thirds with uncluttered warm wall above for real HTML heading. Physically stable contact, no new device, no added writing or logo, no interface, no people. Recompose, do not crop off the stone or tablet.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "count": 1,
+        "aspect_ratio": "4:5",
+        "medias": [
+          {
+            "role": "image",
+            "value": "940c9922-4dec-4573-808a-91f38a8d3a88"
+          }
+        ],
+        "prompt": "Recompose the exact supplied cleaned tablet-and-rock campaign hero for deliberate mobile 4:5 layout. Same one irregular pale limestone rock, exact tablet chrome rim and plain dark reflective glass, same warm quiet gallery. Put complete device/rock in lower two-thirds with uncluttered warm wall above for real HTML heading. Physically stable contact, no new device, no added writing or logo, no interface, no people. Recompose, do not crop off the stone or tablet."
+      },
+      "sourceDescription": "940c9922-4dec-4573-808a-91f38a8d3a88",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212250_01060c41-a78f-4a42-a7b2-2956a191343d.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/07-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/07-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 8,
+      "world": "plumbing",
+      "title": "Vakbedrijf · werkbeeld",
+      "type": "image",
+      "purpose": "Plumbing hero work scene",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": "nano_banana_flash",
+      "credits": 2,
+      "jobId": "6045599d-c3c5-49c9-a59a-4b551baa520f",
+      "status": "completed",
+      "qa": "Dezelfde monteur herkenbaar; gereedschap/leidingen illustratief, geen technische instructie.",
+      "prompt": "Use the exact supplied fictional technician identity, face, hair, age, build and charcoal workwear with oxblood trim. Believable modern Dutch bathroom, he kneels on right beside an open sink cabinet checking an exposed brass water valve with a small wrench. Natural hands with correct finger count, obvious sensible grip, no emergency flooding. Clean copy-safe negative space on left, premium daylight documentary photograph. No other technician, no writing or label, no brand. Authentic competence, not posing. Fictional demo service scene, never real client evidence.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "count": 1,
+        "aspect_ratio": "16:9",
+        "medias": [
+          {
+            "role": "image",
+            "value": "5ad77e34-75f3-4f44-9461-c218142f0efe"
+          }
+        ],
+        "prompt": "Use the exact supplied fictional technician identity, face, hair, age, build and charcoal workwear with oxblood trim. Believable modern Dutch bathroom, he kneels on right beside an open sink cabinet checking an exposed brass water valve with a small wrench. Natural hands with correct finger count, obvious sensible grip, no emergency flooding. Clean copy-safe negative space on left, premium daylight documentary photograph. No other technician, no writing or label, no brand. Authentic competence, not posing. Fictional demo service scene, never real client evidence."
+      },
+      "sourceDescription": "5ad77e34-75f3-4f44-9461-c218142f0efe",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212249_6045599d-c3c5-49c9-a59a-4b551baa520f.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/08-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/08-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 9,
+      "world": "plumbing",
+      "title": "Vakbedrijf · servicedetail",
+      "type": "image",
+      "purpose": "Plumbing service section",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": "nano_banana_flash",
+      "credits": 2,
+      "jobId": "aa8f86df-4a46-49d4-900a-c4a4e4c26e6e",
+      "status": "completed",
+      "qa": "Handen en scène bruikbaar op Lab-schaal; aansluiting niet als technisch bewijs presenteren.",
+      "prompt": "Exact same fictional technician and workwear as supplied. Tight documentary service detail, his natural hands checking a brass isolation valve and connecting pipe inside an open tidy sink cabinet. Forearms and part of same face visible on right, anatomically correct hands, plausible plumbing and tool contact, gentle daylight. Refined clean premium photograph, no second person, no letters, no labels or company logo. This is fictional demonstration, not actual work proof.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "count": 1,
+        "aspect_ratio": "16:9",
+        "medias": [
+          {
+            "role": "image",
+            "value": "5ad77e34-75f3-4f44-9461-c218142f0efe"
+          }
+        ],
+        "prompt": "Exact same fictional technician and workwear as supplied. Tight documentary service detail, his natural hands checking a brass isolation valve and connecting pipe inside an open tidy sink cabinet. Forearms and part of same face visible on right, anatomically correct hands, plausible plumbing and tool contact, gentle daylight. Refined clean premium photograph, no second person, no letters, no labels or company logo. This is fictional demonstration, not actual work proof."
+      },
+      "sourceDescription": "5ad77e34-75f3-4f44-9461-c218142f0efe",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212250_aa8f86df-4a46-49d4-900a-c4a4e4c26e6e.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/09-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/09-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 10,
+      "world": "renovation",
+      "title": "Renovatie · materiaal-detail",
+      "type": "image",
+      "purpose": "Renovation craftsmanship section",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": "nano_banana_flash",
+      "credits": 2,
+      "jobId": "f9606424-31d9-428c-ab4c-fb699e5cb417",
+      "status": "completed",
+      "qa": "Zelfde materiaalwereld; detailvariant, geen exacte bouwtekening.",
+      "prompt": "Use the exact same supplied bathroom identity and warm pale travertine/oak/bronze palette. Architectural close detail of the carefully fitted oak drawer corner beneath the same sculpted travertine basin, with raking daylight revealing porous stone and joinery. Same room and plausible geometry, not a redesigned bathroom. Calm editorial crop, no people, no text, no logos. Fictional project reference.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "count": 1,
+        "aspect_ratio": "16:9",
+        "medias": [
+          {
+            "role": "image",
+            "value": "6b91e7c8-d018-40d6-a22d-2eb8102369be"
+          }
+        ],
+        "prompt": "Use the exact same supplied bathroom identity and warm pale travertine/oak/bronze palette. Architectural close detail of the carefully fitted oak drawer corner beneath the same sculpted travertine basin, with raking daylight revealing porous stone and joinery. Same room and plausible geometry, not a redesigned bathroom. Calm editorial crop, no people, no text, no logos. Fictional project reference."
+      },
+      "sourceDescription": "6b91e7c8-d018-40d6-a22d-2eb8102369be",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212249_f9606424-31d9-428c-ab4c-fb699e5cb417.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/10-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/10-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 11,
+      "world": "performance",
+      "title": "Performance · mobiele compositie",
+      "type": "image",
+      "purpose": "Personal trainer mobile hero",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": "nano_banana_flash",
+      "credits": 2,
+      "jobId": "1e9e5d4e-e4e1-40da-8848-482cea0c10b7",
+      "status": "completed",
+      "qa": "Zelfde trainer/wereld, deliberate verticale compositie.",
+      "prompt": "Recompose the exact same adult fictional trainer, face, build, charcoal outfit and navy/lime gym into a deliberate vertical 9:16 campaign image. He stands naturally holding one dumbbell at his side, correct hands and equipment, entire upper body and legs readable, dark copy-safe area above. Same lighting and identity, no exaggerated muscles, no other people, no lettering or logos, no transformation claim.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "count": 1,
+        "aspect_ratio": "9:16",
+        "medias": [
+          {
+            "role": "image",
+            "value": "99375ff0-08e1-4725-9fa8-dd4ab28ed588"
+          }
+        ],
+        "prompt": "Recompose the exact same adult fictional trainer, face, build, charcoal outfit and navy/lime gym into a deliberate vertical 9:16 campaign image. He stands naturally holding one dumbbell at his side, correct hands and equipment, entire upper body and legs readable, dark copy-safe area above. Same lighting and identity, no exaggerated muscles, no other people, no lettering or logos, no transformation claim."
+      },
+      "sourceDescription": "99375ff0-08e1-4725-9fa8-dd4ab28ed588",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212250_1e9e5d4e-e4e1-40da-8848-482cea0c10b7.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/11-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/11-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 12,
+      "world": "product",
+      "title": "Product · cap / materiaal-detail",
+      "type": "image",
+      "purpose": "Product ad detail keyframe",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": "nano_banana_flash",
+      "credits": 2,
+      "jobId": "10d150b4-db27-4cbe-a139-28dce6bc4414",
+      "status": "completed",
+      "qa": "Coherent met productmaster; bruikbaar als detail-keyframe.",
+      "prompt": "Exact same cream reusable bottle with sage cap and same travertine block on charcoal studio backdrop. Premium macro crop of cap seam and textured cream shoulder, light gliding from sage rim to matte cream body. Same real material and precise consistent bottle geometry, no new cap shape, no extra bottle, no text, no logos, no splash. Vertical material detail for a product launch sequence.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "count": 1,
+        "aspect_ratio": "9:16",
+        "medias": [
+          {
+            "role": "image",
+            "value": "924024cc-b39f-450e-9fd2-dac52e0ceb39"
+          }
+        ],
+        "prompt": "Exact same cream reusable bottle with sage cap and same travertine block on charcoal studio backdrop. Premium macro crop of cap seam and textured cream shoulder, light gliding from sage rim to matte cream body. Same real material and precise consistent bottle geometry, no new cap shape, no extra bottle, no text, no logos, no splash. Vertical material detail for a product launch sequence."
+      },
+      "sourceDescription": "924024cc-b39f-450e-9fd2-dac52e0ceb39",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212250_10d150b4-db27-4cbe-a139-28dce6bc4414.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/12-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/12-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 13,
+      "world": "gamenfy",
+      "title": "Gamenfy · clean walk source",
+      "type": "image",
+      "purpose": "Gamenfy articulated motion comparison source",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": null,
+      "credits": 2,
+      "jobId": "6a424b0b-7e6a-4d69-af6e-2783b3e4ab48",
+      "status": "completed",
+      "qa": "Benen en beide armen vrij, groene achtergrond. Afgeleide testbron, geen vervanging van originele l05.",
+      "prompt": "Strict character identity from the supplied stylized 3D young adult companion reference. Preserve exact face, brown hair, small gold crown, black gold-trim zip jacket with G emblem, white shirt, black trousers, black gold-trim sneakers and proportions. Isolate the exact character full body in neutral relaxed standing pose, three-quarter side orientation facing right, BOTH arms free hanging by sides (no hands in pockets), both feet fully visible. Remove ALL background streaks and props, remove backpack only if present. Uniform flat pure chroma green #00FF00 backdrop and floor, no shadows, no gradient, no environmental geometry, no texture, no writing. Same polished warm 3D cartoon render, not photoreal, not redesign. Generous margin all sides, character fits entirely inside frame. This is a separate animation test source; original art remains untouched.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "aspect_ratio": "3:4",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "https://joe-silk.vercel.app/img/lab/daily-score/joey/l05.webp"
+          }
+        ],
+        "prompt": "Strict character identity from the supplied stylized 3D young adult companion reference. Preserve exact face, brown hair, small gold crown, black gold-trim zip jacket with G emblem, white shirt, black trousers, black gold-trim sneakers and proportions. Isolate the exact character full body in neutral relaxed standing pose, three-quarter side orientation facing right, BOTH arms free hanging by sides (no hands in pockets), both feet fully visible. Remove ALL background streaks and props, remove backpack only if present. Uniform flat pure chroma green #00FF00 backdrop and floor, no shadows, no gradient, no environmental geometry, no texture, no writing. Same polished warm 3D cartoon render, not photoreal, not redesign. Generous margin all sides, character fits entirely inside frame. This is a separate animation test source; original art remains untouched."
+      },
+      "sourceDescription": "https://joe-silk.vercel.app/img/lab/daily-score/joey/l05.webp",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212502_6a424b0b-7e6a-4d69-af6e-2783b3e4ab48.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/13-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/13-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 14,
+      "world": "plumbing",
+      "title": "Vakbedrijf · mobiele compositie",
+      "type": "image",
+      "purpose": "Plumbing deliberate mobile hero",
+      "model": "nano_banana_2",
+      "modelLabel": "Nano Banana 2",
+      "backendModel": null,
+      "credits": 2,
+      "jobId": "6a0ffc05-62c7-4c43-b747-f5958066f47e",
+      "status": "completed",
+      "qa": "Zelfde monteur en werk-scène, hoofd en handen behouden.",
+      "prompt": "Recompose this exact fictional plumbing technician work scene into vertical 4:5 mobile hero. Preserve the exact technician identity, charcoal/oxblood clothes, same bathroom sink cabinet and brass valve. Kneeling competent working pose, realistic hands/tool contact, upper quarter quiet pale wall for real HTML heading. No new people or objects, no text, no logo, no extra fingers, no flooding. Do not crop head/hands off. Same documentary daylight quality, clearly a fictional demonstration.",
+      "params": {
+        "model": "nano_banana_2",
+        "resolution": "2k",
+        "aspect_ratio": "4:5",
+        "count": 1,
+        "medias": [
+          {
+            "role": "image",
+            "value": "6045599d-c3c5-49c9-a59a-4b551baa520f"
+          }
+        ],
+        "prompt": "Recompose this exact fictional plumbing technician work scene into vertical 4:5 mobile hero. Preserve the exact technician identity, charcoal/oxblood clothes, same bathroom sink cabinet and brass valve. Kneeling competent working pose, realistic hands/tool contact, upper quarter quiet pale wall for real HTML heading. No new people or objects, no text, no logo, no extra fingers, no flooding. Do not crop head/hands off. Same documentary daylight quality, clearly a fictional demonstration."
+      },
+      "sourceDescription": "6045599d-c3c5-49c9-a59a-4b551baa520f",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212500_6a0ffc05-62c7-4c43-b747-f5958066f47e.png",
+      "previewPath": "website-ventures-assets/credit-sprint-20261007/14-1280.webp",
+      "webPath": "website-ventures-assets/credit-sprint-20261007/14-1280.webp",
+      "poster": null,
+      "originalPath": null
+    },
+    {
+      "index": 21,
+      "world": "agency",
+      "title": "Agency · rustige hero-motion",
+      "type": "video",
+      "purpose": "Agency hero optional motion",
+      "model": "seedance_2_5",
+      "modelLabel": "Seedance 2.5",
+      "backendModel": "seedance_2_5",
+      "credits": 60,
+      "jobId": "ffd90b52-8a1e-40d3-a59e-48e4f30e0361",
+      "status": "completed",
+      "qa": "Vijf steekproefframes bekeken: stabiele tablet/steen. Motion wijkt qua framing af van de still; geen exacte scan.",
+      "prompt": "One restrained five-second premium product shot. Animate this exact tablet on this exact single pale rock, physically stable contact and constant device geometry. A slow tiny camera arc toward the right, soft daylight reflection travels over plain black glass. Rock and tablet never rotate or transform. Same architecture, no new props, no extra devices, no letters, no interface, no fire, no people, no cuts. End with a calm hold. Silent.",
+      "params": {
+        "model": "seedance_2_5",
+        "mode": "omni_reference",
+        "duration": 5,
+        "resolution": "1080p",
+        "generate_audio": false,
+        "aspect_ratio": "16:9",
+        "count": 1,
+        "medias": [
+          {
+            "role": "start_image",
+            "value": "940c9922-4dec-4573-808a-91f38a8d3a88"
+          }
+        ],
+        "prompt": "One restrained five-second premium product shot. Animate this exact tablet on this exact single pale rock, physically stable contact and constant device geometry. A slow tiny camera arc toward the right, soft daylight reflection travels over plain black glass. Rock and tablet never rotate or transform. Same architecture, no new props, no extra devices, no letters, no interface, no fire, no people, no cuts. End with a calm hold. Silent."
+      },
+      "sourceDescription": "Asset 1",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212346_ffd90b52-8a1e-40d3-a59e-48e4f30e0361.mp4",
+      "previewPath": null,
+      "webPath": "website-ventures-assets/credit-sprint-20261007/21.mp4",
+      "poster": "website-ventures-assets/credit-sprint-20261007/01-480.webp",
+      "originalPath": "website-ventures-assets/credit-sprint-20261007/21.mp4"
+    },
+    {
+      "index": 22,
+      "world": "agency",
+      "title": "Agency · materiaal-motion",
+      "type": "video",
+      "purpose": "Agency tactile material section",
+      "model": "seedance_2_5",
+      "modelLabel": "Seedance 2.5",
+      "backendModel": "seedance_2_5",
+      "credits": 60,
+      "jobId": "b0871255-0473-4b2a-8eaa-838116ddede0",
+      "status": "completed",
+      "qa": "Vijf steekproefframes: subtiele beweging, stabiele rand. Bruikbaar als rustige detailfilm.",
+      "prompt": "Five-second macro product film of exact chrome tablet edge resting on exact pale stone in supplied image. Very slow lateral camera slide a few centimeters, exquisitely stable chrome edge, glass thickness and rock texture. One controlled daylight reflection, no deformation, no floating object, no added props, no writing or logos, no people, no cuts, silent. Finish with calm hold.",
+      "params": {
+        "model": "seedance_2_5",
+        "mode": "omni_reference",
+        "duration": 5,
+        "resolution": "1080p",
+        "generate_audio": false,
+        "aspect_ratio": "16:9",
+        "count": 1,
+        "medias": [
+          {
+            "role": "start_image",
+            "value": "f781f65a-dd16-4313-a762-546094ba3a92"
+          }
+        ],
+        "prompt": "Five-second macro product film of exact chrome tablet edge resting on exact pale stone in supplied image. Very slow lateral camera slide a few centimeters, exquisitely stable chrome edge, glass thickness and rock texture. One controlled daylight reflection, no deformation, no floating object, no added props, no writing or logos, no people, no cuts, silent. Finish with calm hold."
+      },
+      "sourceDescription": "Asset 2",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212345_b0871255-0473-4b2a-8eaa-838116ddede0.mp4",
+      "previewPath": null,
+      "webPath": "website-ventures-assets/credit-sprint-20261007/22.mp4",
+      "poster": "website-ventures-assets/credit-sprint-20261007/02-480.webp",
+      "originalPath": "website-ventures-assets/credit-sprint-20261007/22.mp4"
+    },
+    {
+      "index": 23,
+      "world": "renovation",
+      "title": "Renovatie · ruimtelijke motion",
+      "type": "video",
+      "purpose": "Renovation cinematic hero",
+      "model": "seedance_2_5",
+      "modelLabel": "Seedance 2.5",
+      "backendModel": "seedance_2_5",
+      "credits": 60,
+      "jobId": "272da14d-6b2f-49ad-bdf1-3665988838a0",
+      "status": "completed",
+      "qa": "Vijf steekproefframes: rustige camera en consistente ruimte; fictief project.",
+      "prompt": "Five-second architectural editorial film of exactly this warm Dutch bathroom. Very slow steady camera dolly forward with a small rightward slide. Maintain exact sink, taps, mirror, cabinet, toilet and shower positions and all straight lines throughout. Gentle daylight grazing stone, no changes to layout, no objects appearing, no people, no water, no words, no logo, no cuts. Physically believable refined architectural film. Silent.",
+      "params": {
+        "model": "seedance_2_5",
+        "mode": "omni_reference",
+        "duration": 5,
+        "resolution": "1080p",
+        "generate_audio": false,
+        "aspect_ratio": "16:9",
+        "count": 1,
+        "medias": [
+          {
+            "role": "start_image",
+            "value": "6b91e7c8-d018-40d6-a22d-2eb8102369be"
+          }
+        ],
+        "prompt": "Five-second architectural editorial film of exactly this warm Dutch bathroom. Very slow steady camera dolly forward with a small rightward slide. Maintain exact sink, taps, mirror, cabinet, toilet and shower positions and all straight lines throughout. Gentle daylight grazing stone, no changes to layout, no objects appearing, no people, no water, no words, no logo, no cuts. Physically believable refined architectural film. Silent."
+      },
+      "sourceDescription": "Asset 4",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212345_272da14d-6b2f-49ad-bdf1-3665988838a0.mp4",
+      "previewPath": null,
+      "webPath": "website-ventures-assets/credit-sprint-20261007/23.mp4",
+      "poster": "website-ventures-assets/credit-sprint-20261007/04-480.webp",
+      "originalPath": "website-ventures-assets/credit-sprint-20261007/23.mp4"
+    },
+    {
+      "index": 24,
+      "world": "performance",
+      "title": "Performance · menselijke motion",
+      "type": "video",
+      "purpose": "Trainer demo optional hero motion",
+      "model": "seedance_2_5",
+      "modelLabel": "Seedance 2.5",
+      "backendModel": "seedance_2_5",
+      "credits": 60,
+      "jobId": "e55e9699-c370-427b-8821-813f36dabf43",
+      "status": "completed",
+      "qa": "Vijf steekproefframes: minieme voorbereiding; geen workoutdemonstratie of trainingsadvies.",
+      "prompt": "Five-second human-led fitness campaign film from the exact supplied fictional adult trainer image. Preserve exact face, outfit, realistic physique and navy/lime gym. He makes one small controlled preparation movement, reaches for ONE existing dumbbell and pauses, never lifts heavy weight or performs a complex exercise. Stable natural five-finger hands, equipment remains solid, very subtle camera push. No extra people, no muscles morphing, no costume changes, no words or logos, no cuts. Silent.",
+      "params": {
+        "model": "seedance_2_5",
+        "mode": "omni_reference",
+        "duration": 5,
+        "resolution": "1080p",
+        "generate_audio": false,
+        "aspect_ratio": "16:9",
+        "count": 1,
+        "medias": [
+          {
+            "role": "start_image",
+            "value": "99375ff0-08e1-4725-9fa8-dd4ab28ed588"
+          }
+        ],
+        "prompt": "Five-second human-led fitness campaign film from the exact supplied fictional adult trainer image. Preserve exact face, outfit, realistic physique and navy/lime gym. He makes one small controlled preparation movement, reaches for ONE existing dumbbell and pauses, never lifts heavy weight or performs a complex exercise. Stable natural five-finger hands, equipment remains solid, very subtle camera push. No extra people, no muscles morphing, no costume changes, no words or logos, no cuts. Silent."
+      },
+      "sourceDescription": "Asset 5",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_212346_e55e9699-c370-427b-8821-813f36dabf43.mp4",
+      "previewPath": null,
+      "webPath": "website-ventures-assets/credit-sprint-20261007/24.mp4",
+      "poster": "website-ventures-assets/credit-sprint-20261007/05-480.webp",
+      "originalPath": "website-ventures-assets/credit-sprint-20261007/24.mp4"
+    },
+    {
+      "index": 25,
+      "world": "plumbing",
+      "title": "Vakbedrijf · service-motion",
+      "type": "video",
+      "purpose": "Plumbing demo work hero motion",
+      "model": "seedance_2_5",
+      "modelLabel": "Seedance 2.5",
+      "backendModel": "seedance_2_5",
+      "credits": 60,
+      "jobId": "a72512ff-0d90-43af-9de5-b33429726c55",
+      "status": "completed",
+      "qa": "Vijf steekproefframes: herkenbare monteur en minimale gereedschapsactie. Demo; verbindingen niet als technische instructie gebruiken.",
+      "prompt": "Animate exact fictional technician and bathroom from supplied frame in one five-second documentary service shot. He checks the existing brass valve using a small sensible wrist movement, then pauses. Keep exact face, hair, clothing and realistic hand count. Tool and valve remain solid with stable contact; no disassembly, no flooded water, no extra objects or people. Locked steady camera with only subtle breathing movement. No letters, labels or logos, no cuts. Silent. This is a fictional demo, not real service evidence.",
+      "params": {
+        "model": "seedance_2_5",
+        "mode": "omni_reference",
+        "duration": 5,
+        "resolution": "1080p",
+        "generate_audio": false,
+        "aspect_ratio": "16:9",
+        "count": 1,
+        "medias": [
+          {
+            "role": "start_image",
+            "value": "6045599d-c3c5-49c9-a59a-4b551baa520f"
+          }
+        ],
+        "prompt": "Animate exact fictional technician and bathroom from supplied frame in one five-second documentary service shot. He checks the existing brass valve using a small sensible wrist movement, then pauses. Keep exact face, hair, clothing and realistic hand count. Tool and valve remain solid with stable contact; no disassembly, no flooded water, no extra objects or people. Locked steady camera with only subtle breathing movement. No letters, labels or logos, no cuts. Silent. This is a fictional demo, not real service evidence."
+      },
+      "sourceDescription": "Asset 8",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_213126_a72512ff-0d90-43af-9de5-b33429726c55.mp4",
+      "previewPath": null,
+      "webPath": "website-ventures-assets/credit-sprint-20261007/25.mp4",
+      "poster": "website-ventures-assets/credit-sprint-20261007/08-480.webp",
+      "originalPath": "website-ventures-assets/credit-sprint-20261007/25.mp4"
+    },
+    {
+      "index": 26,
+      "world": "product",
+      "title": "Product · acht seconden reveal",
+      "type": "video",
+      "purpose": "Vertical product-launch demo",
+      "model": "seedance_2_5",
+      "modelLabel": "Seedance 2.5",
+      "backendModel": "seedance_2_5",
+      "credits": 96,
+      "jobId": "98ed7900-5784-4695-9f89-dc6daef07c28",
+      "status": "completed",
+      "qa": "Acht steekproefframes: coherent cap/detail naar product-reveal, stabiele cream/sage fles. Geen echte advertentieclaim.",
+      "prompt": "Eight-second premium product launch film, exact cream bottle with sage cap on exact warm travertine pedestal. One refined continuous shot: begin with slow close attention to the cap seam and matte texture, slowly pull back to reveal the complete bottle and block, finish with two seconds of stable hero hold. Constant exact bottle shape/cap/materials, grounded physically, restrained studio light sweep. No product transformation, no floating, no cap opening, no liquid, no text or logo, no added props. Single unbranded bottle only, silent.",
+      "params": {
+        "model": "seedance_2_5",
+        "mode": "omni_reference",
+        "duration": 8,
+        "resolution": "1080p",
+        "generate_audio": false,
+        "aspect_ratio": "9:16",
+        "count": 1,
+        "medias": [
+          {
+            "role": "start_image",
+            "value": "924024cc-b39f-450e-9fd2-dac52e0ceb39"
+          }
+        ],
+        "prompt": "Eight-second premium product launch film, exact cream bottle with sage cap on exact warm travertine pedestal. One refined continuous shot: begin with slow close attention to the cap seam and matte texture, slowly pull back to reveal the complete bottle and block, finish with two seconds of stable hero hold. Constant exact bottle shape/cap/materials, grounded physically, restrained studio light sweep. No product transformation, no floating, no cap opening, no liquid, no text or logo, no added props. Single unbranded bottle only, silent."
+      },
+      "sourceDescription": "Asset 6",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_213126_98ed7900-5784-4695-9f89-dc6daef07c28.mp4",
+      "previewPath": null,
+      "webPath": "website-ventures-assets/credit-sprint-20261007/26.mp4",
+      "poster": "website-ventures-assets/credit-sprint-20261007/06-480.webp",
+      "originalPath": "website-ventures-assets/credit-sprint-20261007/26.mp4"
+    },
+    {
+      "index": 27,
+      "world": "agency",
+      "title": "Agency · verticale motion",
+      "type": "video",
+      "purpose": "Agency mobile motion",
+      "model": "seedance_2_5",
+      "modelLabel": "Seedance 2.5",
+      "backendModel": "seedance_2_5",
+      "credits": 60,
+      "jobId": "e45155dd-0088-48df-af5a-9e6a768e55d0",
+      "status": "completed",
+      "qa": "Vijf steekproefframes: verticale framing en tablet/steen blijven consistent. Alleen optionele mobiele motion.",
+      "prompt": "Five-second vertical premium product shot of exact thin chrome black-glass tablet resting on exact single pale rock, same warm quiet architecture. Slow small forward camera drift and one subtle light reflection; keep entire tablet and rock in frame, generous upper blank space. All objects stay firmly grounded and shapes identical, no morphing, no text, no UI, no new devices, no people, no fire or cuts. Finish calm, silent.",
+      "params": {
+        "model": "seedance_2_5",
+        "mode": "omni_reference",
+        "duration": 5,
+        "resolution": "1080p",
+        "generate_audio": false,
+        "aspect_ratio": "9:16",
+        "count": 1,
+        "medias": [
+          {
+            "role": "start_image",
+            "value": "01060c41-a78f-4a42-a7b2-2956a191343d"
+          }
+        ],
+        "prompt": "Five-second vertical premium product shot of exact thin chrome black-glass tablet resting on exact single pale rock, same warm quiet architecture. Slow small forward camera drift and one subtle light reflection; keep entire tablet and rock in frame, generous upper blank space. All objects stay firmly grounded and shapes identical, no morphing, no text, no UI, no new devices, no people, no fire or cuts. Finish calm, silent."
+      },
+      "sourceDescription": "Asset 7",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_213126_e45155dd-0088-48df-af5a-9e6a768e55d0.mp4",
+      "previewPath": null,
+      "webPath": "website-ventures-assets/credit-sprint-20261007/27.mp4",
+      "poster": "website-ventures-assets/credit-sprint-20261007/07-480.webp",
+      "originalPath": "website-ventures-assets/credit-sprint-20261007/27.mp4"
+    },
+    {
+      "index": 28,
+      "world": "gamenfy",
+      "title": "Gamenfy · echte loopbeweging-proef",
+      "type": "video",
+      "purpose": "Gamenfy separate articulated walk/sprite comparison",
+      "model": "seedance_2_5",
+      "modelLabel": "Seedance 2.5",
+      "backendModel": "seedance_2_5",
+      "credits": 60,
+      "jobId": "9d57c679-074b-43a2-9d79-73ddea1851be",
+      "status": "completed",
+      "qa": "Vijf steekproefframes tonen echte wisselende been/armposes. Chroma-green schoon genoeg voor Lab-keying. Geen 3D-rig; loopnaad en randen nog op echte iPhone beoordelen.",
+      "prompt": "Animate exactly this stylized 3D crowned young adult companion in a five-second natural repeating WALK IN PLACE cycle facing right at the same three-quarter angle. Character remains centered at a CONSTANT position and scale: do NOT slide the whole image. His knees bend alternately, hips rotate gently, feet lift, pass and plant with clear alternating stance, arms swing gently in opposition. Same face, hair, small crown, black/gold jacket, white shirt, trousers, sneakers and proportions throughout. No turning toward camera, no outfit changes, no head morphing, no props, no camera motion or zoom. Uniform flat pure chroma green #00FF00 background/floor throughout, no shadows, no gradients, no scenery. Entire body/feet always visible with margins. Start and end at a similar walk pose for loop. Silent.",
+      "params": {
+        "model": "seedance_2_5",
+        "mode": "omni_reference",
+        "duration": 5,
+        "resolution": "1080p",
+        "generate_audio": false,
+        "aspect_ratio": "3:4",
+        "count": 1,
+        "medias": [
+          {
+            "role": "start_image",
+            "value": "6a424b0b-7e6a-4d69-af6e-2783b3e4ab48"
+          }
+        ],
+        "prompt": "Animate exactly this stylized 3D crowned young adult companion in a five-second natural repeating WALK IN PLACE cycle facing right at the same three-quarter angle. Character remains centered at a CONSTANT position and scale: do NOT slide the whole image. His knees bend alternately, hips rotate gently, feet lift, pass and plant with clear alternating stance, arms swing gently in opposition. Same face, hair, small crown, black/gold jacket, white shirt, trousers, sneakers and proportions throughout. No turning toward camera, no outfit changes, no head morphing, no props, no camera motion or zoom. Uniform flat pure chroma green #00FF00 background/floor throughout, no shadows, no gradients, no scenery. Entire body/feet always visible with margins. Start and end at a similar walk pose for loop. Silent."
+      },
+      "sourceDescription": "Asset 13",
+      "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3J11PlWTdAXdyiVgxHYnMUsJS8U/hf_20261007_213126_9d57c679-074b-43a2-9d79-73ddea1851be.mp4",
+      "previewPath": null,
+      "webPath": "website-ventures-assets/credit-sprint-20261007/28.mp4",
+      "poster": "website-ventures-assets/credit-sprint-20261007/13-480.webp",
+      "originalPath": "website-ventures-assets/credit-sprint-20261007/28.mp4"
+    }
+  ],
+  "preservation": {
+    "masterArchives": [
+      "Website-Ventures-Masters-20261007.zip",
+      "Gamenfy-Motion-Masters-20261007.zip"
+    ],
+    "note": "Original PNG/MP4 copies preserved in downloadable archives; repo holds lightweight web derivatives and exact generated MP4 output.",
+    "code": "CREDIT-ATELIER-2026-10-07.md"
+  }
+}
