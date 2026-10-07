@@ -12,6 +12,8 @@ Gebouwd door ChatGPT voor Joey. De nieuwe toestemming vervangt voor deze sprint 
 
 ## Vervolg · 8 oktober
 
+Gamenfy Lab en de bestaande Venture-workspace openen het atelier nu binnen de app. De inhoud laadt alleen na een klik; sluiten verwijdert het iframe en stopt media. De 22 assets en productiekaart blijven op de appserver beschikbaar. Geen verplichte review of nieuwe generatie. De standalone atelierpagina blijft een fallback.
+
 Elke asset heeft Ja / Misschien / Nee en een korte notitie. De feedbacklijst bevat de assetnummers, toepassing en bestandspaden en is met één knop te kopiëren. Nog niet beoordeelde assets tellen niet als goedgekeurd. Dit is alleen browsersessie-geheugen: kopieer vóór herladen/sluiten; geen opslag, cloudwrite of echte appdata. Beeldkaarten gebruiken nu responsive 480/1280-WebP-bronnen. Dit vervolg gebruikt nul extra credits; de masterarchieven blijven de oorspronkelijke productie-output.
 
 ## Budget
