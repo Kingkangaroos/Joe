@@ -10,6 +10,10 @@ Gebouwd door ChatGPT voor Joey. De nieuwe toestemming vervangt voor deze sprint 
 - `WEBSITE-VENTURES-CREDIT-RESCUE-2026-10-07.json` is de volledige productiekaart: exacte prompts, bronnen, jobs, kosten en QA.
 - De nummers op de bestanden komen overeen met de assetnummers in de productiekaart.
 
+## Vervolg · 8 oktober
+
+Elke asset heeft Ja / Misschien / Nee en een korte notitie. De feedbacklijst bevat de assetnummers, toepassing en bestandspaden en is met één knop te kopiëren. Nog niet beoordeelde assets tellen niet als goedgekeurd. Dit is alleen browsersessie-geheugen: kopieer vóór herladen/sluiten; geen opslag, cloudwrite of echte appdata. Beeldkaarten gebruiken nu responsive 480/1280-WebP-bronnen. Dit vervolg gebruikt nul extra credits; de masterarchieven blijven de oorspronkelijke productie-output.
+
 ## Budget
 
 14 beelden × 2 = 28 credits. Zeven 5-secondenvideo’s × 60 = 420. Eén 8-secondenfilm × 96 = 96. Totaal: 544.
