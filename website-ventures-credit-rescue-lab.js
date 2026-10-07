@@ -11,9 +11,46 @@
     gamenfy: { label: '06 / Gamenfy', brand: 'GAMENFY / MOTION QA', title: '', copy: '', hero: 13, mobile: 13, demo: 'lab-3d-test-6.html', note: 'Articulatieproef, niet de live rigged 3D-route.' }
   };
   let manifest, activeWorld = 'agency', activeKind = 'all', walkVideo, moving = false, raf = 0;
+  // Session-only review: no storage, auth, cloud writes or automatic acceptance.
+  const reviews = new Map();
+  const votes = { yes: 'Ja', maybe: 'Misschien', no: 'Nee' };
   const safePath = value => typeof value === 'string' && value.startsWith(base) && !value.includes('..') && /^[a-zA-Z0-9_./-]+$/.test(value);
   function element(tag, text, cls) { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (cls) e.className = cls; return e; }
   function link(text, href, download) { const e = element('a', text); e.href = href; if (download) e.download = ''; else { e.target = '_blank'; e.rel = 'noopener'; } return e; }
+  function updateReviewSummary() {
+    const selected = manifest.assets.filter(a => { const r = reviews.get(a.index); return r && (r.vote || r.note.trim()); });
+    const judged = selected.filter(a => reviews.get(a.index).vote).length;
+    $('reviewCount').textContent = judged + ' / ' + manifest.assets.length + ' beoordeeld · ' + selected.length + ' assets in je feedbacklijst.';
+    $('reviewExport').value = selected.length ? ['Credit Atelier · feedback van de gebruiker', 'Productieset: ' + manifest.id, 'Dit is feedback, geen automatische publicatie of productiegoedkeuring.', '', ...selected.map(a => {
+      const r = reviews.get(a.index);
+      return 'Asset ' + a.index + ' · ' + a.title + '\nOordeel: ' + (votes[r.vote] || 'Nog niet gekozen') + '\nToepassing: ' + a.purpose + '\nBestand: ' + a.webPath + (r.note.trim() ? '\nNotitie: ' + r.note.trim() : '');
+    })].join('\n\n') : '';
+    $('copyReview').disabled = !selected.length;
+    $('copyStatus').textContent = '';
+  }
+  function reviewControls(a) {
+    const box = element('fieldset', undefined, 'asset-review');
+    box.append(element('legend', 'Jouw oordeel over asset ' + a.index));
+    const row = element('div', undefined, 'review-votes');
+    Object.entries(votes).forEach(([vote, title]) => {
+      const b = element('button', title); b.type = 'button'; b.dataset.vote = vote;
+      b.setAttribute('aria-pressed', String(reviews.get(a.index)?.vote === vote));
+      b.addEventListener('click', () => {
+        const previous = reviews.get(a.index) || { vote: null, note: '' };
+        reviews.set(a.index, { ...previous, vote: previous.vote === vote ? null : vote });
+        row.children && Array.from(row.children).forEach(x => x.setAttribute('aria-pressed', String(x.dataset.vote === reviews.get(a.index).vote)));
+        updateReviewSummary();
+      }); row.append(b);
+    });
+    const label = element('label', 'Korte notitie (optioneel)'); label.htmlFor = 'reviewNote' + a.index;
+    const note = element('textarea'); note.id = 'reviewNote' + a.index; note.rows = 2; note.maxLength = 500;
+    note.value = reviews.get(a.index)?.note || ''; note.placeholder = 'Bijvoorbeeld: rustiger beeld, betere voeten, geschikt voor hero…';
+    note.addEventListener('input', () => {
+      const previous = reviews.get(a.index) || { vote: null, note: '' };
+      reviews.set(a.index, { ...previous, note: note.value.slice(0, 500) }); updateReviewSummary();
+    });
+    box.append(row, label, note); return box;
+  }
   function chooseWorld(world) {
     if (!worldInfo[world]) return;
     activeWorld = world;
@@ -41,7 +78,7 @@
         if (safePath(a.poster)) v.poster = a.poster;
         if (safePath(a.webPath)) v.src = a.webPath;
         v.setAttribute('aria-label', a.title); v.addEventListener('play', () => document.querySelectorAll('#assetGrid video').forEach(other => { if (other !== v) other.pause(); })); frame.append(v);
-      } else { const im = element('img'); im.loading = 'lazy'; im.alt = a.title; if (safePath(a.previewPath)) im.src = a.previewPath; frame.append(im); }
+      } else { const im = element('img'); im.loading = 'lazy'; im.alt = a.title; if (safePath(a.previewPath)) { im.src = base + String(a.index).padStart(2, '0') + '-480.webp'; im.srcset = im.src + ' 480w, ' + a.previewPath + ' 1280w'; im.sizes = '(max-width:600px) 100vw, (max-width:900px) 50vw, 33vw'; } frame.append(im); }
       const body = element('div', undefined, 'asset-body');
       body.append(element('small', 'ASSET ' + a.index + ' / ' + a.modelLabel + ' / ' + a.credits + ' CREDITS'));
       body.append(element('h3', a.title), element('p', a.purpose), element('p', a.qa));
@@ -51,6 +88,7 @@
       else if (a.resultUrl && /^https:\/\/d8j0ntlcm91z4\.cloudfront\.net\//.test(a.resultUrl)) links.append(link('Originele generatie ↗', a.resultUrl, false));
       body.append(links);
       const details = element('details'); details.append(element('summary', 'Prompt, bron & status'), element('p', 'Job: ' + a.jobId + '\nBron: ' + a.sourceDescription + '\nStatus: ' + a.status + '\n\n' + a.prompt)); body.append(details);
+      body.append(reviewControls(a));
       card.append(frame, body); grid.append(card);
     });
   }
@@ -83,11 +121,16 @@
     document.addEventListener('visibilitychange', () => { if (document.hidden) stopWalk(); });
   }
   document.querySelectorAll('[data-kind]').forEach(b => b.addEventListener('click', () => { activeKind = b.dataset.kind; document.querySelectorAll('[data-kind]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); if (manifest) renderAssets(); }));
+  $('copyReview').addEventListener('click', async () => {
+    if (!$('reviewExport').value) return;
+    try { await navigator.clipboard.writeText($('reviewExport').value); $('copyStatus').textContent = 'Gekopieerd. Plak dit in je chat of eigen notities om het te bewaren.'; }
+    catch (_) { $('reviewExport').focus(); $('reviewExport').select(); $('copyStatus').textContent = 'Automatisch kopiëren niet beschikbaar. De feedback is geselecteerd; kopieer handmatig.'; }
+  });
   fetch('WEBSITE-VENTURES-CREDIT-RESCUE-2026-10-07.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw Error('manifest'); return r.json(); }).then(data => {
     if (!Array.isArray(data.assets)) throw Error('assets'); manifest = data;
     $('spent').textContent = data.creditsSpent; $('remaining').textContent = data.endingBalance; $('counts').textContent = data.assets.filter(a => a.type === 'image').length + ' + ' + data.assets.filter(a => a.type === 'video').length;
     $('qaSummary').textContent = data.qaSummary;
     Object.entries(worldInfo).forEach(([key, w]) => { const b = element('button', w.label); b.dataset.world = key; b.setAttribute('aria-pressed', 'false'); b.addEventListener('click', () => chooseWorld(key)); $('worlds').append(b); });
-    const asked = new URLSearchParams(location.search).get('world'); chooseWorld(worldInfo[asked] ? asked : 'agency'); prepareWalk();
+    const asked = new URLSearchParams(location.search).get('world'); chooseWorld(worldInfo[asked] ? asked : 'agency'); prepareWalk(); updateReviewSummary();
   }).catch(() => { $('assetStatus').textContent = 'De productiekaart kon niet laden. Herlaad of open de JSON-link onderaan.'; });
 }());
