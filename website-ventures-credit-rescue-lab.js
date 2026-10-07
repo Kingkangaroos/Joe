@@ -1,5 +1,6 @@
 (function () {
   'use strict';
+  if (new URLSearchParams(location.search).get('embed') === '1') document.body.classList.add('atelier-embedded');
   const $ = id => document.getElementById(id);
   const base = 'website-ventures-assets/credit-sprint-20261007/';
   const worldInfo = {
