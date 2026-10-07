@@ -1,6 +1,23 @@
 {
   "releases": [
     {
+      "id": "2026-10-07-credit-rescue",
+      "date": "2026-10-07",
+      "surfaces": [
+        "ventures"
+      ],
+      "title": "Credit Atelier: 544 credits gericht omgezet",
+      "why": "Joey geeft alle 544 credits vrij vóór de gemelde abonnementsafloop; werk moet waardevol en terugvindbaar blijven.",
+      "changes": [
+        "14 beelden en 8 motion-assets voor agency, drie voorbeelden, productfilm en Gamenfy.",
+        "Elke asset heeft doel, bron, prompt, job, kosten, download en QA-notitie.",
+        "544 besteed; saldo 0 bevestigd. Geen aankoop, verlenging of echte appdata gewijzigd."
+      ],
+      "try": "Finance → Ventures → Venture Lab → Credit Atelier. Wissel wereld, bekijk motion en download de productiekaart.",
+      "remaining": "Lab-materiaal, niet jouw goedkeuring. Echte iPhone-feedback en externe prospecttest blijven open; geen conversieclaim.",
+      "url": "website-ventures-credit-rescue-lab.html"
+    },
+    {
       "id": "2026-10-01-ventures-research-credit-lab",
       "date": "2026-10-01",
       "surfaces": [
