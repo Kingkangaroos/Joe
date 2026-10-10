@@ -1,6 +1,20 @@
 {
   "releases": [
     {
+      "id": "2026-10-10-first-habit-evolution",
+      "date": "2026-10-10",
+      "surfaces": ["home"],
+      "title": "Eerste vinkje, meteen een nieuw poppetje",
+      "why": "Joey wil na opnieuw beginnen direct zichtbare vooruitgang: het eerste poppetje is de basis, de eerste voltooiing toont het tweede.",
+      "changes": [
+        "Publieke Daily Mission-companions tonen bij score 0 afbeelding 1, bij score 1 afbeelding 2, enzovoort tot afbeelding 10.",
+        "Kaart, detailvenster en voorladen gebruiken dezelfde koppeling. Terugnemen en terugval tonen ook weer de passende eerdere afbeelding.",
+        "Bestaande scores, historie, XP en de afwijkende privé-skilllogica blijven behouden. Score 9 en 10 delen de laatste van de tien bestaande afbeeldingen."
+      ],
+      "try": "Home → vink Gratitude op score 0 af: de afbeelding wisselt direct van het eerste naar het tweede poppetje. Alleen de kaart openen telt niet als voltooiing.",
+      "remaining": "Visuele iPhone-check niet uitgevoerd; geen nieuwe afbeeldingen gegenereerd."
+    },
+    {
       "id": "2026-10-10-portfolio-book-lab",
       "date": "2026-10-10",
       "surfaces": [

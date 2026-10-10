@@ -93,10 +93,10 @@ assert.deepEqual(Array.from(sandboxWindow.GamenfyPark31Registry.publicKeys),cano
 assert.deepEqual(Array.from(sandboxWindow.GamenfyPark31Registry.privateKeys),['weed_control','no_porn'],'private dailies are separate from the public eleven');
 
 assert.equal(ids.p31Stage.dataset.liveLevel,'7','live walking score is shown');
-assert.equal(ids.p31Stage.dataset.artLevel,'7','walking level selects matching artwork');
-assert.match(ids.p31Art.src,/\/l07\.webp\?v=1\.19$/,'level 7 loads current l07 artwork');
+assert.equal(ids.p31Stage.dataset.artLevel,'8','score 7 selects evolution 8 above the baseline');
+assert.match(ids.p31Art.src,/\/l08\.webp\?v=1\.19$/,'score 7 loads current l08 artwork');
 assert.equal(ids.p31State.textContent,'EXPERT','level 7 uses canonical Expert band');
-assert.equal(levelNodes[6].attributes['aria-current'],'step','live evolution dot is selected');
+assert.equal(levelNodes[7].attributes['aria-current'],'step','live evolution dot is selected');
 ids.p31Companion.listeners.click();
 assert.ok(ids.p31Stage.classList.contains('is-lit'),'tap activates light/glow');
 assert.equal(storage.rpg_habits_v1,JSON.stringify({walking:{score:7}}),'light tap never changes habit data');
@@ -156,7 +156,7 @@ const lab=fs.readFileSync(path.join(__dirname,'..','lab-older-experiments.html')
 assert.match(lab,/park31-lab\.js\?v=1\.1/);assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.19"/);
 const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');assert.match(home,/park31\.html\?embed=1&amp;mode=missions&amp;privacy=all/,'Personal Home includes public and PIN-backed private Daily Missions 2.0 companions');
 const page=fs.readFileSync(path.join(__dirname,'..','park31.html'),'utf8');
-assert.match(page,/park31\.js\?v=1\.20/);assert.match(page,/12 missions/);assert.match(page,/Budgeting gebruikt de uil en Meditation de panda/);
+assert.match(page,/park31\.js\?v=1\.21/);assert.match(page,/12 missions/);assert.match(page,/Budgeting gebruikt de uil en Meditation de panda/);
 
 const walkingSlot=new Element('walking-slot');walkingSlot.dataset.mission='walking';
 const openEvent={target:walkingSlot,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
@@ -175,4 +175,20 @@ const nutritionSlot=new Element('nutrition-slot');nutritionSlot.dataset.mission=
 const nutritionTap={target:nutritionSlot,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
 ids.p31Roster.listeners.click(nutritionTap);assert.equal(ids.p31ModalTitle.textContent,'Nutrition');ids.p31MissionToggle.listeners.click();runImmediateTimeouts();assert.deepEqual(missionToggles,['walking','nutrition']);
 
-console.log('Park 3.1 smoke test passed: canonical membership stays separate internally while Joey personal roster is visually unified.');
+closeNodes[0].listeners.click();
+storage.rpg_habits_v1=JSON.stringify({gratitude:{score:0}});
+parentListeners['gamenfy:daily-mission-change']();
+const gratitudeSlot=new Element('gratitude-slot');gratitudeSlot.dataset.mission='gratitude';
+ids.p31Roster.listeners.click({target:gratitudeSlot,preventDefault(){},stopPropagation(){}});
+assert.match(ids.p31ModalArt.src,/gratitude\/l01\.webp/,'score zero starts with first character');
+ids.p31MissionToggle.listeners.click();runImmediateTimeouts();
+assert.match(ids.p31ModalArt.src,/gratitude\/l02\.webp/,'first completion immediately changes the open detail character');
+assert.match(ids.p31Roster.innerHTML,/gratitude\/l02\.webp/,'first completion immediately changes the Home card');
+for(const score of [0,1,2,8,9,10,1,0]){
+  storage.rpg_habits_v1=JSON.stringify({gratitude:{score}});
+  parentListeners['gamenfy:daily-mission-change']();
+  const frame=String(Math.min(score+1,10)).padStart(2,'0');
+  assert.ok(ids.p31ModalArt.src.includes('gratitude/l'+frame+'.webp'),'score '+score+' shows frame '+frame+' after completion/undo/decay');
+  assert.equal(JSON.parse(storage.rpg_habits_v1).gratitude.score,score,'rendering never changes the real score');
+}
+console.log('Park 3.1 passed: roster, first Gratitude completion, immediate card/detail evolution, undo/decay and capped final artwork.');

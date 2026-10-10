@@ -56,7 +56,7 @@
   function levelInfo(mission){
     mission=mission||PUBLIC_MISSIONS.find(function(item){return item.key===KEY;})||PUBLIC_MISSIONS[0];
     var forced=mission.key===KEY?previewLevel():null;
-    if(forced!==null)return {raw:forced,art:clamp(forced||1,1,10),source:'preview'};
+    if(forced!==null)return {raw:forced,art:clamp(forced+1,1,10),source:'preview'};
     var w=hostWindow();
     if(mission.private){
       try{
@@ -73,12 +73,14 @@
     try{
       var habits=(w.getHabits&&w.getHabits())||{};
       var n=Number((habits[mission.key]||{}).score);
-      if(Number.isFinite(n))return {raw:clamp(Math.round(n),0,10),art:clamp(Math.round(n)||1,1,10),source:'habit'};
+      // L1 is the resting baseline: the very first completion must reveal L2.
+      // Keep the canonical 0–10 score intact; ten existing images cap at L10.
+      if(Number.isFinite(n))return {raw:clamp(Math.round(n),0,10),art:clamp(Math.round(n)+1,1,10),source:'habit'};
     }catch(e){}
     try{
       var local=JSON.parse(localStorage.getItem('rpg_habits_v1'))||{};
       var score=Number((local[mission.key]||{}).score);
-      if(Number.isFinite(score))return {raw:clamp(Math.round(score),0,10),art:clamp(Math.round(score)||1,1,10),source:'local-habit'};
+      if(Number.isFinite(score))return {raw:clamp(Math.round(score),0,10),art:clamp(Math.round(score)+1,1,10),source:'local-habit'};
     }catch(e){}
     return {raw:0,art:1,source:'empty'};
   }
