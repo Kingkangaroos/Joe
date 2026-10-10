@@ -39,6 +39,10 @@ assert.notEqual(mount.children[0], frame);
 close.events.click(); assert.equal(panel.hidden, true); assert.equal(mount.children.length, 0, 'Closing releases frame and media');
 assert(second.anchor.focused); assert.equal(second.anchor.attrs['aria-expanded'], 'false');
 click('website-ventures-credit-rescue-lab.html?world=unknown'); assert.equal(mount.children[0].src, 'https://fixture.test/website-ventures-credit-rescue-lab.html?embed=1');
+click('website-ventures-portfolio-book-lab.html?world=gamenfy&owner=not-forwarded');
+assert.equal(mount.children[0].src, 'https://fixture.test/website-ventures-portfolio-book-lab.html?embed=1');
+assert.match(mount.children[0].title, /Portfolio Book/);
+close.events.click(); assert.equal(mount.children.length, 0);
 for (const file of ['lab.html', 'ventures-workspace.html']) {
   const html = fs.readFileSync(path.join(root, file), 'utf8');
   assert(html.includes('credit-atelier-in-app.js?v=1')); assert(html.includes('credit-atelier-in-app.css?v=1'));
