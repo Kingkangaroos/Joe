@@ -203,6 +203,10 @@
     }catch(e){}
   }
   function openMission(key){
+    if(key==='household'&&homeSurface&&typeof hostWindow().openHouseholdChecklist==='function'){
+      hostWindow().openHouseholdChecklist();
+      return;
+    }
     selected=MISSIONS.find(function(item){return item.key===key;})||null;
     preview=null;
     if(selected&&selected.private&&homeSurface){

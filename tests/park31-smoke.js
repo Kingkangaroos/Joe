@@ -156,7 +156,7 @@ const lab=fs.readFileSync(path.join(__dirname,'..','lab-older-experiments.html')
 assert.match(lab,/park31-lab\.js\?v=1\.1/);assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.19"/);
 const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');assert.match(home,/park31\.html\?embed=1&amp;mode=missions&amp;privacy=all/,'Personal Home includes public and PIN-backed private Daily Missions 2.0 companions');
 const page=fs.readFileSync(path.join(__dirname,'..','park31.html'),'utf8');
-assert.match(page,/park31\.js\?v=1\.19/);assert.match(page,/12 missions/);assert.match(page,/Budgeting gebruikt de uil en Meditation de panda/);
+assert.match(page,/park31\.js\?v=1\.20/);assert.match(page,/12 missions/);assert.match(page,/Budgeting gebruikt de uil en Meditation de panda/);
 
 const walkingSlot=new Element('walking-slot');walkingSlot.dataset.mission='walking';
 const openEvent={target:walkingSlot,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};

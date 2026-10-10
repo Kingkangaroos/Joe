@@ -1,7 +1,7 @@
 {
   "project": "Gamenfy",
   "owner": "Joey",
-  "updatedAt": "2026-09-18",
+  "updatedAt": "2026-10-10",
   "managedBy": [
     "ChatGPT (OpenAI)",
     "Claude"
@@ -156,6 +156,7 @@
     "Workflow publiceren geeft geen toestemming voor automatisch betaalde generaties. Handmatig model, referentie en instellingen overnemen; actuele dekking controleren."
   ],
   "ideaBank": [
+    "2026-10-10 · Joey · Household mini-checklist op de echte homepage, expliciet goedgekeurd zonder Lab-stap: kleding → afval → spullen op hun plek → machines → dag/week voorbereiden → doekje → stofzuigen → dweilen → final touch. Machines vóór voorbereiden zodat ze alvast draaien. Substappen per dag bewaren, overslaan mag; habit en bestaande level/XP-logica blijven apart. Uitgewerkt als Home-functie; geen algemene Home 2.0-rollout.",
     "Warm White + Oxblood as a controlled Lab-first token direction; keep white dominant and preserve green/amber semantic states.",
     "Character Trophy Case as the canonical badge collection, plus one exact-once unlock moment and at most one featured/latest badge on Home."
   ],

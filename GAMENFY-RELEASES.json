@@ -19,6 +19,24 @@
       "url": "website-ventures-portfolio-book-lab.html"
     },
     {
+      "id": "2026-10-10-household-checklist",
+      "date": "2026-10-10",
+      "surfaces": [
+        "home"
+      ],
+      "title": "Household: jouw vaste opruimvolgorde",
+      "why": "Joey wil op de echte homepage een mini-checklist achter Household en het idee blijvend in de ideeënbox.",
+      "changes": [
+        "Tik Household op Home voor negen stappen: kleding, afval, spullen op hun plek, machines, voorbereidingen, doekje, stofzuigen, dweilen en final touch.",
+        "Vinkjes worden per dag bewaard in de bestaande dagelijkse opslag; sluiten of herladen wist niets. Een andere dag heeft een eigen checklist.",
+        "Machines komen vóór voorbereidingen zodat ze alvast kunnen draaien. Niet iedere stap is iedere dag nodig.",
+        "Losse stappen wijzigen geen levels of XP; Household afvinken gebruikt de bestaande habit-logica en voorkomt herhaald afvinken via deze knop.",
+        "Verzoek vastgelegd in Project HQ → Idea Bank. Bestaande Home, habits en experimenten behouden."
+      ],
+      "try": "Home → Daily Missions → tik Household → vink een stap aan → sluit en heropen. Voltooi de habit met Household afvinken of het ronde vinkje.",
+      "remaining": "Browserless regressie- en UI-simulatietests uitgevoerd. Volledige browsertest niet uitgevoerd: browserdownload mislukt. Visuele iPhone-check en echte cross-device sync van de nieuwe substappen nog niet bevestigd; bestaande sync-infrastructuur en andere habits ongewijzigd."
+    },
+    {
       "id": "2026-10-07-gamenfy-credit-motion",
       "date": "2026-10-07",
       "surfaces": [
