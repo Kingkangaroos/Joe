@@ -1,0 +1,21 @@
+/* Home-scoped native dialog, above the embedded mission roster. */
+body.hh-open{overflow:hidden}
+.hh-dialog{box-sizing:border-box;margin:auto;width:min(440px,calc(100% - 24px));max-height:88dvh;overflow:auto;border:1px solid #dfddd5;border-radius:22px;padding:22px;color:#181712;background:#faf9f5;box-shadow:0 24px 90px #0005;font-family:Inter,system-ui,sans-serif}
+.hh-dialog::backdrop{background:#11182799;backdrop-filter:blur(5px)}
+.hh-dialog header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hh-dialog header small{font-size:10px;letter-spacing:.13em;color:#737066;font-weight:700}
+.hh-dialog h2{font-size:24px;margin:5px 0 0;font-family:'Schibsted Grotesk',system-ui,sans-serif}
+.hh-dialog [data-hh-close]{width:44px;height:44px;flex-shrink:0;border:1px solid #dfddd5;border-radius:50%;background:white;font-size:26px;cursor:pointer}
+.hh-intro,.hh-dialog footer p{font-size:12px;line-height:1.6;color:#6f6c63;margin:14px 0}
+.hh-progress{font-size:12px;font-weight:700;color:#2e8b5f;margin:14px 0 10px}
+.hh-dialog ol{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.hh-dialog li{border:1px solid #e8e6df;border-radius:12px;background:white}
+.hh-dialog label{display:flex;gap:12px;align-items:flex-start;padding:12px;cursor:pointer;min-height:48px}
+.hh-dialog input{width:21px;height:21px;flex-shrink:0;accent-color:#2e8b5f;margin:1px 0 0}
+.hh-dialog label strong{display:block;font-size:13px;line-height:1.5}
+.hh-dialog label small{display:block;font-size:11px;line-height:1.5;color:#6f6c63;margin-top:2px}
+.hh-dialog input:checked+span strong{color:#2e8b5f;text-decoration:line-through}
+.hh-dialog [data-hh-complete]{width:100%;min-height:46px;border:0;border-radius:12px;background:#2e8b5f;color:white;font:700 14px Inter,system-ui,sans-serif;cursor:pointer}
+.hh-dialog [data-hh-complete]:disabled{background:#e1e9df;color:#34553b;cursor:default}
+.hh-error{font-size:12px;color:#a33128;margin:10px 0;line-height:1.5}
+.hh-dialog :focus-visible{outline:3px solid #d4633e;outline-offset:3px}
