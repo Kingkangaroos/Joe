@@ -59,16 +59,15 @@
     if(forced!==null)return {raw:forced,art:clamp(forced+1,1,10),source:'preview'};
     var w=hostWindow();
     if(mission.private){
-      try{
-        var character=(w.getCharacter&&w.getCharacter())||{};
-        var xp=((((character||{}).skills||{})[mission.key]||{}).xp)||0;
-        var privateLevel=Number(w.getSkillLevel?w.getSkillLevel(mission.key,xp):(w.xpToLevel?w.xpToLevel(xp):1));
-        if(Number.isFinite(privateLevel)){
-          var privateStage=clamp(Math.ceil(Math.max(1,Math.round(privateLevel))/10),1,10);
-          return {raw:privateStage,art:privateStage,source:'private-skill'};
-        }
-      }catch(e){}
-      return {raw:0,art:1,source:'empty'};
+      // Visual consistency only. Never change the private skill's XP or history.
+      // Visual score uses the last year only: +1 done, -1 missed, bounded 0–10.
+      // Today is not missed while the user still has time to complete it.
+      var privateScore=0;
+      for(var day=365;day>=0;day--){
+        if(doneOn(mission,dateDaysAgo(day)))privateScore=clamp(privateScore+1,0,10);
+        else if(day>0)privateScore=clamp(privateScore-1,0,10);
+      }
+      return {raw:privateScore,art:clamp(privateScore+1,1,10),source:'private-daily'};
     }
     try{
       var habits=(w.getHabits&&w.getHabits())||{};

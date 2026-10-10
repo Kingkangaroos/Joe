@@ -1,6 +1,21 @@
 {
   "releases": [
     {
+      "id": "2026-10-11-little-worlds-all-habits",
+      "date": "2026-10-11",
+      "surfaces": ["home", "lab"],
+      "title": "Little Worlds + basisvorm voor alle habits",
+      "why": "Een voltooiing moet direct zichtbaar voelen, met een poppetje in zijn eigen wereld.",
+      "changes": [
+        "Alle elf publieke en beide privé-companions starten visueel bij vorm 1 en tonen vorm 2 na de eerste voltooiing.",
+        "Privé-companions gebruiken voor hun uiterlijk nu dagelijkse consistentie over het laatste jaar (+1 voltooid, -1 gemist, vandaag nog geen straf). XP en logs blijven intact; verborgen Gardening blijft verborgen.",
+        "Nieuwe geïsoleerde Lab-test: drie uitgewerkte wereldjes, opladen/lichtpiek/onthulling, opnieuw afspelen, langzame modus, optioneel geluid en vergelijking met de bestaande echte 3D-rig."
+      ],
+      "try": "Jarvis → Lab → Little Worlds. De drie demo-werelden beperken niet de levelkoppeling op Home.",
+      "remaining": "De rig heeft één renclip, geen tien 3D-vormen. Visuele browser/iPhone-controle nog niet uitgevoerd.",
+      "url": "lab-habit-evolution.html"
+    },
+    {
       "id": "2026-10-10-first-habit-evolution",
       "date": "2026-10-10",
       "surfaces": ["home"],
