@@ -1,6 +1,23 @@
 {
   "releases": [
     {
+      "id": "2026-10-10-portfolio-book",
+      "date": "2026-10-10",
+      "surfaces": [
+        "ventures"
+      ],
+      "title": "Portfolio Book · jouw video als websiteproef",
+      "why": "Joey vindt het interactieve boekportfolio uit zijn nieuwe opname cool en wil een eigen test in de app, zonder eerst eerdere updates te bekijken.",
+      "changes": [
+        "Eigen donkere bureautafel, gesloten cover en zes tweezijdige CSS-3D-bladen.",
+        "Vijf bestaande demo-werelden met projectdetails; swipe, pijlen, hoofdstukken en leesmodus.",
+        "Opent binnen de app in Lab en Venture Lab. Geen nieuwe credits, missiewijziging of vervanging van eerdere proeven."
+      ],
+      "try": "Finance → Ventures → Venture Lab → Portfolio Book. Open de cover en sla de pagina’s om.",
+      "remaining": "Ontwerp-/interactietest, geen gekozen agency-route. CSS-3D, geen vervormbare WebGL-papiermesh. Browser/iPhone-rendering nog niet geverifieerd.",
+      "url": "website-ventures-portfolio-book-lab.html"
+    },
+    {
       "id": "2026-10-07-credit-rescue",
       "date": "2026-10-07",
       "surfaces": [

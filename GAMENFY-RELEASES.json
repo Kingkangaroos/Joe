@@ -1,9 +1,29 @@
 {
   "releases": [
     {
+      "id": "2026-10-10-portfolio-book-lab",
+      "date": "2026-10-10",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Portfolio Book · jouw video als websiteproef",
+      "why": "Joey vindt het interactieve boekportfolio uit zijn nieuwe opname cool en wil een eigen test in de app, zonder eerst eerdere updates te bekijken.",
+      "changes": [
+        "Eigen donkere bureautafel, gesloten cover en zes tweezijdige CSS-3D-bladen.",
+        "Vijf bestaande demo-werelden met projectdetails; swipe, pijlen, hoofdstukken en leesmodus.",
+        "Opent binnen de app in Lab en Venture Lab. Geen nieuwe credits, missiewijziging of vervanging van eerdere proeven."
+      ],
+      "try": "Jarvis → Lab → Portfolio Book. Probeer bladeren en Leesmodus.",
+      "remaining": "Ontwerp-/interactietest, geen gekozen agency-route. CSS-3D, geen vervormbare WebGL-papiermesh. Browser/iPhone-rendering nog niet geverifieerd.",
+      "url": "website-ventures-portfolio-book-lab.html"
+    },
+    {
       "id": "2026-10-10-household-checklist",
       "date": "2026-10-10",
-      "surfaces": ["home"],
+      "surfaces": [
+        "home"
+      ],
       "title": "Household: jouw vaste opruimvolgorde",
       "why": "Joey wil op de echte homepage een mini-checklist achter Household en het idee blijvend in de ideeënbox.",
       "changes": [
