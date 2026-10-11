@@ -48,9 +48,9 @@ for(const id of expected){
   assert.equal(env.taskAnim,null,'task state cleared for '+id);
 }
 assert.deepEqual(env.completed,expected,'all nine tasks complete in the required order');
-assert.doesNotMatch(js,/\\brig\\./,'obsolete primitive rig code is removed');
-assert.match(js,/rescueTask\\(id,token,'watchdog'\\)/,'time-out recovery is installed');
-assert.match(js,/o\\.position\\.copy\\(o\\.userData\\.originalPosition\\)/,'reset restores object locations');
-assert.match(js,/if\\(taskToken!==currentToken\\)return/,'evolution reset invalidates stale timers');
+assert.doesNotMatch(js,/\brig\./,'obsolete primitive rig code is removed');
+assert.match(js,/rescueTask\(id,token,'watchdog'\)/,'time-out recovery is installed');
+assert.match(js,/o\.position\.copy\(o\.userData\.originalPosition\)/,'reset restores object locations');
+assert.match(js,/if\(taskToken!==currentToken\)return/,'evolution reset invalidates stale timers');
 assert.match(html,/id="previewEvolution"/,'one-tap evolution preview is available');
 console.log('PASS Household regression: nine animation callbacks, step 4, watchdog, reset and evolution preview.');
