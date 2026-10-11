@@ -85,123 +85,132 @@ for(let i=0;i<10;i++){
 const actorRoot=new THREE.Group();scene.add(actorRoot);
 const actorShadow=new THREE.Mesh(new THREE.CircleGeometry(.42,28),new THREE.MeshBasicMaterial({color:'#000',transparent:true,opacity:.25,depthWrite:false}));actorShadow.rotation.x=-Math.PI/2;actorShadow.position.y=.02;actorRoot.add(actorShadow);
 
-const rig={};
-function joint(parent,x,y,z){const g=new THREE.Group();g.position.set(x,y,z);parent.add(g);return g}
-function bodyMesh(parent,geo,color,x=0,y=0,z=0,rough=.78){
- const m=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color,roughness:rough}));
- m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;
+const CHARACTER_ART={
+ idle:'img/lab/park31/household/l03.webp',
+ general:'img/lab/park31/household/l02.webp',
+ prepare:'img/lab/park31/household/l04.webp',
+ wipe:'img/lab/park31/household/l05.webp',
+ finish:'img/lab/park31/household/l03.webp'
+};
+const charTextures={},charMaterials={};
+let characterSprite=null,characterBaseY=1.03,currentVisual='idle';
+const loader=new THREE.TextureLoader();
+
+function makeCharacterTexture(path){
+ const tex=loader.load(path);
+ tex.colorSpace=THREE.SRGBColorSpace;
+ tex.wrapS=tex.wrapT=THREE.ClampToEdgeWrapping;
+ // Assets include the purple display pedestal at the bottom.
+ // Crop it away so only Joey's canon Household character lives in the room.
+ tex.repeat.set(1,.68);
+ tex.offset.set(0,.32);
+ return tex;
 }
-function buildHouseholdCharacter(){
- const root=new THREE.Group();root.name='HouseholdCharacter';actorRoot.add(root);rig.root=root;
- const skin='#f0a27e',hair='#171217',black='#18131d',purple='#632f9a',purple2='#8b55c7',cream='#fff0e2',white='#fff8f1',brown='#4b2616',gold='#d8a84e';
-
- // Chibi proportions copied from the Household l01/l05/l10 family:
- // huge head, compact torso, short thick limbs and glossy toy-like boots.
- const hips=joint(root,0,.56,0);rig.hips=hips;
- const pelvis=bodyMesh(hips,new THREE.SphereGeometry(.24,22,16),black,0,0,0,.48);pelvis.scale.set(1.18,.78,.95);
-
- const torso=joint(hips,0,.18,0);rig.torso=torso;
- const bodice=bodyMesh(torso,new THREE.SphereGeometry(.29,24,16),black,0,.18,0,.38);bodice.scale.set(1.02,1.05,.78);
- const collar=bodyMesh(torso,new THREE.TorusGeometry(.16,.035,10,24,Math.PI),cream,0,.39,-.04,.45);collar.rotation.z=Math.PI;
-
- // Purple bow + gold center.
- const bowL=bodyMesh(torso,new THREE.SphereGeometry(.095,16,10),purple,-.095,.34,-.225,.32);bowL.scale.set(1.45,.72,.48);bowL.rotation.z=.35;
- const bowR=bodyMesh(torso,new THREE.SphereGeometry(.095,16,10),purple,.095,.34,-.225,.32);bowR.scale.set(1.45,.72,.48);bowR.rotation.z=-.35;
- bodyMesh(torso,new THREE.SphereGeometry(.045,14,10),gold,0,.34,-.255,.25);
-
- // Bell skirt + white underskirt/apron.
- const skirt=bodyMesh(hips,new THREE.CylinderGeometry(.28,.44,.34,30),black,0,-.13,0,.42);
- const under=bodyMesh(hips,new THREE.CylinderGeometry(.31,.47,.12,30),cream,0,-.30,0,.55);
- const apron=bodyMesh(hips,new THREE.SphereGeometry(.29,20,12),cream,0,-.02,-.22,.72);apron.scale.set(.88,.9,.24);
- const apronTrim=bodyMesh(hips,new THREE.TorusGeometry(.26,.028,10,24,Math.PI),white,0,-.10,-.255,.5);apronTrim.rotation.z=Math.PI;
-
- // Oversized head.
- const head=joint(torso,0,.61,0);rig.head=head;
- const face=bodyMesh(head,new THREE.SphereGeometry(.35,32,22),skin,0,0,0,.42);face.scale.set(1,.95,.88);
-
- // Bob hair: cap + side locks.
- const hairCap=bodyMesh(head,new THREE.SphereGeometry(.365,30,20),hair,0,.075,.045,.3);hairCap.scale.set(1.02,.78,.95);
- const sideL=bodyMesh(head,new THREE.SphereGeometry(.16,20,14),hair,-.27,-.03,.03,.3);sideL.scale.set(.72,1.45,.82);
- const sideR=bodyMesh(head,new THREE.SphereGeometry(.16,20,14),hair,.27,-.03,.03,.3);sideR.scale.set(.72,1.45,.82);
-
- // Maid bonnet made from soft scallops.
- const bonnet=new THREE.Group();bonnet.position.set(0,.29,.04);head.add(bonnet);
- for(let i=0;i<7;i++){
-   const a=(i/6-.5)*Math.PI*.92;
-   const puff=bodyMesh(bonnet,new THREE.SphereGeometry(.105,16,10),cream,Math.sin(a)*.31,Math.cos(a)*.085,0,.72);
-   puff.scale.set(.82,1.12,.72);
- }
- const headband=bodyMesh(head,new THREE.TorusGeometry(.315,.035,10,28,Math.PI),cream,0,.18,.02,.62);headband.rotation.z=Math.PI;
-
- // Huge glossy anime-style eyes: white, brown iris, black pupil + highlight.
- function eye(side){
-   const s=side==='L'?-1:1;
-   const whiteEye=bodyMesh(head,new THREE.SphereGeometry(.092,20,14),white,s*.125,-.315,.005,.22);whiteEye.scale.set(.92,.54,1.08);
-   const iris=bodyMesh(head,new THREE.SphereGeometry(.061,20,14),brown,s*.125,-.36,.006,.18);iris.scale.set(.9,.43,1);
-   const pupil=bodyMesh(head,new THREE.SphereGeometry(.034,18,12),'#09090d',s*.125,-.388,.008,.16);pupil.scale.set(.95,.32,1);
-   const hi=bodyMesh(head,new THREE.SphereGeometry(.013,12,8),white,s*.105,-.411,.028,.1);
- }
- eye('L');eye('R');
- bodyMesh(head,new THREE.SphereGeometry(.018,12,8),'#c86f5f',0,-.325,-.055,.35);
-
- // Short, chunky arms with cream cuffs.
- function arm(side){
-  const s=side==='L'?-1:1;
-  const upper=joint(torso,s*.31,.38,0);upper.rotation.z=s*.12;rig['upper'+side]=upper;
-  bodyMesh(upper,new THREE.CylinderGeometry(.105,.115,.24,18),black,0,-.12,0,.38);
-  bodyMesh(upper,new THREE.TorusGeometry(.10,.025,10,18),cream,0,-.23,0,.55);
-  const fore=joint(upper,0,-.25,0);rig['fore'+side]=fore;
-  bodyMesh(fore,new THREE.CylinderGeometry(.082,.09,.21,18),skin,0,-.105,0,.48);
-  const hand=joint(fore,0,-.21,0);rig['hand'+side]=hand;
-  bodyMesh(hand,new THREE.SphereGeometry(.09,18,12),skin,0,-.045,0,.4);
- }
-
- // Very short legs + oversized glossy boots.
- function leg(side){
-  const s=side==='L'?-1:1;
-  const thigh=joint(hips,s*.14,-.24,0);rig['thigh'+side]=thigh;
-  bodyMesh(thigh,new THREE.CylinderGeometry(.115,.13,.20,18),skin,0,-.10,0,.45);
-  const shin=joint(thigh,0,-.20,0);rig['shin'+side]=shin;
-  bodyMesh(shin,new THREE.CylinderGeometry(.105,.11,.14,18),cream,0,-.07,0,.58);
-  const foot=joint(shin,0,-.14,0);rig['foot'+side]=foot;
-  const boot=bodyMesh(foot,new THREE.SphereGeometry(.15,22,14),black,0,-.07,-.07,.18);boot.scale.set(1.0,.72,1.28);
-  const ribbon=bodyMesh(foot,new THREE.SphereGeometry(.055,14,10),purple,0,.03,-.145,.3);ribbon.scale.set(1.5,.6,.45);
- }
- arm('L');arm('R');leg('L');leg('R');
-
- // Purple trim accents.
- bodyMesh(torso,new THREE.SphereGeometry(.032,12,8),purple,0,.10,-.225,.28);
- bodyMesh(torso,new THREE.SphereGeometry(.032,12,8),purple,0,.00,-.225,.28);
+for(const [key,path] of Object.entries(CHARACTER_ART)){
+ const tex=makeCharacterTexture(path);
+ charTextures[key]=tex;
+ charMaterials[key]=new THREE.SpriteMaterial({
+   map:tex,transparent:true,depthWrite:false,alphaTest:.025,
+   toneMapped:false
+ });
 }
-buildHouseholdCharacter();
-rig.root.scale.setScalar(1.14);
+characterSprite=new THREE.Sprite(charMaterials.idle);
+characterSprite.name='HouseholdCanonCharacter';
+characterSprite.scale.set(1.58,2.16,1);
+characterSprite.position.set(0,characterBaseY,0);
+actorRoot.add(characterSprite);
 
-function resetRigPose(){
- if(!rig.root)return;
- ['thighL','thighR','shinL','shinR','footL','footR','upperL','upperR','foreL','foreR','torso','head'].forEach(k=>{if(rig[k])rig[k].rotation.set(0,0,0)});
- if(rig.hips)rig.hips.position.y=.56;
- if(rig.upperL)rig.upperL.rotation.z=-.10;
- if(rig.upperR)rig.upperR.rotation.z=.10;
+function setCharacterVisual(key){
+ const wanted=charMaterials[key]||charMaterials.general||charMaterials.idle;
+ if(characterSprite.material!==wanted) characterSprite.material=wanted;
+ currentVisual=key;
 }
-function updateRigAnimation(dt,now){
- if(!rig.root)return;
- if(taskAnim)return;
+function visualForTask(id){
+ if(id==='wipe') return 'wipe';
+ if(id==='prepare'||id==='machines') return 'prepare';
+ if(id==='finish') return 'finish';
+ return 'general';
+}
+function resetCharacterPose(){
+ if(!characterSprite)return;
+ characterSprite.position.y=characterBaseY;
+ characterSprite.scale.set(1.58,2.16,1);
+ characterSprite.material.rotation=0;
+}
+function updateCharacterAnimation(dt,now){
+ if(!characterSprite)return;
+ if(taskAnim) return;
  if(now<celebrateUntil){
-  const p=1-(celebrateUntil-now)/2200,w=Math.sin(Math.min(1,Math.max(0,p))*Math.PI);
-  resetRigPose();rig.upperL.rotation.x=-2.15*w;rig.upperR.rotation.x=-2.15*w;rig.hips.position.y=.56+Math.sin(p*Math.PI*3)*.08*w;rig.torso.rotation.x=-.10*w;return;
+   const p=1-(celebrateUntil-now)/2200;
+   const w=Math.sin(Math.max(0,Math.min(1,p))*Math.PI);
+   setCharacterVisual('finish');
+   characterSprite.position.y=characterBaseY+Math.sin(p*Math.PI*3)*.14*w;
+   const s=1+w*.08;characterSprite.scale.set(1.58*s,2.16*s,1);
+   characterSprite.material.rotation=Math.sin(p*Math.PI*5)*.055*w;
+   return;
  }
  if(moving){
-  walkClock+=dt*14.5;const s=Math.sin(walkClock),a=Math.abs(s);
-  resetRigPose();rig.thighL.rotation.x=s*.72;rig.thighR.rotation.x=-s*.72;
-  rig.shinL.rotation.x=Math.max(0,-s)*.62;rig.shinR.rotation.x=Math.max(0,s)*.62;
-  rig.footL.rotation.x=-s*.14;rig.footR.rotation.x=s*.14;
-  rig.upperL.rotation.x=-s*.58;rig.upperR.rotation.x=s*.58;
-  rig.hips.position.y=.56+a*.025;rig.torso.rotation.z=-s*.035;return;
+   setCharacterVisual('idle');
+   walkClock+=dt*18;
+   const step=Math.sin(walkClock),lift=Math.abs(Math.sin(walkClock*.5));
+   characterSprite.position.y=characterBaseY+.035*lift;
+   characterSprite.material.rotation=step*.026;
+   characterSprite.scale.set(1.58*(1+.018*lift),2.16*(1-.012*lift),1);
+   return;
  }
- resetRigPose();const t=now*.001;
- rig.hips.position.y=.56+Math.sin(t*2.1)*.006;rig.torso.rotation.z=Math.sin(t*.9)*.015;rig.head.rotation.y=Math.sin(t*.55)*.06;
+ setCharacterVisual('idle');
+ const t=now*.001;
+ characterSprite.position.y=characterBaseY+Math.sin(t*2.0)*.012;
+ characterSprite.material.rotation=Math.sin(t*.75)*.008;
+ characterSprite.scale.set(1.58,2.16,1);
 }
 
+// Small game-FX layer: visible confirmation that the room reacts to her actions.
+const actionFx=new THREE.Group();scene.add(actionFx);
+const cleanRing=new THREE.Mesh(
+ new THREE.RingGeometry(.26,.34,32),
+ new THREE.MeshBasicMaterial({color:'#c7a7ff',transparent:true,opacity:.0,depthWrite:false,side:THREE.DoubleSide})
+);
+cleanRing.rotation.x=-Math.PI/2;cleanRing.position.y=.025;scene.add(cleanRing);
+let fxUntil=0,fxMode='';
+const fxParticles=[];
+for(let i=0;i<12;i++){
+ const p=new THREE.Mesh(
+   new THREE.OctahedronGeometry(.035+(i%3)*.008,0),
+   new THREE.MeshBasicMaterial({color:i%2?'#fff2c8':'#c9a8ff',transparent:true,opacity:0,depthWrite:false})
+ );
+ p.visible=false;actionFx.add(p);fxParticles.push(p);
+}
+function startActionFx(id,obj){
+ fxMode=id;fxUntil=performance.now()+(id==='vacuum'||id==='mop'?650:480);
+ cleanRing.position.set(obj.position.x,.025,obj.position.z);
+ cleanRing.material.opacity=.62;
+ fxParticles.forEach((p,i)=>{
+   p.visible=true;p.material.opacity=.85;
+   p.position.set(obj.position.x+(i%4-.5)*.12,.10+(i%3)*.07,obj.position.z+((i*7)%5-2)*.08);
+   p.userData.seed=i*.61;
+ });
+}
+function updateActionFx(now){
+ const left=fxUntil-now;
+ if(left<=0){
+   cleanRing.material.opacity=Math.max(0,cleanRing.material.opacity-.08);
+   fxParticles.forEach(p=>{p.visible=false;p.material.opacity=0});
+   return;
+ }
+ const q=1-left/(fxMode==='vacuum'||fxMode==='mop'?650:480);
+ cleanRing.scale.setScalar(.82+q*.65);
+ cleanRing.material.opacity=.62*(1-q);
+ cleanRing.rotation.z=now*.003;
+ fxParticles.forEach((p,i)=>{
+   const a=p.userData.seed+q*Math.PI*2;
+   p.position.y=.10+q*.48+(i%3)*.025;
+   p.position.x+=Math.cos(a)*.004;
+   p.position.z+=Math.sin(a)*.004;
+   p.rotation.y+=.12;
+   p.material.opacity=.85*(1-q);
+ });
+}
 const clutter=new Map();
 function addClutter(id,color,pos,kind='box'){
   let g=kind==='sphere'?new THREE.SphereGeometry(.18,16,10):new THREE.BoxGeometry(.42,.14,.28);
@@ -229,6 +238,8 @@ const vac=clutter.get('vacuum');
 const vacHandle=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.72,14),new THREE.MeshStandardMaterial({color:'#47355d',roughness:.35,metalness:.08}));vacHandle.position.set(0,.42,-.12);vacHandle.rotation.x=-.22;vac.add(vacHandle);
 const vacGrip=new THREE.Mesh(new THREE.BoxGeometry(.19,.07,.10),new THREE.MeshStandardMaterial({color:'#e7dbe8',roughness:.4}));vacGrip.position.set(0,.76,-.20);vac.add(vacGrip);
 const vacGlow=new THREE.Mesh(new THREE.SphereGeometry(.045,12,8),new THREE.MeshStandardMaterial({color:'#a85bea',emissive:'#7a34bb',emissiveIntensity:.65}));vacGlow.position.set(.09,.06,-.20);vac.add(vacGlow);
+const dustGroup=new THREE.Group();room.add(dustGroup);
+for(let i=0;i<14;i++){const d=new THREE.Mesh(new THREE.SphereGeometry(.018+(i%3)*.006,8,6),new THREE.MeshStandardMaterial({color:i%2?'#715b4b':'#8f7661',roughness:1}));d.position.set(-1.6+(i%7)*.43,.025,.55+Math.floor(i/7)*.55+(i%2)*.08);d.userData.original=d.scale.clone();dustGroup.add(d)}
 const mop=clutter.get('mop');
 const mopHead=new THREE.Mesh(new THREE.BoxGeometry(.42,.08,.18),new THREE.MeshStandardMaterial({color:'#ede3dc',roughness:.82}));mopHead.position.set(0,-.47,0);mop.add(mopHead);
 const mopBand=new THREE.Mesh(new THREE.TorusGeometry(.055,.018,8,16),new THREE.MeshStandardMaterial({color:'#6c43a0',roughness:.45}));mopBand.position.set(0,.28,0);mopBand.rotation.x=Math.PI/2;mop.add(mopBand);
@@ -270,7 +281,7 @@ function updateMove(dt){
  tmp.subVectors(target,actorRoot.position);tmp.y=0;const d=tmp.length();
  if(d<.07){actorRoot.position.x=target.x;actorRoot.position.z=target.z;moving=false;setState('idle');const cb=afterMove;afterMove=null;if(cb)cb();return}
  tmp.normalize();actorRoot.position.addScaledVector(tmp,Math.min(d,moveSpeed*dt));
- const yaw=Math.atan2(-tmp.x,-tmp.z);let diff=yaw-actorRoot.rotation.y;diff=Math.atan2(Math.sin(diff),Math.cos(diff));actorRoot.rotation.y+=diff*Math.min(1,dt*13);if(rig.head)rig.head.rotation.y=THREE.MathUtils.clamp(diff*1.35,-.34,.34);
+ const yaw=Math.atan2(tmp.x,tmp.z);let diff=yaw-actorRoot.rotation.y;diff=Math.atan2(Math.sin(diff),Math.cos(diff));actorRoot.rotation.y+=diff*Math.min(1,dt*10);
 }
 
 function taskTarget(id){
@@ -293,25 +304,45 @@ function actionDestination(id,obj){
 function startTaskAnimation(id,cb){
  const obj=clutter.get(id);if(!obj){cb();return}
  const long=id==='vacuum'||id==='mop'||id==='wipe';
- taskAnim={id,obj,from:obj.position.clone(),to:actionDestination(id,obj),start:performance.now(),duration:reduce?80:(long?520:330),cb};
- setState(id);
+ taskAnim={id,obj,from:obj.position.clone(),to:actionDestination(id,obj),start:performance.now(),duration:reduce?80:(long?650:420),cb};
+ setState(id);setCharacterVisual(visualForTask(id));startActionFx(id,obj);
 }
 function updateTaskAnimation(now){
  if(!taskAnim)return;
  const a=taskAnim,p=Math.min(1,(now-a.start)/a.duration),ease=1-Math.pow(1-p,3),wave=Math.sin(p*Math.PI);
- resetRigPose();
+ resetCharacterPose();
+ setCharacterVisual(visualForTask(a.id));
+ // Every task has its own readable body-language beat while keeping the exact canon art.
  if(a.id==='clothes'||a.id==='trash'||a.id==='places'){
-  rig.torso.rotation.x=wave*.48;rig.upperL.rotation.x=-wave*.95;rig.upperR.rotation.x=-wave*.95;rig.foreL.rotation.x=-wave*.65;rig.foreR.rotation.x=-wave*.65;
+   characterSprite.material.rotation=-.08*wave;
+   characterSprite.position.y=characterBaseY-.10*wave;
+   characterSprite.scale.set(1.58*(1+.035*wave),2.16*(1-.08*wave),1);
  }else if(a.id==='wipe'){
-  rig.torso.rotation.x=.12*wave;rig.upperR.rotation.x=-1.0*wave;rig.foreR.rotation.z=Math.sin(p*Math.PI*6)*.75;rig.head.rotation.y=.18*wave;
- }else if(a.id==='vacuum'||a.id==='mop'){
+   characterSprite.material.rotation=Math.sin(p*Math.PI*5)*.055;
+   characterSprite.position.y=characterBaseY+.025*Math.sin(p*Math.PI*4);
+ }else if(a.id==='vacuum'){
+   characterSprite.material.rotation=Math.sin(p*Math.PI*3)*.07;
+   characterSprite.position.y=characterBaseY-.035*wave;
+   characterSprite.scale.set(1.58*(1+.025*wave),2.16*(1-.025*wave),1);
+ }else if(a.id==='mop'){
+   characterSprite.material.rotation=Math.sin(p*Math.PI*4)*.08;
+   characterSprite.position.y=characterBaseY-.02*wave;
+ }else if(a.id==='machines'||a.id==='prepare'){
+   characterSprite.material.rotation=.045*wave;
+   characterSprite.position.y=characterBaseY+.025*wave;
+ }else if(a.id==='finish'){
+   characterSprite.position.y=characterBaseY+.10*wave;
+   characterSprite.material.rotation=Math.sin(p*Math.PI*2)*.05;
+ } if(a.id==='vacuum'||a.id==='mop'){
   rig.torso.rotation.x=.16*wave;rig.upperL.rotation.x=-.75*wave;rig.upperR.rotation.x=-.75*wave;rig.foreL.rotation.x=-.55*wave;rig.foreR.rotation.x=-.55*wave;rig.torso.rotation.z=Math.sin(p*Math.PI*6)*.14;
  }else if(a.id==='machines'||a.id==='prepare'||a.id==='finish'){
   rig.upperR.rotation.x=-.85*wave;rig.foreR.rotation.x=-.55*wave;rig.torso.rotation.z=.08*wave;
  }
  if(a.id==='vacuum'||a.id==='mop'){
-  a.obj.position.x=a.from.x+Math.sin(p*Math.PI*3)*.75;
-  a.obj.position.z=a.from.z+(a.id==='mop'?Math.sin(p*Math.PI*2)*.35:0);
+  const cleaned=Math.floor(p*dustGroup.children.length);dustGroup.children.forEach((d,i)=>d.visible=i>=cleaned);
+  a.obj.position.x=a.from.x+Math.sin(p*Math.PI*4)*.82;
+  a.obj.position.z=a.from.z+(a.id==='mop'?Math.sin(p*Math.PI*2)*.42:Math.cos(p*Math.PI*2)*.16);
+  a.obj.rotation.z=(a.id==='mop'?.18:.10)*Math.sin(p*Math.PI*4);
  }else if(a.id==='wipe'){
   a.obj.position.x=a.from.x+Math.sin(p*Math.PI*5)*.28;
  }else{
@@ -321,7 +352,7 @@ function updateTaskAnimation(now){
  }
  a.obj.material.emissive.set('#5ce3b1');a.obj.material.emissiveIntensity=.25+.45*wave;
  if(p>=1){
-  resetRigPose();
+  resetCharacterPose();setCharacterVisual('idle');
   a.obj.scale.setScalar(.01);setTimeout(()=>{a.obj.visible=false;},100);
   taskAnim=null;const cb=a.cb;if(cb)cb();
  }
@@ -368,8 +399,8 @@ function reset(){
  bedTop.material.color.set(upgraded?'#fff6ee':'#f4e9e2');
  sun.intensity=upgraded?3.35:2.85;fill.intensity=upgraded?1.1:.9;practical.intensity=upgraded?.62:.42;
  camera.position.set(upgraded?6.25:6.8,upgraded?4.75:5.2,upgraded?7.8:8.5);camera.lookAt(0,.7,0);
- clutter.forEach(o=>{o.visible=true;o.scale.setScalar(1);if(o.material?.emissive){o.material.emissive.set('#000');o.material.emissiveIntensity=0}});
- actorRoot.position.set(.1,0,1.9);actorRoot.rotation.y=Math.PI;renderTasks();toast(upgraded?'Nieuwe dag: level blijft, nieuwe rommel':'Nieuwe dag: kamer weer rommelig');
+ clutter.forEach(o=>{o.visible=true;o.scale.setScalar(1);if(o.material?.emissive){o.material.emissive.set('#000');o.material.emissiveIntensity=0}});dustGroup.children.forEach(d=>d.visible=true);
+ actorRoot.position.set(.1,0,1.9);actorRoot.rotation.y=0;resetCharacterPose();setCharacterVisual('idle');renderTasks();toast(upgraded?'Nieuwe dag: level blijft, nieuwe rommel':'Nieuwe dag: kamer weer rommelig');
 }
 document.getElementById('resetRoom').onclick=reset;
 currentTaskButton.onclick=startTask;
@@ -394,11 +425,11 @@ function renderTasks(){
  clutter.forEach((o,key)=>{if(!o.material?.emissive)return;o.material.emissive.set(key===id?'#8be1c1':'#000');o.material.emissiveIntensity=key===id ? .22 : 0});
 }
 
-toast('Eigen Household rig actief · klik stap 1 of de kleding');
+toast('Canon Household character actief · klik stap 1 of de kleding');
 
 function resize(){const r=stage.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/Math.max(1,r.height);camera.updateProjectionMatrix()}
 new ResizeObserver(resize).observe(stage);resize();reset();
 
 let last=performance.now();
-function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;updateMove(dt);updateTaskAnimation(now);updateRigAnimation(dt,now);sparkleGroup.children.forEach(s=>{if(s.visible){const t=now*.002+s.userData.phase;s.rotation.y=t;s.scale.setScalar(.75+Math.sin(t*2)*.28)}});renderer.render(scene,camera);requestAnimationFrame(tick)}
+function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;updateMove(dt);updateTaskAnimation(now);updateCharacterAnimation(dt,now);updateActionFx(now);sparkleGroup.children.forEach(s=>{if(s.visible){const t=now*.002+s.userData.phase;s.rotation.y=t;s.scale.setScalar(.75+Math.sin(t*2)*.28)}});renderer.render(scene,camera);requestAnimationFrame(tick)}
 requestAnimationFrame(tick);
