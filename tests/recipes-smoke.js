@@ -10,11 +10,14 @@ const page=fs.readFileSync(path.join(root,'recipes.html'),'utf8');
 const character=fs.readFileSync(path.join(root,'character.html'),'utf8');
 const xp=fs.readFileSync(path.join(root,'xp.js'),'utf8');
 
-for(const name of ['Tonijn salade','Egg salad','Cha siu','Stroop / Siroop','Pasta carbonara']){
+for(const name of ['Tonijn salade','Egg salad','Cha siu','Stroop / Siroop','Pasta carbonara','Noedels met paksoi, fachong & gekruide kip']){
   assert.ok(page.includes(name),'Notion recipe seed includes '+name);
 }
 assert.match(page,/NOTION_RECIPE_SEED/,'Notion seed is explicit and deterministic');
-assert.match(page,/mergeNotionSeed/,'Notion recipes merge into existing user data');
+assert.match(page,/mergeNotionSeed/,'Starter recipes merge into existing user data');
+assert.match(page,/GAMENFY_RECIPE_SEED/,'Gamenfy recipe seed is separate from the Notion import');
+assert.match(page,/Geen sojasaus bij de kip/,'Noodle recipe preserves the no-soy-on-chicken rule');
+assert.match(page,/kern minimaal 75°C/,'Noodle recipe preserves safe chicken doneness guidance');
 assert.match(page,/ingredientsText/,'Recipe Book stores normal ingredient text');
 assert.match(page,/methodText/,'Recipe Book stores preparation steps');
 assert.match(page,/Macro-calculator \(optioneel/,'Macro calculator is optional, not the primary recipe format');
