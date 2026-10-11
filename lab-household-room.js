@@ -22,7 +22,7 @@ const TASKS=[
  ['finish','Final touch','Kussens recht · kamer fijn','finish']
 ];
 
-let index=0,level=1,busy=false,model,mixer,actions={},current='idle';
+let index=0,level=1,busy=false,model,mixer,actions={},current='idle',taskAnim=null;
 const target=new THREE.Vector3(),tmp=new THREE.Vector3();
 let moving=false,afterMove=null;
 
@@ -110,13 +110,56 @@ function updateMove(dt){
 function taskTarget(id){
  const o=clutter.get(id);const p=o?o.position.clone():new THREE.Vector3();p.z+=.55;return p;
 }
+function actionDestination(id,obj){
+ const map={
+  clothes:new THREE.Vector3(-2.55,1.35,-1.9),
+  trash:new THREE.Vector3(-2.55,.45,-.9),
+  places:new THREE.Vector3(-2.55,1.05,-1.9),
+  machines:new THREE.Vector3(-2.55,.98,-.88),
+  prepare:new THREE.Vector3(2.0,.72,-1.55),
+  wipe:new THREE.Vector3(-2.25,.88,-.75),
+  vacuum:new THREE.Vector3(-.25,.18,.9),
+  mop:new THREE.Vector3(.65,.18,.8),
+  finish:new THREE.Vector3(1.85,.73,-1.62)
+ };
+ return (map[id]||obj.position).clone();
+}
+function startTaskAnimation(id,cb){
+ const obj=clutter.get(id);if(!obj){cb();return}
+ const long=id==='vacuum'||id==='mop'||id==='wipe';
+ taskAnim={id,obj,from:obj.position.clone(),to:actionDestination(id,obj),start:performance.now(),duration:reduce?80:(long?520:330),cb};
+ blend('idle',1.2);
+}
+function updateTaskAnimation(now){
+ if(!taskAnim)return;
+ const a=taskAnim,p=Math.min(1,(now-a.start)/a.duration),ease=1-Math.pow(1-p,3),wave=Math.sin(p*Math.PI);
+ if(model){
+  model.rotation.x=(a.id==='clothes'||a.id==='trash'||a.id==='places')?wave*.26:(a.id==='wipe'?wave*.12:0);
+  model.rotation.z=(a.id==='wipe'||a.id==='vacuum'||a.id==='mop')?Math.sin(p*Math.PI*6)*.08:0;
+ }
+ if(a.id==='vacuum'||a.id==='mop'){
+  a.obj.position.x=a.from.x+Math.sin(p*Math.PI*3)*.75;
+  a.obj.position.z=a.from.z+(a.id==='mop'?Math.sin(p*Math.PI*2)*.35:0);
+ }else if(a.id==='wipe'){
+  a.obj.position.x=a.from.x+Math.sin(p*Math.PI*5)*.28;
+ }else{
+  a.obj.position.lerpVectors(a.from,a.to,ease);
+  a.obj.position.y+=wave*.28;
+  a.obj.rotation.y+=.18;
+ }
+ a.obj.material.emissive.set('#5ce3b1');a.obj.material.emissiveIntensity=.25+.45*wave;
+ if(p>=1){
+  if(model){model.rotation.x=0;model.rotation.z=0}
+  a.obj.scale.setScalar(.01);setTimeout(()=>{a.obj.visible=false;},100);
+  taskAnim=null;const cb=a.cb;if(cb)cb();
+ }
+}
 function startTask(){
  if(busy||index>=TASKS.length)return;busy=true;renderTasks();
  const [id,name]=TASKS[index];toast('Ze gaat '+name.toLowerCase());
- walkTo(taskTarget(id),()=>{pulse(clutter.get(id));setTimeout(()=>completeCurrent(id),reduce?40:150)});
+ walkTo(taskTarget(id),()=>{pulse(clutter.get(id));setTimeout(()=>startTaskAnimation(id,()=>completeCurrent(id)),reduce?20:60)});
 }
 function completeCurrent(id){
- const obj=clutter.get(id);if(obj){obj.material.emissive.set('#5ce3b1');obj.material.emissiveIntensity=.35;obj.scale.setScalar(.01);setTimeout(()=>{obj.visible=false;},180)}
  index++;busy=false;renderTasks();
  if(index>=TASKS.length){toast('Kamer schoon — evolution!');setTimeout(levelUp,320)}
  else toast('Stap '+index+' klaar · volgende: '+TASKS[index][1]);
@@ -142,7 +185,19 @@ function upgradeRoom(){
  requestAnimationFrame(grow);
 }
 function reset(){
- index=0;busy=false;upgradeGroup.visible=false;scene.background=new THREE.Color('#141a2c');floorMesh.material.color.set('#88747a');backWall.material.color.set('#67586f');sideWall.material.color.set('#5b5671');bedBase.material.color.set('#d7c1b7');bedTop.material.color.set('#efe0d6');sun.intensity=2.6;fill.intensity=.8;camera.position.set(6.8,5.2,8.5);camera.lookAt(0,.7,0);clutter.forEach(o=>{o.visible=true;o.scale.setScalar(1);if(o.material?.emissive){o.material.emissive.set('#000');o.material.emissiveIntensity=0}});actorRoot.position.set(.1,0,1.9);actorRoot.rotation.y=Math.PI;renderTasks();toast('Nieuwe dag: kamer weer rommelig');
+ index=0;busy=false;taskAnim=null;
+ const upgraded=level>1;
+ upgradeGroup.visible=upgraded;
+ scene.background=new THREE.Color(upgraded?'#191d2d':'#141a2c');
+ floorMesh.material.color.set(upgraded?'#b48f78':'#88747a');
+ backWall.material.color.set(upgraded?'#8f7a94':'#67586f');
+ sideWall.material.color.set(upgraded?'#786d8d':'#5b5671');
+ bedBase.material.color.set(upgraded?'#c7a78e':'#d7c1b7');
+ bedTop.material.color.set(upgraded?'#fff3e7':'#efe0d6');
+ sun.intensity=upgraded?3.15:2.6;fill.intensity=upgraded?1.05:.8;
+ camera.position.set(upgraded?6.25:6.8,upgraded?4.75:5.2,upgraded?7.8:8.5);camera.lookAt(0,.7,0);
+ clutter.forEach(o=>{o.visible=true;o.scale.setScalar(1);if(o.material?.emissive){o.material.emissive.set('#000');o.material.emissiveIntensity=0}});
+ actorRoot.position.set(.1,0,1.9);actorRoot.rotation.y=Math.PI;renderTasks();toast(upgraded?'Nieuwe dag: level blijft, nieuwe rommel':'Nieuwe dag: kamer weer rommelig');
 }
 document.getElementById('resetRoom').onclick=reset;
 function renderTasks(){
@@ -170,5 +225,5 @@ function resize(){const r=stage.getBoundingClientRect();renderer.setSize(r.width
 new ResizeObserver(resize).observe(stage);resize();reset();
 
 let last=performance.now();
-function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(mixer)mixer.update(dt);updateMove(dt);if(model){model.position.y=model.userData.baseY||model.position.y;model.rotation.z=moving?Math.sin(now*.018)*.018:0;}renderer.render(scene,camera);requestAnimationFrame(tick)}
+function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(mixer)mixer.update(dt);updateMove(dt);updateTaskAnimation(now);if(model){model.position.y=model.userData.baseY||model.position.y;if(!taskAnim)model.rotation.z=moving?Math.sin(now*.022)*.025:0;}renderer.render(scene,camera);requestAnimationFrame(tick)}
 requestAnimationFrame(tick);
