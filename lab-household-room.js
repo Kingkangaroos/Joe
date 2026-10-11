@@ -23,7 +23,7 @@ const TASKS=[
  ['finish','Final touch','Kussens recht · kamer fijn','finish']
 ];
 
-let index=0,level=1,busy=false,current='idle',taskAnim=null,celebrateUntil=0,walkClock=0;
+let index=0,level=1,busy=false,current='idle',taskAnim=null,celebrateUntil=0,walkClock=0,taskToken=0,taskStartedAt=0;
 const target=new THREE.Vector3(),tmp=new THREE.Vector3();
 let moving=false,afterMove=null;
 
@@ -137,6 +137,7 @@ function visualForTask(id){
 }
 function resetCharacterPose(){
  if(!characterSprite)return;
+ characterSprite.position.x=0;
  characterSprite.position.y=characterBaseY;
  characterSprite.scale.set(1.58,2.16,1);
  characterSprite.material.rotation=0;
@@ -308,7 +309,7 @@ function actionDestination(id,obj){
 function startTaskAnimation(id,cb){
  const obj=clutter.get(id);if(!obj){cb();return}
  const long=id==='vacuum'||id==='mop'||id==='wipe';
- taskAnim={id,obj,from:obj.position.clone(),to:actionDestination(id,obj),start:performance.now(),duration:reduce?80:(long?650:420),cb};
+ taskAnim={id,obj,from:obj.position.clone(),fromRotation:obj.rotation.clone(),to:actionDestination(id,obj),start:performance.now(),duration:reduce?80:(long?650:420),cb};
  setState(id);setCharacterVisual(visualForTask(id));startActionFx(id,obj);
  if(id==='vacuum'||id==='mop') obj.visible=false;
 }
@@ -338,10 +339,7 @@ function updateTaskAnimation(now){
  }else if(a.id==='finish'){
    characterSprite.position.y=characterBaseY+.10*wave;
    characterSprite.material.rotation=Math.sin(p*Math.PI*2)*.05;
- } if(a.id==='vacuum'||a.id==='mop'){
-  rig.torso.rotation.x=.16*wave;rig.upperL.rotation.x=-.75*wave;rig.upperR.rotation.x=-.75*wave;rig.foreL.rotation.x=-.55*wave;rig.foreR.rotation.x=-.55*wave;rig.torso.rotation.z=Math.sin(p*Math.PI*6)*.14;
- }else if(a.id==='machines'||a.id==='prepare'||a.id==='finish'){
-  rig.upperR.rotation.x=-.85*wave;rig.foreR.rotation.x=-.55*wave;rig.torso.rotation.z=.08*wave;
+
  }
  if(a.id==='vacuum'||a.id==='mop'){
   const cleaned=Math.floor(p*dustGroup.children.length);dustGroup.children.forEach((d,i)=>d.visible=i>=cleaned);
@@ -356,7 +354,7 @@ function updateTaskAnimation(now){
  }else{
   a.obj.position.lerpVectors(a.from,a.to,ease);
   a.obj.position.y+=wave*.28;
-  a.obj.rotation.y+=.18;
+  a.obj.rotation.y=a.fromRotation.y+ease*.48;
  }
  a.obj.material.emissive.set('#5ce3b1');a.obj.material.emissiveIntensity=.25+.45*wave;
  if(p>=1){
@@ -366,11 +364,36 @@ function updateTaskAnimation(now){
  }
 }
 function startTask(){
- if(busy||index>=TASKS.length)return;busy=true;renderTasks();
- const [id,name]=TASKS[index];toast('Ze gaat '+name.toLowerCase());
- walkTo(taskTarget(id),()=>{pulse(clutter.get(id));setTimeout(()=>startTaskAnimation(id,()=>completeCurrent(id)),reduce?20:60)});
+ if(busy||index>=TASKS.length)return;
+ busy=true;const token=++taskToken;taskStartedAt=performance.now();renderTasks();
+ const [id,name]=TASKS[index];
+ toast('Ze gaat '+name.toLowerCase());
+ console.info('[Household]',index+1,id,'start');
+ // Watchdog: this task cannot permanently block the UI after a failed animation/callback.
+ setTimeout(()=>{if(taskToken===token&&busy&&index<TASKS.length)rescueTask(id,token,'watchdog');},2200);
+ walkTo(taskTarget(id),()=>{
+   if(taskToken!==token)return;
+   console.info('[Household]',index+1,id,'arrived');
+   pulse(clutter.get(id));
+   setTimeout(()=>{
+     if(taskToken!==token)return;
+     try{startTaskAnimation(id,()=>completeCurrent(id,token));}
+     catch(err){console.error('[Household] animation start error',id,err);rescueTask(id,token,'animation-start');}
+   },reduce?20:60);
+ });
 }
-function completeCurrent(id){
+function rescueTask(id,token,reason){
+ if(taskToken!==token||index>=TASKS.length||TASKS[index]?.[0]!==id)return;
+ console.warn('[Household] recovered task',index+1,id,reason);
+ moving=false;afterMove=null;taskAnim=null;
+ resetCharacterPose();setCharacterVisual('idle');
+ const obj=clutter.get(id);if(obj){obj.visible=false;obj.scale.setScalar(.01);}
+ completeCurrent(id,token);
+}
+function completeCurrent(id,token){
+ if(token!==taskToken||index>=TASKS.length||TASKS[index]?.[0]!==id)return;
+ taskToken++;taskAnim=null;moving=false;afterMove=null;taskStartedAt=0;
+ console.info('[Household]',index+1,id,'complete');
  index++;busy=false;renderTasks();
  if(index>=TASKS.length){toast('Kamer schoon — evolution!');setTimeout(levelUp,320)}
  else toast('Stap '+index+' klaar · volgende: '+TASKS[index][1]);
@@ -396,7 +419,7 @@ function upgradeRoom(){
  requestAnimationFrame(grow);
 }
 function reset(){
- index=0;busy=false;taskAnim=null;
+ taskToken++;index=0;busy=false;taskAnim=null;moving=false;afterMove=null;taskStartedAt=0;celebrateUntil=0;flash.classList.remove('run');
  const upgraded=level>1;
  upgradeGroup.visible=upgraded;sparkleGroup.children.forEach(s=>s.visible=upgraded);
  scene.background=new THREE.Color(upgraded?'#6d6a78':'#6d6673');
@@ -439,5 +462,16 @@ function resize(){const r=stage.getBoundingClientRect();renderer.setSize(r.width
 new ResizeObserver(resize).observe(stage);resize();reset();
 
 let last=performance.now();
-function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;updateMove(dt);updateTaskAnimation(now);updateCharacterAnimation(dt,now);updateActionFx(now);sparkleGroup.children.forEach(s=>{if(s.visible){const t=now*.002+s.userData.phase;s.rotation.y=t;s.scale.setScalar(.75+Math.sin(t*2)*.28)}});renderer.render(scene,camera);requestAnimationFrame(tick)}
+function tick(now){
+ requestAnimationFrame(tick);
+ const dt=Math.min(.05,(now-last)/1000);last=now;
+ try{
+   updateMove(dt);updateTaskAnimation(now);updateCharacterAnimation(dt,now);updateActionFx(now);
+   sparkleGroup.children.forEach(s=>{if(s.visible){const t=now*.002+s.userData.phase;s.rotation.y=t;s.scale.setScalar(.75+Math.sin(t*2)*.28)}});
+   renderer.render(scene,camera);
+ }catch(err){
+   console.error('[Household] frame error',err);
+   if(taskStartedAt&&taskAnim&&TASKS[index]?.[0]===taskAnim.id)rescueTask(taskAnim.id,taskToken,'frame-error');
+ }
+}
 requestAnimationFrame(tick);
