@@ -30,6 +30,8 @@ assert.match(js,/Cozy room shell/,'room includes the warmer decorative diorama p
 assert.match(js,/l01\\/l05\\/l10 family|l01\\/l05\\/l10|Chibi proportions copied from the Household l01\\/l05\\/l10 family/,'0.4 explicitly follows the Household evolution family proportions');
 assert.match(js,/img\/lab\/park31\/household\/l03\.webp/,'0.5 visibly uses Joey canon Household art');
 assert.match(js,/img\/lab\/park31\/household\/l05\.webp/,'wipe action uses a canon Household cleaning pose');
+assert.match(js,/img\/lab\/park31\/household\/l07\.webp/,'mop action uses a canon Household mop pose');
+assert.match(js,/img\/lab\/park31\/household\/l08\.webp/,'vacuum action uses a canon Household vacuum pose');
 assert.match(js,/canon Household character lives in the room/,'pedestal crop is deliberate');
 assert.match(js,/SpriteMaterial/,'Household is rendered as a 2.5D character puppet rather than primitive body parts');
 assert.doesNotMatch(js,/buildHouseholdCharacter|Maid bonnet made from soft scallops|Huge glossy anime-style eyes/,'old primitive character builder is removed');
