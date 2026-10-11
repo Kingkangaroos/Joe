@@ -9,6 +9,8 @@ const root=path.join(__dirname,'..');
 const page=fs.readFileSync(path.join(root,'recipes.html'),'utf8');
 const character=fs.readFileSync(path.join(root,'character.html'),'utf8');
 const xp=fs.readFileSync(path.join(root,'xp.js'),'utf8');
+const bookCss=fs.readFileSync(path.join(root,'recipes-book.css'),'utf8');
+const bookJs=fs.readFileSync(path.join(root,'recipes-book.js'),'utf8');
 
 for(const name of ['Tonijn salade','Egg salad','Cha siu','Stroop / Siroop','Pasta carbonara','Noedels met paksoi, fachong & gekruide kip']){
   assert.ok(page.includes(name),'Notion recipe seed includes '+name);
