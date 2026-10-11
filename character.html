@@ -14,7 +14,7 @@
 <script src="sync.js?v=11.9" defer></script>
 <script src="backup-owner-binding.js?v=1" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
-<script src="xp.js?v=10.98" defer></script>
+<script src="xp.js?v=10.99" defer></script>
 <script src="quests.js?v=10.98" defer></script>
 <script src="ladders.js?v=10.98" defer></script>
 <script src="ventures.js?v=10.98" defer></script>
@@ -2218,7 +2218,7 @@ function openSkillDetail(skillKey){
   // never the ever-growing XP-level — confirmed with Joey across all 9 habits.
   const rawLevel=window.getSkillLevel ? window.getSkillLevel(skillKey,xp) : xpToLevel(xp);
   const tl    =(!isHabit && window.tierLockInfo)?window.tierLockInfo(skillKey,rawLevel):{level:rawLevel,locked:false};
-  const level =tl.level;
+  const level =isHabit?Math.min(10,tl.level+1):tl.level;
   const meta  =PARENT_META[def.parentSkill||'body']||{color:'#6BE3A4'};
   const color =meta.color;
   const ms    =def.milestones||{};
@@ -2941,7 +2941,7 @@ function renderCharacter(){
     .filter(([,def])=>def.isHabit && def.active!==false)
     .map(([k,def])=>({
       key:k, icon:def.icon||'⚡', label:def.label||k, parentSkill:def.parentSkill,
-      score:(habits[k]||{}).score||0, streak:(habits[k]||{}).streak||0,
+      score:Math.min(10,((habits[k]||{}).score||0)+1), streak:(habits[k]||{}).streak||0,
       lastChecked:(habits[k]||{}).lastChecked||'',
     }));
 

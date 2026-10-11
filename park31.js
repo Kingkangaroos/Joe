@@ -21,7 +21,7 @@
     {key:'gratitude',label:'Gratitude',emoji:'🙏',dir:'gratitude'},
     {key:'good_deed',label:'Good Deed',emoji:'❤️',dir:'good-deed'},
     {key:'screen_time',label:'Screen Time',emoji:'📵',dir:'screen-time'},
-    {key:'cold_shower',label:'Cold Shower',emoji:'💧',dir:'cold-shower'}
+    {key:'workout',label:'Workout + Mobility',emoji:'🏋️',dir:'workout'}
   ];
   var PRIVATE_MISSIONS=[
     {key:'weed_control',label:'Gardening',emoji:'🌿',dir:'no-weed',private:true},
@@ -30,13 +30,13 @@
   var MISSIONS=PUBLIC_MISSIONS.concat(PRIVATE_MISSIONS);
   var DISPLAY_MISSIONS=[
     'budgeting','sleep','nutrition','walking','teeth','household',
-    'meditation','gratitude','good_deed','screen_time','no_porn','cold_shower'
+    'meditation','gratitude','good_deed','screen_time','no_porn','workout'
   ].map(function(key){return MISSIONS.find(function(item){return item.key===key;});}).filter(Boolean);
   var stage,button,art,levelEl,stateEl,sourceEl,copyEl,levelsEl,progressEl,lightEl,errorEl,rosterEl,rosterCountEl;
   var modal,modalArt,modalTitle,modalMeta,modalLevel,modalState,modalProgress,modalStatus,prevEl,nextEl,liveResetEl,missionToggleEl;
   var celebration,celebrationTitle,celebrationMeta,celebrationTimer=null;
   var current={raw:0,art:1,source:'empty'};
-  var artworkReady={budgeting:true,sleep:true,nutrition:true,walking:true,teeth:true,household:true,meditation:true,gratitude:true,good_deed:true,screen_time:true,cold_shower:true,weed_control:true,no_porn:true};
+  var artworkReady={budgeting:true,sleep:true,nutrition:true,walking:true,teeth:true,household:true,meditation:true,gratitude:true,good_deed:true,screen_time:true,workout:true,weed_control:true,no_porn:true};
   var litUntil={};
   var tries=0,pollId=null,missionMode=false,publicOnlyMode=false,homeSurface=false,selected=null,preview=null;
 
@@ -85,6 +85,7 @@
   }
   function assetUrl(level,mission){
     mission=mission||PUBLIC_MISSIONS.find(function(item){return item.key===KEY;})||PUBLIC_MISSIONS[0];
+    if(mission.key==='workout')return 'img/lab/workout-pending.svg';
     level=clamp(Math.round(Number(level)||1),1,10);
     return 'img/lab/park31/'+mission.dir+'/l'+String(level).padStart(2,'0')+'.webp?v='+VERSION;
   }
@@ -105,7 +106,7 @@
     }).join('');
   }
   function artworkLabel(mission){
-    return '10 evolution levels';
+    return mission.key==='workout'?'? To be generated':'10 evolution levels';
   }
   function missionCopy(mission){
     var w=hostWindow(),def={};
@@ -121,7 +122,7 @@
       gratitude:'Schrijf vandaag minimaal één ding op waar je dankbaar voor bent.',
       good_deed:'Doe vandaag bewust iets goeds voor iemand anders.',
       screen_time:'Houd gedachteloos schermgebruik vandaag onder controle.',
-      cold_shower:'Pak vandaag je afgesproken koude douche/rinse.',
+      workout:'? To be generated · plan en karakter volgen. Maximaal 20 minuten thuis: workout + mobility, samen uit te werken.',
       weed_control:'Blijf vandaag binnen je afgesproken gardening-grens.',
       no_porn:'Houd vandaag je discipline-afspraak.'
     };
@@ -138,16 +139,16 @@
   }
   function rosterCard(mission){
     var info=levelInfo(mission),ready=!!artworkReady[mission.key],done=missionMode&&isDone(mission);
-    var neglected=missionMode&&!done&&inactivityDays(mission)>=3;
+    var neglected=mission.key!=='workout'&&missionMode&&!done&&inactivityDays(mission)>=3;
     var lit=(litUntil[mission.key]||0)>Date.now();
     var selectedNow=!!(selected&&selected.key===mission.key);
-    var instruction=done?'Vandaag voltooid':(neglected?'HELP · Tik om te openen':(info.raw===0?'Slapend · voltooi om te wekken':'Tik om te openen'));
+    var instruction=mission.key==='workout'&&!done?'? To be generated':done?'Vandaag voltooid':(neglected?'HELP · Tik om te openen':(info.raw===0?'Slapend · voltooi om te wekken':'Tik om te openen'));
     var slotClass='p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(neglected?' is-neglected':'')+(lit?' is-lit':'')+(selectedNow?' is-selected':'')+(info.raw===0?' is-zero':'');
     return '<div class="p31-slot-wrap'+(done?' is-done':'')+'">'
       +'<button class="'+slotClass+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+' aria-pressed="'+(done?'true':'false')+'"'+(selectedNow?' aria-current="true"':'')+'>'
       +'<span class="p31-slot-art">'+(ready?'<img src="'+assetUrl(info.art,mission)+'" alt="" draggable="false">':mission.emoji)+(info.raw===0?'<span class="p31-dormant" aria-hidden="true">Zzz</span>':'')+(neglected?'<span class="p31-help" aria-hidden="true">HELP</span>':'')+'</span>'
       +'<span class="p31-slot-copy"><strong>'+mission.label+'</strong><small title="'+artworkLabel(mission)+'">'+missionCopy(mission)+'</small><em>'+(missionMode?instruction:(ready?'Tik om te openen':'artwork pending'))+'</em></span>'
-      +'<span class="p31-slot-level">L'+info.raw+'</span></button>'
+      +'<span class="p31-slot-level">L'+info.art+'</span></button>'
       +(missionMode?'<button class="p31-check'+(done?' is-done':'')+'" type="button" data-p31-toggle="'+mission.key+'" aria-label="'+(done?'Maak '+mission.label+' ongedaan':'Voltooi '+mission.label+' vandaag')+'" aria-pressed="'+(done?'true':'false')+'">'+(done?'✓':'')+'</button>':'')
       +'</div>';
   }
@@ -180,7 +181,7 @@
     if(!celebration||toLevel<=fromLevel)return;
     clearTimeout(celebrationTimer);
     celebrationTitle.textContent=mission.label;
-    celebrationMeta.textContent='LEVEL '+toLevel;
+    celebrationMeta.textContent='LEVEL '+clamp(toLevel+1,1,10);
     litUntil[mission.key]=Date.now()+5000;
     celebration.hidden=false;
     var slot=rosterEl&&typeof rosterEl.querySelector==='function'?rosterEl.querySelector('[data-mission="'+mission.key+'"]'):null;
@@ -204,6 +205,7 @@
     }catch(e){}
   }
   function openMission(key){
+    if(key==='workout'&&homeSurface&&typeof hostWindow().openMissionDetail==='function'){hostWindow().openMissionDetail('workout');return;}
     if(key==='household'&&homeSurface&&typeof hostWindow().openHouseholdChecklist==='function'){
       hostWindow().openHouseholdChecklist();
       return;
@@ -235,18 +237,18 @@
   function updateModal(){
     if(!selected||!modalArt)return;
     var info=levelInfo(selected),shown=shownLevel(),done=missionMode&&isDone(selected);
-    var displayLevel=preview===null?info.raw:shown;
+    var displayLevel=shown;
     var url=assetUrl(shown,selected);
     if(modalArt.getAttribute('src')!==url)modalArt.setAttribute('src',url);
     modalArt.alt=selected.label+' companion preview at level '+shown;
     if(modalArt.parentElement)modalArt.parentElement.classList.toggle('is-zero',displayLevel===0&&preview===null);
     modalTitle.textContent=selected.label;
-    modalMeta.textContent=(preview===null?'LIVE LEVEL · '+info.raw:'PREVIEW '+shown+' · LIVE '+info.raw);
+    modalMeta.textContent=(preview===null?'LIVE LEVEL · '+info.art:'PREVIEW '+shown+' · LIVE '+info.art);
     modalLevel.textContent='Level '+displayLevel;
     modalState.textContent=state(displayLevel);
     modalProgress.style.width=(clamp(displayLevel,0,10)*10)+'%';
     modalStatus.textContent=preview!==null
-      ?'Alleen preview — je live level blijft '+info.raw+'.'
+      ?'Alleen preview — je live level blijft '+info.art+'.'
       :(missionMode?(done?'Vandaag voltooid · tik het ronde vinkje om ongedaan te maken.':'Nog niet voltooid · tik het ronde vinkje op de kaart om af te ronden.'):'Live level uit Daily Missions.');
     liveResetEl.disabled=preview===null;
     missionToggleEl.hidden=!missionMode;
@@ -282,7 +284,7 @@
   function notifyMissionSummary(){
     if(window.parent===window||!window.parent||typeof window.parent.postMessage!=='function')return;
     var shown=publicOnlyMode?PUBLIC_MISSIONS:DISPLAY_MISSIONS;
-    var levels=shown.map(function(mission){return levelInfo(mission).raw;});
+    var levels=shown.map(function(mission){return levelInfo(mission).art;});
     var total=levels.reduce(function(sum,value){return sum+Number(value||0);},0);
     var overall=levels.length?Math.round((total/levels.length)*10)/10:0;
     var completed=missionMode?shown.filter(function(mission){return isDone(mission);}).length:0;
@@ -319,11 +321,11 @@
     stage.classList.toggle('is-zero',current.raw===0);
     stage.dataset.liveLevel=String(current.raw);
     stage.dataset.artLevel=String(current.art);
-    levelEl.textContent='LEVEL '+current.raw;
-    stateEl.textContent=state(current.raw);
+    levelEl.textContent='LEVEL '+current.art;
+    stateEl.textContent=state(current.art);
     sourceEl.textContent=sourceLabel(current.source);
-    copyEl.textContent=current.raw===0?'Level 1 artwork at technical level 0':'Live evolution · artwork '+current.art+' of 10';
-    progressEl.style.width=(clamp(current.raw,0,10)*10)+'%';
+    copyEl.textContent='Live evolution · level '+current.art+' of 10';
+    progressEl.style.width=(clamp(current.art,1,10)*10)+'%';
     levelsEl.querySelectorAll('[data-level]').forEach(function(node){
       var active=Number(node.dataset.level)===current.art;
       node.classList.toggle('is-current',active);

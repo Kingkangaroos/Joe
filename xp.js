@@ -617,9 +617,15 @@
       why:'Less passive scrolling is linked to better mood and sleep — screens before bed delay melatonin and push your sleep back.',
       habitDesc:'Conscious screen time: < 2h entertainment per day = full point.',
     },
+    workout: {
+      xp:0, parentSkill:'body', icon:'🏋️', label:'Workout + Mobility', active:true, isHabit:true,
+      why:'Thuis sterker en soepeler worden, met een haalbaar ritme naast tennis.',
+      habitDesc:'? To be generated — maximaal 20 minuten thuis. Trainingsplan, mobiliteit, herstel en opbouw bespreken we samen. Matje aanwezig; dumbbells nog te bespreken. Karakter volgt pas in stap twee.',
+      benefits:[],
+    },
     cold_shower: {
       benefits:[{d:1,t:'noradrenaline spike: alert and awake'},{d:7,t:'mood stabilises'},{d:30,t:'29% fewer sick days (Buijze 2016, PLOS)'}],
-      xp:0, parentSkill:'discipline', icon:'🚿', label:'Cold Shower', active:true, isHabit:true,
+      xp:0, parentSkill:'discipline', icon:'🚿', label:'Cold Shower', active:false, isHabit:true,
       why:'Cold triggers a noradrenaline and dopamine surge (alertness, mood). A Dutch trial found ~29% fewer sick days in the cold-shower group.',
       habitDesc:'Cold shower every day. +1 point. Drops -1 per missed day.',
     },
@@ -727,6 +733,7 @@
             if (v.private) saved.skills[k].private = true;
             else            delete saved.skills[k].private;
             if (saved.skills[k].active === undefined) saved.skills[k].active = v.active;
+            if (k === 'cold_shower') saved.skills[k].active = false;
             saved.skills[k].quickLog  = v.quickLog;
             saved.skills[k].milestones = v.milestones;
           }

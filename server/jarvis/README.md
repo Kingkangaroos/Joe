@@ -17,7 +17,9 @@ Canonical public Daily Missions Jarvis must recognize as checkable:
 - `gratitude`
 - `good_deed`
 - `screen_time`
-- `cold_shower`
+- `workout` (Workout + Mobility; plan/art pending)
+
+Cold Shower (`cold_shower`) is archived since 2026-10-11; never reinterpret its history as workout activity.
 
 Not checkable as public Daily Missions:
 - `grounding` — disabled;

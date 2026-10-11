@@ -57,7 +57,7 @@ run('xp.js');
 const defs = window.RPG_DEFAULT_SKILLS;
 const chess = defs.chess;
 assert.ok(chess, 'Chess is registered in RPG_DEFAULT_SKILLS');
-assert.equal(Object.keys(defs).length, 47, 'the full registry now contains 47 definitions including disabled Grounding');
+assert.equal(Object.keys(defs).length, 48, 'the full registry now contains 48 definitions including archived Cold Shower and disabled Grounding');
 assert.equal(Object.values(defs).filter(def => def.active !== false).length, 46, 'Chess raises the active roster to 46');
 assert.equal(chess.label, 'Chess');
 assert.equal(chess.parentSkill, 'mind');

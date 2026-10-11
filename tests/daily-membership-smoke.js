@@ -23,7 +23,17 @@ const canonical=Object.keys(defs).filter(key=>{
   const def=defs[key];return def&&def.isHabit===true&&def.active!==false&&!def.private;
 }).sort();
 assert.equal(canonical.length,11,'RPG registry contains exactly eleven public Daily Missions');
-assert.deepEqual(canonical,['budgeting','cold_shower','good_deed','gratitude','household','meditation','nutrition','screen_time','sleep','teeth','walking']);
+assert.deepEqual(canonical,['budgeting','good_deed','gratitude','household','meditation','nutrition','screen_time','sleep','teeth','walking','workout']);
+
+assert.equal(defs.cold_shower.active,false,'Cold Shower archived');
+assert.match(defs.workout.habitDesc,/To be generated/);
+localStorage.setItem('rpg_habits_v1',JSON.stringify({cold_shower:{score:6,label:'Cold Shower'}}));
+const coldBefore=JSON.stringify(JSON.parse(localStorage.getItem('rpg_habits_v1')).cold_shower);
+window.checkHabit('workout','Workout + Mobility','🏋️');
+assert.equal(JSON.parse(localStorage.getItem('rpg_habits_v1')).workout.score,1,'workout first completion uses independent score');
+window.uncheckHabit('workout');
+assert.equal(JSON.parse(localStorage.getItem('rpg_habits_v1')).workout.score,0,'workout undo');
+assert.equal(JSON.stringify(JSON.parse(localStorage.getItem('rpg_habits_v1')).cold_shower),coldBefore,'cold history is not migrated or changed by workout');
 
 const source=fs.readFileSync(path.join(__dirname,'..','park31.js'),'utf8');
 function keysFrom(blockName){

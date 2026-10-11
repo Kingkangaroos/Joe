@@ -14,7 +14,7 @@
 <script src="auth.js?v=11.1" defer></script>
 <script src="sync.js?v=11.9" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
-<script src="xp.js?v=10.98" defer></script>
+<script src="xp.js?v=10.99" defer></script>
 <script src="quests.js?v=10.98" defer></script>
 <script src="ladders.js?v=10.98" defer></script>
 <script src="ventures.js?v=10.98" defer></script>
@@ -1121,7 +1121,7 @@ body {
 .grat-card.grat-playful{position:relative;overflow:hidden;border:0;background:linear-gradient(135deg,#fff 0%,#fff7d8 42%,#eee8ff 100%);box-shadow:0 8px 26px rgba(21,20,15,.07);transition:border-radius .35s ease,transform .2s ease}.grat-card.grat-playful::before,.grat-card.grat-playful::after{content:'';position:absolute;border-radius:50%;pointer-events:none;filter:blur(.2px)}.grat-card.grat-playful::before{width:110px;height:110px;right:-38px;top:-42px;background:rgba(255,159,123,.22)}.grat-card.grat-playful::after{width:82px;height:82px;left:-28px;bottom:-32px;background:rgba(117,103,201,.15)}.grat-card.grat-playful>*{position:relative;z-index:1}.grat-card.grat-shape-0{border-radius:30px 30px 30px 10px}.grat-card.grat-shape-1{border-radius:42% 58% 34% 66% / 34% 35% 65% 66%;padding:24px 20px}.grat-card.grat-shape-2{clip-path:polygon(7% 12%,22% 5%,38% 12%,50% 3%,63% 12%,79% 5%,93% 13%,96% 88%,82% 96%,64% 91%,50% 98%,34% 91%,17% 96%,4% 87%);padding:24px 24px 22px}.grat-card.grat-shape-3{border-radius:50px 18px 50px 18px;background:linear-gradient(135deg,#e6fbf2,#fff4ca 46%,#f4e9ff)}.grat-card.grat-shape-4{border-radius:999px;padding:22px 24px;background:linear-gradient(110deg,#fff1ee,#f6edff,#eaf9f1)}
 </style>
 <link rel="stylesheet" href="gamenfy-workspace.css?v=1">
-<script src="gamenfy-updates.js?v=1" defer></script>
+<script src="gamenfy-updates.js?v=2" defer></script>
 </head>
 <body data-updates-surface="home">
 <div class="page">
@@ -1297,7 +1297,7 @@ body {
     <button class="nm-add" id="missionsDayBtn" onclick="toggleMissionsDay()">Yesterday</button></div>
   <div id="weekStrip" style="display:flex;gap:2px;margin:2px 0 10px;padding:0 4px"></div>
   <div class="daily-missions-2" id="dailyMissions2Wrap" style="background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:20px">
-    <iframe id="dailyMissions2Frame" title="Daily Missions 2.0" src="park31.html?embed=1&amp;mode=missions&amp;privacy=all&amp;surface=home&amp;v=1.22" style="display:block;width:100%;height:1180px;min-height:820px;border:0;background:transparent" loading="eager"></iframe>
+    <iframe id="dailyMissions2Frame" title="Daily Missions 2.0" src="park31.html?embed=1&amp;mode=missions&amp;privacy=all&amp;surface=home&amp;v=1.23" style="display:block;width:100%;height:1180px;min-height:820px;border:0;background:transparent" loading="eager"></iframe>
   </div>
   <div class="missions-grid" id="missionsCard" hidden aria-hidden="true" style="display:none!important">
     <div>Loading habits…</div>
@@ -1498,7 +1498,7 @@ function renderMissions() {
     const h = habits[k] || {};
     const donedToday = hlogHas(k, today);
     if (donedToday) doneCount++;
-    const lvl = h.score || 0;
+    const lvl = Math.min(10,(h.score || 0)+1);
     const why = def.why ? (def.why.length > 110 ? def.why.slice(0, 110).replace(/\s+\S*$/,'') + '…' : def.why) : '';
     return `<div class="mq-card${donedToday?' done':''}" onclick="openMissionDetail('${k}')" data-key="${k}">
       <div class="mq-top">
@@ -1875,7 +1875,7 @@ window.openMissionDetail = function(key, isPrivate, privateId) {
   const habits = window.getHabits ? window.getHabits() : {};
   const lvlLine = isPrivate
     ? 'LV ' + (window.getSkillLevel ? window.getSkillLevel(key, ((window.getCharacter()||{skills:{}}).skills[key]||{}).xp||0) : 1) + ' · abstinence quest'
-    : 'Habit score ' + ((habits[key]||{}).score||0) + '/10 · +15 XP per check';
+    : 'Level ' + Math.min(10,(((habits[key]||{}).score)||0)+1) + '/10 · +15 XP per check';
   const benefits = Array.isArray(def.benefits) ? def.benefits.slice().sort((a,b)=>a.d-b.d) : [];
   const bHtml = benefits.map(b => `
     <div class="md-benefit${st.streak >= b.d ? ' got' : ''}">
@@ -1903,6 +1903,7 @@ window.openMissionDetail = function(key, isPrivate, privateId) {
       <div class="md-stat miss"><div class="md-stat-num">${st.missed}</div><div class="md-stat-lbl">missed</div></div>
     </div>
     ${def.why ? `<div class="md-sec">Why this matters</div><div class="md-why">${def.why}</div>` : ''}
+    ${key==='workout' ? `<div class="md-sec">? To be generated</div><div class="md-why">${def.habitDesc}<br><br>Volgende bespreking: oefeningen, rustdagen, geleidelijke opbouw en eventuele dumbbells. Tot die tijd kun je hier je eigen workout + mobility afvinken.</div>` : ''}
     ${bHtml ? `<div class="md-sec">What consistency earns you</div>${bHtml}` : ''}
     <button class="md-check${st.checkedToday ? ' is-done' : ''}" onclick="mdCheck('${key}',${isPrivate?1:0},'${privateId||''}')">
       ${st.checkedToday ? '✓ Done' : (missionsDayOffset<0 ? 'Check for '+viewedDateLabel() : 'Check today ✓')}
@@ -2124,7 +2125,7 @@ function renderFocusGrid() {
     // Level 1 for the same skill" confusion.
     const rawLevel = window.getSkillLevel ? window.getSkillLevel(key, xp) : window.xpToLevel(xp);
     const tl = (!isHabit && window.tierLockInfo) ? window.tierLockInfo(key, rawLevel) : { level: rawLevel, locked: false };
-    const level = tl.level;
+    const level = isHabit ? Math.min(10,tl.level+1) : tl.level;
     const nextXp = window.xpForLevel ? window.xpForLevel(level+1) : null;
     const thisXp = window.xpForLevel ? window.xpForLevel(level) : 0;
     const barPct = isHabit
@@ -3022,7 +3023,7 @@ window.tsPick = function(key, hour, skillKey) {
       <span class="ts-picked-icon">${def.icon||'⭐'}</span>
       <div>
         <div class="ts-picked-name">${def.label||skillKey}</div>
-        <div class="ts-picked-lv">${def.isHabit ? 'Daily habit · score '+((window.getHabits&&(window.getHabits()[skillKey]||{}).score)||0)+'/10' : 'Level '+tl.level+(tl.locked?' · tier locked':'')}</div>
+        <div class="ts-picked-lv">${def.isHabit ? 'Daily habit · level '+Math.min(10,((window.getHabits&&(window.getHabits()[skillKey]||{}).score)||0)+1)+'/10' : 'Level '+tl.level+(tl.locked?' · tier locked':'')}</div>
       </div>
     </div>
     <div class="ts-suggest${s.kind==='gate'?' gate':''}">

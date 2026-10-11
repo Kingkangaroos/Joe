@@ -15,7 +15,7 @@ const descend = e => e.children.flatMap(c => [c, ...descend(c)]);
   const html = fs.readFileSync(path.join(root, 'website-ventures-credit-rescue-lab.html'), 'utf8');
   for (const [, id] of html.matchAll(/id="([^"]+)"/g)) elements.set(id, new Element('div'));
   const filters = ['all', 'image', 'video'].map(k => { const e = new Element('button'); e.dataset.kind = k; return e; });
-  const document = {
+  const document = {body:{dataset:{}},
     getElementById: id => elements.get(id), hidden: false, addEventListener() {},
     createElement: tag => { const e = new Element(tag); all.push(e); return e; },
     querySelectorAll: q => q === '[data-kind]' ? filters : q === '[data-world]' ? all.filter(e => e.dataset.world) : q === '#assetGrid video' ? descend(elements.get('assetGrid')).filter(e => e.tagName === 'video') : []

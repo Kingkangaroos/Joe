@@ -1,9 +1,31 @@
 {
   "releases": [
     {
+      "id": "2026-10-11-step-one",
+      "date": "2026-10-11",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Stap één · jouw feedback verwerkt",
+      "why": "Levels begrijpelijk, ruimte voor Workout en gescheiden werkplekken.",
+      "changes": [
+        "Levelweergave begint bij 1 en volgt het poppetje. Bestaande scores en XP blijven intact.",
+        "Cold Shower is uit actieve habits; Workout + Mobility heeft een eigen historie en een ? To be generated-plek. Het plan bespreken we nog.",
+        "Gamenfy Lab heeft een eigen Character Atelier en een directe Assets-link. Portfolio Book en de commerciële set staan in Ventures.",
+        "Updates kun je afzonderlijk als Gezien markeren of Alles gelezen kiezen. Daarna staat er 0 nieuwe updates; geschiedenis blijft bewaard."
+      ],
+      "try": "Home → Workout + Mobility; Lab → Character Atelier; wijzigingslog → Gezien of Alles gelezen.",
+      "remaining": "Workoutplan, Pokémon-achtige vloeiende evolutie en echte 3D-wereld bespreken we verder. Geen afbeeldingen gegenereerd: stap twee wacht op jouw signaal.",
+      "url": "gamenfy-next-steps.html"
+    },
+    {
       "id": "2026-10-11-little-worlds-all-habits",
       "date": "2026-10-11",
-      "surfaces": ["home", "lab"],
+      "surfaces": [
+        "home",
+        "lab"
+      ],
       "title": "Little Worlds + basisvorm voor alle habits",
       "why": "Een voltooiing moet direct zichtbaar voelen, met een poppetje in zijn eigen wereld.",
       "changes": [
@@ -18,7 +40,9 @@
     {
       "id": "2026-10-10-first-habit-evolution",
       "date": "2026-10-10",
-      "surfaces": ["home"],
+      "surfaces": [
+        "home"
+      ],
       "title": "Eerste vinkje, meteen een nieuw poppetje",
       "why": "Joey wil na opnieuw beginnen direct zichtbare vooruitgang: het eerste poppetje is de basis, de eerste voltooiing toont het tweede.",
       "changes": [
@@ -33,8 +57,7 @@
       "id": "2026-10-10-portfolio-book-lab",
       "date": "2026-10-10",
       "surfaces": [
-        "home",
-        "lab"
+        "ventures"
       ],
       "title": "Portfolio Book · jouw video als websiteproef",
       "why": "Joey vindt het interactieve boekportfolio uit zijn nieuwe opname cool en wil een eigen test in de app, zonder eerst eerdere updates te bekijken.",
@@ -82,7 +105,7 @@
       ],
       "try": "Jarvis → Lab → Credit Atelier → Gamenfy; start de loop handmatig en vergelijk met rigged 3D.",
       "remaining": "Lab-materiaal, niet jouw goedkeuring. Echte iPhone-feedback en externe prospecttest blijven open; geen conversieclaim.",
-      "url": "website-ventures-credit-rescue-lab.html"
+      "url": "gamenfy-credit-atelier.html"
     },
     {
       "id": "2026-09-18-living-home-synthesis",

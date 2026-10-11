@@ -62,7 +62,7 @@
       localStorage.setItem(AUTO_KEY,JSON.stringify(state));
     }catch(e){}
   }
-  function scoreOf(key){try{return Math.max(0,Math.min(10,Number(((window.getHabits&&window.getHabits()[key])||{}).score)||0));}catch(e){return 0;}}
+  function scoreOf(key){try{return Math.max(0,Math.min(10,(Number(((window.getHabits&&window.getHabits()[key])||{}).score)||0)+1));}catch(e){return 1;}}
   function band(level){if(level>=10)return {i:4,name:'Master'};if(level>=7)return {i:3,name:'Expert'};if(level>=5)return {i:2,name:'Advanced'};if(level>=3)return {i:1,name:'Apprentice'};return {i:0,name:'Starter'};}
   function missedDays(key){if(isDone(key,todayKey()))return 0;var misses=0;for(var i=0;i<14;i++){var d=shiftDate(todayKey(),-i);if(isDone(key,d))break;misses++;}return misses;}
   function publicMissions(){
@@ -134,7 +134,7 @@
     attachImageFallbacks(focusRoom);
     focusTitle.textContent=m.def.label||m.key;
     focusMeta.textContent=(previewLevel==null?'TODAY':'VISUAL PREVIEW')+' · '+b.name.toUpperCase();
-    focusDesc.textContent=m.def.habitDesc||m.def.why||'Complete this Daily Mission today to move your persistent 0–10 consistency level forward.';
+    focusDesc.textContent=m.def.habitDesc||m.def.why||'Complete this Daily Mission today to move your level 1–10 forward.';
     focusLevel.innerHTML='<span>Level '+level+'/10</span><span class="bar"><i style="width:'+(level*10)+'%"></i></span><span>'+b.name+'</span>';
     actionBtn.textContent=done?'Undo today':'Complete mission';
     actionBtn.classList.toggle('done',done);

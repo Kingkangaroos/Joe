@@ -20,9 +20,11 @@ async function flush(){await new Promise(r=>setImmediate(r));}
   await flush();assert.equal(box.children.length,0,'wait for real account event');
   window.gamenfyUserId='fixture-owner';events['gamenfy-auth-ready']();const count=JSON.parse(read('GAMENFY-RELEASES.json')).releases.filter(r=>r.surfaces.includes('home')).length;assert.ok(box.textContent.includes('Nieuw voor jou · '+count));
   button(box,'Bekijk wijzigingen').onclick();let dialog=find(body,x=>x.tagName==='dialog');assert.ok(dialog.open);assert.match(dialog.textContent,/Week- en maandquesthistorie/);assert.equal(writes,0);
+  const one=button(dialog,'Gezien');one.onclick();assert.equal(writes,1);assert.equal(one.disabled,true);assert.equal(JSON.parse([...values.values()][0]).length,1,'one acknowledgement marks exactly one release');
+  writes=0;
   button(dialog,'Sluiten').onclick();assert.equal(find(body,x=>x.tagName==='dialog'),undefined);assert.match(box.textContent,/Nieuw voor jou/);assert.equal(writes,0);
-  button(box,'Bekijk wijzigingen').onclick();dialog=find(body,x=>x.tagName==='dialog');button(dialog,'Deze updates gezien').onclick();assert.equal(writes,1);assert.match(box.textContent,/Wat is er nieuw/);
+  button(box,'Bekijk wijzigingen').onclick();dialog=find(body,x=>x.tagName==='dialog');button(dialog,'Alles gelezen').onclick();assert.equal(writes,1);assert.match(box.textContent,/0 nieuwe updates/);
   window.gamenfyUserId='second-owner';events['gamenfy-auth-ready']();assert.match(box.textContent,/Nieuw voor jou/);
-  button(box,'Bekijk wijzigingen').onclick();dialog=find(body,x=>x.tagName==='dialog');window.localStorage.setItem=()=>{throw Error('blocked')};button(dialog,'Deze updates gezien').onclick();assert.ok(dialog.open);assert.match(dialog.textContent,/Opslaan lukte niet/);
+  button(box,'Bekijk wijzigingen').onclick();dialog=find(body,x=>x.tagName==='dialog');window.localStorage.setItem=()=>{throw Error('blocked')};button(dialog,'Alles gelezen').onclick();assert.ok(dialog.open);assert.match(dialog.textContent,/Opslaan lukte niet/);
   console.log('Release DOM: delayed auth, open/close without ack, full history, explicit ack, account isolation and blocked storage pass.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

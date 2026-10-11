@@ -1,6 +1,7 @@
 (function () {
   'use strict';
   if (new URLSearchParams(location.search).get('embed') === '1') document.body.classList.add('atelier-embedded');
+  const gameOnly = document.body.dataset.atelierScope === 'gamenfy';
   const $ = id => document.getElementById(id);
   const base = 'website-ventures-assets/credit-sprint-20261007/';
   const worldInfo = {
@@ -128,10 +129,12 @@
     catch (_) { $('reviewExport').focus(); $('reviewExport').select(); $('copyStatus').textContent = 'Automatisch kopiëren niet beschikbaar. De feedback is geselecteerd; kopieer handmatig.'; }
   });
   fetch('WEBSITE-VENTURES-CREDIT-RESCUE-2026-10-07.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw Error('manifest'); return r.json(); }).then(data => {
-    if (!Array.isArray(data.assets)) throw Error('assets'); manifest = data;
+    if (!Array.isArray(data.assets)) throw Error('assets');
+    if(gameOnly)data={...data,assets:data.assets.filter(a=>a.world==='gamenfy')};
+    manifest = data;
     $('spent').textContent = data.creditsSpent; $('remaining').textContent = data.endingBalance; $('counts').textContent = data.assets.filter(a => a.type === 'image').length + ' + ' + data.assets.filter(a => a.type === 'video').length;
     $('qaSummary').textContent = data.qaSummary;
-    Object.entries(worldInfo).forEach(([key, w]) => { const b = element('button', w.label); b.dataset.world = key; b.setAttribute('aria-pressed', 'false'); b.addEventListener('click', () => chooseWorld(key)); $('worlds').append(b); });
-    const asked = new URLSearchParams(location.search).get('world'); chooseWorld(worldInfo[asked] ? asked : 'agency'); prepareWalk(); updateReviewSummary();
+    Object.entries(worldInfo).filter(([key])=>!gameOnly||key==='gamenfy').forEach(([key, w]) => { const b = element('button', w.label); b.dataset.world = key; b.setAttribute('aria-pressed', 'false'); b.addEventListener('click', () => chooseWorld(key)); $('worlds').append(b); });
+    const asked = new URLSearchParams(location.search).get('world'); chooseWorld(gameOnly?'gamenfy':(worldInfo[asked] ? asked : 'agency')); prepareWalk(); updateReviewSummary();
   }).catch(() => { $('assetStatus').textContent = 'De productiekaart kon niet laden. Herlaad of open de JSON-link onderaan.'; });
 }());

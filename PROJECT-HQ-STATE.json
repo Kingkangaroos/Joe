@@ -1,7 +1,7 @@
 {
   "project": "Gamenfy",
   "owner": "Joey",
-  "updatedAt": "2026-10-10",
+  "updatedAt": "2026-10-11",
   "managedBy": [
     "ChatGPT (OpenAI)",
     "Claude"
@@ -13,6 +13,7 @@
     "userEditable": true
   },
   "now": [
+    "11 oktober · Stap één: levels tonen basis 1; Cold Shower archiveren en Workout + Mobility als nieuwe habit met ? To be generated. Gamenfy en Ventures Labs scheiden; gelezen updates expliciet afvinken. Zie gamenfy-next-steps.html.",
     "18 september: dezelfde Home-proef uitgebreid met wisselende missie-spotlight, horizontale missiebar en laatste demo-voltooiing vooraan; terugnemen blijft omkeerbaar. Bestaande reviewkeuzes blijven open; geen wijziging aan echte data of Home v1.",
     "Claude verzorgt stap 1 en 2: familie en animatie. ChatGPT + Joey beoordelen nu stap 3 via ChatGPT Lab → Gamenfy 2.0 · Home-proef (lab-home-v2.html). Huidige Home blijft versie 1; geen reset van gegevens.",
     "Actief experiment: ChatGPT Lab → Companion Park 3D opent Claude’s externe Lab. Eerst beweging/evolutie beoordelen; geen koppeling met echte missies of levels gemaakt.",
@@ -29,6 +30,7 @@
     "Op Joeys iPhone: bestaande Device QA en Swipe Navigation Lab beoordelen, plus de gratitude-vorm en directe L0→L1-reactie. Swipe blijft een Lab-proef totdat het goed voelt."
   ],
   "completedThisPass": [
+    "11 oktober · Joey keurt de bestaande Household-checklist goed.",
     "2026-09-17 · Gamenfy 2.0 Home-proef toegevoegd: visuele dagkaart, compacte agenda/crew/weekritme/skillblokken, klikbare details, voorbeeldacties en twee kleurstanden. Review en drie gerichte keuzevragen zitten in de proef. Alleen demodata; geen echte Home-migratie.",
     "2026-09-17 · Claude’s externe Companion Park 3D als eigen blok onder Actuele experimenten toegevoegd; groot openen in Lab of apart. Bestaande experimenten en feedback behouden; WHY-link expliciet open.",
     "2026-09-17 · ChatGPT Lab geordend; oude experimenten behouden, afzonderlijk te openen. Operation Hub met zes stappen en aanklikbare assetpreviews. Home-melding en blijvend wijzigingslog toegevoegd; geen missies of voortgang aangepast.",
@@ -156,6 +158,8 @@
     "Workflow publiceren geeft geen toestemming voor automatisch betaalde generaties. Handmatig model, referentie en instellingen overnemen; actuele dekking controleren."
   ],
   "ideaBank": [
+    "11 oktober · Workout + Mobility: max 20 minuten thuis naast tennis; matje aanwezig; samen oefeningen, herstel/progressie en eventueel dumbbells bespreken. Nog geen schema. Nieuwe afbeeldingen uitsluitend na expliciet 'doe stap twee'.",
+    "11 oktober · Visuele richting: echte interactieve 3D-spelwereld met passende rigged karakters en handelingen. Household wordt rommelig → schoon → luxer; geen stapel losse kamerbeelden als eindoplossing. Evolutie mag flits en sprong houden, maar fasen moeten vloeiend samenvallen (Pokémon-referenties).",
     "2026-10-10 · Joey · Household mini-checklist op de echte homepage, expliciet goedgekeurd zonder Lab-stap: kleding → afval → spullen op hun plek → machines → dag/week voorbereiden → doekje → stofzuigen → dweilen → final touch. Machines vóór voorbereiden zodat ze alvast draaien. Substappen per dag bewaren, overslaan mag; habit en bestaande level/XP-logica blijven apart. Uitgewerkt als Home-functie; geen algemene Home 2.0-rollout.",
     "Warm White + Oxblood as a controlled Lab-first token direction; keep white dominant and preserve green/amber semantic states.",
     "Character Trophy Case as the canonical badge collection, plus one exact-once unlock moment and at most one featured/latest badge on Home."

@@ -88,7 +88,7 @@ function runImmediateTimeouts(){for(const timer of timeoutTimers){if(!timer.canc
 const source=fs.readFileSync(path.join(__dirname,'..','park31.js'),'utf8');
 vm.runInNewContext(source,sandbox,{filename:'park31.js'});
 
-const canonicalPublic=['budgeting','sleep','nutrition','walking','teeth','household','meditation','gratitude','good_deed','screen_time','cold_shower'];
+const canonicalPublic=['budgeting','sleep','nutrition','walking','teeth','household','meditation','gratitude','good_deed','screen_time','workout'];
 assert.deepEqual(Array.from(sandboxWindow.GamenfyPark31Registry.publicKeys),canonicalPublic,'Park exposes the exact canonical eleven public Daily Missions');
 assert.deepEqual(Array.from(sandboxWindow.GamenfyPark31Registry.privateKeys),['weed_control','no_porn'],'private dailies are separate from the public eleven');
 
@@ -101,14 +101,14 @@ ids.p31Companion.listeners.click();
 assert.ok(ids.p31Stage.classList.contains('is-lit'),'tap activates light/glow');
 assert.equal(storage.rpg_habits_v1,JSON.stringify({walking:{score:7}}),'light tap never changes habit data');
 
-const expectedBands=[[0,'STARTER'],[2,'STARTER'],[3,'APPRENTICE'],[4,'APPRENTICE'],[5,'ADVANCED'],[6,'ADVANCED'],[7,'EXPERT'],[9,'EXPERT'],[10,'MASTER']];
+const expectedBands=[[0,'STARTER'],[2,'APPRENTICE'],[3,'APPRENTICE'],[4,'ADVANCED'],[5,'ADVANCED'],[6,'EXPERT'],[7,'EXPERT'],[9,'MASTER'],[10,'MASTER']];
 for(const [score,label] of expectedBands){
   storage.rpg_habits_v1=JSON.stringify({walking:{score}});intervalTimers[0]();
   assert.equal(ids.p31Stage.dataset.liveLevel,String(score));assert.equal(ids.p31State.textContent,label,'level '+score+' maps to '+label);
 }
 storage.rpg_habits_v1=JSON.stringify({walking:{score:0}});intervalTimers[0]();
 assert.equal(ids.p31Stage.dataset.liveLevel,'0');assert.equal(ids.p31Stage.dataset.artLevel,'1');
-assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.19$/);assert.equal(ids.p31Progress.style.width,'0%');
+assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.19$/);assert.equal(ids.p31Progress.style.width,'10%');
 
 // Thirteen native Park 3.1 sets remain intact: all eleven public missions plus two private companions.
 const nativeDirs=['budgeting','steps','nutrition','teeth','household','meditation','gratitude','good-deed','screen-time','cold-shower','no-weed','discipline','sleep'];
@@ -129,9 +129,11 @@ for(const missionDir of ['budgeting','meditation','cold-shower','teeth','good-de
   }
 }
 assert.equal((ids.p31Roster.innerHTML.match(/<button class="p31-slot/g)||[]).length,12,'Home roster contains eleven public companions plus anonymized Discipline');
-for(const label of ['Budgeting','Sleep','Nutrition','Steps','Brush Teeth','Household','Meditation','Gratitude','Good Deed','Screen Time','Cold Shower']){
+for(const label of ['Budgeting','Sleep','Nutrition','Steps','Brush Teeth','Household','Meditation','Gratitude','Good Deed','Screen Time']){
   assert.match(ids.p31Roster.innerHTML,new RegExp(label+'[\\s\\S]*Tik om te openen'),'public '+label+' is present and interactive');
 }
+assert.match(ids.p31Roster.innerHTML,/Workout \+ Mobility[\s\S]*To be generated/);
+assert.doesNotMatch(ids.p31Roster.innerHTML,/Cold Shower/);
 assert.doesNotMatch(ids.p31Roster.innerHTML,/Gardening/,'Gardening is hidden from the visible roster');
 assert.match(ids.p31Roster.innerHTML,/Discipline[\s\S]*10 evolution levels/,'anonymized Discipline remains available in the unified personal roster');
 assert.doesNotMatch(ids.p31Roster.innerHTML,/Private dailies|apart van de publieke 11|is-private/,'personal roster does not visually separate private quests');
@@ -156,20 +158,20 @@ const lab=fs.readFileSync(path.join(__dirname,'..','lab-older-experiments.html')
 assert.match(lab,/park31-lab\.js\?v=1\.1/);assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.19"/);
 const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');assert.match(home,/park31\.html\?embed=1&amp;mode=missions&amp;privacy=all/,'Personal Home includes public and PIN-backed private Daily Missions 2.0 companions');
 const page=fs.readFileSync(path.join(__dirname,'..','park31.html'),'utf8');
-assert.match(page,/park31\.js\?v=1\.22/);assert.match(page,/12 missions/);assert.match(page,/Budgeting gebruikt de uil en Meditation de panda/);
+assert.match(page,/park31\.js\?v=1\.23/);assert.match(page,/12 missions/);assert.match(page,/Budgeting gebruikt de uil en Meditation de panda/);
 
 const walkingSlot=new Element('walking-slot');walkingSlot.dataset.mission='walking';
 const openEvent={target:walkingSlot,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
 ids.p31Roster.listeners.click(openEvent);
-assert.equal(ids.p31Modal.hidden,false);assert.equal(ids.p31ModalTitle.textContent,'Steps');assert.equal(ids.p31ModalLevel.textContent,'Level 0');assert.equal(ids.p31ModalState.textContent,'STARTER');assert.equal(ids.p31ModalProgress.style.width,'0%');assert.equal(missionToggles.length,0);
+assert.equal(ids.p31Modal.hidden,false);assert.equal(ids.p31ModalTitle.textContent,'Steps');assert.equal(ids.p31ModalLevel.textContent,'Level 1');assert.equal(ids.p31ModalState.textContent,'STARTER');assert.equal(ids.p31ModalProgress.style.width,'10%');assert.equal(missionToggles.length,0);
 
 const liveStorage=storage.rpg_habits_v1;ids.p31Next.listeners.click();
-assert.equal(ids.p31ModalMeta.textContent,'PREVIEW 2 · LIVE 0');assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.19$/);assert.equal(ids.p31MissionToggle.disabled,true);assert.equal(storage.rpg_habits_v1,liveStorage);closeNodes[0].listeners.click();
+assert.equal(ids.p31ModalMeta.textContent,'PREVIEW 2 · LIVE 1');assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.19$/);assert.equal(ids.p31MissionToggle.disabled,true);assert.equal(storage.rpg_habits_v1,liveStorage);closeNodes[0].listeners.click();
 
 const walkingCheck=new Element('walking-check');walkingCheck.dataset.p31Toggle='walking';
 const checkEvent={target:walkingCheck,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
 ids.p31Roster.listeners.click(checkEvent);runImmediateTimeouts();
-assert.deepEqual(missionToggles,['walking'],'circle tap completes exactly one public mission through host controller');assert.equal(ids.p31Celebration.hidden,false);assert.equal(ids.p31CelebrationMeta.textContent,'LEVEL 1');
+assert.deepEqual(missionToggles,['walking'],'circle tap completes exactly one public mission through host controller');assert.equal(ids.p31Celebration.hidden,false);assert.equal(ids.p31CelebrationMeta.textContent,'LEVEL 2');
 
 const nutritionSlot=new Element('nutrition-slot');nutritionSlot.dataset.mission='nutrition';
 const nutritionTap={target:nutritionSlot,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
@@ -197,12 +199,12 @@ for(const key of canonicalPublic){
   for(const score of [0,1,9,10,0]){
     storage.rpg_habits_v1=JSON.stringify({[key]:{score}});
     parentListeners['gamenfy:daily-mission-change']();
-    assert.ok(ids.p31Roster.innerHTML.includes(dir+'/l'+String(Math.min(score+1,10)).padStart(2,'0')+'.webp'),key+' maps every score to baseline+1');
+    assert.ok(ids.p31Roster.innerHTML.includes(key==='workout'?'img/lab/workout-pending.svg':dir+'/l'+String(Math.min(score+1,10)).padStart(2,'0')+'.webp'),key+' maps every score to baseline+1');
   }
 }
 parentWindow.viewedDateStr=()=> '2026-10-10';
 for(const key of ['weed_control','no_porn']){
-  const privateSource=source.replace("'meditation','gratitude','good_deed','screen_time','no_porn','cold_shower'","'meditation','gratitude','good_deed','screen_time','no_porn','weed_control','cold_shower'");
+  const privateSource=source.replace("'meditation','gratitude','good_deed','screen_time','no_porn','workout'","'meditation','gratitude','good_deed','screen_time','no_porn','weed_control','workout'");
   const dir=key==='no_porn'?'discipline':'no-weed';
   for(const done of [false,true,false]){
     storage['rpg_daily_v1:2026-10-10']=JSON.stringify({quests:{[key]:{done}}});

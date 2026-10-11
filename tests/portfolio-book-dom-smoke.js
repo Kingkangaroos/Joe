@@ -49,7 +49,8 @@ $('readingToggle').events.click(); assert.equal($('deskStage').hidden, false); a
 for (const im of descend(book).filter(e => e.tagName === 'img')) { assert(fs.statSync(path.join(root, im.src)).size > 500); assert(im.srcset.includes('1280w')); }
 const quiet = run(true); quiet.$('openBook').events.click(); assert.equal(quiet.timers.size, 0); assert.equal(quiet.$('nextPage').disabled, false);
 assert.equal(run(false, false).$('readingView').hidden, false, 'Unsupported CSS-3D falls back to readable content');
-for (const file of ['lab.html', 'ventures-workspace.html', 'sites.html']) assert(fs.readFileSync(path.join(root, file), 'utf8').includes('website-ventures-portfolio-book-lab.html'));
+assert(!fs.readFileSync(path.join(root,'lab.html'),'utf8').includes('website-ventures-portfolio-book-lab.html'));
+for (const file of ['ventures-workspace.html', 'sites.html']) assert(fs.readFileSync(path.join(root, file), 'utf8').includes('website-ventures-portfolio-book-lab.html'));
 assert(!/localStorage|sessionStorage|supabase|fetch\(|innerHTML|requestAnimationFrame|autoplay/.test(source));
 const css = fs.readFileSync(path.join(root, 'website-ventures-portfolio-book-lab.css'), 'utf8'); assert(css.includes('backface-visibility:hidden') && css.includes('preserve-3d') && css.includes('touch-action:pan-y') && css.includes('prefers-reduced-motion'));
 console.log('Portfolio Book DOM: six two-sided leaves, page bounds, keyboard, vertical-first drag/cancel/reversal, controls, inert pages, modal, reading/reduced-motion/fallback, real local assets and app links pass. No browser rendering claim.');
