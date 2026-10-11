@@ -10,6 +10,7 @@ const root=path.join(__dirname,'..');
 const page=fs.readFileSync(path.join(root,'projects.html'),'utf8');
 const app=fs.readFileSync(path.join(root,'projects.js'),'utf8');
 const topbar=fs.readFileSync(path.join(root,'topbar.js'),'utf8');
+const lab=fs.readFileSync(path.join(root,'lab.html'),'utf8');
 
 assert.match(page,/Life OS · Projects/,'Projects has a dedicated Life OS surface');
 assert.match(page,/projectList/,'Projects page has a project selector');
@@ -30,5 +31,7 @@ assert.match(app,/syncedKeys:\[KEY\]/,'Projects state is included in cloud sync'
 assert.doesNotMatch(app,/FileReader|data:image/,'Moodboard avoids storing heavy image blobs inside app_state JSON');
 assert.match(topbar,/projects\.html/,'Projects is reachable from the persistent app chrome');
 assert.match(topbar,/Projects/,'Projects shortcut has an accessible label');
+assert.match(lab,/id="gwHouseProject"/,'House Upgrade is visible as a dedicated Gamenfy Lab card');
+assert.match(lab,/href="projects\.html"/,'House Upgrade is reachable from the Gamenfy Lab');
 assert.match(page,/projects\.js\?v=1\.1/,'Projects page revalidates the House 1.0 import controller');
 console.log('Projects smoke passed: dedicated House Upgrade workspace, autosave/cloud sync and global navigation are wired.');
