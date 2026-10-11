@@ -253,6 +253,17 @@ const NOTION_RECIPE_SEED = [
   }
 ];
 
+const GAMENFY_RECIPE_SEED = [
+  {
+    sourceId:'gamenfy-noedels-paksoi-fachong-kip', source:'Gamenfy', sourceName:'Cooking Recipe Book',
+    name:'Noedels met paksoi, fachong & gekruide kip', servings:1, tags:['noedels','kip','meal prep'], ingredients:[],
+    ingredientsText:'NOEDELS\nNoedels\nPaksoi of amsoi\nFachong, in dunne rondjes\nSesamolie\nHoning\nUi + knoflook (liefst vers/pasta)\nKippenbouillonblokje\nDonkere sojasaus\n\nKIP\nKip\nRode varkenskruiden\nSesamolie\nHoning\nUi + knoflook\nEventueel beetje kippenbouillon\nPeper en eventueel zout\n\nERBIJ\nGroente op zuur, apart',
+    methodText:'1. Marineer de kip met rode varkenskruiden, sesamolie, honing, ui/knoflook en eventueel bouillon. Geen sojasaus bij de kip.\n2. Gaar de kip: airfryer 170–180°C ±20–30 min of oven 170°C ±45–60 min. Halverwege draaien; kern minimaal 75°C.\n3. Bak fachong-rondjes lichtbruin en leg apart.\n4. Kook de noedels 3–4 min in water met kippenbouillon en giet af.\n5. Roerbak paksoi/amsoi 3–4 min in royale sesamolie met honing en ui/knoflook.\n6. Voeg noedels toe. Breng op smaak met extra sesamolie, donkere sojasaus en eventueel honing. Schep fachong er als laatste door.\n7. Verdeel met kip over mealprep-bakjes; groente op zuur apart.',
+    notes:'Hoeveelheden op gevoel: proef vooral op zoet/hartig en sesamsmaak. Laat meal prep snel afkoelen en zet binnen 2 uur in koelkast of vriezer.',
+    draft:false
+  }
+];
+
 function normalizeRecipe(r){
   r=r&&typeof r==='object'?r:{};
   return {
@@ -275,7 +286,7 @@ function mergeNotionSeed(arr){
   const names={}; const sourceIds={};
   arr.forEach(function(r){ names[(r.name||'').trim().toLowerCase()]=true; if(r.sourceId)sourceIds[r.sourceId]=true; });
   let changed=false;
-  NOTION_RECIPE_SEED.forEach(function(seed){
+  NOTION_RECIPE_SEED.concat(GAMENFY_RECIPE_SEED).forEach(function(seed){
     const key=seed.name.toLowerCase();
     if(!sourceIds[seed.sourceId]&&!names[key]){ arr.push(normalizeRecipe(seed)); changed=true; }
   });
