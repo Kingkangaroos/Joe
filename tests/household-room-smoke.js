@@ -14,7 +14,7 @@ assert.match(js,/raycaster\.intersectObjects/,'room objects are clickable via ra
 assert.match(js,/walkTo\(taskTarget/,'character walks to the active cleaning target');
 assert.match(js,/celebrateUntil/,'evolution celebration remains in the animation flow');
 assert.match(css,/@keyframes evoBlink/,'evolution blink animation exists');
-assert.match(html,/Lab-only|lab-only/i,'prototype is explicitly labelled Lab-only');
+assert.match(html,/Wat deze test bewijst|demo/i,'prototype remains explicitly labelled as a demonstration');
 assert.doesNotMatch(js,/toggleMission|rpg_habitlog_v1|rpg_daily_v1/,'prototype cannot mutate canonical Daily Mission state');
 assert.doesNotMatch(js,/GLTFLoader|hf_20260916_/,'Household room no longer depends on the floating external test GLB');
 assert.match(js,/CHARACTER_ART/,'Household room uses approved native character artwork');
