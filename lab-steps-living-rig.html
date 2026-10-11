@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c1422"><title>Steps Living Rig 0.1 · Gamenfy Lab</title>
+<link rel="stylesheet" href="lab-steps-living-rig.css?v=1">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head><body>
+<header class="top"><a href="lab.html">← Lab</a><span>CHATGPT LAB · REAL 3D</span><strong>STEPS 0.1</strong></header>
+<main class="shell">
+ <div class="intro"><div class="eyebrow">CHARACTER ENGINE / PROOF OF LIFE</div><h1>Hij beweegt écht.</h1>
+ <p>Geen sprites of gewisselde levelplaatjes. Dit test een <b>nieuw, zelfstandig 3D-model</b> met draaiende kop, armen, benen, knieën en voeten. Het is een eerste handgemaakte 3D-versie van Steps — <em>nog niet dezelfde afwerkingskwaliteit als je originele render.</em></p></div>
+ <section class="stageCard">
+  <div id="stage" class="stage" aria-label="Vrij draaibare interactieve 3D Steps wereld"><div class="loading" id="loading">3D fox laden… <small>mesh · beweging · interactieve camera</small></div></div>
+  <div class="stageHint">↻ Sleep om te draaien · knijp om te zoomen · tik op de vloer om erheen te lopen</div>
+  <div class="hud"><span id="state">IDLE</span><span id="meshStatus">GLB laden</span><span id="boneStatus">Bones —</span><span id="fps">FPS —</span></div>
+  <div class="motion">
+   <button data-motion="idle" class="on" type="button">😴 Idle</button>
+   <button data-motion="walk" type="button">🚶 Walk</button>
+   <button data-motion="run" type="button">⚡ Run</button>
+   <button data-motion="yawn" type="button">🥱 Yawn</button>
+   <button data-motion="celebrate" type="button">✨ Celebrate</button>
+  </div>
+ </section>
+ <section class="comparison">
+  <div class="comparisonHead"><div><div class="eyebrow">ORIGINELE STEPS-ASSETS</div><h2>Zelfde character. Nog niet dezelfde kwaliteit.</h2></div><span>LEVEL-ART ≠ ANIMATIE</span></div>
+  <div class="refs">
+   <button data-level="1" type="button" class="selected"><img src="img/lab/park31/steps/l01.webp" alt="Originele Steps level 1"/><strong>Level 1</strong><small>Slaperig</small></button>
+   <button data-level="5" type="button"><img src="img/lab/park31/steps/l05.webp" alt="Originele Steps level 5"/><strong>Level 5</strong><small>Op tempo</small></button>
+   <button data-level="10" type="button"><img src="img/lab/park31/steps/l10.webp" alt="Originele Steps level 10"/><strong>Level 10</strong><small>Volle energie</small></button>
+  </div>
+  <p id="levelNote">De afbeelding links is alleen ter vergelijking. Het 3D-model verandert niet van level wanneer je hierop klikt.</p>
+ </section>
+ <section class="testNote"><h2>Waar deze proef voor dient</h2>
+ <p>We testen eerst <b>lichaamsbeweging, 3D-richting, voetcontact, performance en visuele gelijkenis</b>. De 19-bone Blender-rig draait in een losstaande Three.js-wereld. Ik heb de eerste stappen expres geïsoleerd van de echte Daily Missions.</p>
+ <p>De volgende stap is de vorm en het gezicht op basis van je feedback verder verfijnen. De bestaande Household-demo blijft apart en ongewijzigd.</p></section>
+</main><script type="module" src="lab-steps-living-rig.js?v=1"></script>
+</body></html>
