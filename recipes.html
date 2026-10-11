@@ -14,6 +14,8 @@
 <script src="sync.js?v=11.9" defer></script>
 <script src="topbar.js?v=11.1" defer></script>
 <script src="xp.js?v=10.99" defer></script>
+<link rel="stylesheet" href="recipes-book.css?v=1">
+<script src="recipes-book.js?v=1" defer></script>
 <style>
 :root {
   --bg: #F4F3EF; --card: #FFFFFF; --ink: #15140F; --ink-card: #181712;
@@ -32,9 +34,14 @@ body { padding-bottom: 90px; }
 .sec-head { font-family: var(--font-display); font-weight: 700; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin: 22px 0 10px; }
 
 .recipe-card {
-  background: var(--card); border: 1px solid var(--line); border-radius: 14px;
-  padding: 14px 16px; margin-bottom: 10px; cursor: pointer;
+  background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+  padding: 0; margin-bottom: 12px; cursor: pointer; overflow:hidden;
 }
+.recipe-card-cover{display:block;width:100%;height:180px;object-fit:cover;background:#e7e2d6}
+.recipe-card-cover-empty{display:grid;place-items:center;font-size:40px}
+.recipe-card-body{padding:14px 16px}
+.rc-cover-input{width:100%;border:1px solid var(--line-strong);border-radius:10px;background:var(--card);color:var(--ink);padding:10px 12px;font-size:13px;outline:none}
+.rc-cover-input:focus{border-color:var(--ember);box-shadow:0 0 0 2px rgba(212,99,62,.10)}
 .recipe-card:active { border-color: var(--line-strong); }
 .recipe-name { font-family: var(--font-display); font-weight: 700; font-size: 15px; margin-bottom: 6px; }
 .recipe-macros { display: flex; gap: 14px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
@@ -143,11 +150,37 @@ body { padding-bottom: 90px; }
     <div class="page-sub">Je vaste plek voor recepten, bereidingswijze, meal-prep ideeën en — wanneer je wilt — macro's.</div>
   </div>
 
+  <section class="cookbook-wrap" aria-labelledby="cookbookTitle">
+    <div class="cookbook-intro">
+      <div><span class="cookbook-eyebrow">JOEY'S KITCHEN · VOL. 01</span><h2 id="cookbookTitle">Blader door je recepten.</h2></div>
+      <p>Dezelfde fysieke boek-richting als de Portfolio Book-test, maar groter en gebouwd rond gerechten.</p>
+    </div>
+    <div class="cookbook-toolbar">
+      <button id="cookbookTopView" type="button" aria-pressed="false">Bovenaanzicht</button>
+      <span id="cookbookStatus" aria-live="polite">Cover</span>
+    </div>
+    <div class="cookbook-desk" id="cookbookDesk">
+      <div class="cookbook-light" aria-hidden="true"></div>
+      <div class="cookbook-spoon" aria-hidden="true"></div>
+      <div class="cookbook-cloth" aria-hidden="true"></div>
+      <div class="cookbook-space">
+        <div id="recipeBook" class="recipe-book is-closed" tabindex="0" role="group" aria-label="Interactief receptenboek"></div>
+      </div>
+      <button id="cookbookOpen" class="cookbook-open" type="button">Open Recipe Book <span>↗</span></button>
+      <div class="cookbook-hint">Swipe ↔ of gebruik de pijlen</div>
+    </div>
+    <nav class="cookbook-controls" aria-label="Bladeren door recepten">
+      <button id="cookbookPrev" type="button" disabled>← Terug</button>
+      <span id="cookbookCounter">00 / 00</span>
+      <button id="cookbookNext" type="button">Omslaan →</button>
+    </nav>
+  </section>
+
   <div class="import-note"><strong>Notion import actief.</strong> Je bestaande Cooking → Recepten-pagina is gebruikt als startpunt. Nieuwe recepten die je hier toevoegt blijven in Gamenfy opgeslagen en gesynchroniseerd.</div>
 
   <button class="new-recipe-btn" onclick="openRecipeEditor(null)">+ Nieuw recept toevoegen</button>
 
-  <div class="sec-head">Mijn recepten</div>
+  <div class="sec-head">Recipe library</div>
   <div id="recipeList"></div>
 
   <div class="note-box" id="noteBox"></div>
@@ -264,6 +297,15 @@ const GAMENFY_RECIPE_SEED = [
   }
 ];
 
+const RECIPE_COVERS = {
+  'notion-tonijn-salade':'https://images.pexels.com/photos/16266746/pexels-photo-16266746.jpeg?auto=compress&cs=tinysrgb&w=1400',
+  'notion-egg-salad':'https://images.pexels.com/photos/24356956/pexels-photo-24356956.jpeg?auto=compress&cs=tinysrgb&w=1400',
+  'notion-cha-siu':'https://images.pexels.com/photos/32909271/pexels-photo-32909271.jpeg?auto=compress&cs=tinysrgb&w=1400',
+  'notion-stroop-siroop':'https://images.pexels.com/photos/2059240/pexels-photo-2059240.jpeg?auto=compress&cs=tinysrgb&w=1400',
+  'notion-carbonara':'https://images.pexels.com/photos/3606799/pexels-photo-3606799.jpeg?auto=compress&cs=tinysrgb&w=1400',
+  'gamenfy-noedels-paksoi-fachong-kip':'https://images.pexels.com/photos/24811710/pexels-photo-24811710.jpeg?auto=compress&cs=tinysrgb&w=1400'
+};
+
 function normalizeRecipe(r){
   r=r&&typeof r==='object'?r:{};
   return {
@@ -277,6 +319,7 @@ function normalizeRecipe(r){
     source:r.source||'Gamenfy',
     sourceName:r.sourceName||'',
     sourceId:r.sourceId||'',
+    coverImage:r.coverImage||RECIPE_COVERS[r.sourceId]||'',
     draft:!!r.draft,
     updatedAt:r.updatedAt||''
   };
@@ -335,6 +378,8 @@ function renderRecipeList(){
     const preview=(r.ingredientsText||r.methodText||r.notes||'').split('\n').filter(Boolean).slice(0,2).join(' · ');
     const pills=(r.tags||[]).slice(0,3).map(function(tag){return '<span class="recipe-pill">'+escapeHtml(tag)+'</span>';}).join('');
     return '<div class="recipe-card" onclick="openRecipeEditor('+idx+')">'+
+      (r.coverImage?'<img class="recipe-card-cover" src="'+escapeHtml(r.coverImage)+'" alt="" loading="lazy">':'<div class="recipe-card-cover recipe-card-cover-empty">🍳</div>')+
+      '<div class="recipe-card-body">'+
       '<div class="recipe-top"><div class="recipe-name">'+escapeHtml(r.name)+'</div><span style="color:var(--faint)">›</span></div>'+
       '<div class="recipe-badges">'+
         (r.source==='Notion'?'<span class="recipe-pill notion">Notion import</span>':'<span class="recipe-pill">Gamenfy</span>')+
@@ -343,7 +388,7 @@ function renderRecipeList(){
       (preview?'<div class="recipe-preview">'+escapeHtml(preview)+'</div>':'')+
       (hasMacro?'<div class="recipe-macros" style="margin-top:8px"><span><b>'+Math.round(perServing)+'</b> kcal/serving</span><span><b>'+Math.round(t.protein)+'g</b> protein total</span></div>':'')+
       '<div class="recipe-source">'+(r.source==='Notion'?'Bron: Notion · Cooking / Recepten':'Opgeslagen in Gamenfy')+'</div>'+
-    '</div>';
+      '</div></div>';
   }).join('');
 }
 
@@ -367,6 +412,8 @@ window.openRecipeEditor = function(idx){
       '<input type="number" id="rcServings" min="1" value="'+(r.servings||1)+'" oninput="renderRcTotals()">'+
     '</div>'+
     (r.source==='Notion'?'<div class="recipe-badges"><span class="recipe-pill notion">Geïmporteerd uit Notion</span></div>':'')+
+    '<div class="recipe-text-label">Cover foto (optioneel)</div>'+
+    '<input class="rc-cover-input" id="rcCoverImage" inputmode="url" placeholder="https://… food photo" value="'+escapeHtml(r.coverImage||'')+'">'+
     '<div class="recipe-text-label">Ingrediënten</div>'+
     '<textarea class="recipe-textarea" id="rcIngredientsText" placeholder="Bijv. 500 g kip\\n2 teentjes knoflook\\n1 el sojasaus">'+escapeHtml(r.ingredientsText||'')+'</textarea>'+
     '<div class="recipe-text-label">Bereidingswijze</div>'+
@@ -477,10 +524,11 @@ window.saveRecipeFromEditor = function(){
   const ingredientsText=(document.getElementById('rcIngredientsText')?.value||'').trim();
   const methodText=(document.getElementById('rcMethodText')?.value||'').trim();
   const notes=(document.getElementById('rcNotes')?.value||'').trim();
+  const coverImage=(document.getElementById('rcCoverImage')?.value||'').trim();
   const recipe = normalizeRecipe({
     ...previous,
     name:name, servings:servings, ingredients:cleanIngredients,
-    ingredientsText:ingredientsText, methodText:methodText, notes:notes,
+    ingredientsText:ingredientsText, methodText:methodText, notes:notes, coverImage:coverImage,
     source:previous.source||'Gamenfy',
     draft:!ingredientsText && !methodText,
     updatedAt:new Date().toISOString()
@@ -489,6 +537,7 @@ window.saveRecipeFromEditor = function(){
   saveRecipes(recipes);
   const bg = document.getElementById('rcBg'); if(bg) bg.remove();
   renderRecipeList();
+  if(window.renderRecipeBook) window.renderRecipeBook();
 };
 window.deleteRecipeFromEditor = function(){
   if(editingIdx==null) return;
@@ -498,6 +547,7 @@ window.deleteRecipeFromEditor = function(){
   saveRecipes(recipes);
   const bg = document.getElementById('rcBg'); if(bg) bg.remove();
   renderRecipeList();
+  if(window.renderRecipeBook) window.renderRecipeBook();
 };
 
 document.getElementById('noteBox').textContent =
