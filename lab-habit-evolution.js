@@ -24,15 +24,15 @@
     world.classList.toggle('upgraded',from>1);
     if(!reduce){
       world.style.setProperty('--evolution-duration',(3200*speed)+'ms');
-      world.style.setProperty('--beat',(1100*speed)+'ms');
+      world.style.setProperty('--beat',(800*speed)+'ms');
       world.classList.add('evolving');setPhase('gather');
-      await wait(950*speed);if(id!==token)return;
-      setPhase('burst');await wait(1100*speed);if(id!==token)return;
+      await wait(1700*speed);if(id!==token)return;
+      setPhase('burst');await wait(800*speed);if(id!==token)return;
     }
     chime();
     setPhase('reveal');$('reward').textContent=to===from?'Je wereld blijft op volle kracht.':configs[h].reward;
     world.classList.toggle('upgraded',to>1);$('level').textContent=to;
-    if(!reduce)await wait(1150*speed);if(id!==token)return;
+    if(!reduce)await wait(700*speed);if(id!==token)return;
     levels[h]=to;update();world.classList.remove('evolving');
     setPhase('idle');last={habit:h,from,to};lock(false);
   }

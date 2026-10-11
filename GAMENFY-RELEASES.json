@@ -1,6 +1,23 @@
 {
   "releases": [
     {
+      "id": "2026-10-11-evolution-build-up",
+      "date": "2026-10-11",
+      "surfaces": [
+        "lab"
+      ],
+      "title": "Meer transformatie in dezelfde 3,2 seconden",
+      "why": "Het beginpoppetje moet de evolutie opbouwen.",
+      "changes": [
+        "Ringen verwijderd.",
+        "Beginvorm licht eerst langzaam op, daarna sneller richting de vormwisseling.",
+        "Snellere lift en sprong; vloeiende overgang en landing blijven behouden."
+      ],
+      "try": "Little Worlds → Gratitude gedaan; Langzaam maakt de opbouw zichtbaar.",
+      "remaining": "Joey zoekt of maakt de vervangende karakterbeelden zelf.",
+      "url": "lab-habit-evolution.html"
+    },
+    {
       "id": "2026-10-11-smooth-evolution-asset-review",
       "date": "2026-10-11",
       "surfaces": [
