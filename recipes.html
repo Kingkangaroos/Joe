@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#F4F3EF">
-<title>Recipes — Gamenfy</title>
+<title>Cooking Recipe Book — Gamenfy</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,8 +12,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=11.1" defer></script>
 <script src="sync.js?v=11.9" defer></script>
-<script src="topbar.js?v=11.0" defer></script>
-<script src="xp.js?v=10.98" defer></script>
+<script src="topbar.js?v=11.1" defer></script>
+<script src="xp.js?v=10.99" defer></script>
 <style>
 :root {
   --bg: #F4F3EF; --card: #FFFFFF; --ink: #15140F; --ink-card: #181712;
@@ -39,6 +39,20 @@ body { padding-bottom: 90px; }
 .recipe-name { font-family: var(--font-display); font-weight: 700; font-size: 15px; margin-bottom: 6px; }
 .recipe-macros { display: flex; gap: 14px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
 .recipe-macros b { color: var(--ink); font-weight: 700; }
+.recipe-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.recipe-badges { display:flex; gap:5px; flex-wrap:wrap; margin:6px 0 8px; }
+.recipe-pill { font-size:9px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; padding:3px 7px; border-radius:999px; background:var(--bg); border:1px solid var(--line); color:var(--muted); }
+.recipe-pill.notion { color:#6b5b47; background:#f7f0e6; border-color:#e7d7c2; }
+.recipe-pill.draft { color:var(--ember-deep); background:rgba(212,99,62,.08); border-color:rgba(212,99,62,.25); }
+.recipe-preview { font-size:12px; color:var(--muted); line-height:1.45; margin-top:5px; }
+.recipe-source { font-size:10px; color:var(--faint); margin-top:7px; }
+.recipe-text-label { font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:14px 0 6px; }
+.recipe-textarea { width:100%; min-height:110px; resize:vertical; border:1px solid var(--line-strong); border-radius:11px; background:var(--card); color:var(--ink); padding:11px 12px; font-size:13px; line-height:1.5; outline:none; }
+.recipe-textarea:focus { border-color:var(--ember); box-shadow:0 0 0 2px rgba(212,99,62,.10); }
+.recipe-textarea.small { min-height:76px; }
+.macro-optional { border:1px solid var(--line); border-radius:12px; padding:0 12px; margin:16px 0; background:var(--card); }
+.macro-optional summary { cursor:pointer; padding:12px 0; font-size:12px; font-weight:700; color:var(--ink); }
+.import-note { background:linear-gradient(135deg,#fbf7ef,#f4efe6); border:1px solid #eadcc6; border-radius:14px; padding:13px 14px; margin-bottom:14px; font-size:12px; color:#665847; line-height:1.5; }
 .empty-state {
   text-align: center; padding: 36px 20px; color: var(--muted); font-size: 13px;
   border: 1px dashed var(--line-strong); border-radius: 14px;
@@ -125,13 +139,15 @@ body { padding-bottom: 90px; }
 <body>
 <div class="wrap">
   <div class="page-head">
-    <div class="page-title">🍳 Recipes</div>
-    <div class="page-sub">Add ingredients by weight, get real nutrition totals — for your cooking skill.</div>
+    <div class="page-title">🍳 Cooking Recipe Book</div>
+    <div class="page-sub">Je vaste plek voor recepten, bereidingswijze, meal-prep ideeën en — wanneer je wilt — macro's.</div>
   </div>
 
-  <button class="new-recipe-btn" onclick="openRecipeEditor(null)">+ New recipe</button>
+  <div class="import-note"><strong>Notion import actief.</strong> Je bestaande Cooking → Recepten-pagina is gebruikt als startpunt. Nieuwe recepten die je hier toevoegt blijven in Gamenfy opgeslagen en gesynchroniseerd.</div>
 
-  <div class="sec-head">My Recipes</div>
+  <button class="new-recipe-btn" onclick="openRecipeEditor(null)">+ Nieuw recept toevoegen</button>
+
+  <div class="sec-head">Mijn recepten</div>
   <div id="recipeList"></div>
 
   <div class="note-box" id="noteBox"></div>
@@ -204,8 +220,73 @@ const INGREDIENT_DB = {
 };
 
 const RKEY = 'rpg_recipes_v1';
-function loadRecipes(){ try{ return JSON.parse(localStorage.getItem(RKEY))||[]; }catch(e){ return []; } }
-function saveRecipes(arr){ try{ localStorage.setItem(RKEY, JSON.stringify(arr)); }catch(e){} }
+const NOTION_RECIPE_SEED = [
+  {
+    sourceId:'notion-tonijn-salade', source:'Notion', sourceName:'Cooking / Recepten',
+    name:'Tonijn salade', servings:1, tags:['salade','protein'], ingredients:[],
+    ingredientsText:'Komkommer\n2–3 stengels bleekselderij\nRode ui\nAvocado\n3 blikjes tonijn\n3 el mayo/yogonaise\nCayenne pepper\nEventueel een peper',
+    methodText:'', notes:'Overgenomen uit Notion op 11 oktober 2026.', draft:false
+  },
+  {
+    sourceId:'notion-egg-salad', source:'Notion', sourceName:'Cooking / Recepten',
+    name:'Egg salad', servings:1, tags:['salade','protein'], ingredients:[],
+    ingredientsText:'8 eieren\n4 augurken\nRode ui\nBosui\nKapucijners\n5 el mayo\n1 el mosterd\nZout\nPeper\nCajun of andere kruiden\nSmoked paprika',
+    methodText:'', notes:'Overgenomen uit Notion op 11 oktober 2026.', draft:false
+  },
+  {
+    sourceId:'notion-cha-siu', source:'Notion', sourceName:'Cooking / Recepten',
+    name:'Cha siu', servings:1, tags:['vlees','asian'], ingredients:[],
+    ingredientsText:'1,1–1,4 kg varkensschouder\n3–4 teentjes knoflook\n2 plakjes gember (optioneel)\n2 el bruine suiker\n4 el honing\n4 el hoisinsaus\n4 el oestersaus\n2 el lichte sojasaus\n1 el sojasaus\n½ tl five spice\n1 el sesamolie\n1 tl zout\n1 el kookwijn\n1 el plantaardige olie\n2 tl rode kleurstof of 1 el rode pasta',
+    methodText:'', notes:'Ingrediënten overgenomen uit Notion. Bereidingswijze stond daar nog niet uitgeschreven.', draft:false
+  },
+  {
+    sourceId:'notion-stroop-siroop', source:'Notion', sourceName:'Cooking / Recepten',
+    name:'Stroop / Siroop', servings:1, tags:['drinken','basis'], ingredients:[],
+    ingredientsText:'1,5 kg suiker\n1,25 liter water\n1–2 el citroenzuur\n1 flesje essence',
+    methodText:'1. Doe 1,25 liter water in de pan.\n2. Voeg 1,5 kg suiker toe.\n3. Kook totdat het helemaal helder en een beetje borrelend is.\n4. Laat 30–45 minuten afkoelen en voeg citroenzuur en essence toe.\n5. Laat volledig afkoelen en schenk over.',
+    notes:'Overgenomen uit Notion op 11 oktober 2026.', draft:false
+  },
+  {
+    sourceId:'notion-carbonara', source:'Notion', sourceName:'Cooking / Recepten',
+    name:'Pasta carbonara', servings:1, tags:['pasta'], ingredients:[],
+    ingredientsText:'', methodText:'', notes:'Bestond al als recepttitel in Notion, maar had nog geen inhoud.', draft:true
+  }
+];
+
+function normalizeRecipe(r){
+  r=r&&typeof r==='object'?r:{};
+  return {
+    name:r.name||'Untitled recipe',
+    servings:Math.max(1,Number(r.servings)||1),
+    ingredients:Array.isArray(r.ingredients)?r.ingredients:[],
+    ingredientsText:typeof r.ingredientsText==='string'?r.ingredientsText:'',
+    methodText:typeof r.methodText==='string'?r.methodText:'',
+    notes:typeof r.notes==='string'?r.notes:'',
+    tags:Array.isArray(r.tags)?r.tags:[],
+    source:r.source||'Gamenfy',
+    sourceName:r.sourceName||'',
+    sourceId:r.sourceId||'',
+    draft:!!r.draft,
+    updatedAt:r.updatedAt||''
+  };
+}
+function mergeNotionSeed(arr){
+  arr=Array.isArray(arr)?arr.map(normalizeRecipe):[];
+  const names={}; const sourceIds={};
+  arr.forEach(function(r){ names[(r.name||'').trim().toLowerCase()]=true; if(r.sourceId)sourceIds[r.sourceId]=true; });
+  let changed=false;
+  NOTION_RECIPE_SEED.forEach(function(seed){
+    const key=seed.name.toLowerCase();
+    if(!sourceIds[seed.sourceId]&&!names[key]){ arr.push(normalizeRecipe(seed)); changed=true; }
+  });
+  if(changed){ try{ localStorage.setItem(RKEY,JSON.stringify(arr)); }catch(e){} }
+  return arr;
+}
+function loadRecipes(){
+  try{ return mergeNotionSeed(JSON.parse(localStorage.getItem(RKEY))||[]); }
+  catch(e){ return mergeNotionSeed([]); }
+}
+function saveRecipes(arr){ try{ localStorage.setItem(RKEY, JSON.stringify(arr.map(normalizeRecipe))); }catch(e){} }
 
 function findIngredient(name){
   const key = (name||'').trim().toLowerCase();
@@ -238,14 +319,20 @@ function renderRecipeList(){
   }
   list.innerHTML = recipes.map((r,idx) => {
     const t = calcTotals(r.ingredients);
+    const hasMacro = (r.ingredients||[]).some(function(x){return Number(x.grams)>0;});
     const perServing = r.servings>0 ? t.kcal/r.servings : t.kcal;
+    const preview=(r.ingredientsText||r.methodText||r.notes||'').split('\n').filter(Boolean).slice(0,2).join(' · ');
+    const pills=(r.tags||[]).slice(0,3).map(function(tag){return '<span class="recipe-pill">'+escapeHtml(tag)+'</span>';}).join('');
     return '<div class="recipe-card" onclick="openRecipeEditor('+idx+')">'+
-      '<div class="recipe-name">'+escapeHtml(r.name)+'</div>'+
-      '<div class="recipe-macros">'+
-        '<span><b>'+Math.round(t.kcal)+'</b> kcal total</span>'+
-        '<span><b>'+Math.round(perServing)+'</b> kcal/serving ('+(r.servings||1)+'x)</span>'+
-        '<span><b>'+Math.round(t.protein)+'g</b> protein</span>'+
-      '</div></div>';
+      '<div class="recipe-top"><div class="recipe-name">'+escapeHtml(r.name)+'</div><span style="color:var(--faint)">›</span></div>'+
+      '<div class="recipe-badges">'+
+        (r.source==='Notion'?'<span class="recipe-pill notion">Notion import</span>':'<span class="recipe-pill">Gamenfy</span>')+
+        (r.draft?'<span class="recipe-pill draft">Draft</span>':'')+pills+
+      '</div>'+
+      (preview?'<div class="recipe-preview">'+escapeHtml(preview)+'</div>':'')+
+      (hasMacro?'<div class="recipe-macros" style="margin-top:8px"><span><b>'+Math.round(perServing)+'</b> kcal/serving</span><span><b>'+Math.round(t.protein)+'g</b> protein total</span></div>':'')+
+      '<div class="recipe-source">'+(r.source==='Notion'?'Bron: Notion · Cooking / Recepten':'Opgeslagen in Gamenfy')+'</div>'+
+    '</div>';
   }).join('');
 }
 
@@ -255,7 +342,7 @@ let editingIngredients = [];
 window.openRecipeEditor = function(idx){
   editingIdx = idx;
   const recipes = loadRecipes();
-  const r = (idx!=null) ? recipes[idx] : { name:'', servings:1, ingredients:[{name:'',grams:''}] };
+  const r = (idx!=null) ? recipes[idx] : normalizeRecipe({ name:'', servings:1, ingredients:[{name:'',grams:''}], source:'Gamenfy' });
   editingIngredients = JSON.parse(JSON.stringify(r.ingredients && r.ingredients.length ? r.ingredients : [{name:'',grams:''}]));
 
   const old = document.getElementById('rcBg'); if(old) old.remove();
@@ -265,13 +352,23 @@ window.openRecipeEditor = function(idx){
     '<div class="rc-handle"></div>'+
     '<input class="rc-title-input" id="rcName" placeholder="Recipe name" value="'+escapeHtml(r.name)+'">'+
     '<div class="rc-servings-row">'+
-      '<label>Servings / containers</label>'+
+      '<label>Porties / bakjes</label>'+
       '<input type="number" id="rcServings" min="1" value="'+(r.servings||1)+'" oninput="renderRcTotals()">'+
     '</div>'+
-    '<div class="sec-head" style="margin-top:0">Ingredients (grams, weighed)</div>'+
-    '<div id="rcIngredients"></div>'+
-    '<button class="add-ing-btn" onclick="addIngredientRow()">+ Add ingredient</button>'+
-    '<div class="totals-card" id="rcTotalsCard"></div>'+
+    (r.source==='Notion'?'<div class="recipe-badges"><span class="recipe-pill notion">Geïmporteerd uit Notion</span></div>':'')+
+    '<div class="recipe-text-label">Ingrediënten</div>'+
+    '<textarea class="recipe-textarea" id="rcIngredientsText" placeholder="Bijv. 500 g kip\\n2 teentjes knoflook\\n1 el sojasaus">'+escapeHtml(r.ingredientsText||'')+'</textarea>'+
+    '<div class="recipe-text-label">Bereidingswijze</div>'+
+    '<textarea class="recipe-textarea" id="rcMethodText" placeholder="1. Snijd…\\n2. Bak…\\n3. Serveer…">'+escapeHtml(r.methodText||'')+'</textarea>'+
+    '<div class="recipe-text-label">Notities</div>'+
+    '<textarea class="recipe-textarea small" id="rcNotes" placeholder="Meal prep, aanpassingen, volgende keer…">'+escapeHtml(r.notes||'')+'</textarea>'+
+    '<details class="macro-optional">'+
+      '<summary>Macro-calculator (optioneel, met gewogen ingrediënten)</summary>'+
+      '<div class="sec-head" style="margin-top:2px">Ingrediënten in gram</div>'+
+      '<div id="rcIngredients"></div>'+
+      '<button class="add-ing-btn" onclick="addIngredientRow()">+ Gewogen ingrediënt</button>'+
+      '<div class="totals-card" id="rcTotalsCard"></div>'+
+    '</details>'+
     '<div class="rc-actions">'+
       '<button class="rc-save-btn" onclick="saveRecipeFromEditor()">Save recipe</button>'+
       (idx!=null ? '<button class="rc-delete-btn" onclick="deleteRecipeFromEditor()">Delete</button>' : '')+
@@ -365,7 +462,18 @@ window.saveRecipeFromEditor = function(){
   const servings = Math.max(1, Number(sEl && sEl.value)||1);
   const cleanIngredients = editingIngredients.filter(function(ing){ return (ing.name||'').trim() && Number(ing.grams)>0; });
   const recipes = loadRecipes();
-  const recipe = { name:name, servings:servings, ingredients:cleanIngredients, updatedAt:new Date().toISOString() };
+  const previous = editingIdx!=null ? recipes[editingIdx] : {};
+  const ingredientsText=(document.getElementById('rcIngredientsText')?.value||'').trim();
+  const methodText=(document.getElementById('rcMethodText')?.value||'').trim();
+  const notes=(document.getElementById('rcNotes')?.value||'').trim();
+  const recipe = normalizeRecipe({
+    ...previous,
+    name:name, servings:servings, ingredients:cleanIngredients,
+    ingredientsText:ingredientsText, methodText:methodText, notes:notes,
+    source:previous.source||'Gamenfy',
+    draft:!ingredientsText && !methodText,
+    updatedAt:new Date().toISOString()
+  });
   if(editingIdx!=null) recipes[editingIdx] = recipe; else recipes.push(recipe);
   saveRecipes(recipes);
   const bg = document.getElementById('rcBg'); if(bg) bg.remove();
