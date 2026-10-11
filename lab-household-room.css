@@ -17,3 +17,4 @@
 @media(max-width:820px){.room-stage-wrap{min-height:560px}}
 @media(max-width:520px){.shell{padding-left:8px;padding-right:8px}.room-stage-wrap{min-height:510px;border-radius:18px}.task-panel{border-radius:16px;padding:10px 11px}.task-head h2{font-size:18px}.task-head p{font-size:8px}.task-head>span{font-size:8px;padding:5px 7px}.task-action-row{margin-top:8px}.intro p{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.evolution-flash.run{animation:none;opacity:.7}.room-toast{transition:none}}
+.preview-evolution{margin-top:12px;border:1px solid #cbb2ff66;border-radius:12px;padding:10px 14px;background:#2e2052;color:#f7eaff;font-weight:800;font-size:11px;cursor:pointer}.preview-evolution:active{transform:scale(.98)}
