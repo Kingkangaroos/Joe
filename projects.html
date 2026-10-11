@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F3EF">
+<title>Projects — Gamenfy</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=11.1" defer></script>
+<script src="sync.js?v=11.9" defer></script>
+<script src="topbar.js?v=11.1" defer></script>
+<script src="projects.js?v=1.0" defer></script>
+<style>
+:root{
+  --bg:#F4F3EF;--card:#fff;--ink:#15140F;--muted:#6F6C63;--faint:#A6A399;
+  --line:#E8E6DF;--line-strong:#DBD8CF;--ember:#D4633E;--gold:#C9A227;--green:#2E8B5F;
+  --font-display:'Schibsted Grotesk',-apple-system,sans-serif;--font-body:'Inter',-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--font-body);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;padding:16px 14px 100px}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.shell{max-width:720px;margin:0 auto}
+.hero{padding:18px 2px 16px}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ember);margin-bottom:6px}
+h1{font-family:var(--font-display);font-size:34px;line-height:1;font-weight:800;letter-spacing:-.04em}
+.hero p{font-size:13px;color:var(--muted);line-height:1.55;margin-top:8px;max-width:560px}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat strong{display:block;font-family:var(--font-display);font-size:20px;font-weight:800}
+.stat span{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.section-title{font-family:var(--font-display);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 12px;font-size:12px;font-weight:700}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.project-list{display:flex;gap:9px;overflow-x:auto;padding:2px 1px 14px;scrollbar-width:none}
+.project-list::-webkit-scrollbar{display:none}
+.project-chip{min-width:190px;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:15px;padding:13px}
+.project-chip.active{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.project-chip-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.project-chip-name{font-family:var(--font-display);font-size:14px;font-weight:800}
+.project-chip-meta{font-size:10px;color:var(--muted);margin-top:4px}
+.mini-bar,.progress-bar{height:5px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:9px}
+.mini-bar i,.progress-bar i{display:block;height:100%;background:var(--green);border-radius:99px}
+.project-hero{background:#181712;color:#F4F3EF;border-radius:20px;padding:18px;margin-bottom:12px}
+.project-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.project-kicker{font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:rgba(244,243,239,.56)}
+.project-name{font-family:var(--font-display);font-size:25px;font-weight:800;letter-spacing:-.03em;margin-top:3px}
+.project-summary{font-size:12px;line-height:1.5;color:rgba(244,243,239,.68);margin-top:5px}
+.project-progress{font-family:var(--font-display);font-size:24px;font-weight:800;color:#fff}
+.project-hero .progress-bar{background:rgba(255,255,255,.12);margin-top:14px}
+.project-hero .progress-bar i{background:var(--gold)}
+.next-move{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12);font-size:12px;color:rgba(244,243,239,.7)}
+.next-move b{display:block;color:#fff;font-size:14px;margin-top:3px}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px}
+.card h2{font-family:var(--font-display);font-size:16px;font-weight:800;margin-bottom:3px}
+.card-sub{font-size:11px;color:var(--muted);line-height:1.45;margin-bottom:12px}
+.area-row{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.area{white-space:nowrap;border:1px solid var(--line);background:var(--bg);border-radius:99px;padding:7px 10px;font-size:11px;font-weight:700;color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px 11px;background:#fff}
+.check{width:22px;height:22px;border-radius:7px;border:1px solid var(--line-strong);background:var(--bg);flex:0 0 auto;color:#fff;font-size:12px;font-weight:800}
+.check.done{background:var(--green);border-color:var(--green)}
+.item-main{min-width:0;flex:1}
+.item-title{font-size:13px;font-weight:700;line-height:1.35}
+.item.done .item-title{text-decoration:line-through;color:var(--muted)}
+.item-meta{font-size:10px;color:var(--muted);margin-top:3px}
+.icon-btn{border:0;background:transparent;color:var(--faint);padding:2px 4px}
+.add-row{display:flex;gap:7px;margin-top:10px}
+.add-row input{min-width:0;flex:1;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px 11px;font-size:12px;outline:none}
+.add-row input:focus,.notes:focus{border-color:var(--ember);box-shadow:0 0 0 2px rgba(212,99,62,.1)}
+.add-row button{border:0;border-radius:10px;background:var(--ink);color:#fff;padding:0 13px;font-weight:800}
+.mood-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.mood{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--bg);position:relative}
+.mood img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#e7e5df}
+.mood-body{padding:8px}
+.mood-title{font-size:11px;font-weight:700;line-height:1.3}
+.mood-empty{border:1px dashed var(--line-strong);border-radius:13px;padding:18px;text-align:center;color:var(--muted);font-size:11px;grid-column:1/-1}
+.field-grid{display:grid;grid-template-columns:1fr;gap:7px;margin-top:10px}
+.field-grid input{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px 11px;font-size:12px;outline:none}
+.notes{width:100%;min-height:150px;resize:vertical;border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:12px;font-size:13px;line-height:1.55;outline:none}
+.save-state{font-size:10px;color:var(--muted);margin-top:7px;min-height:14px}
+.shop-price{font-family:var(--font-display);font-weight:800;white-space:nowrap}
+.empty{font-size:12px;color:var(--muted);padding:8px 2px}
+@media(min-width:680px){.grid{grid-template-columns:1fr 1fr}.wide{grid-column:1/-1}.field-grid{grid-template-columns:1.2fr .6fr 1.2fr}.mood-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <header class="hero">
+    <div class="eyebrow">Life OS · Projects</div>
+    <h1>Je projecten.</h1>
+    <p>De plek voor alles wat je aan het bouwen of veranderen bent buiten Ventures. Niet in je hoofd bewaren: dumpen, ordenen en steeds één volgende stap zien.</p>
+  </header>
+
+  <section class="summary" aria-label="Projectoverzicht">
+    <div class="stat"><strong id="statActive">—</strong><span>Actief</span></div>
+    <div class="stat"><strong id="statOpen">—</strong><span>Open taken</span></div>
+    <div class="stat"><strong id="statSpend">—</strong><span>Shopping</span></div>
+  </section>
+
+  <div class="toolbar">
+    <div class="section-title">Projects</div>
+    <button class="btn" id="newProjectBtn" type="button">+ Nieuw project</button>
+  </div>
+  <div id="projectList" class="project-list" aria-label="Projecten"></div>
+  <section id="projectDetail"></section>
+</main>
+</body>
+</html>
