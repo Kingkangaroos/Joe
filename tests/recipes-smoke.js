@@ -17,7 +17,9 @@ assert.match(page,/NOTION_RECIPE_SEED/,'Notion seed is explicit and deterministi
 assert.match(page,/mergeNotionSeed/,'Starter recipes merge into existing user data');
 assert.match(page,/GAMENFY_RECIPE_SEED/,'Gamenfy recipe seed is separate from the Notion import');
 assert.match(page,/Geen sojasaus bij de kip/,'Noodle recipe preserves the no-soy-on-chicken rule');
-assert.match(page,/kern minimaal 75°C/,'Noodle recipe preserves safe chicken doneness guidance');
+assert.match(page,/Madame Jeanette/,'Noodle recipe includes Madame Jeanette in the vegetable components');
+assert.match(page,/1 komkommer/,'Pickled vegetable side includes cucumber');
+assert.match(page,/wortelstukjes\/\-sliertjes/,'Pickled vegetable side includes carrot strips or pieces');
 assert.match(page,/ingredientsText/,'Recipe Book stores normal ingredient text');
 assert.match(page,/methodText/,'Recipe Book stores preparation steps');
 assert.match(page,/Macro-calculator \(optioneel/,'Macro calculator is optional, not the primary recipe format');
