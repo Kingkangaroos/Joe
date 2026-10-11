@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#11152a">
-  <title>Household Room 0.2 · Gamenfy Lab</title>
+  <title>Household Room 0.3 · Gamenfy Lab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
 <body>
   <header class="topbar">
     <a href="lab.html">‹ ChatGPT Lab</a>
-    <span>HOUSEHOLD ROOM · 0.2</span>
+    <span>HOUSEHOLD ROOM · 0.3</span>
   </header>
 
   <main class="shell">
@@ -39,14 +39,15 @@
 
       <aside class="task-panel">
         <div class="task-head">
-          <div><small>VASTE VOLGORDE</small><h2>Vandaag opruimen</h2></div>
-          <span id="hhProgress">0 / 9</span>
+          <div><small>VOLGENDE ACTIE</small><h2 id="currentTaskTitle">Kleding opruimen</h2><p id="currentTaskHint">Kleding → kast / wasmand</p></div>
+          <span id="hhProgress">1 / 9</span>
         </div>
-        <ol id="hhTasks" class="task-list"></ol>
-        <div class="task-foot">
-          <button id="resetRoom" type="button">Reset demo</button>
-          <p>Lab-only: deze test schrijft nog niets naar je echte Daily Mission.</p>
+        <div class="task-action-row">
+          <button id="currentTaskButton" type="button">Doe deze stap <span>→</span></button>
+          <button id="resetRoom" class="reset-mini" type="button" aria-label="Reset demo">↻</button>
         </div>
+        <div class="task-progress" aria-hidden="true"><div id="taskProgressFill"></div></div>
+        <ol id="hhTasks" class="task-list" hidden></ol>
       </aside>
     </section>
 
