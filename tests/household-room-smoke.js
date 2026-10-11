@@ -1,0 +1,23 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.join(__dirname,'..');
+const html=fs.readFileSync(path.join(root,'lab-household-room.html'),'utf8');
+const js=fs.readFileSync(path.join(root,'lab-household-room.js'),'utf8');
+const css=fs.readFileSync(path.join(root,'lab-household-room.css'),'utf8');
+const lab=fs.readFileSync(path.join(root,'lab.html'),'utf8');
+
+for(const id of ['clothes','trash','places','machines','prepare','wipe','vacuum','mop','finish']) assert.match(js,new RegExp("'"+id+"'"),'Household room preserves ordered task '+id);
+assert.match(js,/TASKS\[index\]/,'only current Household task drives interaction');
+assert.match(js,/raycaster\.intersectObjects/,'room objects are clickable via raycasting');
+assert.match(js,/walkTo\(taskTarget/,'character walks to the active cleaning target');
+assert.match(js,/2\.8s/,'evolution flash is locked to 2.8 seconds');
+assert.match(css,/@keyframes evoBlink/,'evolution blink animation exists');
+assert.match(js,/Lab-only|lab-only/i,'prototype does not claim canonical writes');
+assert.doesNotMatch(js,/toggleMission|rpg_habitlog_v1|rpg_daily_v1/,'prototype cannot mutate canonical Daily Mission state');
+assert.match(js,/GLTFLoader/,'room reuses the rigged GLB route');
+assert.match(html,/Household Room 0\.1/,'prototype has explicit title');
+assert.match(lab,/id="gwHouseholdRoom"/,'Lab exposes Household Room card');
+assert.match(lab,/lab-household-room\.html/,'Lab links to Household Room');
+console.log('PASS Household Room 0.1: ordered tasks, clickable 3D room, locomotion, safe Lab isolation and evolution flow.');
