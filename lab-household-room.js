@@ -3,6 +3,10 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const stage=document.getElementById('householdStage');
 const list=document.getElementById('hhTasks');
 const progress=document.getElementById('hhProgress');
+const currentTaskTitle=document.getElementById('currentTaskTitle');
+const currentTaskHint=document.getElementById('currentTaskHint');
+const currentTaskButton=document.getElementById('currentTaskButton');
+const taskProgressFill=document.getElementById('taskProgressFill');
 const levelEl=document.getElementById('hhLevel');
 const toastEl=document.getElementById('roomToast');
 const flash=document.getElementById('evolutionFlash');
@@ -25,25 +29,50 @@ let moving=false,afterMove=null;
 
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;stage.append(renderer.domElement);
-const scene=new THREE.Scene();scene.background=new THREE.Color('#141a2c');
+const scene=new THREE.Scene();scene.background=new THREE.Color('#6d6673');
 const camera=new THREE.PerspectiveCamera(38,1,.1,50);camera.position.set(6.8,5.2,8.5);camera.lookAt(0,.7,0);
-scene.add(new THREE.HemisphereLight('#f7f2ff','#36433e',2.1));
-const sun=new THREE.DirectionalLight('#fff0d4',2.6);sun.position.set(4,8,5);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
-const fill=new THREE.DirectionalLight('#b7caff',.8);fill.position.set(-5,3,4);scene.add(fill);
+scene.add(new THREE.HemisphereLight('#fff4e9','#4b4050',2.35));
+const sun=new THREE.DirectionalLight('#fff1da',2.85);sun.position.set(4,8,5);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
+const fill=new THREE.DirectionalLight('#c6d5ff',.9);fill.position.set(-5,3,4);scene.add(fill);
 
 const mat=(c,r=.85)=>new THREE.MeshStandardMaterial({color:c,roughness:r});
 const room=new THREE.Group();scene.add(room);
 function mesh(g,c,x,y,z,cast=true){const m=new THREE.Mesh(g,mat(c));m.position.set(x,y,z);m.castShadow=cast;m.receiveShadow=true;room.add(m);return m}
-const floorMesh=mesh(new THREE.BoxGeometry(7,.16,5.8),'#88747a',0,-.08,0);
-const backWall=mesh(new THREE.BoxGeometry(7,3.3,.14),'#67586f',0,1.65,-2.82);
-const sideWall=mesh(new THREE.BoxGeometry(.14,3.3,5.8),'#5b5671',-3.43,1.65,0);
-const bedBase=mesh(new THREE.BoxGeometry(2.4,.5,1.7),'#d7c1b7',1.75,.25,-1.65);
-const bedTop=mesh(new THREE.BoxGeometry(2.3,.12,1.6),'#efe0d6',1.75,.56,-1.65);
+const floorMesh=mesh(new THREE.BoxGeometry(7,.16,5.8),'#9b735b',0,-.08,0);
+const backWall=mesh(new THREE.BoxGeometry(7,3.3,.14),'#c4adb7',0,1.65,-2.82);
+const sideWall=mesh(new THREE.BoxGeometry(.14,3.3,5.8),'#b49da9',-3.43,1.65,0);
+const bedBase=mesh(new THREE.BoxGeometry(2.4,.5,1.7),'#b99684',1.75,.25,-1.65);
+const bedTop=mesh(new THREE.BoxGeometry(2.3,.12,1.6),'#f4e9e2',1.75,.56,-1.65);
 mesh(new THREE.BoxGeometry(1.2,2.25,.7),'#8d735f',-2.55,1.12,-1.9);
 mesh(new THREE.BoxGeometry(1.15,.75,.7),'#a98872',-2.55,.37,-.9);
 mesh(new THREE.BoxGeometry(1.1,.08,.72),'#dec7a9',-2.55,.8,-.9);
 mesh(new THREE.BoxGeometry(1.7,.08,1.15),'#bfa6c9',.2,.045,.8);
-mesh(new THREE.BoxGeometry(.9,.1,.45),'#cdbbd7',1.85,.63,-1.65);
+mesh(new THREE.BoxGeometry(.9,.1,.45),'#d9c3cf',1.85,.63,-1.65);
+
+// Cozy room shell: rug, window, curtains, shelf, nightstand, lamp and hamper.
+const rug=new THREE.Mesh(new THREE.CylinderGeometry(1.18,1.18,.035,48),new THREE.MeshStandardMaterial({color:'#d9b8a4',roughness:.95}));
+rug.position.set(.15,.018,.85);rug.receiveShadow=true;room.add(rug);
+const windowPane=mesh(new THREE.BoxGeometry(1.45,1.15,.035),'#a9d5df',-.55,1.88,-2.735,false);
+windowPane.material.roughness=.4;windowPane.material.emissive=new THREE.Color('#618fa0');windowPane.material.emissiveIntensity=.12;
+mesh(new THREE.BoxGeometry(1.58,.055,.07),'#f0e0d5',-.55,2.47,-2.69);
+mesh(new THREE.BoxGeometry(1.58,.055,.07),'#f0e0d5',-.55,1.30,-2.69);
+mesh(new THREE.BoxGeometry(.055,1.2,.07),'#f0e0d5',-1.32,1.88,-2.69);
+mesh(new THREE.BoxGeometry(.055,1.2,.07),'#f0e0d5',.22,1.88,-2.69);
+mesh(new THREE.BoxGeometry(.045,1.13,.065),'#f0e0d5',-.55,1.88,-2.68);
+mesh(new THREE.BoxGeometry(.38,1.55,.09),'#b8899f',-1.57,1.77,-2.62);
+mesh(new THREE.BoxGeometry(.38,1.55,.09),'#b8899f',.47,1.77,-2.62);
+mesh(new THREE.BoxGeometry(1.25,.10,.32),'#7f654f',.85,2.48,-2.56);
+const bookA=mesh(new THREE.BoxGeometry(.12,.28,.18),'#e5b46f',.55,2.67,-2.48);
+const bookB=mesh(new THREE.BoxGeometry(.11,.24,.18),'#6f9f91',.69,2.65,-2.48);
+const nightstand=mesh(new THREE.BoxGeometry(.58,.52,.55),'#8e6f59',2.88,.26,-1.72);
+const lampBase=mesh(new THREE.CylinderGeometry(.11,.15,.16,20),'#d2b690',2.88,.60,-1.72);
+const lampShadeBase=mesh(new THREE.CylinderGeometry(.16,.27,.30,24),'#f0cf9e',2.88,.82,-1.72);
+lampShadeBase.material.emissive=new THREE.Color('#d99f55');lampShadeBase.material.emissiveIntensity=.12;
+const practical=new THREE.PointLight('#ffd9a8',.42,4.2,2);practical.position.set(2.88,1.05,-1.68);scene.add(practical);
+const hamper=new THREE.Mesh(new THREE.CylinderGeometry(.33,.29,.58,24),new THREE.MeshStandardMaterial({color:'#b89472',roughness:.9}));
+hamper.position.set(-2.85,.29,.75);hamper.castShadow=true;room.add(hamper);
+const poster=mesh(new THREE.BoxGeometry(.72,.96,.035),'#e7d9ca',1.15,1.98,-2.73,false);
+const posterInner=mesh(new THREE.BoxGeometry(.58,.78,.025),'#8da59a',1.15,1.98,-2.705,false);
 
 const actorRoot=new THREE.Group();scene.add(actorRoot);
 const actorShadow=new THREE.Mesh(new THREE.CircleGeometry(.42,28),new THREE.MeshBasicMaterial({color:'#000',transparent:true,opacity:.25,depthWrite:false}));actorShadow.rotation.x=-Math.PI/2;actorShadow.position.y=.02;actorRoot.add(actorShadow);
@@ -166,7 +195,7 @@ function updateMove(dt){
  tmp.subVectors(target,actorRoot.position);tmp.y=0;const d=tmp.length();
  if(d<.07){actorRoot.position.x=target.x;actorRoot.position.z=target.z;moving=false;setState('idle');const cb=afterMove;afterMove=null;if(cb)cb();return}
  tmp.normalize();actorRoot.position.addScaledVector(tmp,Math.min(d,moveSpeed*dt));
- const yaw=Math.atan2(tmp.x,tmp.z);let diff=yaw-actorRoot.rotation.y;diff=Math.atan2(Math.sin(diff),Math.cos(diff));actorRoot.rotation.y+=diff*Math.min(1,dt*8);
+ const yaw=Math.atan2(-tmp.x,-tmp.z);let diff=yaw-actorRoot.rotation.y;diff=Math.atan2(Math.sin(diff),Math.cos(diff));actorRoot.rotation.y+=diff*Math.min(1,dt*13);if(rig.head)rig.head.rotation.y=THREE.MathUtils.clamp(diff*1.35,-.34,.34);
 }
 
 function taskTarget(id){
@@ -239,13 +268,13 @@ function levelUp(){
 }
 function upgradeRoom(){
  upgradeGroup.visible=true;
- scene.background=new THREE.Color('#191d2d');
- floorMesh.material.color.set('#b48f78');
- backWall.material.color.set('#8f7a94');
- sideWall.material.color.set('#786d8d');
- bedBase.material.color.set('#c7a78e');
- bedTop.material.color.set('#fff3e7');
- sun.intensity=3.15;fill.intensity=1.05;
+ scene.background=new THREE.Color('#6d6a78');
+ floorMesh.material.color.set('#b48667');
+ backWall.material.color.set('#d4b8c2');
+ sideWall.material.color.set('#c1a5b1');
+ bedBase.material.color.set('#c59e87');
+ bedTop.material.color.set('#fff6ee');
+ sun.intensity=3.35;fill.intensity=1.1;practical.intensity=.62;
  camera.position.set(6.25,4.75,7.8);camera.lookAt(0,.75,0);
  upgradeGroup.scale.setScalar(.72);
  const t0=performance.now();
@@ -256,27 +285,38 @@ function reset(){
  index=0;busy=false;taskAnim=null;
  const upgraded=level>1;
  upgradeGroup.visible=upgraded;
- scene.background=new THREE.Color(upgraded?'#191d2d':'#141a2c');
- floorMesh.material.color.set(upgraded?'#b48f78':'#88747a');
- backWall.material.color.set(upgraded?'#8f7a94':'#67586f');
- sideWall.material.color.set(upgraded?'#786d8d':'#5b5671');
- bedBase.material.color.set(upgraded?'#c7a78e':'#d7c1b7');
- bedTop.material.color.set(upgraded?'#fff3e7':'#efe0d6');
- sun.intensity=upgraded?3.15:2.6;fill.intensity=upgraded?1.05:.8;
+ scene.background=new THREE.Color(upgraded?'#6d6a78':'#6d6673');
+ floorMesh.material.color.set(upgraded?'#b48667':'#9b735b');
+ backWall.material.color.set(upgraded?'#d4b8c2':'#c4adb7');
+ sideWall.material.color.set(upgraded?'#c1a5b1':'#b49da9');
+ bedBase.material.color.set(upgraded?'#c59e87':'#b99684');
+ bedTop.material.color.set(upgraded?'#fff6ee':'#f4e9e2');
+ sun.intensity=upgraded?3.35:2.85;fill.intensity=upgraded?1.1:.9;practical.intensity=upgraded?.62:.42;
  camera.position.set(upgraded?6.25:6.8,upgraded?4.75:5.2,upgraded?7.8:8.5);camera.lookAt(0,.7,0);
  clutter.forEach(o=>{o.visible=true;o.scale.setScalar(1);if(o.material?.emissive){o.material.emissive.set('#000');o.material.emissiveIntensity=0}});
  actorRoot.position.set(.1,0,1.9);actorRoot.rotation.y=Math.PI;renderTasks();toast(upgraded?'Nieuwe dag: level blijft, nieuwe rommel':'Nieuwe dag: kamer weer rommelig');
 }
 document.getElementById('resetRoom').onclick=reset;
+currentTaskButton.onclick=startTask;
 function renderTasks(){
- progress.textContent=Math.min(index,TASKS.length)+' / '+TASKS.length;
- list.innerHTML=TASKS.map((t,i)=>{
-  const status=i<index?'✓':i===index?(busy?'bezig…':'doen'):'slot';
-  const cls=i<index?'done':i===index?'active':'locked';
-  return '<li class="'+cls+'"><button type="button" data-i="'+i+'" '+(i===index&&!busy?'':'disabled')+'><span class="num">'+(i+1)+'</span><span><strong>'+t[1]+'</strong><small>'+t[2]+'</small></span><span class="state">'+status+'</span></button></li>';
- }).join('');
- const active=list.querySelector('li.active button');if(active)active.onclick=startTask;
- const id=TASKS[index]?.[0];clutter.forEach((o,key)=>{if(!o.material?.emissive)return;o.material.emissive.set(key===id?'#8be1c1':'#000');o.material.emissiveIntensity=key===id ? .22 : 0});
+ const done=Math.min(index,TASKS.length);
+ const currentTask=TASKS[Math.min(index,TASKS.length-1)];
+ progress.textContent=(index>=TASKS.length?TASKS.length:index+1)+' / '+TASKS.length;
+ taskProgressFill.style.width=((done/TASKS.length)*100)+'%';
+ if(index>=TASKS.length){
+  currentTaskTitle.textContent='Kamer schoon';
+  currentTaskHint.textContent='Alle 9 stappen zijn klaar — evolution gestart.';
+  currentTaskButton.disabled=true;
+  currentTaskButton.innerHTML='Vandaag klaar <span>✓</span>';
+ }else{
+  currentTaskTitle.textContent=currentTask[1];
+  currentTaskHint.textContent=currentTask[2];
+  currentTaskButton.disabled=busy;
+  currentTaskButton.innerHTML=(busy?'Bezig…':'Doe deze stap')+' <span>→</span>';
+  currentTaskButton.onclick=startTask;
+ }
+ const id=TASKS[index]?.[0];
+ clutter.forEach((o,key)=>{if(!o.material?.emissive)return;o.material.emissive.set(key===id?'#8be1c1':'#000');o.material.emissiveIntensity=key===id ? .22 : 0});
 }
 
 toast('Eigen Household rig actief · klik stap 1 of de kleding');
