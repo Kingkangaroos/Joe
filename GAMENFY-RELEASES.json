@@ -1,6 +1,23 @@
 {
   "releases": [
     {
+      "id": "2026-10-11-smooth-evolution-asset-review",
+      "date": "2026-10-11",
+      "surfaces": [
+        "lab"
+      ],
+      "title": "Vloeiende evolutie + zichtbare assetvergelijking",
+      "why": "Een level-up moet één doorlopende verandering voelen; gevonden beelden moeten zichtbaar te controleren zijn.",
+      "changes": [
+        "Little Worlds: twee energieringen, geleidelijke vormwisseling, flits en doorlopende sprong met landing.",
+        "Steps en Good Deed: alle tien huidige vormen controleerbaar op drie achtergronden, naast daadwerkelijk teruggevonden bestanden.",
+        "Nieuwere Steps-sheet met vier loopposes zichtbaar. Geen nieuwe afbeeldingen gegenereerd."
+      ],
+      "try": "Lab → Little Worlds en Steps & Good Deed assetvergelijking.",
+      "remaining": "De nieuwere Steps-sheet heeft nog gekleurde randen en is geen tien-levelset. Geen nieuwere schone Good Deed-set vastgesteld; transparantieherstel blijft open. Stap twee wacht op Joey.",
+      "url": "lab-asset-compare.html"
+    },
+    {
       "id": "2026-10-11-step-one",
       "date": "2026-10-11",
       "surfaces": [

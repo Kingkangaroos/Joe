@@ -1,8 +1,9 @@
 <!doctype html>
 <html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#111827"><title>Little Worlds · Evolution Lab</title>
-<link rel="stylesheet" href="lab-habit-evolution.css?v=1">
+<link rel="stylesheet" href="lab-habit-evolution.css?v=2">
+<link rel="stylesheet" href="lab-evolution-smooth.css?v=1">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
-<script src="lab-habit-evolution.js?v=1" defer></script></head>
+<script src="lab-habit-evolution.js?v=2" defer></script></head>
 <body><main class="shell"><header class="top"><a href="lab.html">‹ ChatGPT Lab</a><span>TEST 11 · DEMO</span><button id="sound" aria-pressed="false">Geluid uit</button></header>
 <div class="intro"><span class="eyebrow">JOUW GEWOONTES, HUN WERELD</span><h1>Little worlds.<br><em>Big little wins.</em></h1><p>Een vinkje dat je kunt voelen. Kies een wereld en laat je companion evolueren.</p></div>
 <nav class="habits" aria-label="Kies een habit"><button data-habit="gratitude" aria-pressed="true">✦ Gratitude</button><button data-habit="household" aria-pressed="false">⌂ Household</button><button data-habit="walking" aria-pressed="false">↗ Steps</button></nav>
@@ -10,7 +11,7 @@
 <div class="world-heading"><div><small id="place">THE GRATITUDE GARDEN</small><h2 id="worldTitle">Er groeit iets goeds.</h2></div><span class="level">VORM <b id="level">1</b><small>/ 10</small></span></div>
 <div class="scenery" aria-hidden="true"><div class="moon"></div><div class="cloud cloud-a"></div><div class="cloud cloud-b"></div><div class="hill hill-a"></div><div class="hill hill-b"></div><div class="floor"></div><div class="path"></div><div class="window"></div><div class="shelf"></div><div class="rug"></div><div class="plant"><i></i><i></i><i></i></div><div class="clutter"><i></i><i></i><i></i></div><div class="flowers" id="flowers"></div><div class="milestones"><i>01</i><i>02</i><i>03</i></div><div class="fireflies"></div></div>
 <div id="rigStage" hidden aria-label="3D-companion in zijn wereld"></div>
-<div class="actor" id="actor"><div class="actor-shadow"></div><img id="companion" src="img/lab/park31/gratitude/l01.webp" alt="Gratitude basisvorm"><div class="actor-ring"></div></div>
+<div class="actor" id="actor"><div class="actor-shadow"></div><img id="companion" src="img/lab/park31/gratitude/l01.webp" alt="Gratitude basisvorm"><img id="nextCompanion" alt="" aria-hidden="true"><div class="actor-ring"></div><div class="orbit orbit-a" aria-hidden="true"></div><div class="orbit orbit-b" aria-hidden="true"></div></div>
 <div class="energy" aria-hidden="true"><div class="rays"></div><div class="pulse"></div><div id="particles"></div></div>
 <div class="world-reward" id="reward" role="status" aria-live="polite">Een klein begin telt.</div><div class="ground-label" id="groundLabel">JOUW EIGEN STUKJE RUST</div>
 </section>

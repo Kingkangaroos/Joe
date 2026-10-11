@@ -2,7 +2,7 @@
 (function(){
   'use strict';
   const configs={gratitude:{dir:'gratitude',place:'THE GRATITUDE GARDEN',title:'Er groeit iets goeds.',button:'Gratitude gedaan',reward:'Je tuin krijgt er licht bij.',ground:'JOUW EIGEN STUKJE RUST'},household:{dir:'household',place:'THE LITTLE RESET ROOM',title:'Ruimte in je huis. Rust in je hoofd.',button:'Household gedaan',reward:'De kamer ademt weer.',ground:'EEN HUIS DAT MET JE MEEGROEIT'},walking:{dir:'steps',place:'THE EVERYDAY TRAIL',title:'Elke stap brengt je verder.',button:'10.000 stappen gehaald',reward:'Een nieuw stukje wereld bereikt.',ground:'VANDAAG EEN STUKJE VERDER'}};
-  const $=id=>document.getElementById(id),world=$('world'),image=$('companion');
+  const $=id=>document.getElementById(id),world=$('world'),image=$('companion'),nextImage=$('nextCompanion');
   const levels={gratitude:1,household:1,walking:1};
   let habit='gratitude',mode='art',busy=false,token=0,last=null,rig=null,rigPromise=null,sound=false,audio=null;
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -20,12 +20,20 @@
     try{await Promise.race([preload(asset(h,to)),wait(8000).then(()=>{throw Error('timeout');})]);}catch(e){$('loadStatus').textContent='De volgende vorm kon niet laden. Probeer opnieuw.';lock(false);return;}
     if(id!==token)return;
     const speed=$('slow').checked?1.8:1;
-    image.src=asset(h,from);$('reward').textContent='Een klein moment. Een echte stap.';world.classList.remove('upgraded');
-    if(!reduce){world.style.setProperty('--beat',(.65*speed)+'s');setPhase('gather');await wait(650*speed);if(id!==token)return;world.style.setProperty('--beat',(.75*speed)+'s');setPhase('burst');await wait(300*speed);if(id!==token)return;}
-    levels[h]=to;update();chime();
-    if(!reduce){await wait(380*speed);if(id!==token)return;world.style.setProperty('--beat',(1.15*speed)+'s');}
+    image.src=asset(h,from);nextImage.src=asset(h,to);$('reward').textContent='Een klein moment. Een echte stap.';
+    world.classList.toggle('upgraded',from>1);
+    if(!reduce){
+      world.style.setProperty('--evolution-duration',(3200*speed)+'ms');
+      world.style.setProperty('--beat',(1100*speed)+'ms');
+      world.classList.add('evolving');setPhase('gather');
+      await wait(950*speed);if(id!==token)return;
+      setPhase('burst');await wait(1100*speed);if(id!==token)return;
+    }
+    chime();
     setPhase('reveal');$('reward').textContent=to===from?'Je wereld blijft op volle kracht.':configs[h].reward;
-    if(!reduce)await wait(1250*speed);if(id!==token)return;
+    world.classList.toggle('upgraded',to>1);$('level').textContent=to;
+    if(!reduce)await wait(1150*speed);if(id!==token)return;
+    levels[h]=to;update();world.classList.remove('evolving');
     setPhase('idle');last={habit:h,from,to};lock(false);
   }
   document.querySelectorAll('[data-habit]').forEach(b=>{if(b.tagName!=='BUTTON')return;b.addEventListener('click',()=>{if(busy)return;habit=b.dataset.habit;last=null;setPhase('idle');$('reward').textContent='Een klein begin telt.';update();});});
