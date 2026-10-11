@@ -184,6 +184,7 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
     if (p.endsWith('finance.html')) return 'finance';
     if (p.endsWith('settings.html')) return 'settings';
     if (p.endsWith('jarvis.html')) return 'jarvis';
+    if (p.endsWith('projects.html')) return 'projects';
     return 'main';
   }
 
@@ -206,11 +207,27 @@ body.topbar-modal-open { overflow: hidden; touch-action: none; }
     document.body.insertBefore(topWrap.firstChild, document.body.firstChild);
     const tbEl = document.getElementById('topbar');
     if (tbEl) {
+      const left = document.createElement('div');
+      left.className = 'topbar-left';
+      left.style.cssText = 'display:flex;align-items:center;gap:4px;margin-right:auto';
+
       const gear = document.createElement('a');
       gear.href = 'settings.html'; gear.textContent = '⚙️';
       gear.setAttribute('aria-label', 'Settings');
-      gear.style.cssText = 'text-decoration:none;font-size:18px;padding:8px 6px;margin-right:auto;-webkit-tap-highlight-color:transparent';
-      tbEl.appendChild(gear);
+      gear.style.cssText = 'text-decoration:none;font-size:18px;padding:8px 6px;-webkit-tap-highlight-color:transparent';
+
+      const projects = document.createElement('a');
+      projects.href = 'projects.html'; projects.textContent = '🗂️';
+      projects.setAttribute('aria-label', 'Projects');
+      projects.title = 'Projects';
+      projects.style.cssText = 'text-decoration:none;font-size:18px;padding:8px 7px;border-radius:10px;-webkit-tap-highlight-color:transparent';
+      if ((window.location.pathname || '').toLowerCase().endsWith('projects.html')) {
+        projects.style.background = '#F4F3EF';
+      }
+
+      left.appendChild(gear);
+      left.appendChild(projects);
+      tbEl.appendChild(left);
     }
     const bottomWrap = document.createElement('div');
     bottomWrap.innerHTML = bottombarHtml.trim();
