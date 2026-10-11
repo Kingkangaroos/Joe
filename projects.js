@@ -3,7 +3,7 @@
 
 var KEY='gamenfy_projects_v1';
 var SEED={
-  v:1,
+  v:2,
   activeId:'house-upgrade',
   projects:[{
     id:'house-upgrade',
@@ -11,20 +11,37 @@ var SEED={
     name:'House Upgrade',
     subtitle:'Huis opknappen',
     status:'active',
-    summary:'Mijn huis stap voor stap mooier, rustiger en functioneler maken — zonder ideeën, beelden en losse klusjes kwijt te raken.',
-    areas:['Keuken','Woonkamer','Slaapkamer','Hal / entree','Badkamer'],
+    summary:'Mijn open loft stap voor stap mooier, rustiger en functioneler maken — zonder ideeën, beelden en losse klusjes kwijt te raken.',
+    source:'House 1.0 · geïmporteerd uit eerdere ChatGPT-gesprekken',
+    layout:['Entree','Keuken / bar','Eetgedeelte + bank','Badkamer','Woonkamer','Slaapkamer'],
+    constraints:[
+      'Groene bank blijft',
+      'TV-meubel blijft',
+      'Grote TV blijft',
+      'Nieuw bed blijft',
+      'Grote kast links blijft op zijn plek',
+      'Doorgangen en looproute blijven open',
+      'Grijze bank is optioneel'
+    ],
+    styleDirection:'Rustig luxe · warm modern / Japandi / hotel-chic light. Weinig spullen, geen showroomgevoel. Groen, hout, zwart en beige-wit als basis met warme 2700K-verlichting.',
+    areas:['Entree','Keuken / bar','Eetgedeelte','Badkamer','Woonkamer','Slaapkamer'],
     tasks:[
       {id:'task-moodboard',title:'Moodboard verzamelen en beste beelden kiezen',area:'Hele huis',done:false},
       {id:'task-room-plan',title:'Per ruimte bepalen: houden / weg / kopen',area:'Hele huis',done:false},
-      {id:'task-kitchen',title:'Keukenindeling definitief maken',area:'Keuken',done:false}
+      {id:'task-kitchen',title:'Keukenindeling definitief maken',area:'Keuken / bar',done:false},
+      {id:'task-house1-images',title:'Oude House 1.0 beelden opnieuw koppelen zodra de bestanden beschikbaar zijn',area:'Hele huis',done:false}
     ],
     ideas:[
       {id:'idea-before-after',title:'Voor- en nafoto per ruimte bewaren'},
-      {id:'idea-priority',title:'Werk per ruimte met één duidelijke volgende stap'}
+      {id:'idea-priority',title:'Werk per ruimte met één duidelijke volgende stap'},
+      {id:'idea-kitchen-calm',title:'Keuken: bestaande groene kastjes + hout behouden; koelkast visueel rustiger integreren en accessoires reduceren'},
+      {id:'idea-zones',title:'Open loft zoneren met licht, vloerkleden en meubelplaatsing zonder doorgangen dicht te zetten'},
+      {id:'idea-living',title:'Woonkamer: groene bank als eyecatcher; grote bank niet kleiner maken; stoel schuin tegenover de bank kan de zone afmaken'},
+      {id:'idea-lighting',title:'Warme verlichting rond 2700K als vaste basis voor de hele woning'}
     ],
     shopping:[],
     moodboard:[],
-    notes:'Hier kan alles in wat je niet wilt vergeten: kleuren, maten, links, twijfels, ideeën en beslissingen.\n\nTip: plak bij Moodboard een directe afbeeldingslink of een asset-URL uit je eigen Gamenfy/GitHub-map.',
+    notes:'HOUSE 1.0 IMPORT — 11 oktober 2026\n\nIndeling: open loft zonder muren. Entree → keuken/bar → eetgedeelte met bank → badkamer → woonkamer → slaapkamer.\n\nVaste uitgangspunten: groene bank, TV-meubel, grote TV en nieuw bed blijven. Grote kast links staat vast. Doorgangen moeten open blijven. Grijze bank mag blijven of weg.\n\nStijlrichting uit eerdere sessies: rustig luxe, warm modern/Japandi/hotel-chic light. Weinig losse spullen, geen fantasy/thema en geen showroomgevoel. Materialen/kleuren: groen, hout, beige/crème, zwart, eventueel messing/amber glas/natuursteen als kleine accenten.\n\nKeuken: matte groene kastjes + warm houten werkblad/vloer en bestaande structuur als basis. Rustiger stylen, koelkast visueel integreren, declutteren, warme 2700K-verlichting.\n\nWoonkamer/open ruimte: zones duidelijker maken zonder muren; bank 20–30 cm van de muur kan lucht geven als de looproute dat toelaat. Een stoel schuin tegenover de bank is eerder als optie genoemd.\n\nOude gegenereerde House 1.0-beelden horen in Moodboard zodra de originele bestanden weer beschikbaar zijn.',
     createdAt:'2026-10-11T00:00:00.000Z',
     updatedAt:'2026-10-11T00:00:00.000Z'
   }]
@@ -57,6 +74,10 @@ function normalizeProject(p){
   p.subtitle=p.subtitle||'Persoonlijk project';
   p.status=p.status||'active';
   p.summary=p.summary||'Maak het concreet en houd hier alles bij elkaar.';
+  p.source=typeof p.source==='string'?p.source:'';
+  p.layout=Array.isArray(p.layout)?p.layout:[];
+  p.constraints=Array.isArray(p.constraints)?p.constraints:[];
+  p.styleDirection=typeof p.styleDirection==='string'?p.styleDirection:'';
   p.areas=Array.isArray(p.areas)?p.areas:[];
   p.tasks=Array.isArray(p.tasks)?p.tasks:[];
   p.ideas=Array.isArray(p.ideas)?p.ideas:[];
@@ -65,14 +86,42 @@ function normalizeProject(p){
   p.notes=typeof p.notes==='string'?p.notes:'';
   return p;
 }
+function mergeUniqueById(target, additions){
+  var seen={};
+  (target||[]).forEach(function(x){if(x&&x.id)seen[x.id]=true;});
+  (additions||[]).forEach(function(x){if(x&&x.id&&!seen[x.id]){target.push(clone(x));seen[x.id]=true;}});
+}
+function migrate(raw){
+  if(!raw||!Array.isArray(raw.projects))return raw;
+  raw.projects=raw.projects.map(normalizeProject);
+  var house=raw.projects.find(function(p){return p.id==='house-upgrade';});
+  var template=SEED.projects[0];
+  var changed=false;
+  if(house){
+    if((raw.v||1)<2){
+      if(!house.source){house.source=template.source;changed=true;}
+      if(!house.layout.length){house.layout=clone(template.layout);changed=true;}
+      if(!house.constraints.length){house.constraints=clone(template.constraints);changed=true;}
+      if(!house.styleDirection){house.styleDirection=template.styleDirection;changed=true;}
+      mergeUniqueById(house.tasks,template.tasks);
+      mergeUniqueById(house.ideas,template.ideas);
+      if(house.notes.indexOf('HOUSE 1.0 IMPORT')===-1){
+        house.notes=(house.notes?house.notes+'\n\n':'')+template.notes;
+        changed=true;
+      }
+      raw.v=2;changed=true;
+    }
+  }
+  if(!raw.activeId&&raw.projects[0])raw.activeId=raw.projects[0].id;
+  if(changed){
+    try{localStorage.setItem(KEY,JSON.stringify(raw));}catch(e){}
+  }
+  return raw;
+}
 function load(){
   try{
     var raw=JSON.parse(localStorage.getItem(KEY));
-    if(raw&&Array.isArray(raw.projects)){
-      raw.projects=raw.projects.map(normalizeProject);
-      if(!raw.activeId&&raw.projects[0])raw.activeId=raw.projects[0].id;
-      return raw;
-    }
+    if(raw&&Array.isArray(raw.projects))return migrate(raw);
   }catch(e){}
   var seeded=clone(SEED);
   try{localStorage.setItem(KEY,JSON.stringify(seeded));}catch(e){}
@@ -170,6 +219,9 @@ function renderDetail(){
       '<div class="next-move">NEXT MOVE<b>'+(next?esc(next.title):'Alles afgevinkt — kies de volgende fase.')+'</b></div>'+
     '</section>'+
     '<div class="grid">'+
+      (p.layout.length?'<section class="card wide house-map"><h2>House map</h2><div class="card-sub">'+esc(p.source||'Vaste woningindeling')+'</div><div class="house-flow">'+p.layout.map(function(a,i){return '<span>'+esc(a)+'</span>'+(i<p.layout.length-1?'<b>→</b>':'');}).join('')+'</div></section>':'')+
+      (p.constraints.length?'<section class="card"><h2>Blijft staan</h2><div class="card-sub">Harde randvoorwaarden uit House 1.0.</div><div class="constraint-list">'+p.constraints.map(function(x){return '<div class="constraint">✓ '+esc(x)+'</div>';}).join('')+'</div></section>':'')+
+      (p.styleDirection?'<section class="card"><h2>Design direction</h2><div class="card-sub">De rode draad uit de eerdere interieurgesprekken.</div><div class="style-copy">'+esc(p.styleDirection)+'</div></section>':'')+
       '<section class="card wide"><h2>Ruimtes / areas</h2><div class="card-sub">Gebruik dit als je vaste kapstok. Geen losse chats meer nodig om te onthouden waar je mee bezig was.</div><div class="area-row">'+
         p.areas.map(function(a){return '<span class="area">'+esc(a)+'</span>';}).join('')+
       '</div></section>'+
@@ -244,9 +296,9 @@ window.addEventListener('storage',function(e){if(!e.key||e.key===KEY)render();})
 window.addEventListener('gamenfy:remote-state-applied',function(e){if(e.detail&&e.detail.appKey==='projects')render();});
 
 document.addEventListener('DOMContentLoaded',function(){
-  render();
   if(typeof window.initCloudSync==='function'){
     window.initCloudSync({appKey:'projects',syncedKeys:[KEY],syncedPrefixes:[],onApplied:render});
   }
+  render();
 });
 })();
