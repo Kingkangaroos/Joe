@@ -37,11 +37,11 @@ const fill=new THREE.DirectionalLight('#b7caff',.8);fill.position.set(-5,3,4);sc
 const mat=(c,r=.85)=>new THREE.MeshStandardMaterial({color:c,roughness:r});
 const room=new THREE.Group();scene.add(room);
 function mesh(g,c,x,y,z,cast=true){const m=new THREE.Mesh(g,mat(c));m.position.set(x,y,z);m.castShadow=cast;m.receiveShadow=true;room.add(m);return m}
-mesh(new THREE.BoxGeometry(7,.16,5.8),'#88747a',0,-.08,0);
-mesh(new THREE.BoxGeometry(7,3.3,.14),'#67586f',0,1.65,-2.82);
-mesh(new THREE.BoxGeometry(.14,3.3,5.8),'#5b5671',-3.43,1.65,0);
-mesh(new THREE.BoxGeometry(2.4,.5,1.7),'#d7c1b7',1.75,.25,-1.65);
-mesh(new THREE.BoxGeometry(2.3,.12,1.6),'#efe0d6',1.75,.56,-1.65);
+const floorMesh=mesh(new THREE.BoxGeometry(7,.16,5.8),'#88747a',0,-.08,0);
+const backWall=mesh(new THREE.BoxGeometry(7,3.3,.14),'#67586f',0,1.65,-2.82);
+const sideWall=mesh(new THREE.BoxGeometry(.14,3.3,5.8),'#5b5671',-3.43,1.65,0);
+const bedBase=mesh(new THREE.BoxGeometry(2.4,.5,1.7),'#d7c1b7',1.75,.25,-1.65);
+const bedTop=mesh(new THREE.BoxGeometry(2.3,.12,1.6),'#efe0d6',1.75,.56,-1.65);
 mesh(new THREE.BoxGeometry(1.2,2.25,.7),'#8d735f',-2.55,1.12,-1.9);
 mesh(new THREE.BoxGeometry(1.15,.75,.7),'#a98872',-2.55,.37,-.9);
 mesh(new THREE.BoxGeometry(1.1,.08,.72),'#dec7a9',-2.55,.8,-.9);
@@ -68,6 +68,14 @@ addClutter('vacuum','#4c556d',new THREE.Vector3(-1.65,.36,1.8));
 addClutter('mop','#6ca1a8',new THREE.Vector3(2.85,.48,1.2));
 addClutter('finish','#c8b5e6',new THREE.Vector3(1.82,.72,-1.62));
 
+const upgradeGroup=new THREE.Group();room.add(upgradeGroup);upgradeGroup.visible=false;
+const upgradeMat=new THREE.MeshStandardMaterial({color:'#88cfa7',roughness:.6,emissive:'#153b2c',emissiveIntensity:.08});
+const pot=new THREE.Mesh(new THREE.CylinderGeometry(.22,.28,.32,20),new THREE.MeshStandardMaterial({color:'#c28e63',roughness:.8}));pot.position.set(-1.95,.16,-1.65);upgradeGroup.add(pot);
+for(let i=0;i<5;i++){const leaf=new THREE.Mesh(new THREE.SphereGeometry(.18,14,10),upgradeMat);leaf.scale.set(.65,1.2,.45);leaf.position.set(-1.95+(i-2)*.09,.46+Math.abs(i-2)*.05,-1.65+(i%2)*.06);upgradeGroup.add(leaf)}
+const lampStem=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.9,14),new THREE.MeshStandardMaterial({color:'#d6c4aa',roughness:.7}));lampStem.position.set(2.8,.45,-2.1);upgradeGroup.add(lampStem);
+const lampShade=new THREE.Mesh(new THREE.CylinderGeometry(.2,.32,.28,20),new THREE.MeshStandardMaterial({color:'#f4d59b',roughness:.55,emissive:'#f0b95b',emissiveIntensity:.18}));lampShade.position.set(2.8,.93,-2.1);upgradeGroup.add(lampShade);
+const frame=new THREE.Mesh(new THREE.BoxGeometry(1.1,.72,.05),new THREE.MeshStandardMaterial({color:'#e6d7ba',roughness:.7}));frame.position.set(.3,1.85,-2.72);upgradeGroup.add(frame);
+
 const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
 renderer.domElement.addEventListener('pointerup',e=>{
  if(busy)return;
@@ -89,12 +97,13 @@ function blend(name,speed=1){
  if(!mixer)return;const chosen=actions[name]||actions.walk||actions.idle||Object.values(actions).find(Boolean);if(!chosen)return;current=name;chosen.timeScale=speed;
  Object.values(actions).forEach(a=>{if(a){a.enabled=true;a.play();a.fadeOut(.16)}});chosen.reset().fadeIn(.16).play();
 }
-function walkTo(v,cb){target.copy(v);moving=true;afterMove=cb;blend('walk',1)}
+let moveSpeed=3.4;
+function walkTo(v,cb){target.copy(v);moving=true;afterMove=cb;const d=actorRoot.position.distanceTo(target);moveSpeed=Math.max(3.4,d/.42);blend('walk',1.85)}
 function updateMove(dt){
  if(!moving)return;
  tmp.subVectors(target,actorRoot.position);tmp.y=0;const d=tmp.length();
  if(d<.07){actorRoot.position.x=target.x;actorRoot.position.z=target.z;moving=false;blend('idle',.7);const cb=afterMove;afterMove=null;if(cb)cb();return}
- tmp.normalize();actorRoot.position.addScaledVector(tmp,Math.min(d,1.15*dt));
+ tmp.normalize();actorRoot.position.addScaledVector(tmp,Math.min(d,moveSpeed*dt));
  const yaw=Math.atan2(tmp.x,tmp.z);let diff=yaw-actorRoot.rotation.y;diff=Math.atan2(Math.sin(diff),Math.cos(diff));actorRoot.rotation.y+=diff*Math.min(1,dt*8);
 }
 
@@ -104,7 +113,7 @@ function taskTarget(id){
 function startTask(){
  if(busy||index>=TASKS.length)return;busy=true;renderTasks();
  const [id,name]=TASKS[index];toast('Ze gaat '+name.toLowerCase());
- walkTo(taskTarget(id),()=>setTimeout(()=>completeCurrent(id),reduce?80:520));
+ walkTo(taskTarget(id),()=>{pulse(clutter.get(id));setTimeout(()=>completeCurrent(id),reduce?40:150)});
 }
 function completeCurrent(id){
  const obj=clutter.get(id);if(obj){obj.material.emissive.set('#5ce3b1');obj.material.emissiveIntensity=.35;obj.scale.setScalar(.01);setTimeout(()=>{obj.visible=false;},180)}
@@ -114,14 +123,26 @@ function completeCurrent(id){
 }
 function levelUp(){
  busy=true;flash.classList.remove('run');void flash.offsetWidth;flash.classList.add('run');
- setTimeout(()=>{level=Math.min(10,level+1);levelEl.textContent=level;upgradeRoom();},1400);
+ setTimeout(()=>{level=Math.min(10,level+1);levelEl.textContent=level;upgradeRoom();},900);
  setTimeout(()=>{busy=false;toast('Household level '+level+' · morgen komt er weer nieuwe rommel');},2850);
 }
 function upgradeRoom(){
- room.children.forEach(o=>{if(o.material&&o.material.color&&o.geometry?.type==='BoxGeometry'&&o.position.y<.1&&!o.userData.task)o.material.color.offsetHSL(0,.02,.04)});
+ upgradeGroup.visible=true;
+ scene.background=new THREE.Color('#191d2d');
+ floorMesh.material.color.set('#b48f78');
+ backWall.material.color.set('#8f7a94');
+ sideWall.material.color.set('#786d8d');
+ bedBase.material.color.set('#c7a78e');
+ bedTop.material.color.set('#fff3e7');
+ sun.intensity=3.15;fill.intensity=1.05;
+ camera.position.set(6.25,4.75,7.8);camera.lookAt(0,.75,0);
+ upgradeGroup.scale.setScalar(.72);
+ const t0=performance.now();
+ function grow(now){const p=Math.min(1,(now-t0)/520);const e=1-Math.pow(1-p,3);upgradeGroup.scale.setScalar(.72+.28*e);if(p<1)requestAnimationFrame(grow)}
+ requestAnimationFrame(grow);
 }
 function reset(){
- index=0;busy=false;clutter.forEach(o=>{o.visible=true;o.scale.setScalar(1);if(o.material?.emissive){o.material.emissive.set('#000');o.material.emissiveIntensity=0}});actorRoot.position.set(.1,0,1.9);actorRoot.rotation.y=Math.PI;renderTasks();toast('Nieuwe dag: kamer weer rommelig');
+ index=0;busy=false;upgradeGroup.visible=false;scene.background=new THREE.Color('#141a2c');floorMesh.material.color.set('#88747a');backWall.material.color.set('#67586f');sideWall.material.color.set('#5b5671');bedBase.material.color.set('#d7c1b7');bedTop.material.color.set('#efe0d6');sun.intensity=2.6;fill.intensity=.8;camera.position.set(6.8,5.2,8.5);camera.lookAt(0,.7,0);clutter.forEach(o=>{o.visible=true;o.scale.setScalar(1);if(o.material?.emissive){o.material.emissive.set('#000');o.material.emissiveIntensity=0}});actorRoot.position.set(.1,0,1.9);actorRoot.rotation.y=Math.PI;renderTasks();toast('Nieuwe dag: kamer weer rommelig');
 }
 document.getElementById('resetRoom').onclick=reset;
 function renderTasks(){
@@ -137,7 +158,7 @@ function renderTasks(){
 
 new GLTFLoader().load(MODEL_URL,gltf=>{
  model=gltf.scene;model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.frustumCulled=false}});
- const box=new THREE.Box3().setFromObject(model,true),size=box.getSize(new THREE.Vector3()),s=1.55/Math.max(.1,size.y);model.scale.setScalar(s);model.position.y=-box.min.y*s;actorRoot.add(model);
+ const box=new THREE.Box3().setFromObject(model,true),size=box.getSize(new THREE.Vector3()),s=1.55/Math.max(.1,size.y);model.scale.setScalar(s);model.position.y=-box.min.y*s;model.userData.baseY=model.position.y;actorRoot.add(model);
  mixer=new THREE.AnimationMixer(model);const make=c=>c?mixer.clipAction(c):null;
  actions.idle=make(findClip(/idle|stand/i,gltf)||(gltf.animations||[])[0]);
  actions.walk=make(findClip(/walk/i,gltf)||findClip(/run|jog/i,gltf)||(gltf.animations||[])[0]);
@@ -149,5 +170,5 @@ function resize(){const r=stage.getBoundingClientRect();renderer.setSize(r.width
 new ResizeObserver(resize).observe(stage);resize();reset();
 
 let last=performance.now();
-function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(mixer)mixer.update(dt);updateMove(dt);renderer.render(scene,camera);requestAnimationFrame(tick)}
+function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(mixer)mixer.update(dt);updateMove(dt);if(model){model.position.y=model.userData.baseY||model.position.y;model.rotation.z=moving?Math.sin(now*.018)*.018:0;}renderer.render(scene,camera);requestAnimationFrame(tick)}
 requestAnimationFrame(tick);
