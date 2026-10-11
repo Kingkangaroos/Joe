@@ -26,7 +26,7 @@ assert.equal(canonical.length,11,'RPG registry contains exactly eleven public Da
 assert.deepEqual(canonical,['budgeting','good_deed','gratitude','household','meditation','nutrition','screen_time','sleep','teeth','walking','workout']);
 
 assert.equal(defs.cold_shower.active,false,'Cold Shower archived');
-assert.match(defs.workout.habitDesc,/To be generated/);
+assert.match(defs.workout.habitDesc,/workout of mobility-sessie/,'Workout now has the approved evolution and an active mission description');
 localStorage.setItem('rpg_habits_v1',JSON.stringify({cold_shower:{score:6,label:'Cold Shower'}}));
 const coldBefore=JSON.stringify(JSON.parse(localStorage.getItem('rpg_habits_v1')).cold_shower);
 window.checkHabit('workout','Workout + Mobility','🏋️');

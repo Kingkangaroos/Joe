@@ -31,7 +31,7 @@ assert.ok(gf.some(x=>x.id==='GF-SK-CHESS-001'),'Chess skill object remains archi
 assert.ok(gf.some(x=>x.id==='GF-DS-SPRITE-WALK-001'&&String(x.model).includes('AutoSprite')),'Daily Score walk cycle remains documented');
 assert.ok(gf.some(x=>x.id==='GF-PRIV-WEED-001'&&x.scope==='private'),'Weed-control object stays private');
 assert.ok(gf.some(x=>x.id==='GF-PRIV-DISCIPLINE-001'&&x.scope==='private'),'No-porn temptation FX stays private');
-assert.ok(park.includes('13 native Park 3.1 evolution sets × 10 levels = 130 WebP assets'),'Existing Park 3.1 inventory remains source of truth');
+assert.ok(park.includes('14 native Park 3.1 evolution sets × 10 levels = 140 WebP assets'),'Current Park 3.1 inventory includes Workout; archived v2 inventory remains historical');
 assert.ok(data.gamenfyStrategy.existingInventory.includes('130 committed WebPs'),'Archive still avoids recreating existing art');
 assert.ok(ui.includes("fetch('WEBSITE-VENTURES-PRODUCTION-LINE-V2.json'"),'Archived board reads durable v2 JSON');
 assert.ok(ui.includes("fetch('HIGGSFIELD-CREDIT-PREFLIGHT.json'"),'Archived board retains credit anchors');
