@@ -1,0 +1,36 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.join(__dirname,'..');
+const html=fs.readFileSync(path.join(root,'lab-steps-living-rig.html'),'utf8');
+const js=fs.readFileSync(path.join(root,'lab-steps-living-rig.js'),'utf8');
+const lab=fs.readFileSync(path.join(root,'lab.html'),'utf8');
+const a=fs.readFileSync(path.join(root,'assets/models/steps-fox-rig-v1.part1.b64'),'utf8').trim();
+const b=fs.readFileSync(path.join(root,'assets/models/steps-fox-rig-v1.part2.b64'),'utf8').trim();
+assert.equal((a+b).length,304908,'both asset parts are complete');
+const binary=Buffer.from(a+b,'base64');
+assert.equal(binary.toString('utf8',0,4),'glTF','asset is a real binary glTF model');
+assert.equal(binary.readUInt32LE(8),binary.length,'GLB length matches header');
+const jsonLength=binary.readUInt32LE(12);
+const gltf=JSON.parse(binary.toString('utf8',20,20+jsonLength));
+const names=new Set(gltf.nodes.map(n=>n.name));
+for(const name of ['Root','Hips','Spine','Head','Jaw','Tail','Thigh.L','Thigh.R','Shin.L','Shin.R','Foot.L','Foot.R','UpperArm.L','UpperArm.R']){
+ assert.ok(names.has(name),'real animated rig node: '+name);
+}
+assert.ok(gltf.meshes.length>=10,'3D polygon meshes are present');
+assert.ok((gltf.animations||[]).length>=1,'model retains real transform animation channels');
+assert.ok(gltf.extensionsUsed.includes('KHR_draco_mesh_compression'),'model is compressed for mobile');
+const animationTargets=new Set(gltf.animations.flatMap(anim=>anim.channels.map(c=>gltf.nodes[c.target.node].name)));
+assert.ok(animationTargets.has('Thigh.L')&&animationTargets.has('Head'),'animated limbs and head are exported');
+for(const state of ['idle','walk','run','yawn','celebrate']) assert.match(js,new RegExp("state==='"+state+"'"),state+' has individual 3D motion');
+assert.match(js,/loader\.setDRACOLoader/,'mobile loader supports Draco');
+assert.match(js,/loader\.parse\(bytes\.buffer/,'binary GLB is parsed, not displayed as an image');
+assert.match(js,/pose\('Jaw'/,'yawn actuates an actual head bone');
+assert.match(js,/pose\('Thigh\.L'/,'walking changes real leg bones');
+assert.match(js,/new OrbitControls/,'360-degree 3D viewer enabled');
+assert.doesNotMatch(js,/SpriteMaterial|TextureLoader/,'not a sprite animated illusion');
+assert.match(html,/Level 1.*Level 5.*Level 10/s,'canon evolution images remain references only');
+assert.match(lab,/id="gwStepsLivingRig"/,'Steps 3D Lab entry exists');
+assert.doesNotMatch(js,/rpg_habitlog_v1|toggleMission|localStorage|supabase/,'lab experiment does not write mission state');
+console.log('PASS Steps Living Rig: authentic 3D GLB, articulated bones, five discrete motion states, clean Lab isolation.');
