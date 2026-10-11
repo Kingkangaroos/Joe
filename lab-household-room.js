@@ -221,7 +221,7 @@ function addClutter(id,color,pos,kind='box'){
   let g=kind==='sphere'?new THREE.SphereGeometry(.18,16,10):new THREE.BoxGeometry(.42,.14,.28);
   if(id==='vacuum')g=new THREE.BoxGeometry(.34,.18,.42);
   if(id==='mop')g=new THREE.CylinderGeometry(.045,.045,.95,14);
-  const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color,roughness:.7,emissive:'#000'}));m.position.copy(pos);m.castShadow=true;m.userData.task=id;room.add(m);clutter.set(id,m);return m;
+  const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color,roughness:.7,emissive:'#000'}));m.position.copy(pos);m.userData.originalPosition=pos.clone();m.userData.originalRotation=m.rotation.clone();m.castShadow=true;m.userData.task=id;room.add(m);clutter.set(id,m);return m;
 }
 addClutter('clothes','#e67b8e',new THREE.Vector3(1.05,.08,.85));
 addClutter('trash','#d1b06c',new THREE.Vector3(-.8,.1,1.25));
@@ -395,13 +395,13 @@ function completeCurrent(id,token){
  taskToken++;taskAnim=null;moving=false;afterMove=null;taskStartedAt=0;
  console.info('[Household]',index+1,id,'complete');
  index++;busy=false;renderTasks();
- if(index>=TASKS.length){toast('Kamer schoon — evolution!');setTimeout(levelUp,320)}
+ if(index>=TASKS.length){toast('Kamer schoon — evolution!');const completedToken=taskToken;setTimeout(()=>{if(taskToken===completedToken)levelUp();},320)}
  else toast('Stap '+index+' klaar · volgende: '+TASKS[index][1]);
 }
 function levelUp(){
- busy=true;celebrateUntil=performance.now()+2200;flash.classList.remove('run');void flash.offsetWidth;flash.classList.add('run');
- setTimeout(()=>{level=Math.min(10,level+1);levelEl.textContent=level;upgradeRoom();},900);
- setTimeout(()=>{busy=false;toast('Household level '+level+' · morgen komt er weer nieuwe rommel');},2850);
+ const currentToken=taskToken;busy=true;celebrateUntil=performance.now()+2200;flash.classList.remove('run');void flash.offsetWidth;flash.classList.add('run');
+ setTimeout(()=>{if(taskToken!==currentToken)return;level=Math.min(10,level+1);levelEl.textContent=level;upgradeRoom();},900);
+ setTimeout(()=>{if(taskToken!==currentToken)return;busy=false;toast('Household level '+level+' · morgen komt er weer nieuwe rommel');},2850);
 }
 function upgradeRoom(){
  upgradeGroup.visible=true;sparkleGroup.children.forEach(s=>s.visible=true);
@@ -430,10 +430,18 @@ function reset(){
  bedTop.material.color.set(upgraded?'#fff6ee':'#f4e9e2');
  sun.intensity=upgraded?3.35:2.85;fill.intensity=upgraded?1.1:.9;practical.intensity=upgraded?.62:.42;
  camera.position.set(upgraded?6.25:6.8,upgraded?4.75:5.2,upgraded?7.8:8.5);camera.lookAt(0,.7,0);
- clutter.forEach(o=>{o.visible=true;o.scale.setScalar(1);if(o.material?.emissive){o.material.emissive.set('#000');o.material.emissiveIntensity=0}});dustGroup.children.forEach(d=>d.visible=true);
+ clutter.forEach(o=>{o.visible=true;o.scale.setScalar(1);o.position.copy(o.userData.originalPosition);o.rotation.copy(o.userData.originalRotation);if(o.material?.emissive){o.material.emissive.set('#000');o.material.emissiveIntensity=0}});dustGroup.children.forEach(d=>d.visible=true);
  actorRoot.position.set(.1,0,1.9);actorRoot.rotation.y=0;resetCharacterPose();setCharacterVisual('idle');renderTasks();toast(upgraded?'Nieuwe dag: level blijft, nieuwe rommel':'Nieuwe dag: kamer weer rommelig');
 }
 document.getElementById('resetRoom').onclick=reset;
+document.getElementById('previewEvolution').onclick=()=>{
+ // Lab-only shortcut: inspect the visible upgrade without repeating nine tasks.
+ taskToken++;moving=false;afterMove=null;taskAnim=null;taskStartedAt=0;busy=false;
+ resetCharacterPose();setCharacterVisual('idle');
+ index=TASKS.length;clutter.forEach(o=>{o.visible=false;o.scale.setScalar(.01)});
+ dustGroup.children.forEach(d=>d.visible=false);
+ renderTasks();levelUp();
+};
 currentTaskButton.onclick=startTask;
 function renderTasks(){
  const done=Math.min(index,TASKS.length);
