@@ -90,6 +90,8 @@ const CHARACTER_ART={
  general:'img/lab/park31/household/l02.webp',
  prepare:'img/lab/park31/household/l04.webp',
  wipe:'img/lab/park31/household/l05.webp',
+ vacuum:'img/lab/park31/household/l08.webp',
+ mop:'img/lab/park31/household/l07.webp',
  finish:'img/lab/park31/household/l03.webp'
 };
 const charTextures={},charMaterials={};
@@ -127,6 +129,8 @@ function setCharacterVisual(key){
 }
 function visualForTask(id){
  if(id==='wipe') return 'wipe';
+ if(id==='vacuum') return 'vacuum';
+ if(id==='mop') return 'mop';
  if(id==='prepare'||id==='machines') return 'prepare';
  if(id==='finish') return 'finish';
  return 'general';
@@ -306,6 +310,7 @@ function startTaskAnimation(id,cb){
  const long=id==='vacuum'||id==='mop'||id==='wipe';
  taskAnim={id,obj,from:obj.position.clone(),to:actionDestination(id,obj),start:performance.now(),duration:reduce?80:(long?650:420),cb};
  setState(id);setCharacterVisual(visualForTask(id));startActionFx(id,obj);
+ if(id==='vacuum'||id==='mop') obj.visible=false;
 }
 function updateTaskAnimation(now){
  if(!taskAnim)return;
@@ -340,9 +345,12 @@ function updateTaskAnimation(now){
  }
  if(a.id==='vacuum'||a.id==='mop'){
   const cleaned=Math.floor(p*dustGroup.children.length);dustGroup.children.forEach((d,i)=>d.visible=i>=cleaned);
-  a.obj.position.x=a.from.x+Math.sin(p*Math.PI*4)*.82;
-  a.obj.position.z=a.from.z+(a.id==='mop'?Math.sin(p*Math.PI*2)*.42:Math.cos(p*Math.PI*2)*.16);
-  a.obj.rotation.z=(a.id==='mop'?.18:.10)*Math.sin(p*Math.PI*4);
+  // The canon l07/l08 artwork already contains the mop/vacuum in her hands.
+  // Animate the whole character as the action carrier instead of faking arm mechanics.
+  characterSprite.position.x=Math.sin(p*Math.PI*4)*.06;
+  characterSprite.position.y=characterBaseY-.025*wave;
+  characterSprite.material.rotation=Math.sin(p*Math.PI*4)*(a.id==='mop'?.055:.04);
+  a.obj.position.copy(a.from);
  }else if(a.id==='wipe'){
   a.obj.position.x=a.from.x+Math.sin(p*Math.PI*5)*.28;
  }else{
