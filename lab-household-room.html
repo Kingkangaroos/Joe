@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#11152a">
+  <title>Household Room 0.1 · Gamenfy Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab-household-room.css?v=1">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="lab.html">‹ ChatGPT Lab</a>
+    <span>HOUSEHOLD ROOM · 0.1</span>
+  </header>
+
+  <main class="shell">
+    <section class="intro">
+      <span class="eyebrow">LIVING DAILY MISSION</span>
+      <h1>Haar kamer ís de checklist.</h1>
+      <p>Alleen de volgende taak is actief. Tik op de taak óf op het bijbehorende object in de kamer. Zij loopt erheen, ruimt het op en ontgrendelt de volgende stap.</p>
+    </section>
+
+    <section class="room-card">
+      <div class="room-stage-wrap">
+        <div id="householdStage" class="room-stage" aria-label="Interactieve Household kamer"></div>
+        <div class="room-hud">
+          <span>Household level</span>
+          <strong><b id="hhLevel">1</b>/10</strong>
+        </div>
+        <div id="roomToast" class="room-toast" aria-live="polite"></div>
+        <div id="evolutionFlash" class="evolution-flash" aria-hidden="true">
+          <div class="evo-copy"><small>HOUSEHOLD EVOLUTION</small><strong>LEVEL UP</strong></div>
+        </div>
+      </div>
+
+      <aside class="task-panel">
+        <div class="task-head">
+          <div><small>VASTE VOLGORDE</small><h2>Vandaag opruimen</h2></div>
+          <span id="hhProgress">0 / 9</span>
+        </div>
+        <ol id="hhTasks" class="task-list"></ol>
+        <div class="task-foot">
+          <button id="resetRoom" type="button">Reset demo</button>
+          <p>Lab-only: deze test schrijft nog niets naar je echte Daily Mission.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="notes">
+      <strong>Wat deze test bewijst</strong>
+      <p>Één 3D-kamer, één rigged character, echte locomotion en negen concrete schoonmaakacties. Als dit goed voelt, koppelen we dezelfde flow daarna aan je echte Household-state en level 1–10.</p>
+    </section>
+  </main>
+
+  <script type="module" src="lab-household-room.js?v=1"></script>
+</body>
+</html>
