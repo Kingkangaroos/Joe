@@ -620,7 +620,7 @@
     workout: {
       xp:0, parentSkill:'body', icon:'🏋️', label:'Workout + Mobility', active:true, isHabit:true,
       why:'Thuis sterker en soepeler worden, met een haalbaar ritme naast tennis.',
-      habitDesc:'? To be generated — maximaal 20 minuten thuis. Trainingsplan, mobiliteit, herstel en opbouw bespreken we samen. Matje aanwezig; dumbbells nog te bespreken. Karakter volgt pas in stap twee.',
+      habitDesc:'Een workout of mobility-sessie thuis (maximaal 20 minuten) telt als Daily Mission. Matje aanwezig; oefeningen en opbouw bepalen we samen.',
       benefits:[],
     },
     cold_shower: {

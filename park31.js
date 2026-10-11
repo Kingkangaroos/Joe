@@ -85,7 +85,6 @@
   }
   function assetUrl(level,mission){
     mission=mission||PUBLIC_MISSIONS.find(function(item){return item.key===KEY;})||PUBLIC_MISSIONS[0];
-    if(mission.key==='workout')return 'img/lab/workout-pending.svg';
     level=clamp(Math.round(Number(level)||1),1,10);
     return 'img/lab/park31/'+mission.dir+'/l'+String(level).padStart(2,'0')+'.webp?v='+VERSION;
   }
@@ -106,7 +105,7 @@
     }).join('');
   }
   function artworkLabel(mission){
-    return mission.key==='workout'?'? To be generated':'10 evolution levels';
+    return '10 evolution levels';
   }
   function missionCopy(mission){
     var w=hostWindow(),def={};
@@ -122,7 +121,7 @@
       gratitude:'Schrijf vandaag minimaal één ding op waar je dankbaar voor bent.',
       good_deed:'Doe vandaag bewust iets goeds voor iemand anders.',
       screen_time:'Houd gedachteloos schermgebruik vandaag onder controle.',
-      workout:'? To be generated · plan en karakter volgen. Maximaal 20 minuten thuis: workout + mobility, samen uit te werken.',
+      workout:'Een workout of mobility-sessie thuis (maximaal 20 minuten) telt als Daily Mission.',
       weed_control:'Blijf vandaag binnen je afgesproken gardening-grens.',
       no_porn:'Houd vandaag je discipline-afspraak.'
     };
@@ -142,7 +141,7 @@
     var neglected=mission.key!=='workout'&&missionMode&&!done&&inactivityDays(mission)>=3;
     var lit=(litUntil[mission.key]||0)>Date.now();
     var selectedNow=!!(selected&&selected.key===mission.key);
-    var instruction=mission.key==='workout'&&!done?'? To be generated':done?'Vandaag voltooid':(neglected?'HELP · Tik om te openen':(info.raw===0?'Slapend · voltooi om te wekken':'Tik om te openen'));
+    var instruction=done?'Vandaag voltooid':(neglected?'HELP · Tik om te openen':(info.raw===0?'Slapend · voltooi om te wekken':'Tik om te openen'));
     var slotClass='p31-slot'+(ready?' is-ready':' is-waiting')+(done?' is-done':'')+(neglected?' is-neglected':'')+(lit?' is-lit':'')+(selectedNow?' is-selected':'')+(info.raw===0?' is-zero':'');
     return '<div class="p31-slot-wrap'+(done?' is-done':'')+'">'
       +'<button class="'+slotClass+'" type="button" data-mission="'+mission.key+'"'+(ready?'':' disabled')+' aria-pressed="'+(done?'true':'false')+'"'+(selectedNow?' aria-current="true"':'')+'>'

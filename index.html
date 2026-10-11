@@ -906,6 +906,8 @@ body {
 }
 .md-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--line-strong); margin: 12px auto 14px; }
 .md-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.md-workout-art { height: 200px; display:flex; justify-content:center; align-items:center; border-radius:14px; overflow:hidden; background:linear-gradient(145deg,#eee7d7,#f9f6ee); margin-bottom:14px; }
+.md-workout-art img { max-height:194px; width:100%; object-fit:contain; }
 .md-icon { font-size: 34px; }
 .md-title { font-family: var(--font-display); font-weight: 800; font-size: 19px; letter-spacing: -0.02em; }
 .md-sub { font-size: 11px; font-family: var(--font-mono); color: var(--muted); margin-top: 2px; }
@@ -1298,7 +1300,7 @@ body {
     <button class="nm-add" id="missionsDayBtn" onclick="toggleMissionsDay()">Yesterday</button></div>
   <div id="weekStrip" style="display:flex;gap:2px;margin:2px 0 10px;padding:0 4px"></div>
   <div class="daily-missions-2" id="dailyMissions2Wrap" style="background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:20px">
-    <iframe id="dailyMissions2Frame" title="Daily Missions 2.0" src="park31.html?embed=1&amp;mode=missions&amp;privacy=all&amp;surface=home&amp;v=1.24" style="display:block;width:100%;height:1180px;min-height:820px;border:0;background:transparent" loading="eager"></iframe>
+    <iframe id="dailyMissions2Frame" title="Daily Missions 2.0" src="park31.html?embed=1&amp;mode=missions&amp;privacy=all&amp;surface=home&amp;v=1.25" style="display:block;width:100%;height:1180px;min-height:820px;border:0;background:transparent" loading="eager"></iframe>
   </div>
   <div class="missions-grid" id="missionsCard" hidden aria-hidden="true" style="display:none!important">
     <div>Loading habits…</div>
@@ -1875,6 +1877,9 @@ window.openMissionDetail = function(key, isPrivate, privateId) {
   const def = defaults[key] || {};
   const st = missionStats(key, !!isPrivate, privateId);
   const habits = window.getHabits ? window.getHabits() : {};
+  const workoutScore = Math.max(0,Math.min(10,Math.round(Number((habits[key]||{}).score)||0)));
+  const workoutArtLevel = Math.min(10,workoutScore+1);
+  const workoutArtwork = key==='workout'&&!isPrivate ? `<div class="md-workout-art"><img src="img/lab/park31/workout/l${String(workoutArtLevel).padStart(2,'0')}.webp?v=1" alt="Workout + Mobility · Level ${workoutArtLevel}" loading="lazy"></div>` : '';
   const lvlLine = isPrivate
     ? 'LV ' + (window.getSkillLevel ? window.getSkillLevel(key, ((window.getCharacter()||{skills:{}}).skills[key]||{}).xp||0) : 1) + ' · abstinence quest'
     : 'Level ' + Math.min(10,(((habits[key]||{}).score)||0)+1) + '/10 · +15 XP per check';
@@ -1899,13 +1904,14 @@ window.openMissionDetail = function(key, isPrivate, privateId) {
         <div class="md-sub">${lvlLine}</div>
       </div>
     </div>
+    ${workoutArtwork}
     <div class="md-stats">
       <div class="md-stat fire"><div class="md-stat-num">${st.streak}</div><div class="md-stat-lbl">🔥 streak</div></div>
       <div class="md-stat done"><div class="md-stat-num">${st.total}</div><div class="md-stat-lbl">✓ total days</div></div>
       <div class="md-stat miss"><div class="md-stat-num">${st.missed}</div><div class="md-stat-lbl">missed</div></div>
     </div>
     ${def.why ? `<div class="md-sec">Why this matters</div><div class="md-why">${def.why}</div>` : ''}
-    ${key==='workout' ? `<div class="md-sec">? To be generated</div><div class="md-why">${def.habitDesc}<br><br>Volgende bespreking: oefeningen, rustdagen, geleidelijke opbouw en eventuele dumbbells. Tot die tijd kun je hier je eigen workout + mobility afvinken.</div>` : ''}
+    ${key==='workout' ? `<div class="md-sec">Training & Mobility</div><div class="md-why">${def.habitDesc}<br><br>Volgende bespreking: oefeningen, rustdagen, geleidelijke opbouw en eventuele dumbbells. Tot die tijd kun je hier je eigen workout + mobility afvinken.</div>` : ''}
     ${bHtml ? `<div class="md-sec">What consistency earns you</div>${bHtml}` : ''}
     <button class="md-check${st.checkedToday ? ' is-done' : ''}" onclick="mdCheck('${key}',${isPrivate?1:0},'${privateId||''}')">
       ${st.checkedToday ? '✓ Done' : (missionsDayOffset<0 ? 'Check for '+viewedDateLabel() : 'Check today ✓')}

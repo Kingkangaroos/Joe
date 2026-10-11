@@ -111,7 +111,7 @@ assert.equal(ids.p31Stage.dataset.liveLevel,'0');assert.equal(ids.p31Stage.datas
 assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.19$/);assert.equal(ids.p31Progress.style.width,'10%');
 
 // Thirteen native Park 3.1 sets remain intact: all eleven public missions plus two private companions.
-const nativeDirs=['budgeting','steps','nutrition','teeth','household','meditation','gratitude','good-deed','screen-time','cold-shower','no-weed','discipline','sleep'];
+const nativeDirs=['budgeting','steps','nutrition','teeth','household','meditation','gratitude','good-deed','screen-time','cold-shower','no-weed','discipline','sleep','workout'];
 for(const missionDir of nativeDirs){
   const assetDir=path.join(__dirname,'..','img','lab','park31',missionDir);const digests=[];
   for(let level=1;level<=10;level++){
@@ -122,7 +122,7 @@ for(const missionDir of nativeDirs){
   }
   assert.equal(new Set(digests).size,10,missionDir+' has ten distinct level images');
 }
-for(const missionDir of ['budgeting','meditation','cold-shower','teeth','good-deed','steps','sleep']){
+for(const missionDir of ['budgeting','meditation','cold-shower','teeth','good-deed','steps','sleep','workout']){
   for(let level=1;level<=10;level++){
     const bytes=fs.readFileSync(path.join(__dirname,'..','img','lab','park31',missionDir,'l'+String(level).padStart(2,'0')+'.webp'));
     assert.ok(bytes.includes(Buffer.from('ALPH')),missionDir+' l'+level+' has alpha');
@@ -132,7 +132,7 @@ assert.equal((ids.p31Roster.innerHTML.match(/<button class="p31-slot/g)||[]).len
 for(const label of ['Budgeting','Sleep','Nutrition','Steps','Brush Teeth','Household','Meditation','Gratitude','Good Deed','Screen Time']){
   assert.match(ids.p31Roster.innerHTML,new RegExp(label+'[\\s\\S]*Tik om te openen'),'public '+label+' is present and interactive');
 }
-assert.match(ids.p31Roster.innerHTML,/Workout \+ Mobility[\s\S]*To be generated/);
+assert.match(ids.p31Roster.innerHTML,/Workout \+ Mobility[\s\S]*10 evolution levels/);
 assert.doesNotMatch(ids.p31Roster.innerHTML,/Cold Shower/);
 assert.doesNotMatch(ids.p31Roster.innerHTML,/Gardening/,'Gardening is hidden from the visible roster');
 assert.match(ids.p31Roster.innerHTML,/Discipline[\s\S]*10 evolution levels/,'anonymized Discipline remains available in the unified personal roster');
@@ -195,11 +195,11 @@ for(const score of [0,1,2,8,9,10,1,0]){
 }
 closeNodes[0].listeners.click();
 for(const key of canonicalPublic){
-  const dir={walking:'steps',good_deed:'good-deed',screen_time:'screen-time',cold_shower:'cold-shower'}[key]||key;
+  const dir={walking:'steps',good_deed:'good-deed',screen_time:'screen-time',cold_shower:'cold-shower',workout:'workout'}[key]||key;
   for(const score of [0,1,9,10,0]){
     storage.rpg_habits_v1=JSON.stringify({[key]:{score}});
     parentListeners['gamenfy:daily-mission-change']();
-    assert.ok(ids.p31Roster.innerHTML.includes(key==='workout'?'img/lab/workout-pending.svg':dir+'/l'+String(Math.min(score+1,10)).padStart(2,'0')+'.webp'),key+' maps every score to baseline+1');
+    assert.ok(ids.p31Roster.innerHTML.includes(dir+'/l'+String(Math.min(score+1,10)).padStart(2,'0')+'.webp'),key+' maps every score to baseline+1');
   }
 }
 parentWindow.viewedDateStr=()=> '2026-10-10';
