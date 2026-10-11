@@ -27,7 +27,12 @@ assert.match(html,/id="currentTaskButton"/,'compact current-task action bar exis
 assert.match(js,/Math\.atan2\(-tmp\.x,-tmp\.z\)/,'character forward axis is corrected so it faces travel direction');
 assert.match(js,/rig\.head\.rotation\.y/,'head can lead toward travel direction');
 assert.match(js,/Cozy room shell/,'room includes the warmer decorative diorama pass');
-assert.match(html,/Household Room 0\.3/,'prototype has explicit title');
+assert.match(js,/l01\\/l05\\/l10 family|l01\\/l05\\/l10|Chibi proportions copied from the Household l01\\/l05\\/l10 family/,'0.4 explicitly follows the Household evolution family proportions');
+assert.match(js,/huge head, compact torso, short thick limbs/,'character uses the Household chibi silhouette instead of generic human proportions');
+assert.match(js,/Maid bonnet made from soft scallops/,'maid bonnet is part of the 3D silhouette');
+assert.match(js,/Huge glossy anime-style eyes/,'Household face uses oversized glossy eyes');
+assert.match(js,/Turn the functional task proxies into cute game props/,'cleaning props received a game-art pass');
+assert.match(html,/Household Room 0\.4/,'prototype has explicit title');
 assert.match(lab,/id="gwHouseholdRoom"/,'Lab exposes Household Room card');
 assert.match(lab,/lab-household-room\.html/,'Lab links to Household Room');
-console.log('PASS Household Room 0.3: ordered tasks, clickable 3D room, locomotion, safe Lab isolation and evolution flow.');
+console.log('PASS Household Room 0.4: ordered tasks, clickable 3D room, locomotion, safe Lab isolation and evolution flow.');
