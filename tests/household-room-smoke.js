@@ -22,8 +22,12 @@ assert.match(js,/thighL|thighR/,'Household character has independent leg articul
 assert.match(js,/moveSpeed=Math\.max\(3\.4,d\/\.42\)/,'target travel is intentionally fast for testing');
 assert.match(js,/startTaskAnimation/,'each Household task has an action animation phase');
 assert.match(js,/upgradeGroup\.visible=upgraded/,'next-day reset preserves the upgraded room at higher level');
-assert.match(css,/position:absolute;z-index:8/,'task list stays over the 3D room instead of below it');
-assert.match(html,/Household Room 0\.2/,'prototype has explicit title');
+assert.doesNotMatch(css,/\.task-panel\{position:absolute/,'task UI no longer covers the 3D room');
+assert.match(html,/id="currentTaskButton"/,'compact current-task action bar exists below the room');
+assert.match(js,/Math\.atan2\(-tmp\.x,-tmp\.z\)/,'character forward axis is corrected so it faces travel direction');
+assert.match(js,/rig\.head\.rotation\.y/,'head can lead toward travel direction');
+assert.match(js,/Cozy room shell/,'room includes the warmer decorative diorama pass');
+assert.match(html,/Household Room 0\.3/,'prototype has explicit title');
 assert.match(lab,/id="gwHouseholdRoom"/,'Lab exposes Household Room card');
 assert.match(lab,/lab-household-room\.html/,'Lab links to Household Room');
-console.log('PASS Household Room 0.2: ordered tasks, clickable 3D room, locomotion, safe Lab isolation and evolution flow.');
+console.log('PASS Household Room 0.3: ordered tasks, clickable 3D room, locomotion, safe Lab isolation and evolution flow.');
