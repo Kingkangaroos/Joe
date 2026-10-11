@@ -1,0 +1,42 @@
+.home-habit-evolution{position:fixed;inset:0;z-index:12000;display:grid;place-items:center;pointer-events:none;background:radial-gradient(ellipse at center,#111b3266,transparent 70%);font-family:Inter,system-ui,sans-serif}
+.home-habit-evolution .he-card{position:relative;width:min(340px,88vw);padding:24px 18px 20px;border:1px solid #e8d8ad66;border-radius:26px;background:linear-gradient(150deg,#243d43f5,#161b31f5);box-shadow:0 20px 70px #0006;color:#fff;text-align:center}
+.home-habit-evolution h2{font-size:21px;margin:0 24px 8px}
+.home-habit-evolution .he-status{color:#f0dba4;font-size:15px;font-weight:700;margin:12px 0 0}
+.home-habit-evolution .he-actor{position:relative;left:50%;width:210px;height:245px;transform:translateX(-50%);transform-origin:50% 95%}
+.home-habit-evolution img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.home-habit-evolution .he-new{opacity:0}
+.home-habit-evolution .he-close{position:absolute;right:10px;top:8px;pointer-events:auto;border:0;border-radius:50%;background:transparent;color:#ddd;font-size:26px;width:42px;height:42px;cursor:pointer}
+.home-habit-evolution.he-running .he-actor{animation:evolution-flight 2800ms linear both}
+.home-habit-evolution.he-running .he-old{animation:evolution-old 2800ms ease-in-out both}
+.home-habit-evolution.he-running .he-new{animation:evolution-new 2800ms ease-in-out both}
+@keyframes evolution-flight{
+  0%{transform:translateX(-50%) translateY(0) scale(1)}
+  35%{transform:translateX(-50%) translateY(0) scale(.98,1.015)}
+  59%{transform:translateX(-50%) translateY(2px) scale(.96,1.025)}
+  70%{transform:translateX(-50%) translateY(-10px) scale(1.03)}
+  79%{transform:translateX(-50%) translateY(-34px) scale(1.06)}
+  91%{transform:translateX(-50%) translateY(2px) scale(1.025,.975)}
+  100%{transform:translateX(-50%) translateY(0) scale(1)}
+}
+@keyframes evolution-old{
+  0%,3%{opacity:1;filter:brightness(1) saturate(1) blur(0)}
+  14%{opacity:1;filter:brightness(1.9) saturate(.5) blur(.3px)}
+  24%{opacity:1;filter:brightness(1) saturate(1) blur(0)}
+  33%{opacity:1;filter:brightness(2.3) saturate(.3) blur(.4px)}
+  41%{opacity:1;filter:brightness(1) saturate(1) blur(0)}
+  48%{opacity:1;filter:brightness(2.7) saturate(.1) blur(.6px)}
+  54%{opacity:1;filter:brightness(1.15) saturate(.9) blur(.2px)}
+  60%{opacity:1;filter:brightness(3) saturate(0) blur(.8px)}
+  64%{opacity:1;filter:brightness(1.25) saturate(.8) blur(.3px)}
+  68%{opacity:1;filter:brightness(3) saturate(0) blur(1.5px)}
+  73%{opacity:.5;filter:brightness(2.5) saturate(.1) blur(1.5px)}
+  79%,100%{opacity:0;filter:brightness(1) saturate(1) blur(0)}
+}
+@keyframes evolution-new{
+  0%,66%{opacity:0;filter:brightness(3) saturate(0) blur(1.5px)}
+  73%{opacity:.5;filter:brightness(2.5) saturate(.1) blur(1.5px)}
+  79%{opacity:1;filter:brightness(1.5) saturate(.6) blur(.5px)}
+  90%,100%{opacity:1;filter:brightness(1) saturate(1) blur(0)}
+}
+
+@media(prefers-reduced-motion:reduce){.home-habit-evolution.he-running .he-actor,.home-habit-evolution.he-running img{animation:none!important}.home-habit-evolution .he-old{opacity:0}.home-habit-evolution .he-new{opacity:1}}

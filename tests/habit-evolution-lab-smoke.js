@@ -7,6 +7,6 @@ for(const id of [...js.matchAll(/\$\('([^']+)'\)/g)].map(m=>m[1]))assert.ok(html
 for(const dir of ['gratitude','household','steps'])for(let i=1;i<=10;i++)assert.ok(fs.existsSync('img/lab/park31/'+dir+'/l'+String(i).padStart(2,'0')+'.webp'));
 assert.match(js,/Math\.min\(from\+1,10\)/);assert.match(js,/prefers-reduced-motion/);assert.match(js,/if\(busy\)return/);
 assert.match(rig,/AnimationMixer/);assert.match(rig,/renderer\.dispose/);assert.match(rig,/observer\.disconnect/);
-assert.match(fs.readFileSync('lab.html','utf8'),/data-gw-title="Little Worlds · Evolution Lab"/);
+assert.doesNotMatch(fs.readFileSync('lab.html','utf8'),/id="gwHabitEvolution"/,'approved test removed from Lab');
 JSON.parse(fs.readFileSync('GAMENFY-RELEASES.json','utf8'));
 console.log('Evolution Lab: syntax, assets, controls, isolation, rig cleanup and Lab entry passed.');

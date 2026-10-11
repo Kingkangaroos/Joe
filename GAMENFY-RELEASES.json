@@ -1,6 +1,24 @@
 {
   "releases": [
     {
+      "id": "2026-10-11-home-evolution",
+      "date": "2026-10-11",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Goedgekeurde evolutie staat op Home",
+      "why": "Een echt afgeronde habit krijgt direct de goedgekeurde transformatie.",
+      "changes": [
+        "De knipperende evolutie duurt 2,8 seconden en verschijnt bij een level-up op Home.",
+        "Ongedaan maken stopt de animatie; er verandert niets aan de bestaande XP- en levellogica.",
+        "De oude Little Worlds-proef is uit de actieve Lab-lijst gehaald."
+      ],
+      "try": "Home → voltooi een habit die een nieuw level krijgt.",
+      "remaining": "Volgende stap: één Household-wereld uitwerken met zichtbaar opruimen. Workout-schema samen bepalen. Joey zoekt of maakt de vervangende beelden.",
+      "url": "index.html"
+    },
+    {
       "id": "2026-10-11-evolution-build-up",
       "date": "2026-10-11",
       "surfaces": [

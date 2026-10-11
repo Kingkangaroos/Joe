@@ -1,0 +1,18 @@
+'use strict';
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const park=fs.readFileSync('park31.js','utf8');
+const handler=park.slice(park.indexOf('  function onMissionChange('),park.indexOf('  function bind(){'));
+let score=1,plays=[],cancels=[];
+const mission={key:'gratitude'},context={homeSurface:true,observedLevels:{gratitude:0},missionByKey:k=>k==='gratitude'?mission:null,levelInfo:()=>({raw:score}),hostWindow:()=>({GamenfyHabitEvolution:{cancel:k=>cancels.push(k)}}),celebrateLevelUp:(m,a,b)=>plays.push([m.key,a,b])};
+context.refresh=()=>{context.observedLevels.gratitude=score;};vm.createContext(context);vm.runInContext(handler,context);
+context.onMissionChange({detail:{key:'gratitude',done:true}});assert.deepEqual(plays,[['gratitude',0,1]],'completion advances 1 to 2 visually');
+context.onMissionChange({detail:{key:'gratitude',done:true}});assert.equal(plays.length,1,'duplicate event cannot replay');
+score=0;context.onMissionChange({detail:{key:'gratitude',done:false}});assert.deepEqual(cancels,['gratitude']);assert.equal(plays.length,1,'undo never celebrates');
+score=3;context.onMissionChange({detail:{}});assert.equal(plays.length,1,'sync/refresh never celebrates');
+context.homeSurface=false;score=4;context.onMissionChange({detail:{key:'gratitude',done:true}});assert.equal(plays.length,1,'non-Home event isolated');
+const js=fs.readFileSync('home-habit-evolution.js','utf8');new vm.Script(js);
+assert.doesNotMatch(js,/localStorage|addXP|checkHabit|toggleMission|fetch\(/,'presentation cannot mutate mission data');
+assert.match(js,/},2800\)/);assert.match(js,/prefers-reduced-motion/);assert.match(js,/id!==version/,'stale image loads cannot revive canceled animation');
+const css=fs.readFileSync('home-habit-evolution.css','utf8');assert.equal((css.match(/2800ms/g)||[]).length,3,'all animation layers share duration');
+assert.match(fs.readFileSync('index.html','utf8'),/home-habit-evolution.js/);
+console.log('Home evolution: completion, dedupe, undo, sync isolation, cancellation guards and 2.8-second tracks passed.');

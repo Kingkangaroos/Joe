@@ -37,7 +37,7 @@
   var celebration,celebrationTitle,celebrationMeta,celebrationTimer=null;
   var current={raw:0,art:1,source:'empty'};
   var artworkReady={budgeting:true,sleep:true,nutrition:true,walking:true,teeth:true,household:true,meditation:true,gratitude:true,good_deed:true,screen_time:true,workout:true,weed_control:true,no_porn:true};
-  var litUntil={};
+  var litUntil={},observedLevels={};
   var tries=0,pollId=null,missionMode=false,publicOnlyMode=false,homeSurface=false,selected=null,preview=null;
 
   function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
@@ -178,6 +178,10 @@
     return 14;
   }
   function celebrateLevelUp(mission,fromLevel,toLevel){
+    if(homeSurface&&hostWindow().GamenfyHabitEvolution){
+      hostWindow().GamenfyHabitEvolution.play({key:mission.key,label:mission.label,from:clamp(fromLevel+1,1,10),to:clamp(toLevel+1,1,10),oldSrc:assetUrl(clamp(fromLevel+1,1,10),mission),newSrc:assetUrl(clamp(toLevel+1,1,10),mission)});
+      return;
+    }
     if(!celebration||toLevel<=fromLevel)return;
     clearTimeout(celebrationTimer);
     celebrationTitle.textContent=mission.label;
@@ -200,7 +204,7 @@
       setTimeout(function(){
         var after=levelInfo(mission).raw;
         refresh();
-        if(result===true&&after>before)celebrateLevelUp(mission,before,after);
+        if(!homeSurface&&result===true&&after>before)celebrateLevelUp(mission,before,after);
       },0);
     }catch(e){}
   }
@@ -353,7 +357,16 @@
     button.setAttribute('aria-label',lit?'Turn the park light off':'Turn the park light on');
     lightEl.textContent=lit?'Park light on':'Park light off';
   }
-  function refresh(){render();if(selected&&modal&&!modal.hidden)updateModal();}
+  function rememberLevels(){MISSIONS.forEach(function(m){observedLevels[m.key]=levelInfo(m).raw;});}
+  function refresh(){render();if(selected&&modal&&!modal.hidden)updateModal();rememberLevels();}
+  function onMissionChange(event){
+    var detail=(event&&event.detail)||{},mission=missionByKey(detail.key),before=observedLevels[detail.key];
+    refresh();
+    if(!homeSurface||!mission)return;
+    if(detail.done===false){if(hostWindow().GamenfyHabitEvolution)hostWindow().GamenfyHabitEvolution.cancel(mission.key);return;}
+    var after=levelInfo(mission).raw;
+    if(detail.done===true&&typeof before==='number'&&after>before)celebrateLevelUp(mission,before,after);
+  }
   function bind(){
     button.addEventListener('click',toggleLight);
     rosterEl.addEventListener('click',onRosterClick);
@@ -366,12 +379,12 @@
     art.addEventListener('load',function(){stage.classList.remove('is-loading');errorEl.hidden=true;});
     art.addEventListener('error',function(){stage.classList.remove('is-loading');errorEl.hidden=false;});
     window.addEventListener('storage',function(event){if(!event.key||event.key==='rpg_habits_v1'||event.key==='rpg_habitlog_v1'||String(event.key).indexOf('rpg_daily_v1:')===0)refresh();});
-    window.addEventListener('gamenfy:daily-mission-change',refresh);
+    window.addEventListener('gamenfy:daily-mission-change',onMissionChange);
     window.addEventListener('gamenfy:auto-habits-changed',refresh);
     window.addEventListener('gamenfy:remote-state-applied',refresh);
     try{
       if(window.parent&&window.parent!==window){
-        window.parent.addEventListener('gamenfy:daily-mission-change',refresh);
+        window.parent.addEventListener('gamenfy:daily-mission-change',onMissionChange);
         window.parent.addEventListener('gamenfy:auto-habits-changed',refresh);
         window.parent.addEventListener('gamenfy:remote-state-applied',refresh);
       }
@@ -402,7 +415,7 @@
     prevEl=document.getElementById('p31Prev');nextEl=document.getElementById('p31Next');liveResetEl=document.getElementById('p31LiveReset');missionToggleEl=document.getElementById('p31MissionToggle');
     celebration=document.getElementById('p31Celebration');celebrationTitle=document.getElementById('p31CelebrationTitle');celebrationMeta=document.getElementById('p31CelebrationMeta');
     if(!stage||!button||!art||!levelsEl||!rosterEl||!rosterCountEl||!modal||!modalArt||!prevEl||!nextEl||!liveResetEl||!missionToggleEl||!celebration||!celebrationTitle||!celebrationMeta)return;
-    buildLevels();bind();render();preload();probeRoster();
+    buildLevels();bind();render();rememberLevels();preload();probeRoster();
     if(art.complete&&art.naturalWidth){stage.classList.remove('is-loading');errorEl.hidden=true;}
     if(window.parent===window&&typeof window.initCloudSync==='function'&&window.supabase){
       try{window.initCloudSync({appKey:'rpg',syncedKeys:window.RPG_SYNC_KEYS,syncedPrefixes:window.RPG_SYNC_PREFIXES});}catch(e){}
