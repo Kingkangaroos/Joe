@@ -19,13 +19,15 @@
   100%{transform:translateX(-50%) translateY(0) scale(1)}
 }
 @keyframes evolution-old{
-  0%,5%{opacity:1;filter:brightness(1) saturate(1) blur(0)}
-  18%{opacity:1;filter:brightness(1.9) saturate(.5) blur(.3px)}
-  31%{opacity:1;filter:brightness(1) saturate(1) blur(0)}
-  41%{opacity:1;filter:brightness(2.5) saturate(.2) blur(.5px)}
-  49%{opacity:1;filter:brightness(1) saturate(1) blur(0)}
-  56%{opacity:1;filter:brightness(3) saturate(0) blur(.8px)}
-  62%{opacity:1;filter:brightness(1.25) saturate(.8) blur(.3px)}
+  0%,3%{opacity:1;filter:brightness(1) saturate(1) blur(0)}
+  14%{opacity:1;filter:brightness(1.9) saturate(.5) blur(.3px)}
+  24%{opacity:1;filter:brightness(1) saturate(1) blur(0)}
+  33%{opacity:1;filter:brightness(2.3) saturate(.3) blur(.4px)}
+  41%{opacity:1;filter:brightness(1) saturate(1) blur(0)}
+  48%{opacity:1;filter:brightness(2.7) saturate(.1) blur(.6px)}
+  54%{opacity:1;filter:brightness(1.15) saturate(.9) blur(.2px)}
+  60%{opacity:1;filter:brightness(3) saturate(0) blur(.8px)}
+  64%{opacity:1;filter:brightness(1.25) saturate(.8) blur(.3px)}
   68%{opacity:1;filter:brightness(3) saturate(0) blur(1.5px)}
   73%{opacity:.5;filter:brightness(2.5) saturate(.1) blur(1.5px)}
   79%,100%{opacity:0;filter:brightness(1) saturate(1) blur(0)}
