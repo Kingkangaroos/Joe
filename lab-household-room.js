@@ -132,7 +132,7 @@ function renderTasks(){
   return '<li class="'+cls+'"><button type="button" data-i="'+i+'" '+(i===index&&!busy?'':'disabled')+'><span class="num">'+(i+1)+'</span><span><strong>'+t[1]+'</strong><small>'+t[2]+'</small></span><span class="state">'+status+'</span></button></li>';
  }).join('');
  const active=list.querySelector('li.active button');if(active)active.onclick=startTask;
- const id=TASKS[index]?.[0];clutter.forEach((o,key)=>{if(!o.material?.emissive)return;o.material.emissive.set(key===id?'#8be1c1':'#000');o.material.emissiveIntensity=key===id?.22:0});
+ const id=TASKS[index]?.[0];clutter.forEach((o,key)=>{if(!o.material?.emissive)return;o.material.emissive.set(key===id?'#8be1c1':'#000');o.material.emissiveIntensity=key===id ? .22 : 0});
 }
 
 new GLTFLoader().load(MODEL_URL,gltf=>{
