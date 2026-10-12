@@ -20,7 +20,7 @@
       if(id!==version||started)return;started=true;clearTimeout(timer);
       document.getElementById('celBg')?.remove();document.body.appendChild(box);
       var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if(!reduced&&options.from<options.to&&options.key!=='workout')box.classList.add('he-running');
+      if(!reduced&&options.from<options.to)box.classList.add('he-running');
       else{oldArt.style.opacity='0';newArt.style.opacity='1';}
       timer=setTimeout(function(){if(id===version)cancel();},2800);
     }
@@ -33,3 +33,4 @@
   window.GamenfyHabitEvolution={play:play,cancel:cancel};
   window.addEventListener('pagehide',function(){cancel();});
 })();
+
