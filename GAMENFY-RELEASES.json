@@ -1,6 +1,24 @@
 {
   "releases": [
     {
+      "id": "2026-10-13-habit-cutouts",
+      "date": "2026-10-13",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Good Deed en Steps vrijstaand hersteld",
+      "why": "Geen witte vlakken of oude donkere achtergronden rond de companions.",
+      "changes": [
+        "Alle tien Good Deed-vormen vervangen door herstelde transparante uitsnedes.",
+        "Alle tien Steps-vormen uitgesplitst uit de aangeleverde sheet, met transparante randen en behouden lichteffecten.",
+        "Alleen artwork en cacheversies aangepast; levels, historie, XP en evolutietiming blijven gelijk."
+      ],
+      "try": "Bekijk Steps en Good Deed op Home, of controleer alle tien vormen in de assetvergelijking.",
+      "remaining": "3D-beweging en voetcontact blijven een afzonderlijke Lab-proef.",
+      "url": "lab-asset-compare.html"
+    },
+    {
       "id": "2026-10-11-home-evolution",
       "date": "2026-10-11",
       "surfaces": [

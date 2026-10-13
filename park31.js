@@ -9,7 +9,7 @@
   'use strict';
 
   var KEY='walking';
-  var VERSION='1.19';
+  var VERSION='1.20';
   var PUBLIC_MISSIONS=[
     {key:'budgeting',label:'Budgeting',emoji:'💰',dir:'budgeting'},
     {key:'sleep',label:'Sleep',emoji:'😴',dir:'sleep'},
