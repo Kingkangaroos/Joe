@@ -25,6 +25,8 @@
 <script src="goal-quests.js?v=1.0" defer></script>
 <link rel="stylesheet" href="household-checklist.css?v=1.0">
 <script src="household-checklist.js?v=1.0" defer></script>
+<link rel="stylesheet" href="home-workout.css?v=1.0">
+<script src="home-workout.js?v=1.0" defer></script>
 <style>
 :root {
   --bg: #F4F3EF;
@@ -1912,7 +1914,7 @@ window.openMissionDetail = function(key, isPrivate, privateId) {
       <div class="md-stat miss"><div class="md-stat-num">${st.missed}</div><div class="md-stat-lbl">missed</div></div>
     </div>
     ${def.why ? `<div class="md-sec">Why this matters</div><div class="md-why">${def.why}</div>` : ''}
-    ${key==='workout' ? `<div class="md-sec">Training & Mobility</div><div class="md-why">${def.habitDesc}<br><br>Volgende bespreking: oefeningen, rustdagen, geleidelijke opbouw en eventuele dumbbells. Tot die tijd kun je hier je eigen workout + mobility afvinken.</div>` : ''}
+    ${key==='workout'&&!isPrivate&&window.GamenfyHomeWorkout ? window.GamenfyHomeWorkout.shell(viewedDateStr()) : ''}
     ${bHtml ? `<div class="md-sec">What consistency earns you</div>${bHtml}` : ''}
     <button class="md-check${st.checkedToday ? ' is-done' : ''}" onclick="mdCheck('${key}',${isPrivate?1:0},'${privateId||''}')">
       ${st.checkedToday ? '✓ Done' : (missionsDayOffset<0 ? 'Check for '+viewedDateLabel() : 'Check today ✓')}
@@ -1922,6 +1924,7 @@ window.openMissionDetail = function(key, isPrivate, privateId) {
   </div>`;
   bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
   document.body.appendChild(bg);
+  if (key==='workout'&&!isPrivate&&window.GamenfyHomeWorkout) window.GamenfyHomeWorkout.bind(bg);
 };
 window.mdCheck = function(key, isPrivate, privateId) {
   const st = missionStats(key, !!isPrivate, privateId);

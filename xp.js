@@ -620,7 +620,7 @@
     workout: {
       xp:0, parentSkill:'body', icon:'🏋️', label:'Workout + Mobility', active:true, isHabit:true,
       why:'Thuis sterker en soepeler worden, met een haalbaar ritme naast tennis.',
-      habitDesc:'Een workout of mobility-sessie thuis (maximaal 20 minuten) telt als Daily Mission. Matje aanwezig; oefeningen en opbouw bepalen we samen.',
+      habitDesc:'Een workout of mobility-sessie thuis telt als Daily Mission. Ma/wo/vr: calisthenics (kort beginnen, maximaal 20 minuten) en korte mobility. Andere dagen: rustige mobility. Open op Home je routine met week 1–4 en optioneel dumbbellroeien. Het habit-level meet regelmaat, niet trainingszwaarte.',
       benefits:[],
     },
     cold_shower: {
