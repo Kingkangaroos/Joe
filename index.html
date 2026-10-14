@@ -16,7 +16,7 @@
 <script src="auth.js?v=11.1" defer></script>
 <script src="sync.js?v=11.9" defer></script>
 <script src="topbar.js?v=11.0" defer></script>
-<script src="xp.js?v=10.99" defer></script>
+<script src="xp.js?v=11.0" defer></script>
 <script src="quests.js?v=10.98" defer></script>
 <script src="ladders.js?v=10.98" defer></script>
 <script src="ventures.js?v=10.98" defer></script>
@@ -1127,6 +1127,7 @@ body {
 <link rel="stylesheet" href="gamenfy-workspace.css?v=1">
 <script src="gamenfy-updates.js?v=2" defer></script>
 <link rel="stylesheet" href="home-habit-evolution.css?v=1"><script src="home-habit-evolution.js?v=2" defer></script>
+<link rel="stylesheet" href="goal-compass.css?v=1"><script src="goal-compass.js?v=1" defer></script>
 </head>
 <body data-updates-surface="home">
 <div class="page">
@@ -1178,9 +1179,7 @@ body {
   </div>
 
   <!-- WHY today (goal-first; no invented life taxonomy) -->
-  <div id="lifeWhyWrap" style="display:none">
-    <div class="life-why-card" id="lifeWhyCard" onclick="location.href='character.html#goals'"></div>
-  </div>
+  <section id="goalCompass" aria-label="Mijn doelen en volgende stap"></section>
 
   <!-- Daily Score shows today's checked mission count with Joey's approved 10-stage evolution. -->
   <div id="dailyLevelCard" style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#171712,#27251d);color:#fff;border-radius:18px;padding:14px 15px;margin:0 0 12px;box-shadow:0 12px 28px -24px rgba(21,20,15,.8)">
@@ -3665,4 +3664,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
