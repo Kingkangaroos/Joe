@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const {snapshot}=require('../goal-year-timer.js');
+let s=snapshot(new Date('2026-10-18T20:45:00Z'));
+assert.equal(s.start,'2026-07-18');assert.equal(s.end,'2027-07-18');assert.equal(s.elapsed,92);assert.equal(s.remaining,273);
+assert.equal(snapshot(new Date('2026-07-17T22:00:00Z')).remaining,365,'Amsterdam calendar day controls countdown');
+s=snapshot(new Date('2027-07-18T12:00:00Z'));assert.equal(s.remaining,0);assert.equal(s.percent,100);assert.equal(s.overdue,false);
+s=snapshot(new Date('2027-07-19T12:00:00Z'));assert.equal(s.remaining,0);assert.equal(s.overdue,true);
+const character=fs.readFileSync('character.html','utf8'),source=fs.readFileSync('goal-year-timer.js','utf8');
+assert.ok(character.indexOf('id="goalYearTimer"')<character.indexOf('id="lifeGoalsOverview"'));
+assert.doesNotMatch(source,/localStorage\.setItem|saveGoals|addXP/,'the annual timer cannot rewrite individual goals or money progress');
+console.log('Annual timer: original date, year horizon, Amsterdam day, expired state and read-only goal boundary passed.');

@@ -8,7 +8,8 @@ const finance=read('finance.html');
 assert.ok(finance.includes('data-tab="ventures"'));
 assert.ok(finance.includes('ventures-workspace.html?embed=1'));
 assert.ok(!finance.includes('<button class="bot-tab" data-tab="portfolio">'),'Portfolio is parked, not a visible Finance tab');
-assert.ok(finance.includes("['net','subs','wish','ventures','debts']"));
+const financeTabs=(finance.match(/const validTabs = \[([^\]]+)\]/)||[])[1]||'';
+for(const tab of ['net','budget','subs','wish','ventures','debts']) assert.ok(financeTabs.includes("'"+tab+"'"),'Finance preserves tab: '+tab);
 
 const workspace=read('ventures-workspace.html');
 assert.ok(workspace.includes('data-gamenfy-scope="personal"'));

@@ -1,0 +1,34 @@
+/* Salary-cycle boundaries and money arithmetic · ChatGPT (OpenAI). */
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const b=require('../finance-budget.js');
+assert.deepEqual(b.cycle('2026-10-21'),{start:'2026-09-22',end:'2026-10-22',last:'2026-10-21',days:30});
+assert.equal(b.cycle('2026-10-22').start,'2026-10-22');
+assert.equal(b.cycle('2027-01-01').start,'2026-12-22');
+assert.equal(b.cycle('2027-02-22').days,28);
+assert.equal(b.cycle('2028-02-22').days,29);
+assert.throws(()=>b.cycle('2026-02-30'));
+assert.equal(b.today(new Date('2026-10-21T22:01:00Z')),'2026-10-22');
+for(const [s,n] of [['1.400,50',140050],['1400,50',140050],['1400.50',140050],['1.400',140000],['0',0],['0,10',10]])assert.equal(b.cents(s),n,s);
+for(const s of ['','-1','NaN','Infinity','1e3','0,001','abc','1.40,5'])assert.equal(b.cents(s),null,s);
+const cfg={changes:[{from:'2026-09-22',cents:140000}]};
+const r={entries:[{date:'2026-10-01',cents:100000}]};
+let m=b.metrics(cfg,r,'2026-10-18');
+assert.equal(m.available,40000);assert.equal(m.daysLeft,4);assert.equal(m.nextWeek,40000);assert.equal(m.daily,10000);assert.equal(m.nextDays,4);
+m=b.metrics(cfg,r,'2026-10-08');assert.equal(m.daysLeft,14);assert.equal(m.nextWeek,20000);
+m=b.metrics(cfg,r,'2026-10-21');assert.equal(m.daysLeft,1);assert.equal(m.nextWeek,40000);
+m=b.metrics(cfg,{entries:[{date:'2026-10-18',cents:150000}]},'2026-10-18');
+assert.equal(m.available,-10000);assert.equal(m.over,10000);assert.equal(m.nextWeek,0);assert.equal(m.daily,0);
+assert.equal(b.metrics({changes:[{from:'2026-09-22',cents:0}]},r,'2026-10-18').over,100000);
+assert.equal(b.metrics({},r,'2026-10-18').budget,null);
+// Later budget changes must not reprice earlier months, including absent months.
+const changed={changes:[...cfg.changes,{from:'2026-12-22',cents:120000}]};
+assert.equal(b.budgetAt(changed,'2026-10-22'),140000);
+assert.equal(b.budgetAt(changed,'2026-12-22'),120000);
+assert.deepEqual(b.periods(changed,'2027-01-22').map(p=>p.start),['2026-12-22','2026-11-22','2026-10-22','2026-09-22']);
+assert.equal(b.spent({entries:[...r.entries,{date:'2026-10-18',cents:-20000,kind:'adjustment'}]}),80000);
+const src=fs.readFileSync('finance.html','utf8');
+assert.match(src,/data-tab="budget"/);assert.match(src,/const validTabs = \[[^\]]*'budget'/);
+assert.match(src,/syncedPrefixes:\s*\['nw:'\]/);
+assert.ok(b.CONFIG.startsWith('nw:')&&b.PREFIX.startsWith('nw:'),'budget and history share Finance sync ownership');
+console.log('Budget: 22nd rollover, Amsterdam midnight, leap/month/year boundaries, cents, live remaining allowance, overspend and preserved historical budgets passed.');
