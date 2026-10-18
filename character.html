@@ -18,6 +18,12 @@
 <script src="quests.js?v=10.98" defer></script>
 <script src="ladders.js?v=10.98" defer></script>
 <script src="ventures.js?v=10.98" defer></script>
+<link rel="stylesheet" href="life-goals.css?v=1">
+<script src="life-goals.js?v=1" defer></script>
+<link rel="stylesheet" href="goal-compass.css?v=1">
+<script src="goal-compass.js?v=2" defer></script>
+<link rel="stylesheet" href="goal-quests.css?v=1.0">
+<script src="goal-quests.js?v=1.0" defer></script>
 <style>
 :root {
   /* Daylight design tokens */
@@ -1501,12 +1507,21 @@ textarea {
 
   <!-- GOALS VIEW (v10.61) -->
   <div id="goalsView" style="display:none">
+    <section id="lifeGoalsOverview" aria-label="Mijn levensdoelen"></section>
+    <details class="lg-tools"><summary>Bedrag, voortgang & eerstvolgende stap</summary><section id="goalCompass" aria-label="Doelmeting en volgende stap"></section></details>
+    <details class="lg-tools"><summary>Week- en maanddoelen</summary>
+      <section class="gq-command" id="goalQuestCommand" aria-labelledby="goalQuestHeading">
+        <div class="gq-command-head"><h2 id="goalQuestHeading">Command Quests</h2><p>Own the week. Steer the month.</p></div>
+        <div class="gq-cards" id="goalQuestCards"></div>
+      </section>
+    </details>
+    <div class="sec-head" style="margin-top:22px">Mijn uitgewerkte doelen</div>
     <button class="new-recipe-btn-goals" onclick="openGoalEditor(null)">+ New goal</button>
     <div id="goalsList"></div>
     <div class="wish-empty-card" id="goalsEmpty" style="display:none">
       <div class="wish-empty-icon">🎯</div>
-      <div class="wish-empty-title">No goals yet</div>
-      <div class="wish-empty-sub">Set a goal with a deadline — link it to skills, and every bit of related progress gets logged here automatically, so it never quietly slips away.</div>
+      <div class="wish-empty-title">Werk een richting uit als doel</div>
+      <div class="wish-empty-sub">Open hierboven een categorie of voeg zelf een doel toe. Leg vast wat je wilt bereiken en hoe je het meet; voeg een streefdatum toe zodra die vaststaat.</div>
     </div>
     <div id="goalsPastSection" style="display:none">
       <div class="sec-head" style="margin-top:22px">Past goals</div>
@@ -2008,9 +2023,10 @@ window.toggleOptionalQuest=function(skillKey,lvl,xp,el){
 // =============================================================
 const GOALS_KEY = 'rpg_goals_v1';
 function loadGoals(){ try{ return JSON.parse(localStorage.getItem(GOALS_KEY))||[]; }catch(e){ return []; } }
-function saveGoals(arr){ try{ localStorage.setItem(GOALS_KEY, JSON.stringify(arr)); }catch(e){} }
+function saveGoals(arr){ try{ localStorage.setItem(GOALS_KEY, JSON.stringify(arr)); return true; }catch(e){ return false; } }
 
 function daysUntil(dateStr){
+  if(!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return null;
   // v10.61: was comparing exact now() to target 23:59:59 — a fractional-day
   // gap that meant Math.ceil() could never land exactly on 0, so "due today"
   // would never actually show even ON the deadline day. Fixed to compare
@@ -2030,9 +2046,10 @@ function goalActivityLog(goal){
   return log.slice(0, 20); // xpLog is already newest-first
 }
 
-function escapeHtmlG(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+function escapeHtmlG(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML.replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 function renderGoalsView(){
+  if(window.GamenfyLifeGoals) window.GamenfyLifeGoals.render();
   const goals = loadGoals();
   const defaults = window.RPG_DEFAULT_SKILLS||{};
   // v10.99: overdue goals stay active until Joey deliberately closes them.
@@ -2052,15 +2069,18 @@ function renderGoalsView(){
     listEl.innerHTML = activeList.map(g => {
       const idx = goals.indexOf(g);
       const dLeft = daysUntil(g.deadline);
-      const dCls = dLeft < 0 ? 'overdue' : dLeft <= 7 ? 'soon' : 'ok';
-      const dTxt = dLeft < 0 ? Math.abs(dLeft)+'d overdue' : dLeft===0 ? 'due today' : dLeft+'d left';
+      const dCls = dLeft === null ? 'ok' : dLeft < 0 ? 'overdue' : dLeft <= 7 ? 'soon' : 'ok';
+      const dTxt = dLeft === null ? 'Geen streefdatum' : dLeft < 0 ? Math.abs(dLeft)+'d overdue' : dLeft===0 ? 'due today' : dLeft+'d left';
       const links = (g.linkedSkills||[]).map(k => (defaults[k]||{}).icon+' '+(defaults[k]||{}).label).filter(Boolean);
       const log = goalActivityLog(g);
       const logHtml = log.length
         ? log.slice(0,3).map(e => '<div class="goal-log-item"><b>'+e.date.slice(5)+'</b> · '+escapeHtmlG(e.reason||((defaults[e.skill]||{}).label||e.skill))+' <span style="color:var(--ember)">+'+e.amount+'xp</span></div>').join('')
         : '<div class="goal-log-empty">No linked activity logged yet</div>';
+      const category = window.GamenfyLifeGoals ? window.GamenfyLifeGoals.categoryLabel(g.category) : '';
       return '<div class="goal-card" onclick="openGoalEditor('+idx+')">'+
+        (category ? '<div class="lg-goal-category">'+escapeHtmlG(category)+'</div>' : '')+
         '<div class="goal-card-top"><div class="goal-title">'+escapeHtmlG(g.title)+'</div><div class="goal-days '+dCls+'">'+dTxt+'</div></div>'+
+        (g.measure ? '<p class="lg-goal-measure">'+escapeHtmlG(g.measure)+'</p>' : '')+
         '<div class="goal-pct-row"><span>Progress</span><span>'+(g.pct||0)+'%</span></div>'+
         '<div class="goal-bar-track"><div class="goal-bar-fill" style="width:'+(g.pct||0)+'%"></div></div>'+
         (links.length ? '<div class="goal-links">'+links.map(l=>'<span class="goal-link-chip">'+l+'</span>').join('')+'</div>' : '')+
@@ -2084,11 +2104,12 @@ function renderGoalsView(){
   }
 }
 
-let editingGoalIdx = null, editingGoalSkills = [];
-window.openGoalEditor = function(idx){
+let editingGoalIdx = null, editingGoalSkills = [], editingGoalSeed = {};
+window.openGoalEditor = function(idx, seed){
   editingGoalIdx = idx;
+  editingGoalSeed = seed || {};
   const goals = loadGoals();
-  const g = (idx!=null) ? goals[idx] : { title:'', why:'', deadline:'', linkedSkills:[], pct:0, createdDate:todayKey() };
+  const g = (idx!=null) ? goals[idx] : { title:'', why:'', deadline:'', linkedSkills:[], pct:0, createdDate:todayKey(), ...editingGoalSeed };
   editingGoalSkills = (g.linkedSkills||[]).slice();
 
   const old = document.getElementById('geBg'); if(old) old.remove();
@@ -2101,8 +2122,12 @@ window.openGoalEditor = function(idx){
     '<input class="ge-title-input" id="geTitle" placeholder="What\u2019s the goal?" value="'+escapeHtmlG(g.title)+'">'+
     '<div class="sec-head" style="margin-top:0">Why does this matter</div>'+
     '<textarea class="ge-textarea" id="geWhy" rows="2" placeholder="Optional \u2014 your own reminder of why">'+escapeHtmlG(g.why)+'</textarea>'+
-    '<div class="sec-head">Deadline</div>'+
-    '<input class="ge-date-input" id="geDeadline" type="date" value="'+(g.deadline||'')+'">'+
+    '<label class="sec-head" for="geCategory">Categorie</label>'+
+    '<select class="ge-date-input" id="geCategory"><option value="">Overig / nog kiezen</option>'+((window.GamenfyLifeGoals&&window.GamenfyLifeGoals.categories)||[]).map(c=>'<option value="'+c.id+'"'+(g.category===c.id?' selected':'')+'>'+escapeHtmlG(c.label)+'</option>').join('')+'</select>'+
+    '<label class="sec-head" for="geMeasure">Hoe meet ik het resultaat?</label>'+
+    '<textarea class="ge-textarea" id="geMeasure" rows="3" placeholder="Bijvoorbeeld een bedrag, aantal routes of een concreet eindresultaat">'+escapeHtmlG(g.measure)+'</textarea>'+
+    '<label class="sec-head" for="geDeadline">Streefdatum (optioneel)</label>'+
+    '<input class="ge-date-input" id="geDeadline" type="date" value="'+escapeHtmlG(g.deadline)+'">'+
     '<div class="sec-head">Link skills (recent activity appears automatically)</div>'+
     '<div class="ge-skill-grid" id="geSkillGrid">'+
       skillKeys.map(k => '<div class="ge-skill-chip'+(editingGoalSkills.includes(k)?' sel':'')+'" data-k="'+k+'" onclick="toggleGoalSkill(\''+k+'\')">'+defaults[k].icon+' '+defaults[k].label+'</div>').join('')+
@@ -2129,17 +2154,19 @@ window.saveGoalFromEditor = function(){
   const title = (titleEl.value||'').trim();
   if(!title){ alert('Give the goal a title first.'); titleEl.focus(); return; }
   const deadline = document.getElementById('geDeadline').value;
-  if(!deadline){ alert('Pick a deadline.'); return; }
   const why = document.getElementById('geWhy').value.trim();
   const pct = Number(document.getElementById('gePct').value)||0;
   const goals = loadGoals();
   const goal = {
+    ...(editingGoalIdx!=null ? goals[editingGoalIdx] : editingGoalSeed),
     title, why, deadline, pct, linkedSkills: editingGoalSkills.slice(),
+    category: document.getElementById('geCategory').value,
+    measure: document.getElementById('geMeasure').value.trim(),
     createdDate: (editingGoalIdx!=null ? goals[editingGoalIdx].createdDate : todayKey()),
     archived: false,
   };
   if(editingGoalIdx!=null) goals[editingGoalIdx] = goal; else goals.push(goal);
-  saveGoals(goals);
+  if(saveGoals(goals)===false){ alert('Opslaan is niet gelukt. Je invoer blijft staan; probeer opnieuw.'); return; }
   document.getElementById('geBg').remove();
   renderGoalsView();
 };

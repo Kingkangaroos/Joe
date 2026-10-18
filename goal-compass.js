@@ -3,7 +3,7 @@
   'use strict';
   const KEY = 'rpg_goal_compass_v1';
   const moneyId = 'freedom-money';
-  const money = { id: moneyId, title: '€50.000 liquide, zelf verdiend', deadline: '2027-03-27', why: 'Vrijheid om te reizen, te ondernemen en te experimenteren. Uiteindelijk bedrijven helpen groeien en zelf investeren.' };
+  const money = { id: moneyId, title: '€50.000 liquide, zelf verdiend', deadline: '', why: 'Vrijheid om te reizen, te ondernemen en te experimenteren. Uiteindelijk bedrijven helpen groeien en zelf investeren.' };
   let selected = moneyId;
   const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function read(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch (_) { return fallback; } }

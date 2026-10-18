@@ -36,8 +36,9 @@ assert.match(home,/const missionCompleted=completeGratitudeMission\(todayStr\(\)
 assert.match(character,/toggleDailyQuest\(gratitudeQuest,sd\)/,'dated Character gratitude entry auto-completes the matching mission');
 assert.match(home,/className='grat-cloud-row'/,'gratitude words themselves are arranged into cloud rows');
 
-assert.match(home,/goal-quests\.js\?v=1\.0/,'Home loads Command Quests');
-assert.match(home,/id="goalQuestCards"/,'Home mounts Command Quests');
+assert.match(character,/goal-quests\.js\?v=1\.0/,'Skills Goals loads Command Quests');
+assert.match(character,/id="goalQuestCards"/,'Skills Goals mounts Command Quests');
+assert.doesNotMatch(home,/id="goalQuestCards"/,'Home stays quiet after the requested move');
 assert.match(xp,/rpg_goal_quests_v1/,'Command Quests are in the canonical synced state scope');
 
 const store={};

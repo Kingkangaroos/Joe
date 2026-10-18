@@ -12,12 +12,13 @@ assert.match(xp,/!g\.archived && Number\(g\.pct\|\|0\)<100/,'only active unfinis
 assert.match(xp,/g\.linkedSkills\.includes\(skillKey\)/,'skill WHY uses explicit goal links, not guessed categories');
 assert.match(xp,/window\.getGoalLinksForSkill/);
 assert.match(xp,/window\.getPriorityGoalReminder/);
-assert.match(home,/id="lifeWhyCard"/,'Home exposes a compact goal reminder');
-assert.match(home,/Why you’re doing this/);
-assert.match(home,/escapeHtml\(goal\.why\)/,'user-authored goal WHY is inert text');
+assert.doesNotMatch(home,/id="(?:lifeWhyCard|goalCompass|goalQuestCards)"/,'requested goal panels stay off Home');
+assert.match(character,/id="lifeGoalsOverview"/,'Skills Goals holds the life plan');
+assert.match(character,/id="goalCompass"/,'measured goal direction moves to Skills Goals');
+assert.match(fs.readFileSync(path.join(root,'goal-compass.js'),'utf8'),/esc\(why\)/,'user-authored goal WHY remains inert text');
 assert.match(home,/getGoalLinksForSkill\(c\.skill\)/,'Daily Challenge uses its selected skill to find a real linked goal');
 assert.match(home,/WHY →/,'action-to-goal chain is visible when a link exists');
-assert.match(home,/character\.html#goals/,'WHY card opens canonical Goals rather than a competing goal store');
+assert.match(fs.readFileSync(path.join(root,'goal-compass.js'),'utf8'),/character\.html#goals/,'goal direction points to canonical Goals rather than a competing goal store');
 assert.match(character,/hash === 'goals'[\s\S]*setSkillsView\('goals'\)/,'WHY card target opens the canonical Goals view on initial load');
 assert.match(character,/hash==='goals'[\s\S]*setSkillsView\('goals'\)/,'Goals deep-link remains correct after hash changes');
 console.log('WHY-chain smoke: real Goals are the primary reminder source; skill links are explicit and safely rendered.');

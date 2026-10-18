@@ -1,0 +1,35 @@
+/* Goals relocation and draft/editor boundaries · ChatGPT (OpenAI). */
+'use strict';
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const source=fs.readFileSync('life-goals.js','utf8');
+let writes=0,goals=[];
+const host={innerHTML:'',querySelectorAll(){return [];},addEventListener(){}};
+const window={addEventListener(){}};
+const localStorage={getItem:key=>key==='rpg_goals_v1'?JSON.stringify(goals):null,setItem(){writes++;}};
+vm.runInNewContext(source,{window,localStorage,document:{readyState:'loading',addEventListener(){},getElementById:id=>id==='lifeGoalsOverview'?host:null}});
+const api=window.GamenfyLifeGoals;
+assert.deepEqual(Array.from(api.categories,c=>c.label),['Liefde','Geld','Vrijheid','Blijheid','Exploration']);
+api.render();
+for(const category of api.categories) assert.match(host.innerHTML,new RegExp('data-lg-category="'+category.id+'"'));
+assert.equal(writes,0,'opening the overview must never seed or overwrite user goals');
+assert.equal(api.seed('money').deadline,'','conflicting deadline references are not silently confirmed');
+assert.match(api.seed('money').measure,/Omzet.*uren.*XP.*niet automatisch/);
+assert.equal(api.seed('exploration').deadline,'');
+assert.doesNotMatch(api.seed('happiness').measure,/8\/10/,'assistant SMART proposals do not become saved user commitments');
+assert.match(host.innerHTML,/nog bevestigen/);
+assert.match(host.innerHTML,/126 jaar/);
+goals=[{sourceId:'life-plan:love',title:'<img src=x onerror=alert(1)>',why:'my own direction',measure:'my own measure',deadline:'2027-05-01'}];
+api.render();assert.doesNotMatch(host.innerHTML,/<img src=x/);assert.match(host.innerHTML,/&lt;img/);assert.match(host.innerHTML,/my own measure/);
+assert.equal(writes,0,'refresh and prefilled editor templates remain read-only');
+const character=fs.readFileSync('character.html','utf8'),home=fs.readFileSync('index.html','utf8');
+assert.doesNotMatch(home,/goal-compass\.(?:js|css)|goal-quests\.(?:js|css)|id="(?:goalCompass|goalQuestCards)"/);
+assert.match(character,/goal-compass\.js/);assert.match(character,/goal-quests\.js/);
+// Exercise the actual editor save function: preserve metadata, canonical key and optional dates.
+const saveSource=character.slice(character.indexOf('window.saveGoalFromEditor = function'),character.indexOf('window.deleteGoalFromEditor = function'));
+const elements={geTitle:{value:'Updated goal'},geDeadline:{value:''},geWhy:{value:'My why'},gePct:{value:'25'},geCategory:{value:'exploration'},geMeasure:{value:'Routes walked / total'},geBg:{remove(){}}};
+let output;
+const ctx={window:{},editingGoalIdx:0,editingGoalSkills:['walking'],editingGoalSeed:{},loadGoals:()=>[{id:'stable-id',sourceId:'life-plan:exploration',createdDate:'2026-07-18',customMetadata:{keep:true}}],saveGoals:value=>{output=value;},renderGoalsView(){},todayKey:()=> '2026-10-18',document:{getElementById:id=>elements[id]},alert:message=>{throw new Error(message);}};
+vm.runInNewContext(saveSource,ctx);ctx.window.saveGoalFromEditor();
+assert.equal(output[0].id,'stable-id');assert.equal(output[0].customMetadata.keep,true);assert.equal(output[0].sourceId,'life-plan:exploration');
+assert.equal(output[0].category,'exploration');assert.equal(output[0].measure,'Routes walked / total');assert.equal(output[0].deadline,'');assert.equal(output[0].createdDate,'2026-07-18');
+console.log('Life goals: five categories, read-only defaults, unconfirmed SMART criteria, safe text, preserved metadata, optional dates and Home relocation passed.');

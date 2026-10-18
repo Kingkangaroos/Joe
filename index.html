@@ -8,7 +8,6 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="img/icons/gamenfy-home-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="img/icons/gamenfy-home-192.png">
-<link rel="stylesheet" href="goal-quests.css?v=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -22,7 +21,6 @@
 <script src="ventures.js?v=10.98" defer></script>
 <script src="checkin.js?v=10.98" defer></script>
 <script src="push.js?v=10.99" defer></script>
-<script src="goal-quests.js?v=1.0" defer></script>
 <link rel="stylesheet" href="household-checklist.css?v=1.0">
 <script src="household-checklist.js?v=1.0" defer></script>
 <link rel="stylesheet" href="home-workout.css?v=1.0">
@@ -1129,7 +1127,6 @@ body {
 <link rel="stylesheet" href="gamenfy-workspace.css?v=1">
 <script src="gamenfy-updates.js?v=2" defer></script>
 <link rel="stylesheet" href="home-habit-evolution.css?v=1"><script src="home-habit-evolution.js?v=2" defer></script>
-<link rel="stylesheet" href="goal-compass.css?v=1"><script src="goal-compass.js?v=1" defer></script>
 </head>
 <body data-updates-surface="home">
 <div class="page">
@@ -1180,9 +1177,6 @@ body {
     <div class="season-banner" id="seasonBanner"></div>
   </div>
 
-  <!-- WHY today (goal-first; no invented life taxonomy) -->
-  <section id="goalCompass" aria-label="Mijn doelen en volgende stap"></section>
-
   <!-- Daily Score shows today's checked mission count with Joey's approved 10-stage evolution. -->
   <div id="dailyLevelCard" style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#171712,#27251d);color:#fff;border-radius:18px;padding:14px 15px;margin:0 0 12px;box-shadow:0 12px 28px -24px rgba(21,20,15,.8)">
     <div aria-hidden="true" style="width:72px;height:82px;flex:0 0 72px;border-radius:20px;display:grid;place-items:center;background:radial-gradient(circle at 35% 28%,#fff7c9 0 5%,#d7b84a 6% 18%,#766425 38%,#28251a 72%);border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)"><span style="font-size:25px;filter:drop-shadow(0 2px 5px rgba(0,0,0,.35))">✦</span></div>
@@ -1193,11 +1187,6 @@ body {
       <div id="dailyLevelMeta" style="font-size:10px;color:#aaa58d;margin-top:5px">Daily Missions laden…</div>
     </div>
   </div>
-
-  <section class="gq-command" id="goalQuestCommand" aria-labelledby="goalQuestHeading">
-    <div class="gq-command-head"><h2 id="goalQuestHeading">Command Quests</h2><p>Own the week. Steer the month.</p></div>
-    <div class="gq-cards" id="goalQuestCards"></div>
-  </section>
 
   <!-- Legacy Day Score DOM remains hidden for rollback/history only. -->
   <div class="sec-head" style="display:none" aria-hidden="true">Day Score</div>
