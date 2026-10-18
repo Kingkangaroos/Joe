@@ -33,5 +33,5 @@ assert.match(topbar,/projects\.html/,'Projects is reachable from the persistent 
 assert.match(topbar,/Projects/,'Projects shortcut has an accessible label');
 assert.match(lab,/id="gwHouseProject"/,'House Upgrade is visible as a dedicated Gamenfy Lab card');
 assert.match(lab,/href="projects\.html"/,'House Upgrade is reachable from the Gamenfy Lab');
-assert.match(page,/projects\.js\?v=1\.1/,'Projects page revalidates the House 1.0 import controller');
+assert.match(page,/projects\.js\?v=1\.2/,'Projects page revalidates the workbook controller');
 console.log('Projects smoke passed: dedicated House Upgrade workspace, autosave/cloud sync and global navigation are wired.');

@@ -64,7 +64,7 @@
         '<dl><dt>Gewenste uitkomst</dt><dd>'+esc(current?current.why:c.outcome)+'</dd><dt>Hoe ik het meet</dt><dd>'+esc(current&&current.measure?current.measure:c.measure)+'</dd><dt>Termijn</dt><dd>'+esc(current&&current.deadline?current.deadline:c.timing)+'</dd></dl>'+
         (c.proposal?'<p class="lg-proposal"><strong>Eerdere uitwerking · nog bevestigen</strong>'+esc(c.proposal)+'</p>':'')+
         '<details class="lg-long"><summary>Mijn langere termijn · 31 tot 126 jaar</summary><ul>'+c.long.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul>'+(c.note?'<p>'+esc(c.note)+'</p>':'')+'</details>'+
-        '<button type="button" data-lg-edit="'+c.id+'">'+(current?'Mijn doel aanpassen':'Uitwerken als doel')+'</button></div></details>';
+        '<button type="button" data-lg-edit="'+c.id+'">'+(current?'Mijn doel aanpassen':'Uitwerken als doel')+'</button>'+(c.id==='happiness'?'<p class="lg-workbook-link"><a href="projects.html#mental-health">📓 Mental health · open mijn persoonlijke werkboek ↗</a></p>':'')+'</div></details>';
     }).join('')+'</div><details class="lg-extras"><summary>Aanvullende doelen & projecten</summary>'+extra.map(x=>'<article><strong>'+esc(x.title)+'</strong><p>'+esc(x.why)+'</p><p>'+esc(x.measure)+'</p><button type="button" data-lg-edit="'+x.id+'">Uitwerken als doel</button></article>').join('')+'</details><p class="lg-footnote">Dit overzicht bewaart je teruggevonden basis en je oudere levensplan. Open termijnen en eerdere voorstellen blijven herkenbaar. Je eigen uitgewerkte doelen staan hieronder.</p>';
   }
   function init() {

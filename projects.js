@@ -49,6 +49,8 @@ var SEED={
 
 var state=null;
 var saveTimer=null;
+var projectsCloudReady=false;
+var workbookRequested=location.hash==='#mental-health';
 
 function clone(obj){return JSON.parse(JSON.stringify(obj));}
 function uid(prefix){return prefix+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);}
@@ -84,6 +86,12 @@ function normalizeProject(p){
   p.shopping=Array.isArray(p.shopping)?p.shopping:[];
   p.moodboard=Array.isArray(p.moodboard)?p.moodboard:[];
   p.notes=typeof p.notes==='string'?p.notes:'';
+  if(p.kind==='workbook'){
+    p.focus=typeof p.focus==='string'?p.focus:'';
+    p.nextDiscussion=typeof p.nextDiscussion==='string'?p.nextDiscussion:'';
+    p.linkedSkills=Array.isArray(p.linkedSkills)?p.linkedSkills:[];
+    p.chapters=Array.isArray(p.chapters)?p.chapters:[];
+  }
   return p;
 }
 function mergeUniqueById(target, additions){
@@ -135,7 +143,8 @@ function save(message){
   try{
     localStorage.setItem(KEY,JSON.stringify(state));
     showSave(message||'Opgeslagen');
-  }catch(e){showSave('Opslaan mislukt');}
+    return true;
+  }catch(e){showSave('Opslaan mislukt. Je invoer staat nog in dit venster; probeer Nu opslaan.');return false;}
 }
 function saveSoon(message){
   clearTimeout(saveTimer);
@@ -146,6 +155,7 @@ function showSave(message){
   if(!el)return;
   el.textContent=message||'';
   clearTimeout(showSave.timer);
+  if(String(message||'').indexOf('mislukt')!==-1)return;
   showSave.timer=setTimeout(function(){if(el)el.textContent='Autosave actief';},1400);
 }
 function current(){
@@ -177,9 +187,9 @@ function renderList(){
   root.innerHTML=state.projects.map(function(p){
     var pct=projectProgress(p);
     return '<button type="button" class="project-chip'+(p.id===state.activeId?' active':'')+'" data-action="select" data-id="'+esc(p.id)+'">'+
-      '<div class="project-chip-top"><span class="project-chip-name">'+esc(p.icon)+' '+esc(p.name)+'</span><span>'+pct+'%</span></div>'+
+      '<div class="project-chip-top"><span class="project-chip-name">'+esc(p.icon)+' '+esc(p.name)+'</span><span>'+(p.kind==='workbook'?'Werkboek':pct+'%')+'</span></div>'+
       '<div class="project-chip-meta">'+esc(p.subtitle||p.status)+'</div>'+
-      '<div class="mini-bar"><i style="width:'+pct+'%"></i></div>'+
+      (p.kind==='workbook'?'':'<div class="mini-bar"><i style="width:'+pct+'%"></i></div>')+
     '</button>';
   }).join('');
 }
@@ -210,6 +220,7 @@ function renderDetail(){
   var root=document.getElementById('projectDetail');
   var p=current();
   if(!p){root.innerHTML='';return;}
+  if(p.kind==='workbook'&&window.GamenfyMentalWorkbook){root.innerHTML=window.GamenfyMentalWorkbook.render(p);return;}
   var pct=projectProgress(p);
   var next=nextTask(p);
   root.innerHTML=
@@ -242,6 +253,29 @@ function render(){
   renderStats();renderList();renderDetail();
 }
 
+function openMentalWorkbook(){
+  workbookRequested=true;
+  if(!projectsCloudReady||!window.gamenfyUserId)return;
+  if(!window.GamenfyMentalWorkbook)return;
+  // Read the current merged state before adding a single empty workbook.
+  state=load();
+  if(!state.projects.some(function(p){return p.id==='mental-health';}))state.projects.push(normalizeProject(window.GamenfyMentalWorkbook.template()));
+  state.activeId='mental-health';
+  workbookRequested=false;
+  save('Werkboek geopend');render();
+}
+function markProjectsReady(e){
+  if(!e.detail||e.detail.appKey!=='projects'||!window.gamenfyUserId)return;
+  projectsCloudReady=true;
+  var btn=document.getElementById('openMentalWorkbookBtn');
+  if(btn){btn.disabled=false;btn.textContent='Open mijn werkboek';}
+  if(workbookRequested)openMentalWorkbook();
+}
+var workbookButton=document.getElementById('openMentalWorkbookBtn');
+if(workbookButton)workbookButton.addEventListener('click',openMentalWorkbook);
+window.addEventListener('gamenfy:cloud-sync-ready',markProjectsReady);
+window.addEventListener('hashchange',function(){if(location.hash==='#mental-health')openMentalWorkbook();});
+
 document.addEventListener('click',function(e){
   var btn=e.target.closest('[data-action]');
   if(!btn)return;
@@ -250,6 +284,16 @@ document.addEventListener('click',function(e){
   var action=btn.getAttribute('data-action');
   if(action==='select'){state.activeId=id;save('Project geopend');render();return;}
   if(!p)return;
+  if(action==='save-workbook'&&p.kind==='workbook'){
+    if(projectsCloudReady&&window.gamenfyUserId)save('Werkboek opgeslagen');
+    return;
+  }
+  if(action==='copy-workbook'&&p.kind==='workbook'){
+    if(!projectsCloudReady||!window.gamenfyUserId)return;
+    if(navigator.clipboard&&window.GamenfyMentalWorkbook){navigator.clipboard.writeText(window.GamenfyMentalWorkbook.exportText(p)).then(function(){showSave('Werkboek gekopieerd');},function(){showSave('Kopiëren lukt niet; selecteer je notities handmatig');});}
+    else showSave('Kopiëren lukt niet; selecteer je notities handmatig');
+    return;
+  }
   if(action==='toggle-task'){
     var task=p.tasks.find(function(x){return x.id===id;});
     if(task){task.done=!task.done;save(task.done?'Taak afgerond':'Taak heropend');render();}
@@ -264,9 +308,11 @@ document.addEventListener('submit',function(e){
   if(!form)return;
   e.preventDefault();
   var p=current();if(!p)return;
+  if(p.kind==='workbook'&&(!projectsCloudReady||!window.gamenfyUserId))return;
   var data=new FormData(form);
   var kind=form.getAttribute('data-form');
   var title=String(data.get('title')||'').trim();
+  if(kind==='chapter'&&title&&p.kind==='workbook')p.chapters.push({id:uid('chapter'),title:title,prompt:'Mijn eigen onderwerp om te onderzoeken of te bespreken.',notes:'',reviewed:false});
   if(kind==='task'&&title)p.tasks.push({id:uid('task'),title:title,area:'Algemeen',done:false});
   if(kind==='idea'&&title)p.ideas.push({id:uid('idea'),title:title});
   if(kind==='shop'&&title)p.shopping.push({id:uid('shop'),title:title,price:Number(String(data.get('price')||'').replace(',','.'))||0,url:safeUrl(data.get('url')),note:'Wishlist'});
@@ -278,11 +324,25 @@ document.addEventListener('submit',function(e){
 });
 
 document.addEventListener('input',function(e){
-  if(e.target&&e.target.id==='projectNotes'){
-    var p=current();if(!p)return;
-    p.notes=e.target.value;
-    saveSoon('Notities opgeslagen');
+  var p=current();
+  if(p&&p.kind==='workbook'){
+    if(!projectsCloudReady||!window.gamenfyUserId)return;
+    var chapterId=e.target&&e.target.getAttribute('data-chapter-notes');
+    if(chapterId){var chapter=p.chapters.find(function(c){return c.id===chapterId;});if(chapter){chapter.notes=e.target.value;save('Notities opgeslagen');}return;}
+    var field=e.target&&e.target.getAttribute('data-workbook-field');
+    if(field==='focus'||field==='nextDiscussion'){p[field]=e.target.value;save('Notities opgeslagen');return;}
   }
+  if(e.target&&e.target.id==='projectNotes'){
+    if(!p)return;
+    p.notes=e.target.value;
+    if(p.kind==='workbook')save('Notities opgeslagen');else saveSoon('Notities opgeslagen');
+  }
+});
+document.addEventListener('change',function(e){
+  var id=e.target&&e.target.getAttribute('data-chapter-reviewed'),p=current();
+  if(!id||!p||p.kind!=='workbook'||!projectsCloudReady||!window.gamenfyUserId)return;
+  var chapter=p.chapters.find(function(c){return c.id===id;});
+  if(chapter){chapter.reviewed=!!e.target.checked;save('Hoofdstuk bijgewerkt');var label=e.target.closest('details').querySelector('.wb-chapter-status');if(label)label.textContent=chapter.reviewed?'Verkend':'Open';var count=document.querySelector('.wb-count');if(count)count.textContent=p.chapters.length+' hoofdstukken · '+p.chapters.filter(function(c){return c.reviewed;}).length+' verkend';}
 });
 
 document.getElementById('newProjectBtn').addEventListener('click',function(){

@@ -13,7 +13,9 @@
 <script src="auth.js?v=11.1" defer></script>
 <script src="sync.js?v=11.9" defer></script>
 <script src="topbar.js?v=11.1" defer></script>
-<script src="projects.js?v=1.1" defer></script>
+<link rel="stylesheet" href="mental-workbook.css?v=1">
+<script src="mental-workbook.js?v=1" defer></script>
+<script src="projects.js?v=1.2" defer></script>
 <style>
 :root{
   --bg:#F4F3EF;--card:#fff;--ink:#15140F;--muted:#6F6C63;--faint:#A6A399;
@@ -117,6 +119,11 @@ h1{font-family:var(--font-display);font-size:34px;line-height:1;font-weight:800;
     <div class="section-title">Projects</div>
     <button class="btn" id="newProjectBtn" type="button">+ Nieuw project</button>
   </div>
+  <section class="workbook-launch" aria-labelledby="mentalWorkbookHeading">
+    <h2 id="mentalWorkbookHeading">Mental health · persoonlijk werkboek</h2>
+    <p>Een plek voor hoofdstukken, zelfonderzoek, notities en vragen voor je volgende gesprek.</p>
+    <button class="btn" id="openMentalWorkbookBtn" type="button" disabled>Account en werkboek laden…</button>
+  </section>
   <div id="projectList" class="project-list" aria-label="Projecten"></div>
   <section id="projectDetail"></section>
 </main>
