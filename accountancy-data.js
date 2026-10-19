@@ -510,6 +510,184 @@ window.GamenfyAccountancyData = {
       ],
       "extension": "Volgende case: buitenlandse dochter met USD als functionele valuta, openingsnettoactiva, gemiddelde en historische koersen en een sluitende valutareserve. Laat het volledige model door een IFRS-specialist beoordelen."
     }
+  ],
+  "resources": [
+    {
+      "id": "exact-training",
+      "group": "Nederlands & software",
+      "name": "Exact Online trainingen",
+      "url": "https://www.exact.com/nl/exact-online/support/trainingen",
+      "language": "Nederlands",
+      "access": "Aanbod en toegang verschillen per training/account",
+      "purpose": "Handelingen oefenen in de software die je op werk gebruikt.",
+      "action": "Zoek een training over memoriaal of jaarafsluiting. Herhaal de stappen in een aparte oefenadministratie en maak één aansluitstaat.",
+      "stages": [
+        "dossier",
+        "aansluiten",
+        "afsluiten"
+      ]
+    },
+    {
+      "id": "snelstart",
+      "group": "Nederlands & software",
+      "name": "SnelStart Academy — boekhouden",
+      "url": "https://www.snelstart.nl/academy/e-learning/boekhouden-bundel",
+      "language": "Nederlands",
+      "access": "Bekijk actuele toegang en voorwaarden bij de aanbieder",
+      "purpose": "Nederlandstalige uitleg over grootboek, btw, voorraad en eindejaarsverwerking.",
+      "action": "Kies het onderwerp balans of eindejaarsverwerking. Schrijf na afloop zelf vijf afsluitboekingen; boekingsschermen zijn SnelStart-specifiek.",
+      "stages": [
+        "start",
+        "dossier",
+        "afsluiten"
+      ]
+    },
+    {
+      "id": "coach",
+      "group": "Basis & losse oefeningen",
+      "name": "AccountingCoach — afsluitboekingen oefenen",
+      "url": "https://www.accountingcoach.com/adjusting-entries/quiz",
+      "language": "Engels · Amerikaanse context",
+      "access": "Online quiz vrij toegankelijk; extra PRO-materiaal betaald",
+      "purpose": "Korte vragen over overlopende posten, vooruitbetalingen en afschrijvingen.",
+      "action": "Maak eerst tien vragen zonder uitleg. Noteer elk fout antwoord met de juiste journaalpost. Gebruik dit voor de boekhoudtechniek; Nederlandse verslaggevingsregels toets je apart.",
+      "stages": [
+        "start",
+        "afsluiten",
+        "english"
+      ]
+    },
+    {
+      "id": "ot-fa",
+      "group": "Basis & losse oefeningen",
+      "name": "OpenTuition — Financial Accounting (FA)",
+      "url": "https://opentuition.com/acca/fa/",
+      "language": "Engels · ACCA",
+      "access": "Gratis cursus, colleges en toetsen; registratie kan nodig zijn",
+      "purpose": "Gestructureerde basis in dubbel boekhouden en financiële overzichten.",
+      "action": "Kies een hoofdstuk bij jouw kennishiaat, bekijk het college en maak daarna de hoofdstuktoets. Bewaar je drie belangrijkste fouten in je bewijsnotities.",
+      "stages": [
+        "start",
+        "dossier",
+        "afsluiten",
+        "english"
+      ]
+    },
+    {
+      "id": "kvk-micro",
+      "group": "Nederlandse jaarrekening & naslag",
+      "name": "KVK — jaarrekening micro en klein",
+      "url": "https://www.kvk.nl/deponeren/jaarrekening-deponeren-bedrijfsklasse-micro-en-klein/",
+      "language": "Nederlands",
+      "access": "Vrij toegankelijk",
+      "purpose": "Wat je voor een micro- of kleine rechtspersoon moet deponeren en via welke route.",
+      "action": "Maak voor je fictieve BV een publicatiechecklist. Leg uit wat in de inrichtingsjaarrekening staat en wat bij KVK openbaar wordt. Oefen op papier; verzend geen fictieve deponering.",
+      "stages": [
+        "start",
+        "jaarrekening",
+        "zelfstandig"
+      ]
+    },
+    {
+      "id": "rjk",
+      "group": "Nederlandse jaarrekening & naslag",
+      "name": "RJnet — richtlijnen voor micro en klein",
+      "url": "https://www.rjnet.nl/richtlijnen/kleine-bundel/",
+      "language": "Nederlands",
+      "access": "Uitleg vrij; volledige richtlijnen doorgaans via kantoor/abonnement",
+      "purpose": "De juiste grondslagen, waardering en toelichtingen voor je Nederlandse case.",
+      "action": "Zoek via de boekjaar-editie van je kantoor de regel voor één balanspost. Schrijf de bron, jouw keuze en het effect op de cijfers op.",
+      "stages": [
+        "waarderen",
+        "jaarrekening",
+        "zelfstandig"
+      ]
+    },
+    {
+      "id": "nba4410",
+      "group": "Nederlandse jaarrekening & naslag",
+      "name": "NBA — Standaard 4410 Samenstellingsopdrachten",
+      "url": "https://www.nba.nl/wet--en-regelgeving/hra/1619/10430/10543/",
+      "language": "Nederlands",
+      "access": "Online tekst vrij toegankelijk",
+      "purpose": "Begrijpen wat een accountant bij een samenstellingsopdracht doet en vastlegt.",
+      "action": "Lees de onderdelen over uitvoering, documentatie en rapportage. Maak vijf reviewvragen voor je eigen oefendossier; bespreek je interpretatie met een senior.",
+      "stages": [
+        "dossier",
+        "aansluiten",
+        "jaarrekening",
+        "zelfstandig"
+      ]
+    },
+    {
+      "id": "belasting",
+      "group": "Nederlandse jaarrekening & naslag",
+      "name": "Belastingdienst — fiscale versus commerciële winst",
+      "url": "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/zakelijk/winst/inkomstenbelasting/inkomstenbelasting_voor_ondernemers/winst_uit_onderneming",
+      "language": "Nederlands · IB-context",
+      "access": "Vrij toegankelijk",
+      "purpose": "Waarom fiscale waardering en commerciële cijfers kunnen verschillen.",
+      "action": "Maak een aansluiting met twee verschillen. Deze pagina gaat over inkomstenbelasting; bepaal voor een BV de toepasselijke Vpb-regels afzonderlijk.",
+      "stages": [
+        "waarderen"
+      ]
+    },
+    {
+      "id": "ifrs-modules",
+      "group": "Internationaal & vervolg",
+      "name": "IFRS Foundation — officiële oefenmodules",
+      "url": "https://www.ifrs.org/supporting-implementation/2025-ifrs-for-smes-supporting-materials/modules/",
+      "language": "Engels · IFRS for SMEs",
+      "access": "Officiële leermaterialen; registratie kan nodig zijn",
+      "purpose": "Uitleg, voorbeelden en assessments bij de derde editie van IFRS for SMEs.",
+      "action": "Begin met module 1 en 2; ga daarna naar voorraad (13), vaste activa (17), omzet (23) en valuta (30). Controleer op de overzichtspagina de editie en beschikbaarheid van de gekozen module.",
+      "stages": [
+        "smes",
+        "group"
+      ]
+    },
+    {
+      "id": "ot-fr",
+      "group": "Internationaal & vervolg",
+      "name": "OpenTuition — Financial Reporting (FR)",
+      "url": "https://opentuition.com/acca/fr/",
+      "language": "Engels · ACCA/IFRS",
+      "access": "Gratis leermateriaal; registratie kan nodig zijn",
+      "purpose": "Verdieping in verslaggeving, financiële overzichten en consolidatie.",
+      "action": "Kies eerst één onderwerp dat je uit de Nederlandse route kent. Maak een verschilnotitie en daarna een groepsopgave. Deze cursus behandelt niet automatisch de Nederlandse RJk-regels.",
+      "stages": [
+        "english",
+        "smes",
+        "group"
+      ]
+    },
+    {
+      "id": "acca",
+      "group": "Internationaal & vervolg",
+      "name": "ACCA — Financial Reporting examenoefeningen",
+      "url": "https://www.accaglobal.com/ie/en/student/exam-support-resources/fundamentals-exams-study-resources/f7/cbe-question-practice.html",
+      "language": "Engels · ACCA/IFRS",
+      "access": "Uitleg openbaar; Practice Platform vraagt om inloggen/toegang",
+      "purpose": "Specimen- en examenvragen met uitwerkingen om je toepassing te toetsen.",
+      "action": "Kies een vraag over een enkelvoudige jaarrekening en later consolidatie. Werk eerst zelf uit en vergelijk met de marking guide; toegang en syllabusjaar bepalen welke vragen beschikbaar zijn.",
+      "stages": [
+        "smes",
+        "group"
+      ]
+    },
+    {
+      "id": "ifrs18",
+      "group": "Internationaal & vervolg",
+      "name": "IFRS Foundation — IFRS 18",
+      "url": "https://www.ifrs.org/issued-standards/list-of-standards/ifrs-18-presentation-and-disclosure-in-financial-statements/",
+      "language": "Engels · full IFRS",
+      "access": "Overzicht vrij; volledige tekst kan registratie vereisen",
+      "purpose": "De presentatiestandaard die onder full IFRS vanaf boekjaren beginnend in 2027 IAS 1 vervangt.",
+      "action": "Maak een korte notitie over ingangsdatum en presentatiegevolgen. Pas deze full-IFRS-wijziging niet automatisch toe op Dutch GAAP of IFRS for SMEs.",
+      "stages": [
+        "group"
+      ]
+    }
   ]
 };
 })();

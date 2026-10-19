@@ -7,7 +7,7 @@ const status={textContent:''};
 const document={readyState:'loading',activeElement:null,body:{appendChild(){}},addEventListener:(k,f)=>domHandlers[k]=f,getElementById:id=>id==='accountancyApp'?app:id==='saveStatus'?status:null,querySelector:()=>null,querySelectorAll:()=>[],createElement:()=>({style:{}})};
 const window={addEventListener(){},dispatchEvent(){}};
 const localStorage={getItem:k=>values.has(k)?values.get(k):null,setItem:(k,v)=>values.set(k,String(v)),removeItem:k=>values.delete(k)};
-const sandbox={window,document,localStorage,console,Intl,Date,Math,JSON,Object,Number,String,Array,setTimeout:()=>1,clearTimeout(){},setInterval:()=>1};
+const sandbox={window,document,localStorage,console,URL,Intl,Date,Math,JSON,Object,Number,String,Array,setTimeout:()=>1,clearTimeout(){},setInterval:()=>1};
 function run(name){vm.runInNewContext(fs.readFileSync(path.join(root,name),'utf8'),sandbox,{filename:name});}
 run('xp.js');run('quests.js');run('ladders.js');run('accountancy-data.js');run('accountancy.js');
 const data=window.GamenfyAccountancyData,api=window.GamenfyAccountancy;
@@ -36,6 +36,11 @@ input({stage:'start',field:'evidence'},'<img src=x onerror=alert(1)> mijn testno
 click({tab:'pad'});assert.ok(app.innerHTML.includes('&lt;img src=x onerror=alert(1)&gt;'));
 for(const stage of data.stages){for(let i=0;i<stage.deliverables.length;i++)input({stage:stage.id,check:String(i)},'',true,'checkbox');input({stage:stage.id,field:'evidence'},'Fictief oefendossier: berekeningen gecontroleerd en de fouten hersteld; bron en leerpunten vastgelegd.');input({stage:stage.id,field:'criterion'},'',true,'checkbox');if(['zelfstandig','group'].includes(stage.id)){click({complete:stage.id});assert.ok(!api.read().stages[stage.id].done,'senior review reference required');input({stage:stage.id,field:'reviewer'},'Senior A · 19 oktober · punten opgelost');}click({complete:stage.id});assert.ok(api.read().stages[stage.id].done);}
 assert.ok(app.innerHTML.includes('7 / 7 fases'));
+assert.equal(data.resources.length,12);
+for(const r of data.resources){assert.equal(new URL(r.url).protocol,'https:');assert.ok(r.action&&r.access&&r.language);assert.ok(r.stages.every(id=>data.stages.some(s=>s.id===id)));}
+click({tab:'bronnen'});for(const r of data.resources)assert.ok(app.innerHTML.includes('href="'+r.url+'"'),r.name+' is reachable from the websites tab');
+assert.ok(app.innerHTML.includes('Dit doe je daar:'));
+click({tab:'pad'});assert.ok(app.innerHTML.includes('Links &amp; websites')||app.innerHTML.includes('Links & websites bij deze fase'));
 const before=localStorage.getItem('rpg_character_v1');click({complete:'start'});assert.ok(data.stages.every(s=>!api.read().stages[s.id].done));assert.equal(localStorage.getItem('rpg_character_v1'),before,'mastery toggles cannot manufacture XP or alter other skills');
 click({tab:'cases'});input({answer:'profit'},'13.200');click({grade:'dienst'});assert.ok(app.innerHTML.includes('1 / 4 cijfers goed'));
 input({answer:'profit'},'12.200');assert.equal(api.read().cases.dienst.checked,false);
