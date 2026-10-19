@@ -9,6 +9,181 @@
 (function () {
   'use strict';
   window.SKILL_LADDERS = {
+    accountancy: [
+  {
+    "level": 1,
+    "title": "Startscan & opdracht afbakenen",
+    "meaning": "Bepaal wat je al kunt en welk verslaggevingsstelsel bij je oefenbedrijf hoort.",
+    "why": "Werk toe naar aantoonbaar kunnen: Je kunt vijf boekingen uitleggen en de juiste rapportages onderscheiden.",
+    "doThis": [
+      "Beschrijf rechtsvorm, activiteiten, boekjaar, gebruikers en gewenste rapportage.",
+      "Leg uit: commerciële jaarrekening, fiscale cijfers, inrichtingsjaarrekening en publicatiestukken.",
+      "Maak zonder hulp vijf boekingen en leg het effect op balans en resultaat uit."
+    ],
+    "examples": [
+      "Opdrachtkaart met rechtsvorm, boekjaar en stelsel",
+      "Startscan: bank, debiteuren, crediteuren, btw, memoriaal, toelichting (zelfstandig / met hulp / nieuw)"
+    ],
+    "next": "Proefbalans → werkdossier",
+    "claim": "Je kunt vijf boekingen uitleggen en de juiste rapportages onderscheiden."
+  },
+  {
+    "level": 5,
+    "title": "Proefbalans → werkdossier",
+    "meaning": "Bouw een controleerbaar dossier met bronstukken en een sluitende proefbalans.",
+    "why": "Werk toe naar aantoonbaar kunnen: Een ander kan iedere grootboekregel terugvinden en de proefbalans sluit zonder restpost.",
+    "doThis": [
+      "Maak dossiermappen 00 opdracht, 01 proefbalans, 02 aansluitingen, 03 memoriaal, 04 rapportage, 05 review.",
+      "Importeer of typ de fictieve proefbalans uit case 1; controleer debet = credit.",
+      "Map elke rekening naar balans of winst-en-verlies; zet per post de bron en open vraag erbij."
+    ],
+    "examples": [
+      "Sluitende proefbalans met mapping",
+      "Dossierindex en ontbrekende-stukkenlijst"
+    ],
+    "next": "Balansposten aansluiten",
+    "claim": "Een ander kan iedere grootboekregel terugvinden en de proefbalans sluit zonder restpost."
+  },
+  {
+    "level": 10,
+    "title": "Balansposten aansluiten",
+    "meaning": "Onderbouw de saldi voordat je een rapport uitdraait.",
+    "why": "Werk toe naar aantoonbaar kunnen: Alle relevante saldi hebben een onderbouwing; geen onverklaarde verschillen wegboeken.",
+    "doThis": [
+      "Sluit bank aan op afschrift, debiteuren/crediteuren op open posten.",
+      "Maak btw-aansluiting met aangiften, betalingen en grootboek; verklaar verschillen.",
+      "Sluit lonen aan op loonjournaal en aangiften; leg tussenrekeningen en oude posten uit."
+    ],
+    "examples": [
+      "Aansluitstaat bank, debiteuren, crediteuren, btw en loon",
+      "Verschillenlijst met oplossing of gerichte vraag"
+    ],
+    "next": "Memoriaal & jaarafsluiting",
+    "claim": "Alle relevante saldi hebben een onderbouwing; geen onverklaarde verschillen wegboeken."
+  },
+  {
+    "level": 16,
+    "title": "Memoriaal & jaarafsluiting",
+    "meaning": "Boek kosten en opbrengsten in het juiste jaar en laat een mutatiespoor achter.",
+    "why": "Werk toe naar aantoonbaar kunnen: Case 1 sluit: resultaat, balans en eigen vermogen kloppen; je kunt elke correctie mondeling verdedigen.",
+    "doThis": [
+      "Werk case 1 uit: afschrijving, vooruitbetaling, overlopende kosten/opbrengsten en oninbaarheid.",
+      "Schrijf per correctie: feit → regel → berekening → journaalpost → bron.",
+      "Maak de gecorrigeerde proefbalans, resultaatberekening en vermogensvergelijking."
+    ],
+    "examples": [
+      "Memoriaalstaat met vijf onderbouwde correcties",
+      "Gecorrigeerde proefbalans en vermogensvergelijking"
+    ],
+    "next": "Waardering & fiscale aansluiting",
+    "claim": "Case 1 sluit: resultaat, balans en eigen vermogen kloppen; je kunt elke correctie mondeling verdedigen."
+  },
+  {
+    "level": 22,
+    "title": "Waardering & fiscale aansluiting",
+    "meaning": "Leer waarom een sluitende balans nog niet automatisch een goede jaarrekening is.",
+    "why": "Werk toe naar aantoonbaar kunnen: Case 2 sluit; je verwart fiscale correcties niet met commerciële boekingen.",
+    "doThis": [
+      "Beoordeel activa, voorraad, debiteuren, schulden en schattingen op basis van de toepasselijke grondslagen.",
+      "Maak case 2 en verklaar commerciële versus fiscale winst en het effect op belasting.",
+      "Noteer wanneer je moet overleggen: continuïteit, claims, verbonden partijen, schattingsonzekerheid."
+    ],
+    "examples": [
+      "Waarderingsmemo bij minimaal drie posten",
+      "Commercieel-fiscale aansluiting en belastingberekening"
+    ],
+    "next": "Eerste complete jaarrekening",
+    "claim": "Case 2 sluit; je verwart fiscale correcties niet met commerciële boekingen."
+  },
+  {
+    "level": 32,
+    "title": "Eerste complete jaarrekening",
+    "meaning": "Maak een Nederlandse conceptjaarrekening voor een eenvoudige micro- of kleine BV.",
+    "why": "Werk toe naar aantoonbaar kunnen: Bedragen zijn traceerbaar; toelichtingen passen bij de onderneming; vergelijkende cijfers en tekst sluiten aan.",
+    "doThis": [
+      "Bepaal met bronverwijzing de grootteklasse, groepscontext en toepasselijke BW2/RJk-grondslagen.",
+      "Werk case 2 uit tot balans, winst-en-verlies, grondslagen, toelichtingen en vergelijkende cijfers.",
+      "Maak een afzonderlijke publicatiecheck: opstellen, ondertekenen, vaststellen en deponeren zijn verschillende stappen."
+    ],
+    "examples": [
+      "Conceptjaarrekening met vergelijkende cijfers en toelichtingen",
+      "Dossier met onderbouwingen en publicatiecheck"
+    ],
+    "next": "Jaarrekeningen maken — hoofddoel",
+    "claim": "Bedragen zijn traceerbaar; toelichtingen passen bij de onderneming; vergelijkende cijfers en tekst sluiten aan."
+  },
+  {
+    "level": 48,
+    "title": "Jaarrekeningen maken — hoofddoel",
+    "meaning": "Lever herhaalbaar een reviewbaar dossier op en los reviewpunten inhoudelijk op.",
+    "why": "Werk toe naar aantoonbaar kunnen: Drie dossiers sluiten en alle kritieke reviewpunten zijn opgelost. Zonder externe review blijft dit oefenbekwaam, nog niet praktijkgevalideerd.",
+    "doThis": [
+      "Rond drie verschillende volledige dossiers af: dienstverlening, handelsbedrijf/voorraad en een eenvoudige BV.",
+      "Laat minimaal één volledig dossier door een senior/accountant reviewen; bewaar alleen anonieme bevindingen.",
+      "Herstel alle materiële of inhoudelijke fouten en maak een persoonlijke afsluitchecklist.",
+      "Leg in tien minuten uit hoe resultaat, vermogen, liquiditeit en belangrijkste schattingen samenhangen."
+    ],
+    "examples": [
+      "Drie complete oefendossiers",
+      "Reviewlog met oplossingen en minimaal één externe review",
+      "Eigen afsluitchecklist en korte klanttoelichting"
+    ],
+    "next": "Engelstalig rapporteren",
+    "claim": "Drie dossiers sluiten en alle kritieke reviewpunten zijn opgelost. Zonder externe review blijft dit oefenbekwaam, nog niet praktijkgevalideerd."
+  },
+  {
+    "level": 60,
+    "title": "Engelstalig rapporteren",
+    "meaning": "Maak dezelfde jaarrekening leesbaar in het Engels en behoud het gekozen stelsel.",
+    "why": "Werk toe naar aantoonbaar kunnen: De vertaling wijzigt bedragen of grondslagen niet; Dutch GAAP blijft herkenbaar vermeld.",
+    "doThis": [
+      "Maak een woordenlijst van 40 termen: accruals, receivables, impairment, equity, retained earnings enzovoort.",
+      "Zet een eerder beoordeelde Nederlandse oefencase om naar een Engelstalig reporting pack.",
+      "Schrijf een Engelstalige management summary van één pagina en presenteer de cijfers in vijf minuten."
+    ],
+    "examples": [
+      "Engelstalige balans, resultaat en toelichtingen",
+      "Woordenlijst en management summary"
+    ],
+    "next": "IFRS for SMEs — inhoudelijke brug",
+    "claim": "De vertaling wijzigt bedragen of grondslagen niet; Dutch GAAP blijft herkenbaar vermeld."
+  },
+  {
+    "level": 74,
+    "title": "IFRS for SMEs — inhoudelijke brug",
+    "meaning": "Leer een internationaal stelsel toepassen en verschillen met Dutch GAAP onderbouwen.",
+    "why": "Werk toe naar aantoonbaar kunnen: Je onderbouwt minimaal vijf stelselvergelijkingen en laat het pack reviewen; een verschil kan ook nihil zijn.",
+    "doThis": [
+      "Gebruik de officiële 2025/derde-editie-modules; begin bij 1, 2, 7, 13, 17, 21, 23, 29 en 30.",
+      "Maak per behandeld onderwerp oefeningen en een verschilnotitie: bron → verwerking → journaalpost → toelichting.",
+      "Maak een mini reporting pack inclusief kasstroomoverzicht en een overgangsmemo met minimaal vijf beoordeelde verschillen."
+    ],
+    "examples": [
+      "Uitwerkingen van officiële module-oefeningen",
+      "Verschillenmatrix en Engelstalig reporting pack"
+    ],
+    "next": "Full IFRS & internationale groep",
+    "claim": "Je onderbouwt minimaal vijf stelselvergelijkingen en laat het pack reviewen; een verschil kan ook nihil zijn."
+  },
+  {
+    "level": 100,
+    "title": "Full IFRS & internationale groep",
+    "meaning": "Een vervolgrichting met valuta, consolidatie en complexere verslaggeving.",
+    "why": "Werk toe naar aantoonbaar kunnen: Een gecontroleerde mini-case is de instap; pas een volledig beoordeeld groepsdossier maakt deze fase afgerond.",
+    "doThis": [
+      "Maak case 3 voor valuta en groepseliminaties; onderbouw transactievaluta versus functionele valuta.",
+      "Verdiep full IFRS: IAS 7, IAS 12, IAS 21, IFRS 9, 10, 15 en 16; vergelijk expliciet met IFRS for SMEs.",
+      "Werk een volledige groepscase uit met acquisitie/openingsbalans, eliminaties, valutareserve en toelichtingen.",
+      "Laat het dossier reviewen door iemand met IFRS/consolidatie-ervaring."
+    ],
+    "examples": [
+      "Case 3 met eliminatieboekingen",
+      "Full-IFRS-consolidatiedossier en reviewmemo"
+    ],
+    "next": "Verdiep en onderhoud je vakkennis.",
+    "claim": "Een gecontroleerde mini-case is de instap; pas een volledig beoordeeld groepsdossier maakt deze fase afgerond."
+  }
+],
     piano: [
       { level: 1, title: 'First Contact',
         meaning: 'Learn the keyboard: find middle C, name the white keys (C D E F G A B), and see the octave pattern repeat. Sit with good posture — bench height so your forearms are level, relaxed wrists, curved hands.',
@@ -1023,3 +1198,4 @@
     ],
   };
 })();
+

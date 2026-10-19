@@ -1873,6 +1873,10 @@ window.resetSkill=function(key){
 
 function tierClaims(){ try{ return JSON.parse(localStorage.getItem('rpg_tier_claims_v1'))||{}; }catch(e){ return {}; } }
 function buildLadderHtml(skillKey, ladder){
+  // Accountancy mastery lives in its evidence workbook, separate from activity XP.
+  if(skillKey==='accountancy'){
+    return '<div class="sd-log-section"><h3>Jaarrekeningen maken</h3><p>Je app-level groeit met oefen-XP. De tien inhoudelijke fases en het Nederlandse subdoel rond je af in het werkboek, met bewijs en review.</p>'+ladder.map(t=>'<div class="sd-ms-row"><div class="sd-ms-status">📒</div><div><strong>'+escapeHtml(t.title)+'</strong><p>'+escapeHtml(t.meaning)+'</p></div></div>').join('')+'<a class="season-start-btn" href="accountancy.html">Open leerpad, voortgang & oefencases ↗</a></div>';
+  }
   const claimed=(tierClaims()[skillKey])||0;
   const nextTier=ladder.find(t=>t.level>claimed);
   const opts=(window.OPTIONAL_QUESTS||{})[skillKey]||[];
@@ -2372,6 +2376,9 @@ function openSkillDetail(skillKey){
     ? '<button class="season-start-btn" onclick="location.href=\'recipes.html\'"><span>🍳</span> Open Recipe Book</button>'
     : '';
 
+  const accountancyHtml = skillKey==='accountancy'
+    ? '<a class="season-start-btn" href="accountancy.html"><span>📒</span> Jaarrekeningen maken · leerpad & oefencases ↗</a>' : '';
+
   // v10.39: Seasons — show progress if this skill IS the active season,
   // a start button if no season is active anywhere, or nothing if a season
   // is active on a different skill (only one runs at a time, by design).
@@ -2431,6 +2438,7 @@ function openSkillDetail(skillKey){
       ${tierLockHtml}
       ${labHtml}
       ${recipesHtml}
+      ${accountancyHtml}
       ${seasonHtml}
       ${sladder ? sladderHtml : tierChecklistHtml}
       ${msBtnHtml}
@@ -5057,4 +5065,5 @@ window.addEventListener('storage',()=>{
 </script>
 </body>
 </html>
+
 
