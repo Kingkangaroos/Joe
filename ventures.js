@@ -103,6 +103,35 @@
         ]
       },
       {
+        id: 'freelance_finance',
+        name: 'Freelance Finance',
+        tagline: 'Verkennen · flexibele boekhoudopdrachten van 2–6 uur per week, naast fulltime werk',
+        status: 'exploring',
+        // Handig als extra inkomstenroute, geen verplicht actieve onderneming.
+        // Onderscheid zzp-opdrachten (alleen betaald bij werk) van detachering (looncontract).
+        resources: [
+          { label: 'Freelance.nl — kleine finance-opdrachten', url: 'https://www.freelance.nl/' },
+          { label: 'Rousch — zzp-accountancybemiddeling', url: 'https://www.rousch.nl/zzp' },
+          { label: 'Career Control — interim finance / detachering', url: 'https://www.careercontrol.nl/professionals/finance-control' }
+        ],
+        phases: [
+          { id: 'p1', name: 'Haalbaarheid — eerst werk en risico toetsen', steps: [
+            { id: 'ff1', title: 'Check nevenwerkzaamheden en onafhankelijkheid', detail: 'Controleer arbeidscontract, concurrentie-/relatiebeding, vertrouwelijkheid en mogelijke belangenconflicten bij je huidige accountantswerkgever. Spreek eventuele toestemming schriftelijk af.', minutes: 25, xp: { money: 10 } },
+            { id: 'ff2', title: 'Kies de constructie', detail: 'Route A: freelance opdrachten via een bureau, alleen declarabele uren betaald. Route B: flexibele schil administratiekantoor. Route C: detachering in loondienst met mogelijk salaris tussen opdrachten, afhankelijk van contract. Houd dit onderscheid expliciet.', minutes: 20, xp: { business: 10 } },
+            { id: 'ff3', title: 'Zzp-regels en netto-opbrengst controleren', detail: 'Check KvK, btw, verzekeringen, schijnzelfstandigheid en belasting/Zvw. Met enkele uren per week haal je doorgaans het urencriterium voor zelfstandigenaftrek niet. Bepaal of het netto echt beter is dan bezorgwerk.', minutes: 35, xp: { money: 20 } }
+          ]},
+          { id: 'p2', name: 'Positionering en opdrachten vinden', steps: [
+            { id: 'ff4', title: 'Mini-aanbod met Exact Online formuleren', detail: 'Schrijf een helder aanbod: bankmutaties, facturen, debiteuren/crediteuren, grootboekopschoning en periodieke administraties. Geen belasting- of jaarrekeningadvies buiten je vakbekwaamheid; neem geen klantdata van je werkgever mee.', minutes: 35, xp: { business: 25 } },
+            { id: 'ff5', title: 'Bemiddelaars en kantoren benaderen', detail: 'Bekijk Freelance.nl, Rousch en Career Control via de links. Benader ook kleine administratiekantoren in Almere/Amsterdam met vraag naar remote hulp voor 2–6 uur per week, in de avond. Vacatures zijn voorbeelden, geen gegarandeerd beschikbare opdrachten.', minutes: 60, xp: { sales: 25 } },
+            { id: 'ff6', title: 'Tarief versus kosten toetsen', detail: 'Start als onderzoek met €40–€50 excl. btw per daadwerkelijk declarabel uur. Controleer tarief op ervaring, softwaretoegang, acquisitietijd, verzekering, risico en netto-opbrengst. Geen omzet of salaris gegarandeerd.', minutes: 25, xp: { money: 20 } }
+          ]},
+          { id: 'p3', name: 'Kleine betaalde pilot', steps: [
+            { id: 'ff7', title: 'Proefopdracht van 2–4 uur per week', detail: 'Accepteer alleen een duidelijke afgebakende opdracht met haalbare deadlines, bevoegdheden, gegevensbeveiliging en afgesproken declaratie. Werk uitsluitend met toegestane klanttoegang.', minutes: 30, xp: { business: 30 } },
+            { id: 'ff8', title: 'Na vier weken beoordelen', detail: 'Log betaalde uren én onbetaalde acquisitie/admin. Vergelijk netto per werkelijk besteed uur, werkdruk en vrijheid met Uber Eats of extra loonwerk. Beslis doorgaan, automatiseren of pauzeren.', minutes: 30, xp: { money: 30 }, boss: true }
+          ]}
+        ]
+      },
+      {
         id: 'app_vormgeving',
         name: 'Gamenfy Build',
         tagline: 'Website Ventures first — active visual production, showroom integration and commercial lock',
