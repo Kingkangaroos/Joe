@@ -908,7 +908,7 @@ html, body { scrollbar-width: none; -ms-overflow-style: none; }
 .wish-input-url { flex: 1 1 100%; min-width: 0; width: 100%; }
 .wish-row-links { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-top: 10px; }
 .wish-row-site { font-size: 12px; font-weight: 700; color: #B794F4; text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere; }
-.wish-row-link-edit { color: var(--text-tertiary); background: transparent; border: 1px solid rgba(255,255,255,.16); border-radius: 8px; font: 600 11px inherit; padding: 7px 9px; cursor: pointer; }
+.wish-row-link-edit { color: var(--text-tertiary); background: transparent; border: 1px solid rgba(255,255,255,.16); border-radius: 8px; font-family: inherit; font-size: 11px; font-weight: 600; padding: 7px 9px; cursor: pointer; }
 .wish-row-link-editor { margin-top: 9px; display: flex; gap: 7px; flex-wrap: wrap; }
 .wish-row-link-editor[hidden] { display: none; }
 .wish-row-link-editor input { flex: 1 1 190px; min-width: 0; }
@@ -2637,6 +2637,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   function wishSafeUrl(raw) {
     const value = String(raw || '').trim();
     if (!value) return '';
+    if (/^[a-z][a-z0-9+.-]*:/i.test(value) && !/^https?:\/\//i.test(value)) return null;
     try {
       const candidate = /^https?:\/\//i.test(value) ? value : 'https://' + value;
       const parsed = new URL(candidate);
