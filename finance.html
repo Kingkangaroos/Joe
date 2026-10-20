@@ -905,6 +905,15 @@ html, body { scrollbar-width: none; -ms-overflow-style: none; }
   padding: 0 12px; margin-top: -2px;
 }
 .wish-input-name { flex: 2; min-width: 160px; }
+.wish-input-url { flex: 1 1 100%; min-width: 0; width: 100%; }
+.wish-row-links { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-top: 10px; }
+.wish-row-site { font-size: 12px; font-weight: 700; color: #B794F4; text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere; }
+.wish-row-link-edit { color: var(--text-tertiary); background: transparent; border: 1px solid rgba(255,255,255,.16); border-radius: 8px; font-family: inherit; font-size: 11px; font-weight: 600; padding: 7px 9px; cursor: pointer; }
+.wish-row-link-editor { margin-top: 9px; display: flex; gap: 7px; flex-wrap: wrap; }
+.wish-row-link-editor[hidden] { display: none; }
+.wish-row-link-editor input { flex: 1 1 190px; min-width: 0; }
+.wish-row-link-editor button { border: 1px solid rgba(255,255,255,.16); border-radius: 8px; padding: 8px 11px; color: var(--text-primary); background: rgba(255,255,255,.06); font-weight: 700; cursor: pointer; }
+.wish-row-link-error { width: 100%; color: #FF8A8A; font-size: 11px; }
 .wish-input-amt  { flex: 1; min-width: 80px; max-width: 110px; text-align: right; font-variant-numeric: tabular-nums; }
 .wish-input-ccy {
   flex: 0 1 80px;
@@ -1772,6 +1781,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <div class="wish-add-row">
       <input type="text"   id="wishName"   placeholder="Item name (e.g. New iPhone Pro Max)" class="wish-input wish-input-name">
       <input type="text" inputmode="decimal" id="wishAmount" placeholder="Cost, e.g. 89,95" class="wish-input wish-input-amt">
+      <input type="url" inputmode="url" autocomplete="url" id="wishUrl" placeholder="Website / productlink (optioneel)" aria-label="Website of productlink" class="wish-input wish-input-url">
       <button class="wish-add-btn" id="wishAddBtn" onclick="window.__addWish && window.__addWish()">+ Add</button>
     </div>
     <div class="wish-add-error-msg" id="wishAddError" style="display:none"></div>
@@ -2603,7 +2613,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   // ============================================================
   // WISHLIST — items with % of net worth.
-  // Each item is { name, amountCHF, ts, ccy }. Stored in 'wishlist'.
+  // Each item is { name, amount, ts, entered_amount, entered_currency, url? }. Stored in 'wishlist'.
   // Colors: <5% green, 5-25% amber, >25% red.
   // ============================================================
   // NOTE: don't use consts here — renderWishlist gets called from inside
@@ -2621,6 +2631,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     if (pct < 5)  return 'good';
     if (pct < 25) return 'warn';
     return 'bad';
+  }
+  // Only open HTTP(S) URLs. Accept domain-only links; never inject unchecked
+  // storage data into an href (older synced devices can hold arbitrary values).
+  function wishSafeUrl(raw) {
+    const value = String(raw || '').trim();
+    if (!value) return '';
+    if (/^[a-z][a-z0-9+.-]*:/i.test(value) && !/^https?:\/\//i.test(value)) return null;
+    try {
+      const candidate = /^https?:\/\//i.test(value) ? value : 'https://' + value;
+      const parsed = new URL(candidate);
+      if (!['http:', 'https:'].includes(parsed.protocol) || !parsed.hostname || !parsed.hostname.includes('.')) return null;
+      if (parsed.username || parsed.password) return null;
+      return parsed.href;
+    } catch (e) { return null; }
   }
   function renderWishlist() {
     const wishList    = document.getElementById('wishList');
@@ -2674,6 +2698,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
       const pctText = pct == null ? '—' : pct.toFixed(2) + '%';
       const fillPct = Math.min(100, pct == null ? 0 : pct);
       const monthsToSave = (grand > 0 && cost > 0) ? Math.ceil(cost / Math.max(1, grand * 0.05)) : null; // rough: if you saved 5%/mo
+      const safeUrl = wishSafeUrl(it.url);
       const row = document.createElement('div');
       row.className = 'wish-row';
       row.innerHTML =
@@ -2688,7 +2713,48 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         + '</div>'
         + '<button class="wish-row-x" data-i="' + origIdx + '" aria-label="Remove">×</button>'
         + '</div>'
-        + '<div class="wish-row-bar"><div class="wish-row-bar-fill ' + cls + '" style="width:' + fillPct + '%"></div></div>';
+        + '<div class="wish-row-bar"><div class="wish-row-bar-fill ' + cls + '" style="width:' + fillPct + '%"></div></div>'
+        + '<div class="wish-row-links">'
+        + (safeUrl ? '<a class="wish-row-site" href="' + escapeHtml(safeUrl) + '" target="_blank" rel="noopener noreferrer" aria-label="Open website voor ' + escapeHtml(it.name) + '">↗ Bekijk website</a>' : '')
+        + '<button type="button" class="wish-row-link-edit" aria-expanded="false">' + (safeUrl ? '✎ Wijzig link' : '+ Link toevoegen') + '</button>'
+        + '</div>'
+        + '<div class="wish-row-link-editor" hidden>'
+        +   '<input type="url" inputmode="url" class="wish-input" aria-label="Link naar product of website" placeholder="https://website.nl/product">'
+        +   '<button type="button" class="wish-row-link-save">Opslaan</button>'
+        +   '<button type="button" class="wish-row-link-cancel">Annuleer</button>'
+        +   '<div class="wish-row-link-error" role="alert" hidden></div>'
+        + '</div>';
+      const linkEdit = row.querySelector('.wish-row-link-edit');
+      const editor = row.querySelector('.wish-row-link-editor');
+      const linkInput = editor.querySelector('input');
+      const linkError = editor.querySelector('.wish-row-link-error');
+      linkInput.value = safeUrl || '';
+      linkEdit.addEventListener('click', () => {
+        editor.hidden = !editor.hidden;
+        linkEdit.setAttribute('aria-expanded', String(!editor.hidden));
+        if (!editor.hidden) linkInput.focus();
+      });
+      editor.querySelector('.wish-row-link-cancel').addEventListener('click', () => {
+        editor.hidden = true;
+        linkEdit.setAttribute('aria-expanded', 'false');
+      });
+      function saveWishLink() {
+        const value = wishSafeUrl(linkInput.value);
+        if (value === null) {
+          linkError.textContent = 'Vul een geldige website in (bijv. https://bol.com), of maak het veld leeg om de link te verwijderen.';
+          linkError.hidden = false;
+          return;
+        }
+        const arr = storeGet('wishlist') || [];
+        if (!Number.isInteger(origIdx) || origIdx < 0 || origIdx >= arr.length) return renderWishlist();
+        // Index refers to unsorted storage, not the visual amount ranking.
+        arr[origIdx].url = value;
+        storeSet('wishlist', arr);
+        renderWishlist();
+      }
+      editor.querySelector('.wish-row-link-save').addEventListener('click', saveWishLink);
+      linkInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveWishLink(); } });
+
       wishList.appendChild(row);
     });
     wishList.querySelectorAll('.wish-row-x').forEach(b => {
@@ -2714,20 +2780,23 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     try {
       const nEl = document.getElementById('wishName');
       const aEl = document.getElementById('wishAmount');
+      const urlEl = document.getElementById('wishUrl');
       if (!nEl || !aEl) return;
       const n = (nEl.value || '').trim();
       const aRaw = euroNum(aEl.value);
       const errEl = document.getElementById('wishAddError');
       if (!n) { wishFieldError(nEl, 'Give the item a name first.'); return; }
       if (isNaN(aRaw)) { wishFieldError(aEl, 'Enter a cost, e.g. 89,95 — that field isn\u2019t a valid amount.'); return; }
+      const url = wishSafeUrl(urlEl && urlEl.value);
+      if (url === null) { wishFieldError(urlEl, 'Vul een geldige website in of laat dit veld leeg.'); return; }
       if (errEl) errEl.style.display = 'none';
       const arr = storeGet('wishlist') || [];
       arr.push({
         name: n, amount: aRaw, ts: Date.now(),
-        entered_amount: aRaw, entered_currency: 'EUR'
+        entered_amount: aRaw, entered_currency: 'EUR', url: url || ''
       });
       storeSet('wishlist', arr);
-      nEl.value = ''; aEl.value = '';
+      nEl.value = ''; aEl.value = ''; if (urlEl) urlEl.value = '';
       renderWishlist();
     } catch (e) { console.error('wishAdd failed', e); }
   }
@@ -2736,6 +2805,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   const _wishAmount = document.getElementById('wishAmount');
   if (_wishName)   _wishName.addEventListener('keydown', (e) => { if (e.key === 'Enter') doWishAdd(); });
   if (_wishAmount) _wishAmount.addEventListener('keydown', (e) => { if (e.key === 'Enter') doWishAdd(); });
+  const _wishUrl = document.getElementById('wishUrl');
+  if (_wishUrl) _wishUrl.addEventListener('keydown', (e) => { if (e.key === 'Enter') doWishAdd(); });
   renderWishlist();
 
   // ============================================================
