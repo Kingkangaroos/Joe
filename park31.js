@@ -86,7 +86,7 @@
   function assetUrl(level,mission){
     mission=mission||PUBLIC_MISSIONS.find(function(item){return item.key===KEY;})||PUBLIC_MISSIONS[0];
     level=clamp(Math.round(Number(level)||1),1,10);
-    return 'img/lab/park31/'+mission.dir+'/l'+String(level).padStart(2,'0')+'.webp?v='+VERSION;
+    return 'img/lab/park31/'+mission.dir+'/l'+String(level).padStart(2,'0')+'.webp?v='+(mission.key==='teeth'?'teeth-alpha-20261026':VERSION);
   }
   function state(level){
     level=clamp(Math.round(Number(level)||0),0,10);
