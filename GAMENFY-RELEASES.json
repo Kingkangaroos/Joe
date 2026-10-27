@@ -1,6 +1,26 @@
 {
   "releases": [
     {
+      "id": "2026-10-27-accountancy-praktijklab",
+      "date": "2026-10-27",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Accountancy Praktijklab · twee eenmanszaken",
+      "why": "Joey wil rond fase 6 praktisch oefenen met kleine klanten en AI-toepassing onderzoeken.",
+      "changes": [
+        "Een nette voorgeboekte administratie en een rommelig Excel-dossier, met fictieve facturen, bankregels en klantantwoord.",
+        "Zelf boeken en tegenboeken, saldibalans bekijken, bank afstemmen, btw controleren en jaarstukken met toelichting uitwerken.",
+        "AI-werkbank: uitsluitend fictief contextpakket, vaste beoordelingsvoorbeelden, handmatig voorstel als concept en een eigen tijd/kwaliteitsvergelijking. Geen AI-provider verbonden.",
+        "Beide dossiers bewaren eigen voortgang binnen je bestaande Accountancy-werkboek; eerdere fases en XP zijn niet afgevinkt of aangepast."
+      ],
+      "remaining": "Browser/iPhone-weergave en een echte aangemelde synchronisatieronde zijn nog niet praktisch bevestigd. Jaarstukken blijven een oefenconcept; geen aangifte of klantopdracht uitgevoerd.",
+      "url": "bookkeeping-practice.html",
+      "linkLabel": "Open het Accountancy Praktijklab →",
+      "try": "Skills → Business → Accountancy → kies de nette of rommelige praktijkcase. Begin bij de opdrachtkaart en bronstukken."
+    },
+    {
       "id": "2026-10-27-accountancy-terugvinden",
       "date": "2026-10-27",
       "surfaces": [

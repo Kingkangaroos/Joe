@@ -1,0 +1,26 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+const root=path.join(__dirname,'..'),items=new Map(),handlers={},boots=[];
+const app={innerHTML:'',addEventListener:(k,f)=>handlers[k]=f,contains:()=>false},status={textContent:''},error={textContent:''};
+const window={location:{search:''},addEventListener(){},confirm:()=>true};
+const document={readyState:'loading',activeElement:null,addEventListener:(k,f)=>boots.push(f),getElementById:id=>id==='practiceApp'?app:id==='practiceStatus'?status:id==='draftError'?error:null};
+const localStorage={getItem:k=>items.get(k)||null,setItem:(k,v)=>items.set(k,String(v))};
+const sandbox={window,document,localStorage,Intl,URLSearchParams,Date,JSON,Math,Number,String,Array,Object,console,setTimeout:()=>1,clearTimeout(){}};
+for(const name of ['bookkeeping-practice-data.js','bookkeeping-practice.js'])vm.runInNewContext(fs.readFileSync(path.join(root,name),'utf8'),sandbox);
+const D=window.BookkeepingPracticeData,P=window.BookkeepingPractice;
+for(const [v,n]of [['1.200,50',120050],['1200.50',120050],['1.200',120000],['',0],['-12',null],['1.0011',null],['12abc',null]])assert.equal(P.cents(v),n);
+for(const c of D.cases){for(const j of [...c.seed,...c.solution])assert.equal(P.validate(j,c),null,j.description);const final=[...c.seed,...c.solution.map((j,i)=>({...j,id:'J'+(c.seed.length+i+1)}))];const m=P.metrics(final);for(const k of Object.keys(c.expected))assert.equal(m[k],c.expected[k],c.id+' '+k);assert.equal(m.assets,m.equity+m.vatNet);assert.equal(m.bank,c.bank.reduce((n,b)=>n+b.amount,0));assert.equal(Object.values(P.balances(final)).reduce((a,b)=>a+b,0),0);assert.ok(P.controls(c,{journals:c.seed}).some(r=>!r.ok));}
+const clean=D.cases[0],hard=D.cases[1],s=P.fresh(clean);s.journals=[...clean.seed,...clean.solution.map((j,i)=>({...j,id:'J'+(10+i)}))];
+s.bankRefs={B01:'J1',B02:'J2',B03:'J3',B04:'J4',B05:'J5',B06:'J6',B07:'J9'};assert.ok(P.bankCheck(clean,s).ok);s.bankRefs.B02='J2,J1';assert.equal(P.bankCheck(clean,s).ok,false);
+const hs=P.fresh(hard);hs.journals=[...hard.seed,...hard.solution.map((j,i)=>({...j,id:'J'+(12+i)}))];hs.bankRefs={B01:'J1',B02:'J2',B03:'J3,J10,J15',B04:'J4',B05:'J5',B06:'J6',B07:'J9',B08:'J11',B09:'J20'};assert.ok(P.bankCheck(hard,hs).ok,'messy case supports a duplicate and reversal allocated to one bank line');
+const bad={date:'2026-12-31',description:'Boeking voor test',source:'D01',lines:[{account:'4400',debit:1200,credit:0},{account:'1500',debit:252,credit:0},{account:'1100',debit:0,credit:1452}]};const parsed=P.parseAI(JSON.stringify(bad),clean);assert.equal(P.validate(parsed,clean),null,'balanced proposals may still be conceptually wrong');assert.throws(()=>P.parseAI('not JSON',clean));assert.throws(()=>P.parseAI(JSON.stringify({...bad,source:'REAL-CLIENT'}),clean));assert.throws(()=>P.parseAI(JSON.stringify({...bad,date:'2026-11-30'}),clean));assert.throws(()=>P.parseAI(JSON.stringify({...bad,lines:[{account:'9999',debit:1,credit:0},{account:'1100',debit:0,credit:1}]}),clean));
+items.set('rpg_accountancy_v1',JSON.stringify({stages:{start:{evidence:'PRIVACY-SECRET-NOTE'}},notes:'PERSONAL'}));assert.ok(!P.aiPrompt(clean).includes('PRIVACY-SECRET-NOTE'));assert.ok(P.aiPrompt(clean).includes('INITIEEL AANGELEVERD JOURNAAL'));
+boots[0]();assert.ok(app.innerHTML.includes('Instappen rond fase 6'));assert.equal(items.has('rpg_character_v1'),false,'no XP writes');
+const click=dataset=>handlers.click({target:{closest:()=>({dataset})}}),input=(dataset,value)=>handlers.input({target:{dataset,value,hasAttribute:()=>false}});
+input({note:'review'},'<img src=x onerror=alert(1)> fictief');assert.equal(JSON.parse(items.get('rpg_accountancy_v1')).stages.start.evidence,'PRIVACY-SECRET-NOTE');
+click({tab:'report'});assert.ok(app.innerHTML.includes('&lt;img src=x onerror=alert(1)&gt;'));
+click({tab:'boeken'});input({draft:'description'},'Eigen afsluitboeking verzekering');input({draft:'source'},'D03');input({line:'0',side:'account'},'1400');input({line:'0',side:'debit'},'550');input({line:'1',side:'account'},'4300');input({line:'1',side:'credit'},'550');click({action:'post'});let stored=JSON.parse(items.get('rpg_accountancy_v1'));assert.equal(stored.practiceLab.clean.journals.length,10);assert.equal(stored.practiceLab.clean.journals.at(-1).id,'J10');
+click({case:'messy'});input({note:'review'},'Andere case');stored=JSON.parse(items.get('rpg_accountancy_v1'));assert.equal(stored.practiceLab.clean.journals.length,10);assert.equal(stored.practiceLab.messy.journals.length,11);
+click({action:'empty'});stored=JSON.parse(items.get('rpg_accountancy_v1'));assert.equal(stored.practiceLab.messy.journals.length,0);assert.equal(stored.practiceLab.clean.journals.length,10);assert.ok(stored.stages.start);
+items.set('rpg_accountancy_v1','broken JSON');input({note:'review'},'Do not wipe existing state');assert.equal(items.get('rpg_accountancy_v1'),'broken JSON');
+console.log('Practice lab: balanced clean/messy solutions, cents, bank matching, AI validation, no automatic AI posting/XP, safe notes, isolated cases and preserved existing workbook pass.');
