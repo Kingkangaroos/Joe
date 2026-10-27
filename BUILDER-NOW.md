@@ -12,6 +12,7 @@ This repository is the durable source of truth for Gamenfy.
 - Builder owns implementation, integration, persistence, tests, rollback and technical documentation.
 - New original visual assets belong to a separate Creator workflow; Builder integrates only approved output.
 - A chat claim is not completed work until the relevant commit/files are verified.
+- Every user-visible Gamenfy change must add an entry to `GAMENFY-RELEASES.json` with `home` in its surfaces, explaining the change and linking to its actual app location. The existing top-of-Home update card is part of delivery, not an optional follow-up. Website Ventures-only changes additionally use their scoped feed when appropriate. This is Joey’s explicit standing instruction, reaffirmed 27 October 2026.
 - Joey decides meaningful product/visual choices.
 - When Joey says **“ga verder, druk”**, **“keep it going”**, **“verder”**, or asks Builder to keep working while he is unavailable, continue autonomously inside locked boundaries instead of stopping for routine clarification.
 - Do not force live user data through SQL merely to make a feature look verified. Prefer real app execution + read-only verification.
@@ -461,3 +462,4 @@ Bottom nav can visually drift upward while scrolling on iOS 26 standalone PWA. D
 - Automatic CI is green for newest functional commit.
 - Production deployment is READY for newest functional commit.
 - Device-only issues stay open until real iPhone/PWA confirmation.
+

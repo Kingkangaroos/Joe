@@ -1,6 +1,63 @@
 {
   "releases": [
     {
+      "id": "2026-10-27-accountancy-terugvinden",
+      "date": "2026-10-27",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Accountancy & tarieven terugvinden",
+      "why": "Het vakleerpad en je bijverdienidee zijn verschillende onderdelen; je vindt ze nu vanaf één zichtbare kaart bij Ventures.",
+      "changes": [
+        "Finance → Ventures heeft een vaste kaart Accountancy & tarieven met een directe link naar Freelance Finance.",
+        "Daar staat de bewaarde verkenning: 2–6 uur per week administratief werk, €40–€50 excl. btw per declarabel uur als onderzoeksaanname, constructies, bemiddelaars en een kleine pilot. Dit is geen vastgesteld actueel markttarief.",
+        "Het leerpad Jaarrekeningen maken blijft apart onder Skills → Business → Accountancy en verwijst nu ook naar dit verdienidee."
+      ],
+      "remaining": "Persoonlijke haalbaarheid, actuele tarieven en beschikbare opdrachten moeten nog worden onderzocht; er zijn geen opdrachten of inkomsten toegekend.",
+      "url": "finance.html?tab=ventures&space=lab&venture=freelance_finance",
+      "linkLabel": "Open accountancy & tarieven →",
+      "try": "Open Accountancy & tarieven; kies de verkenning of het leerpad."
+    },
+    {
+      "id": "2026-10-26-teeth-alpha",
+      "date": "2026-10-26",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Teeth: transparante artwork hersteld",
+      "why": "De achtergrond bevatte meegetekende schaakbordvlakken, ondanks een aanwezige transparantielaag.",
+      "changes": [
+        "Tien Teeth-levels op 26 oktober vervangen door opgeschoonde transparante versies.",
+        "Afbeeldingscache voor Teeth vernieuwd; levels, historie en voltooiingen zijn niet gewijzigd.",
+        "Op 27 oktober bevestigd door Joey: de wijziging werkt goed."
+      ],
+      "remaining": "Geen verdere Teeth-wijziging gevraagd.",
+      "url": "index.html",
+      "linkLabel": "Open Home →",
+      "try": "Bekijk Brush Teeth in je Daily Missions."
+    },
+    {
+      "id": "2026-10-19-accountancy-leerpad",
+      "date": "2026-10-19",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Accountancy-skill: jaarrekeningen leren maken",
+      "why": "Van administratie naar een onderbouwde Nederlandse jaarrekening, met een internationale vervolgrichting.",
+      "changes": [
+        "Tien fases met opleverstukken, bewijsnotities en reviewcriteria.",
+        "Drie fictieve oefencases met antwoordcontrole en uitwerkingen.",
+        "Twaalf leerwebsites met oefenopdrachten en informatie over taal en toegang."
+      ],
+      "remaining": "Je voortgang is niet vooraf afgevinkt; praktijkreview moet je zelf laten uitvoeren.",
+      "url": "accountancy.html",
+      "linkLabel": "Open het Accountancy-leerpad →",
+      "try": "Skills → Business → Accountancy → Jaarrekeningen maken."
+    },
+    {
       "id": "2026-10-13-habit-cutouts",
       "date": "2026-10-13",
       "surfaces": [
