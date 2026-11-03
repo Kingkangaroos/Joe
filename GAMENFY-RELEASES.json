@@ -1,6 +1,24 @@
 {
   "releases": [
     {
+      "id": "2026-11-03-finance-shortlist-expanded",
+      "date": "2026-11-03",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Freelance Finance · shortlist uitgebreid",
+      "why": "Twee nieuwe opdrachtlinks van Joey bewaren en beoordelen.",
+      "changes": [
+        "Vrouwenmodemerk toegevoegd met pluspunten, locatievraag en intakevragen.",
+        "Freelance.nl 1186577 bewaard als nog te beoordelen: opdrachttekst niet toegankelijk."
+      ],
+      "remaining": "Geen reacties verstuurd. Voor nummer 1186577 is een screenshot of tekst nodig.",
+      "url": "ventures-workspace.html#financeMoreOpportunities",
+      "linkLabel": "Bekijk de nieuwe opdrachten →",
+      "try": "Finance → Ventures → Vrouwenmodemerk & nog te bekijken opdracht."
+    },
+    {
       "id": "2026-11-03-finance-opportunities",
       "date": "2026-11-03",
       "surfaces": [
