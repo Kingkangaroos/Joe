@@ -1,6 +1,24 @@
 {
   "releases": [
     {
+      "id": "2026-11-03-finance-opportunities",
+      "date": "2026-11-03",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Freelance Finance · twee opdrachten vergelijken",
+      "why": "Joey wil concrete kansen beoordelen naast zijn baan.",
+      "changes": [
+        "Beide doorgestuurde opdrachten bewaard bij Ventures, met bronlinks, plus- en minpunten en intakevragen.",
+        "Exact Online krijgt prioriteit voor een kennismaking; stichting vraagt extra afstemming over subsidies en jaarwerk."
+      ],
+      "remaining": "Geen reactie verzonden of abonnement gekocht. Status en tarieven zijn een momentopname van 3 november.",
+      "url": "ventures-workspace.html#financeOpportunities",
+      "linkLabel": "Bekijk je opdrachten →",
+      "try": "Finance → Ventures → Twee concrete opdrachten."
+    },
+    {
       "id": "2026-10-27-accountancy-praktijklab",
       "date": "2026-10-27",
       "surfaces": [
