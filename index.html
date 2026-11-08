@@ -1782,7 +1782,7 @@ window.privatePinPrompt = function(onSuccess, options){
 // labels for the rest of the session as a side effect.
 window.gamenfyOpenPrivateMission = function(id){
   const q = PRIVATE_DAILY.find(x => x.id === id); if (!q) return;
-  privatePinPrompt(() => openMissionDetail(q.skill, 1, q.id), { persist:false });
+  privatePinPrompt(() => openMissionDetail(q.skill, 1, q.id, true), { persist:false });
 };
 
 function yesterdayStr(){ const d=new Date(); d.setDate(d.getDate()-1);
@@ -1863,7 +1863,7 @@ function missionStats(key, isPrivate, privateId) {
   return { total, streak, missed, checkedToday };
 }
 
-window.openMissionDetail = function(key, isPrivate, privateId) {
+window.openMissionDetail = function(key, isPrivate, privateId, pinVerified) {
   if (key === 'household' && !isPrivate && window.openHouseholdChecklist) return window.openHouseholdChecklist();
   const defaults = window.RPG_DEFAULT_SKILLS || {};
   const def = defaults[key] || {};
@@ -1913,6 +1913,7 @@ window.openMissionDetail = function(key, isPrivate, privateId) {
   </div>`;
   bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
   document.body.appendChild(bg);
+  if(key==='no_porn' && isPrivate && (pinVerified === true || sessionStorage.getItem('rpg_private_unlocked')==='1')) window.mountDisciplineChallenge(bg.querySelector('.md-head'));
   if (key==='workout'&&!isPrivate&&window.GamenfyHomeWorkout) window.GamenfyHomeWorkout.bind(bg);
 };
 window.mdCheck = function(key, isPrivate, privateId) {
@@ -3654,7 +3655,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
-</body>
+<script src="discipline-challenge.js?v=1"></script></body>
 </html>
 
 

@@ -2457,6 +2457,7 @@ function openSkillDetail(skillKey){
     </div>`;
 
   document.body.appendChild(overlay);
+  if(skillKey==='no_porn' && isPrivateUnlocked()) window.mountDisciplineChallenge(overlay.firstElementChild.firstElementChild);
   overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
 }
 
@@ -5063,7 +5064,7 @@ window.addEventListener('storage',()=>{
   if(id==='history')   renderHistory();
 });
 </script>
-</body>
+<script src="discipline-challenge.js?v=1"></script></body>
 </html>
 
 

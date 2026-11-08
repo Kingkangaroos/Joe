@@ -1,6 +1,22 @@
 {
   "releases": [
     {
+      "id": "2026-11-08-discipline-challenge",
+      "date": "2026-11-08",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Discipline · persoonlijke 30-daagse uitdaging",
+      "why": "Volg een dagelijks doel achter je bestaande pincode.",
+      "changes": [
+        "Afteller, dagkalender en mijlpalen per oefendag."
+      ],
+      "try": "Open de Discipline-missie, voer je pincode in en start je uitdaging.",
+      "url": "index.html",
+      "remaining": "Voortgang wordt op dit apparaat bewaard."
+    },
+    {
       "id": "2026-11-03-finance-shortlist-expanded",
       "date": "2026-11-03",
       "surfaces": [
