@@ -1,6 +1,22 @@
 {
   "releases": [
     {
+      "id": "2026-11-08-agenda-first",
+      "date": "2026-11-08",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Nieuwe Home · agenda op volle breedte",
+      "why": "De planning moet ook op een lege dag zichtbaar zijn.",
+      "changes": [
+        "Scrolbare tijdlijn met aanklikbare uren en bestaande afspraken.",
+        "Compacte companion rechtsboven; Gratitude onder de agenda."
+      ],
+      "try": "Tik op een tijd om een afspraak te plannen.",
+      "url": "index.html"
+    },
+    {
       "id": "2026-11-08-home-compact",
       "date": "2026-11-08",
       "surfaces": [
