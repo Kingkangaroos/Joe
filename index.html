@@ -1127,7 +1127,7 @@ body {
 <link rel="stylesheet" href="gamenfy-workspace.css?v=1">
 <script src="gamenfy-updates.js?v=2" defer></script>
 <link rel="stylesheet" href="home-habit-evolution.css?v=1"><script src="home-habit-evolution.js?v=2" defer></script>
-</head>
+<link rel="stylesheet" href="home-compact.css?v=1"></head>
 <body data-updates-surface="home">
 <div class="page">
 <section class="gw-card" id="gamenfyUpdates" aria-live="polite"></section>
@@ -1579,6 +1579,7 @@ function renderGratitude(){
     btn.addEventListener('click',()=>openGratitudeWord(key));
     return btn;
   }
+  if(document.body.classList.contains('hnew')){const visible=entries.slice(0,12);visible.forEach(e=>box.appendChild(makeWord(e)));if(entries.length>12){const more=document.createElement('button');more.textContent='Alle '+entries.length+' woorden';more.onclick=()=>{more.remove();entries.slice(12).forEach(e=>box.appendChild(makeWord(e)))};box.appendChild(more)}return;}
   const patterns={1:[1],2:[2],3:[1,2],4:[1,2,1],5:[1,3,1],6:[1,4,1],7:[1,2,3,1],8:[1,3,3,1],9:[1,2,3,2,1],10:[1,2,4,2,1]};
   let capacities=patterns[entries.length];
   if(!capacities){
@@ -2599,7 +2600,7 @@ function renderAgenda() {
     const blocks = slotItems.map((it, idx) => {
       const color = it.type === 'mission' ? 'var(--green)' : it.type === 'skill' ? 'var(--ember)' : 'var(--ink-card)';
       const hint = it.hint ? ` <span class="agenda-block-hint">· ${escapeHtml(it.hint)}</span>` : '';
-      const half = (it.time % 1) ? `<span class="agenda-block-half">:30</span>` : '';
+      const half = Number.isInteger(it.endMinute) ? `<span class="agenda-block-half">:${String(Math.round(it.time*60)%60).padStart(2,"0")}</span>` : (it.time % 1) ? `<span class="agenda-block-half">:30</span>` : '';
       return `<div class="agenda-block${it.done?' done':''}" style="background:${color}" data-hour="${h}" data-idx="${idx}" onclick="toggleAgendaBlock('${key}',${h},${idx},event)">
         ${half}<span class="agenda-block-icon">${escapeHtml(it.icon||'•')}</span>
         <span class="agenda-block-text">${escapeHtml(it.label)}${hint}</span>
@@ -3655,7 +3656,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
-<script src="discipline-challenge.js?v=1"></script></body>
+<script src="discipline-challenge.js?v=1"></script><script src="home-compact.js?v=1"></script></body>
 </html>
 
 

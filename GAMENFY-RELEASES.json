@@ -1,6 +1,22 @@
 {
   "releases": [
     {
+      "id": "2026-11-08-home-compact",
+      "date": "2026-11-08",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Nieuwe Home · agenda, kroon en dankbaarheid",
+      "why": "Minder scrollen op dezelfde startpagina.",
+      "changes": [
+        "Agenda met precieze tijden en Next Move naast de Daily Score.",
+        "Compacte woordwolk en linksboven terug naar Oude Home."
+      ],
+      "url": "index.html",
+      "try": "Tik op de kroon voor de companions."
+    },
+    {
       "id": "2026-11-08-discipline-challenge",
       "date": "2026-11-08",
       "surfaces": [
