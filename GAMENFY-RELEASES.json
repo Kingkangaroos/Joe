@@ -1,6 +1,22 @@
 {
   "releases": [
     {
+      "id": "2026-11-09-agenda-duur",
+      "date": "2026-11-09",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Agenda toont de hele afspraak",
+      "why": "De tijdlijn liet afspraken alleen bij het beginuur zien.",
+      "changes": [
+        "Tijdblokken op schaal, overlap naast elkaar.",
+        "Dankbaar voor: meest genoemde woorden centraal, overige woorden uitklapbaar."
+      ],
+      "try": "Plan 13:00–18:00 en scrol door de tijdlijn.",
+      "url": "index.html"
+    },
+    {
       "id": "2026-11-08-agenda-first",
       "date": "2026-11-08",
       "surfaces": [
