@@ -1,6 +1,21 @@
 {
   "releases": [
     {
+      "id": "2026-11-10-lab-new-shortcuts",
+      "date": "2026-11-10",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Piano & World Studio staan nu direct bovenaan Lab",
+      "why": "De nieuwe proeven waren niet duidelijk vindbaar tussen de andere experimenten.",
+      "changes": [
+        "Een vast blok bovenaan Lab met directe knoppen naar beide studio’s."
+      ],
+      "url": "lab.html?v=20261110-2#labNewNow",
+      "try": "Open Lab en gebruik het bovenste blok Nieuw."
+    },
+    {
       "id": "2026-11-10-piano-studio",
       "date": "2026-11-10",
       "surfaces": [
