@@ -21,6 +21,7 @@ This repository is the durable source of truth for Gamenfy.
 ## Hard boundaries
 
 - New visual/product experiments live in the **normal app Lab** first.
+- Joey reaffirmed on 10 November 2026: “Jaa je mag alles altijd in het lab plaatsen daar is I voor”. Lab placement is standing user authorization; do not repeatedly ask conversational permission for normal Lab experiments.
 - **Home/Main visual layout stays untouched unless Joey explicitly approves a Home rollout.** Authorized persistence/sync/Fitbit/Daily Mission logic may run on Main.
 - Park 3.0 source remains frozen rollback/reference.
 - Park 3.1 is the current Daily Mission Lab iteration and does not overwrite Park 3.0.

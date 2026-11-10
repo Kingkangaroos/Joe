@@ -2379,6 +2379,9 @@ function openSkillDetail(skillKey){
   const accountancyHtml = skillKey==='accountancy'
     ? '<a class="season-start-btn" href="accountancy.html"><span>📒</span> Jaarrekeningen maken · leerpad & oefencases ↗</a>' : '';
 
+  const pianoLabHtml = skillKey==='piano'
+    ? '<a class="season-start-btn" href="piano-lab.html"><span>🎹</span> Piano Studio · live oefenproef in Lab ↗</a>' : '';
+
   // v10.39: Seasons — show progress if this skill IS the active season,
   // a start button if no season is active anywhere, or nothing if a season
   // is active on a different skill (only one runs at a time, by design).
@@ -2439,6 +2442,7 @@ function openSkillDetail(skillKey){
       ${labHtml}
       ${recipesHtml}
       ${accountancyHtml}
+      ${pianoLabHtml}
       ${seasonHtml}
       ${sladder ? sladderHtml : tierChecklistHtml}
       ${msBtnHtml}

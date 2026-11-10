@@ -1,6 +1,42 @@
 {
   "releases": [
     {
+      "id": "2026-11-10-piano-studio",
+      "date": "2026-11-10",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Piano Studio · vier favoriete songprojecten",
+      "why": "Een oefenplek met live notenfeedback en ruimte om mee te zingen.",
+      "changes": [
+        "Microfoon voor losse noten, MIDI voor akkoorden, wachtmodus en handfilter.",
+        "MIDI afspelen, tempo en fragmenten herhalen, eigen backingtrack en lyrics.",
+        "Bereikbaar vanuit de Piano-skill en Lab."
+      ],
+      "url": "piano-lab.html",
+      "try": "Open Piano Studio en probeer eerst de eigen warming-up.",
+      "remaining": "Echte songpartijen niet meegeleverd: laad je eigen MIDI/audio/tekst. Echte piano, iPhone en MIDI-hardware nog testen."
+    },
+    {
+      "id": "2026-11-10-world-studio",
+      "date": "2026-11-10",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "World Studio · vijf sferen om te proberen",
+      "why": "Een concrete vergelijking van sfeer, echte 3D-beweging en een zichtbare agenda.",
+      "changes": [
+        "Vijf wisselbare werelden met de bestaande Steps-rig.",
+        "Testmissie met lopen, vieren en een oplichtende missieplek.",
+        "Favoriete sfeer en notities alleen op dit apparaat."
+      ],
+      "try": "Lab → World Studio. Wissel sfeer en voltooi een testmissie.",
+      "url": "lab-world-directions.html?v=1",
+      "remaining": "Voorbeeldgegevens; modelkwaliteit, voetcontact en echte iPhone-performance nog beoordelen."
+    },
+    {
       "id": "2026-11-09-agenda-duur",
       "date": "2026-11-09",
       "surfaces": [
