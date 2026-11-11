@@ -49,3 +49,11 @@ Primary references checked: Three.js SkeletonUtils cloning and CCDIKSolver docum
 - https://docs.meshy.ai/en/api/rigging-and-animation
 
 Meshy CLI was available but not authenticated. No login, purchase or credit use was initiated. Higgsfield was not used, as requested. No refund/account action was taken.
+
+## Published checkpoint
+
+Functional commit: `7c9149517384d57b952754ab68ee2383052d2909` (tree `04265fab9deed08406dbde9ce78d86730833674a`). GitHub Actions run `43116587208` / job `130846034155`: success. Exact Vercel production deployment `dpl_Cko4S8kw3uirN5fPgB5iPRPrjFnC`: READY. Live Home, Lab, World route and shared CSS returned HTTP 200 with the new markers. Lab’s top shortcut points to World 0.2. The source tree on GitHub matches the tested local tree exactly.
+
+Live browser proof (desktop, explicit no-WebGL fallback):
+
+![World Studio 0.2, automatic Midnight theme; static model fallback is labeled](docs/review/observatory-studio-2026-11-11.jpg)
