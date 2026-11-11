@@ -1,0 +1,42 @@
+{
+  "vertices": 10233,
+  "triangles": 20398,
+  "bytes": 791572,
+  "walkDuration": 1.2,
+  "walkStride": 0.78125,
+  "runDuration": 0.7333333333333333,
+  "runStride": 2.2222222222222223,
+  "source": "Original Blender mesh, smooth weighted skin; locally generated motion; no external services.",
+  "contactQA": {
+    "Walk": {
+      "duration": 1.2333333492279053,
+      "contact": [
+        {
+          "zDrift": 2.1379962861223234e-07,
+          "verticalDrift": 1.6427902266302752e-07,
+          "minY": 0.13999993659540827
+        },
+        {
+          "zDrift": 2.046707357900024e-07,
+          "verticalDrift": 3.425991695338304e-07,
+          "minY": 0.13999970800054362
+        }
+      ]
+    },
+    "Run": {
+      "duration": 0.7666666507720947,
+      "contact": [
+        {
+          "zDrift": 5.213725335906361e-07,
+          "verticalDrift": 5.814599257081277e-07,
+          "minY": 0.1399995755796002
+        },
+        {
+          "zDrift": 2.1004038308625184e-07,
+          "verticalDrift": 2.7757443238352053e-07,
+          "minY": 0.13999986177771473
+        }
+      ]
+    }
+  }
+}

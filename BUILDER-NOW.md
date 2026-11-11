@@ -4,6 +4,12 @@ Last updated: 2026-09-04
 Owner: Joey Siemons  
 Primary builder: ChatGPT (OpenAI)
 
+## 11 November 2026 · authorized visual overnight build
+
+Joey explicitly requested a larger Home companion, scrollable Daily Missions and an app-wide day/night style on 11 November. This authorizes these Home presentation changes. Open World Studio 0.2 remains a Lab prototype. His latest instruction forbids Higgsfield use; no Higgsfield calls or generation credits were used.
+
+See `OVERNIGHT-2026-11-11.md` for implementation, reproduction and verification limits. Canonical mission writers, private/PIN routes and frozen Park 3.0 are unchanged. The shared theme uses Amsterdam time: Paper Quest 07:00–19:00, Midnight Observatory 19:00–07:00. The 07:00 start is an implementation assumption; 19:00 was explicitly requested.
+
 ## Working mode
 
 This repository is the durable source of truth for Gamenfy.

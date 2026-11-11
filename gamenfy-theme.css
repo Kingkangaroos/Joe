@@ -1,0 +1,37 @@
+/* Shared visual language. Only presentation; no mission/state/finance writers. */
+html[data-gamenfy-theme]{--font-body:Inter,system-ui,-apple-system,sans-serif;--font-display:'Schibsted Grotesk',system-ui,sans-serif;--font:Inter,system-ui,-apple-system,sans-serif;--obs-radius:20px}
+html[data-gamenfy-theme="paper"]{--bg:#eee7d6;--card:#faf5e9;--ink:#443a2e;--ink-card:#443a2e;--muted:#7d6d59;--faint:#978571;--line:#d8ccb5;--line-strong:#bca98b;--ember:#8b623b;--ember-deep:#684725;--gold:#9b7437;--green:#3e7458;--scan:#457d86;--surface:#faf5e9;--soft:#e7dac2;--accent:#8b623b;--button:#fbf5e6;--bg-deep:#e4d9c3;--bg-card:#faf5e9;--bg-secondary:#f5efdf;--glass-bg:#faf5e9;--glass-border:#d8ccb5;--glass-border-strong:#bca98b;--text-primary:#443a2e;--text-secondary:#7d6d59;--text-tertiary:#978571;--text-quaternary:#a59278;--border:#d8ccb5;--border-soft:#e4d9c3;--success:#3e7458;--warning:#9b7437;--danger:#b65351;--p31-bg:#eee7d6;--p31-panel:#faf5e9;--p31-ink:#443a2e;--p31-muted:#7d6d59;--p31-line:#d8ccb5;--p31-teal:#3e7458;--p31-blue:#457d86;--p31-gold:#9b7437;--mint:#3e7458;--pink:#9b6b74;--obs-hero:#e2d1ad;--obs-event:#e8dcc5;--obs-star:#d9c59e;--obs-shadow:0 12px 35px #7253300d}
+html[data-gamenfy-theme="night"]{--bg:#101624;--card:#1b2439;--ink:#eef0fa;--ink-card:#eef0fa;--muted:#a8b0cc;--faint:#858fae;--line:#34415d;--line-strong:#526080;--ember:#c0b4f3;--ember-deep:#9c8cd2;--gold:#e4cc91;--green:#9fdbbf;--scan:#a3c8ee;--surface:#1b2439;--soft:#2b3451;--accent:#c0b4f3;--button:#252f48;--bg-deep:#0c1120;--bg-card:#1b2439;--bg-secondary:#202a42;--glass-bg:#1b2439;--glass-border:#34415d;--glass-border-strong:#526080;--text-primary:#eef0fa;--text-secondary:#a8b0cc;--text-tertiary:#858fae;--text-quaternary:#75819f;--border:#34415d;--border-soft:#293550;--success:#9fdbbf;--warning:#e4cc91;--danger:#f0a0ae;--p31-bg:#101624;--p31-panel:#1b2439;--p31-ink:#eef0fa;--p31-muted:#a8b0cc;--p31-line:#34415d;--p31-teal:#9fdbbf;--p31-blue:#a3c8ee;--p31-gold:#e4cc91;--mint:#9fdbbf;--pink:#d1b3df;--obs-hero:#303552;--obs-event:#373c5a;--obs-star:#d5ccf6;--obs-shadow:0 14px 40px #00000021}
+html[data-gamenfy-theme="arcade"]{--bg:#0e1c26;--card:#172c38;--ink:#dbfff5;--muted:#9ebeb9;--line:#31564f;--line-strong:#488674;--accent:#8ce4c8;--ember:#8ce4c8;--surface:#172c38;--button:#213f45;--soft:#244e4f;--obs-hero:#21494d;--obs-event:#285256;--obs-star:#8ce4c8}
+html[data-gamenfy-theme]{--t1:var(--ink);--t2:var(--muted);--t3:var(--faint);--text-1:var(--ink);--text-2:var(--muted);--text-3:var(--faint);--text-4:var(--text-quaternary);--border-strong:var(--line-strong);--bg-input:var(--card);--bg-input-focus:var(--soft);--bg-dropdown:var(--card);--pale:var(--soft);--dw-bg:var(--bg);--dw-panel:var(--card);--dw-panel2:var(--soft);--dw-ink:var(--ink);--dw-muted:var(--muted);--dw-line:var(--line);--dw-purple:var(--ember);--dw-purple2:var(--ember);--dw-warm:var(--gold);--dw-green:var(--green);--dw-danger:var(--danger)}
+html[data-gamenfy-theme] body.hnew{--ember:var(--accent)}
+html[data-gamenfy-theme] body{background:var(--bg)!important;color:var(--ink)!important}
+html[data-gamenfy-theme="night"] body{background:radial-gradient(ellipse at 85% -5%,#2c294c70,transparent 45%),var(--bg)!important}
+html[data-gamenfy-theme="paper"] body{background:radial-gradient(ellipse at 10% 0%,#fff8e97d,transparent 55%),var(--bg)!important}
+html[data-gamenfy-theme] :is(.topbar,.bottombar,.greeting,.homeSwitch,.gw-page){color:var(--ink);background-color:var(--bg)}
+html[data-gamenfy-theme] :is(.gw-card,.gw-dialog,.hn article,.hnDialog,.grat-card,.card,.sd-panel,.modal,.po-modal,.project-card,.jv-card,.jv-input-wrap,.jv-hubnav,.p31-livebar,.p31-roster,.p31-evolution,.p31-sheet,.p31-slot,.p31-slot-art,.p31-detail,.p31-notes,.p31-mission-card){background:var(--card)!important;color:var(--ink)!important;border-color:var(--line)!important;box-shadow:var(--obs-shadow)}
+html[data-gamenfy-theme] :is(.gw-feature,.hn .hnScore,.char-strip,.daily-level-card){background:linear-gradient(140deg,var(--obs-hero),var(--card))!important;color:var(--ink)!important;border-color:var(--line)!important}
+html[data-gamenfy-theme] :is(.gw-card a,.gw-shell>a,.gw-card summary,.p31-back,.p31-kicker,.p31-slot-copy strong,.sd-title,.sd-level-badge,.hn small,.hnScore small,.hnScore strong,.hnScore span,.hn .grat-word,.hn .gratLegend,.hn .gratArchive summary){color:var(--ink)!important}
+html[data-gamenfy-theme] :is(.gw-step small,.p31-head p,.p31-slot-copy small,.p31-slot-copy em,.sd-why,.sd-subtitle,.hnThemeTag){color:var(--muted)!important}
+html[data-gamenfy-theme] :is(.topbar-pill-count,.topbar-water-pill,.topbar-water-add,.bottombar-tab.active){color:var(--ink)!important}
+html[data-gamenfy-theme] :is(.topbar,.bottombar,.gw-grid>a,.sd-tier-row,.hnScroll,.hn .hnScroll){border-color:var(--line)!important}
+html[data-gamenfy-theme] :is(.gw-button,.gw-dialog button,.homeSwitch button,.hn button,.hnBtn,.hnDialog button,.jv-hub,.p31-level,.sd-custom-btn){background:var(--soft)!important;color:var(--ink)!important;border-color:var(--line)!important}
+html[data-gamenfy-theme] .homeSwitch [aria-pressed=true]{background:var(--ember)!important;color:var(--bg)!important}
+html[data-gamenfy-theme] .hn .hnScroll{background:var(--card)!important}
+html[data-gamenfy-theme] .hnTimeGrid{background:repeating-linear-gradient(to bottom,transparent 0 29px,var(--line) 29px 30px,transparent 30px 59px,var(--line) 59px 60px)}
+html[data-gamenfy-theme] .hn button.hnLine{background:transparent!important;color:var(--muted)!important}
+html[data-gamenfy-theme] .hn button.hnEvent{background:var(--obs-event)!important;color:var(--ink)!important;border-left-color:var(--ember)}
+html[data-gamenfy-theme] .hn button.hnEvent[aria-pressed=true]{background:var(--green)!important;color:var(--bg)!important}
+html[data-gamenfy-theme] :is(.hn .gratCluster,.hn #gratitudeHomeCard,.hn #gratTags){background:var(--card)!important}
+html[data-gamenfy-theme] :is(input,textarea,select){background-color:var(--card)!important;color:var(--ink)!important;border-color:var(--line)}
+html[data-gamenfy-theme] #accountancyApp :is(button,.button){background:var(--soft);color:var(--ink)}
+html[data-gamenfy-theme] #accountancyApp :is(.hero-aside,.tip){background:var(--obs-hero);color:var(--ink)}
+html[data-gamenfy-theme] #accountancyApp .hero-aside :is(p,a,.eyebrow){color:var(--ink)}
+html[data-gamenfy-theme] .hnDialog::backdrop{background:#070c16c7}
+html[data-gamenfy-theme] .p31-slot-level{background:var(--soft);color:var(--ink)}
+html[data-gamenfy-theme="paper"] .p31-stars{opacity:.08}
+html[data-gamenfy-theme] .studio,html[data-gamenfy-theme] .panel{background:var(--card);border-color:var(--line)}
+html[data-gamenfy-theme] :is(.studio button:not(.key),.panel button,.toolbar select,.connect select,.fileButton){background:var(--soft);color:var(--ink);border-color:var(--line)}
+html[data-gamenfy-theme] #playReference{background:var(--ember);color:var(--bg)}
+html[data-gamenfy-theme="paper"] :is(.rollViewport,.results,.coach,.keyboard){color:#443a2e}
+html[data-gamenfy-theme] .hnThemeTag{margin-left:auto;font-size:9px;letter-spacing:.04em;max-width:90px;text-align:right}

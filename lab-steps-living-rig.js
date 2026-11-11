@@ -133,8 +133,9 @@ async function loadFox(){
     fox.traverse(o=>{
       if(o.name.startsWith('ENV_')||o.isLight||o.isCamera)o.visible=false;
       if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}
-      if(/^(Root|Hips|Spine|Neck|Head|Jaw|Tail|UpperArm\.[LR]|Forearm\.[LR]|Hand\.[LR]|Thigh\.[LR]|Shin\.[LR]|Foot\.[LR])$/.test(o.name)){
-        targets[o.name]=o;rest[o.name]=o.rotation.clone();initialPosition[o.name]=o.position.clone();
+      const canonicalName=o.name.replace(/^(UpperArm|Forearm|Hand|Thigh|Shin|Foot)([LR])$/, '$1.$2');
+      if(/^(Root|Hips|Spine|Neck|Head|Jaw|Tail|UpperArm\.[LR]|Forearm\.[LR]|Hand\.[LR]|Thigh\.[LR]|Shin\.[LR]|Foot\.[LR])$/.test(canonicalName)){
+        targets[canonicalName]=o;rest[canonicalName]=o.rotation.clone();initialPosition[canonicalName]=o.position.clone();
       }
     });
     actor.add(fox);

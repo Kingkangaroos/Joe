@@ -1127,7 +1127,7 @@ body {
 <link rel="stylesheet" href="gamenfy-workspace.css?v=1">
 <script src="gamenfy-updates.js?v=2" defer></script>
 <link rel="stylesheet" href="home-habit-evolution.css?v=1"><script src="home-habit-evolution.js?v=2" defer></script>
-<link rel="stylesheet" href="home-compact.css?v=3"></head>
+<link rel="stylesheet" href="home-compact.css?v=4"><link rel="stylesheet" href="gamenfy-theme.css?v=20261111-1"><script src="gamenfy-theme.js?v=20261111-1"></script></head>
 <body data-updates-surface="home">
 <div class="page">
 <section class="gw-card" id="gamenfyUpdates" aria-live="polite"></section>
@@ -1320,7 +1320,7 @@ window.addEventListener('message', function(event){
   if(event.origin !== location.origin || !event.data) return;
   if(event.data.type === 'gamenfy:park31-height'){
     const frame=document.getElementById('dailyMissions2Frame');
-    const h=Math.max(820,Math.min(1900,Number(event.data.height)||0));
+    const h=Math.max(820,Math.min(40000,Number(event.data.height)||0));
     if(frame && h) frame.style.height=h+'px';
     return;
   }
@@ -3661,7 +3661,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
-<script src="discipline-challenge.js?v=1"></script><script src="home-compact.js?v=3"></script></body>
+<script src="discipline-challenge.js?v=1"></script><script src="home-compact.js?v=4"></script></body>
 </html>
 
 

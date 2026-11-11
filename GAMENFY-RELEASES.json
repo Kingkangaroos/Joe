@@ -1,6 +1,25 @@
 {
   "releases": [
     {
+      "id": "2026-11-11-observatory-world",
+      "date": "2026-11-11",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Open World 0.2 + Paper overdag, Observatory in de avond",
+      "why": "Je crew verdient ruimte, zichtbare voetbeweging en één herkenbare sfeer.",
+      "changes": [
+        "Home-companion groter boven de agenda; Daily Missions kunnen over de volle hoogte scrollen.",
+        "Paper Quest 07:00–19:00 en Midnight Observatory 19:00–07:00, Amsterdamtijd.",
+        "Nieuw doorlopend 3D-lichaam met vijf clips, voetplaatsing en twaalf plekken in dezelfde wereld.",
+        "De oude rig herkent zijn beenbotten nu ook na het inladen."
+      ],
+      "url": "lab-world-directions.html?v=20261111-2",
+      "try": "Open World Studio bovenaan Lab. Probeer Wandel, Ren en Hele crew.",
+      "remaining": "Twaalf kleurvarianten delen één basisfiguur. Echte iPhone-performance en visuele goedkeuring staan open."
+    },
+    {
       "id": "2026-11-10-lab-new-shortcuts",
       "date": "2026-11-10",
       "surfaces": [

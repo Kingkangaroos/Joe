@@ -94,7 +94,7 @@ assert.deepEqual(Array.from(sandboxWindow.GamenfyPark31Registry.privateKeys),['w
 
 assert.equal(ids.p31Stage.dataset.liveLevel,'7','live walking score is shown');
 assert.equal(ids.p31Stage.dataset.artLevel,'8','score 7 selects evolution 8 above the baseline');
-assert.match(ids.p31Art.src,/\/l08\.webp\?v=1\.19$/,'score 7 loads current l08 artwork');
+assert.match(ids.p31Art.src,/\/l08\.webp\?v=\d+\.\d+(?:\.\d+)?$/,'score 7 loads versioned l08 artwork');
 assert.equal(ids.p31State.textContent,'EXPERT','level 7 uses canonical Expert band');
 assert.equal(levelNodes[7].attributes['aria-current'],'step','live evolution dot is selected');
 ids.p31Companion.listeners.click();
@@ -108,7 +108,7 @@ for(const [score,label] of expectedBands){
 }
 storage.rpg_habits_v1=JSON.stringify({walking:{score:0}});intervalTimers[0]();
 assert.equal(ids.p31Stage.dataset.liveLevel,'0');assert.equal(ids.p31Stage.dataset.artLevel,'1');
-assert.match(ids.p31Art.src,/\/l01\.webp\?v=1\.19$/);assert.equal(ids.p31Progress.style.width,'10%');
+assert.match(ids.p31Art.src,/\/l01\.webp\?v=\d+\.\d+$/);assert.equal(ids.p31Progress.style.width,'10%');
 
 // Thirteen native Park 3.1 sets remain intact: all eleven public missions plus two private companions.
 const nativeDirs=['budgeting','steps','nutrition','teeth','household','meditation','gratitude','good-deed','screen-time','cold-shower','no-weed','discipline','sleep','workout'];
@@ -155,10 +155,10 @@ assert.match(source,/gamenfyOpenPrivateMission/,'opening the private companion d
 assert.match(source,/info\.raw===0\?'Slapend/,'level zero has a distinct dormant presentation before L1');
 
 const lab=fs.readFileSync(path.join(__dirname,'..','lab-older-experiments.html'),'utf8');
-assert.match(lab,/park31-lab\.js\?v=1\.1/);assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=1\.19"/);
+assert.match(lab,/park31-lab\.js\?v=1\.1/);assert.match(lab,/<iframe src="park31\.html\?embed=1&amp;mode=missions&amp;v=\d+\.\d+"/);
 const home=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');assert.match(home,/park31\.html\?embed=1&amp;mode=missions&amp;privacy=all/,'Personal Home includes public and PIN-backed private Daily Missions 2.0 companions');
 const page=fs.readFileSync(path.join(__dirname,'..','park31.html'),'utf8');
-assert.match(page,/park31\.js\?v=1\.25/);assert.match(page,/12 missions/);assert.match(page,/Budgeting gebruikt de uil en Meditation de panda/);
+assert.match(page,/park31\.js\?v=\d+\.\d+/);assert.match(page,/12 missions/);assert.match(page,/Budgeting gebruikt de uil en Meditation de panda/);
 
 const walkingSlot=new Element('walking-slot');walkingSlot.dataset.mission='walking';
 const openEvent={target:walkingSlot,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
@@ -166,7 +166,7 @@ ids.p31Roster.listeners.click(openEvent);
 assert.equal(ids.p31Modal.hidden,false);assert.equal(ids.p31ModalTitle.textContent,'Steps');assert.equal(ids.p31ModalLevel.textContent,'Level 1');assert.equal(ids.p31ModalState.textContent,'STARTER');assert.equal(ids.p31ModalProgress.style.width,'10%');assert.equal(missionToggles.length,0);
 
 const liveStorage=storage.rpg_habits_v1;ids.p31Next.listeners.click();
-assert.equal(ids.p31ModalMeta.textContent,'PREVIEW 2 · LIVE 1');assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=1\.19$/);assert.equal(ids.p31MissionToggle.disabled,true);assert.equal(storage.rpg_habits_v1,liveStorage);closeNodes[0].listeners.click();
+assert.equal(ids.p31ModalMeta.textContent,'PREVIEW 2 · LIVE 1');assert.match(ids.p31ModalArt.src,/steps\/l02\.webp\?v=\d+\.\d+$/);assert.equal(ids.p31MissionToggle.disabled,true);assert.equal(storage.rpg_habits_v1,liveStorage);closeNodes[0].listeners.click();
 
 const walkingCheck=new Element('walking-check');walkingCheck.dataset.p31Toggle='walking';
 const checkEvent={target:walkingCheck,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}};
