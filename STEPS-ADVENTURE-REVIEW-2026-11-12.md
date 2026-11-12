@@ -33,6 +33,8 @@ The first visual pass was still too close to a sparse character showroom. Revisi
 - Finish the dreamer’s pajamas, maid’s boots and the heart hero’s armor; increase mobile crew cards to two columns, support portrait and short landscape layouts, keep dialogs scrollable, preserve safe areas and gate movement while menus/inspection are open.
 - Batch static world geometry by material and attribute layout. The exported full scene with all twelve characters and the highest Steps form stays under 180 visible primitives before transient burst effects. This is a budget check, not a phone FPS claim.
 
+- Preserve the renderer and physics when the browser places the page in its back/forward cache; restore its frame clock and clear held input on return.
+
 ## Verification
 
 - All 134 browserless smoke files passed locally, including canonical mission, Fitbit, XP, privacy and existing regressions.

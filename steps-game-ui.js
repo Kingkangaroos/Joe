@@ -50,5 +50,5 @@ function tick(now){if(stopped)return;requestAnimationFrame(tick);const dt=Math.m
  if(toastTime>0){toastTime-=dt;if(toastTime<=0)$('toast').hidden=true;}
  uiClock+=dt;if(uiClock>.1){uiClock=0;updateHUD();}scene.update(state,dt,motion,isPaused);
 }
-document.addEventListener('visibilitychange',()=>{last=performance.now();if(document.hidden){resetInput();save();}});addEventListener('pagehide',()=>{save();stopped=true;scene?.dispose();physics?.dispose();},{once:true});
+document.addEventListener('visibilitychange',()=>{last=performance.now();if(document.hidden){resetInput();save();}});addEventListener('pagehide',event=>{save();resetInput();if(event.persisted)return;stopped=true;scene?.dispose();physics?.dispose();});addEventListener('pageshow',event=>{if(event.persisted){last=performance.now();resetInput();updateHUD();}});
 updateHUD();forms();boot();requestAnimationFrame(tick);
