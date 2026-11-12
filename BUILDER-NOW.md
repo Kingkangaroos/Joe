@@ -4,6 +4,14 @@ Last updated: 2026-09-04
 Owner: Joey Siemons  
 Primary builder: ChatGPT (OpenAI)
 
+## 12 November 2026 · Steps game and distinct crew
+
+Joey explicitly requested a stronger game feel, separate characters for the other habits, Steps fully through its evolutions, and at least two critical self-reviews. `lab-world-directions.html` now hosts The First Light. `steps-quest-core.js` owns the Lab-only ten-chapter campaign; `steps-game-ui.js` owns input/HUD/saving, `steps-game-render.js` adapts simulation to Three.js or a labeled playable 2D map, `steps-game-world.js` composes the shared island, and `steps-game-physics.js` owns Rapier collision/gate state. No canonical habit writer changed. The optional existing Steps-form view reads the last known local score without changing it.
+
+Twelve distinct, original rigged GLB assets are in `assets/game/crew`, not twelve recolors. Steps contains ten cumulative geometry groups and its own five clips; other characters reuse the compatible motion clips on different geometry. Their full ten-form 3D sets are not yet authored. Existing approved Park art is untouched. No Higgsfield was used.
+
+See `STEPS-ADVENTURE-REVIEW-2026-11-12.md` for both review rounds and verification evidence.
+
 ## 11 November 2026 · authorized visual overnight build
 
 Joey explicitly requested a larger Home companion, scrollable Daily Missions and an app-wide day/night style on 11 November. This authorizes these Home presentation changes. Open World Studio 0.2 remains a Lab prototype. His latest instruction forbids Higgsfield use; no Higgsfield calls or generation credits were used.

@@ -1,0 +1,96 @@
+{
+  "generator": "ChatGPT original Blender sculptures, glTF Transform optimized",
+  "version": 1,
+  "models": [
+    {
+      "key": "walking",
+      "bytes": 1505512,
+      "triangles": 45246,
+      "skins": 1,
+      "clips": [
+        "Celebrate",
+        "Idle",
+        "Run",
+        "Walk",
+        "Yawn"
+      ]
+    },
+    {
+      "key": "budgeting",
+      "bytes": 573496,
+      "triangles": 17824,
+      "skins": 1,
+      "clips": []
+    },
+    {
+      "key": "sleep",
+      "bytes": 739760,
+      "triangles": 22748,
+      "skins": 1,
+      "clips": []
+    },
+    {
+      "key": "nutrition",
+      "bytes": 439516,
+      "triangles": 13040,
+      "skins": 1,
+      "clips": []
+    },
+    {
+      "key": "teeth",
+      "bytes": 573816,
+      "triangles": 17188,
+      "skins": 1,
+      "clips": []
+    },
+    {
+      "key": "household",
+      "bytes": 665992,
+      "triangles": 20612,
+      "skins": 1,
+      "clips": []
+    },
+    {
+      "key": "meditation",
+      "bytes": 574796,
+      "triangles": 17732,
+      "skins": 1,
+      "clips": []
+    },
+    {
+      "key": "gratitude",
+      "bytes": 393576,
+      "triangles": 11946,
+      "skins": 1,
+      "clips": []
+    },
+    {
+      "key": "good_deed",
+      "bytes": 518488,
+      "triangles": 15746,
+      "skins": 1,
+      "clips": []
+    },
+    {
+      "key": "screen_time",
+      "bytes": 305260,
+      "triangles": 9610,
+      "skins": 1,
+      "clips": []
+    },
+    {
+      "key": "workout",
+      "bytes": 431868,
+      "triangles": 13624,
+      "skins": 1,
+      "clips": []
+    },
+    {
+      "key": "discipline",
+      "bytes": 570420,
+      "triangles": 17266,
+      "skins": 1,
+      "clips": []
+    }
+  ]
+}

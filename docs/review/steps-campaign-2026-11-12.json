@@ -1,0 +1,189 @@
+{
+  "campaign": {
+    "won": true,
+    "chapters": 10,
+    "forms": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "stars": 1475,
+    "frames": 1752
+  },
+  "models": [
+    {
+      "key": "walking",
+      "skinnedMeshes": 16,
+      "checks": [
+        {
+          "clip": "Walk",
+          "minFootY": 0.1049996999220536
+        },
+        {
+          "clip": "Run",
+          "minFootY": 0.10499973261887702
+        }
+      ]
+    },
+    {
+      "key": "budgeting",
+      "skinnedMeshes": 7,
+      "checks": [
+        {
+          "clip": "Walk",
+          "minFootY": 0.1049996999220536
+        },
+        {
+          "clip": "Run",
+          "minFootY": 0.10499973261887702
+        }
+      ]
+    },
+    {
+      "key": "sleep",
+      "skinnedMeshes": 8,
+      "checks": [
+        {
+          "clip": "Walk",
+          "minFootY": 0.1049996999220536
+        },
+        {
+          "clip": "Run",
+          "minFootY": 0.10499973261887702
+        }
+      ]
+    },
+    {
+      "key": "nutrition",
+      "skinnedMeshes": 8,
+      "checks": [
+        {
+          "clip": "Walk",
+          "minFootY": 0.1049996999220536
+        },
+        {
+          "clip": "Run",
+          "minFootY": 0.10499973261887702
+        }
+      ]
+    },
+    {
+      "key": "teeth",
+      "skinnedMeshes": 5,
+      "checks": [
+        {
+          "clip": "Walk",
+          "minFootY": 0.1049996999220536
+        },
+        {
+          "clip": "Run",
+          "minFootY": 0.10499973261887702
+        }
+      ]
+    },
+    {
+      "key": "household",
+      "skinnedMeshes": 8,
+      "checks": [
+        {
+          "clip": "Walk",
+          "minFootY": 0.1049996999220536
+        },
+        {
+          "clip": "Run",
+          "minFootY": 0.10499973261887702
+        }
+      ]
+    },
+    {
+      "key": "meditation",
+      "skinnedMeshes": 6,
+      "checks": [
+        {
+          "clip": "Walk",
+          "minFootY": 0.1049996999220536
+        },
+        {
+          "clip": "Run",
+          "minFootY": 0.10499973261887702
+        }
+      ]
+    },
+    {
+      "key": "gratitude",
+      "skinnedMeshes": 4,
+      "checks": [
+        {
+          "clip": "Walk",
+          "minFootY": 0.1049996999220536
+        },
+        {
+          "clip": "Run",
+          "minFootY": 0.10499973261887702
+        }
+      ]
+    },
+    {
+      "key": "good_deed",
+      "skinnedMeshes": 6,
+      "checks": [
+        {
+          "clip": "Walk",
+          "minFootY": 0.1049996999220536
+        },
+        {
+          "clip": "Run",
+          "minFootY": 0.10499973261887702
+        }
+      ]
+    },
+    {
+      "key": "screen_time",
+      "skinnedMeshes": 4,
+      "checks": [
+        {
+          "clip": "Walk",
+          "minFootY": 0.1049996999220536
+        },
+        {
+          "clip": "Run",
+          "minFootY": 0.10499973261887702
+        }
+      ]
+    },
+    {
+      "key": "workout",
+      "skinnedMeshes": 7,
+      "checks": [
+        {
+          "clip": "Walk",
+          "minFootY": 0.1049996999220536
+        },
+        {
+          "clip": "Run",
+          "minFootY": 0.10499973261887702
+        }
+      ]
+    },
+    {
+      "key": "discipline",
+      "skinnedMeshes": 7,
+      "checks": [
+        {
+          "clip": "Walk",
+          "minFootY": 0.1049996999220536
+        },
+        {
+          "clip": "Run",
+          "minFootY": 0.10499973261887702
+        }
+      ]
+    }
+  ]
+}

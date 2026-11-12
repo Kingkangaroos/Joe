@@ -1,0 +1,18 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),Q=require('../steps-quest-core.js');
+let s=Q.fresh(),ticks=0;const forms=[],chapters=[];
+while(!s.won&&ticks++<40000){
+ const chapter=s.chapter;if(Q.chapter(s).kind==='dashroute'&&!s.dashUsed)Q.dash(s);
+ if(Q.complete(s)&&Q.distance(s.player,Q.ALTAR)<1.7)Q.interact(s);else if(Q.chapter(s).kind==='switches')Q.interact(s);
+ const target=Q.next(s),d=Q.distance(s.player,target);Q.step(s,{x:d>.1?(target.x-s.player.x)/d:0,z:d>.1?(target.z-s.player.z)/d:0},.04);
+ for(const e of Q.drain(s))if(e.type==='evolution')forms.push(e.form);if(s.chapter!==chapter)chapters.push(chapter);
+}
+assert(s.won,'ten chapters are completable through normal movement, dash, ordered runes and altar interaction');assert.equal(s.form,10);assert.deepEqual(forms,[2,3,4,5,6,7,8,9,10]);assert.equal(s.history.length,10);assert.equal(s.stars,1475,'rewards are paid exactly once');const stars=s.stars;Q.interact(s);assert.equal(s.stars,stars);const old=s.player.x;Q.step(s,{x:1,z:0},.04);assert(s.player.x!==old,'completed island remains explorable');assert(Q.restore(Q.serialize(s)).won);
+s=Q.fresh();assert.equal(Q.dash(s),false,'dash locked before form four');s.form=4;assert(Q.dash(s));assert.equal(s.energy,78);assert(!Q.dash(s),'dash cooldown');
+s=Q.fresh();s.chapter=5;s.form=6;s.player={x:-1,z:-5,heading:0};Q.step(s,{},.04);assert.equal(s.done.length,1);assert.equal(s.stars,5);const resumed=Q.restore(Q.serialize(s));assert.equal(resumed.stars,0,'restart timed route cannot farm pickup currency');assert.equal(resumed.done.length,0);s.timer=.001;Q.step(s,{},.04);assert.equal(s.done.length,0);assert.equal(s.stars,0);assert.equal(s.form,6,'retry never removes a form');
+s=Q.fresh();s.chapter=4;s.form=5;s.player={x:3,z:-4};assert.equal(Q.interact(s),'rune');s.player={x:5,z:-8};assert.equal(Q.interact(s),'wrong');assert.equal(s.done.length,0);assert.equal(s.stars,0,'wrong rune resets its provisional reward');
+assert.equal(Q.restore('bad json').form,1);assert.equal(Q.restore({version:99,form:10}).form,1);
+const root=path.join(__dirname,'..'),hashes=new Set();for(const c of Q.CREW){const file=path.join(root,c.model);assert(fs.existsSync(file));assert(fs.existsSync(path.join(root,c.portrait)));const b=Buffer.from(fs.readFileSync(file,'utf8'),'base64');hashes.add(crypto.createHash('sha256').update(b).digest('hex'));assert.equal(b.toString('ascii',0,4),'glTF');assert.equal(b.readUInt32LE(8),b.length);const g=JSON.parse(b.toString('utf8',20,20+b.readUInt32LE(12)).trim());assert(g.skins.length);if(c.key==='walking'){for(const clip of ['Idle','Walk','Run','Yawn','Celebrate'])assert(g.animations.some(a=>a.name===clip));for(let i=1;i<=10;i++)assert(g.nodes.some(n=>n.extras?.unlock_form===i),'real 3D geometry for form '+i);}}
+assert.equal(hashes.size,12,'twelve distinct model assets, not one recolored model');assert.equal(Q.CREW.length,12);for(const f of Q.FORMS)assert(fs.existsSync(path.join(root,f.render)));
+const ui=fs.readFileSync(path.join(root,'steps-game-ui.js'),'utf8');assert(!/addXP|supabase|rpg_habitlog_v1|recomputeHabit/.test(ui));assert.equal((ui.match(/localStorage\.setItem\(/g)||[]).length,1);assert(ui.includes('localStorage.setItem(Q.SAVE_KEY'));assert(ui.includes('document.hidden'));assert(ui.includes('scene.inputVector'));assert(ui.includes('showModal'));
+console.log('Steps adventure: complete ten-chapter campaign, all ten forms, exact rewards, retry/reload, rune ordering, dash limits, explorable ending, twelve distinct skinned assets and isolated Lab saving passed.');

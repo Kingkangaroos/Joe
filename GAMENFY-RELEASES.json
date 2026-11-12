@@ -1,6 +1,25 @@
 {
   "releases": [
     {
+      "id": "2026-11-12-steps-first-light",
+      "date": "2026-11-12",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Steps · The First Light: een avontuur met tien vormen",
+      "why": "Meer gamegevoel, echte evoluties en een eigen identiteit voor elke habit.",
+      "changes": [
+        "Tien speelbare hoofdstukken, van eerste lichtzaadjes tot een ontwaakt eiland.",
+        "Zelf bewegen, sprinten, dashen, runen, tijdritten, begeleiden en beloningen.",
+        "Tien echte 3D-uitrustingsvormen voor Steps en twaalf afzonderlijke geanimeerde personages.",
+        "Hervatten op dit apparaat, dag/nachtsfeer en een speelbare 2D-kaart als WebGL ontbreekt."
+      ],
+      "url": "lab-world-directions.html?v=20261112-1",
+      "try": "Lab → Steps Adventure. Begin een avontuur of bekijk de tien vormen en de crew.",
+      "remaining": "De andere habits hebben afzonderlijke 3D-basismodellen; hun eigen volledige 3D-evolutiereeksen staan nog open. Echte iPhone-GPU-performance blijft te beoordelen."
+    },
+    {
       "id": "2026-11-11-observatory-world",
       "date": "2026-11-11",
       "surfaces": [
