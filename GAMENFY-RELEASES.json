@@ -1,6 +1,24 @@
 {
   "releases": [
     {
+      "id": "2026-11-12-investment-lab",
+      "date": "2026-11-12",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Money Lab · strategieën en beleggings-API’s verkennen",
+      "why": "Eerst je beleggingsregels begrijpen en testen voordat je een platform koppelt.",
+      "changes": [
+        "Drie strategieën vergelijken met dezelfde inleg, kosten en synthetische koersen.",
+        "Fictieve koop- en verkooporders plus je eigen onderzoeksnotities.",
+        "API-platformen vergeleken en twee alleen-lezen demomodules voorbereid."
+      ],
+      "url": "investment-lab.html?v=1",
+      "try": "Lab → Money Lab → kies een scenario en vergelijk de regels.",
+      "remaining": "Voorbereidingsbranch: geen productiepublicatie, historische backtest of brokerverbinding. Echte iPhone-weergave nog beoordelen."
+    },
+    {
       "id": "2026-11-11-observatory-world",
       "date": "2026-11-11",
       "surfaces": [
