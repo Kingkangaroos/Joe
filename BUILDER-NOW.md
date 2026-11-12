@@ -4,6 +4,10 @@ Last updated: 2026-09-04
 Owner: Joey Siemons  
 Primary builder: ChatGPT (OpenAI)
 
+## 12 November 2026 · visual fidelity correction
+
+Joey explicitly clarified that his original character pictures are the ideal designs. The current smooth 3D models miss that vibe. Treat them as technical working models, not visually approved replacements. Original source images now lead the HUD, evolution gallery, crew selection and 2D map; 3D inspection still shows the actual working models, never a source image pretending to be 3D. Read `CHARACTER-ART-DIRECTION.md` before creating another model. One source-faithful Steps image-to-3D benchmark comes before expanding the set. No Higgsfield. Meshy CLI 0.8.5 checked on 12 November: no authenticated account; no generation submitted or credits spent.
+
 ## 12 November 2026 · Steps game and distinct crew
 
 Joey explicitly requested a stronger game feel, separate characters for the other habits, Steps fully through its evolutions, and at least two critical self-reviews. `lab-world-directions.html` now hosts The First Light. `steps-quest-core.js` owns the Lab-only ten-chapter campaign; `steps-game-ui.js` owns input/HUD/saving, `steps-game-render.js` adapts simulation to Three.js or a labeled playable 2D map, `steps-game-world.js` composes the shared island, and `steps-game-physics.js` owns Rapier collision/gate state. No canonical habit writer changed. The optional existing Steps-form view reads the last known local score without changing it.

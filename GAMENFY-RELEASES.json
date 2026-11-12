@@ -1,6 +1,24 @@
 {
   "releases": [
     {
+      "id": "2026-11-12-original-character-fidelity",
+      "date": "2026-11-12",
+      "surfaces": [
+        "home",
+        "lab"
+      ],
+      "title": "Je originele assets zijn de ontwerpstandaard",
+      "why": "De 3D-werkmodellen raakten de expressie en rijke uitstraling van je ideale character-plaatjes kwijt.",
+      "changes": [
+        "Originele portretten hersteld in HUD, crew-keuze, evolutiegalerij en 2D-kaart.",
+        "3D-werkversies blijven afzonderlijk te bekijken, met een duidelijke status.",
+        "Visuele bronregels vastgelegd voor de volgende Steps-vertaling."
+      ],
+      "url": "lab-world-directions.html?v=20261112-art1",
+      "try": "Open Je crew of de tien Steps-vormen; de originele afbeeldingen zijn weer leidend.",
+      "remaining": "De daadwerkelijke 3D-vormgeving is hiermee nog niet verbeterd. De beeldgestuurde modelroute vereist nog een aangemelde Meshy-verbinding."
+    },
+    {
       "id": "2026-11-12-steps-first-light",
       "date": "2026-11-12",
       "surfaces": [
