@@ -482,3 +482,5 @@ Bottom nav can visually drift upward while scrolling on iOS 26 standalone PWA. D
 - Production deployment is READY for newest functional commit.
 - Device-only issues stay open until real iPhone/PWA confirmation.
 
+
+13 Nov source fidelity update: one hosted Meshy Steps l05 benchmark succeeded (15 credits, 85 remain). See lab-steps-source-test.html and CHARACTER-ART-DIRECTION.md. Closer to source but not visually final; task exposes no export formats, no game integration or animation done. Do not regenerate or subscribe.

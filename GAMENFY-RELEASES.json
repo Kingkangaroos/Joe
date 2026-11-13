@@ -1,6 +1,21 @@
 {
   "releases": [
     {
+      "id": "2026-11-13-steps-source-benchmark",
+      "date": "2026-11-13",
+      "surfaces": [
+        "lab"
+      ],
+      "title": "Steps: originele asset naar 3D",
+      "why": "De bronplaatjes zijn Joey’s ideale poppetjes.",
+      "changes": [
+        "Eén directe image-to-3D-proef van originele Steps-vorm 5.",
+        "Origineel en modelpreview naast elkaar met kritische beoordeling."
+      ],
+      "url": "lab-steps-source-test.html?v=20261113-1",
+      "remaining": "Nog geen exportformaten teruggegeven door Meshy. Geen rig, loopanimatie of integratie in het spel; geen perfect resultaat geclaimd."
+    },
+    {
       "id": "2026-11-12-original-character-fidelity",
       "date": "2026-11-12",
       "surfaces": [

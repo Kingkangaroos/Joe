@@ -27,3 +27,7 @@ Meshy CLI 0.8.5 is installed but auth status is unauthenticated. No login flow, 
 ## Current presentation correction
 
 Original art is used for portraits and the explicitly 2D map. Selecting a card still opens the actual 3D working model (or its labeled static render when WebGL is unavailable). Source and model caches are separate so an original picture is never passed off as a finished 3D translation. Existing approved art files, gameplay, habit history and save data remain untouched.
+
+## 13 November: first direct-source benchmark
+
+Hosted Meshy connection used with permission for one source-based game-topology test, not the unauthenticated CLI. Task `01a1d4ab-5c2e-771c-a201-ebdb06685f48`, image-to-3d, original Steps l05 URL, meshy-t2.5, target 30000 triangles, meshy-n1 texture. Succeeded; balance 100 → 85. No subscription, reruns, rig or animation. Preview inspected against source: closer face/eyes/ears, compact body, outfit and sneakers; softer mouth/gloves and less rich material definition remain. Only one rendered view inspected; topology, back, deformation and mobile performance not established. get_task and show_model returned no formats, only encrypted viewer preview, so no GLB was fetched or integrated. Do not claim free-tier export is impossible in general: studio reports can_download true; this task simply lists none. Lab comparison records these exact limitations.
